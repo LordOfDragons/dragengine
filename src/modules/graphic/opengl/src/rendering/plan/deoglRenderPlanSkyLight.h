@@ -25,6 +25,8 @@
 #include "../task/deoglAddToRenderTask.h"
 #include "../task/deoglRenderTask.h"
 #include "../../collidelist/deoglCollideList.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -65,6 +67,13 @@ public:
 	
 	
 private:
+	/** Counters struct. */
+	struct sCounters{
+		uint32_t workGroupSize[ 3 ];
+		uint32_t counter;
+	};
+	
+	
 	deoglRenderPlan &pPlan;
 	deoglRSkyInstance *pSky;
 	deoglRSkyInstanceLayer *pLayer;
@@ -99,6 +108,14 @@ private:
 	deoglRPTSkyLightBuildRT *pTaskBuildRT2;
 	deoglRPTSkyLightGIFindContent *pTaskGIFindContent;
 	deoglRPTSkyLightGIUpdateRT *pTaskGIUpdateRT;
+	
+	deoglSPBlockUBO::Ref pUBOFindConfig;
+	deoglSPBlockSSBO::Ref pSSBOCounters;
+	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
+	
+	deoglSPBlockUBO::Ref pUBOFindConfigGI;
+	deoglSPBlockSSBO::Ref pSSBOCountersGI;
+	deoglSPBlockSSBO::Ref pSSBOVisibleElementsGI;
 	
 	
 	
@@ -210,6 +227,16 @@ public:
 	
 	
 	
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
+	
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfigGI() const{ return pUBOFindConfigGI; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCountersGI() const{ return pSSBOCountersGI; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsGI() const{ return pSSBOVisibleElementsGI; }
+	
+	
+	
 	/** Clear. */
 	void Clear();
 	
@@ -235,12 +262,33 @@ public:
 	void WaitFinishedBuildRT1();
 	void WaitFinishedBuildRT2();
 	
+	void PrepareBuffers();
+	void ReadVisibleElements();
+	void ReadVisibleElementsGI();
+	
 	/** Clean up after rendering. */
 	void CleanUp();
 	
 	
 	
 private:
+	void pPrepareFindConfig();
+	void pPrepareFindConfigGI();
+	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
+	void pClearCounters();
+	void pSetWorldComputeParams( deoglSPBlockUBO &ubo );
+	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );
+	void pSetLightFrustumPlanes( deoglSPBlockUBO &ubo,
+		const decDMatrix &frustumMatrix, const decDMatrix &matrixLightSpace );
+	void pSetLightFrustumPlane( deoglSPBlockUBO &ubo, const decDMatrix &matrix,
+		int &index, const decDVector &normal, double distance );
+	void pCalcLightFrustum( const decDMatrix &matrix, decDVector (&frustumPoints)[ 5 ] );
+	void pLightFrustumBox( const decDVector (&frustumPoints)[ 5 ], decDVector &minExtend, decDVector &maxExtend );
+	void pFrustumHull( deoglSPBlockUBO &ubo, const decDVector (&frustumPoints)[ 5 ] );
+	void pCullLayerMask( deoglSPBlockUBO &ubo );
+	void pSetSplits( deoglSPBlockUBO &ubo, float backtrack );
+	void pSetGISplits( deoglSPBlockUBO &ubo );
+	
 	void pDetermineShadowParameters();
 	void pCalcShadowLayerParams();
 	void pWaitFinishedFindContent();

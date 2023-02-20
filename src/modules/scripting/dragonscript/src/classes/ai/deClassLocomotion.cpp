@@ -1991,7 +1991,7 @@ dsFunction( init.clsLoco, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 void deClassLocomotion::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsLocomotion * const locomotion = ( ( const sLocoNatDat * )p_GetNativeData( myself ) )->locomotion;
 	
-	rt->PushInt( ( intptr_t )locomotion );
+	rt->PushInt( ( int )( intptr_t )locomotion );
 }
 
 // public func bool equals( Object object )

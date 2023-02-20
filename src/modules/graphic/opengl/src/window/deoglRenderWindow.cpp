@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "deoglRenderWindow.h"
 #include "deoglRRenderWindow.h"
@@ -157,18 +156,13 @@ void deoglRenderWindow::SyncToRender(){
 	if( pDirtyIcon ){
 		if( pRenderWindow.GetIcon() ){
 			deoglImage &image = *( ( deoglImage* )pRenderWindow.GetIcon()->GetPeerGraphic() );
-			deoglPixelBuffer *pixelBuffer = NULL;
 			
 			image.CreatePixelBuffer();
 			
 			try{
-				pixelBuffer = new deoglPixelBuffer( *image.GetPixelBuffer() );
-				pRRenderWindow->SetIcon( pixelBuffer );
+				pRRenderWindow->SetIcon( deoglPixelBuffer::Ref::New( new deoglPixelBuffer( image.GetPixelBuffer() ) ) );
 				
 			}catch( const deException & ){
-				if( pixelBuffer ){
-					delete pixelBuffer;
-				}
 				image.ReleasePixelBuffer();
 				throw;
 			}

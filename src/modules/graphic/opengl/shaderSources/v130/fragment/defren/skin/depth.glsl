@@ -41,7 +41,6 @@
 #ifdef DEPTH_TEST
 	uniform HIGHP sampler2DArray texDepthTest;
 #endif
-uniform HIGHP sampler2DArray texXRayDepth;
 
 
 
@@ -66,9 +65,6 @@ uniform HIGHP sampler2DArray texXRayDepth;
 #ifdef CLIP_PLANE
 	in vec3 vClipCoord;
 #endif
-#ifdef DEPTH_ORTHOGONAL
-	in float vZCoord;
-#endif
 #ifdef DEPTH_DISTANCE
 	in vec3 vPosition;
 #endif
@@ -83,6 +79,8 @@ uniform HIGHP sampler2DArray texXRayDepth;
 	#ifdef WITH_BITANGENT
 		in vec3 vBitangent;
 	#endif
+#elif defined DEPTH_OFFSET
+	in vec3 vNormal; // dummy, find a way to remove this later on
 #endif
 #ifdef TEXTURE_RIM_EMISSIVITY
 	in vec3 vReflectDir;
@@ -165,13 +163,11 @@ vec3 finalEmissivityIntensity( in vec3 intensity ){
 void main( void ){
 	// calculate depth if non-projective depth is used. this has to be done before any branching
 	// because derivatives become undefined otherwise.
-	#ifdef DEPTH_ORTHOGONAL
-		vec2 depthDeriv = vec2( dFdx( vZCoord ), dFdy( vZCoord ) );
-		gl_FragDepth = vZCoord;
-	#endif
 	#ifdef DEPTH_DISTANCE
 		float depth = length( vPosition ) * pDepthTransform.x + pDepthTransform.y;
-		vec2 depthDeriv = vec2( dFdx( depth ), dFdy( depth ) );
+		#ifdef DEPTH_OFFSET
+// 			vec2 depthDeriv = vec2( dFdx( depth ), dFdy( depth ) );
+		#endif
 		gl_FragDepth = depth;
 	#endif
 	
@@ -182,7 +178,7 @@ void main( void ){
 		}
 	#endif
 	
-	#ifdef DEPTH_OFFSET
+	#if defined DEPTH_OFFSET && defined DEPTH_ORTHOGONAL && NEVER_DEFINED
 		/*if( gl_FrontFacing ){
 			gl_FragDepth += length( depthDeriv ) * pDepthOffset[ vLayer ].x + pDepthOffset[ vLayer ].y;
 			
@@ -200,10 +196,6 @@ void main( void ){
 		gl_FragDepth += length( depthDeriv ) * depthOffset.x + depthOffset.y;
 	#endif
 	
-	#ifdef NO_ZCLIP
-		gl_FragDepth = max( gl_FragDepth, 0 );
-	#endif
-	
 	// discard fragments using the clip plane
 	#ifdef CLIP_PLANE
 		if( dot( vClipCoord, pClipPlane[ vLayer ].xyz ) <= pClipPlane[ vLayer ].w ) discard;
@@ -219,7 +211,7 @@ void main( void ){
 		
 		// relief mapping. definition of macros has to be delied until here since undefine
 		// symbols can lead to tricky situations resulting in compilers failing
-		#ifndef HAS_TESSELLATION_SHADER
+		#if ! defined HAS_TESSELLATION_SHADER && defined REQUIRES_TEX_COLOR
 			vec2 tcReliefMapped = vTCColor;
 			reliefMapping( tcReliefMapped, realNormal );
 			
@@ -358,17 +350,6 @@ void main( void ){
 			#endif
 		#endif
 	#endif
-	
-	// discard against xray depth
-	if( pCondXRay ){
-		float xrayDepth = sampleDepth( texXRayDepth, ivec3( gl_FragCoord.xy, vLayer ) );
-		
-		#ifdef INVERSE_DEPTH
-			if( fragmentDepth >= xrayDepth ) discard;
-		#else
-			if( fragmentDepth <= xrayDepth ) discard;
-		#endif
-	}
 	
 	// encode the output depth
 	#ifdef ENCODE_OUT_DEPTH

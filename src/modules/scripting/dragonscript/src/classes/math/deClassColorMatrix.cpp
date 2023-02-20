@@ -834,7 +834,7 @@ void deClassColorMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValu
 	
 	const unsigned short p = ( unsigned short )precision;
 	char format[ 110 ];
-	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+	snprintf( format, sizeof( format ), "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",

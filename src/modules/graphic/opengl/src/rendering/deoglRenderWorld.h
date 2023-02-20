@@ -24,6 +24,7 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderWorldInfo.h"
+#include "../pipeline/deoglPipeline.h"
 
 class deoglAddToRenderTask;
 class deoglAddToRenderTaskParticles;
@@ -31,7 +32,6 @@ class deoglParticleSorter;
 class deoglRenderTask;
 class deoglRenderPlanMasked;
 class deoglRenderTaskParticles;
-class deoglSPBlockUBO;
 
 
 
@@ -40,20 +40,18 @@ class deoglSPBlockUBO;
  */
 class deoglRenderWorld : public deoglRenderBase{
 private:
-	deoglSPBlockUBO *pRenderPB;
-	deoglSPBlockUBO *pRenderXRayPB;
+	deoglSPBlockUBO::Ref pRenderPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	deoglParticleSorter *pParticleSorter;
 	deoglRenderTaskParticles *pRenderTaskParticles;
 	deoglAddToRenderTaskParticles *pAddToRenderTaskParticles;
 	
-	deoglShaderProgramUsage pShaderFinalize;
-	deoglShaderProgramUsage pShaderFinalizeSplit;
-	deoglShaderProgramUsage pShaderFinalizeStereo;
-	
-	deoglShaderProgramUsage pShaderCopyDepth;
-	deoglShaderProgramUsage pShaderCopyDepthStereo;
+	const deoglPipeline *pPipelineFinalize;
+	const deoglPipeline *pPipelineFinalizeStereo;
+	const deoglPipeline *pPipelineFinalizeBlend;
+	const deoglPipeline *pPipelineFinalizeBlendStereo;
+	const deoglPipeline *pPipelineFinalizeSplit;
 	
 	deoglRenderWorldInfo pDebugInfo;
 	
@@ -77,10 +75,7 @@ public:
 	inline deoglRenderWorldInfo &GetDebugInfo(){ return pDebugInfo; }
 	
 	/** Render parameter block. */
-	inline deoglSPBlockUBO *GetRenderPB() const{ return pRenderPB; }
-	
-	/** Render XRay parameter block. */
-	inline deoglSPBlockUBO *GetRenderXRayPB() const{ return pRenderXRayPB; }
+	inline const deoglSPBlockUBO::Ref &GetRenderPB() const{ return pRenderPB; }
 	
 	/** Render task. */
 	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }
@@ -125,9 +120,6 @@ public:
 	
 	/** Render finalize pass to active graphics context with color correction. */
 	void RenderFinalizeContext( deoglRenderPlan &plan );
-	
-	/** Copy depth to XRay depth. */
-	void CopyDepthToXRayDepth( deoglRenderPlan &plan );
 	
 	
 	

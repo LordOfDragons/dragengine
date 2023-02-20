@@ -30,7 +30,7 @@ class delGameIcon;
 /**
  * \brief Icon icon list.
  */
-class delGameIconList{
+class DE_DLL_EXPORT delGameIconList{
 private:
 	decObjectList pIcons;
 	

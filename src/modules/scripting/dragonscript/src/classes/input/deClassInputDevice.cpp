@@ -714,7 +714,7 @@ dsFunction( init.clsInputDevice, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_N
 void deClassInputDevice::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsInputDevice * const device = ( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
 	
-	rt->PushInt( ( intptr_t )device );
+	rt->PushInt( ( int )( intptr_t )device );
 }
 
 // public func bool equals( Object obj )

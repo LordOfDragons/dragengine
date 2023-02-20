@@ -71,7 +71,7 @@ debnValueVector2::~debnValueVector2(){
 ///////////////
 
 bool debnValueVector2::UpdateValue( bool force ){
-	if( ! force && pValueVector2.GetVector().IsEqualTo( pLastValue, pValueVector2.GetPrecision() ) ){
+	if( ! force && pValueVector2.GetVector().IsEqualTo( pLastValue, ( float )pValueVector2.GetPrecision() ) ){
 		return false;
 	}
 	
@@ -92,8 +92,8 @@ void debnValueVector2::ReadValue( decBaseFileReader &reader ){
 		break;
 		
 	case evtVector2F64:
-		pLastValue.x = reader.ReadDouble();
-		pLastValue.y = reader.ReadDouble();
+		pLastValue.x = ( float )reader.ReadDouble();
+		pLastValue.y = ( float )reader.ReadDouble();
 		break;
 		
 	default:

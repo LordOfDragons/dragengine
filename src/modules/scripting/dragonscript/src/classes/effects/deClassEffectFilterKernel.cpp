@@ -151,7 +151,7 @@ dsFunction( init.clsEffFilKer, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NAT
 void deClassEffectFilterKernel::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deEffectFilterKernel * const effect = ( ( sEffFilKerMatrixNatDat* )p_GetNativeData( myself ) )->effect;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )effect );
+	rt->PushInt( ( int )( intptr_t )effect );
 }
 
 // public func bool equals( Object obj )

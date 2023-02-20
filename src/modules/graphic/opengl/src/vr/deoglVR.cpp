@@ -236,7 +236,9 @@ void deoglVR::Submit(){
 	//      inside OpenVR to use whatever scissor parameters are in effect by the last call
 	//      of the application. this causes rendere artifacts in the HMD. disabling
 	//      GL_SCISSOR_TEST fixes this problem. this is also save if OpenVR is fixed
-	OGL_CHECK( pCamera.GetRenderThread(), glDisable( GL_SCISSOR_TEST ) );
+	//      
+	// NOTE since we use pipelines now this has to be done using a pipeline instead
+	pCamera.GetRenderThread().GetRenderers().GetWorld().GetPipelineClearBuffers()->Activate();
 	
 	const deoglRestoreFramebuffer restoreFbo( pCamera.GetRenderThread() ); 
 	pLeftEye.Submit( *vrmodule );

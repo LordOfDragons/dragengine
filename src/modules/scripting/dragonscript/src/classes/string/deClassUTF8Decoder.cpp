@@ -179,7 +179,7 @@ dsFunction( init.clsU8D, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 
 void deClassUTF8Decoder::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decUTF8Decoder *decoder = ( ( sU8DNatDat* )p_GetNativeData( myself ) )->decoder;
-	rt->PushInt( ( intptr_t )decoder );
+	rt->PushInt( ( int )( intptr_t )decoder );
 }
 
 

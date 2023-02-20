@@ -30,7 +30,7 @@ class deoglRDSRenderableValue;
 
 
 /**
- * \brief Dynamic skin value renderable.
+ * Dynamic skin value renderable.
  */
 class deoglDSRenderableValue : public deoglDSRenderable{
 public:
@@ -42,10 +42,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderable. */
+	/** Create renderable. */
 	deoglDSRenderableValue( deoglDynamicSkin &dynamicSkin, const deDSRenderableValue &renderable );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDSRenderableValue();
 	/*@}*/
 	
@@ -53,16 +53,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Renderable. */
+	/** Renderable. */
 	inline const deDSRenderableValue &GetRenderableValue() const{ return pRenderableValue; }
 	
-	/** \brief Render renderable. */
+	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;
 	
-	/** \brief Renderable changed. */
+	/** Renderable changed. */
 	virtual void RenderableChanged();
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	/*@}*/
 	

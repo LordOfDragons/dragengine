@@ -29,7 +29,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Module parameter quick debug.
+ * Module parameter quick debug.
  */
 class deoglPQuickDebug : public deoglParameterInt{
 public:

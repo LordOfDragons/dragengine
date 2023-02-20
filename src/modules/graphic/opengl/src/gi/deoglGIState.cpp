@@ -35,6 +35,7 @@
 #include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
+#include "../rendering/deoglRenderWorld.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -43,6 +44,7 @@
 #include "../utils/collision/deoglCollisionDetection.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionFrustum.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -97,21 +99,9 @@ pCameraForceToneMapAdaptionCount( 0 ),
 pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
 pTexProbeOffset( renderThread ),
-pTexProbeState( renderThread ),
-pTexCopyProbeIrradiance( renderThread ),
-pFBOProbeIrradiance( renderThread, false ),
-pFBOProbeDistance( renderThread, false ),
-pFBOProbeOffset( renderThread, false ),
-pFBOProbeState( renderThread, false ),
-pFBOCopyProbeIrradiance( renderThread, false ),
 pClearMaps( true ),
-pVBOProbeOffsets( 0 ),
-pVBOProbeOffsetsTransition( 0 ),
-pVBOProbeOffsetsData( NULL ),
 pProbesHaveMoved( false ),
 
-pVBOProbeExtends( 0 ),
-pVBOProbeExtendsData( NULL ),
 pProbesExtendsChanged( false ),
 
 pInstances( *this ),
@@ -440,24 +430,27 @@ void deoglGIState::ComponentBecameVisible( deoglRComponent *component ){
 	ComponentEnteredWorld( component );
 }
 
+void deoglGIState::StartReadBack(){
+	const deoglGICascade &cascade = GetActiveCascade();
+	INIT_SPECIAL_TIMING
+	
+	if( pProbesHaveMoved && cascade.GetUpdateProbeCount() > 0 ){
+		pReadBackProbeOffsets->TransferFrom( pPBProbeOffsets, cascade.GetUpdateProbeCount() );
+		SPECIAL_TIMER_PRINT("StartReadBack: > ProbeOffsets.TransferFrom")
+	}
+	
+	if( pProbesExtendsChanged && cascade.GetRayCacheProbeCount() > 0 ){
+		pReadBackProbeExtends->TransferFrom( pPBProbeExtends, cascade.GetRayCacheProbeCount() );
+		SPECIAL_TIMER_PRINT("StartReadBack: > ProbeExtends.TransferFrom")
+	}
+}
+
 
 
 // Private Functions
 //////////////////////
 
 void deoglGIState::pCleanUp(){
-	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
-	dops.DeleteOpenGLBuffer( pVBOProbeOffsets );
-	dops.DeleteOpenGLBuffer( pVBOProbeOffsetsTransition );
-	dops.DeleteOpenGLBuffer( pVBOProbeExtends );
-	
-	if( pVBOProbeOffsetsData ){
-		delete [] pVBOProbeOffsetsData;
-	}
-	if( pVBOProbeExtendsData ){
-		delete [] pVBOProbeExtendsData;
-	}
-	
 	if( pCascades ){
 		int i;
 		for( i=0; i<pCascadeCount; i++ ){
@@ -593,7 +586,8 @@ void deoglGIState::pInitCascadeUpdateCycle(){
 
 void deoglGIState::pInitUBOClearProbes(){
 	pUBOClearProbes.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
-	deoglSPBlockUBO &ubo = GetUBOClearProbes();
+	deoglSPBlockUBO &ubo = pUBOClearProbes;
+	
 	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 	ubo.SetParameterCount( 1 );
 	ubo.GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, ( pRealProbeCount / 32 ) / 4 ); // uvec4
@@ -657,13 +651,10 @@ void deoglGIState::pUpdateProbeOffsetFromShader( deoglGICascade &cascade ){
 	INIT_SPECIAL_TIMING
 	pProbesHaveMoved = false;
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsets ) );
-	OGL_CHECK( pRenderThread, pglGetBufferSubData( GL_ARRAY_BUFFER,
-		0, cascade.GetUpdateProbeCount() * 4 * sizeof( GLfloat ), pVBOProbeOffsetsData ) );
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
-	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > GetVBOData")
+	const deoglSPBMapBuffer mapped( pReadBackProbeOffsets );
+	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > MapPBO")
 	
-	cascade.UpdateProbeOffsetFromShader( pVBOProbeOffsetsData );
+	cascade.UpdateProbeOffsetFromShader( pReadBackProbeOffsets->GetMappedBuffer() );
 	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > UpdateCascade")
 }
 
@@ -675,13 +666,10 @@ void deoglGIState::pUpdateProbeExtendsFromShader( deoglGICascade &cascade ){
 	INIT_SPECIAL_TIMING
 	pProbesExtendsChanged = false;
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeExtends ) );
-	OGL_CHECK( pRenderThread, pglGetBufferSubData( GL_ARRAY_BUFFER,
-		0, cascade.GetRayCacheProbeCount() * 6 * sizeof( GLfloat ), pVBOProbeExtendsData ) );
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
-	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > GetVBOData")
+	const deoglSPBMapBuffer mapped( pReadBackProbeExtends );
+	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > MapPBO")
 	
-	cascade.UpdateProbeExtendsFromShader( pVBOProbeExtendsData );
+	cascade.UpdateProbeExtendsFromShader( pReadBackProbeExtends->GetMappedBuffer() );
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > UpdateCascade")
 }
 
@@ -715,154 +703,93 @@ void deoglGIState::pPrepareRayCacheProbes( deoglGICascade &cascade ){
 
 void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	if( pTexProbeIrradiance.GetTexture() && pTexProbeDistance.GetTexture()
-	&& pTexProbeOffset.GetTexture() && pTexProbeState.GetTexture() && ! pClearMaps ){
+	&& pTexProbeOffset.GetTexture() && ! pClearMaps ){
 		return;
 	}
 	
-	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-	
 	if( ! pTexProbeIrradiance.GetTexture() ){
-		const int width = ( pSizeTexIrradiance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
-		const int height = ( pSizeTexIrradiance + 2 ) * pProbeCount.z + 2;
-		
-		pTexProbeIrradiance.SetFBOFormat( 3, true );
-		pTexProbeIrradiance.SetSize( width, height, pCascadeCount );
+		pTexProbeIrradiance.SetFBOFormat( 4, true ); // image load/store supports only 1, 2 and 4 not 3
+		pTexProbeIrradiance.SetSize( ( pSizeTexIrradiance + 2 ) * pProbeCount.x * pProbeCount.y + 2,
+			( pSizeTexIrradiance + 2 ) * pProbeCount.z + 2, pCascadeCount );
 		pTexProbeIrradiance.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeIrradiance );
-		pFBOProbeIrradiance.DetachAllImages();
-		pFBOProbeIrradiance.AttachColorArrayTexture( 0, &pTexProbeIrradiance );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOProbeIrradiance.Verify();
 	}
 	
 	if( ! pTexProbeDistance.GetTexture() ){
-		const int width = ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
-		const int height = ( pSizeTexDistance + 2 ) * pProbeCount.z + 2;
-		
 		pTexProbeDistance.SetFBOFormat( 2, true );
-		pTexProbeDistance.SetSize( width, height, pCascadeCount );
+		pTexProbeDistance.SetSize( ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2,
+			( pSizeTexDistance + 2 ) * pProbeCount.z + 2, pCascadeCount );
 		pTexProbeDistance.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeDistance );
-		pFBOProbeDistance.DetachAllImages();
-		pFBOProbeDistance.AttachColorArrayTexture( 0, &pTexProbeDistance );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOProbeDistance.Verify();
 	}
 	
 	if( ! pTexProbeOffset.GetTexture() ){
-		const int width = pProbeCount.x * pProbeCount.y;
-		const int height = pProbeCount.z;
-		
 		pTexProbeOffset.SetFBOFormat( 4, true );
-		pTexProbeOffset.SetSize( width, height, pCascadeCount );
+		pTexProbeOffset.SetSize( pProbeCount.x * pProbeCount.y, pProbeCount.z, pCascadeCount );
 		pTexProbeOffset.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOffset );
-		pFBOProbeOffset.DetachAllImages();
-		pFBOProbeOffset.AttachColorArrayTexture( 0, &pTexProbeOffset );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOProbeOffset.Verify();
-	}
-	
-	if( ! pTexProbeState.GetTexture() ){
-		const int width = pProbeCount.x * pProbeCount.y;
-		const int height = pProbeCount.z;
-		
-		pTexProbeState.SetFBOFormatIntegral( 1, 8, true );
-		pTexProbeState.SetSize( width, height );
-		pTexProbeState.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeState );
-		pFBOProbeState.DetachAllImages();
-		pFBOProbeState.AttachColorTexture( 0, &pTexProbeState );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOProbeState.Verify();
-	}
-	
-	if( ! pTexCopyProbeIrradiance.GetTexture() ){
-		const int width = ( pSizeTexIrradiance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
-		const int height = ( pSizeTexIrradiance + 2 ) * pProbeCount.z + 2;
-		
-		pTexCopyProbeIrradiance.SetFBOFormat( 3, true );
-		pTexCopyProbeIrradiance.SetSize( width, height );
-		pTexCopyProbeIrradiance.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOCopyProbeIrradiance );
-		pFBOCopyProbeIrradiance.DetachAllImages();
-		pFBOCopyProbeIrradiance.AttachColorTexture( 0, &pTexCopyProbeIrradiance );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOCopyProbeIrradiance.Verify();
 	}
 	
 	if( pClearMaps ){
-		OGL_CHECK( pRenderThread, glDisable( GL_BLEND ) ); // silence performance warning
-		OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
-		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+		deoglPixelBuffer::Ref pixbuf;
+		pClearMaps = false;
 		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeIrradiance );
-		const GLfloat clearIrradiance[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearIrradiance[ 0 ] ) );
+		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4,
+			pTexProbeIrradiance.GetWidth(), pTexProbeIrradiance.GetHeight(),
+			pTexProbeIrradiance.GetLayerCount() ) );
+		pixbuf->SetToFloatColor( 0.0f, 0.0f, 0.0f, 0.0f );
+		pTexProbeIrradiance.SetPixels( pixbuf );
 		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeDistance );
+		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat2,
+			pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
+			pTexProbeDistance.GetLayerCount() ) );
 		const GLfloat maxProbeDistance = pCascades[ pCascadeCount - 1]->GetMaxProbeDistance();
-		const GLfloat clearDistance[ 4 ] = { maxProbeDistance, maxProbeDistance,
-			maxProbeDistance, maxProbeDistance * maxProbeDistance };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistance[ 0 ] ) );
+		pixbuf->SetToFloatColor( maxProbeDistance, maxProbeDistance,
+			maxProbeDistance, maxProbeDistance * maxProbeDistance );
+		pTexProbeDistance.SetPixels( pixbuf );
 		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOffset );
-		const GLfloat clearOffset[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearOffset[ 0 ] ) );
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeState );
-		const GLuint clearState[ 4 ] = { 0, 0, 0, 0 };
-		OGL_CHECK( pRenderThread, pglClearBufferuiv( GL_COLOR, 0, &clearState[ 0 ] ) );
+		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4,
+			pTexProbeOffset.GetWidth(), pTexProbeOffset.GetHeight(),
+			pTexProbeOffset.GetLayerCount() ) );
+		pixbuf->SetToFloatColor( 0.0f, 0.0f, 0.0f, 0.0f );
+		pTexProbeOffset.SetPixels( pixbuf );
 	}
-	
-	pClearMaps = false;
 }
 
 void deoglGIState::pPrepareProbeVBO(){
-	// data arrays
-	pVBOProbeOffsetsData = new GLfloat[ GI_MAX_PROBE_COUNT * 4 ];
-	pVBOProbeExtendsData = new GLfloat[ GI_MAX_PROBE_COUNT * 6 ];
+	const bool rowMajor = pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
-	// VBO probe offset
-	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeOffsets ) );
-	if( ! pVBOProbeOffsets ){
-		DETHROW( deeOutOfMemory );
-	}
+	// parameter block probe dynamic states
+	pPBProbeDynamicStates.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+	pPBProbeDynamicStates->SetRowMajor( rowMajor );
+	pPBProbeDynamicStates->SetParameterCount( 1 );
+	pPBProbeDynamicStates->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint state
+	pPBProbeDynamicStates->SetElementCount( GI_MAX_PROBE_COUNT );
+	pPBProbeDynamicStates->MapToStd140();
+	pPBProbeDynamicStates->EnsureBuffer();
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsets ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
-		GI_MAX_PROBE_COUNT * 4 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
+	// parameter block probe offset
+	pPBProbeOffsets.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+	pPBProbeOffsets->SetRowMajor( rowMajor );
+	pPBProbeOffsets->SetParameterCount( 2 );
+	pPBProbeOffsets->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 offset
+	pPBProbeOffsets->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint flags
+	pPBProbeOffsets->SetElementCount( GI_MAX_PROBE_COUNT );
+	pPBProbeOffsets->MapToStd140();
+	pPBProbeOffsets->EnsureBuffer();
 	
-	// transition VBO probe offset
-	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeOffsetsTransition ) );
-	if( ! pVBOProbeOffsetsTransition ){
-		DETHROW( deeOutOfMemory );
-	}
+	pReadBackProbeOffsets.TakeOver( new deoglSPBlockReadBackSSBO( pPBProbeOffsets ) );
+	pReadBackProbeOffsets->EnsureBuffer();
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsetsTransition ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
-		GI_MAX_PROBE_COUNT * 4 * sizeof( GLfloat ), NULL, GL_STREAM_DRAW ) );
+	// parameter block probe extends
+	pPBProbeExtends.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+	pPBProbeExtends->SetRowMajor( rowMajor );
+	pPBProbeExtends->SetParameterCount( 2 );
+	pPBProbeExtends->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 minExtend
+	pPBProbeExtends->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 maxExtend
+	pPBProbeExtends->SetElementCount( GI_MAX_PROBE_COUNT );
+	pPBProbeExtends->MapToStd140();
+	pPBProbeExtends->EnsureBuffer();
 	
-	// VBO probe extends
-	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeExtends ) );
-	if( ! pVBOProbeExtends ){
-		DETHROW( deeOutOfMemory );
-	}
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeExtends ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
-		GI_MAX_PROBE_COUNT * 6 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
+	pReadBackProbeExtends.TakeOver( new deoglSPBlockReadBackSSBO( pPBProbeExtends ) );
+	pReadBackProbeExtends->EnsureBuffer();
 }
 
 void deoglGIState::pPrepareUBORayDirections() const{
@@ -871,56 +798,50 @@ void deoglGIState::pPrepareUBORayDirections() const{
 	const int raysPerProbe = traceRays.GetRaysPerProbe();
 	
 	deoglSPBlockUBO &ubo = pRenderThread.GetGI().GetUBORayDirection();
-	ubo.MapBuffer();
-	try{
+	const deoglSPBMapBuffer mapped( ubo );
+	
 // #define GI_USE_RANDOM_DIRECTION 1
-		#ifdef  GI_USE_RANDOM_DIRECTION
-		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
-			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
+	#ifdef  GI_USE_RANDOM_DIRECTION
+	const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
+		decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
+	#endif
+	
+	const float sf_PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
+	const float sf_n = ( float )raysPerProbe;
+	#define madfrac(A, B) ((A)*(B)-floorf((A)*(B)))
+	
+	int i;
+	for( i=0; i<raysPerProbe; i++ ){
+		const float sf_i = ( float )i;
+		const float phi = TWO_PI * madfrac( sf_i, sf_PHI - 1.0f );
+		const float cosTheta = 1.0f - ( 2.0f * sf_i + 1.0f ) * ( 1.0f / sf_n );
+		const float sinTheta = sqrtf( decMath::clamp( 1.0f - cosTheta * cosTheta, 0.0f, 1.0f ) );
+		const decVector sf( cosf( phi ) * sinTheta, sinf( phi ) * sinTheta, cosTheta );
+		
+		// the paper uses random rotation matrix. this results though in huge flickering
+		// even if smoothed using hystersis which is close to epiletic attack. disabling
+		// the random rotation keeps the result stable. it is most probably not as smooth
+		// as it could be with random rotation but avoids the unsupportable flickering
+		//ubo.SetParameterDataArrayVec3( 0, i, randomOrientation * sf );
+		#ifdef GI_USE_RANDOM_DIRECTION
+		ubo.SetParameterDataArrayVec3( 0, i, randomOrientation * sf );
+		#else
+		ubo.SetParameterDataArrayVec3( 0, i, sf );
 		#endif
-		
-		const float sf_PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
-		const float sf_n = ( float )raysPerProbe;
-		#define madfrac(A, B) ((A)*(B)-floor((A)*(B)))
-		
-		int i;
-		for( i=0; i<raysPerProbe; i++ ){
-			const float sf_i = ( float )i;
-			const float phi = TWO_PI * madfrac( sf_i, sf_PHI - 1.0f );
-			const float cosTheta = 1.0f - ( 2.0f * sf_i + 1.0f ) * ( 1.0f / sf_n );
-			const float sinTheta = sqrtf( decMath::clamp( 1.0f - cosTheta * cosTheta, 0.0f, 1.0f ) );
-			const decVector sf( cosf( phi ) * sinTheta, sinf( phi ) * sinTheta, cosTheta );
-			
-			// the paper uses random rotation matrix. this results though in huge flickering
-			// even if smoothed using hystersis which is close to epiletic attack. disabling
-			// the random rotation keeps the result stable. it is most probably not as smooth
-			// as it could be with random rotation but avoids the unsupportable flickering
-			//ubo.SetParameterDataArrayVec3( 0, i, randomOrientation * sf );
-			#ifdef GI_USE_RANDOM_DIRECTION
-			ubo.SetParameterDataArrayVec3( 0, i, randomOrientation * sf );
-			#else
-			ubo.SetParameterDataArrayVec3( 0, i, sf );
-			#endif
-		}
-		
-		#undef madfrac
-		
-		// DEBUG
-		/*{
-			for( i=0; i<pRaysPerProbe; i++ ){
-				float pc = TWO_PI * i / pRaysPerProbe;
-				decVector dir( sinf( pc ), 0.0f, cos( pc ) );
-				ubo.SetParameterDataArrayVec3( eutpRayDirection, i, dir );
-			}
-			for( i=0; i<pUpdateProbeCount; i++ ){
-				ubo.SetParameterDataArrayVec3( eutpProbePosition, i, (i%4)*3.0/4.0-1.5, 1, 0 );
-			}
-		}*/
-		// DEBUG
-		
-	}catch( const deException & ){
-		ubo.UnmapBuffer();
-		throw;
 	}
-	ubo.UnmapBuffer();
+	
+	#undef madfrac
+	
+	// DEBUG
+	/*{
+		for( i=0; i<pRaysPerProbe; i++ ){
+			float pc = TWO_PI * i / pRaysPerProbe;
+			decVector dir( sinf( pc ), 0.0f, cos( pc ) );
+			ubo.SetParameterDataArrayVec3( eutpRayDirection, i, dir );
+		}
+		for( i=0; i<pUpdateProbeCount; i++ ){
+			ubo.SetParameterDataArrayVec3( eutpProbePosition, i, (i%4)*3.0/4.0-1.5, 1, 0 );
+		}
+	}*/
+	// DEBUG
 }

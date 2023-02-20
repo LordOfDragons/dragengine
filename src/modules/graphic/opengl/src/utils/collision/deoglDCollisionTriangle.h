@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Triangle collision volume.
+ * Triangle collision volume.
  *
  * Defines a collision volume in the shape of a triangle. The
  * triangle is defined by the three corner points. The points
@@ -44,7 +44,7 @@ private:
 	decDVector pNormal;
 	double pDist;
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision triangle with all points 0. */
 	deoglDCollisionTriangle();
@@ -60,13 +60,13 @@ public:
 	virtual ~deoglDCollisionTriangle();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume( deoglDCollisionVolume *volume );
 	virtual double VolumeMoveHitsVolume( deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume( deoglDCollisionSphere *sphere );
 	virtual bool CylinderHitsVolume( deoglDCollisionCylinder *cylinder );
@@ -83,13 +83,13 @@ public:
 	virtual double PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglDCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglDCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decDVector &point );
@@ -97,12 +97,12 @@ public:
 	virtual decDVector ClosestPointTo( const decDVector &point );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglDCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this triangle. */
 	bool SphereHitsTriangle( deoglDCollisionSphere *sphere );
@@ -145,7 +145,7 @@ public:
 	double TriangleMoveHitsTriangle( deoglDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	inline const decDVector &GetCorner1() const{ return pCorners[ 0 ]; }
 	inline const decDVector &GetCorner2() const{ return pCorners[ 1 ]; }

@@ -236,7 +236,7 @@ const decVector &sc, float sr){
 	float c = rp * rp + sc * sc - ( rp * sc ) * 2.0f - sr * sr;
 	float disc = b * b - a * c;
 	if( disc < 0.0f ) return -1.0f;
-	disc = sqrt( disc );
+	disc = sqrtf( disc );
 	float lambda = -b - disc;
 	if( lambda < 0.0f ) lambda = -b + disc;
 	return lambda / a;
@@ -375,10 +375,10 @@ const decVector &tp3, const decVector &tp4, const decVector &p){
 	v2.Normalize();
 	v3.Normalize();
 	v4.Normalize();
-	arcsum += acos( v1 * v2 );
-	arcsum += acos( v2 * v3 );
-	arcsum += acos( v3 * v4 );
-	arcsum += acos( v4 * v1 );
+	arcsum += acosf( v1 * v2 );
+	arcsum += acosf( v2 * v3 );
+	arcsum += acosf( v3 * v4 );
+	arcsum += acosf( v4 * v1 );
 	return fabs(arcsum - 2.0f*PI) <= 0.005f;
 }
 
@@ -396,7 +396,7 @@ const decVector &sphereCenter, float sphereRadius, float &hitDistance ){
 		return false;
 	}
 	
-	disc = sqrt( disc );
+	disc = sqrtf( disc );
 	float lambda = -b - disc;
 	if( lambda < 0.0f ){
 		lambda = -b + disc;
@@ -444,7 +444,7 @@ const decVector &sphere2Center, float sphere2Radius, const decVector &displaceme
 	if( disc < 0.0f ) return 1.0f;
 	
 	// determine the closer of the two points
-	disc = sqrt( disc );
+	disc = sqrtf( disc );
 	factor = 1.0f / ( a * 2.0f );
 	lambda = ( -b - disc ) * factor;
 	if( lambda < 0.0f ) lambda = ( -b + disc ) * factor;
@@ -605,7 +605,7 @@ const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderRadius,
 	disc = b * b - 4.0f * a * c;
 	
 	if( disc > 1e-6f ){
-		disc = sqrt( disc );
+		disc = sqrtf( disc );
 		
 		distance = ( disc - b ) / ( 2.0f * a );
 		if( distance >= 0.0f && distance <= 1.0f ){
@@ -687,7 +687,7 @@ float &hitDistance ){
 	disc = b * b - 4.0f * a * c;
 	
 	if( disc > 1e-6f ){
-		disc = sqrt( disc );
+		disc = sqrtf( disc );
 		
 		distance = ( disc - b ) / ( 2.0f * a );
 		if( distance >= 0.0f && distance <= 1.0f ){
@@ -760,7 +760,7 @@ const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleRadius, fl
 	disc = b * b - 4.0f * a * c;
 	
 	if( disc > 1e-6f ){
-		disc = sqrt( disc );
+		disc = sqrtf( disc );
 		
 		distance = ( disc - b ) / ( 2.0f * a );
 		if( distance >= 0.0f && distance <= 1.0f ){
@@ -820,7 +820,7 @@ float &hitDistance ){
 	
 	// adjust parameters
 	f1 = ( capsuleBottomRadius - capsuleTopRadius ) / ( 2.0f * capsuleHalfHeight ); // sin(a)
-	f2 = sqrt( 1.0f - f1 * f1 ); // cos(a)
+	f2 = sqrtf( 1.0f - f1 * f1 ); // cos(a)
 	
 	f3 = capsuleBottomRadius * f1;
 	halfHeight = capsuleHalfHeight + ( capsuleTopRadius * f1 - f3 ) * 0.5f;
@@ -844,7 +844,7 @@ float &hitDistance ){
 	disc = b * b - 4.0f * a * c;
 	
 	if( disc > 1e-6f ){
-		disc = sqrt( disc );
+		disc = sqrtf( disc );
 		
 		distance = ( disc - b ) / ( 2.0f * a );
 		if( distance >= 0.0f && distance <= 1.0f ){

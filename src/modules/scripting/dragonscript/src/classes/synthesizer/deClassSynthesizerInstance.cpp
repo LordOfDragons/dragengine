@@ -310,7 +310,7 @@ deClassSynthesizerInstance::nfHashCode::nfHashCode( const sInitData &init ) : ds
 void deClassSynthesizerInstance::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deSynthesizerInstance * const instance = ( ( sSynINatDat* )p_GetNativeData( myself ) )->instance;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )instance );
+	rt->PushInt( ( int )( intptr_t )instance );
 }
 
 // public func bool equals( Object obj )

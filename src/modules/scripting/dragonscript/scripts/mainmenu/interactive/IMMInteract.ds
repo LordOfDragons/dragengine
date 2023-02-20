@@ -46,68 +46,68 @@ class IMMInteract implements ColliderListener
 	
 	
 	/** \brief Create interact handler for interactive main menu. */
-	public func new( InteractiveMainMenu mainMenu )
+	public func new(InteractiveMainMenu mainMenu)
 		if mainMenu == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pMainMenu = mainMenu
-		this.pCollisionFilter = this.createCollisionFilter()
+		pMainMenu = mainMenu
+		pCollisionFilter = createCollisionFilter()
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
-		this.pHoverHotSpot = null
-		this.pMainMenu = null
+		pHoverHotSpot = null
+		pMainMenu = null
 	end
 	
 	
 	
 	/** \brief Interactive main menu. */
 	public func InteractiveMainMenu getMainMenu()
-		return this.pMainMenu
+		return pMainMenu
 	end
 	
 	/** \brief Hot-spot under cursor or null. */
 	public func IMMBehaviorHotSpot.Instance getHoverHotSpot()
-		return this.pHoverHotSpot
+		return pHoverHotSpot
 	end
 	
 	
 	
 	/** \brief Update camera. */
-	public func void update( float elapsed )
+	public func void update(float elapsed)
 		// hovering over hot-spot is only enabled if no hot-spot is active, activating
 		// or deactivating. basically only in pure main menu mode
-		if this.pMainMenu.getActiveHotSpot() == null
-			this.hotSpotFromMouseCursor()
+		if pMainMenu.getActiveHotSpot() == null
+			hotSpotFromMouseCursor()
 			
 		else
-			this.clearHotSpot()
+			clearHotSpot()
 		end
 	end
 	
 	/** \brief Mouse button pressed. */
-	public func void onButtonPress( MouseEvent event )
+	public func void onButtonPress(MouseEvent event)
 		select event.getButton()
 		case InputEventMouseButton.left
-			if this.pHoverHotSpot != null and this.pMainMenu.getActiveHotSpot() == null
-				this.pMainMenu.activateHotSpot( this.pHoverHotSpot )
+			if pHoverHotSpot != null and pMainMenu.getActiveHotSpot() == null
+				pMainMenu.activateHotSpot(pHoverHotSpot)
 			end
 			
 		case InputEventMouseButton.right, InputEventMouseButton.middle
-			if this.pMainMenu.getActiveHotSpot() != null
-				this.pMainMenu.deactivateHotSpot()
+			if pMainMenu.getActiveHotSpot() != null
+				pMainMenu.deactivateHotSpot()
 			end
 		end
 	end
 	
 	/** \brief Key pressed. */
-	public func void onKeyPress( KeyEvent event )
+	public func void onKeyPress(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.escape
-			if this.pMainMenu.getActiveHotSpot() != null
-				this.pMainMenu.deactivateHotSpot()
+			if pMainMenu.getActiveHotSpot() != null
+				pMainMenu.deactivateHotSpot()
 			end
 		end
 	end
@@ -117,27 +117,26 @@ class IMMInteract implements ColliderListener
 	/** \brief Create collision filter. */
 	protected func CollisionFilter createCollisionFilter()
 		var LayerMask layerMask = LayerMask.new()
-		layerMask.setBit( BaseGameApp.CollisionFilterBit.geometry )
-		layerMask.setBit( BaseGameApp.CollisionFilterBit.dynamic )
-		layerMask.setBit( BaseGameApp.CollisionFilterBit.actorAI ) // used by IMMBehaviorColliderInteract
-		return CollisionFilter.new( layerMask )
+		layerMask.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		layerMask.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		layerMask.setBit(BaseGameApp.CollisionFilterBit.actorAI) // used by IMMBehaviorColliderInteract
+		return CollisionFilter.new(layerMask)
 	end
 	
 	/** \brief Update hotspot from mouse cursor position. */
 	protected func void hotSpotFromMouseCursor()
-		var DVector rayOrigin = this.pMainMenu.getCamera().getPosition()
-		var WorldRenderer worldRenderer = this.pMainMenu.getWorldRenderer()
-		var Vector rayDirection = worldRenderer.backProject( \
-			this.pMainMenu.getDesktop().getMouseLocation() \
-				- worldRenderer.getScreenPosition() )
+		var DVector rayOrigin = pMainMenu.getCamera().getPosition()
+		var WorldRenderer worldRenderer = pMainMenu.getWorldRenderer()
+		var Vector rayDirection = worldRenderer.backProject(\
+			pMainMenu.getDesktop().getMouseLocation() - worldRenderer.getScreenPosition())
 		
-		var IMMBehaviorHotSpot.Instance lastHotSpot = this.pHoverHotSpot
-		this.pHoverHotSpot = null
+		var IMMBehaviorHotSpot.Instance lastHotSpot = pHoverHotSpot
+		pHoverHotSpot = null
 		
-		this.pMainMenu.getWorld().getWorld().rayHitsClosest( rayOrigin, \
-			rayDirection * 300.0, this, this.pCollisionFilter )
+		pMainMenu.getWorld().getWorld().rayHitsClosest(rayOrigin, \
+			rayDirection * 300.0, this, pCollisionFilter)
 		
-		if this.pHoverHotSpot == lastHotSpot
+		if pHoverHotSpot == lastHotSpot
 			return
 		end
 		
@@ -145,27 +144,27 @@ class IMMInteract implements ColliderListener
 			lastHotSpot.onHotSpotHoverExit()
 		end
 		
-		if this.pHoverHotSpot != null
-			this.pHoverHotSpot.onHotSpotHoverEnter()
+		if pHoverHotSpot != null
+			pHoverHotSpot.onHotSpotHoverEnter()
 		end
 	end
 	
 	/** \brief Clear hotspot. */
 	protected func void clearHotSpot()
-		if this.pHoverHotSpot == null
+		if pHoverHotSpot == null
 			return
 		end
 		
-		if this.pHoverHotSpot != null
-			this.pHoverHotSpot.onHotSpotHoverExit()
+		if pHoverHotSpot != null
+			pHoverHotSpot.onHotSpotHoverExit()
 		end
-		this.pHoverHotSpot = null
+		pHoverHotSpot = null
 	end
 	
 	
 	
 	/** \brief Store hot-spot if hit collider is a hot-spot. */
-	public func void collisionResponse( Collider owner, CollisionInfo info )
+	public func void collisionResponse(Collider owner, CollisionInfo info)
 		if not info.isCollider()
 			return
 		end
@@ -179,18 +178,18 @@ class IMMInteract implements ColliderListener
 			return
 		end
 		
-		var IMMBehaviorHotSpot.Instance behavior = IMMBehaviorHotSpot.getInstanceIn( hitOwner cast BehaviorElement )
+		var IMMBehaviorHotSpot.Instance behavior = IMMBehaviorHotSpot.getInstanceIn(hitOwner cast BehaviorElement)
 		if behavior != null
-			this.pHoverHotSpot = behavior
+			pHoverHotSpot = behavior
 		end
 	end
 	
 	/** \brief All colliders can be hit. */
-	public func bool canHitCollider( Collider owner, Collider collider )
+	public func bool canHitCollider(Collider owner, Collider collider)
 		return true
 	end
 	
 	/** \brief Not used. */
-	public func void colliderChanged( Collider owner )
+	public func void colliderChanged(Collider owner)
 	end
 end

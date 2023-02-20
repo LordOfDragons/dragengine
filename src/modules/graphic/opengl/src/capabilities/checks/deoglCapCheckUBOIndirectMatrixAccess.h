@@ -29,7 +29,7 @@ class deoglCapabilities;
 
 
 /**
- * \brief Capability check UBO indirect matrix access.
+ * Capability check UBO indirect matrix access.
  */
 class deoglCapCheckUBOIndirectMatrixAccess{
 private:
@@ -41,7 +41,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capability check. */
+	/** Create capability check. */
 	deoglCapCheckUBOIndirectMatrixAccess( deoglCapabilities &capabilities );
 	/*@}*/
 	
@@ -49,13 +49,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief UBO indirect access is working correctly. */
+	/** UBO indirect access is working correctly. */
 	inline bool Working() const{ return pWorking; }
 	
-	/** \brief UBO indirect access is not working correctly. */
+	/** UBO indirect access is not working correctly. */
 	inline bool Broken() const{ return ! pWorking; }
 	
-	/** \brief Run check. */
+	/** Run check. */
 	void Check( GLuint fbo );
 	/*@}*/
 };

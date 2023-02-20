@@ -34,7 +34,7 @@ class deSky;
 
 
 /**
- * \brief Render sky.
+ * Render sky.
  */
 class deoglRSky : public deObject{
 private:
@@ -53,10 +53,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new render sky. */
+	/** Create new render sky. */
 	deoglRSky( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render sky. */
+	/** Clean up render sky. */
 	~deoglRSky();
 	/*@}*/
 	
@@ -64,27 +64,27 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Background color of the sky. */
+	/** Background color of the sky. */
 	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
-	/** \brief Set background color of the sky. */
+	/** Set background color of the sky. */
 	void SetBgColor( const decColor &color );
 	
 	
 	
-	/** \brief Number of layers. */
+	/** Number of layers. */
 	inline int GetLayerCount() const{ return pLayerCount; }
 	
-	/** \brief Get link at index. */
+	/** Get link at index. */
 	const deoglRSkyLink &GetLinkAt( int index ) const;
 	
 	/**
-	 * \brief Rebuild links.
+	 * Rebuild links.
 	 * 
 	 * \note Called from main thread during synchronoization.
 	 */
@@ -92,11 +92,11 @@ public:
 	
 	
 	
-	/** \brief Layer at index. */
+	/** Layer at index. */
 	deoglRSkyLayer &GetLayerAt( int index ) const;
 	
 	/**
-	 * \brief Rebuild layers.
+	 * Rebuild layers.
 	 * 
 	 * \note Called from main thread during synchronoization.
 	 */

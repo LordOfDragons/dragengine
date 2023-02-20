@@ -236,6 +236,10 @@ void decLayerMask::WriteToFile( decBaseFileWriter& writer ) const{
 	writer.WriteULong( pMask );
 }
 
+void decLayerMask::SetMask( uint64_t mask ){
+	pMask = mask;
+}
+
 
 
 // Operators

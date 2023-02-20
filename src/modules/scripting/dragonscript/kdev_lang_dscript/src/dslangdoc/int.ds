@@ -20,6 +20,9 @@
  * | \b not int | true if integer value is not 0 |
  * 
  * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 fixed class int
 	/** \name Constructors */
@@ -49,7 +52,7 @@ fixed class int
 	 * \returns \em true if \em other is of type integer and both are equal.
 	 */
 	public func bool equals( Object other )
-		return 0
+		return false
 	end
 	
 	/** \brief Hash code for use as dictionary keys. */
@@ -68,7 +71,22 @@ fixed class int
 	/** \name Operators */
 	/*@{*/
 	/** \brief Integer value is less than another integereger value. */
+	public func bool <( byte other )
+		return false
+	end
+	
+	/** \brief Integer value is less than another integereger value. */
 	public func bool <( int other )
+		return false
+	end
+	
+	/** \brief Integer value is less than another integereger value. */
+	public func bool <( float other )
+		return false
+	end
+	
+	/** \brief Integer value is less than or equal to another integereger value. */
+	public func bool <=( byte other )
 		return false
 	end
 	
@@ -77,8 +95,28 @@ fixed class int
 		return false
 	end
 	
+	/** \brief Integer value is less than or equal to another integereger value. */
+	public func bool <=( float other )
+		return false
+	end
+	
+	/** \brief Integer value is greater than another integereger value. */
+	public func bool >( byte other )
+		return false
+	end
+	
 	/** \brief Integer value is greater than another integereger value. */
 	public func bool >( int other )
+		return false
+	end
+	
+	/** \brief Integer value is greater than another integereger value. */
+	public func bool >( float other )
+		return false
+	end
+	
+	/** \brief Integer value is greater than or equal to another integereger value. */
+	public func bool >=( byte other )
 		return false
 	end
 	
@@ -87,10 +125,30 @@ fixed class int
 		return false
 	end
 	
+	/** \brief Integer value is greater than or equal to another integereger value. */
+	public func bool >=( float other )
+		return false
+	end
+	
 	
 	
 	/** \brief Integer plus another integereger value. */
+	public func int +( byte other )
+		return 0
+	end
+	
+	/** \brief Integer plus another integereger value. */
 	public func int +( int other )
+		return 0
+	end
+	
+	/** \brief Integer plus another integereger value. */
+	public func float +( float other )
+		return 0.0
+	end
+	
+	/** \brief Integer minus another integereger value. */
+	public func int -( byte other )
 		return 0
 	end
 	
@@ -99,8 +157,31 @@ fixed class int
 		return 0
 	end
 	
+	/** \brief Integer minus another integereger value. */
+	public func float -( float other )
+		return 0.0
+	end
+	
+	/** \brief Integer value timer another integereger value. */
+	public func int *( byte other )
+		return 0
+	end
+	
 	/** \brief Integer value timer another integereger value. */
 	public func int *( int other )
+		return 0
+	end
+	
+	/** \brief Integer value timer another integereger value. */
+	public func float *( float other )
+		return 0.0
+	end
+	
+	/**
+	 * \brief Integer value divided by another integereger value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func int /( byte other )
 		return 0
 	end
 	
@@ -112,8 +193,26 @@ fixed class int
 		return 0
 	end
 	
+	/**
+	 * \brief Integer value divided by another integereger value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func float /( float other )
+		return 0.0
+	end
+	
+	/** \brief Integer modulo another integereger value. */
+	public func int %( byte other )
+		return 0
+	end
+	
 	/** \brief Integer modulo another integereger value. */
 	public func int %( int other )
+		return 0
+	end
+	
+	/** \brief Integer left shifted by digits. */
+	public func int <<( byte digits )
 		return 0
 	end
 	
@@ -123,7 +222,17 @@ fixed class int
 	end
 	
 	/** \brief Integer right shifted by digits. */
+	public func int >>( byte digits )
+		return 0
+	end
+	
+	/** \brief Integer right shifted by digits. */
 	public func int >>( int digits )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value plus another integereger value. */
+	public func int +=( byte other )
 		return 0
 	end
 	
@@ -133,7 +242,17 @@ fixed class int
 	end
 	
 	/** \brief Set integer value to integer value minus another integereger value. */
+	public func int -=( byte other )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value minus another integereger value. */
 	public func int -=( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value timer another integereger value. */
+	public func int *=( byte other )
 		return 0
 	end
 	
@@ -150,13 +269,36 @@ fixed class int
 		return 0
 	end
 	
+	/**
+	 * \brief Set integer value to integer value divided by another integereger value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func int /=( byte other )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer modulo another integereger value. */
+	public func int %=( byte other )
+		return 0
+	end
+	
 	/** \brief Set integer value to integer modulo another integereger value. */
 	public func int %=( int other )
 		return 0
 	end
 	
 	/** \brief Set integer value to integer value left shifted by digits. */
+	public func int <<=( byte digits )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value left shifted by digits. */
 	public func int <<=( int digits )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value right shifted by digits. */
+	public func int >>=( byte digits )
 		return 0
 	end
 	
@@ -168,7 +310,17 @@ fixed class int
 	
 	
 	/** \brief Bitwise and between this integer and another integer. */
+	public func int &( byte other )
+		return 0
+	end
+	
+	/** \brief Bitwise and between this integer and another integer. */
 	public func int &( int other )
+		return 0
+	end
+	
+	/** \brief Bitwise  or between this integer and another integer. */
+	public func int |( byte other )
 		return 0
 	end
 	
@@ -178,7 +330,17 @@ fixed class int
 	end
 	
 	/** \brief Bitwise xor between this integer and another integer. */
+	public func int ^( byte other )
+		return 0
+	end
+	
+	/** \brief Bitwise xor between this integer and another integer. */
 	public func int ^( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to bitwise and between this integer and another integer and return new value. */
+	public func int &=( byte other )
 		return 0
 	end
 	
@@ -188,7 +350,17 @@ fixed class int
 	end
 	
 	/** \brief Set integer value to bitwise or between this integer and another integer and return new value. */
+	public func int |=( byte other )
+		return 0
+	end
+	
+	/** \brief Set integer value to bitwise or between this integer and another integer and return new value. */
 	public func int |=( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to bitwise xor between this integer and another integer and return new value. */
+	public func int ^=( byte other )
 		return 0
 	end
 	
@@ -199,11 +371,6 @@ fixed class int
 	
 	
 	
-	/** \brief Negative value. */
-	public func int -()
-		return 0
-	end
-	
 	/** \brief Increment integer value by one. */
 	public func int ++()
 		return 0
@@ -211,6 +378,11 @@ fixed class int
 	
 	/** \brief Decrement integer value by one. */
 	public func int --()
+		return 0
+	end
+	
+	/** \brief Negated value. */
+	public func int -()
 		return 0
 	end
 end

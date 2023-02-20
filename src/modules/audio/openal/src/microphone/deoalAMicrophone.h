@@ -254,7 +254,7 @@ public:
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void DebugUpdateInfo( deDebugBlockInfo &debugInfo );
-	void DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray );
+	void DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume );
 	/*@}*/
 	
 	
@@ -296,9 +296,9 @@ private:
 	
 	void pProcessEffects();
 	
-	void pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray );
-	void pDebugCaptureRays( deDebugDrawerShape &shape,
-		const deoalSoundRayList &rayList, const deoalSoundRay &ray );
+	void pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume );
+	void pDebugCaptureRays( deDebugDrawerShape &shape, const deoalSoundRayList &rayList,
+		const deoalSoundRay &ray, bool volume );
 	
 	float pMaxActiveSpeakerRange() const;
 };

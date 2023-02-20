@@ -200,7 +200,7 @@ dsFunction( init.clsCapCan, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 void deClassCaptureCanvas::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deCaptureCanvas * const captureCanvas = ( ( sCapCanNatDat* )p_GetNativeData( myself ) )->captureCanvas;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )captureCanvas );
+	rt->PushInt( ( int )( intptr_t )captureCanvas );
 }
 
 // public func bool equals( Object obj )

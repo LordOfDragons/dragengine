@@ -427,7 +427,7 @@ deClassColor::nfToString::nfToString( const sInitData &init ) : dsFunction( init
 void deClassColor::nfToString::RunFunction( dsRunTime *RT, dsValue *This ){
 	const decColor &color = ( ( sClrNatDat* )p_GetNativeData( This ) )->color;
 	char buffer[ 50 ];
-	sprintf( ( char* )&buffer, "(%f,%f,%f,%f)", color.r, color.g, color.b, color.a );
+	snprintf( ( char* )&buffer, sizeof( buffer ), "(%f,%f,%f,%f)", color.r, color.g, color.b, color.a );
 	RT->PushString( buffer );
 }
 
@@ -448,7 +448,7 @@ void deClassColor::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *mys
 	
 	const unsigned short p = ( unsigned short )precision;
 	char format[ 22 ];
-	sprintf( format, "(%%.%huf,%%.%huf,%%.%huf,%%.%huf)", p, p, p, p );
+	snprintf( format, sizeof( format ), "(%%.%huf,%%.%huf,%%.%huf,%%.%huf)", p, p, p, p );
 	
 	const decColor &color = ( ( sClrNatDat* )p_GetNativeData( myself ) )->color;
 	decString str;

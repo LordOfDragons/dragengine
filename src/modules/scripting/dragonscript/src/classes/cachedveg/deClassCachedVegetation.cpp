@@ -734,7 +734,7 @@ dsFunction( init.clsCVeg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 void deClassCachedVegetation::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dedsCachedVegetation *cveg = ( ( sCVegNatDat* )p_GetNativeData( myself ) )->cveg;
 	
-	rt->PushInt( ( intptr_t )cveg );
+	rt->PushInt( ( int )( intptr_t )cveg );
 }
 
 // public func bool equals( Object obj )

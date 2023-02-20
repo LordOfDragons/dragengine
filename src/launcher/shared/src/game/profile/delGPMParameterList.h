@@ -30,7 +30,7 @@ class delGPMParameter;
 /**
  * \brief Game Profile Module Parameter List.
  */
-class delGPMParameterList{
+class DE_DLL_EXPORT delGPMParameterList{
 private:
 	decObjectList pParameters;
 	

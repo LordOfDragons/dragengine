@@ -33,15 +33,17 @@
 
 // Events
 ///////////
-FXDEFMAP( decrbPanelErrorTrace ) decrbPanelErrorTraceMap[] = {
-};
+
+//FXDEFMAP( decrbPanelErrorTrace ) decrbPanelErrorTraceMap[] = {
+//};
 
 
 
 // Class decrbPanelErrorTrace
 ///////////////////////////////
 	
-FXIMPLEMENT( decrbPanelErrorTrace, FXVerticalFrame, decrbPanelErrorTraceMap, ARRAYNUMBER( decrbPanelErrorTraceMap ) )
+//FXIMPLEMENT( decrbPanelErrorTrace, FXVerticalFrame, decrbPanelErrorTraceMap, ARRAYNUMBER( decrbPanelErrorTraceMap ) )
+FXIMPLEMENT( decrbPanelErrorTrace, FXVerticalFrame, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

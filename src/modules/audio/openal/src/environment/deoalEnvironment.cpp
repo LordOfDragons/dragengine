@@ -89,6 +89,7 @@ pRangeSquared( 1.0f ),
 pAttenuationRefDist( 1.0f ),
 pAttenuationRolloff( 0.0f ),
 pAttenuationDistanceOffset( 0.0f ),
+pValid( false ),
 pGainLow( 1.0f ),
 pGainMedium( 1.0f ),
 pGainHigh( 1.0f ),
@@ -211,7 +212,7 @@ void deoalEnvironment::Update(){
 	// skip if outside range to save processing time
 	const decQuaternion &micOrient = microphone.GetOrientation();
 	const decDVector &micPos = microphone.GetPosition();
-	const float distanceSquared = ( micPos - pPosition ).LengthSquared();
+	const float distanceSquared = ( float )( ( micPos - pPosition ).LengthSquared() );
 	const deoalConfiguration::eAurealizationModes aurealizationMode =
 		pAudioThread.GetConfiguration().GetAurealizationMode();
 	
@@ -259,6 +260,8 @@ void deoalEnvironment::Update(){
 	}
 	
 	pCalcEffectParameters();
+	
+	pValid = true;
 	
 	// debug
 // 	if( pAudioThread.GetDebug().GetLogCalcEnvProbe() ){

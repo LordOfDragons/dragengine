@@ -100,49 +100,46 @@ enum eSPRectangle{
 deoglRenderDebug::deoglRenderDebug( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
-pDebugFont( NULL ),
+pDebugFont( nullptr ),
 
-pTBORenderText1( NULL ),
-pTBORenderText2( NULL ),
+pTBORenderText1( nullptr ),
+pTBORenderText2( nullptr ),
 
-pTBORenderRectangle1( NULL ),
-pTBORenderRectangle2( NULL )
+pTBORenderRectangle1( nullptr ),
+pTBORenderRectangle2( nullptr )
 {
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
-		sources = shaderManager.GetSourcesNamed( "DefRen Debug Color-Only" );
-		pShaderXRay = shaderManager.GetProgramWith( sources, defines );
+		pipconf.Reset();
+		pipconf.SetDepthMask( false );
+		pipconf.EnableBlendBlend();
+		
+		// x-ray
+		pipconf.SetShader( renderThread, "DefRen Debug Color-Only", defines );
+		pPipelineXRay = pipelineManager.GetWith( pipconf );
 		defines.RemoveAllDefines();
 		
+		// texture layer
+		defines.SetDefines( "TEXTURELEVEL" );
+		pipconf.SetShader( renderThread, "Debug Display Texture", defines );
+		pPipelineOutTexLayer = pipelineManager.GetWith( pipconf );
 		
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Debug Sphere" );
-		pShaderSphere = shaderManager.GetProgramWith( sources, defines );
-		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
-		pShaderOutTex = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.SetDefine( "TEXTURELEVEL", "1" );
-		pShaderOutTexLayer = shaderManager.GetProgramWith( sources, defines );
+		// texture array
+		defines.SetDefines( "ARRAYTEXTURE" );
+		pipconf.SetShader( renderThread, "Debug Display Texture", defines );
+		pPipelineOutArrTex = pipelineManager.GetWith( pipconf );
 		defines.RemoveAllDefines();
 		
-		defines.SetDefine( "TEXTURELEVEL", "1" );
-		defines.SetDefine( "ARRAYTEXTURE", "1" );
-		pShaderOutArrTex = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		// text
+		pipconf.SetShader( renderThread, "Debug Render Text", defines );
+		pPipelineRenderText = pipelineManager.GetWith( pipconf );
 		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "Debug Render Text" );
-		pShaderRenderText = shaderManager.GetProgramWith( sources, defines );
-		
-		sources = shaderManager.GetSourcesNamed( "Debug Rectangle" );
-		pShaderRectangle = shaderManager.GetProgramWith( sources, defines );
+		// rectangle
+		pipconf.SetShader( renderThread, "Debug Rectangle", defines );
+		pPipelineRectangle = pipelineManager.GetWith( pipconf );
 		
 		
 		
@@ -183,7 +180,6 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	int texWidth = texture->GetWidth();
@@ -215,22 +211,8 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	// => scale.x = tex.width / view.width
 	// => offset.x = ( tex.width / view.width ) - 1 = scale.x - 1
 	
-	// set opengl states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	// set shader and options
-	renderThread.GetShader().ActivateShader( pShaderOutTexLayer );
-	deoglShaderCompiled &shader = *pShaderOutTexLayer->GetCompiled();
+	pPipelineOutTexLayer->Activate();
+	deoglShaderCompiled &shader = pPipelineOutTexLayer->GetGlShader();
 	
 	shader.SetParameterFloat( spotPosTransform, scaleX, scaleY, scaleX - 1.0f, scaleY - 1.0f );
 	shader.SetParameterFloat( spotTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -249,13 +231,10 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 		shader.SetParameterFloat( spotGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 	
-	// set texture
 	tsmgr.EnableTexture( 0, *texture, GetSamplerClampNearestMipMap() );
 	
-	// render full screen quad
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 	
-	// cleanup
 	tsmgr.DisableStage( 0 );
 }
 
@@ -269,7 +248,6 @@ deoglArrayTexture *texture, int layer, int level, bool gammaCorrect ){
 	if( ! texture || layer < 0 || layer >= texture->GetLayerCount() ) DETHROW( deeInvalidParam );
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	int texWidth = texture->GetWidth();
@@ -301,22 +279,8 @@ deoglArrayTexture *texture, int layer, int level, bool gammaCorrect ){
 	// => scale.x = tex.width / view.width
 	// => offset.x = ( tex.width / view.width ) - 1 = scale.x - 1
 	
-	// set opengl states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	// set shader and options
-	renderThread.GetShader().ActivateShader( pShaderOutArrTex );
-	deoglShaderCompiled &shader = *pShaderOutArrTex->GetCompiled();
+	pPipelineOutArrTex->Activate();
+	deoglShaderCompiled &shader = pPipelineOutArrTex->GetGlShader();
 	
 	shader.SetParameterFloat( spotPosTransform, scaleX, scaleY, scaleX - 1.0f, scaleY - 1.0f );
 	shader.SetParameterFloat( spotTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -332,13 +296,10 @@ deoglArrayTexture *texture, int layer, int level, bool gammaCorrect ){
 	shader.SetParameterFloat( spotLayer, ( float )layer );
 	shader.SetParameterFloat( spotLevel, ( float )level );
 	
-	// set texture
 	tsmgr.EnableArrayTexture( 0, *texture, GetSamplerClampNearest() );
 	
-	// render full screen quad
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 	
-	// cleanup
 	tsmgr.DisableStage( 0 );
 }
 
@@ -347,22 +308,14 @@ void deoglRenderDebug::RenderComponentsStatic( sRenderParameters &params ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglCollideList &clist = *params.collideList;
-	int c, componentCount;
 	
-	// set states
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	// prepare depth testing
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	
-	// render component boxes
-	componentCount = clist.GetComponentCount();
+	const int count = clist.GetComponentCount();
+	int i;
 	
-	for( c=0; c<componentCount; c++ ){
-		deoglRComponent &component = *clist.GetComponentAt( c )->GetComponent();
+	for( i=0; i<count; i++ ){
+		deoglRComponent &component = *clist.GetComponentAt( i )->GetComponent();
 		
 		if( component.GetRenderStatic() ){
 			RenderComponentBox( params, component, decColor( 0.0f, 0.5f, 0.0f, 1.0f ) );
@@ -381,37 +334,25 @@ void deoglRenderDebug::RenderComponentBox( sRenderParameters &params, deoglRComp
 	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
 	
 	decDMatrix matrixCP( params.matrixCamera * params.matrixProjection );
-	deoglShaderCompiled *shader = NULL;
 	decDMatrix matrixMVP;
 	deoglDCollisionBox box;
 	decColor edgeColor;
 	
-	// set states
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	pPipelineXRay->Activate();
+	deoglShaderCompiled &shader = pPipelineXRay->GetGlShader();
 	
-	// prepare depth testing
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	
-	// select shader
-	renderThread.GetShader().ActivateShader( pShaderXRay );
-	shader = pShaderXRay->GetCompiled();
 	
 	edgeColor.r = powf( color.r, OGL_RENDER_GAMMA );
 	edgeColor.g = powf( color.g, OGL_RENDER_GAMMA );
 	edgeColor.b = powf( color.b, OGL_RENDER_GAMMA );
 	
-	// set matrix
 	box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-	
 	matrixMVP = decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixCP;
 	
-	shader->SetParameterDMatrix4x4( sprMatrixMVP, matrixMVP );
+	shader.SetParameterDMatrix4x4( sprMatrixMVP, matrixMVP );
 	
-	// render
-	shader->SetParameterColor4( sprColor, edgeColor );
+	shader.SetParameterColor4( sprColor, edgeColor );
 	shapeBox.ActivateVAO();
 	shapeBox.RenderLines();
 	pglBindVertexArray( 0 );
@@ -442,7 +383,7 @@ void deoglRenderDebug::AddRenderText( deoglRenderPlan &plan, const char *text, i
 	
 	decUTF8Decoder utf8Decoder;
 	utf8Decoder.SetString( text );
-	const int len = decMath::min( strlen( text ), utf8Decoder.GetLength() );
+	const int len = decMath::min( ( int )strlen( text ), utf8Decoder.GetLength() );
 	
 	while( utf8Decoder.GetPosition() < len ){
 		const int character = utf8Decoder.DecodeNextCharacter();
@@ -497,11 +438,10 @@ void deoglRenderDebug::EndRenderText(){
 	tsmgr.EnableTBO( 2, pTBORenderText2->GetTBO(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 2 );
 	
-	renderThread.GetShader().ActivateShader( pShaderRenderText );
+	pPipelineRenderText->Activate();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	OGL_CHECK( renderThread, pglDrawArraysInstanced(
-		GL_TRIANGLE_FAN, 0, 4, pTBORenderText2->GetPixelCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, pTBORenderText2->GetPixelCount() ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	tsmgr.DisableAllStages();
@@ -547,11 +487,10 @@ void deoglRenderDebug::EndRenderRectangle(){
 	tsmgr.EnableTBO( 1, pTBORenderRectangle2->GetTBO(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 1 );
 	
-	renderThread.GetShader().ActivateShader( pShaderRectangle );
+	pPipelineRectangle->Activate();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	OGL_CHECK( renderThread, pglDrawArraysInstanced(
-		GL_TRIANGLE_FAN, 0, 4, pTBORenderRectangle2->GetPixelCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, pTBORenderRectangle2->GetPixelCount() ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	tsmgr.DisableAllStages();

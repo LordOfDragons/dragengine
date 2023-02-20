@@ -1,0 +1,288 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Linear set of objects containing each object at most once.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Set
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create empty set. */
+	public func new()
+	end
+	
+	/** \brief Create copy of another set. */
+	public func new( Set set )
+	end
+	
+	
+	
+	/** \brief Create set with one object added. */
+	public static func Set newWith( Object obj )
+		return null
+	end
+	
+	/** \brief Create set with two object added. */
+	public static func Set newWith( Object obj1, Object obj2 )
+		return null
+	end
+	
+	/** \brief Create set with three object added. */
+	public static func Set newWith( Object obj1, Object obj2, Object obj3 )
+		return null
+	end
+	
+	/** \brief Create set with four object added. */
+	public static func Set newWith( Object obj1, Object obj2, Object obj3, Object obj4 )
+		return null
+	end
+	
+	/** \brief Create set with five object added. */
+	public static func Set newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5 )
+		return null
+	end
+	
+	/** \brief Create set with six object added. */
+	public static func Set newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6 )
+		return null
+	end
+	
+	/** \brief Create set with seven object added. */
+	public static func Set newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7 )
+		return null
+	end
+	
+	/** \brief Create set with eight object added. */
+	public static func Set newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7, Object obj8 )
+		return null
+	end
+	
+	/** \brief Create set with nine object added. */
+	public static func Set newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7, Object obj8, Object obj9 )
+		return null
+	end
+	
+	/** \brief Create set with ten object added. */
+	public static func Set newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7, Object obj8, Object obj9, Object obj10 )
+		return null
+	end
+	
+	/** \brief Create set with values added from array. */
+	public static func Set newFrom( Array array )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Count of elements. */
+	public func int getCount()
+		return 0
+	end
+	
+	/** \brief Add object if absent. */
+	public func void add( Object obj )
+	end
+	
+	/** \brief Add all objects from \em set to set if absent. */
+	public func void addAll( Set set )
+	end
+	
+	/** \brief Object is present. */
+	public func bool has( Object obj )
+		return false
+	end
+	
+	/** \brief Remove object if present. */
+	public func void remove( Object obj )
+	end
+	
+	/** \brief Remove all objects. */
+	public func void removeAll()
+	end
+	
+	/** \brief Remove all objects from set if present. */
+	public func void removeAll( Set set )
+	end
+	
+	/**
+	 * \brief Apply block to each element.
+	 * 
+	 * Block receives \ref Object as argument.
+	 */
+	public func void forEach( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element castable to block argument.
+	 * \version 1.3
+	 * 
+	 * Block receives \ref Object as argument.
+	 */
+	public func void forEachCastable( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element until the blocks returns false for the first time.
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func void forEachWhile( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element castable to block argument until the blocks returns false for the first time.
+	 * \version 1.3
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func void forEachWhileCastable( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element assembling the result of the block into a new set.
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref Object .
+	 */
+	public func Set map( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Collect all elements into a new set for which the block returns true.
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func Set collect( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Collect all elements castable to block argument into a new set for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func Set collectCastable( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold the set values using block.
+	 * 
+	 * If there is no element in the set null is returned. If there is one element
+	 * in the set this element is returned. Otherwise the first two values are send
+	 * as arguments to the block. The return value is then send together with the next
+	 * value as arguments to the block. The last return value is returned as the
+	 * folded value.
+	 */
+	public func Object fold( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold set values using block and injected value.
+	 * 
+	 * Each element in turn is send to block using the last result. For the first element the
+	 * injected value is used as result. The return value is then send together with the next
+	 * value to block. The last return value is returned.
+	 * 
+	 * Block receives as first argument Object injectValue and as second argument Object entry.
+	 */
+	public func Object inject( Object injectValue, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Number of elements for which the block returns true.
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func int count( Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief Number of elements castable to block argument for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func int countCastable( Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief First element for which the block evaluates to true or null otherwise.
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func Object find( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief First element castable to block argument for which the block evaluates to true or null otherwise.
+	 * \version 1.3
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func Object findCastable( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Remove elements for which a block returns true.
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func void removeIf( Block ablock )
+	end
+	
+	/**
+	 * \brief Remove elements castable to block argument for which a block returns true.
+	 * \version 1.3
+	 * 
+	 * Block receives \ref Object as argument and has to return \ref bool .
+	 */
+	public func void removeIfCastable( Block ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Random element.
+	 * \details throws EInvalidParam Set is empty.
+	 */
+	public func Object random()
+		return null
+	end
+	
+	
+	
+	/** \brief String representation of set. */
+	public func String toString()
+		return null
+	end
+	
+	/** \brief Array with content of set. */
+	public func Array toArray()
+		return null
+	end
+	
+	
+	
+	/** \brief Create set with content of \em set appended to content of this set. */
+	public func Set +( Set set )
+		return null
+	end
+	/*@}*/
+end

@@ -29,7 +29,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Light weight wrapper around a set of timer queries.
+ * Light weight wrapper around a set of timer queries.
  * 
  * Works similar to deoglTimerQuery but stores a set of timer queries for easier
  * access. This implementation does not care which query is active nor if they
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create timer query set. */
+	/** Create timer query set. */
 	deoglTimerQuerySet( deoglRenderThread &renderThrad );
 	
-	/** \brief Clean up timer query set. */
+	/** Clean up timer query set. */
 	~deoglTimerQuerySet();
 	/*@}*/
 	
@@ -55,25 +55,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Number of queries in the set. */
+	/** Number of queries in the set. */
 	inline int GetQueryCount() const{ return pQueryCount; }
 	
-	/** \brief Set number of queries in the set. */
+	/** Set number of queries in the set. */
 	void SetQueryCount( int count );
 	
-	/** \brief Begin query at index. */
+	/** Begin query at index. */
 	void BeginQuery( int index );
 	
-	/** \brief End active query. */
+	/** End active query. */
 	void EndQuery();
 	
-	/** \brief Result of the query at index is present. */
+	/** Result of the query at index is present. */
 	bool HasResult( int index ) const;
 	
-	/** \brief Result of query at index as nano-seconds. */
+	/** Result of query at index as nano-seconds. */
 	unsigned int GetResult( int index ) const;
 	/*@}*/
 };

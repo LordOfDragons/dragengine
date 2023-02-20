@@ -125,11 +125,11 @@ void deoglHTViewSectorCluster::UpdateRTSInstances(){
 			continue;
 		}
 		
-		deoglSPBlockUBO * const spbInstance = httexture.GetParamBlock();
+		deoglSPBlockUBO &spbInstance = httexture.GetParamBlock();
 		
 		// add an instance for this cluster
 		rtinstance = pool.GetInstance();
-		rtinstance->SetParameterBlock( spbInstance );
+		rtinstance->SetParameterBlock( &spbInstance );
 		rtinstance->SetFirstPoint( 0 );
 		rtinstance->SetFirstIndex( vboOffsetFaces + clod.firstBasePoint );
 		rtinstance->SetIndexCount( clod.basePointCount );
@@ -148,7 +148,7 @@ void deoglHTViewSectorCluster::UpdateRTSInstances(){
 			const eBorderTargets target = pBorderTargets[ j ];
 			
 			rtinstance = pool.GetInstance();
-			rtinstance->SetParameterBlock( spbInstance );
+			rtinstance->SetParameterBlock( &spbInstance );
 			rtinstance->SetFirstPoint( 0 );
 			rtinstance->SetFirstIndex( vboOffsetFaces + clod.firstBorderPoint[ target ] );
 			rtinstance->SetIndexCount( clod.borderPointCount[ target ] );

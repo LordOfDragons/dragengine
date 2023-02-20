@@ -10,6 +10,9 @@
  * \brief Immutable character string.
  * 
  * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 fixed class String
 	/** \name Constructors */
@@ -42,7 +45,10 @@ fixed class String
 	
 	/**
 	 * \brief Character at index.
-	 * \throws EOutOfBoundary \em index is less than 0 or largen than or equal to getLength().
+	 * 
+	 * If \em index is negative the position is counted from the end of the string.
+	 * 
+	 * \throws EOutOfBoundary \em index is less than -getLength() or largen than or equal to getLength().
 	 */
 	public func byte getAt( int index )
 		return 0
@@ -64,6 +70,63 @@ fixed class String
 	 *          point is larger than the end point an empty string is returned.
 	 */
 	public func String substring( int start, int last )
+		return null
+	end
+	
+	/**
+	 * \brief Return formatted string using parameters applied to this string as format.
+	 * 
+	 * Format string has to contain tokens in the form (without blanks)
+	 * "{" "index" ":" "flags" "field width" ".precision" "format" "}".
+	 * 
+	 * "index" indicates the index of the object to use from the parameters provided. Index
+	 * can be omitted to use the occurance number of the token. First token found is index 0,
+	 * second token found index 1 and so forth. Negative index counts from the end \em parameters.
+	 * 
+	 * If nothing or only "index" is present the ":" is not required to be used.
+	 * 
+	 * The character "{" is special. To insert a plain "{" use "{{". There is no need to
+	 * escape "}" since it is special only after a non-escaped "{" is found. In all other
+	 * cases it is inserted plain.
+	 * 
+	 * Flags are optional can be one ore more of these in any order:<br/>
+	 * "0": Value is padded with "0" up to the desired length.<br/>
+	 * "-": Value is padded with " " on the right side instead of the left side (left aligned).<br/>
+	 * " ": Use " " for positive numbers to align with negative numbers.<br/>
+	 * "+": Use "+" for positive numbers to align with negative numbers.<br/>
+	 * 
+	 * The "field width" defines the minimum field width. Depending on "format" this is used
+	 * to pad up the value to fit into the field width. The value used for "field width"
+	 * has to be a positive integer value.
+	 * 
+	 * The ".precision" indicates the number of digits after the point used for floating
+	 * point values. The value has to be a positive integer value. Using 0 uses the highest
+	 * precision possible.
+	 * 
+	 * The "format" indicates the format to apply to the fetched parameter and can be one
+	 * of these values:<br/>
+	 * "d" or "i": Integer value<br/>
+	 * "o": Integer value in octal notation.<br/>
+	 * "x" or "X": Integer in hexadecimal notation with either lower or upper case letters.<br/>
+	 * "e": Floating point value with exponent like 1.2e7 .<br/>
+	 * "f": Floating point value of desires precision.<br/>
+	 * "g": Behaves like "e" if exponent of value is -4 or greater otherwise behaves like "f".<br/>
+	 *      Removes trailing "0" on decimal side.<br/>
+	 * "c": Integer value converted to character (0-127).<br/>
+	 * "s": String value.<br/>
+	 * 
+	 * Examples:<br/>
+	 * "{}": Use the next parameter from \em parameters and format it as string.<br/>
+	 * "{2}": Always use third parameter from \em parameters.<br/>
+	 * "{:.2f}": Use next parameter from \em parameters and format it as floating point value
+	 *           with 2 digits after the period.<br/>
+	 * "{1:.2f}": Same as above but always use second parameter from \em parameters.<br/>
+	 * "{:04d}": Use next parameter from \em parameters and format it as integer value padded
+	 *           up to 4 digits with "0".<br/>
+	 * "{:s}": Use next parameter from \em parameters and format it as string. This calls
+	 *         Object.toString() on the parameter. This is the same as "{}".<br/>
+	 */
+	public func String format( Array arguments )
 		return null
 	end
 	
@@ -96,7 +159,6 @@ fixed class String
 	 * \details Each character in characters is tested individually.
 	 */
 	public func int findAny( String characters )
-		return 0
 	end
 	
 	/**
@@ -313,12 +375,40 @@ fixed class String
 		return 0
 	end
 	
+	/**
+	 * \brief Determine if string starts with another string.
+	 */
+	public func bool startsWith( String string )
+		return false
+	end
+	
+	/**
+	 * \brief Determine if string starts with another string case insensitive.
+	 */
+	public func bool startsWithNoCase( String string )
+		return false
+	end
+	
+	/**
+	 * \brief Determine if string ends with another string.
+	 */
+	public func bool endsWith( String string )
+		return false
+	end
+	
+	/**
+	 * \brief Determine if string ends with another string case insensitive.
+	 */
+	public func bool endsWithNoCase( String string )
+		return false
+	end
+	
 	
 	
 	/**
 	 * \brief String is equal to another object.
 	 * \returns \em true if \em other is of type String and both are equal.
-	*/
+	 */
 	public func bool equals( Object other )
 		return false
 	end

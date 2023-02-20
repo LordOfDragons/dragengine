@@ -114,6 +114,9 @@ private:
 	int pAttributeCount;
 	VkVertexInputAttributeDescription *pAttributes;
 	
+	bool pDynamicDepthBias;
+	bool pDynamicStencil;
+	
 	
 	
 public:
@@ -357,6 +360,20 @@ public:
 	
 	/** Internal use only. */
 	inline const VkVertexInputAttributeDescription *GetAttributes() const{ return pAttributes; }
+	
+	
+	
+	/** Dynamic depth bias. */
+	inline bool GetDynamicDepthBias() const{ return pDynamicDepthBias; }
+	
+	/** Set dynamic depth bias. */
+	void SetDynamicDepthBias( bool dynamic );
+	
+	/** Dynamic stencil. */
+	inline bool GetDynamicStencil() const{ return pDynamicStencil; }
+	
+	/** Set dynamic stencil. */
+	void SetDynamicStencil( bool dynamic );
 	/*@}*/
 	
 	

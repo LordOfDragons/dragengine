@@ -39,7 +39,6 @@
 #include "deoglRTUniqueKey.h"
 #include "../deGraphicOpenGl.h"
 #include "../deoglBasics.h"
-#include "../deoglPreloader.h"
 #include "../debug/deoglDebugTraceGroup.h"
 #include "../canvas/deoglCanvasView.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
@@ -49,7 +48,6 @@
 #include "../debug/deoglDebugInformation.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
-#include "../edgefinder/deoglEdgeFinder.h"
 #include "../envmap/deoglEnvMapSlotManager.h"
 #include "../extensions/deoglExtensions.h"
 #include "../gi/deoglGI.h"
@@ -57,6 +55,7 @@
 #include "../occlusiontest/deoglOcclusionTestPool.h"
 #include "../occquery/deoglOcclusionQueryManager.h"
 #include "../optimizer/deoglOptimizerManager.h"
+#include "../pipeline/deoglPipelineManager.h"
 #include "../rendering/deoglRenderCanvas.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
 #include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
@@ -101,33 +100,34 @@ pVRCamera( nullptr ),
 
 pLeakTracker( *this ),
 
-pCanvasInputOverlay( NULL ),
-pCanvasDebugOverlay( NULL ),
+pCanvasInputOverlay( nullptr ),
+pCanvasDebugOverlay( nullptr ),
 
-pBufferObject( NULL ),
-pContext( NULL ),
-pDebug( NULL ),
-pDefaultTextures( NULL ),
-pFramebuffer( NULL ),
-pLogger( NULL ),
-pRenderers( NULL ),
-pShader( NULL ),
-pTexture( NULL ),
+pChoices( nullptr ),
+pBufferObject( nullptr ),
+pContext( nullptr ),
+pDebug( nullptr ),
+pDefaultTextures( nullptr ),
+pFramebuffer( nullptr ),
+pLogger( nullptr ),
+pRenderers( nullptr ),
+pShader( nullptr ),
+pTexture( nullptr ),
 
-pCapabilities( NULL ),
-pDeferredRendering( NULL ),
-pDelayedOperations( NULL ),
-pEnvMapSlotManager( NULL ),
-pExtensions( NULL ),
-pLightBoundarybox( NULL ),
-pOccQueryMgr( NULL ),
-pGI( NULL ),
-pShadowMapper( NULL ),
-pTriangleSorter( NULL ),
-pPersistentRenderTaskPool( NULL ),
-pRenderTaskSharedPool( NULL ),
-pUniqueKey( NULL ),
-pOcclusionTestPool( NULL ),
+pCapabilities( nullptr ),
+pDeferredRendering( nullptr ),
+pDelayedOperations( nullptr ),
+pEnvMapSlotManager( nullptr ),
+pExtensions( nullptr ),
+pLightBoundarybox( nullptr ),
+pOccQueryMgr( nullptr ),
+pGI( nullptr ),
+pShadowMapper( nullptr ),
+pTriangleSorter( nullptr ),
+pPersistentRenderTaskPool( nullptr ),
+pRenderTaskSharedPool( nullptr ),
+pUniqueKey( nullptr ),
+pOcclusionTestPool( nullptr ),
 
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
@@ -140,22 +140,21 @@ pMainThreadShowDebugInfoModule( false ),
 
 pDebugTimeThreadMainWaitFinish( 0.0f ),
 
-pDebugTimeThreadRenderSwap( 0.0f ),
+pDebugTimeThreadRenderSyncGpu( 0.0f ),
 pDebugTimeThreadRenderBegin( 0.0f ),
 pDebugTimeThreadRenderWindows( 0.0f ),
 pDebugTimeThreadRenderWindowsPrepare( 0.0f ),
 pDebugTimeThreadRenderWindowsRender( 0.0f ),
 pDebugTimeThreadRenderCapture( 0.0f ),
+pDebugTimeThreadRenderSwap( 0.0f ),
 pDebugCountThreadWindows( 0 ),
 
 // deprecated
-pQuickSorter( NULL ),
-pPreloader( NULL ),
-pEdgeFinder( NULL ),
-pOptimizerManager( NULL ),
+pQuickSorter( nullptr ),
+pOptimizerManager( nullptr ),
 
 // thread control parameters
-pInitialRenderWindow( NULL ), // temporary variable for thread initialization
+pInitialRenderWindow( nullptr ), // temporary variable for thread initialization
 pThreadState( etsStopped ),
 pThreadFailure( false ),
 pBarrierSyncIn( 2 ),
@@ -323,7 +322,7 @@ void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 			pInitThreadPhase3();
 			pLogger->Synchronize(); // send asynchronous logs to game logger
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pLogger->Synchronize(); // send asynchronous logs to game logger
 			throw;
 		}
@@ -494,18 +493,27 @@ void deoglRenderThread::Run(){
 	while( true ){
 		// wait for entering synchronize
 		DEBUG_SYNC_RT_WAIT("in")
-		pBarrierSyncIn.Wait();
-		DEBUG_SYNC_RT_PASS("in")
-		
-		// main thread is messing with our state here. proceed to next barrier doing nothing
-		// except alter the estimated render time. this value is used by the main thread
-		// only outside the synchronization part so we can update it here
-		pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
-		
-		// wait for leaving synchronize
-		DEBUG_SYNC_RT_WAIT("out")
-		pBarrierSyncOut.Wait();
-		DEBUG_SYNC_RT_PASS("out")
+		if( pBarrierSyncIn.TryWait( 250 ) ){
+			DEBUG_SYNC_RT_PASS("in")
+			
+			// main thread is messing with our state here. proceed to next barrier doing nothing
+			// except alter the estimated render time. this value is used by the main thread
+			// only outside the synchronization part so we can update it here
+			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
+			
+			// wait for leaving synchronize
+			DEBUG_SYNC_RT_WAIT("out")
+			pBarrierSyncOut.Wait();
+			DEBUG_SYNC_RT_PASS("out")
+			
+		}else{
+			DEBUG_SYNC_RT_PASS("in timeout")
+			
+			// main thread did not synchronize in time. render another time using the old state
+			// then wait for synchronization again. we still have to update the estimated render
+			// time though
+			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
+		}
 		
 		// exit if shutting down
 		if( pThreadState == etsCleaningUp ){
@@ -922,8 +930,6 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	// deprecated
 	pQuickSorter = new deoglQuickSorter;
-	pPreloader = new deoglPreloader( *this );
-	pEdgeFinder = new deoglEdgeFinder;
 	pOptimizerManager = new deoglOptimizerManager;
 	// deprecated
 	
@@ -940,8 +946,13 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pFramebuffer = new deoglRTFramebuffer( *this );
 	pShader = new deoglRTShader( *this );
 	pDelayedOperations = new deoglDelayedOperations( *this );
+	pPipelineManager.TakeOver( new deoglPipelineManager( *this ) );
 	
 	pInitCapabilities();
+	
+	if( ! pExtensions->VerifyPresence() ){ // capabilities possibly disabled extensions
+		DETHROW( deeInvalidAction );
+	}
 	
 	// debug information
 	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -966,8 +977,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pDebugInfoThreadRender.TakeOver( new deoglDebugInformation( "Render Thread", colorText, colorBgSub ) );
 	pDebugInfoModule->GetChildren().Add( pDebugInfoThreadRender );
 		
-		pDebugInfoThreadRenderSwap.TakeOver( new deoglDebugInformation( "Swap Buffers", colorText, colorBgSub2 ) );
-		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderSwap );
+		pDebugInfoThreadRenderSyncGpu.TakeOver( new deoglDebugInformation( "Sync GPU", colorText, colorBgSub2 ) );
+		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderSyncGpu );
 		
 		pDebugInfoThreadRenderBegin.TakeOver( new deoglDebugInformation( "Begin", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderBegin );
@@ -986,6 +997,9 @@ void deoglRenderThread::pInitThreadPhase4(){
 		
 		pDebugInfoThreadRenderEnd.TakeOver( new deoglDebugInformation( "End", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderEnd );
+		
+		pDebugInfoThreadRenderSwap.TakeOver( new deoglDebugInformation( "Swap Buffers", colorText, colorBgSub2 ) );
+		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderSwap );
 	
 	pDebugInfoFrameLimiter.TakeOver( new deoglDebugInformation( "Frame Limiter", colorText, colorBg ) );
 	pDebugInfoFrameLimiter->SetVisible( false );
@@ -1004,6 +1018,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLFrameRateRender );
 	
 	// below depends on capabilities being known
+	pPipelineManager->GetState().Reset();
+	
 	pChoices = new deoglRTChoices( *this );
 	
 	pBufferObject = new deoglRTBufferObject( *this );
@@ -1017,24 +1033,23 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pEnvMapSlotManager = new deoglEnvMapSlotManager( *this );
 	
 	pOccQueryMgr = new deoglOcclusionQueryManager( *this );
-	pGI = new deoglGI( *this );
 	pLightBoundarybox = new deoglLightBoundaryMap( *this,
 		deoglShadowMapper::ShadowMapSize( pConfiguration ) >> 1 );
 	
 	pRenderers = new deoglRTRenderers( *this );
+	pGI = new deoglGI( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
 	
 	// load vulkan and create device if supported
 	try{
 		pVulkan.TakeOver( new deSharedVulkan( pOgl ) );
-		#ifdef DO_VULKAN_TEST
 		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic( 0 );
-		#else
-		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
-		#endif
+		// pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
 		
 	}catch( const deException &e ){
 		pLogger->LogException( e );
+		pVulkanDevice = nullptr;
+		pVulkan = nullptr;
 	}
 	
 #ifdef DO_VULKAN_TEST
@@ -1381,6 +1396,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	// some final preparations. is this really required?
 	pTexture->GetStages().DisableAllStages();
+	pPipelineManager->GetState().Reset();
 	
 	#ifdef OS_ANDROID
 	DevModeDebugInfoChanged(); // to enable debug stuff if enabled
@@ -1519,6 +1535,17 @@ void deoglRenderThread::pRenderSingleFrame(){
 	decTimer timer;
 #endif
 	
+	// synchronize with GPU. it is annoying this has to be required since it prevents fullly
+	// occupying the GPU. the problem is that swap buller stalls GPU processing and thus
+	// GPU->CPU transfer. by synchronizing with the GPU we can ensure all rendering has
+	// finished so we can use the GPU for pre-render processing. this trades stalling at
+	// an unfortunate time with stalling at a well known time
+	OGL_CHECK( *this, glFinish() );
+	
+	if( showDebugInfoModule ){
+		pDebugTimeThreadRenderSyncGpu = pDebugTimerRenderThread2.GetElapsedTime();
+	}
+	
 	// NOTE if there are multiple windows we can not use delay swap buffers as we
 	//      can using a single window. we have to go through each window individually
 	//      or using a render thread for each of them which would be a problem. this
@@ -1557,10 +1584,10 @@ void deoglRenderThread::pRenderSingleFrame(){
 		pEndFrame();
 		
 	}else{
-		pSwapBuffers();
-		if( showDebugInfoModule ){
-			pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
-		}
+		// pSwapBuffers();
+		// if( showDebugInfoModule ){
+		// 	pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
+		// }
 		
 		#ifdef OS_ANDROID
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame ENTER");
@@ -1593,6 +1620,16 @@ void deoglRenderThread::pRenderSingleFrame(){
 		
 		pVRSubmit();
 		pEndFrame();
+		
+		// the placement of swaping buffers is a problem. if done right before rendering
+		// the swaping stalls compute shaders using read back. if done here swaping stalls
+		// due to calling glFlush internally. the delay here is though better than the one
+		// at the start of rendering since after this swap buffer call the render thread
+		// waits on a barrier
+		pSwapBuffers();
+		if( showDebugInfoModule ){
+			pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
+		}
 	}
 	
 	if( showDebugInfoModule ){
@@ -1600,8 +1637,8 @@ void deoglRenderThread::pRenderSingleFrame(){
 		const float time2 = pDebugTimerRenderThread2.GetElapsedTime();
 		const float time1 = pDebugTimerRenderThread1.GetElapsedTime();
 		
-		pDebugInfoThreadRenderSwap->Clear();
-		pDebugInfoThreadRenderSwap->IncrementElapsedTime( pDebugTimeThreadRenderSwap );
+		pDebugInfoThreadRenderSyncGpu->Clear();
+		pDebugInfoThreadRenderSyncGpu->IncrementElapsedTime( pDebugTimeThreadRenderSyncGpu );
 		
 		pDebugInfoThreadRenderBegin->Clear();
 		pDebugInfoThreadRenderBegin->IncrementElapsedTime( pDebugTimeThreadRenderBegin );
@@ -1622,6 +1659,9 @@ void deoglRenderThread::pRenderSingleFrame(){
 		
 		pDebugInfoThreadRenderEnd->Clear();
 		pDebugInfoThreadRenderEnd->IncrementElapsedTime( time2 );
+		
+		pDebugInfoThreadRenderSwap->Clear();
+		pDebugInfoThreadRenderSwap->IncrementElapsedTime( pDebugTimeThreadRenderSwap );
 		
 		pDebugInfoThreadRender->Clear();
 		pDebugInfoThreadRender->IncrementElapsedTime( time1 );
@@ -1675,7 +1715,7 @@ bool deoglRenderThread::DoesDebugMemoryUsage() const{
 	if( ! pTexture ) return false;
 	if( ! pDeferredRendering ) return false;
 	
-	return pOgl.GetGameEngine()->GetCacheAppID() == "zoids";
+	return pOgl.GetGameEngine()->GetCacheAppID() == "testing";
 }
 
 void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
@@ -1793,22 +1833,6 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		cubemapColorCount, cubemapColorGPU, cubemapColorGPUCompressed, ( int )cubemapColorRatioCompressed, cubemapColorGPUUncompressed,
 		cubemapDepthCount, cubemapDepthGPU );
 	
-	// renderbuffer
-	const deoglMemoryConsumptionTexture &consumptionRenderbuffer = pMemoryManager.GetConsumption().GetRenderbuffer();
-	const int renderbufferCount = consumptionRenderbuffer.GetCount();
-	const int renderbufferColorCount = consumptionRenderbuffer.GetColorCount();
-	const int renderbufferDepthCount = consumptionRenderbuffer.GetDepthCount();
-	unsigned int renderbufferGPU = consumptionRenderbuffer.GetGPU();
-	unsigned int renderbufferColorGPU = consumptionRenderbuffer.GetColorGPU();
-	unsigned int renderbufferDepthGPU = consumptionRenderbuffer.GetDepthGPU();
-	
-	renderbufferGPU /= 1000000;
-	renderbufferColorGPU /= 1000000;
-	renderbufferDepthGPU /= 1000000;
-	
-	pLogger->LogInfoFormat( fmtRenBuf, renderbufferCount, renderbufferGPU, renderbufferColorCount, renderbufferColorGPU,
-		renderbufferDepthCount, renderbufferDepthGPU );
-	
 	// skin memory consumption
 	const deoglMemoryConsumptionTexture &consumptionSkin = pMemoryManager.GetConsumption().GetSkin();
 	const int skinCount = consumptionSkin.GetCount();
@@ -1858,7 +1882,6 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	// deferred rendering system
 	int defrenGPU = pDeferredRendering->GetMemoryUsageGPU() / 1000000;
 	int defrenGPUTexture = pDeferredRendering->GetMemoryUsageGPUTexture() / 1000000;
-	int defrenGPURenBuf = pDeferredRendering->GetMemoryUsageGPURenderbuffer() / 1000000;
 	
 	pLogger->LogInfoFormat( fmtDefRen, defrenGPU, defrenGPUTexture, defrenGPURenBuf );
 	
@@ -1868,7 +1891,6 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	totalGPU = consumptionTexture2D.GetGPU();
 	totalGPU += consumptionTextureArray.GetGPU();
 	totalGPU += consumptionTextureCube.GetGPU();
-	totalGPU += consumptionRenderbuffer.GetGPU();
 	totalGPU += consumptionVBO.GetGPU();
 	totalGPU /= 1000000;
 	
@@ -2113,7 +2135,6 @@ void deoglRenderThread::pBeginFrame(){
 	
 	pDelayedOperations->ProcessInitOperations();
 	
-	pPreloader->PreloadAll(); // DEPRECATED
 	pOptimizerManager->Run( 2000 ); // 4000 // DEPRECATED do this using parallel tasks if required
 	
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
@@ -2445,6 +2466,7 @@ void deoglRenderThread::pCleanUpThread(){
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy framebuffers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
+		pPipelineManager = nullptr;
 		if( pTexture ){
 			delete pTexture;
 			pTexture = NULL;
@@ -2465,13 +2487,14 @@ void deoglRenderThread::pCleanUpThread(){
 		pDebugInfoThreadMainWaitFinish = nullptr;
 		pDebugInfoThreadMainSynchronize = nullptr;
 		pDebugInfoThreadRender = nullptr;
-		pDebugInfoThreadRenderSwap = nullptr;
+		pDebugInfoThreadRenderSyncGpu = nullptr;
 		pDebugInfoThreadRenderBegin = nullptr;
 		pDebugInfoThreadRenderWindows = nullptr;
 		pDebugInfoThreadRenderWindowsPrepare = nullptr;
 		pDebugInfoThreadRenderWindowsRender = nullptr;
 		pDebugInfoThreadRenderCapture = nullptr;
 		pDebugInfoThreadRenderEnd = nullptr;
+		pDebugInfoThreadRenderSwap = nullptr;
 		pDebugInfoFrameLimiter = nullptr;
 		pDebugInfoFLEstimMain = nullptr;
 		pDebugInfoFLEstimRender = nullptr;
@@ -2528,14 +2551,6 @@ void deoglRenderThread::pCleanUpThread(){
 		}
 		
 		// deprecated
-		if( pEdgeFinder ){
-			delete pEdgeFinder;
-			pEdgeFinder = NULL;
-		}
-		if( pPreloader ){
-			delete pPreloader;
-			pPreloader = NULL;
-		}
 		if( pOptimizerManager ){
 			delete pOptimizerManager;
 			pOptimizerManager = NULL;

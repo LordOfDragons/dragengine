@@ -88,10 +88,6 @@ struct oglVector2{
 	GLfloat x, y;
 };
 
-struct oglVector{
-	GLfloat x, y, z;
-};
-
 struct oglVector3{
 	GLfloat x, y, z;
 };

@@ -544,7 +544,7 @@ dsFunction( init.clsColRig, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 void deClassColliderRig::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deColliderRig *collider = ( ( sColRigNatDat* )p_GetNativeData( myself ) )->collider;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )collider );
+	rt->PushInt( ( int )( intptr_t )collider );
 }
 
 // public func bool equals( Object obj )

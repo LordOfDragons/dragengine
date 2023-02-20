@@ -106,8 +106,7 @@ void deCRBasic::CleanUp(){
 
 // crash management
 bool deCRBasic::RecoverFromError(){
-	char argBuffer[ 256 ];
-	sprintf( argBuffer, "dummy" );
+	char argBuffer[ 6 ] = "dummy";
 	int argc = 1;
 	char *args[ 1 ] = { argBuffer };
 	deEngine *engine = GetGameEngine();
@@ -141,7 +140,7 @@ bool deCRBasic::RecoverFromError(){
 	}else{
 		try{
 			engine->GetGraphicSystem()->Start();
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			engine->GetGraphicSystem()->Stop();
 			LogError( "restarting engine systems failed, quitting." );
 			return false;

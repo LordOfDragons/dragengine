@@ -23,30 +23,33 @@
 #define _DEOGLRENDERTASKSHAREDPOOL_H_
 
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decIntList.h>
 
 class deoglRenderThread;
 class deoglRenderTaskSharedInstance;
-class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
+class deoglSkinTexture;
+
 
 
 /**
- * GLobal pool for render task shared resources.
+ * Global pool for render task shared resources.
  */
 class deoglRenderTaskSharedPool{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	int pNextIndexShader;
-	int pNextIndexTexture;
-	int pNextIndexVAO;
-	int pNextIndexInstance;
+	decObjectList pTextures;
+	decObjectList pVAOs;
+	decObjectList pInstances;
+	decPointerList pSkinTextures;
 	
-	decPointerList pShaders;
-	decPointerList pTextures;
-	decPointerList pVAOs;
-	decPointerList pInstances;
+	decPointerList pFreeTextures;
+	decPointerList pFreeVAOs;
+	decPointerList pFreeInstances;
+	decIntList pFreeSkinTextures;
 	
 	
 	
@@ -64,9 +67,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Get shader. */
-	deoglRenderTaskSharedShader *GetShader();
-	
 	/** Get texture. */
 	deoglRenderTaskSharedTexture *GetTexture();
 	
@@ -76,10 +76,27 @@ public:
 	/** Get instance. */
 	deoglRenderTaskSharedInstance *GetInstance();
 	
+	/** Assign skin texture. */
+	int AssignSkinTexture( deoglSkinTexture *skinTexture );
 	
 	
-	/** Return shader. */
-	void ReturnShader( deoglRenderTaskSharedShader *shader );
+	
+	/** Get texture at index. */
+	deoglRenderTaskSharedTexture &GetTextureAt( int index ) const;
+	
+	/** Get VAO at index. */
+	deoglRenderTaskSharedVAO &GetVAOAt( int index ) const;
+	
+	/** Get instance at index. */
+	deoglRenderTaskSharedInstance &GetInstanceAt( int index ) const;
+	
+	/** Get skin texture at index. */
+	deoglSkinTexture *GetSkinTextureAt( int index ) const;
+	
+	/** Get skin texture count. */
+	int GetSkinTextureCount() const;
+	
+	
 	
 	/** Return texture. */
 	void ReturnTexture( deoglRenderTaskSharedTexture *texture );
@@ -89,6 +106,9 @@ public:
 	
 	/** Return instance. */
 	void ReturnInstance( deoglRenderTaskSharedInstance *instance );
+	
+	/** Return skin texture. */
+	void ReturnSkinTexture( int slot );
 	/*@}*/
 };
 

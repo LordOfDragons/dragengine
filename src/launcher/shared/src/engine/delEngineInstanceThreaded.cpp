@@ -19,17 +19,18 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <signal.h>
 #include <stdint.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>
 #else
+#include <unistd.h>
 #include <sys/wait.h>
 #include <sys/select.h>
 #endif
@@ -494,7 +495,7 @@ void delEngineInstanceThreaded::WriteFloatToPipe( float value ){
 }
 
 void delEngineInstanceThreaded::WriteString16ToPipe( const char *string ){
-	const int length = strlen( string );
+	const int length = ( int )strlen( string );
 	WriteUShortToPipe( length );
 	if( length > 0 ){
 		WriteToPipe( string, length );

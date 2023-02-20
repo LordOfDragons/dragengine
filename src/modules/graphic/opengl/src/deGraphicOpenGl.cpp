@@ -283,7 +283,7 @@ void deGraphicOpenGl::InputOverlayCanvasChanged(){
 }
 
 #ifdef ANDROID
-/** \brief Application window has been created. */
+/** Application window has been created. */
 void deGraphicOpenGl::InitAppWindow(){
 	if( pConfiguration.GetDoLogInfo() ){
 		LogInfo( "InitAppWindow" );
@@ -293,7 +293,7 @@ void deGraphicOpenGl::InitAppWindow(){
 	}
 }
 
-/** \brief Application window has been closed. */
+/** Application window has been closed. */
 void deGraphicOpenGl::TerminateAppWindow(){
 	if( pConfiguration.GetDoLogInfo() ){
 		LogInfo( "TerminateAppWindow" );

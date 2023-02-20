@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module Parameter Screen Space Ambient Occlusion Tap Count.
+ * Module Parameter Screen Space Ambient Occlusion Tap Count.
  */
 class deoglPSSAOTapCount : public deoglParameterInt{
 public:

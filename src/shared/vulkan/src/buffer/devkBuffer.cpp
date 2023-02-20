@@ -37,7 +37,7 @@
 
 devkBuffer::devkBuffer( devkDevice &device, VkDeviceSize size, VkBufferUsageFlagBits usage ) :
 pDevice( device ),
-pSize( size ),
+pSize( ( uint32_t )size ),
 pUsage( usage ),
 pBuffer( VK_NULL_HANDLE ),
 pBufferHost( VK_NULL_HANDLE ),

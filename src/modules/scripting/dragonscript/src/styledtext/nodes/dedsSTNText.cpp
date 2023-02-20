@@ -37,21 +37,13 @@
 
 
 dedsSTNText::dedsSTNText(){
-	pText = new char[ 1 ];
-	if( ! pText ) DSTHROW( dueOutOfMemory );
-	pText[ 0 ] = '\0';
 }
 
-dedsSTNText::dedsSTNText( const char* text ){
-	if( ! pText ) DSTHROW( dueInvalidParam );
-	
-	pText = new char[ strlen( text ) + 1 ];
-	if( ! pText ) DSTHROW( dueOutOfMemory );
-	strcpy( pText, text );
+dedsSTNText::dedsSTNText( const char* text ) :
+pText( text ){
 }
 
 dedsSTNText::~dedsSTNText(){
-	if( pText ) delete [] pText;
 }
 
 
@@ -59,14 +51,6 @@ dedsSTNText::~dedsSTNText(){
 // Management
 ///////////////
 
-
-void dedsSTNText::SetText ( const char* text ){
-	if( ! text ) DSTHROW( dueInvalidParam );
-	
-	char *ntext = new char[ strlen( text ) + 1 ];
-	if( ! ntext ) DSTHROW( dueOutOfMemory );
-	strcpy( ntext, text );
-	
-	delete [] pText;
-	pText = ntext;
+void dedsSTNText::SetText ( const char *text ){
+	pText = text;
 }

@@ -166,7 +166,7 @@ int firstLink, const deSynthesizerSourceSynthesizer &source ){
 				link = NULL;
 			}
 			
-		}catch( const deException &exception ){
+		}catch( const deException & ){
 			if( link ){
 				delete link;
 			}

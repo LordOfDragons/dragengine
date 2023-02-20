@@ -107,7 +107,7 @@ public:
 	inline deoglCubeMap *GetStaticShadowCubeMap() const{ return pStaticShadowCubeMap; }
 	
 	/** Static shadow cube map with size. */
-	deoglCubeMap *ObtainStaticShadowCubeMapWithSize( int size );
+	deoglCubeMap *ObtainStaticShadowCubeMapWithSize( int size, bool useFloat );
 	
 	/** Static color cube map or \em NULL if absent. */
 	inline deoglCubeMap *GetStaticColorCubeMap() const{ return pStaticColorCubeMap; }
@@ -145,7 +145,7 @@ public:
 	inline deoglCubeMap *GetDynamicShadowCubeMap() const{ return pDynamicShadowCubeMap; }
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
-	deoglCubeMap *ObtainDynamicShadowCubeMapWithSize( int size );
+	deoglCubeMap *ObtainDynamicShadowCubeMapWithSize( int size, bool useFloat );
 	
 	/** Dynamic color cube map if present or \em NULL otherwise. */
 	inline deoglCubeMap *GetDynamicColorCubeMap() const{ return pDynamicColorCubeMap; }
@@ -189,7 +189,7 @@ public:
 	inline deoglRenderableDepthCubeMap *GetTemporaryShadowCubeMap() const{ return pTemporaryShadowCubeMap; }
 	
 	/** Obtain temporary shadow cube map with size if absent. */
-	deoglRenderableDepthCubeMap *ObtainTemporaryShadowCubeMapWithSize( int size );
+	deoglRenderableDepthCubeMap *ObtainTemporaryShadowCubeMapWithSize( int size, bool useFloat );
 	
 	/** Temporary color cube map if present or \em NULL otherwise. */
 	inline deoglRenderableColorCubeMap *GetTemporaryColorCubeMap() const{ return pTemporaryColorCubeMap; }

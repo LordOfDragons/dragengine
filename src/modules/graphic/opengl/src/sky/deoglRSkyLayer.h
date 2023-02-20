@@ -31,11 +31,11 @@ class deoglRSkyControllerTarget;
 
 
 /**
- * \brief Render sky Layer.
+ * Render sky Layer.
  */
 class deoglRSkyLayer{
 public:
-	/** \brief Sky layer body. */
+	/** Sky layer body. */
 	struct sBody {
 		deoglRSkin *skin;
 		decVector vertex[ 4 ];
@@ -45,39 +45,39 @@ public:
 		decQuaternion orientation;
 	};
 	
-	/** \brief Layer types. */
+	/** Layer types. */
 	enum eLayerTypes{
-		/** \brief Unknown. */
+		/** Unknown. */
 		eltUnknown,
 		
-		/** \brief Sky box. */
+		/** Sky box. */
 		eltSkyBox,
 		
-		/** \brief Sky Sphere. */
+		/** Sky Sphere. */
 		eltSkySphere
 	};
 	
-	/** \brief Images. */
+	/** Images. */
 	enum eImages{
-		/** \brief Sky box front. */
+		/** Sky box front. */
 		eiBoxFront = 0,
 		
-		/** \brief Sky box right. */
+		/** Sky box right. */
 		eiBoxRight,
 		
-		/** \brief Sky box back. */
+		/** Sky box back. */
 		eiBoxBack,
 		
-		/** \brief Sky box left. */
+		/** Sky box left. */
 		eiBoxLeft,
 		
-		/** \brief Sky box top. */
+		/** Sky box top. */
 		eiBoxTop,
 		
-		/** \brief Sky box bottom. */
+		/** Sky box bottom. */
 		eiBoxBottom,
 		
-		/** \brief Sky sphere. */
+		/** Sky sphere. */
 		eiSphere = 0,
 	};
 	
@@ -113,10 +113,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create sky layer. */
+	/** Create sky layer. */
 	deoglRSkyLayer( const deSkyLayer &layer );
 	
-	/** \brief Clean up sky. */
+	/** Clean up sky. */
 	~deoglRSkyLayer();
 	/*@}*/
 	
@@ -124,66 +124,66 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Layer type. */
+	/** Layer type. */
 	inline eLayerTypes GetLayerType() const{ return pLayerType; }
 	
-	/** \brief Textures. */
+	/** Textures. */
 	inline const int *GetTextures() const{ return &pTextures[ 0 ]; }
 	
-	/** \brief Render skin. */
+	/** Render skin. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	
 	
-	/** \brief Bodies. */
+	/** Bodies. */
 	inline const sBody *GetBodies() const{ return pBodies; }
 	
-	/** \brief Number of bodies. */
+	/** Number of bodies. */
 	inline int GetBodyCount() const{ return pBodyCount; }
 	
 	
 	
-	/** \brief Target. */
+	/** Target. */
 	inline const deoglRSkyControllerTarget **GetTargets() const{
 		return ( const deoglRSkyControllerTarget ** )pTargets; }
 	
 	
 	
-	/** \brief Offset. */
+	/** Offset. */
 	inline const decVector &GetOffset() const{ return pOffset; }
 	
-	/** \brief Orientation. */
+	/** Orientation. */
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	
-	/** \brief Blending color. */
+	/** Blending color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Intensity. */
+	/** Intensity. */
 	inline float GetIntensity() const{ return pIntensity; }
 	
-	/** \brief Transparency. */
+	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
 	
 	
-	/** \brief Orientation of the sky light. */
+	/** Orientation of the sky light. */
 	inline const decQuaternion &GetLightOrientation() const{ return pLightOrientation; }
 	
-	/** \brief Color of the sky light. */
+	/** Color of the sky light. */
 	inline const decColor &GetLightColor() const{ return pLightColor; }
 	
-	/** \brief Intensity of the direct sky light. */
+	/** Intensity of the direct sky light. */
 	inline float GetLightIntensity() const{ return pLightIntensity; }
 	
-	/** \brief Intensity of the diffuse sky light. */
+	/** Intensity of the diffuse sky light. */
 	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
 	
 	
 	
-	/** \brief Layer intensity is multiplied by total sky light intensity. */
+	/** Layer intensity is multiplied by total sky light intensity. */
 	inline bool GetMuliplyBySkyLight() const{ return pMulBySkyLight; }
 	
-	/** \brief Layer color is multiplied by total sky light color. */
+	/** Layer color is multiplied by total sky light color. */
 	inline bool GetMuliplyBySkyColor() const{ return pMulBySkyColor; }
 	/*@}*/
 	

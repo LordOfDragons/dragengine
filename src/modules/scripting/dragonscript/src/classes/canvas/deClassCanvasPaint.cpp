@@ -318,7 +318,7 @@ dsFunction( init.clsCPaint, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 void deClassCanvasPaint::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deCanvasPaint * const canvas = ( ( sCPaintNatDat* )p_GetNativeData( myself ) )->canvas;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )canvas );
+	rt->PushInt( ( int )( intptr_t )canvas );
 }
 
 // public func bool equals( Object obj )

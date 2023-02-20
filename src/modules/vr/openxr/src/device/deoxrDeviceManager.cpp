@@ -22,7 +22,6 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "deoxrDevice.h"
 #include "deoxrDeviceAxis.h"
@@ -255,7 +254,7 @@ decString deoxrDeviceManager::NormalizeID( const char *id ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len = strlen( id );
+	const int len = ( int )strlen( id );
 	if( len == 0 ){
 		return decString();
 	}

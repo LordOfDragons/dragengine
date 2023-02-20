@@ -38,13 +38,14 @@
 
 dedsXmlParser::dedsXmlParser( deLogger *logger ) : decXmlParser( logger ){
 	pLog = new char[ 1 ];
-	if( ! pLog ) DSTHROW( dueOutOfMemory );
 	pLog[ 0 ] = '\0';
 	pLogLen = 0;
 }
 
 dedsXmlParser::~dedsXmlParser(){
-	if( pLog ) delete [] pLog;
+	if( pLog ){
+		delete [] pLog;
+	}
 }
 
 
@@ -53,31 +54,45 @@ dedsXmlParser::~dedsXmlParser(){
 ///////////////
 
 void dedsXmlParser::UnexpectedEOF( int line, int pos ){
-	int newline = pLogLen == 0 ? 0 : 1;
-	char *newLog = NULL;
-	newLog = new char[ pLogLen + newline + 28 ];
-	if( ! newLog ) DSTHROW( dueOutOfMemory );
+	const int newline = pLogLen == 0 ? 0 : 1;
+	char * const newLog = new char[ pLogLen + newline + 29 ];
+
 	if( pLogLen > 0 ){
-		strcpy( newLog, pLog );
+		#ifdef OS_W32_VS
+			strncpy_s( newLog, pLogLen + 1, pLog, pLogLen );
+		#else
+			strncpy( newLog, pLog, pLogLen + 1 );
+		#endif
 		newLog[ pLogLen ] = '\n';
 	}
-	strcpy( newLog + pLogLen + newline, "Unexpected end-of-file found" );
+
+	const char * const message = "Unexpected end-of-file found";
+
+	#ifdef OS_W32_VS
+		strcpy_s( newLog + pLogLen + newline, strlen( message ) + 1, message );
+	#else
+		strcpy( newLog + pLogLen + newline, message );
+	#endif
+
 	delete [] pLog;
 	pLog = newLog;
 	pLogLen += newline + 28;
 }
 
 void dedsXmlParser::UnexpectedToken( int line, int pos, const char *token ){
-	int newline = pLogLen == 0 ? 0 : 1;
-	int newLen = 50 + strlen( token );
-	char *newLog = NULL;
-	newLog = new char[ pLogLen + newline + newLen ];
-	if( ! newLog ) DSTHROW( dueOutOfMemory );
+	const int newline = pLogLen == 0 ? 0 : 1;
+	const int newLen = 50 + ( int )strlen( token );
+	char * const newLog = new char[ pLogLen + newline + newLen ];
+
 	if( pLogLen > 0 ){
-		strcpy( newLog, pLog );
+		#ifdef OS_W32_VS
+			strncpy_s( newLog, pLogLen + 1, pLog, pLogLen );
+		#else
+			strncpy( newLog, pLog, pLogLen + 1 );
+		#endif
 		newLog[ pLogLen ] = '\n';
 	}
-	sprintf( newLog + pLogLen + newline, "Unexpected token '%s' found at %i:%i", token, line, pos );
+	snprintf( newLog + pLogLen + newline, newLen, "Unexpected token '%s' found at %i:%i", token, line, pos );
 	delete [] pLog;
 	pLog = newLog;
 	pLogLen += newline + newLen;

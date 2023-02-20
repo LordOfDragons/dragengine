@@ -206,7 +206,7 @@ void deClassSkyLayer::nfGetIntensity::RunFunction( dsRunTime *rt, dsValue *mysel
 	const sSkyLayerNatDat &nd = *( ( const sSkyLayerNatDat* )p_GetNativeData( myself ) );
 	const deSkyLayer &layer = nd.sky->GetLayerAt( nd.index );
 	
-	rt->PushInt( layer.GetIntensity() );
+	rt->PushFloat( layer.GetIntensity() );
 }
 
 // public func void setIntensity( float intensity )
@@ -231,7 +231,7 @@ void deClassSkyLayer::nfGetTransparency::RunFunction( dsRunTime *rt, dsValue *my
 	const sSkyLayerNatDat &nd = *( ( const sSkyLayerNatDat* )p_GetNativeData( myself ) );
 	const deSkyLayer &layer = nd.sky->GetLayerAt( nd.index );
 	
-	rt->PushInt( layer.GetTransparency() );
+	rt->PushFloat( layer.GetTransparency() );
 }
 
 // public func void setTransparency( float transparency )
@@ -340,7 +340,7 @@ void deClassSkyLayer::nfGetLightIntensity::RunFunction( dsRunTime *rt, dsValue *
 	const sSkyLayerNatDat &nd = *( ( const sSkyLayerNatDat* )p_GetNativeData( myself ) );
 	const deSkyLayer &layer = nd.sky->GetLayerAt( nd.index );
 	
-	rt->PushInt( layer.GetLightIntensity() );
+	rt->PushFloat( layer.GetLightIntensity() );
 }
 
 // public func void setLightIntensity( float intensity )
@@ -365,7 +365,7 @@ void deClassSkyLayer::nfGetAmbientIntensity::RunFunction( dsRunTime *rt, dsValue
 	const sSkyLayerNatDat &nd = *( ( const sSkyLayerNatDat* )p_GetNativeData( myself ) );
 	const deSkyLayer &layer = nd.sky->GetLayerAt( nd.index );
 	
-	rt->PushInt( layer.GetAmbientIntensity() );
+	rt->PushFloat( layer.GetAmbientIntensity() );
 }
 
 // public func void setAmbientIntensity( float intensity )

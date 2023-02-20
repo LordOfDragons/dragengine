@@ -22,6 +22,8 @@
 #ifndef _DEOGLLIGHTSHADERCONFIG_H_
 #define _DEOGLLIGHTSHADERCONFIG_H_
 
+#include <stdint.h>
+
 class decString;
 
 
@@ -142,6 +144,10 @@ public:
 	bool pTextureShadow1Ambient;
 	bool pTextureShadow2Ambient;
 	
+	uint32_t pKey1;
+	uint32_t pKey2;
+	uint32_t pKey3;
+	
 	
 	
 public:
@@ -149,6 +155,9 @@ public:
 	/*@{*/
 	/** Create light shader configuration. */
 	deoglLightShaderConfig();
+	
+	/** Create copy of light shader configuration. */
+	deoglLightShaderConfig( const deoglLightShaderConfig &config );
 	
 	/** Clean up light shader configuration. */
 	~deoglLightShaderConfig();
@@ -352,6 +361,16 @@ public:
 	
 	/** Set if shadow ambient map is used. */
 	void SetTextureShadow2Ambient( bool isUsed );
+	
+	
+	
+	/** Key. */
+	inline uint32_t GetKey1() const{ return pKey1; }
+	inline uint32_t GetKey2() const{ return pKey2; }
+	inline uint32_t GetKey3() const{ return pKey3; }
+	
+	/** Update key. */
+	void UpdateKey();
 	/*@}*/
 	
 	

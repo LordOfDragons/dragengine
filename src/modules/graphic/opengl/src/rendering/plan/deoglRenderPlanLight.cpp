@@ -59,6 +59,8 @@ pShadowSizeDynamic( 0 ),
 pTranspShadowSizeDynamic( 0 ),
 pAmbientShadowSizeDynamic( 0 ),
 
+pGIShadowSizeDynamic( 0 ),
+
 pUseShadow( false ),
 pUseShadowTemporary( false ),
 pUseAmbient( false ),
@@ -123,15 +125,21 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	
 	pShadowSizeDynamic = pShadowSizeStatic;
 	
+	pGIShadowSizeDynamic = pShadowSizeStatic;
+	
 	// calculate reduction factors
 	pCalcReductionFactorStatic();
 	pCalcReductionFactorDynamic();
 	
 	// for temporary shadow casting reduce shadow map size. this is done to avoid requesting
 	// and keeping large shared textures. rendering time is not affected much by size
+	int giReductionFactorDynamic = decMath::max( 2, pReductionFactorDynamic );
+	
 	if( pUseShadowTemporary ){
 		pReductionFactorStatic += 2;
 		pReductionFactorDynamic += 2;
+		
+		giReductionFactorDynamic += 2;
 	}
 	
 	// reduce shadow map size
@@ -142,6 +150,8 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	if( pReductionFactorDynamic > 0 ){
 		pShadowSizeDynamic = decMath::max( pShadowSizeDynamic >> pReductionFactorDynamic, minSize );
 	}
+	
+	pGIShadowSizeDynamic = decMath::max( pShadowSizeDynamic >> giReductionFactorDynamic, minSize );
 	
 	// reduce size for transparent shadow maps (or use static sizes?)
 	pTranspShadowSizeStatic = decMath::max( pShadowSizeStatic >> 1, minSize );
@@ -186,7 +196,7 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 		
 		// clamp sizes to last frame and next frame sizes to avoid resizing textures.
 		// using the last frame size avoids resizing if the first rendered camera requires
-		// a smaller size than a later one. using the next frame size avoids resiting if
+		// a smaller size than a later one. using the next frame size avoids resizing if
 		// the first rendered camera requires a larger size than a later one.
 	// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat("PlanShadowCasting: %p %d %d %d",
 	// 		pLight->GetLight(), pShadowSizeDynamic, scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic() );

@@ -26,16 +26,16 @@
 
 
 /**
- * \brief Ratio between game time and render time required to skip synchronization parameter.
+ * Ratio between game time and render time required to skip synchronization parameter.
  */
 class deoglPAsyncRenderSkipSyncTimeRatio : public deoglParameterFloat{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter. */
+	/** Create parameter. */
 	deoglPAsyncRenderSkipSyncTimeRatio( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up parameter. */
+	/** Clean up parameter. */
 	virtual ~deoglPAsyncRenderSkipSyncTimeRatio();
 	/*@}*/
 	
@@ -43,10 +43,10 @@ public:
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** \brief Current value. */
+	/** Current value. */
 	virtual float GetParameterFloat();
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterFloat( float value );
 	/*@}*/
 };

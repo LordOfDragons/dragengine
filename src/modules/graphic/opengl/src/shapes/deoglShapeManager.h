@@ -27,7 +27,7 @@ class deoglShape;
 
 
 /**
- * @brief Shape Manager.
+ * Shape Manager.
  */
 class deoglShapeManager{
 private:
@@ -36,7 +36,7 @@ private:
 	int pShapeSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
 	deoglShapeManager();
@@ -44,7 +44,7 @@ public:
 	~deoglShapeManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of shapes. */
 	inline int GetShapeCount() const{ return pShapeCount; }

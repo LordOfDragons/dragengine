@@ -55,6 +55,28 @@
 
 
 
+// Class deoglRParticleEmitterInstance::WorldComputeElement
+/////////////////////////////////////////////////////////////
+
+deoglRParticleEmitterInstance::WorldComputeElement::WorldComputeElement( deoglRParticleEmitterInstance &emitter ) :
+deoglWorldComputeElement( eetParticleEmitter, &emitter ),
+pEmitter( emitter ){
+}
+
+void deoglRParticleEmitterInstance::WorldComputeElement::UpdateData(
+const deoglWorldCompute &worldCompute, sDataElement &data ) const{
+	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
+	data.SetExtends( pEmitter.GetMinExtend() - refpos, pEmitter.GetMaxExtend() - refpos );
+	data.SetLayerMask( pEmitter.GetLayerMask() );
+	data.flags = ( uint32_t )deoglWorldCompute::eefParticleEmitter;
+	data.geometryCount = 0; //1;
+}
+
+void deoglRParticleEmitterInstance::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+}
+
+
+
 // Class deoglRParticleEmitterInstance
 ////////////////////////////////////////
 
@@ -66,6 +88,7 @@ pRenderThread( renderThread ),
 pEmitter( NULL ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pBurstTime( 0.0f ),
 
@@ -91,6 +114,8 @@ pIBO( 0 ),
 pVAO( NULL ),
 
 pDirtyParticles( true ),
+
+pCSOctreeIndex( 0 ),
 
 pWorldMarkedRemove( false ){
 	LEAK_CHECK_CREATE( renderThread, ParticleEmitterInstance );
@@ -150,6 +175,9 @@ void deoglRParticleEmitterInstance::SetParentWorld( deoglRWorld *world ){
 		pRenderEnvMap->FreeReference();
 		pRenderEnvMap = NULL;
 	}
+	if( pParentWorld && pWorldComputeElement->GetIndex() != -1 ){
+		pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+	}
 	if( pOctreeNode ){
 		pOctreeNode->RemoveParticleEmitter( this );
 		pOctreeNode = NULL;
@@ -169,7 +197,17 @@ void deoglRParticleEmitterInstance::UpdateOctreeNode(){
 		//if( pParticleEmitter->GetVisible() ){
 			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this );
 			
+			if( pWorldComputeElement->GetIndex() != -1 ){
+				pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+				
+			}else{
+				pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+			}
+			
 		/*}else{
+			if( pWorldComputeElement->GetIndex() != -1 ){
+				pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+			}
 			if( pOctreeNode ){
 				pOctreeNode->GetParticleEmittersList().Remove( this );
 				pOctreeNode = NULL;

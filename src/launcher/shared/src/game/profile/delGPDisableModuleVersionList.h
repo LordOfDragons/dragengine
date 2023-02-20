@@ -30,7 +30,7 @@ class delGPDisableModuleVersion;
 /**
  * \brief Game profile disable module version list.
  */
-class delGPDisableModuleVersionList{
+class DE_DLL_EXPORT delGPDisableModuleVersionList{
 private:
 	decObjectList pList;
 	

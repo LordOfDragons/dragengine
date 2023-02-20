@@ -92,7 +92,7 @@ void deoglRenderableColorTexture::SetInUse( bool inUse ){
 
 void deoglRenderableColorTexture::UpdateMemoryUsage(){
 	if( pTexture ){
-		pMemoryUsageGPU = pTexture->GetMemoryConsumption().Total();
+		pMemoryUsageGPU = ( int )pTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;

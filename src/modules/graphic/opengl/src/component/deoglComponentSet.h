@@ -27,7 +27,7 @@ class deoglRComponent;
 
 
 /**
- * \brief Component set.
+ * Component set.
  * 
  * Set of pointers to components. The ordering of the components in the list is
  * not defined and can change when components are removed. This allows to
@@ -42,10 +42,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create component list. */
+	/** Create component list. */
 	deoglComponentSet();
 	
-	/** \brief Clean up component list. */
+	/** Clean up component list. */
 	~deoglComponentSet();
 	/*@}*/
 	
@@ -53,40 +53,40 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of components. */
+	/** Number of components. */
 	inline int GetCount() const{ return pComponentCount; }
 	
-	/** \brief Index of the component or -1 if not in the list. */
+	/** Index of the component or -1 if not in the list. */
 	int IndexOfComponent( deoglRComponent *component ) const;
 	
-	/** \brief Component exists. */
+	/** Component exists. */
 	bool Has( deoglRComponent *component ) const;
 	
-	/** \brief Component at the given index. */
+	/** Component at the given index. */
 	deoglRComponent *GetAt( int index ) const;
 	
-	/** \brief Add component. */
+	/** Add component. */
 	void Add( deoglRComponent *component );
 	
-	/** \brief Add component if missing in the list. Returns true if added. */
+	/** Add component if missing in the list. Returns true if added. */
 	bool AddIfMissing( deoglRComponent *component );
 	
-	/** \brief Remove component. */
+	/** Remove component. */
 	void Remove( deoglRComponent *component );
 	
-	/** \brief Remove component if existing in the list. Returns true if removed. */
+	/** Remove component if existing in the list. Returns true if removed. */
 	bool RemoveIfExisting( deoglRComponent *component );
 	
-	/** \brief Remove component from the given index. */
+	/** Remove component from the given index. */
 	void RemoveFrom( int index );
 	
-	/** \brief Remove all components. */
+	/** Remove all components. */
 	void RemoveAll();
 	
-	/** \brief Mark all components. */
+	/** Mark all components. */
 	void MarkAll( bool mark );
 	
-	/** \brief Remove marked components. */
+	/** Remove marked components. */
 	void RemoveAllMarked( bool mark );
 	/*@}*/
 	

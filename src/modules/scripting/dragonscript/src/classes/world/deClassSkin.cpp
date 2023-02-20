@@ -332,7 +332,7 @@ void deClassSkin::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sSkinNatDat &nd = *( ( sSkinNatDat* )p_GetNativeData( myself ) );
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )nd.skin );
+	rt->PushInt( ( int )( intptr_t )nd.skin );
 }
 
 // public func bool equals( Object obj )

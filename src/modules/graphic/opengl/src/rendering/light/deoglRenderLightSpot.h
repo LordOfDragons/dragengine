@@ -38,7 +38,7 @@ class deoglRenderPlanMasked;
 
 
 /**
- * \brief Render spot lights.
+ * Render spot lights.
  */
 class deoglRenderLightSpot : public deoglRenderLightBase{
 public:
@@ -83,20 +83,20 @@ public:
 		 */
 		int lodMaxPixelError;
 		int lodOffset;
-		int lodFovX;
-		int lodFovY;
+		float lodFovX;
+		float lodFovY;
 		
 		sShadowParams();
 	};
 	
 	
 private:
-	deoglShaderProgramUsage pShaderShadowCopy;
-	deoglShaderProgramUsage pShaderBoxBoundary1;
-	deoglShaderProgramUsage pShaderBoxBoundary1Ambient;
-	deoglShaderProgramUsage pShaderBoxBoundary2;
-	deoglShaderProgramUsage pShaderOccMap;
 	deoglCollideList pCollideList;
+	
+	const deoglPipeline *pPipelineBoxBoundary1;
+	const deoglPipeline *pPipelineBoxBoundary1Ambient;
+	const deoglPipeline *pPipelineBoxBoundary2;
+	const deoglPipeline *pPipelineOccMap;
 	
 	
 	
@@ -128,10 +128,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderLightSpot( deoglRenderThread &renderThread, deoglRTRenderers &renderers );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderLightSpot();
 	/*@}*/
 	
@@ -139,59 +139,59 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Calculate box boundary for a spot light. */
+	/** Calculate box boundary for a spot light. */
 	void CalculateBoxBoundary( deoglRenderPlanLight &planLight );
 	
-	/** \brief Render lights. */
+	/** Render lights. */
 	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Render light. */
+	/** Render light. */
 	void RenderLight( deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Activate textures for lighting. */
+	/** Activate textures for lighting. */
 	void ActivateTextures( deoglRenderPlanLight &planLight, deoglLightShader &shader,
 		const sShadowDepthMaps &shadowDepthMaps );
 	
-	/** \brief Render shadow maps. */
+	/** Render shadow maps. */
 	void RenderShadows( deoglRenderPlanLight &planLight, sShadowParams &shadowParams );
 	
-	/** \brief Render shadow map. */
+	/** Render shadow map. */
 	void RenderShadowMap( deoglRenderPlanLight &planLight,
 		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
 	
-	/** \brief Render ambient map. */
+	/** Render ambient map. */
 	void RenderAmbientMap( deoglRenderPlanLight &planLight,
 		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
 	
-	/** \brief Update light shader parameter block. */
+	/** Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanLight &planLight );
 	
-	/** \brief Update instance shader parameter block. */
+	/** Update instance shader parameter block. */
 	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlan &plan, const deoglCollideListLight &cllight,
 		sShadowDepthMaps &shadowDepthmaps, const decDMatrix &matrixLP );
 	
 	
 	
-	/** \brief Debug information solid lighting. */
+	/** Debug information solid lighting. */
 	inline deoglDebugInformation *GetDebugInfoSolid() const{ return pDebugInfoSolid; }
 	
-	/** \brief Debug information transparent lighting. */
+	/** Debug information transparent lighting. */
 	inline deoglDebugInformation *GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
 	
 	
 	
-	/** \brief Reset debug information. */
+	/** Reset debug information. */
 	void ResetDebugInfo();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoSolid();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoTransparent();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

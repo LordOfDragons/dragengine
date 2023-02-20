@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Cylinder Collision Volume.
+ * Cylinder Collision Volume.
  * Defines a collision volumed in the shape of a cylinder.
  * The cylinder is defined by a half height and two radi
  * one for the top circle and one for the bottom circle.
@@ -50,7 +50,7 @@ private:
 	bool pTapered;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
 	 * Creates a new unoriented cylinder. The half height is set to 0.5, the top
@@ -78,13 +78,13 @@ public:
 	virtual ~deoglCollisionCylinder();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume( deoglCollisionVolume *volume );
 	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume( deoglCollisionSphere *sphere );
 	virtual bool CylinderHitsVolume( deoglCollisionCylinder *Cylinder );
@@ -101,13 +101,13 @@ public:
 	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decVector &point );
@@ -134,12 +134,12 @@ public:
 	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/**
 	 * Determines if the given sphere collides with this Cylinder.
@@ -163,7 +163,7 @@ public:
 	float CylinderMoveHitsCylinder( deoglCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/**
 	 * Retrieves the cylinder center.

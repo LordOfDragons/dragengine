@@ -41,7 +41,7 @@ class delEngineProcessRunGame;
  * and methods usable from the main process. This class contains anything usable only from
  * inside the separate process.
  */
-class delEngineProcess{
+class DE_DLL_EXPORT delEngineProcess{
 public:
 	/** \brief Command codes. */
 	enum eCommandCodes{
@@ -277,7 +277,7 @@ public:
 	int ReadUShortFromPipe();
 	
 	/** \brief Read float from pipe. */
-	int ReadFloatFromPipe();
+	float ReadFloatFromPipe();
 	
 	/** \brief Read string from pipe using uint16_t as length. */
 	void ReadString16FromPipe( decString &string );

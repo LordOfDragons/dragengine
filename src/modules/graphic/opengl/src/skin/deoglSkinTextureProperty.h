@@ -32,7 +32,7 @@ class deVideo;
 
 
 /**
- * \brief Skin texture property.
+ * Skin texture property.
  */
 class deoglSkinTextureProperty{
 private:
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin texture property. */
+	/** Create skin texture property. */
 	deoglSkinTextureProperty();
 	
-	/** \brief Clean up skin texture property. */
+	/** Clean up skin texture property. */
 	~deoglSkinTextureProperty();
 	/*@}*/
 	
@@ -55,23 +55,23 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Renderable index or -1. */
+	/** Renderable index or -1. */
 	inline int GetRenderable() const{ return pRenderable; }
 	
-	/** \brief Set renderable index or -1. */
+	/** Set renderable index or -1. */
 	void SetRenderable( int index );
 	
-	/** \brief Calculated property index or -1. */
+	/** Calculated property index or -1. */
 	inline int GetCalculatedProperty() const{ return pCalculatedProperty; }
 	
-	/** \brief Set calculated property index or -1. */
+	/** Set calculated property index or -1. */
 	void SetCalculatedProperty( int index );
 	
-	/** \brief Property is dynamic. */
+	/** Property is dynamic. */
 	bool IsDynamic() const;
 	
 	/**
-	 * \brief Resolve as float value.
+	 * Resolve as float value.
 	 * 
 	 * If the renderable in the dynamic skin is not a value renderable the defaultValue
 	 * is returned.
@@ -80,7 +80,7 @@ public:
 		const deoglRDynamicSkin *dynamicSkin, float defaultValue ) const;
 	
 	/**
-	 * \brief Resolve as boolean value.
+	 * Resolve as boolean value.
 	 * 
 	 * If the renderable in the dynamic skin is not a value renderable the defaultValue
 	 * is returned. True is returned if the value is larger than 0.5 and false otherwise.
@@ -89,7 +89,7 @@ public:
 		const deoglRDynamicSkin *dynamicSkin, bool defaultValue ) const;
 	
 	/**
-	 * \brief Resolve as color.
+	 * Resolve as color.
 	 * 
 	 * If the renderable in the dynamic skin is not a value or color renderable the
 	 * defaultValue is returned. If renderable is a value renderable the returned
@@ -99,7 +99,7 @@ public:
 		const deoglRDynamicSkin *dynamicSkin, const decColor &defaultValue ) const;
 	
 	/**
-	 * \brief Resolve as vector2.
+	 * Resolve as vector2.
 	 * 
 	 * If the renderable in the dynamic skin is not a value or color renderable the
 	 * defaultValue is returned. If the renderable is a value renderable the returned
@@ -110,7 +110,7 @@ public:
 		const deoglRDynamicSkin *dynamicSkin, const decVector2 &defaultValue ) const;
 	
 	/**
-	 * \brief Resolve as vector.
+	 * Resolve as vector.
 	 * 
 	 * If the renderable in the dynamic skin is not a value or color renderable the
 	 * defaultValue is returned. If the renderable is a value renderable the returned

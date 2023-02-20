@@ -38,14 +38,16 @@
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/ubo_render_parameters.glsl"
-#ifdef SHARED_SPB
-	#include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
-#endif
+#include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 
 
 
 // Inputs
 ///////////
+
+#if defined DEPTH_OFFSET && ! defined REQUIRES_NORMAL
+	#define REQUIRES_NORMAL
+#endif
 
 #ifdef REQUIRES_TEX_COLOR
 	in vec2 vGSTCColor[ 3 ];
@@ -86,9 +88,6 @@
 #ifdef CLIP_PLANE
 	out vec3 vClipCoord;
 #endif
-#ifdef DEPTH_ORTHOGONAL
-	out float vZCoord;
-#endif
 #ifdef DEPTH_DISTANCE
 	out vec3 vPosition;
 #endif
@@ -124,6 +123,10 @@ flat out int vLayer;
 
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 
+#if defined DEPTH_OFFSET
+	#include "v130/shared/defren/skin/depth_offset.glsl"
+#endif
+
 void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition ){
 	gl_Position = preTransformedPosition;
 	
@@ -147,24 +150,15 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	#ifdef WITH_REFLECT_DIR
 		#ifdef BILLBOARD
-			vReflectDir = position.xyz;
+			vReflectDir = vec3( position );
 		#else
 			vReflectDir = pMatrixV[ layer ] * position;
 		#endif
 	#endif
 	
-	#ifdef DEPTH_ORTHOGONAL
-		#ifdef NO_ZCLIP
-			vZCoord = preTransformedPosition.z * 0.5 + 0.5; // we have to do the normalization ourself
-			gl_Position.z = 0;
-		#else
-			vZCoord = preTransformedPosition.z;
-		#endif
-	#endif
-	
 	#ifdef DEPTH_DISTANCE
 		#ifdef BILLBOARD
-			vPosition = position.xyz;
+			vPosition = vec3( position );
 		#else
 			vPosition = pMatrixV[ layer ] * position;
 		#endif
@@ -172,7 +166,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	#ifdef CLIP_PLANE
 		#ifdef BILLBOARD
-			vClipCoord = position.xyz;
+			vClipCoord = vec3( position );
 		#else
 			vClipCoord = pMatrixV[ layer ] * position;
 		#endif
@@ -188,6 +182,15 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	#ifdef HEIGHT_MAP
 		vHTMask = vGSHTMask[ corner ];
+	#endif
+	
+	// depth offset
+	#if defined DEPTH_OFFSET
+		#ifdef GS_RENDER_CUBE
+			applyDepthOffset( 0, vNormal, pDoubleSided );
+		#else
+			applyDepthOffset( layer, vNormal, pDoubleSided );
+		#endif
 	#endif
 	
 	vLayer = layer;

@@ -41,6 +41,8 @@
 ////////////////////////////
 
 deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
+	const deoglConfiguration &conf = renderThread.GetConfiguration();
+	const deoglCapabilities &caps = renderThread.GetCapabilities();
 	const deoglExtensions &ext = renderThread.GetExtensions();
 	
 	#define HASEXT(e) ext.GetHasExtension(deoglExtensions::e)
@@ -52,8 +54,14 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	pSharedVBOUseBaseVertex = HASEXT( ext_ARB_draw_elements_base_vertex );
 	//pSharedVBOUseBaseVertex = false;
 	
+	// Use SSBO for rendering if enough SSBO blocks are allowed
+	pUseSSBORender = HASEXT( ext_ARB_shader_storage_buffer_object )
+		&& caps.GetSSBOMaxBlocksVertex() >= 4
+		&& caps.GetSSBOMaxBlocksGeometry() >= 4
+		&& caps.GetSSBOMaxBlocksFragment() >= 4;
+	
 	// Using SSBOs allows to use a larger number of parameter block per shared SPB than using UBO
-	pSharedSPBUseSSBO = HASEXT( ext_ARB_shader_storage_buffer_object );
+	pSharedSPBUseSSBO = pUseSSBORender;
 	
 	// use global shared SPB lists for SSBO. for UBO it is not favorable
 	pGlobalSharedSPBLists = pSharedSPBUseSSBO;
@@ -80,7 +88,14 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	
 	// use layer in vertex shaders for fullscreen quad rendering. requires these extensions (% coverage):
 	// - ARB_shader_viewport_layer_array (45%) or AMD_vertex_shader_layer (61%): gl_Layer in vertex shader
-	pRenderFSQuadStereoVSLayer = HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer );
+	// - ARB_shader_draw_parameters (67%): gl_DrawID in vertex shader
+	//   ^== this requires 4.6 core or it will not work
+	pRenderFSQuadStereoVSLayer =
+		( HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer ) )
+		&& HASEXT( ext_ARB_shader_draw_parameters );
+	
+	// render cube using geometry shader (required)
+	pRenderCubeGS = caps.GetClearEntireCubeMap().Working();
 	
 	// transform component vertices on the GPU
 	#ifdef OS_ANDROID
@@ -102,12 +117,47 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 		pGPUTransformVertices = egputvApproximate;
 	#endif
 	
+	// inverse depth
+	pUseInverseDepth = conf.GetUseInverseDepth();
+	
+	if( ! caps.GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
+	||  ! caps.GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF )
+	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
+	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF )
+	||  ! pglClipControl ){
+		pUseInverseDepth = false; // not supported
+	}
+	
+	if( pUseInverseDepth ){
+		pDepthCompareFuncRegular = GL_GEQUAL;
+		pDepthCompareFuncReversed = GL_LEQUAL;
+		pClearDepthValueRegular = ( GLfloat )0.0f;
+		pClearDepthValueReversed = ( GLfloat )1.0f;
+		
+	}else{
+		pDepthCompareFuncRegular = GL_LEQUAL;
+		pDepthCompareFuncReversed = GL_GEQUAL;
+		pClearDepthValueRegular = ( GLfloat )1.0f;
+		pClearDepthValueReversed = ( GLfloat )0.0f;
+	}
+	
+	// temporary until working properly
+	if( HASEXT( ext_ARB_shader_atomic_counter_ops ) ){
+		pUseComputeRenderTask = false;
+		
+	}else{
+		pUseComputeRenderTask = false;
+	}
+	
 	#undef HASEXT
+	
+	
 	
 	// log choices
 	deoglRTLogger &l = renderThread.GetLogger();
 	
 	l.LogInfo( "Render Thread Choices:" );
+	l.LogInfoFormat( "- Use SSBO for Rendering: %s", pUseSSBORender ? "Yes" : "No" );
 	l.LogInfoFormat( "- Shared VBO Use Base Vertex: %s", pSharedVBOUseBaseVertex ? "Yes" : "No" );
 	l.LogInfoFormat( "- Shared SPB Use SSBO: %s", pSharedSPBUseSSBO ? "Yes" : "No" );
 	l.LogInfoFormat( "- Global Shared SPB Lists: %s", pGlobalSharedSPBLists ? "Yes" : "No" );
@@ -131,6 +181,7 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	l.LogInfoFormat( "- VR Render Stereo: %s", pVRRenderStereo ? "Yes" : "No" );
 	l.LogInfoFormat( "- Render Stereo Vertex Shader Layer: %s", pRenderStereoVSLayer ? "Yes" : "No" );
 	l.LogInfoFormat( "- Render Fullscreen Quad Stereo Vertex Shader Layer: %s", pRenderFSQuadStereoVSLayer ? "Yes" : "No" );
+	l.LogInfoFormat( "- Use Inverse Depth: %s", pUseInverseDepth ? "Yes" : "No" );
 }
 
 deoglRTChoices::~deoglRTChoices(){

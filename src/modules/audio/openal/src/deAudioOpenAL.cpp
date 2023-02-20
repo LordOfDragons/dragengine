@@ -77,7 +77,7 @@ extern "C" {
 #ifdef OS_UNIX
 __attribute__ ((visibility ("default")))
 #endif
-deBaseModule *OpenALCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *OpenALCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
 #endif

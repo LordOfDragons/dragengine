@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Triangle Sorter.
+ * Triangle Sorter.
  * 
  * Stores a list of triangles that can be sorted by distance.
  */
@@ -52,10 +52,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create triangle sorter. */
+	/** Create triangle sorter. */
 	deoglTriangleSorter();
 	
-	/** \brief Clean up triangle sorter. */
+	/** Clean up triangle sorter. */
 	~deoglTriangleSorter();
 	/*@}*/
 	
@@ -63,22 +63,22 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of triangles. */
+	/** Number of triangles. */
 	inline int GetTriangleCount() const{ return pTriangleCount; }
 	
-	/** \brief First vertex of triangle at index. */
+	/** First vertex of triangle at index. */
 	const decVector &GetTriangleVertex1( int triangle ) const;
 	
-	/** \brief Second vertex of triangle at index. */
+	/** Second vertex of triangle at index. */
 	const decVector &GetTriangleVertex2( int triangle ) const;
 	
-	/** \brief Third vertex of triangle at index. */
+	/** Third vertex of triangle at index. */
 	const decVector &GetTriangleVertex3( int triangle ) const;
 	
-	/** \brief Add triangle. */
+	/** Add triangle. */
 	void AddTriangle( const decVector &vertex1, const decVector &vertex2, const decVector &vertex3 );
 	
-	/** \brief Remove all triangles. */
+	/** Remove all triangles. */
 	void RemoveAllTriangles();
 	/*@}*/
 	
@@ -86,10 +86,10 @@ public:
 	
 	/** \name Sorting */
 	/*@{*/
-	/** \brief Sort objects linear. */
+	/** Sort objects linear. */
 	void SortLinear( const decVector &position, const decVector &view );
 	
-	/** \brief Sort objects radial. */
+	/** Sort objects radial. */
 	void SortRadial( const decVector &position );
 	/*@}*/
 	

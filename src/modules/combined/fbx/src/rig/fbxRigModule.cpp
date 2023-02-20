@@ -112,18 +112,21 @@ void fbxRigModule::SaveRig(decBaseFileWriter &writer, const deRig &rig){
 
 void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 	fbxNode &nodePose = *scene.FirstNodeNamed( "Pose" );
-	deObjectReference refLoadRig;
-	refLoadRig.TakeOver( new fbxRig( scene, nodePose ) );
+	const fbxRig::Ref loadRig( fbxRig::Ref::New( new fbxRig( scene, nodePose ) ) );
+		decVector r(loadRig->GetMatrix().GetEulerAngles() * RAD2DEG);
+		LogInfoFormat("rigmat (%f,%f,%f)", r.x, r.y, r.z);
+		r = loadRig->GetBoneAt(0)->GetOrientation().GetEulerAngles() * RAD2DEG;
+		LogInfoFormat("bonemat (%f,%f,%f)", r.x, r.y, r.z);
+		r = scene.GetTransformation().GetEulerAngles();
+		LogInfoFormat("scenetrans (%f,%f,%f)", r.x, r.y, r.z);
 	
-	const fbxRig &loadRig = ( ( fbxRig& )( deObject& )refLoadRig );
-	
-	const int boneCount = loadRig.GetBoneCount();
-	deRigBone *rigBone = NULL;
+	const int boneCount = loadRig->GetBoneCount();
+	deRigBone *rigBone = nullptr;
 	int i;
 	
 	try{
 		for( i=0; i<boneCount; i++ ){
-			const fbxRigBone &loadBone = *loadRig.GetBoneAt( i );
+			const fbxRigBone &loadBone = *loadRig->GetBoneAt( i );
 			rigBone = new deRigBone( loadBone.GetName() );
 			
 			rigBone->SetPosition( loadBone.GetPosition() );
@@ -133,7 +136,7 @@ void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 			}
 			
 			rig.AddBone( rigBone );
-			rigBone = NULL;
+			rigBone = nullptr;
 		}
 		
 	}catch( const deException & ){

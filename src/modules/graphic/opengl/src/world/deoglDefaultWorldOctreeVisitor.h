@@ -33,7 +33,7 @@ class deoglRParticleEmitterInstance;
 
 
 /**
- * \brief Default world octree visitor.
+ * Default world octree visitor.
  */
 class deoglDefaultWorldOctreeVisitor : public deoglWorldOctreeVisitor{
 private:
@@ -46,10 +46,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create world octree visitor. */
+	/** Create world octree visitor. */
 	deoglDefaultWorldOctreeVisitor();
 	
-	/** \brief Clean up world octree visitor. */
+	/** Clean up world octree visitor. */
 	virtual ~deoglDefaultWorldOctreeVisitor();
 	/*@}*/
 	
@@ -57,37 +57,37 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Visit billboards. */
+	/** Visit billboards. */
 	inline bool GetVisitBillboards() const{ return pVisitBillboards; }
 	
-	/** \brief Set if billboards are visited. */
+	/** Set if billboards are visited. */
 	void SetVisitBillboards( bool visitBillboards );
 	
-	/** \brief Visit particle emitters. */
+	/** Visit particle emitters. */
 	inline bool GetVisitParticleEmitters() const{ return pVisitParticleEmitters; }
 	
-	/** \brief Set if particle emitters are visited. */
+	/** Set if particle emitters are visited. */
 	void SetVisitParticleEmitters( bool visitEmitters );
 	
-	/** \brief Visit components. */
+	/** Visit components. */
 	inline bool GetVisitComponents() const{ return pVisitComponents; }
 	
-	/** \brief Set if components are visited. */
+	/** Set if components are visited. */
 	void SetVisitComponents( bool visitComponents );
 	
-	/** \brief Visit lights. */
+	/** Visit lights. */
 	inline bool GetVisitLights() const{ return pVisitLights; }
 	
-	/** \brief Set if lights are visited. */
+	/** Set if lights are visited. */
 	void SetVisitLights( bool visitLights );
 	
-	/** \brief Visit environment maps. */
+	/** Visit environment maps. */
 	inline bool GetVisitEnvMaps() const{ return pVisitEnvMaps; }
 	
-	/** \brief Set if environment maps are visited. */
+	/** Set if environment maps are visited. */
 	void SetVisitEnvMaps( bool visitEnvMaps );
 	
-	/** \brief Set if all elements are visited. */
+	/** Set if all elements are visited. */
 	void SetVisitAll( bool visitAll );
 	/*@}*/
 	
@@ -95,22 +95,22 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit octree node. */
+	/** Visit octree node. */
 	virtual void VisitNode( deoglDOctree *node, int intersection );
 	
-	/** \brief Visit billboard. */
+	/** Visit billboard. */
 	virtual void VisitBillboard( deoglRBillboard *billboard );
 	
-	/** \brief Visit particle emitter. */
+	/** Visit particle emitter. */
 	virtual void VisitParticleEmitter( deoglRParticleEmitterInstance *emitter );
 	
-	/** \brief Visit component. */
+	/** Visit component. */
 	virtual void VisitComponent( deoglRComponent *component );
 	
-	/** \brief Visit light. */
+	/** Visit light. */
 	virtual void VisitLight( deoglRLight *light );
 	
-	/** \brief Visit environment maps. */
+	/** Visit environment maps. */
 	virtual void VisitEnvMaps( deoglEnvironmentMap *envmap );
 	/*@}*/
 };

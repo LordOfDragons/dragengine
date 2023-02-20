@@ -32,7 +32,7 @@ class deoglVBOLayout;
 
 
 /**
- * \brief Render particle emitter.
+ * Render particle emitter.
  */
 class deoglRParticleEmitter : public deObject{
 private:
@@ -46,10 +46,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render emitter. */
+	/** Create render emitter. */
 	deoglRParticleEmitter( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render emitter. */
+	/** Clean up render emitter. */
 	virtual ~deoglRParticleEmitter();
 	/*@}*/
 	
@@ -57,30 +57,30 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render threaf. */
+	/** Render threaf. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Shared VBO layout. */
+	/** Shared VBO layout. */
 	deoglVBOLayout *GetVBOLayoutShared();
 	
-	/** \brief Local VBO layout. */
+	/** Local VBO layout. */
 	deoglVBOLayout *GetVBOLayoutLocal();
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	void PrepareForRender();
 	
 	
 	
-	/** \brief Number of types. */
+	/** Number of types. */
 	int GetTypeCount() const;
 	
-	/** \brief Type at index. */
+	/** Type at index. */
 	deoglRParticleEmitterType &GetTypeAt( int index ) const;
 	
-	/** \brief Remove all types. */
+	/** Remove all types. */
 	void RemoveAllTypes();
 	
-	/** \brief Add type. */
+	/** Add type. */
 	void AddType( deoglRParticleEmitterType *type );
 	/*@}*/
 };

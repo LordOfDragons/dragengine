@@ -65,8 +65,8 @@
 
 declLauncher::declLauncher() :
 pConfiguration( NULL ){
-	// also log to "/logs/delauncher-console.log"
-	AddFileLogger( "delauncher-console.log" );
+	// also log to "/logs/delauncher-console"
+	AddFileLogger( "delauncher-console" );
 	
 	// set launcher to use direct engine instance
 	SetEngineInstanceFactory( new delEngineInstanceDirect::Factory );

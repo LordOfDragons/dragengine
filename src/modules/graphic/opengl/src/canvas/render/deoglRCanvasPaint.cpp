@@ -172,7 +172,7 @@ void deoglRCanvasPaint::pCleanUp(){
 		delete [] pPoints;
 	}
 	if( pVBOBlock ){
-		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->DelayedRemove();
 		pVBOBlock->FreeReference();
 	}
 }

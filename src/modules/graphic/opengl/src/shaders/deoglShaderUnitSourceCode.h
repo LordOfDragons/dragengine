@@ -19,48 +19,57 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEOGLSHADERUNITSOURCECODE_H_
 #define _DEOGLSHADERUNITSOURCECODE_H_
 
-// predefinitions
+#include <dragengine/common/string/decString.h>
+#include <dragengine/deObject.h>
+
 class decBaseFileReader;
 
 
-
 /**
- * @brief Shader Unit Source Code.
+ * Shader Unit Source Code.
  *
  * Stores the source code of a shader unit program. The shader unit
  * source code can be compiled into a specialized shader unit program
  * using a set of defines. Each shader unit source object is identified
  * by the file path relative to the shader unit source code directory.
  */
-class deoglShaderUnitSourceCode{
+class deoglShaderUnitSourceCode : public deObject{
+public:
+	typedef deTObjectReference<deoglShaderUnitSourceCode> Ref;
+	
+	
+	
 private:
-	char *pFilePath;
-	char *pSourceCode;
+	const decString pFilePath;
+	decString pSourceCode;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new source code object reading source code from a file. */
 	deoglShaderUnitSourceCode( const char *filePath, decBaseFileReader &fileReader );
+	
+protected:
 	/** Cleans up the source code object. */
-	~deoglShaderUnitSourceCode();
+	virtual ~deoglShaderUnitSourceCode();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the file path. */
-	inline const char *GetFilePath() const{ return ( const char * )pFilePath; }
+	inline const decString &GetFilePath() const{ return pFilePath; }
+
 	/** Retrieves the source code. */
-	inline const char *GetSourceCode() const{ return ( const char * )pSourceCode; }
+	inline const decString &GetSourceCode() const{ return pSourceCode; }
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

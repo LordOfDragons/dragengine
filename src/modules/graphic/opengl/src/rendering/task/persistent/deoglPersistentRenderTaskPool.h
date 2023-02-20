@@ -27,7 +27,7 @@
 class deoglPersistentRenderTaskSubInstance;
 class deoglPersistentRenderTaskInstance;
 class deoglPersistentRenderTaskOwner;
-class deoglPersistentRenderTaskShader;
+class deoglPersistentRenderTaskPipeline;
 class deoglPersistentRenderTaskTexture;
 class deoglPersistentRenderTaskVAO;
 
@@ -38,7 +38,7 @@ class deoglPersistentRenderTaskVAO;
 class deoglPersistentRenderTaskPool{
 private:
 	decPointerList pOwners;
-	decPointerList pShaders;
+	decPointerList pPipelines;
 	decPointerList pTextures;
 	decPointerList pVAOs;
 	decPointerList pInstances;
@@ -63,8 +63,8 @@ public:
 	/** Get owner. */
 	deoglPersistentRenderTaskOwner *GetOwner();
 	
-	/** Get shader. */
-	deoglPersistentRenderTaskShader *GetShader();
+	/** Get pipeline. */
+	deoglPersistentRenderTaskPipeline *GetPipeline();
 	
 	/** Get texture. */
 	deoglPersistentRenderTaskTexture *GetTexture();
@@ -83,8 +83,8 @@ public:
 	/** Return owner. */
 	void ReturnOwner( deoglPersistentRenderTaskOwner *owner );
 	
-	/** Return shader. */
-	void ReturnShader( deoglPersistentRenderTaskShader *shader );
+	/** Return pipeline. */
+	void ReturnPipeline( deoglPersistentRenderTaskPipeline *pipeline );
 	
 	/** Return texture. */
 	void ReturnTexture( deoglPersistentRenderTaskTexture *texture );

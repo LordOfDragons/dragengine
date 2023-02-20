@@ -28,7 +28,7 @@ class deoglPixelBufferMipMap;
 
 
 /**
- * @brief Texture Compression.
+ * Texture Compression.
  * Provides support to compress and decompress texture data in pixel buffers.
  */
 class deoglTextureCompression{
@@ -42,7 +42,7 @@ public:
 	bool pFastCompression;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new texture compression object. */
 	deoglTextureCompression();
@@ -50,7 +50,7 @@ public:
 	~deoglTextureCompression();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the pixel buffer containing the decompressed data or NULL if not set. */
 	inline deoglPixelBuffer *GetDecompressedData() const{ return pDecompressedData; }

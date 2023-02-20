@@ -23,6 +23,7 @@
 #define _DEOGLRHTSECTOR_H_
 
 #include "../../deoglBasics.h"
+#include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -31,10 +32,10 @@
 
 class deoglHTSCluster;
 class deoglHTSTexture;
-class deoglPixelBuffer;
 class deoglRenderThread;
 class deoglRHeightTerrain;
 class deoglTexture;
+class deoglWorldCompute;
 
 class deHeightTerrainSector;
 
@@ -44,8 +45,13 @@ class deHeightTerrainSector;
  * Render height terrain sector.
  */
 class deoglRHTSector : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deoglRHTSector> Ref;
+	
 private:
 	deoglRHeightTerrain &pHeightTerrain;
+	int pIndex;
 	
 	decPoint pCoordinates;
 	float pBaseHeight;
@@ -58,9 +64,11 @@ private:
 	bool pTexturesRequirePrepareForRender;
 	
 	deoglTexture *pMasks[ OGLHTS_MAX_MASK_TEXTURES ];
-	deoglPixelBuffer *pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
+	deoglPixelBuffer::Ref pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
 	
 	float *pHeights;
+	float pMinHeight;
+	float pMaxHeight;
 	
 	GLuint *pVBODataPoints1;
 	int pVBODataPoints1Count;
@@ -84,16 +92,24 @@ public:
 	/** Create height terrain sector. */
 	deoglRHTSector( deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
 	
+protected:
 	/** Clean up height terrain sector. */
 	virtual ~deoglRHTSector();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Height terrain. */
 	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
+	
+	/** Index. */
+	inline int GetIndex() const{ return pIndex; }
+	
+	/** Set index. */
+	void SetIndex( int index );
 	
 	/** Sector coordinates. */
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
@@ -111,6 +127,15 @@ public:
 	/** Calculate world position. */
 	decDVector CalcWorldPosition() const;
 	decDVector CalcWorldPosition( const decDVector &referencePosition ) const;
+	
+	/** Add to world compute. */
+	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute. */
+	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Remove from world compute. */
+	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
 	
 	/** Prepare for render. */
 	void PrepareForRender();
@@ -140,6 +165,12 @@ public:
 	/** Heights. */
 	inline float *GetHeights() const{ return pHeights; }
 	
+	/** Minimum height. */
+	inline float GetMinHeight() const{ return pMinHeight; }
+	
+	/** Maximum height. */
+	inline float GetMaxHeight() const{ return pMaxHeight; }
+	
 	/** Height changed. */
 	void HeightChanged( const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to );
 	
@@ -157,6 +188,9 @@ public:
 	
 	/** List of clusters. */
 	inline deoglHTSCluster *GetClusters() const{ return pClusters; }
+	
+	/** Clusters update world compute element textures. */
+	void ClustersUpdateWorldComputeElementTextures();
 	/*@}*/
 	
 	

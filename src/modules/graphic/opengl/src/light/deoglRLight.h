@@ -22,6 +22,11 @@
 #ifndef _DEOGLRLIGHT_H_
 #define _DEOGLRLIGHT_H_
 
+#include "pipeline/deoglLightPipelines.h"
+#include "../component/deoglComponentSet.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../world/deoglWorldComputeElement.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -29,28 +34,23 @@
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/light/deLight.h>
 
-#include "shader/deoglLightShader.h"
-#include "../component/deoglComponentSet.h"
-
 class deoglCollideList;
 class deoglLightShaderConfig;
 class deoglLightVolume;
-class deoglOcclusionQuery;
+class deoglOcclusionTest;
 class deoglOptimizerLight;
 class deoglRCanvasView;
 class deoglRComponent;
+class deoglRDynamicSkin;
 class deoglRenderPlan;
+class deoglRenderPlanMasked;
 class deoglRenderThread;
 class deoglRSkin;
-class deoglRDynamicSkin;
 class deoglRWorld;
-class deoglSPBlockUBO;
 class deoglShadowCaster;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglWorldOctree;
-class deoglOcclusionTest;
-class deoglRenderPlanMasked;
 
 class decConvexVolumeList;
 class deoglDCollisionVolume;
@@ -62,51 +62,22 @@ class decShapeBox;
  * Render light.
  */
 class deoglRLight : public deObject{
-public:
-	/** Shader Types. */
-	enum eShaderTypes{
-		estNoShadow, //<! No shadow casting.
-		estSolid1, //<! Single solid no transparent shadow.
-		estSolid1Transp1, //<! Single solid and transparent shadow.
-		estSolid1NoAmbient, //<! Single solid no transparent shadow without ambient lighting.
-		estSolid1Transp1NoAmbient, //<! Single solid and transparent shadow without ambient lighting.
-		estSolid2, //<! Double solid no transparent shadow.
-		estSolid2Transp1, //<! Double solid and single transparent shadow.
-		estSolid2Transp2, //<! Double solid and transparent shadow.
-		estSolid2NoAmbient, //<! Double solid no transparent shadow.
-		estSolid2Transp1NoAmbient, //<! Double solid and single transparent shadow.
-		estSolid2Transp2NoAmbient, //<! Double solid and transparent shadow.
-		estLumSolid1, //<! Luminance only single solid (unused).
-		estLumSolid1NoAmbient, //<! Luminance only single solid without ambient lighting (unused).
-		estLumSolid2, //<! Luminance only double solid (unused).
-		estLumSolid2NoAmbient, //<! Luminance only double solid (unused).
-		estGIRayNoShadow, //<! GI rays no shadow casting.
-		estGIRaySolid1, //<! GI rays single solid shadow.
-		estGIRaySolid2, //<! GI rays double solid shadow.
-		
-		// stereo
-		estStereoNoShadow, //<! No shadow casting.
-		estStereoSolid1, //<! Single solid no transparent shadow.
-		estStereoSolid1Transp1, //<! Single solid and transparent shadow.
-		estStereoSolid1NoAmbient, //<! Single solid no transparent shadow without ambient lighting.
-		estStereoSolid1Transp1NoAmbient, //<! Single solid and transparent shadow without ambient lighting.
-		estStereoSolid2, //<! Double solid no transparent shadow.
-		estStereoSolid2Transp1, //<! Double solid and single transparent shadow.
-		estStereoSolid2Transp2, //<! Double solid and transparent shadow.
-		estStereoSolid2NoAmbient, //<! Double solid no transparent shadow.
-		estStereoSolid2Transp1NoAmbient, //<! Double solid and single transparent shadow.
-		estStereoSolid2Transp2NoAmbient, //<! Double solid and transparent shadow.
+private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldComputeElement{
+		deoglRLight &pLight;
+	public:
+		WorldComputeElement( deoglRLight &light );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
 	};
 	
-	static const int ShaderTypeCount = estStereoSolid2Transp2NoAmbient + 1;
 	
 	
-	
-public:
 	deoglRenderThread &pRenderThread;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	bool pActive;
 	deLight::eLightTypes pLightType;
@@ -132,6 +103,7 @@ public:
 	deoglSkinState *pSkinState;
 	deoglSkinTexture *pUseSkinTexture;
 	bool pDirtyPrepareSkinStateRenderables;
+	bool pDirtyRenderSkinStateRenderables;
 	
 	bool pDirtyPrepareLightCanvas;
 	
@@ -167,8 +139,6 @@ public:
 	decShapeBox *pLightVolumeCropBox;
 	bool pDirtyConvexVolumeList;
 	
-	deoglOcclusionQuery *pOcclusionQuery;
-	
 	decVector2 pTrackAngles;
 	
 	deoglDCollisionVolume *pColVol;
@@ -180,9 +150,12 @@ public:
 	
 	bool pUpdateOnRemoveComponent;
 	
-	deoglLightShader::Ref pShaders[ ShaderTypeCount ];
-	deoglSPBlockUBO *pParamBlockLight;
-	deoglSPBlockUBO *pParamBlockInstance;
+	deoglLightPipelines::Ref pPipelines;
+	deoglSPBlockUBO::Ref pParamBlockLight;
+	deoglSPBlockUBO::Ref pParamBlockInstance;
+	deoglSPBlockUBO::Ref pParamBlockOccQuery;
+	
+	uint32_t pCSOctreeIndex;
 	
 	bool pWorldMarkedRemove;
 	
@@ -372,6 +345,7 @@ public:
 	
 	void DirtyPrepareSkinStateRenderables();
 	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();
@@ -515,22 +489,25 @@ public:
 	/** Prepare for rendering. */
 	void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
+	/** Prepare for rendering render. */
+	void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	
-	/** Shader for a shader type. */
-	deoglLightShader *GetShaderFor( eShaderTypes shaderType );
 	
-	/** Shader configuration for a shader type. */
-	bool GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config );
+	/** Pipelines. */
+	deoglLightPipelines &GetPipelines();
 	
 	/** Light parameter block. */
-	deoglSPBlockUBO *GetLightParameterBlock();
+	const deoglSPBlockUBO::Ref &GetLightParameterBlock();
 	
 	/** Instance parameter block. */
-	deoglSPBlockUBO *GetInstanceParameterBlock();
+	const deoglSPBlockUBO::Ref &GetInstanceParameterBlock();
 	
-	/** Drop all shaders and parameter blocks. */
-	void DropShaders();
+	/** Occlusion query parameter block. */
+	const deoglSPBlockUBO::Ref &GetOccQueryParameterBlock();
+	
+	/** Drop all pipelines and parameter blocks. */
+	void DropPipelines();
 	
 	
 	
@@ -544,6 +521,10 @@ public:
 	
 	/** Prepare for quick disposal of light. */
 	void PrepareQuickDispose();
+	
+	/** Compute shader octree index. */
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
+	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
 	/*@}*/
 	
 	
@@ -566,15 +547,6 @@ public:
 	 *          component is removed if listed.
 	 */
 	void TestComponent( deoglRComponent *oglComponent );
-	/*@}*/
-	
-	
-	
-	/** \name Culling */
-	/*@{*/
-	/** Occlusion query. */
-	deoglOcclusionQuery &GetOcclusionQuery();
-	inline bool HasOcclusionQuery() const{ return pOcclusionQuery != NULL; }
 	/*@}*/
 	
 	

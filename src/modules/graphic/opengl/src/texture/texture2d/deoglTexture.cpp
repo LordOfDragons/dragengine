@@ -163,7 +163,7 @@ void deoglTexture::CreateTexture(){
 		int i;
 		
 		if( count == 0 ){
-			count = ( int )( floorf( log2f( decMath::max( size.x, size.y ) ) ) );
+			count = ( int )( floorf( log2f( ( float )decMath::max( size.x, size.y ) ) ) );
 		}
 		
 		for( i=0; i<count; i++ ){

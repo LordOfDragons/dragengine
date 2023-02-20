@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\dragonscript\extern_dragonscript.vcxproj">
+      <Project>{043eff15-4b38-4a5b-a20b-9c572699ba59}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\modules\scripting\dragonscript\SConscript" />
+    <None Include="post_build.ps1" />
+    <None Include="pre_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassLocomotion.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationBlocker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationSpace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigatorPath.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimationBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorRule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationDifference.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationSelect.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARBoneTransformator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARForeignState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARGroup.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARInverseKinematic.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARLimit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARMirror.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateManipulator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateSnapshot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARSubAnimator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARTrackTo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\cachedveg\deClassCachedVegetation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasCanvasView.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasPaint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasRenderWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasText.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasVideoPlayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasView.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCaptureCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassCollider.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderBreakingListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderCollisionTest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderRig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurve2D.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier3D.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveDistanceMapping.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\debug\deClassDebugDrawer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassCache.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassEngine.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassGame.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassModuleParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffect.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectColorMatrix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectDistortImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectFilterKernel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectOverlayImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileReader.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileWriter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassMemoryFile.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassBillboard.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassCamera.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassColor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEditableImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEnvMapProbe.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFont.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFontBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImagePixels.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLight.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLumimeter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMesh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMeshBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\heightterrain\deClassHeightTerrain.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDevice.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceAxis.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceButton.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceFeedback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputEvent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassColorMatrix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix4.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDVector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMath.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix4.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassQuaternion.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDouble.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDVector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothFloat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnectionListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkMessage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkStateListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServerListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstanceListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionFilter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionTester.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassForceField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassLayerMask.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensorListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropFieldListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\resources\deClassResourceListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSky.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyBody.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLink.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSound.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterSpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassStringID.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUnicodeString.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUTF8Decoder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerEffect.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerSource.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\effects\deClassSEStretch.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSChain.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSGroup.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSound.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSynthesizer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSWave.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAISystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAnimatorSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAudioSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassCrashRecoverySystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassFileSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassGraphicSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassInputSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassNetworkSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassPhysicsSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassScriptSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSynthesizerSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassVRSystem.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePack.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePackBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXML.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXMLElement.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassMutableID.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassRuntimeMeter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassSafeArray.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassShapeList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassUniqueID.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideoPlayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDecal.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDynamicSkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModelBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRigBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkinBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deClassPathes.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLControllerMapping.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLocomotion.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsCollider.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsConnection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsNetworkState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsParticleEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsPropField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsServer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSoundLevelMeter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsTouchSensor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoader.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoaderTask.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\dedsStyledText.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNParagraph.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNText.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsStyledTextNode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerAdaptor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerClosest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsCollisionTester.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsInputDevice.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsNavigationInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlDocument.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlParser.h" />
+    <ClInclude Include="module_version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassLocomotion.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationBlocker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationSpace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigatorPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimationBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorRule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationDifference.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationSelect.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARBoneTransformator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARForeignState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARGroup.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARInverseKinematic.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARMirror.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateManipulator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateSnapshot.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARSubAnimator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARTrackTo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\cachedveg\deClassCachedVegetation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasCanvasView.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasPaint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasRenderWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasText.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasVideoPlayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasView.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCaptureCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassCollider.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderBreakingListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderCollisionTest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderRig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurve2D.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier3D.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveDistanceMapping.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\debug\deClassDebugDrawer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassCache.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassEngine.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassGame.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassModuleParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffect.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectColorMatrix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectDistortImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectFilterKernel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectOverlayImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileReader.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileWriter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassMemoryFile.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassBillboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEditableImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEnvMapProbe.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFontBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImagePixels.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLumimeter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMeshBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\heightterrain\deClassHeightTerrain.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDevice.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceAxis.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceButton.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceFeedback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputEvent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassColorMatrix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix4.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDVector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMath.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix4.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint3.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassQuaternion.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix2.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector2.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDouble.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDVector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothFloat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector2.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnectionListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkMessage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkStateListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServerListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstanceListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionFilter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionTester.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassForceField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassLayerMask.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensorListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropFieldListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\resources\deClassResourceListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSky.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyBody.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLink.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSound.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterSpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassStringID.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUnicodeString.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUTF8Decoder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerEffect.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerSource.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\effects\deClassSEStretch.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSChain.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSGroup.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSound.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSynthesizer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSWave.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAISystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAnimatorSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAudioSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassCrashRecoverySystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassFileSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassGraphicSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassInputSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassNetworkSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassPhysicsSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassScriptSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSynthesizerSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassVRSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePack.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePackBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXML.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXMLElement.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassMutableID.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassRuntimeMeter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassSafeArray.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassShapeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassUniqueID.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideoPlayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDecal.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDynamicSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModelBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRigBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkinBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLControllerMapping.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLocomotion.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsCollider.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsConnection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsNetworkState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsParticleEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsPropField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsServer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSoundLevelMeter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsTouchSensor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoader.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoaderTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\dedsStyledText.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNParagraph.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNText.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsStyledTextNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerAdaptor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerClosest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsCollisionTester.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsInputDevice.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsNavigationInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlDocument.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlParser.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\scripting\dragonscript\src\module.xml" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{9BA956BA-E62B-4575-97DF-EE0B956AD933}</ProjectGuid>
+    <RootNamespace>dragonscript</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>module scripting dragonscript</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrardragonscript>true</UseDebugLibrardragonscript>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrardragonscript>false</UseDebugLibrardragonscript>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrardragonscript>true</UseDebugLibrardragonscript>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrardragonscript>false</UseDebugLibrardragonscript>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>scrdscript</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>scrdscript</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;SCRDSCRIPT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;SCRDSCRIPT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;SCRDSCRIPT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);USE_INTERNAL_DSCRIPT</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -RuntimeDir "$(SolutionDir)extern\dragonscript\dragonscript-1.4-vc64"</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;SCRDSCRIPT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);USE_INTERNAL_DSCRIPT</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -RuntimeDir "$(SolutionDir)extern\dragonscript\dragonscript-1.4-vc64"</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

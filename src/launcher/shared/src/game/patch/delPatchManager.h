@@ -35,7 +35,7 @@ class delEngineInstance;
 /**
  * \brief Game patch manager.
  */
-class delPatchManager{
+class DE_DLL_EXPORT delPatchManager{
 private:
 	delLauncher &pLauncher;
 	delPatchList pPatches;

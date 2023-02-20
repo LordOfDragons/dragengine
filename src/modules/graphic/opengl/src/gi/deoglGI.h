@@ -39,13 +39,13 @@ class deoglRenderThread;
 
 
 /**
- * \brief Global illumination.
+ * Global illumination.
  * 
  * Shared parameters and data for global illumination.
  */
 class deoglGI{
 public:
-	/** \brief UBO Parameters. */
+	/** UBO Parameters. */
 	enum eUBOParameters{
 		eupSampleImageScale, // vec2: scale factor for sample image size
 		eupProbeCount, // int: count of probes to update
@@ -74,6 +74,7 @@ public:
 		eupSelfShadowBias, // float
 		eupCascade, // int
 		eupDetectionBox, // vec3
+		euppRayCacheProbeCount, // int
 		eupBVHOffset // vec3
 	};
 	
@@ -86,20 +87,20 @@ private:
 	deoglGITraceRays pTraceRays;
 	deoglGIMaterials pMaterials;
 	
-	deObjectReference pUBOParameter;
-	deObjectReference pUBOProbeIndex;
-	deObjectReference pUBOProbePosition;
-	deObjectReference pUBORayDirection;
+	deoglSPBlockUBO::Ref pUBOParameter;
+	deoglSPBlockUBO::Ref pUBOProbeIndex;
+	deoglSPBlockUBO::Ref pUBOProbePosition;
+	deoglSPBlockUBO::Ref pUBORayDirection;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create global illumination. */
+	/** Create global illumination. */
 	deoglGI( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up global illumination. */
+	/** Clean up global illumination. */
 	~deoglGI();
 	/*@}*/
 	
@@ -107,26 +108,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief BVH Shared. */
+	/** BVH Shared. */
 	inline deoglGIBVHShared &GetBVHShared(){ return pBVHShared; }
 	inline const deoglGIBVHShared &GetBVHShared() const{ return pBVHShared; }
 	
-	/** \brief Trace rays. */
+	/** Trace rays. */
 	inline deoglGITraceRays &GetTraceRays(){ return pTraceRays; }
 	inline const deoglGITraceRays &GetTraceRays() const{ return pTraceRays; }
 	
-	/** \brief Materials. */
+	/** Materials. */
 	inline deoglGIMaterials &GetMaterials(){ return pMaterials; }
 	inline const deoglGIMaterials &GetMaterials() const{ return pMaterials; }
 	
-	/** \brief UBO. */
-	inline deoglSPBlockUBO &GetUBOParameter() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOParameter; }
-	inline deoglSPBlockUBO &GetUBOProbeIndex() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOProbeIndex; }
-	inline deoglSPBlockUBO &GetUBOProbePosition() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOProbePosition; }
-	inline deoglSPBlockUBO &GetUBORayDirection() const{ return ( deoglSPBlockUBO& )( deObject& )pUBORayDirection; }
+	/** UBO. */
+	inline deoglSPBlockUBO &GetUBOParameter() const{ return pUBOParameter; }
+	inline deoglSPBlockUBO &GetUBOProbeIndex() const{ return pUBOProbeIndex; }
+	inline deoglSPBlockUBO &GetUBOProbePosition() const{ return pUBOProbePosition; }
+	inline deoglSPBlockUBO &GetUBORayDirection() const{ return pUBORayDirection; }
 	/*@}*/
 	
 	

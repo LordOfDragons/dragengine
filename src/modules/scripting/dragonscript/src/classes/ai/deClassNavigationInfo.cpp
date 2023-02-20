@@ -200,7 +200,7 @@ dsFunction( init.clsNavInfo, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 void deClassNavigationInfo::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsNavigationInfo * const navinfo = ( ( const sNavInfoNatDat * )p_GetNativeData( myself ) )->navinfo;
 	
-	rt->PushInt( ( intptr_t )navinfo );
+	rt->PushInt( ( int )( intptr_t )navinfo );
 }
 
 // public func bool equals( Object object )

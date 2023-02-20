@@ -519,7 +519,7 @@ deClassAnimator::nfHashCode::nfHashCode( const sInitData &init ) : dsFunction( i
 void deClassAnimator::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deAnimator *animator = ( ( sArNatDat* )p_GetNativeData( myself ) )->animator;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )animator );
+	rt->PushInt( ( int )( intptr_t )animator );
 }
 
 // public func bool equals( Object obj )

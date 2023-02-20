@@ -29,7 +29,7 @@ class deSkyLayer;
 
 
 /**
- * @brief Sky Layer Tracker.
+ * Sky Layer Tracker.
  * Helper class tracking the state changes of a sky layer using thresholds.
  * The setter methods of this class return true if a new value is more than
  * the matching treshold value apart. The new value is only set in this case.
@@ -68,7 +68,7 @@ private:
 	float pAmbientIntensity;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sky layer tracker with values inited from a sky layer. */
 	deoglSkyLayerTracker();
@@ -76,7 +76,7 @@ public:
 	~deoglSkyLayerTracker();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the threshold for squared distance changes in orientation values. */
 	inline float GetThresholdOrientation() const{ return pThresholdOrientation; }

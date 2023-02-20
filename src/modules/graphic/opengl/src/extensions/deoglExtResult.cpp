@@ -334,6 +334,14 @@ GLAPI PFNGLGETTRANSFORMFEEDBACKVARYINGPROC pglGetTransformFeedbackVarying = null
 ////////////////////////////////////////////
 
 GLAPI PFNGLBINDFRAGDATALOCATIONEXTPROC pglBindFragDataLocation = nullptr;
+GLAPI PFNGLUNIFORM1UIEXTPROC pglUniform1ui = nullptr;
+GLAPI PFNGLUNIFORM2UIEXTPROC pglUniform2ui = nullptr;
+GLAPI PFNGLUNIFORM3UIEXTPROC pglUniform3ui = nullptr;
+GLAPI PFNGLUNIFORM4UIEXTPROC pglUniform4ui = nullptr;
+GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv = nullptr;
+GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv = nullptr;
+GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv = nullptr;
+GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv = nullptr;
 
 
 
@@ -523,6 +531,8 @@ GLAPI PFNGLUNIFORMBLOCKBINDINGPROC pglUniformBlockBinding = nullptr;
 // GL_ARB_copy_buffer : no opengl version
 ///////////////////////////////////////////
 
+GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData = nullptr;
+
 
 
 // GL_ARB_texture_multisample : no opengl version
@@ -533,6 +543,9 @@ GLAPI PFNGLUNIFORMBLOCKBINDINGPROC pglUniformBlockBinding = nullptr;
 // GL_ARB_get_program_binary : no opengl version
 //////////////////////////////////////////////////
 
+GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary = nullptr;
+GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary = nullptr;
+GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri = nullptr;
 
 
 // GL_ARB_separate_shader_objects : no opengl version

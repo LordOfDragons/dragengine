@@ -26,7 +26,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglCollideListHTSector;
+class deoglHTViewSectorCluster;
 class deoglOcclusionTest;
 
 
@@ -35,7 +35,7 @@ class deoglOcclusionTest;
  */
 class deoglCollideListHTSCluster : public deoglOcclusionTestListener{
 private:
-	deoglCollideListHTSector &pSector;
+	deoglHTViewSectorCluster *pCluster;
 	decPoint pCoordinates;
 	int pIndex;
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create cluster. */
-	deoglCollideListHTSCluster( deoglCollideListHTSector &sector );
+	deoglCollideListHTSCluster();
 	
 	/** Clean up cluster. */
 	~deoglCollideListHTSCluster();
@@ -58,14 +58,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Cluster or nullptr. */
+	inline deoglHTViewSectorCluster *GetCluster() const{ return pCluster; }
+	
+	/** Set cluster or nullptr. */
+	void SetCluster( deoglHTViewSectorCluster *cluster );
+	
 	/** Clear. */
 	void Clear();
 	
 	/** Cluster coordinates. */
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
-	
-	/** Set cluster coordinates. */
-	void SetCoordinates( const decPoint &coordinates );
 	
 	/** Cluster index. */
 	inline int GetIndex() const{ return pIndex; }

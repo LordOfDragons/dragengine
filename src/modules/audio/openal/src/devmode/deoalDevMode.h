@@ -31,7 +31,7 @@ class decUnicodeString;
 
 
 /**
- * \brief OpenAL developer mode.
+ * OpenAL developer mode.
  */
 class deoalDevMode{
 private:
@@ -47,18 +47,20 @@ private:
 	bool pShowActiveMicInfo;
 	bool pCaptureMicRays;
 	bool pCaptureMicRaysXRay;
+	bool pCaptureMicRaysVolume;
 	bool pShowAudioModels;
 	int pCaptureSpeakerDirectClosest;
+	int pVisualizeAudibleSpeakers;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create developer mode. */
+	/** Create developer mode. */
 	deoalDevMode( deAudioOpenAL &audioThread );
 	
-	/** \brief Clean up developer mode. */
+	/** Clean up developer mode. */
 	~deoalDevMode();
 	/*@}*/
 	
@@ -66,51 +68,56 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Developer mode is enabled. */
+	/** Developer mode is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
-	/** \brief Log calculation of environment probe calculation. */
+	/** Log calculation of environment probe calculation. */
 	inline bool GetLogCalcEnvProbe() const{ return pLogCalcEnvProbe; }
 	
-	/** \brief Show module information. */
+	/** Show module information. */
 	inline bool GetShowModuleInfo() const{ return pShowModuleInfo; }
 	
-	/** \brief Show speaker environment overlay information. */
+	/** Show speaker environment overlay information. */
 	inline bool GetShowSpeakerEnvInfo() const{ return pShowSpeakerEnvInfo; }
 	
-	/** \brief Show only speaker environment overlay information at position. */
+	/** Show only speaker environment overlay information at position. */
 	inline bool GetShowSpeakerEnvInfoAt() const{ return pShowSpeakerEnvInfoAt; }
 	
-	/** \brief Show environment overlay information position. */
+	/** Show environment overlay information position. */
 	inline const decDVector &GetShowSpeakerEnvInfoAtPosition() const{ return pShowSpeakerEnvInfoAtPosition; }
 	
-	/** \brief Show closest speaker environment overlay information. */
+	/** Show closest speaker environment overlay information. */
 	inline int GetShowSpeakerEnvInfoClosest() const{ return pShowSpeakerEnvInfoClosest; }
 	
-	/** \brief Show active microphone information. */
+	/** Show active microphone information. */
 	inline bool GetShowActiveMicInfo() const{ return pShowActiveMicInfo; }
 	
-	/** \brief Request capturing microphone sound rays once. */
+	/** Request capturing microphone sound rays once. */
 	inline bool GetCaptureMicRays() const{ return pCaptureMicRays; }
 	
-	/** \brief Clear request capturing microphone sound rays once. */
+	/** Clear request capturing microphone sound rays once. */
 	void ClearCaptureMicRays();
 	
-	/** \brief Capturing microphone sound rays using XRay . */
+	/** Capturing microphone sound rays using XRay . */
 	inline bool GetCaptureMicRaysXRay() const{ return pCaptureMicRaysXRay; }
 	
-	/** \brief Show audio models . */
+	/** Capturing microphone sound rays using Volume. */
+	inline bool GetCaptureMicRaysVolume() const{ return pCaptureMicRaysVolume; }
+	
+	/** Show audio models . */
 	inline bool GetShowAudioModels() const{ return pShowAudioModels; }
 	
-	/** \brief Capture speaker closest direct. */
+	/** Capture speaker closest direct. */
 	inline int GetCaptureSpeakerClosestDirect() const{ return pCaptureSpeakerDirectClosest; }
 	
-	/** \brief Clear capture speaker closest direct. */
+	inline int GetVisualizeAudibleSpeakers() const{ return pVisualizeAudibleSpeakers; }
+	
+	/** Clear capture speaker closest direct. */
 	void ClearCaptureSpeakerClosestDirect();
 	
 	
 	
-	/** \brief Run command. */
+	/** Run command. */
 	bool ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	/*@}*/
 	
@@ -128,6 +135,7 @@ private:
 	void pCmdShowActiveMicInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdCaptureMicRays( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowAudioModels( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdVisualizeAudibleSpeakers( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdCaptureSpeakerDirectClosest( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pActiveWorldNotifyDevModeChanged();

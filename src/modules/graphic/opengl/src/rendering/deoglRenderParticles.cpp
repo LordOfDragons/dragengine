@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License
+ // * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -113,13 +113,6 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 	
 	const deoglDebugTraceGroup debugTrace( renderThread, "Particles.RenderTaskParticles" );
 	
-	// conventional particles work with culling enabled. beams and ribbons though are tricky
-	// to calculate so they easily end up backfacing. for these culling has to be disabled
-	// to get them working. since conventional particles work with culling disabled too
-	// culling is disabled for all particles to avoid any problems
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-// 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	
 	for( i=0; i<stepCount; i++ ){
 		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt( i );
 		
@@ -128,8 +121,7 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 			continue;
 		}
 		
-		// activate shader
-		renderThread.GetShader().ActivateShader( renderTaskStep.GetShader() );
+		renderTaskStep.GetPipeline()->Activate();
 		
 		if( renderParamBlock ){
 			renderParamBlock->Activate();

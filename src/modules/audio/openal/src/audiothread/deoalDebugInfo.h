@@ -69,6 +69,9 @@ private:
 	decPointerList pDIClosestSpeakers;
 	decObjectList pDDClosestSpeakersDirect;
 	
+	int pModeVisAudSpeakers;
+	decObjectList pDDVisAudSpeakers;
+	
 	
 	
 public:
@@ -118,6 +121,9 @@ public:
 	
 	void PrepareDDClosestSpeakersDirect( int count );
 	void CaptureDDClosestSpeakersDirect();
+	
+	void VisAudSpeakers( int mode );
+	void UpdateVisAudSpeakers();
 	
 	void UpdateDebugInfo();
 	/*@}*/

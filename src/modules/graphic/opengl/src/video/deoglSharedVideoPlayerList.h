@@ -31,7 +31,7 @@ class deVideo;
 
 
 /**
- * \brief Shared video player list.
+ * Shared video player list.
  * 
  * List of pointers to shared video players. The ordering of the shared video players
  * in the list is not defined and can change when shared video players are removed.
@@ -47,10 +47,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shared video player list. */
+	/** Create shared video player list. */
 	deoglSharedVideoPlayerList( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up shared video player list. */
+	/** Clean up shared video player list. */
 	~deoglSharedVideoPlayerList();
 	/*@}*/
 	
@@ -58,29 +58,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of shared video players. */
+	/** Number of shared video players. */
 	int GetCount() const;
 	
 	/**
-	 * \brief Shared video player with matching parameters.
+	 * Shared video player with matching parameters.
 	 * \details Creates the shared video player if not existing yet.
 	 */
 	deoglSharedVideoPlayer *GetVideoPlayerFor( deVideo *video, int currentFrame, float playbackSpeed );
 	
 	/**
-	 * \brief Update all shared video players.
+	 * Update all shared video players.
 	 * \details Called from the main thread.
 	 */
 	void UpdateAll( float elapsed );
 	
 	/**
-	 * \brief Update render thread counterparts of all shared video players.
+	 * Update render thread counterparts of all shared video players.
 	 * \details Called from the main thread during synchronizing.
 	 */
 	void SyncAllToRender();
 	
 	/**
-	 * \brief Remove shared video player.
+	 * Remove shared video player.
 	 * \details For use by deoglSharedVideoPlayer only.
 	 */
 	void RemoveSharedVideoPlayer( deoglSharedVideoPlayer *sharedVideoPlayer );

@@ -24,13 +24,14 @@
 
 #include "deoglShaderCompiled.h"
 #include "deoglShaderProgram.h"
+#include "deoglShaderSources.h"
 #include "deoglShaderUnitSourceCode.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
-#include "../rendering/task/shared/deoglRenderTaskSharedShader.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/string/decStringList.h>
 
 
 
@@ -40,13 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources ) :
-pRenderThread( renderThread ),
-pRTSShader( NULL )
+deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, const deoglShaderSources *sources ) :
+pRenderThread( renderThread )
 {
-	if( ! sources ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( sources )
 	
 	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
@@ -59,18 +57,13 @@ pRTSShader( NULL )
 	pSources = sources;
 	
 	pUniqueKey = renderThread.GetUniqueKey().Get();
-	
-	pUsageCount = 1;
 }
 
 deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread,
-deoglShaderSources *sources, const deoglShaderDefines &defines ) :
-pRenderThread( renderThread ),
-pRTSShader( NULL )
+const deoglShaderSources *sources, const deoglShaderDefines &defines ) :
+pRenderThread( renderThread )
 {
-	if( ! sources ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( sources )
 	
 	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
@@ -85,14 +78,9 @@ pRTSShader( NULL )
 	pDefines = defines;
 	
 	pUniqueKey = renderThread.GetUniqueKey().Get();
-	
-	pUsageCount = 1;
 }
 
 deoglShaderProgram::~deoglShaderProgram(){
-	if( pRTSShader ){
-		pRTSShader->ReturnToPool();
-	}
 	if( pCompiled ){
 		delete pCompiled;
 	}
@@ -105,7 +93,11 @@ deoglShaderProgram::~deoglShaderProgram(){
 // Management
 ///////////////
 
-void deoglShaderProgram::SetComputeCode( deoglShaderUnitSourceCode *sourceCode ){
+void deoglShaderProgram::SetCacheId( const decString &id ){
+	pCacheId = id;
+}
+
+void deoglShaderProgram::SetComputeSourceCode( deoglShaderUnitSourceCode *sourceCode ){
 	pSCCompute = sourceCode;
 }
 
@@ -130,38 +122,13 @@ void deoglShaderProgram::SetFragmentSourceCode( deoglShaderUnitSourceCode *sourc
 }
 
 void deoglShaderProgram::SetCompiled( deoglShaderCompiled *compiled ){
-	if( compiled != pCompiled ){
-		if( pCompiled ) delete pCompiled;
-		
-		pCompiled = compiled;
-	}
-}
-
-void deoglShaderProgram::EnsureRTSShader(){
-	if( pRTSShader ){
+	if( compiled == pCompiled ){
 		return;
 	}
 	
-	pRTSShader = pRenderThread.GetRenderTaskSharedPool().GetShader();
-	pRTSShader->SetShader( this );
-}
-
-
-
-void deoglShaderProgram::AddUsage(){
-	pUsageCount++;
-}
-
-void deoglShaderProgram::RemoveUsage(){
-	if( pUsageCount == 0 ){
-		//DETHROW( deeInvalidParam );
-		// this is bad. we let it slip though and let the shader manager notify about what happened the next possible time
+	if( pCompiled ){
+		delete pCompiled;
 	}
 	
-	pUsageCount--;
-	
-	if( pUsageCount == 0 && pRTSShader ){
-		pRTSShader->ReturnToPool();
-		pRTSShader = NULL;
-	}
+	pCompiled = compiled;
 }

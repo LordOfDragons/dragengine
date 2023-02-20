@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Show Light Collision Boxes Parameter.
+ * Show Light Collision Boxes Parameter.
  */
 class deoglPShowLightCB : public deoglParameterBool{
 public:

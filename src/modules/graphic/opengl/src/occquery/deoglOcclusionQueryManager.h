@@ -30,7 +30,7 @@ class deoglOcclusionQuery;
 
 
 /**
- * @brief Occlusion Query Manager.
+ * Occlusion Query Manager.
  *
  * Manages occlusion queries. Queries are stored in a greedy fashion
  * therefore not freed once no more used. Upon requesting a new query
@@ -53,7 +53,7 @@ private:
 	deoglOcclusionQuery *pActiveQuery;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new occlusion queries. */
 	deoglOcclusionQueryManager( deoglRenderThread &renderThread );
@@ -61,9 +61,9 @@ public:
 	~deoglOcclusionQueryManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Claim a new query. */

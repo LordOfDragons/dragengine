@@ -28,7 +28,7 @@ class deoglCubeMap;
 
 
 /**
- * @brief Renderable Color CubeMap.
+ * Renderable Color CubeMap.
  * Stores a renderable cubemap of any kind. Renderable cubemaps can not be
  * used by more than one entity at the same time. They can also not change
  * the size of format once created. They can though be reused if the entity
@@ -46,7 +46,7 @@ private:
 	int pMemoryUsageGPU;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap. */
 	deoglRenderableColorCubeMap( deoglRenderThread &renderThread, int size, int componentCount, bool isFloat );
@@ -54,7 +54,7 @@ public:
 	~deoglRenderableColorCubeMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the size. */
 	inline int GetSize() const{ return pSize; }

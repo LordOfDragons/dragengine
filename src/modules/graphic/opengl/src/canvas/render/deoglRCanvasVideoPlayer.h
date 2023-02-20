@@ -28,7 +28,7 @@ class deoglRVideoPlayer;
 
 
 /**
- * \brief Render canvas video player.
+ * Render canvas video player.
  */
 class deoglRCanvasVideoPlayer : public deoglRCanvas{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvasVideoPlayer( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvasVideoPlayer();
 	/*@}*/
 	
@@ -51,36 +51,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Video player or \em NULL if not set. */
+	/** Video player or \em NULL if not set. */
 	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
-	/** \brief Set video player or \em NULL if not set. */
+	/** Set video player or \em NULL if not set. */
 	void SetVideoPlayer( deoglRVideoPlayer *videoPlayer );
 	
-	/** \brief Texture coordinate transformation matrix. */
+	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
 	
-	/** \brief Set texture coordinate transformation matrix. */
+	/** Set texture coordinate transformation matrix. */
 	void SetTCTransform( const decTexMatrix2 &transform );
 	
-	/** \brief Texture coordinates clamp minimum. */
+	/** Texture coordinates clamp minimum. */
 	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
-	/** \brief Set texture coordinates clamp minimum. */
+	/** Set texture coordinates clamp minimum. */
 	void SetTCClampMinimum( const decVector2 &clamp );
 	
-	/** \brief Texture coordinates clamp maximum. */
+	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
-	/** \brief Set texture coordinates clamp maximum. */
+	/** Set texture coordinates clamp maximum. */
 	void SetTCClampMaximum( const decVector2 &clamp );
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Render. */
+	/** Render. */
 	virtual void Render( const deoglRenderCanvasContext &context );
 	/*@}*/
 };

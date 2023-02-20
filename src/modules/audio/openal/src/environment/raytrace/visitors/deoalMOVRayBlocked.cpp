@@ -70,15 +70,15 @@ void deoalMOVRayBlocked::SetRay( const decVector &origin, const decVector &direc
 	pCheckAxisZ = false;
 	
 	if( fabsf( direction.x ) > FLOAT_SAFE_EPSILON ){
-		pInvRayDirection.x = 1.0 / direction.x;
+		pInvRayDirection.x = 1.0f / direction.x;
 		pCheckAxisX = true;
 	}
 	if( fabsf( direction.y ) > FLOAT_SAFE_EPSILON ){
-		pInvRayDirection.y = 1.0 / direction.y;
+		pInvRayDirection.y = 1.0f / direction.y;
 		pCheckAxisY = true;
 	}
 	if( fabsf( direction.z ) > FLOAT_SAFE_EPSILON ){
-		pInvRayDirection.z = 1.0 / direction.z;
+		pInvRayDirection.z = 1.0f / direction.z;
 		pCheckAxisZ = true;
 	}
 	

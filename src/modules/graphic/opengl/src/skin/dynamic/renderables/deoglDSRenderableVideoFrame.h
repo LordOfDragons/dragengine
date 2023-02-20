@@ -32,7 +32,7 @@ class deDSRenderableVideoFrame;
 
 
 /**
- * \brief Dynamic skin image renderable.
+ * Dynamic skin image renderable.
  */
 class deoglDSRenderableVideoFrame : public deoglDSRenderable{
 public:
@@ -46,10 +46,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderable. */
+	/** Create renderable. */
 	deoglDSRenderableVideoFrame( deoglDynamicSkin &dynamicSkin, const deDSRenderableVideoFrame &renderable );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDSRenderableVideoFrame();
 	/*@}*/
 	
@@ -57,22 +57,22 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Renderable. */
+	/** Renderable. */
 	inline const deDSRenderableVideoFrame &GetRenderableVideoFrame() const{ return pRenderableVideoFrame; }
 	
-	/** \brief Render renderable. */
+	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;
 	
-	/** \brief Renderable changed. */
+	/** Renderable changed. */
 	virtual void RenderableChanged();
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	
-	/** \brief Video player requires sync. */
+	/** Video player requires sync. */
 	void VideoPlayerRequiresSync();
 	
-	/** \brief Drop video player. */
+	/** Drop video player. */
 	void DropVideoPlayer();
 	/*@}*/
 	

@@ -27,7 +27,7 @@ class deoglRParticleEmitterInstance;
 
 
 /**
- * \brief Particle Emitter Instance List.
+ * Particle Emitter Instance List.
  * 
  * List of pointers to particle emitter instances. The ordering of the instances in the list is
  * not defined and can change when emitters are removed. This allows to remove elements with
@@ -42,10 +42,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create particle emitter instance list. */
+	/** Create particle emitter instance list. */
 	deoglParticleEmitterInstanceList();
 	
-	/** \brief Clean up particle emitter instance list. */
+	/** Clean up particle emitter instance list. */
 	~deoglParticleEmitterInstanceList();
 	/*@}*/
 	
@@ -53,34 +53,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of instances. */
+	/** Number of instances. */
 	inline int GetCount() const{ return pInstanceCount; }
 	
-	/** \brief Index of the instance or -1 if not in the list. */
+	/** Index of the instance or -1 if not in the list. */
 	int IndexOf( deoglRParticleEmitterInstance *instance ) const;
 	
-	/** \brief Instance exists. */
+	/** Instance exists. */
 	bool Has( deoglRParticleEmitterInstance *instance ) const;
 	
-	/** \brief Instance at the given index. */
+	/** Instance at the given index. */
 	deoglRParticleEmitterInstance *GetAt( int index ) const;
 	
-	/** \brief Add instance. */
+	/** Add instance. */
 	void Add( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Add instance if missing in the list. Returns true if added. */
+	/** Add instance if missing in the list. Returns true if added. */
 	bool AddIfMissing( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Remove instance. */
+	/** Remove instance. */
 	void Remove( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Remove instance if existing in the list. Returns true if removed. */
+	/** Remove instance if existing in the list. Returns true if removed. */
 	bool RemoveIfExisting( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Remove instance from the given index. */
+	/** Remove instance from the given index. */
 	void RemoveFrom( int index );
 	
-	/** \brief Remove all instances. */
+	/** Remove all instances. */
 	void RemoveAll();
 	/*@}*/
 	

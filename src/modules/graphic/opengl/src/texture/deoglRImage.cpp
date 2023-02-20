@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "deoglRImage.h"
-#include "pixelbuffer/deoglPixelBuffer.h"
 #include "texture2d/deoglTexture.h"
 #include "cubemap/deoglCubeMap.h"
 #include "arraytexture/deoglArrayTexture.h"
@@ -56,8 +55,6 @@ pDepth( image.GetDepth() ),
 pComponentCount( image.GetComponentCount() ),
 pBitCount( image.GetBitCount() ),
 
-pPixelBuffer( NULL ),
-
 pTexture( NULL ),
 pCubeMap( NULL ),
 pArrayTexture( NULL ),
@@ -82,14 +79,6 @@ deoglRImage::~deoglRImage(){
 
 void deoglRImage::SetPixelBuffer( deoglPixelBuffer *pixelBuffer ){
 	// WARNING Called during synchronization from main thread only
-	
-	if( pixelBuffer == pPixelBuffer ){
-		return;
-	}
-	
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-	}
 	
 	pPixelBuffer = pixelBuffer;
 }
@@ -170,17 +159,16 @@ void deoglRImage::PrepareForRender(){
 	}
 	
 	if( pArrayTexture ){
-		pArrayTexture->SetPixels( *pPixelBuffer );
+		pArrayTexture->SetPixels( pPixelBuffer );
 		
 	}else if( pCubeMap ){
-		pCubeMap->SetPixels( *pPixelBuffer );
+		pCubeMap->SetPixels( pPixelBuffer );
 		
 	}else{
-		pTexture->SetPixels( *pPixelBuffer );
+		pTexture->SetPixels( pPixelBuffer );
 	}
 	
-	delete pPixelBuffer;
-	pPixelBuffer = NULL;
+	pPixelBuffer = nullptr;
 }
 
 
@@ -189,9 +177,6 @@ void deoglRImage::PrepareForRender(){
 //////////////////////
 
 void deoglRImage::pCleanUp(){
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-	}
 	pReleaseTextures();
 }
 

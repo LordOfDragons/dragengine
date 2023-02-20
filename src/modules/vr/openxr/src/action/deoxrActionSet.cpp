@@ -44,9 +44,16 @@ pActionSet( XR_NULL_HANDLE )
 		XrActionSetCreateInfo createInfo;
 		memset( &createInfo, 0, sizeof( createInfo ) );
 		createInfo.type = XR_TYPE_ACTION_SET_CREATE_INFO;
-		strncpy( createInfo.actionSetName, name, sizeof( createInfo.actionSetName ) - 1 );
-		strncpy( createInfo.localizedActionSetName, localizedName,
-			sizeof( createInfo.localizedActionSetName ) - 1 );
+		#ifdef OS_W32_VS
+			strncpy_s( createInfo.actionSetName, sizeof( createInfo.actionSetName ),
+				name, sizeof( createInfo.actionSetName ) - 1 );
+			strncpy_s( createInfo.localizedActionSetName, sizeof( createInfo.localizedActionSetName ),
+				localizedName, sizeof( createInfo.localizedActionSetName ) - 1 );
+		#else
+			strncpy( createInfo.actionSetName, name, sizeof( createInfo.actionSetName ) - 1 );
+			strncpy( createInfo.localizedActionSetName, localizedName,
+				sizeof( createInfo.localizedActionSetName ) - 1 );
+		#endif
 		createInfo.priority = 0;
 		
 		OXR_CHECK( instance.xrCreateActionSet( instance.GetInstance(), &createInfo, &pActionSet ) );

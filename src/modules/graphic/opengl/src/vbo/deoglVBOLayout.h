@@ -28,22 +28,22 @@ class deoglRenderThread;
 
 
 /**
- * \brief OpenGL VBO Layout.
+ * OpenGL VBO Layout.
  */
 class deoglVBOLayout{
 public:
-	/** \brief Index types. */
+	/** Index types. */
 	enum eIndexTypes{
-		/** \brief No indices. */
+		/** No indices. */
 		eitNone,
 		
-		/** \brief Unsigned int indices. */
+		/** Unsigned int indices. */
 		eitUnsignedInt,
 		
-		/** \brief Unsigned short indices. */
+		/** Unsigned short indices. */
 		eitUnsignedShort,
 		
-		/** \brief Unsigned byte indices. */
+		/** Unsigned byte indices. */
 		eitUnsignedByte
 	};
 	
@@ -63,13 +63,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create vbo layout. */
+	/** Create vbo layout. */
 	deoglVBOLayout();
 	
-	/** \brief Create vbo layout. */
+	/** Create vbo layout. */
 	deoglVBOLayout( const deoglVBOLayout &layout );
 	
-	/** \brief Clean up vbo layout. */
+	/** Clean up vbo layout. */
 	~deoglVBOLayout();
 	/*@}*/
 	
@@ -77,28 +77,28 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief VBO size. */
+	/** VBO size. */
 	inline int GetSize() const{ return pSize; }
 	
-	/** \brief Set VBO size. */
+	/** Set VBO size. */
 	void SetSize( int size );
 	
-	/** \brief Stride. */
+	/** Stride. */
 	inline int GetStride() const{ return pStride; }
 	
-	/** \brief Set stride. */
+	/** Set stride. */
 	void SetStride( int stride );
 	
-	/** \brief Index type. */
+	/** Index type. */
 	inline eIndexTypes GetIndexType() const{ return pIndexType; }
 	
-	/** \brief Set index type. */
+	/** Set index type. */
 	void SetIndexType( eIndexTypes indexType );
 	
-	/** \brief Size in bytes of indices. */
+	/** Size in bytes of indices. */
 	inline int GetIndexSize() const{ return pIndexSize; }
 	
-	/** \brief Opengl type of the indices. */
+	/** Opengl type of the indices. */
 	inline int GetIndexGLType() const{ return pIndexGLType; }
 	/*@}*/
 	
@@ -106,24 +106,24 @@ public:
 	
 	/** \name Attributes */
 	/*@{*/
-	/** \brief Number of attributes. */
+	/** Number of attributes. */
 	inline int GetAttributeCount() const{ return pAttributeCount; }
 	
-	/** \brief Set number of attributes. */
+	/** Set number of attributes. */
 	void SetAttributeCount( int count );
 	
-	/** \brief Attribute by index. */
+	/** Attribute by index. */
 	deoglVBOAttribute &GetAttributeAt( int index ) const;
 	
 	/**
-	 * \brief Set VAO attribute.
+	 * Set VAO attribute.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
 	void SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int target ) const;
 	
 	/**
-	 * \brief Set VAO attribute.
+	 * Set VAO attribute.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
@@ -134,13 +134,13 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Set layout. */
+	/** Set layout. */
 	deoglVBOLayout &operator=( const deoglVBOLayout &layout );
 	
-	/** \brief Layout matches another one. */
+	/** Layout matches another one. */
 	bool operator==( const deoglVBOLayout &layout ) const;
 	
-	/** \brief Layout does not match another one. */
+	/** Layout does not match another one. */
 	bool operator!=( const deoglVBOLayout &layout ) const;
 	/*@}*/
 	
@@ -148,7 +148,7 @@ public:
 	
 	/** \name Debugging */
 	/*@{*/
-	/** \brief Print layout to the console. */
+	/** Print layout to the console. */
 	void PrintToConsole( deoglRenderThread &renderThread, const char *name );
 	/*@}*/
 };

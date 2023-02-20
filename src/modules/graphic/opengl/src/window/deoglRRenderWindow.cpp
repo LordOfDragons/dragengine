@@ -27,7 +27,6 @@
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../debug/deoglDebugTraceGroup.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../rendering/deoglRenderCanvasContext.h"
 #include "../rendering/deoglRenderCanvas.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -222,7 +221,6 @@ pWidth( 100 ),
 pHeight( 100 ),
 pFullScreen( false ),
 pPaint( true ),
-pIcon( NULL ),
 
 pRCanvasView( NULL ),
 
@@ -237,10 +235,6 @@ deoglRRenderWindow::~deoglRRenderWindow(){
 	
 	DropRCanvasView();
 	pDestroyWindow();
-	
-	if( pIcon ){
-		delete pIcon;
-	}
 }
 
 
@@ -328,10 +322,6 @@ void deoglRRenderWindow::SetPaint( bool paint ){
 void deoglRRenderWindow::SetIcon( deoglPixelBuffer *icon ){
 	if( icon == pIcon ){
 		return;
-	}
-	
-	if( pIcon ){
-		delete pIcon;
 	}
 	
 	pIcon = icon;
@@ -631,23 +621,39 @@ void deoglRRenderWindow::Render(){
 	deoglRCanvas * const debugOverlayCanvas = pRenderThread.GetCanvasDebugOverlay();
 	bool isMainWindow = true; // a problem only if more than one render window exists
 	
-	pRCanvasView->PrepareForRender( NULL );
+	pRCanvasView->PrepareForRender( nullptr );
+	pRCanvasView->PrepareForRenderRender( nullptr );
 	if( isMainWindow ){
 		if( inputOverlayCanvas ){
-			inputOverlayCanvas->PrepareForRender( NULL );
+			inputOverlayCanvas->PrepareForRender( nullptr );
+			inputOverlayCanvas->PrepareForRenderRender( nullptr );
 		}
 		if( debugOverlayCanvas ){
-			debugOverlayCanvas->PrepareForRender( NULL );
+			debugOverlayCanvas->PrepareForRender( nullptr );
+			debugOverlayCanvas->PrepareForRenderRender( nullptr );
 		}
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsPrepare();
 	
-	// render canvas
-	pRenderThread.GetFramebuffer().Activate( NULL );
+	// create render taget if required
+	const decPoint size( pWidth, pHeight );
+	/*
+	if( ! pRenderTarget ){
+		pRenderTarget.TakeOver( new deoglRenderTarget( pRenderThread, size, 3, 8 ) );
+		
+	}else if ( pRenderTarget->GetSize() != size ){
+		pRenderTarget->SetSize( size );
+	}
 	
-	const deoglRenderCanvasContext context( *pRCanvasView, NULL,
-		decPoint(), decPoint( pWidth, pHeight ), true, NULL );
+	pRenderTarget->PrepareFramebuffer();
+	*/
+	
+	// render canvas
+	pRenderThread.GetFramebuffer().Activate( nullptr /*pRenderTarget->GetFBO()*/ );
+	
+	const deoglRenderCanvasContext context( *pRCanvasView,
+		nullptr /*pRenderTarget->GetFBO()*/, decPoint(), size, true, NULL );
 	pRenderThread.GetRenderers().GetCanvas().Prepare( context );
 	
 	pRCanvasView->Render( context );
@@ -663,6 +669,13 @@ void deoglRRenderWindow::Render(){
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsRender();
 	
 	debugTrace.Close();
+	
+	// blit to back buffer
+	/*
+	pRenderThread.GetFramebuffer().Activate( nullptr );
+	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO() ) );
+	OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, size.x, size.y, 0, 0, size.x, size.y, GL_COLOR_BUFFER_BIT, GL_NEAREST ) );
+	*/
 	
 	// capture if any capture canvas are pending
 	Capture();

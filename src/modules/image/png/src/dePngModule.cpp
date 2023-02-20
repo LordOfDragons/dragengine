@@ -66,13 +66,13 @@ deBaseModule *PNGCreateModule( deLoadableModule *loadableModule ){
 static void depngRead( png_structp readStruct, png_bytep data, png_size_t length ){
 	decBaseFileReader *reader = ( decBaseFileReader* )png_get_io_ptr( readStruct );
 	
-	reader->Read( data, length );
+	reader->Read( data, ( int )length );
 }
 
 static void depngWrite( png_structp writeStruct, png_bytep data, png_size_t length ){
 	decBaseFileWriter *writer = ( decBaseFileWriter* )png_get_io_ptr( writeStruct );
 	
-	writer->Write( data, length );
+	writer->Write( data, ( int )length );
 }
 
 static void depngWriteStatus( png_structp writeStruct, png_uint_32 row, int pass ){
@@ -84,7 +84,7 @@ static void depngFlush( png_structp writeStruct ){
 static void depngError( png_structp errorStruct, png_const_charp message ){
 	const dePngImageInfo::sFeedback &feedback = *( ( dePngImageInfo::sFeedback* )png_get_error_ptr( errorStruct ) );
 	
-	feedback.module->LogErrorFormat( "Error %s: %s", feedback.filename, message );
+	feedback.module->LogErrorFormat( "Error %s: %s", feedback.filename.GetString(), message );
 	
 	DETHROW( deeInvalidAction );
 }
@@ -92,7 +92,7 @@ static void depngError( png_structp errorStruct, png_const_charp message ){
 static void depngWarning( png_structp errorStruct, png_const_charp message ){
 	const dePngImageInfo::sFeedback &feedback = *( ( dePngImageInfo::sFeedback* )png_get_error_ptr( errorStruct ) );
 	
-	feedback.module->LogWarnFormat( "Warning %s: %s", feedback.filename, message );
+	feedback.module->LogWarnFormat( "Warning %s: %s", feedback.filename.GetString(), message );
 }
 
 

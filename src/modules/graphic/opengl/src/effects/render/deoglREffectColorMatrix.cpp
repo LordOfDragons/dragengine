@@ -83,47 +83,57 @@ void deoglREffectColorMatrix::SetColorMatrix( const decColorMatrix &colorMatrix 
 
 
 
-deoglShaderProgram *deoglREffectColorMatrix::GetShader(){
-	if( ! pShader ){
-		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+const deoglPipeline *deoglREffectColorMatrix::GetPipeline(){
+	if( ! pPipeline ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
 		GetRenderThread().GetShader().SetCommonDefines( defines );
-		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Color Matrix" );
+		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
-		pShader = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( GetRenderThread(), "Effect Color Matrix", defines );
+		pPipeline = pipelineManager.GetWith( pipconf );
 	}
 	
-	return pShader;
+	return pPipeline;
 }
 
-deoglShaderProgram *deoglREffectColorMatrix::GetShaderStereo(){
-	if( ! pShaderStereo ){
-		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
-		deoglShaderSources *sources;
+const deoglPipeline *deoglREffectColorMatrix::GetPipelineStereo(){
+	if( ! pPipelineStereo ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
 		GetRenderThread().GetShader().SetCommonDefines( defines );
+		
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
 		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			sources = shaderManager.GetSourcesNamed( "Effect Color Matrix" );
 			defines.SetDefines( "VS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Color Matrix", defines );
 			
 		}else{
-			sources = shaderManager.GetSourcesNamed( "Effect Color Matrix Stereo" );
 			defines.SetDefines( "GS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Color Matrix Stereo", defines );
 		}
 		
-		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
+		pPipelineStereo = pipelineManager.GetWith( pipconf );
 	}
 	
-	return pShaderStereo;
+	return pPipelineStereo;
 }
 
 void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "EffectColorMatrix.Render" );
+	const deoglRenderWorld &renderWorld = renderThread.GetRenderers().GetWorld();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();
@@ -161,35 +171,21 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	
 	colorMatrix = pColorMatrix;
 	
-	// set attachments
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
+	pipeline.Activate();
+	
+	renderWorld.SetViewport( plan );
+	
 	defren.SwapPostProcessTarget();
 	defren.ActivatePostProcessFBO( false );
 	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(),
 		*rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 	
-	// set states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	
-	// set program
-	deoglShaderProgram * const shaderProgram = plan.GetRenderStereo() ? GetShaderStereo() : GetShader();
-	rtshader.ActivateShader( shaderProgram );
-	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
-	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	shader.SetParameterColorMatrix5x4( speColorMatrix, speColorOffset, colorMatrix );
 	
-	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-		defren.RenderFSQuadVAOStereo();
-		
-	}else{
-		defren.RenderFSQuadVAO();
-	}
+	renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
+		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
 }

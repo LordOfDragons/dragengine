@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module parameter ambient occlusion self shadowing smoothing angle.
+ * Module parameter ambient occlusion self shadowing smoothing angle.
  */
 class deoglPAOSelfShadowSmoothAngle : public deoglParameterFloat{
 public:

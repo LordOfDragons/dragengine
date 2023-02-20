@@ -678,10 +678,10 @@ void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, f
 			bottom = tanf( -fov.angleDown );
 			
 		}else{
-			left = -1.24382;
-			right = 1.39166;
-			top = -1.47029;
-			bottom = 1.45786;
+			left = -1.24382f;
+			right = 1.39166f;
+			top = -1.47029f;
+			bottom = 1.45786f;
 		}
 		break;
 	}
@@ -695,7 +695,7 @@ decMatrix deVROpenXR::GetMatrixViewEye( eEye eye ){
 			return pSession->GetLeftEyeMatrix();
 			
 		}else{
-			return decMatrix::CreateTranslation(0.0303, 0, 0.015);
+			return decMatrix::CreateTranslation(0.0303f, 0.0f, 0.015f);
 		}
 		
 	case deBaseVRModule::evreRight:
@@ -703,7 +703,7 @@ decMatrix deVROpenXR::GetMatrixViewEye( eEye eye ){
 			return pSession->GetRightEyeMatrix();
 			
 		}else{
-			return decMatrix::CreateTranslation(-0.0303, 0, 0.015);
+			return decMatrix::CreateTranslation(-0.0303f, 0.0f, 0.015f);
 		}
 	}
 	

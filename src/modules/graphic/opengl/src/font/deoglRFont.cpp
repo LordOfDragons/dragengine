@@ -50,7 +50,6 @@ pGlyphs( NULL ),
 pLineHeight( font.GetLineHeight() ),
 pIsColorFont( font.GetIsColorFont() ),
 
-pImage( NULL ),
 pDelayedImage( NULL )
 {
 	try{
@@ -87,8 +86,6 @@ void deoglRFont::FinalizeAsyncResLoading(){
 	pDelayedImage->SyncToRender();
 	
 	pImage = pDelayedImage->GetRImage();
-	pImage->AddReference();
-	
 	pRenderThread.GetDelayedOperations().AddInitImage( pImage );
 }
 
@@ -102,7 +99,6 @@ void deoglRFont::pCleanUp(){
 	
 	if( pImage ){
 		pRenderThread.GetDelayedOperations().RemoveInitImage( pImage );
-		pImage->FreeReference();
 	}
 	if( pGlyphs ){
 		delete [] pGlyphs;

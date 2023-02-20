@@ -36,7 +36,7 @@ class deoglRDecal;
 
 
 /**
- * \brief Skin rendered.
+ * Skin rendered.
  * 
  * Helper class for handling rendered skin textures.
  */
@@ -57,12 +57,12 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin rendered. */
+	/** Create skin rendered. */
 	deoglSkinRendered( deoglRenderThread &renderThread, deoglRComponent &component );
 	deoglSkinRendered( deoglRenderThread &renderThread, deoglRBillboard &billboard );
 	deoglSkinRendered( deoglRenderThread &renderThread, deoglRDecal &decal );
 	
-	/** \brief Clean up skin rendered. */
+	/** Clean up skin rendered. */
 	~deoglSkinRendered();
 	/*@}*/
 	
@@ -70,51 +70,51 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Owner component or NULL. */
+	/** Owner component or NULL. */
 	inline deoglRComponent *GetOwnerComponent() const{ return pOwnerComponent; }
 	
-	/** \brief Owner billboard or NULL. */
+	/** Owner billboard or NULL. */
 	inline deoglRBillboard *GetOwnerBillboard() const{ return pOwnerBillboard; }
 	
-	/** \brief Owner decal or NULL. */
+	/** Owner decal or NULL. */
 	inline deoglRDecal *GetOwnerDecal() const{ return pOwnerDecal; }
 	
-	/** \brief Owner skin or NULL. */
+	/** Owner skin or NULL. */
 	deoglRSkin *GetOwnerSkin() const;
 	
 	
 	
-	/** \brief Number of textures. */
+	/** Number of textures. */
 	int GetTexturedCount() const;
 	
-	/** \brief Texture at index. */
+	/** Texture at index. */
 	deoglSkinRenderedTexture *GetTextureAt( int index ) const;
 	
-	/** \brief Add texture. */
+	/** Add texture. */
 	deoglSkinRenderedTexture *AddTexture( deoglRSkin &skin, int texture, int modelTexture );
 	
-	/** \brief Remove all textures. */
+	/** Remove all textures. */
 	void RemoveAllTextures();
 	
 	
 	
-	/** \brief Mark dirty. */
+	/** Mark dirty. */
 	void SetDirty();
 	
-	/** \brief Prepare if dirty. */
+	/** Prepare if dirty. */
 	void Prepare();
 	
-	/** \brief Add render plans. */
+	/** Add render plans. */
 	void AddRenderPlans( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Drop objects containing delayed deletion support. */
+	/** Drop objects containing delayed deletion support. */
 	void DropDelayedDeletionObjects();
 	/*@}*/
 	

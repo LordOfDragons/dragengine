@@ -22,7 +22,7 @@
 #ifndef _DEOGLSHAREDSPB_H_
 #define _DEOGLSHAREDSPB_H_
 
-#include <dragengine/deObject.h>
+#include "../deoglShaderParameterBlock.h"
 
 class deoglSharedSPBElement;
 class deoglShaderParameterBlock;
@@ -30,7 +30,7 @@ class deoglShaderParameterBlock;
 
 
 /**
- * \brief OpenGL Shared Shader Parameter Block.
+ * OpenGL Shared Shader Parameter Block.
  * 
  * Shared shader parameter blocks contain one or more elements sharing all the same
  * data layout. Each element can be updated individually in the parameter block.
@@ -45,7 +45,12 @@ class deoglShaderParameterBlock;
  */
 class deoglSharedSPB : public deObject{
 public:
-	deoglShaderParameterBlock *pParameterBlock;
+	typedef deTObjectReference<deoglSharedSPB> Ref;
+	
+	
+	
+private:
+	const deoglShaderParameterBlock::Ref pParameterBlock;
 	deoglSharedSPBElement **pElements;
 	int pSize;
 	int pCount;
@@ -56,34 +61,36 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create shared shader parameter block.
+	 * Create shared shader parameter block.
 	 * 
 	 * \warning Do not modify the parameter block after creating the shared object.
 	 */
-	deoglSharedSPB( deoglShaderParameterBlock *parameterBlock );
+	deoglSharedSPB( const deoglShaderParameterBlock::Ref &parameterBlock );
 	
-	/** \brief Clean up shared shader parameter block. */
+protected:
+	/** Clean up shared shader parameter block. */
 	virtual ~deoglSharedSPB();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Parameter block storing the elements. */
-	inline deoglShaderParameterBlock *GetParameterBlock() const{ return pParameterBlock; }
+	/** Parameter block storing the elements. */
+	inline const deoglShaderParameterBlock::Ref &GetParameterBlock() const{ return pParameterBlock; }
 	
-	/** \brief Maximum number of elements. */
+	/** Maximum number of elements. */
 	inline int GetSize() const{ return pSize; }
 	
-	/** \brief Number of stored elements. */
+	/** Number of stored elements. */
 	inline int GetElementCount() const{ return pCount; }
 	
-	/** \brief Element at index or \em NULL of not assigned. */
+	/** Element at index or \em NULL of not assigned. */
 	deoglSharedSPBElement *GetElementAt( int index ) const;
 	
 	/**
-	 * \brief Obtain element.
+	 * Obtain element.
 	 * 
 	 * Caller obtains reference to the element. Release reference if not used anymore.
 	 * Element is removed from the shared parameter block once all references are released.
@@ -93,7 +100,7 @@ public:
 	deoglSharedSPBElement *AddElement();
 	
 	/**
-	 * \brief Remove element.
+	 * Remove element.
 	 * 
 	 * \warning For use by deoglSharedSPBElement only.
 	 */

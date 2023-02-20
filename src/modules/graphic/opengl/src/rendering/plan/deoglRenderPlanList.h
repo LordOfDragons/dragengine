@@ -27,7 +27,7 @@ class deoglRenderPlan;
 
 
 /**
- * @brief Render Plan List.
+ * Render Plan List.
  * List of pointers to render plans. The ordering of the render plans in the list is not defined and can
  * change when render plans are removed. This allows to remove render plans with constant time requirements.
  */
@@ -38,7 +38,7 @@ private:
 	int pPlanSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render plan list. */
 	deoglRenderPlanList();
@@ -46,7 +46,7 @@ public:
 	~deoglRenderPlanList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of render plans. */
 	inline int GetCount() const{ return pPlanCount; }

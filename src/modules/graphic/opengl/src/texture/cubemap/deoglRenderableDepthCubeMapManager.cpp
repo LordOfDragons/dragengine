@@ -65,13 +65,13 @@ const deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMa
 	return pCubeMaps[ index ];
 }
 
-deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMapWith( int size ){
+deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMapWith( int size, bool useFloat ){
 	deoglRenderableDepthCubeMap *cubemap = NULL;
 	int i;
 	
 	// find the cubemap with the matching format
 	for( i=0; i<pCubeMapCount; i++ ){
-		if( ! pCubeMaps[ i ]->GetInUse() && pCubeMaps[ i ]->Matches( size ) ){
+		if( ! pCubeMaps[ i ]->GetInUse() && pCubeMaps[ i ]->Matches( size, useFloat ) ){
 			cubemap = pCubeMaps[ i ];
 			break;
 		}
@@ -91,7 +91,7 @@ deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMapWith(
 			pCubeMapSize = newSize;
 		}
 		
-		cubemap = new deoglRenderableDepthCubeMap( pRenderThread, size );
+		cubemap = new deoglRenderableDepthCubeMap( pRenderThread, size, useFloat );
 		
 		pCubeMaps[ pCubeMapCount ] = cubemap;
 		pCubeMapCount++;

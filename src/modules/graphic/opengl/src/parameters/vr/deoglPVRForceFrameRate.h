@@ -41,10 +41,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Current value. */
+	/** Current value. */
 	virtual decString GetParameterValue();
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterValue( const char *value );
 	/*@}*/
 };

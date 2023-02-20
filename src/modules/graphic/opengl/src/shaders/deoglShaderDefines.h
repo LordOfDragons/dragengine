@@ -22,6 +22,7 @@
 #ifndef _DEOGLSHADERDEFINES_H_
 #define _DEOGLSHADERDEFINES_H_
 
+#include <dragengine/common/string/decString.h>
 
 
 /**
@@ -30,13 +31,16 @@
 class deoglShaderDefines{
 private:
 	struct sDefine{
-		char *name;
-		char *value;
+		decString name;
+		decString value;
 	};
+	
 	
 private:
 	sDefine *pDefines;
 	int pDefineCount;
+	int pDefineSize;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -59,16 +63,16 @@ public:
 	inline int GetDefineCount() const{ return pDefineCount; }
 	
 	/** Name of define at index. */
-	const char *GetDefineNameAt( int index ) const;
+	const decString &GetDefineNameAt( int index ) const;
 	
 	/** Value of define at index. */
-	const char *GetDefineValueAt( int index ) const;
+	const decString &GetDefineValueAt( int index ) const;
 	
 	/** Named define is present. */
 	bool HasDefineNamed( const char *name ) const;
 	
 	/** Value of named define or default value if absent. */
-	const char *GetDefineValueFor( const char *name, const char *defaultValue ) const;
+	const decString &GetDefineValueFor( const char *name, const decString &defaultValue ) const;
 	
 	/** Set define. */
 	void SetDefine( const char *name, const char *value );
@@ -84,11 +88,20 @@ public:
 	/** Remove define. */
 	void RemoveDefine( const char *name );
 	
+	/** Remove defines. */
+	void RemoveDefines( const char *name1 );
+	void RemoveDefines( const char *name1, const char *name2 );
+	void RemoveDefines( const char *name1, const char *name2, const char *name3 );
+	void RemoveDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
+	
 	/** Remove all defines. */
 	void RemoveAllDefines();
 	
 	/** Defines are equal. */
 	bool Equals( const deoglShaderDefines &defines ) const;
+	
+	/** Calculate cache id. */
+	decString CalcCacheId() const;
 	/*@}*/
 	
 	
@@ -104,6 +117,7 @@ public:
 	/** Combine defines. */
 	deoglShaderDefines operator+( const deoglShaderDefines &defines ) const;
 	/*@}*/
+	
 	
 private:
 	void pCleanUp();

@@ -219,7 +219,7 @@ public:
 class cActionInvertBlendFactor : public cBaseAction{
 public:
 	cActionInvertBlendFactor( aeWPAPanelRule &panel ) : cBaseAction( panel,
-		"Invert Blend Ractor", nullptr, "Use '1 - blendFactor' instead of 'blendFactor'" ){ }
+		"Invert Blend Factor", nullptr, "Use '1 - blendFactor' instead of 'blendFactor'" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
 		return new aeUToggleRuleInvertBlendFactor( rule );

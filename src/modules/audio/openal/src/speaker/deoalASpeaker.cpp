@@ -29,8 +29,10 @@
 #include "../audiothread/deoalATLogger.h"
 #include "../audiothread/deoalATDelayed.h"
 #include "../audiothread/deoalDelayedDeletion.h"
+#include "../audiothread/deoalATDebug.h"
 #include "../environment/deoalEnvironment.h"
 #include "../effect/deoalFilter.h"
+#include "../effect/deoalEffectSlot.h"
 #include "../extensions/deoalExtensions.h"
 #include "../microphone/deoalAMicrophone.h"
 #include "../sound/deoalDecodeBuffer.h"
@@ -123,6 +125,9 @@ pVolume( 1.0f ),
 pAttenuationRefDist( 1.0f ),
 pAttenuationRolloff( 1.0f ),
 pAttenuationDistanceOffset( 0.0f ),
+
+pFinalGain( 0.0f ),
+pAttenuatedGain( 0.0f ),
 
 pEnvironment( NULL ),
 
@@ -444,11 +449,11 @@ void deoalASpeaker::PrepareProcessAudio(){
 		
 		if( pDirtyGain ){
 			pDirtyGain = false;
-			pAttenuatedGain = pMuted ? 0.0f : pVolume;
-			if( pParentWorld ) {
-				pAttenuatedGain *= pParentWorld->GetSpeakerGain();
+			if( pPositionless ){
+				pAttenuatedGain = 1.0f;
 			}
-			OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pAttenuatedGain ) );
+			pFinalGain = pAttenuatedGain * GetFullVolume() * ( pMuted ? 0.0f : 1.0f );
+			OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pFinalGain ) );
 		}
 		
 		if( pDirtyLooping ){
@@ -502,6 +507,9 @@ void deoalASpeaker::UpdateEffects(){
 	// takes into account environment calculated parameters
 	pUpdateAttenuatedGain();
 	
+	// update source importance
+	pUpdateSourceImportance();
+	
 	// update environment effect
 	pUpdateEnvironmentEffect();
 }
@@ -550,6 +558,7 @@ void deoalASpeaker::SetPositionless( bool positionless ){
 	
 	if( pEnabled ){
 		pDirtyGeometry = true;
+		pDirtyGain = true;
 	}
 	
 	UpdateOctreeNode();
@@ -668,6 +677,18 @@ float deoalASpeaker::AttenuatedGain( float distance ) const{
 	//        + AL_ROLLOFF_FACTOR * ( distance - AL_REFERENCE_DISTANCE ) );
 	return pAttenuationRefDist / ( pAttenuationRefDist + pAttenuationRolloff
 		* ( decMath::max( distance + pAttenuationDistanceOffset - pAttenuationRefDist, 0.0f ) ) );
+}
+
+float deoalASpeaker::GetFullVolume() const{
+	if( pParentMicrophone ){
+		return pVolume * pParentMicrophone->GetSpeakerGain();
+		
+	}else if( pParentWorld ){
+		return pVolume * pParentWorld->GetSpeakerGain();
+		
+	}else{
+		return pVolume;
+	}
 }
 
 bool deoalASpeaker::AffectsActiveMicrophone() const{
@@ -1361,28 +1382,30 @@ void deoalASpeaker::pCheckStillSourceOwner(){
 }
 
 void deoalASpeaker::pUpdateSourceImportance(){
-	if( pSound && pSound->GetStreaming() ){
-		pSource->SetImportance( 1.0f );
-		
-	}else if( pSynthesizer ){
-		pSource->SetImportance( 1.0f );
-		
-	}else if( pVideoPlayer ){
-		pSource->SetImportance( 1.0f );
+	float importance = 0.0f;
+	
+	if( pSound || pSynthesizer || pVideoPlayer ){
+		importance = 0.0f;
 		
 	}else{
-		pSource->SetImportance( 0.0f );
+		pSource->SetImportance( 1000.0f );
+		return;
 	}
+	
+	importance += decMath::clamp( pFinalGain, 0.0f, 1.0f );
+	
+	pSource->SetImportance( importance );
 }
 
 void deoalASpeaker::pUpdateAttenuatedGain(){
 	if( pMuted || ! pAudioThread.GetActiveMicrophone() ){
 		pAttenuatedGain = 0.0f;
+		pFinalGain = 0.0f;
 		OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, 0.0f ) );
 		return;
 	}
 	
-	pAttenuatedGain = pFullVolume();
+	pAttenuatedGain = 1.0f;
 	
 	// what we do here is fixing the problem with openal attenuation. the openal supports
 	// only an inverse-linear model without pulling to 0. this results in all real-world
@@ -1417,8 +1440,8 @@ void deoalASpeaker::pUpdateAttenuatedGain(){
 	}
 	*/
 	
-	OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pAttenuatedGain ) );
-// 	pAudioThread.GetLogger().LogInfoFormat("AttGain: g=%f", pAttenuatedGain);
+	pFinalGain = pAttenuatedGain * GetFullVolume();
+	OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pFinalGain ) );
 }
 
 
@@ -1608,10 +1631,14 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 // 			AttenuatedGain(0.0f), pVolume * AttenuatedGain(0.0f), pEnvironment->GetBandPassGain(), pVolume,
 // 			pEnvironment->GetReverbGain(), pEnvironment->GetReverbGain() * pVolume);
 	
-	const float volume = pFullVolume();
-	const float reverbGain = pEnvironment->GetReverbGain() * volume / decMath::max( pAttenuatedGain, 0.001f );
+	const float reverbGain = pEnvironment->GetReverbGain() / decMath::max( pAttenuatedGain, 0.001f );
 	
-	const ALuint effect = pSource->GetSendEffect( 0 );
+	const deoalEffectSlot * const effectSlot = pSource->GetEffectSlot();
+	if( ! effectSlot ){
+		return;
+	}
+	
+	const ALuint effect = effectSlot->GetEffect();
 	OAL_CHECK( pAudioThread, palEffecti( effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAIN, 1.0f ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINHF, pEnvironment->GetReverbGainHF() ) );
@@ -1650,7 +1677,6 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	// to be in place for the effect to work
 	// 
 	// see deoalSource::GetSendSlot()
-	pSource->AssignSendEffect( 0 );
 }
 
 
@@ -1684,16 +1710,4 @@ float deoalASpeaker::pCustomGainMultiplier() const{
 		return AttenuatedGain( ( float )( microphonePos - pPosition ).Length() );
 	}
 	return 1.0f;
-}
-
-float deoalASpeaker::pFullVolume() const{
-	if( pParentMicrophone ){
-		return pVolume * pParentMicrophone->GetSpeakerGain();
-		
-	}else if( pParentWorld ){
-		return pVolume * pParentWorld->GetSpeakerGain();
-		
-	}else{
-		return pVolume;
-	}
 }

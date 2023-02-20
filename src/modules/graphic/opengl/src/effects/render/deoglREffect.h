@@ -30,7 +30,7 @@ class deoglRenderPlan;
 
 
 /**
- * \brief Render effect.
+ * Render effect.
  */
 class deoglREffect : public deObject{
 private:
@@ -41,10 +41,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render effect. */
+	/** Create render effect. */
 	deoglREffect( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render effect. */
+	/** Clean up render effect. */
 	virtual ~deoglREffect();
 	/*@}*/
 	
@@ -52,19 +52,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Enabled. */
+	/** Enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
-	/** \brief Set enabled. */
+	/** Set enabled. */
 	void SetEnabled( bool enabled );
 	
-	/** \brief Prepare for render. */
+	/** Prepare for render. */
 	virtual void PrepareForRender();
 	
-	/** \brief Render effect. */
+	/** Render effect. */
 	virtual void Render( deoglRenderPlan &plan ) = 0;
 };
 

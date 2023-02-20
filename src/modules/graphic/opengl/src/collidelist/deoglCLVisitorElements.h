@@ -30,7 +30,7 @@ class deoglDCollisionVolume;
 
 
 /**
- * @brief Collide List Element Visitor.
+ * Collide List Element Visitor.
  * Visits scene elements colliding with a given volume and adds them to the given
  * collide list.
  */
@@ -40,17 +40,17 @@ private:
 	deoglDCollisionVolume *pVolume;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	deoglCLVisitorElements( deoglCollideList *collideList, deoglDCollisionVolume *volume );
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/**
 	 * Visits an octree node. The default implementation is to visit all

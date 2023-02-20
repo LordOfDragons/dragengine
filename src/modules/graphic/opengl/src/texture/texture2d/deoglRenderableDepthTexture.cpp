@@ -88,7 +88,7 @@ void deoglRenderableDepthTexture::SetInUse( bool inUse ){
 
 void deoglRenderableDepthTexture::UpdateMemoryUsage(){
 	if( pTexture ){
-		pMemoryUsageGPU = pTexture->GetMemoryConsumption().Total();
+		pMemoryUsageGPU = ( int )pTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;

@@ -194,7 +194,7 @@ dsFunction( init.clsVid, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassVideo::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deVideo *video = ( ( sVidNatDat* )p_GetNativeData( myself ) )->video;
 	
-	rt->PushInt( ( intptr_t )video );
+	rt->PushInt( ( int )( intptr_t )video );
 }
 
 // public func bool equals( Object object )

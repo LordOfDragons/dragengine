@@ -33,19 +33,15 @@
 //////////////////////////
 
 // constructor, destructor
-dePngImageInfo::dePngImageInfo(const char *aFilename){
-	filename = NULL;
-	readStruct = NULL;
-	infoStruct = NULL;
-	filename = new char[strlen(aFilename)+1];
-	if(!filename) DETHROW(deeOutOfMemory);
-	strcpy(filename, aFilename);
+dePngImageInfo::dePngImageInfo(const char *aFilename) :
+filename( aFilename ),
+readStruct( nullptr ),
+infoStruct( nullptr ){
 }
 dePngImageInfo::~dePngImageInfo(){
 	if(readStruct){
 		png_destroy_read_struct(&readStruct, &infoStruct, NULL);
 	}
-	if(filename) delete [] filename;
 }
 
 // management

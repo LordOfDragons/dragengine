@@ -796,7 +796,7 @@ dsFunction( init.clsNavSpace, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 void deClassNavigationSpace::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deNavigationSpace * const navspace = ( ( const sNavSpaceNatDat * )p_GetNativeData( myself ) )->navspace;
 	
-	rt->PushInt( ( intptr_t )navspace );
+	rt->PushInt( ( int )( intptr_t )navspace );
 }
 
 // public func bool equals( Object object )

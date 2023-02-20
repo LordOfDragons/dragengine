@@ -28,7 +28,7 @@ class deoglRenderableColorTexture;
 
 
 /**
- * @brief Renderable Color Texture Manager.
+ * Renderable Color Texture Manager.
  * Manages renderable textures. Maintains a list of renderable textures build
  * upon demand. Renderable textures once created stay around and can be reused.
  * A renderable texture is only handed out if the format matches and it is not
@@ -44,7 +44,7 @@ private:
 	int pTextureSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable texture manager. */
 	deoglRenderableColorTextureManager( deoglRenderThread &renderThread );
@@ -52,7 +52,7 @@ public:
 	~deoglRenderableColorTextureManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }

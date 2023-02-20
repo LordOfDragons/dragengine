@@ -23,31 +23,30 @@
 #define _DEOGLREFFECTDISTORTIMAGE_H_
 
 #include "deoglREffect.h"
-#include "../../shaders/deoglShaderProgramUsage.h"
+#include "../../pipeline/deoglPipeline.h"
+#include "../../texture/deoglRImage.h"
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglRImage;
-
 
 /**
- * \brief Render effect distort image.
+ * Render effect distort image.
  */
 class deoglREffectDistortImage : public deoglREffect{
 private:
 	decVector2 pStrength;
-	deoglRImage *pImage;
+	deoglRImage::Ref pImage;
 	
-	deoglShaderProgramUsage pShader;
-	deoglShaderProgramUsage pShaderStereo;
+	const deoglPipeline *pPipeline;
+	const deoglPipeline *pPipelineStereo;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render effect. */
+	/** Create render effect. */
 	deoglREffectDistortImage( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render effect. */
+	/** Clean up render effect. */
 	virtual ~deoglREffectDistortImage();
 	/*@}*/
 	
@@ -55,28 +54,28 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Distortion strength in U and V direction. */
+	/** Distortion strength in U and V direction. */
 	inline const decVector2 &GetStrength() const{ return pStrength; }
 	
-	/** \brief Set distortion strength in U and V direction. */
+	/** Set distortion strength in U and V direction. */
 	void SetStrength( const decVector2 &strength );
 	
-	/** \brief Image or \em NULL to render nothing. */
-	inline deoglRImage *GetImage() const{ return pImage; }
+	/** Image or nullptr to render nothing. */
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
-	/** \brief Set image or \em NULL to render nothing. */
+	/** Set image or nullptr to render nothing. */
 	void SetImage( deoglRImage *image );
 	
 	
 	
-	/** \brief Get shader creating it if required. */
-	deoglShaderProgram *GetShader();
-	deoglShaderProgram *GetShaderStereo();
+	/** Get pipeline creating it if required. */
+	const deoglPipeline *GetPipeline();
+	const deoglPipeline *GetPipelineStereo();
 	
-	/** \brief Prepare for render. */
+	/** Prepare for render. */
 	virtual void PrepareForRender();
 	
-	/** \brief Render effect. */
+	/** Render effect. */
 	virtual void Render( deoglRenderPlan &plan );
 };
 

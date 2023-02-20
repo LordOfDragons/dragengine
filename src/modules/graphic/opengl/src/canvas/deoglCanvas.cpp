@@ -139,18 +139,7 @@ void deoglCanvas::SyncToRender(){
 		pRCanvas->SetOrder( pCanvas.GetOrder() );
 		pRCanvas->SetTransparency( pCanvas.GetTransparency() );
 		pRCanvas->SetVisible( pCanvas.GetVisible() );
-		
-		switch( pCanvas.GetBlendMode() ){
-		case deCanvas::ebmBlend:
-			pRCanvas->SetBlendSrc( GL_SRC_ALPHA );
-			pRCanvas->SetBlendDest( GL_ONE_MINUS_SRC_ALPHA );
-			break;
-			
-		case deCanvas::ebmAdd:
-			pRCanvas->SetBlendSrc( GL_SRC_ALPHA );
-			pRCanvas->SetBlendDest( GL_ONE );
-			break;
-		}
+		pRCanvas->SetBlendMode( pCanvas.GetBlendMode() );
 		
 		if( pCanvas.GetMask() ){
 			deoglCanvas &canvas = *( ( deoglCanvas* )pCanvas.GetMask()->GetPeerGraphic() );
@@ -158,7 +147,7 @@ void deoglCanvas::SyncToRender(){
 			pRCanvas->SetMask( canvas.pRCanvas );
 			
 		}else{
-			pRCanvas->SetMask( NULL );
+			pRCanvas->SetMask( nullptr );
 		}
 	}
 	

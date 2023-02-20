@@ -31,7 +31,7 @@ class deoglRDynamicSkin;
 
 
 /**
- * \brief Skin State Renderable.
+ * Skin State Renderable.
  * 
  * Stores the host renderable linked to this skin renderable and additional
  * objects required for masked rendering if required.
@@ -49,10 +49,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin state renderable. */
+	/** Create skin state renderable. */
 	deoglSkinStateRenderable( deoglSkinState &skinState, int index );
 	
-	/** \brief Clean up skin state renderable. */
+	/** Clean up skin state renderable. */
 	~deoglSkinStateRenderable();
 	/*@}*/
 	
@@ -60,30 +60,30 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Host renderable index or -1 if not used. */
+	/** Host renderable index or -1 if not used. */
 	inline int GetHostRenderable() const{ return pHostRenderable; }
 	
-	/** \brief Set host renderable index or -1 if not used. */
+	/** Set host renderable index or -1 if not used. */
 	void SetHostRenderable( int hostRenderable );
 	
-	/** \brief Render plan or NULL if not using masked rendering. */
+	/** Render plan or NULL if not using masked rendering. */
 	inline deoglRenderPlan *GetPlan() const{ return pPlan; }
 	
-	/** \brief Set render plan or NULL if not using masked rendering. */
+	/** Set render plan or NULL if not using masked rendering. */
 	void SetPlan( deoglRenderPlan *plan );
 	
-	/** \brief Temporary texture or NULL if not existing. */
+	/** Temporary texture or NULL if not existing. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** \brief Set temporary texture or NULL if not existing. */
+	/** Set temporary texture or NULL if not existing. */
 	void SetTexture( deoglTexture *texture );
 	
-	/** \brief Clear renderable to be used for another one. */
+	/** Clear renderable to be used for another one. */
 	void Clear();
 	
 	
 	
-	/** \brief Add render plans. */
+	/** Add render plans. */
 	void AddRenderPlans( deoglRenderPlan &plan );
 	/*@}*/
 };

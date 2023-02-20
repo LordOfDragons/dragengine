@@ -29,7 +29,7 @@ class deoglRCamera;
 
 
 /**
- * \brief Render canvas render world.
+ * Render canvas render world.
  */
 class deoglRCanvasRenderWorld : public deoglRCanvas{
 private:
@@ -41,10 +41,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvasRenderWorld( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvasRenderWorld();
 	/*@}*/
 	
@@ -52,18 +52,18 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Camera or \em NULL if not set. */
+	/** Camera or \em NULL if not set. */
 	inline deoglRCamera *GetCamera() const{ return pCamera; }
 	
-	/** \brief Set camera or \em NULL if not set. */
+	/** Set camera or \em NULL if not set. */
 	void SetCamera( deoglRCamera *camera );
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Render. */
+	/** Render. */
 	virtual void Render( const deoglRenderCanvasContext &context );
 	/*@}*/
 };

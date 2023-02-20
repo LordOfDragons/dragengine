@@ -32,7 +32,7 @@ class deModel;
 
 
 /**
- * \brief Model peer.
+ * Model peer.
  */
 class deoglModel : public deBaseGraphicModel{
 public:
@@ -43,7 +43,7 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create model peer. */
+	/** Create model peer. */
 	deoglModel( deGraphicOpenGl &ogl, const deModel &model );
 	
 	/** Cleans up the opengl model. */
@@ -54,13 +54,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl module. */
+	/** Opengl module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Model resource. */
+	/** Model resource. */
 	inline const deModel &GetModel() const{ return pModel; }
 	
-	/** \brief Render model. */
+	/** Render model. */
 	inline deoglRModel *GetRModel() const{ return pRModel; }
 	/*@}*/
 	

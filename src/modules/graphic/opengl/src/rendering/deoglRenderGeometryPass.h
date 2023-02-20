@@ -29,21 +29,16 @@ class deoglRenderPlanMasked;
 
 
 /**
- * \brief Geometry pass renderer.
+ * Geometry pass renderer.
  */
 class deoglRenderGeometryPass : public deoglRenderBase{
-private:
-	deoglShaderProgramUsage pShaderDebug;
-	
-	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderGeometryPass( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderGeometryPass();
 	/*@}*/
 	
@@ -52,7 +47,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/**
-	 * \brief Render solid geometry pass.
+	 * Render solid geometry pass.
 	 * 
 	 * Using FBO Def-Ren Depth. Clears depth. Depth buffer only is used to take advantage of
 	 * double write optimization. Prevents use of Depth+Color to avoid FBO switch in RenderSky.
@@ -72,21 +67,21 @@ public:
 	void RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/**
-	 * \brief Render luminance only pass.
+	 * Render luminance only pass.
 	 */
 // 	void RenderLuminanceOnly( deoglRenderPlan &plan );
 	
 	
 	
 	/**
-	 * \brief Render decals.
+	 * Render decals.
 	 * 
 	 * Using FBO Def-Ren Material buffers set by RenderSolidGeometryPass. No clearing.
 	 * Invalidating no buffers.
 	 */
 	void RenderDecals( deoglRenderPlan &plan, bool xray );
 	
-	/** \brief Render volumetric pass. */
+	/** Render volumetric pass. */
 	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );
 	/*@}*/
 };

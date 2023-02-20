@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Model Face.
+ * Model Face.
  */
 class deoglModelFace{
 private:
@@ -40,7 +40,7 @@ private:
 	int pIndex;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new model face. */
 	deoglModelFace();
@@ -48,7 +48,7 @@ public:
 	~deoglModelFace();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the first vertex. */
 	inline int GetVertex1() const{ return pVertices[ 0 ]; }

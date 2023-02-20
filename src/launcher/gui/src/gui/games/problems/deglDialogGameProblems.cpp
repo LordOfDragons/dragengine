@@ -42,15 +42,16 @@
 // Events
 ///////////
 
-FXDEFMAP( deglDialogGameProblems ) deglDialogGameProblemsMap[] = {};
+//FXDEFMAP( deglDialogGameProblems ) deglDialogGameProblemsMap[] = {};
 
 
 
 // Class deglDialogGameProblems
 /////////////////////////////////
 
-FXIMPLEMENT( deglDialogGameProblems, FXDialogBox,
-	deglDialogGameProblemsMap, ARRAYNUMBER( deglDialogGameProblemsMap ) )
+//FXIMPLEMENT( deglDialogGameProblems, FXDialogBox,
+//	deglDialogGameProblemsMap, ARRAYNUMBER( deglDialogGameProblemsMap ) )
+FXIMPLEMENT( deglDialogGameProblems, FXDialogBox, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

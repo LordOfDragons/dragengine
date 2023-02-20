@@ -259,7 +259,7 @@ long deglPanelEngine::onListModulesDblClick( FXObject *sender, FXSelector select
 }
 
 long deglPanelEngine::onListModulesHeaderClicked( FXObject*, FXSelector, void *pdata ){
-	int colon = ( intptr_t )pdata;
+	int colon = ( int )( intptr_t )pdata;
 	
 	if( colon == 0 ){
 		if( pSortListModules == elmsNameAsc ){

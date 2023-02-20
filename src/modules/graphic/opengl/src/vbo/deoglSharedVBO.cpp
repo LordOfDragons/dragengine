@@ -69,18 +69,10 @@ pMemUseIBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bu
 	pDirty = true;
 	
 	try{
-		// create vbo
 		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
 		
-		// create ibo if indices are used
 		if( indexSize > 0 ){
 			OGL_CHECK( renderThread, pglGenBuffers( 1, &pIBO ) );
-			if( ! pIBO ){
-				DETHROW( deeOutOfMemory );
-			}
 		}
 		
 		// create vao
@@ -96,7 +88,6 @@ pMemUseIBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bu
 			OGL_CHECK( renderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pIBO ) );
 		}
 		
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
 		// add empty block for the entire vbo space
@@ -133,8 +124,8 @@ void deoglSharedVBO::Prepare(){
 	int i;
 	
 	// update vertex buffer
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, stride * pUsedSize, NULL, drawType ) );
+	OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, pVBO ) );
+	OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, NULL, drawType ) );
 	
 	if( pUsedSize > 0 ){
 		// another way which does not require a memory copy is to write the data blocks in ascending
@@ -150,7 +141,7 @@ void deoglSharedVBO::Prepare(){
 				}
 			}
 			
-			OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, stride * pUsedSize, vboData, drawType ) );
+			OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, vboData, drawType ) );
 			delete [] vboData;
 			
 		}catch( const deException & ){
@@ -163,8 +154,8 @@ void deoglSharedVBO::Prepare(){
 	
 	// update index buffer. works differently depending on the presence of base-vertex support
 	if( pIBO ){
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pIBO ) );
-		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, indexSize * pIndexUsedSize, NULL, drawType ) );
+		OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, pIBO ) );
+		OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER, indexSize * pIndexUsedSize, NULL, drawType ) );
 		
 		if( pIndexUsedSize > 0 ){
 			const bool useBaseVertex = renderThread.GetChoices().GetSharedVBOUseBaseVertex();
@@ -204,7 +195,7 @@ void deoglSharedVBO::Prepare(){
 					}
 				}
 				
-				OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, indexSize * pIndexUsedSize, vboData, drawType ) );
+				OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER, indexSize * pIndexUsedSize, vboData, drawType ) );
 				delete [] vboData;
 				
 			}catch( const deException & ){
@@ -217,7 +208,7 @@ void deoglSharedVBO::Prepare(){
 	}
 	
 	// done
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+	OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
 	pDirty = false;
 	
 	pMemUseVBO = stride * pUsedSize;

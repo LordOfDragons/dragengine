@@ -23,6 +23,7 @@
 #define _DEOGLRENDERCANVAS_H_
 
 #include "deoglRenderBase.h"
+#include "../canvas/render/deoglRCanvas.h"
 
 class deoglRenderCanvasContext;
 class deoglRCanvasText;
@@ -44,15 +45,12 @@ private:
 	GLuint pVAOShapes;
 	GLuint pActiveVAO;
 	
-	deoglShaderProgramUsage pShaderCanvasColor;
-	deoglShaderProgramUsage pShaderCanvasColorMask;
-	deoglShaderProgramUsage pShaderCanvasImage;
-	deoglShaderProgramUsage pShaderCanvasImageMask;
-	deoglShaderProgramUsage pShaderCanvasRenderWorld;
-	deoglShaderProgramUsage pShaderCanvasRenderWorldMask;
-	
-	GLenum pBlendSrc;
-	GLenum pBlendDest;
+	const deoglPipeline *pPipelineCanvasColor[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasColorMask[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasImage[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasImageMask[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasRenderWorld[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasRenderWorldMask[ deoglRCanvas::BlendModeCount ];
 	
 	deoglDebugInformation::Ref pDebugInfoCanvas;
 	deoglDebugInformation::Ref pDebugInfoCanvasView;
@@ -151,10 +149,13 @@ public:
 	
 	void SampleDebugInfoPlanPrepare( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareEarlyWorld( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareBuildRTs( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightBuildRT( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan );
@@ -182,9 +183,9 @@ private:
 	void pCleanUp();
 	void pCreateShapesVAO();
 	void pWorldRenderSize( int &width, int &height ) const;
-	void pSetBlendMode( GLenum blendSrc, GLenum blendDest );
-	void pSetBlendModeForce( GLenum blendSrc, GLenum blendDest );
 	void pActivateVAOShapes();
+	void pCreatePipelines( const deoglPipeline* (&pipelines)[ deoglRCanvas::BlendModeCount ],
+		deoglPipelineConfiguration &config );
 };
 
 #endif

@@ -248,7 +248,7 @@ deClassFileWriter::nfWriteString8::nfWriteString8( const sInitData &init ) : dsF
 void deClassFileWriter::nfWriteString8::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
 	const char *data = rt->GetValue( 0 )->GetString();
-	int size = strlen( data );
+	int size = ( int )strlen( data );
 	
 	if( size > 255 ){
 		DSTHROW_INFO( dueInvalidParam, "String too long" );
@@ -268,7 +268,7 @@ deClassFileWriter::nfWriteString16::nfWriteString16( const sInitData &init ) : d
 void deClassFileWriter::nfWriteString16::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
 	const char *data = rt->GetValue( 0 )->GetString();
-	int size = strlen( data );
+	int size = ( int )strlen( data );
 	
 	if( size > 65535 ){
 		DSTHROW_INFO( dueInvalidParam, "String too long" );
@@ -289,7 +289,7 @@ void deClassFileWriter::nfWriteString::RunFunction( dsRunTime *rt, dsValue *myse
 	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
 	const char *data = rt->GetValue( 0 )->GetString();
 	
-	fileWriter.Write( data, strlen( data ) );
+	fileWriter.Write( data, ( int )strlen( data ) );
 }
 
 // public func void writeData( FileReader reader )

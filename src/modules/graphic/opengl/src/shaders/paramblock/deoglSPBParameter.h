@@ -25,19 +25,19 @@
 
 
 /**
- * \brief Shader parameter block parameter.
+ * Shader parameter block parameter.
  */
 class deoglSPBParameter{
 public:
-	/** \brief Value types. */
+	/** Value types. */
 	enum eValueTypes{
-		/** \brief Float values. */
+		/** Float values. */
 		evtFloat,
 		
-		/** \brief Integer values. */
+		/** Integer values. */
 		evtInt,
 		
-		/** \brief Boolean values. */
+		/** Boolean values. */
 		evtBool
 	};
 	
@@ -59,10 +59,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader parameter. */
+	/** Create shader parameter. */
 	deoglSPBParameter();
 	
-	/** \brief Clean up shader parameter. */
+	/** Clean up shader parameter. */
 	~deoglSPBParameter();
 	/*@}*/
 	
@@ -70,56 +70,56 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Value type. */
+	/** Value type. */
 	inline eValueTypes GetValueType() const{ return pValueType; }
 	
-	/** \brief Set value type. */
+	/** Set value type. */
 	void SetValueType( eValueTypes valueType );
 	
-	/** \brief Number of components in vector. */
+	/** Number of components in vector. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Set number of components in vector. */
+	/** Set number of components in vector. */
 	void SetComponentCount( int componentCount );
 	
-	/** \brief Number of vectors. */
+	/** Number of vectors. */
 	inline int GetVectorCount() const{ return pVectorCount; }
 	
-	/** \brief Set number of vectors. */
+	/** Set number of vectors. */
 	void SetVectorCount( int vectorCount );
 	
-	/** \brief Array count. */
+	/** Array count. */
 	inline int GetArrayCount() const{ return pArrayCount; }
 	
-	/** \brief Set array count. */
+	/** Set array count. */
 	void SetArrayCount( int arrayCount );
 	
-	/** \brief Set all parameters. */
+	/** Set all parameters. */
 	void SetAll( eValueTypes valueType, int componentCount,
 		int vectorCount, int arrayCount );
 	
-	/** \brief Offset to first value component in data block. */
+	/** Offset to first value component in data block. */
 	inline int GetOffset() const{ return pOffset; }
 	
-	/** \brief Set offset to first value component in data block. */
+	/** Set offset to first value component in data block. */
 	void SetOffset( int offset );
 	
-	/** \brief Vector stride. */
+	/** Vector stride. */
 	inline int GetStride() const{ return pStride; }
 	
-	/** \brief Set vector stride. */
+	/** Set vector stride. */
 	void SetStride( int stride );
 	
-	/** \brief Array stride. */
+	/** Array stride. */
 	inline int GetArrayStride() const{ return pArrayStride; }
 	
-	/** \brief Set array stride. */
+	/** Set array stride. */
 	void SetArrayStride( int arrayStride );
 	
-	/** \brief Size of data in block. */
+	/** Size of data in block. */
 	inline int GetDataSize() const{ return pDataSize; }
 	
-	/** \brief Set size of data in block. */
+	/** Set size of data in block. */
 	void SetDataSize( int size );
 	/*@}*/
 };

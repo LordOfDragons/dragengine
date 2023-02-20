@@ -29,7 +29,7 @@ class deoglCapsTextureFormat;
 
 
 /**
- * \brief OpenGL capabilities texture format list.
+ * OpenGL capabilities texture format list.
  */
 class deoglCapsTextureFormatList{
 private:
@@ -42,10 +42,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create format list. */
+	/** Create format list. */
 	deoglCapsTextureFormatList();
 	
-	/** \brief Clean up format list. */
+	/** Clean up format list. */
 	~deoglCapsTextureFormatList();
 	/*@}*/
 	
@@ -53,16 +53,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of formats. */
+	/** Number of formats. */
 	inline int GetFormatCount() const{ return pFormatCount; }
 	
-	/** \brief Format at index. */
+	/** Format at index. */
 	const deoglCapsTextureFormat *GetFormatAt( int index ) const;
 	
-	/** \brief Format with opengl format or \em NULL if absent. */
+	/** Format with opengl format or \em NULL if absent. */
 	const deoglCapsTextureFormat *GetFormatWith( GLint format ) const;
 	
-	/** \brief Add format. */
+	/** Add format. */
 	void AddFormat( GLint format, GLenum pixelFormat, GLenum pixelType, int bitsPerPixel,
 		bool isDepth, bool isDepthFloat, bool isStencil, bool isCompressed, const char *name );
 	/*@}*/

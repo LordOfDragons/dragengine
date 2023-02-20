@@ -35,7 +35,7 @@ class deoglVAO;
 
 
 /**
- * \brief OpenGL Shared VBO.
+ * OpenGL Shared VBO.
  * 
  * Shared VBO contain one or more blocks of data belonging to different resources. Each VBO
  * has one VAO assigned to reduce the VAO switching. Shared VBOs can be used in a static or

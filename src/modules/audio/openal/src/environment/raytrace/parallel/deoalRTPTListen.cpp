@@ -161,7 +161,7 @@ void deoalRTPTListen::Run(){
 	pLimitRevTimeCount = 0;
 	pUnlimitRevTimeCount = 0;
 	
-	pDirectSoundDistance = ( pListenPosition - pSourceProbe->GetPosition() ).Length();
+	pDirectSoundDistance = ( float )( ( pListenPosition - pSourceProbe->GetPosition() ).Length() );
 	
 	pSepDistFirstLateRefl = pDirectSoundDistance;
 	if( pListenProbe ){
@@ -364,7 +364,7 @@ void deoalRTPTListen::RunLinearBeam(){
 		
 		// calculate weight
 		float factor = /* beamNormalize * */
-			decMath::max( 1.0f - sqrt( closestDistSquared )
+			decMath::max( 1.0f - sqrtf( closestDistSquared )
 				/ ( baseBeamRadius * closestBeamDistance ), 0.0f );
 		
 		// precalc already applied distance attenuation so no need to do it here again unless

@@ -124,7 +124,7 @@ dsFunction( init.clsEffOverImg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 void deClassEffectOverlayImage::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deEffectOverlayImage * const effect = ( ( sEffOverImgMatrixNatDat* )p_GetNativeData( myself ) )->effect;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )effect );
+	rt->PushInt( ( int )( intptr_t )effect );
 }
 
 // public func bool equals( Object obj )

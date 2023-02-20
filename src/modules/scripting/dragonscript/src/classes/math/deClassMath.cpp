@@ -30,8 +30,8 @@
 #include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
 
-#define DEG_TO_RAD 0.017453292519943295
-#define RAD_TO_DEG 57.295779513082323
+#define DEG_TO_RAD 0.017453292519943295f
+#define RAD_TO_DEG 57.295779513082323f
 
 
 

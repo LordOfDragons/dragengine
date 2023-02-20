@@ -42,14 +42,15 @@
 // Events
 ///////////
 
-FXDEFMAP( deglDGPPanelFileFormats ) deglDGPPanelFileFormatsMap[] = {};
+//FXDEFMAP( deglDGPPanelFileFormats ) deglDGPPanelFileFormatsMap[] = {};
 
 
 
 // Class deglDGPPanelFileFormats
 /////////////////////////////////
 
-FXIMPLEMENT( deglDGPPanelFileFormats, FXVerticalFrame, deglDGPPanelFileFormatsMap, ARRAYNUMBER( deglDGPPanelFileFormatsMap ) )
+//FXIMPLEMENT( deglDGPPanelFileFormats, FXVerticalFrame, deglDGPPanelFileFormatsMap, ARRAYNUMBER( deglDGPPanelFileFormatsMap ) )
+FXIMPLEMENT( deglDGPPanelFileFormats, FXVerticalFrame, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

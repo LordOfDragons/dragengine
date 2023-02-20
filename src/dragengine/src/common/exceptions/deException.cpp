@@ -231,68 +231,98 @@ void deException::pBuildBacktrace(){
 	const HANDLE process = GetCurrentProcess();
 	const HANDLE thread = GetCurrentThread();
 	
+	DWORD symOptions = SYMOPT_LOAD_LINES | SYMOPT_CASE_INSENSITIVE;
+	symOptions |= SYMOPT_DEBUG | SYMOPT_DEFERRED_LOADS | SYMOPT_UNDNAME;
+	symOptions |= SYMOPT_INCLUDE_32BIT_MODULES;
+
+	if( ! SymSetOptions( symOptions ) ){
+		return;
+	}
+	if( ! SymInitialize( process, NULL, TRUE ) ){
+		return;
+	}
+	
 	CONTEXT context;
 	memset( &context, 0, sizeof( CONTEXT ) );
 	context.ContextFlags = CONTEXT_FULL;
 	RtlCaptureContext( &context );
 	
-	SymInitialize( process, NULL, TRUE );
-	
-	DWORD image;
-	STACKFRAME64 stackframe;
-	ZeroMemory( &stackframe, sizeof( STACKFRAME64 ) );
-	
-	#ifdef _M_IX86
-		image = IMAGE_FILE_MACHINE_I386;
-		stackframe.AddrPC.Offset = context.Eip;
-		stackframe.AddrPC.Mode = AddrModeFlat;
-		stackframe.AddrFrame.Offset = context.Ebp;
-		stackframe.AddrFrame.Mode = AddrModeFlat;
-		stackframe.AddrStack.Offset = context.Esp;
-		stackframe.AddrStack.Mode = AddrModeFlat;
-	#elif _M_X64
-		image = IMAGE_FILE_MACHINE_AMD64;
-		stackframe.AddrPC.Offset = context.Rip;
-		stackframe.AddrPC.Mode = AddrModeFlat;
-		stackframe.AddrFrame.Offset = context.Rsp;
-		stackframe.AddrFrame.Mode = AddrModeFlat;
-		stackframe.AddrStack.Offset = context.Rsp;
-		stackframe.AddrStack.Mode = AddrModeFlat;
-	#elif _M_IA64
-		image = IMAGE_FILE_MACHINE_IA64;
-		stackframe.AddrPC.Offset = context.StIIP;
-		stackframe.AddrPC.Mode = AddrModeFlat;
-		stackframe.AddrFrame.Offset = context.IntSp;
-		stackframe.AddrFrame.Mode = AddrModeFlat;
-		stackframe.AddrBStore.Offset = context.RsBSP;
-		stackframe.AddrBStore.Mode = AddrModeFlat;
-		stackframe.AddrStack.Offset = context.IntSp;
-		stackframe.AddrStack.Mode = AddrModeFlat;
+	const int symbolBufferLen = sizeof( IMAGEHLP_SYMBOL64 ) + MAX_SYM_NAME;
+	char * const symbolBuffer = new char[ symbolBufferLen + 1 ];
+	memset( symbolBuffer, 0, symbolBufferLen + 1 );
+	PIMAGEHLP_SYMBOL64 const symbol = ( PIMAGEHLP_SYMBOL64 )symbolBuffer;
+	symbol->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
+	symbol->MaxNameLength = MAX_SYM_NAME;
+
+	STACKFRAME_EX stack;
+	memset( &stack, 0, sizeof( stack ) );
+	DWORD machineType;
+
+	#ifdef _WIN64
+		machineType = IMAGE_FILE_MACHINE_IA64;
+		stack.AddrPC.Offset = context.Rip;
+		stack.AddrPC.Mode = AddrModeFlat;
+		stack.AddrStack.Offset = context.Rsp;
+		stack.AddrStack.Mode = AddrModeFlat;
+		stack.AddrFrame.Offset = context.Rbp;
+		stack.AddrFrame.Mode = AddrModeFlat;
+	#else
+		machineType = IMAGE_FILE_MACHINE_I386;
+		stack.AddrPC.Offset = context.Eip;
+		stack.AddrPC.Mode = AddrModeFlat;
+		stack.AddrStack.Offset = context.Esp;
+		stack.AddrStack.Mode = AddrModeFlat;
+		stack.AddrFrame.Offset = context.Ebp;
+		stack.AddrFrame.Mode = AddrModeFlat;
 	#endif
 	
-	size_t i;
-	for( i=SKIP_SELF_TRACE_COUNT; i<MAX_BACKTRACE_COUNT; i++ ){
-		BOOL result = StackWalk64( image, process, thread, &stackframe, &context,
-			NULL, SymFunctionTableAccess64, SymGetModuleBase64, NULL );
-		if( ! result ){
+	BOOL result;
+	char undecoratedName[ 256 ];
+
+	IMAGEHLP_MODULE64 moduleInfo;
+	memset( &moduleInfo, 0, sizeof( moduleInfo ) );
+	moduleInfo.SizeOfStruct = sizeof( IMAGEHLP_MODULE64 );
+
+	char symbolInfoBuffer[ sizeof( SYMBOL_INFO ) + MAX_SYM_NAME * sizeof( TCHAR ) ];
+	memset( &symbolInfoBuffer, 0, sizeof( symbolInfoBuffer ) );
+	PSYMBOL_INFO symbolInfo = ( PSYMBOL_INFO )&symbolInfoBuffer;
+	symbolInfo->SizeOfStruct = sizeof( SYMBOL_INFO );
+	symbolInfo->MaxNameLen = MAX_SYM_NAME;
+
+	int i;
+	decString desymbol;
+
+	for( i=0; i<50; i++ ){
+		result = StackWalkEx( machineType, process, thread, &stack, &context, NULL,
+			SymFunctionTableAccess64, SymGetModuleBase64, NULL, 0 );
+		if( ! result || ! stack.AddrPC.Offset ){
 			break;
 		}
-		
-		char buffer[ sizeof( SYMBOL_INFO ) + MAX_SYM_NAME * sizeof( TCHAR ) ];
-		PSYMBOL_INFO symbol = ( PSYMBOL_INFO )buffer;
-		symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
-		symbol->MaxNameLen = MAX_SYM_NAME;
-		
-		DWORD64 displacement = 0;
-		decString desymbol;
-		
-		if( SymFromAddr( process, stackframe.AddrPC.Offset, &displacement, symbol ) ){
-			desymbol.Format( "%s [%p]", symbol->Name, ( void* )stackframe.AddrPC.Offset );
+
+		symbol->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
+		symbol->MaxNameLength = 255;
+
+		DWORD64 offsetSymbol = 0;
+		DWORD offsetLine = 0;
+		IMAGEHLP_LINE64 symbolLine = ( IMAGEHLP_LINE64 )0;
+
+		const void *address = 0;
+		const char *name = "??";
+		const char *sourceFile = "??";
+		int sourceLine = 0;
+
+		if( SymFromAddr( process, stack.AddrPC.Offset, &offsetSymbol, symbolInfo ) ){
+			address = ( void* )symbolInfo->Address;
 			
-		}else{
-			desymbol.Format( "?? [%p]", ( void* )stackframe.AddrPC.Offset );
+			UnDecorateSymbolName( symbolInfo->Name, ( PSTR )undecoratedName, sizeof( undecoratedName ), UNDNAME_COMPLETE );
+			name = undecoratedName;
+		}
+		if( SymGetLineFromAddr64( process, stack.AddrPC.Offset, &offsetLine, &symbolLine ) ){
+			sourceLine = ( int )symbolLine.LineNumber;
+			sourceFile = symbolLine.FileName;
 		}
 		
+		desymbol.Format( "%s [%p] %s:%d", name, address, sourceFile, sourceLine );
 		pBacktrace.Add( desymbol );
 	}
 	

@@ -33,7 +33,7 @@ class decConvexVolumeList;
 
 
 /**
- * @brief Light Volume.
+ * Light Volume.
  * Convex light volume enclosing the area of effect of a light source. The volume is guaranteed to be not
  * smaller than the real area of effect of the light source. Most of the time the volume is though larger
  * especially if a tight fitting volume would be concave. The volume can be constructed from a convex
@@ -56,7 +56,7 @@ public:
 	bool pDirtyVBO;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new light volume. */
 	deoglLightVolume( deoglRenderThread &renderThread );
@@ -64,7 +64,7 @@ public:
 	~deoglLightVolume();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the minimum extend. */
 	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }

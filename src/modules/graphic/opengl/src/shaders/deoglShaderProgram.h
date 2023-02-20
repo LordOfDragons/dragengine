@@ -23,29 +23,31 @@
 #define _DEOGLSHADERPROGRAM_H_
 
 #include "deoglShaderDefines.h"
-#include "deoglShaderProgramUsage.h"
+
+#include <dragengine/deObject.h>
 
 class deoglRenderThread;
 class deoglShaderUnitSourceCode;
 class deoglShaderSources;
 class deoglShaderCompiled;
-class deoglRenderTaskSharedShader;
 
 
 
 /**
- * @brief Shader Program.
  * A shader program. Shader programs are compiled from a base code loaded
  * from disk using defines to produce a specialized program.
  */
-class deoglShaderProgram{
+class deoglShaderProgram : public deObject{
 public:
-	typedef deoglShaderProgramUsage Ref;
+	typedef deTObjectReference<deoglShaderProgram> Ref;
+	
+	
 	
 private:
 	deoglRenderThread &pRenderThread;
-	deoglShaderSources *pSources;
+	const deoglShaderSources *pSources;
 	deoglShaderDefines pDefines;
+	decString pCacheId;
 	
 	deoglShaderUnitSourceCode *pSCCompute;
 	deoglShaderUnitSourceCode *pSCTessellationControl;
@@ -57,33 +59,47 @@ private:
 	deoglShaderCompiled *pCompiled;
 	
 	unsigned int pUniqueKey;
-	deoglRenderTaskSharedShader *pRTSShader;
 	
-	int pUsageCount;
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new shader program object. */
-	deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources );
-	/** Creates a new shader program object. */
-	deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources, const deoglShaderDefines &defines );
-	/** Cleans up the shader program object. */
-	~deoglShaderProgram();
+	/** Create shader program. */
+	deoglShaderProgram( deoglRenderThread &renderThread, const deoglShaderSources *sources );
+	
+	/** Create shader program. */
+	deoglShaderProgram( deoglRenderThread &renderThread,
+		const deoglShaderSources *sources, const deoglShaderDefines &defines );
+	
+protected:
+	/** Clean up shader program. */
+	virtual ~deoglShaderProgram();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the sources. */
-	inline deoglShaderSources *GetSources() const{ return pSources; }
+	inline const deoglShaderSources *GetSources() const{ return pSources; }
+	
 	/** Retrieves the defines. */
 	inline const deoglShaderDefines &GetDefines() const{ return pDefines; }
+	
+	/** Cache identifier. */
+	inline const decString &GetCacheId() const{ return pCacheId; }
+	
+	/** Set cache identifier. */
+	void SetCacheId( const decString &id );
 	
 	/** Compute source code or NULL. */
 	inline deoglShaderUnitSourceCode *GetComputeSourceCode() const{ return pSCCompute; }
 	
 	/** Set compute source code or NULL. */
-	void SetComputeCode( deoglShaderUnitSourceCode *sourceCode );
+	void SetComputeSourceCode( deoglShaderUnitSourceCode *sourceCode );
 	
 	/** Retrieves the tessellation control source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetTessellationControlSourceCode() const{ return pSCTessellationControl; }
@@ -93,41 +109,36 @@ public:
 	
 	/** Retrieves the tessellation evaluation source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetTessellationEvaluationSourceCode() const{ return pSCTessellationEvaluation; }
+	
 	/** Sets the tessellation evaluation source code or NULL if not used. */
 	void SetTessellationEvaluationSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	
 	/** Retrieves the geometry source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetGeometrySourceCode() const{ return pSCGeometry; }
+	
 	/** Sets the geometry source code or NULL if not used. */
 	void SetGeometrySourceCode( deoglShaderUnitSourceCode *sourceCode );
+	
 	/** Retrieves the vertex source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetVertexSourceCode() const{ return pSCVertex; }
+	
 	/** Sets the vertex source code or NULL if not used. */
 	void SetVertexSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	
 	/** Retrieves the fragment source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetFragmentSourceCode() const{ return pSCFragment; }
+	
 	/** Sets the fragment source code or NULL if not used. */
 	void SetFragmentSourceCode( deoglShaderUnitSourceCode *sourceCode );
 	
 	/** Retrieves the compiled shader. */
 	inline deoglShaderCompiled *GetCompiled() const{ return pCompiled; }
+	
 	/** Sets the compiled shader. */
 	void SetCompiled( deoglShaderCompiled *compiled );
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
-	
-	/** Render task shared shader. */
-	inline deoglRenderTaskSharedShader *GetRTSShader() const{ return pRTSShader; }
-	
-	/** Ensure render task sharded shader is present. */
-	void EnsureRTSShader();
-	
-	/** Retrieves the usage count. */
-	inline int GetUsageCount() const{ return pUsageCount; }
-	/** Add usage increases the usage count by one. */
-	void AddUsage();
-	/** Removes a usage decreasing the usage count by one. */
-	void RemoveUsage();
 	/*@}*/
 };
 

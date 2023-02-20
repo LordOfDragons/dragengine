@@ -23,15 +23,13 @@
 #define _DEOGLOCCLUSIONTEST_H_
 
 #include "../deoglBasics.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
-class deoglFramebuffer;
 class deoglOcclusionMap;
 class deoglOcclusionTestListener;
-class deoglPixelBuffer;
-class deoglTexture;
 class deoglVBOLayout;
 
 
@@ -50,25 +48,13 @@ private:
 	
 	deoglRenderThread &pRenderThread;
 	
-	deoglTexture *pTextureResult;
-	deoglFramebuffer *pFBOResult;
-	
-	GLuint pVBO;
-	GLuint pVAO;
-	deoglVBOLayout *pVBOLayout;
-	
-	GLuint pVBOResult;
-	GLfloat *pVBOResultData;
-	int pVBOResultDataSize;
+	deoglSPBlockSSBO::Ref pSSBOInput;
+	deoglSPBlockSSBO::Ref pSSBOResult;
 
 	deoglOcclusionTestListener **pInputListeners;
 	sInputData *pInputData;
 	int pInputDataCount;
 	int pInputDataSize;
-	
-	deoglPixelBuffer *pPBResults;
-	GLubyte *pResults;
-	decPoint pResultSize;
 	
 	
 	
@@ -86,19 +72,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Result texture. */
-	inline deoglTexture *GetTextureResult() const{ return pTextureResult; }
-	
-	/** Result fbo. */
-	inline deoglFramebuffer *GetFBOResult() const{ return pFBOResult; }
-	
-	
-	
 	/** Count of input data. */
 	inline int GetInputDataCount() const{ return pInputDataCount; }
-	
-	/** Input data for debugging purpose only. */
-	inline void *GetInputData() const{ return pInputData; }
 	
 	/**
 	 * Add input data returning the index to fetch the result later. The test box is
@@ -113,27 +88,17 @@ public:
 	/** Remove all input data. */
 	void RemoveAllInputData();
 	
-	/**
-	 * Update VBO using the collected input data. This also resizes the result textures
-	 * if required. Always call UpdateVBO before calling GetVBOResult(), GetVAO(),
-	 * GetTextureResult() or GetFBOResult().
-	 */
-	void UpdateVBO();
+	/** Update input data SSBO. */
+	void UpdateSSBO();
 	
-	/** VAO. */
-	GLuint GetVAO();
+	/** Input data SSBO. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOInput() const{ return pSSBOInput; }
 	
-	/** Result vbo. */
-	inline GLuint GetVBOResult() const{ return pVBOResult; }
+	/** Result data SSBO. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOResult() const{ return pSSBOResult; }
 	
-	/** Update results from result texture. */
+	/** Update results from SSBO. */
 	void UpdateResults();
-	
-	/** Result at index. */
-	bool GetResultAt( int index ) const;
-	
-	/** Result size. */
-	inline const decPoint &GetResultSize() const{ return pResultSize; }
 	/*@}*/
 	
 	
@@ -141,9 +106,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateVBOLayout();
-	void pResizeResult( const decPoint &size );
-	void pUpdateTexturesFBO();
+	void pResizeInputData( int size );
 };
 
 #endif

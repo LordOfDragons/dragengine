@@ -38,6 +38,7 @@ UBOLAYOUT uniform GIParameters{
 	int pGICascade;
 	
 	vec3 pGIDetectionBox;
+	int pRayCacheProbeCount;
 	
 	vec3 pGIBVHOffset;
 };

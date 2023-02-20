@@ -813,7 +813,7 @@ void deClassColliderConstraint::nfHashCode::RunFunction( dsRunTime *rt, dsValue 
 	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )constraint );
+	rt->PushInt( ( int )( intptr_t )constraint );
 }
 
 // public func bool equals( Object obj )

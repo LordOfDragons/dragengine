@@ -23,6 +23,8 @@
 #define _DEOGLSKINCHANNEL_H_
 
 #include "../deoglSkinPropertyMap.h"
+#include "../../texture/deoglRImage.h"
+#include "../../texture/pixelbuffer/deoglPixelBufferMipMap.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -32,9 +34,7 @@ class deoglCombinedTexture;
 class deoglCubeMap;
 class deoglImage;
 class deoglPixelBuffer;
-class deoglPixelBufferMipMap;
 class deoglRenderThread;
-class deoglRImage;
 class deoglRSkin;
 class deoglSkinTexture;
 class deoglTexture;
@@ -56,7 +56,7 @@ class decMemoryFile;
 
 
 /**
- * \brief Skin channel.
+ * Skin channel.
  * 
  * Stores the texture for a skin channel. The channel texture is typically a combined
  * texture. The source definition contains the image objects or color values required
@@ -70,73 +70,73 @@ class decMemoryFile;
  */
 class deoglSkinChannel{
 public:
-	/** \brief Channel types. */
+	/** Channel types. */
 	enum eChannelTypes{
-		/** \brief Color (rgb). */
+		/** Color (rgb). */
 		ectColor,
 		
-		/** \brief Color tint mask (r). */
+		/** Color tint mask (r). */
 		ectColorTintMask,
 		
-		/** \brief Transparency (r). */
+		/** Transparency (r). */
 		ectTransparency,
 		
-		/** \brief Omni-directional color (rgb cube). */
+		/** Omni-directional color (rgb cube). */
 		ectColorOmnidirCube,
 		
-		/** \brief Omni-directional color equirect map (rgb). */
+		/** Omni-directional color equirect map (rgb). */
 		ectColorOmnidirEquirect,
 		
-		/** \brief Solidity (r). */
+		/** Solidity (r). */
 		ectSolidity,
 		
-		/** \brief Normal (rgb), optional normal deviation angle (a). */
+		/** Normal (rgb), optional normal deviation angle (a). */
 		ectNormal,
 		
-		/** \brief Height map (r), optional tech specific (g). */
+		/** Height map (r), optional tech specific (g). */
 		ectHeight,
 		
-		/** \brief Emission color (rgb), emission strength (a). */
+		/** Emission color (rgb), emission strength (a). */
 		ectEmissivity,
 		
-		/** \brief Refraction distortion (rg). */
+		/** Refraction distortion (rg). */
 		ectRefractDistort,
 		
-		/** \brief Ambient occlusion (r). */
+		/** Ambient occlusion (r). */
 		ectAO,
 		
-		/** \brief Reflectivity (rgb). */
+		/** Reflectivity (rgb). */
 		ectReflectivity,
 		
-		/** \brief Roughness (r). */
+		/** Roughness (r). */
 		ectRoughness,
 		
-		/** \brief Environment map (rgb cube). */
+		/** Environment map (rgb cube). */
 		ectEnvironmentMap,
 		
-		/** \brief Environment room (rgb cube). */
+		/** Environment room (rgb cube). */
 		ectEnvironmentRoom,
 		
-		/** \brief Environment room mask (r). */
+		/** Environment room mask (r). */
 		ectEnvironmentRoomMask,
 		
-		/** \brief Environment room emissivity (rgb cube). */
+		/** Environment room emissivity (rgb cube). */
 		ectEnvironmentRoomEmissivity,
 		
-		/** \brief Absorption (rgb). */
+		/** Absorption (rgb). */
 		ectAbsorption,
 		
-		/** \brief Rim emission (r). */
+		/** Rim emission (r). */
 		ectRimEmissivity,
 		
-		/** \brief Non-PBR albedo (rgb). */
+		/** Non-PBR albedo (rgb). */
 		ectNonPbrAlbedo,
 		
-		/** \brief Non-PBR metalness (r). */
+		/** Non-PBR metalness (r). */
 		ectNonPbrMetalness
 	};
 	
-	/** \brief Number of channels. */
+	/** Number of channels. */
 	static const int CHANNEL_COUNT = ectNonPbrMetalness + 1;
 	
 	
@@ -155,7 +155,7 @@ private:
 	deoglCubeMap *pCubeMap;
 	deoglArrayTexture *pArrayTexture;
 	deoglCombinedTexture *pCombinedTexture;
-	deoglPixelBufferMipMap *pPixelBufferMipMap;
+	deoglPixelBufferMipMap::Ref pPixelBufferMipMap;
 	
 	decString pCacheID;
 	bool pIsCached;
@@ -170,8 +170,8 @@ private:
 	
 	decColor pUniformColor;
 	bool pUniformColorMask[ 4 ];
-	deoglRImage *pCombinedImage1;
-	deoglRImage *pCombinedImage2;
+	deoglRImage::Ref pCombinedImage1;
+	deoglRImage::Ref pCombinedImage2;
 	deoglImage *pDelayedCombineImage1;
 	deoglImage *pDelayedCombineImage2;
 	
@@ -179,7 +179,7 @@ private:
 	bool pDynamic;
 	
 	deoglRImage *pImage;
-	bool pImageHeld;
+	deoglRImage::Ref pHoldImage;
 	
 	deVideo *pVideo;
 	int pVideoPlayer;
@@ -193,10 +193,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin channel. */
+	/** Create skin channel. */
 	deoglSkinChannel( deoglRenderThread &renderThread, eChannelTypes type );
 	
-	/** \brief Clean up skin channel. */
+	/** Clean up skin channel. */
 	~deoglSkinChannel();
 	/*@}*/
 	
@@ -204,195 +204,192 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Finalize after asynchronous resource loading. */
+	/** Finalize after asynchronous resource loading. */
 	void FinalizeAsyncResLoading();
 	
 	
 	
-	/** \brief Full quality size. */
+	/** Full quality size. */
 	inline const decPoint3 &GetSize() const{ return pSize; }
 	
-	/** \brief Set full quality size. */
+	/** Set full quality size. */
 	void SetSize( const decPoint3 &size );
 	
-	/** \brief Retrieves the component count. */
+	/** Retrieves the component count. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Sets the component count. */
+	/** Sets the component count. */
 	void SetComponentCount( int componentCount );
 	
 	
 	
-	/** \brief Texture scaling factor in u direction. */
+	/** Texture scaling factor in u direction. */
 	inline float GetFactorU() const{ return pFactorU; }
 	
-	/** \brief Set texture scaling factor in u direction. */
+	/** Set texture scaling factor in u direction. */
 	void SetFactorU( float factor );
 	
-	/** \brief Texture scaling factor in v direction. */
+	/** Texture scaling factor in v direction. */
 	inline float GetFactorV() const{ return pFactorV; }
 	
-	/** \brief Set texture scaling factor in v direction. */
+	/** Set texture scaling factor in v direction. */
 	void SetFactorV( float factor );
 	
-	/** \brief Texture or \em NULL if this is not used. */
+	/** Texture or nullptr if this is not used. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** \brief Cube map or \em NULL if this is not used. */
+	/** Cube map or nullptr if this is not used. */
 	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
 	
-	/** \brief Array texture or \em NULL if this is not used. */
+	/** Array texture or nullptr if this is not used. */
 	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
-	/** \brief Combined texture or \em NULL if not used. */
+	/** Combined texture or nullptr if not used. */
 	inline deoglCombinedTexture *GetCombinedTexture() const{ return pCombinedTexture; }
 	
-	/** \brief Set combined texture or \em NULL if not used. */
+	/** Set combined texture or nullptr if not used. */
 	void SetCombinedTexture( deoglCombinedTexture *combinedTexture );
 	
 	
 	
-	/** \brief Pixel buffer mip map or \em NULL if not existing. */
-	inline deoglPixelBufferMipMap *GetPixelBufferMipMap() const{ return pPixelBufferMipMap; }
+	/** Pixel buffer mip map or nullptr if not existing. */
+	inline const deoglPixelBufferMipMap::Ref &GetPixelBufferMipMap() const{ return pPixelBufferMipMap; }
 	
-	/** \brief Set pixel buffer mip map or \em NULL if not existing. */
+	/** Set pixel buffer mip map or nullptr if not existing. */
 	void SetPixelBufferMipMap( deoglPixelBufferMipMap *pbmipmap );
 	
-	/** \brief Texture data is cached. */
+	/** Texture data is cached. */
 	inline bool GetIsCached() const{ return pIsCached; }
 	
-	/** \brief Set if texture data is cached. */
+	/** Set if texture data is cached. */
 	void SetIsCached( bool isCached );
 	
-	/** \brief Texture can be cached. */
+	/** Texture can be cached. */
 	inline bool GetCanBeCached() const{ return pCanBeCached; }
 	
-	/** \brief Set if texture can be cached. */
+	/** Set if texture can be cached. */
 	void SetCanBeCached( bool canBeCached );
 	
-	/** \brief Cache identifier. */
+	/** Cache identifier. */
 	inline const decString &GetCacheID() const{ return pCacheID; }
 	
-	/** \brief Set cache identifier. */
+	/** Set cache identifier. */
 	void SetCacheID( const char *cacheID );
 	
-	/** \brief Cache verify data or \em NULL if absent. */
+	/** Cache verify data or nullptr if absent. */
 	inline const decMemoryFile *GetCacheVerify() const{ return pCacheVerify; }
 	
 	
 	
-	/** \brief Uniform color. */
+	/** Uniform color. */
 	inline const decColor &GetUniformColor() const{ return pUniformColor; }
 	
-	/** \brief Set uniform color. */
+	/** Set uniform color. */
 	void SetUniformColor( const decColor &color );
 	
-	/** \brief Color component is static. */
+	/** Color component is static. */
 	bool IsComponentStatic( int component ) const;
 	
-	/** \brief At least one color component is static. */
+	/** At least one color component is static. */
 	bool HasStaticComponent() const;
 	
-	/** \brief All color components are static. */
+	/** All color components are static. */
 	bool AllComponentsStatic() const;
 	
-	/** \brief All color components are not static. */
+	/** All color components are not static. */
 	bool AllComponentsNotStatic() const;
 	
-	/** \brief First combined image or \em NULL if not existing. */
-	inline deoglRImage *GetCombinedImage1() const{ return pCombinedImage1; }
+	/** First combined image or nullptr if not existing. */
+	inline const deoglRImage::Ref &GetCombinedImage1() const{ return pCombinedImage1; }
 	
-	/** \brief Second combined image or \em NULL if not existing. */
-	inline deoglRImage *GetCombinedImage2() const{ return pCombinedImage2; }
+	/** Second combined image or nullptr if not existing. */
+	inline const deoglRImage::Ref &GetCombinedImage2() const{ return pCombinedImage2; }
 	
-	/** \brief First delayed combined image or \em NULL if not existing. */
+	/** First delayed combined image or nullptr if not existing. */
 	inline deoglImage *GetDelayedCombinedImage1() const{ return pDelayedCombineImage1; }
 	
-	/** \brief Second delayed combined image or \em NULL if not existing. */
+	/** Second delayed combined image or nullptr if not existing. */
 	inline deoglImage *GetDelayedCombinedImage2() const{ return pDelayedCombineImage2; }
 	
 	
 	
-	/** \brief Channel is purely a uniform color. */
+	/** Channel is purely a uniform color. */
 	inline bool GetUniform() const{ return pUniform; }
 	
-	/** \brief Set if channel is purely a uniform color. */
+	/** Set if channel is purely a uniform color. */
 	void SetUniform( bool uniform );
 	
-	/** \brief Channel has dynamic content. */
+	/** Channel has dynamic content. */
 	inline bool GetDynamic() const{ return pDynamic; }
 	
-	/** \brief Set channel has dynamic content. */
+	/** Set channel has dynamic content. */
 	void SetDynamic( bool dynamic );
 	
 	
 	
-	/** \brief Image or \em NULL to use the texture stored locally. */
+	/** Image or nullptr to use the texture stored locally. */
 	inline deoglRImage *GetImage() const{ return pImage; }
 	
-	/** \brief Set image or \em NULL to use the texture stored locally. */
-// 	void SetImage( deoglRImage *image );
-	
 	/**
-	 * \brief Video or \em NULL to use the texture stored locally.
+	 * Video or nullptr to use the texture stored locally.
 	 * \details This has to be called only by synchronization in main thread. The video pointer
 	 *          is only valid as long as deoglSkin is existing.
 	 */
 	inline deVideo *GetVideo() const{ return pVideo; }
 	
 	/**
-	 * \brief Set video or \em NULL to use the texture stored locally.
+	 * Set video or nullptr to use the texture stored locally.
 	 * \details This has to be called only by synchronization in main thread. The video pointer
 	 *          is only valid as long as deoglSkin is existing.
 	 */
 	void SetVideo( deVideo *video );
 	
-	/** \brief Video player index or -1 if not used. */
+	/** Video player index or -1 if not used. */
 	inline int GetVideoPlayer() const{ return pVideoPlayer; }
 	
-	/** \brief Set video player index or -1 if not used. */
+	/** Set video player index or -1 if not used. */
 	void SetVideoPlayer( int index );
 	
-	/** \brief Video player is shared. */
+	/** Video player is shared. */
 	inline bool GetSharedVideoPlayer() const{ return pSharedVideoPlayer; }
 	
-	/** \brief Set if video player is shared. */
+	/** Set if video player is shared. */
 	void SetSharedVideoPlayer( bool shared );
 	
-	/** \brief Index of the renderable or -1 if not dynamic. */
+	/** Index of the renderable or -1 if not dynamic. */
 	inline int GetRenderable() const{ return pRenderable; }
 	
-	/** \brief Set index of the renderable or -1 if not dynamic. */
+	/** Set index of the renderable or -1 if not dynamic. */
 	void SetRenderable( int index );
 	
 	
 	
 	/**
-	 * \brief Prepare for building channel.
+	 * Prepare for building channel.
 	 * \details Creates the required texture object and cache parameters required for loading caches.
 	 */
 	void PrepareChannel( deoglRSkin &skin, deoglSkinTexture &texture, const deSkinTexture &engTexture,
 		const deoglVSDetermineChannelFormat &channelFormat );
 	
 	/**
-	 * \brief Build channel but does not create anything requiring opengl calls.
+	 * Build channel but does not create anything requiring opengl calls.
 	 * \details Call after loading caches if cache ID is empty or cache is outdated or missing.
 	 */
 	void BuildChannel( const deSkinTexture &engTexture );
 	
-	/** \brief Generate cone map. */
+	/** Generate cone map. */
 	void GenerateConeMap();
 	
-	/** \brief Clear cache data build during a call to PrepareChannel not required anymore. */
+	/** Clear cache data build during a call to PrepareChannel not required anymore. */
 	void ClearCacheData();
 	
 	/**
-	 * \brief Use shared image.
+	 * Use shared image.
 	 * 
 	 * If shared image is not in use by a skin moves textures to shared image. Otherwise deletes
 	 * textures without using delayed deletion to avoid dead-locking.
@@ -403,11 +400,11 @@ public:
 	
 	
 	
-	/** \brief Channel name for logging and debugging. */
+	/** Channel name for logging and debugging. */
 	static const char *ChannelNameFor( eChannelTypes type );
 	
 	/**
-	 * \brief Channel type matching property type.
+	 * Channel type matching property type.
 	 * \param[in] propertyType Property type to match.
 	 * \param[out] channelType Matching channel type. Updated only if \em true is returned.
 	 * \returns \em true if matching.

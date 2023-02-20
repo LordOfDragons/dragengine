@@ -27,7 +27,6 @@
 #include "deoglCombinedTextureList.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
-#include "../../texture/deoglRImage.h"
 #include "../../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
@@ -51,26 +50,14 @@ pLLPrev( NULL ),
 pLLNext( NULL )
 {
 	int i;
-	
 	for( i=0; i<4; i++ ){
 		pImages[ i ] = images[ i ];
-		if( images[ i ] ){
-			images[ i ]->AddReference();
-		}
 	}
 }
 
 deoglCombinedTexture::~deoglCombinedTexture(){
-	int i;
-	
 	if( pTexture ){
 		delete pTexture;
-	}
-	
-	for( i=0; i<4; i++ ){
-		if( pImages[ i ] ){
-			pImages[ i ]->FreeReference();
-		}
 	}
 }
 
@@ -79,11 +66,9 @@ deoglCombinedTexture::~deoglCombinedTexture(){
 // Management
 ///////////////
 
-deoglRImage *deoglCombinedTexture::GetImageAt( int component ) const{
-	if( component < 0 || component > 3 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+const deoglRImage::Ref &deoglCombinedTexture::GetImageAt( int component ) const{
+	DEASSERT_TRUE( component >= 0 )
+	DEASSERT_TRUE( component <= 3 )
 	return pImages[ component ];
 }
 
@@ -126,7 +111,7 @@ void deoglCombinedTexture::CalcHashCode(){
 	pHashCode = CalcHashCodeFor( pColor, pImages );
 }
 
-unsigned int deoglCombinedTexture::CalcHashCodeFor( const decColor &color, deoglRImage *images[ 4 ] ){
+unsigned int deoglCombinedTexture::CalcHashCodeFor( const decColor &color, const deoglRImage::Ref *images ){
 	unsigned int hashCode = 0;
 	
 	hashCode += ( unsigned int )( color.r * 255.0 );
@@ -134,10 +119,10 @@ unsigned int deoglCombinedTexture::CalcHashCodeFor( const decColor &color, deogl
 	hashCode += ( unsigned int )( color.b * 255.0 );
 	hashCode += ( unsigned int )( color.a * 255.0 );
 	
-	hashCode += ( unsigned int )( ( intptr_t )images[ 0 ] & 0xffff );
-	hashCode += ( unsigned int )( ( intptr_t )images[ 1 ] & 0xffff );
-	hashCode += ( unsigned int )( ( intptr_t )images[ 2 ] & 0xffff );
-	hashCode += ( unsigned int )( ( intptr_t )images[ 3 ] & 0xffff );
+	hashCode += ( unsigned int )( ( intptr_t )( deoglRImage* )images[ 0 ] & 0xffff );
+	hashCode += ( unsigned int )( ( intptr_t )( deoglRImage* )images[ 1 ] & 0xffff );
+	hashCode += ( unsigned int )( ( intptr_t )( deoglRImage* )images[ 2 ] & 0xffff );
+	hashCode += ( unsigned int )( ( intptr_t )( deoglRImage* )images[ 3 ] & 0xffff );
 	
 	return hashCode;
 }
@@ -151,12 +136,8 @@ void deoglCombinedTexture::RemoveUsage(){
 	
 	if( pUsageCount == 0 ){
 		int i;
-		
 		for( i=0; i<4; i++ ){
-			if( pImages[ i ] ){
-				pImages[ i ]->FreeReference();
-				pImages[ i ] = NULL;
-			}
+			pImages[ i ] = nullptr;
 		}
 		
 		// WARNING remove usage typically happens during main thread. if the combined texture

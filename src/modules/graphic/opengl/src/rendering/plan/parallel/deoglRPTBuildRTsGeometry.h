@@ -38,6 +38,7 @@ private:
 	const deoglRenderPlanMasked *pMask;
 	float pElapsedTime;
 	deSemaphore pSemaphore;
+	int pPipelineModifier;
 	
 	
 	
@@ -74,6 +75,7 @@ public:
 	
 	
 private:
+	void pInitPipelineModifier();
 	void pSolid( bool xray );
 	void pSolidTerrain( bool xray );
 	void pSolidOutline( bool xray );

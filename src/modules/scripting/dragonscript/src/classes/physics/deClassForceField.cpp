@@ -418,7 +418,7 @@ dsFunction( init.clsFF, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 
 void deClassForceField::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deForceField * const forcefield = ( ( sFFNatDat* )p_GetNativeData( myself ) )->forcefield;
-	rt->PushInt( ( intptr_t )forcefield );
+	rt->PushInt( ( int )( intptr_t )forcefield );
 }
 
 // public func bool equals( Object obj )

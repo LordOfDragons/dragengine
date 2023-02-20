@@ -32,7 +32,7 @@ class deEngine;
 
 
 /**
- * \brief Build constructed definition string.
+ * Build constructed definition string.
  */
 class deoglSCConstructedDefinition : public deSkinPropertyNodeVisitor{
 private:
@@ -46,11 +46,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/** Create visitor. */
 	deoglSCConstructedDefinition( const deEngine &engine, decMemoryFile *definition,
 		decMemoryFile *verify, const deSkinPropertyConstructed &property );
 	
-	/** \brief Clean up visitor. */
+	/** Clean up visitor. */
 	virtual ~deoglSCConstructedDefinition();
 	/*@}*/
 	
@@ -58,7 +58,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Definitiojn is cache valid. */
+	/** Definitiojn is cache valid. */
 	inline bool GetCacheValid() const{ return pCacheValid; }
 	/*@}*/
 	
@@ -66,16 +66,16 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit group node. */
+	/** Visit group node. */
 	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
 	
-	/** \brief Visit image node. */
+	/** Visit image node. */
 	virtual void VisitImage( deSkinPropertyNodeImage &node );
 	
-	/** \brief Visit shape node. */
+	/** Visit shape node. */
 	virtual void VisitShape( deSkinPropertyNodeShape &node );
 	
-	/** \brief Visit text node. */
+	/** Visit text node. */
 	virtual void VisitText( deSkinPropertyNodeText &node );
 	/*@}*/
 	

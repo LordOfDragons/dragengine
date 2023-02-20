@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
 #include "deoglDebugFont.h"
@@ -848,12 +847,13 @@ void gimpDecodeRLE( unsigned char * const image_buf, const unsigned char *rle_da
 }
 
 void deoglDebugFont::pBuildTexture(){
-	deoglPixelBuffer pixbuf( deoglPixelBuffer::epfByte4, gimp_debugfont.width, gimp_debugfont.height, 1 );
+	const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New( new deoglPixelBuffer(
+		deoglPixelBuffer::epfByte4, gimp_debugfont.width, gimp_debugfont.height, 1 ) ) );
 	//deoglPixelBuffer pixbuf2( deoglPixelBuffer::epfByte4, gimp_debugfont.width, gimp_debugfont.height, 1 );
 	//unsigned int i, line = gimp_debugfont.width * gimp_debugfont.bytes_per_pixel;
 	
 	// GIMP_DEBUGFONT_RUN_LENGTH_DECODE
-	gimpDecodeRLE( ( unsigned char * )pixbuf.GetPointerByte4(), &gimp_debugfont.rle_pixel_data[ 0 ],
+	gimpDecodeRLE( ( unsigned char * )pixbuf->GetPointerByte4(), &gimp_debugfont.rle_pixel_data[ 0 ],
 		gimp_debugfont.width * gimp_debugfont.height, gimp_debugfont.bytes_per_pixel );
 	
 	//for( i=0; i<gimp_debugfont.height; i++ ){

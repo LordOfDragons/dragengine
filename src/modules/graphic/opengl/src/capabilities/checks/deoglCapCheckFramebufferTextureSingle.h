@@ -29,7 +29,7 @@ class deoglCapabilities;
 
 
 /**
- * \brief Capability check glFramebufferTexture with single texture.
+ * Capability check glFramebufferTexture with single texture.
  */
 class deoglCapCheckFramebufferTextureSingle{
 private:
@@ -41,7 +41,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capability check. */
+	/** Create capability check. */
 	deoglCapCheckFramebufferTextureSingle( deoglCapabilities &capabilities );
 	/*@}*/
 	
@@ -49,13 +49,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Clear entire array texture is working correctly. */
+	/** Clear entire array texture is working correctly. */
 	inline bool Working() const{ return pWorking; }
 	
-	/** \brief Clear entire array texture is not working correctly. */
+	/** Clear entire array texture is not working correctly. */
 	inline bool Broken() const{ return ! pWorking; }
 	
-	/** \brief Run check. */
+	/** Run check. */
 	void Check( GLuint fbo );
 	/*@}*/
 };

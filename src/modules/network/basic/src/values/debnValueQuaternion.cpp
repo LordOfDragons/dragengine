@@ -71,7 +71,7 @@ debnValueQuaternion::~debnValueQuaternion(){
 ///////////////
 
 bool debnValueQuaternion::UpdateValue( bool force ){
-	if( ! force && pValueQuat.GetQuaternion().IsEqualTo( pLastValue, pValueQuat.GetPrecision() ) ){
+	if( ! force && pValueQuat.GetQuaternion().IsEqualTo( pLastValue, ( float )pValueQuat.GetPrecision() ) ){
 		return false;
 	}
 	
@@ -96,10 +96,10 @@ void debnValueQuaternion::ReadValue( decBaseFileReader &reader ){
 		break;
 		
 	case evtQuaternionF64:
-		pLastValue.x = reader.ReadDouble();
-		pLastValue.y = reader.ReadDouble();
-		pLastValue.z = reader.ReadDouble();
-		pLastValue.w = reader.ReadDouble();
+		pLastValue.x = ( float )reader.ReadDouble();
+		pLastValue.y = ( float )reader.ReadDouble();
+		pLastValue.z = ( float )reader.ReadDouble();
+		pLastValue.w = ( float )reader.ReadDouble();
 		break;
 		
 	default:

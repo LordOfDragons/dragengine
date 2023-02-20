@@ -30,7 +30,7 @@ class deoglRenderableColorCubeMap;
 
 
 /**
- * @brief Renderable Color Cube Manager.
+ * Renderable Color Cube Manager.
  *
  * Manages renderable cubemaps. Maintains a list of renderable cubemaps build
  * upon demand. Renderable cubemaps once created stay around and can be reused.
@@ -47,7 +47,7 @@ private:
 	int pCubeMapSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap manager. */
 	deoglRenderableColorCubeMapManager( deoglRenderThread &renderThread );
@@ -55,7 +55,7 @@ public:
 	~deoglRenderableColorCubeMapManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable cubemaps. */
 	inline int GetCubeMapCount() const{ return pCubeMapCount; }

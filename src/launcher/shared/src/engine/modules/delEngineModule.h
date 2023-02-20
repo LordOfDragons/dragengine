@@ -36,7 +36,7 @@ class delLauncher;
 /**
  * \brief Game Engine Module.
  */
-class delEngineModule : public deObject{
+class DE_DLL_EXPORT delEngineModule : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<delEngineModule> Ref;

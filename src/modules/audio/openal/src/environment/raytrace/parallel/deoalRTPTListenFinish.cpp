@@ -604,12 +604,12 @@ void deoalRTPTListenFinish::pRun(){
 	// 
 	// this is actually the same as going directly from receiver to openal gain like this:
 	//   openal-gain = sqrt(receiver-intensity)
-	finalFRGainLow = sqrt( finalFRGainLow );
-	finalFRGainMedium = sqrt( finalFRGainMedium );
-	finalFRGainHigh = sqrt( finalFRGainHigh );
-	finalLRGainLow = sqrt( finalLRGainLow );
-	finalLRGainMedium = sqrt( finalLRGainMedium );
-	finalLRGainHigh = sqrt( finalLRGainHigh );
+	finalFRGainLow = sqrtf( finalFRGainLow );
+	finalFRGainMedium = sqrtf( finalFRGainMedium );
+	finalFRGainHigh = sqrtf( finalFRGainHigh );
+	finalLRGainLow = sqrtf( finalLRGainLow );
+	finalLRGainMedium = sqrtf( finalLRGainMedium );
+	finalLRGainHigh = sqrtf( finalLRGainHigh );
 	
 	// gains are clamped by a threshold in the sound trace task. this is by default around
 	// -60db or 0.001 . openal though goes down to -100db by definition. we need to scale
@@ -699,13 +699,13 @@ void deoalRTPTListenFinish::pRun(){
 		echoDelay = meanFreePath * INV_SOUND_SPEED;
 		const float rtfactor = 13.8f * -echoDelay;
 		if( absorptionLow > FLOAT_SAFE_EPSILON ){
-			reverberationTimeLow = rtfactor / log( decMath::max( 1.0f - absorptionLow, 1e-5f ) );
+			reverberationTimeLow = rtfactor / logf( decMath::max( 1.0f - absorptionLow, 1e-5f ) );
 		}
 		if( absorptionMedium > FLOAT_SAFE_EPSILON ){
-			reverberationTimeMedium = rtfactor / log( decMath::max( 1.0f - absorptionMedium, 1e-5f ) );
+			reverberationTimeMedium = rtfactor / logf( decMath::max( 1.0f - absorptionMedium, 1e-5f ) );
 		}
 		if( absorptionHigh > FLOAT_SAFE_EPSILON ){
-			reverberationTimeHigh = rtfactor / log( decMath::max( 1.0f - absorptionHigh, 1e-5f ) );
+			reverberationTimeHigh = rtfactor / logf( decMath::max( 1.0f - absorptionHigh, 1e-5f ) );
 		}
 		
 	}else{

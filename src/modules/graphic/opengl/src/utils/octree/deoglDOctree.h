@@ -30,7 +30,7 @@ class deoglDCollisionVolume;
 
 
 /**
- * @brief Generic Double-Precision Octree Class.
+ * Generic Double-Precision Octree Class.
  * Provides the generic implementation of an octree algorithm. For real usage subclass
  * this class and implement the required functions. Every Octree object is the root of
  * an octree. The top most octree object with no parent is the real octree root and

@@ -109,6 +109,9 @@ public:
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender();
 	
+	/** Prepare for render. Called by deoglRWorld if registered previously. */
+	void PrepareForRenderRender();
+	
 	/**
 	 * Prepare instances for rendering using a camera position.
 	 * First all instances are removed. Then each instance is distance tested

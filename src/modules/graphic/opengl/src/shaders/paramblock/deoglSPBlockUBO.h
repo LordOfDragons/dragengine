@@ -33,9 +33,15 @@
  * data block.
  */
 class deoglSPBlockUBO : public deoglShaderParameterBlock{
+public:
+	typedef deTObjectReference<deoglSPBlockUBO> Ref;
+	
+	
+	
 private:
 	GLuint pUBO;
 	int pBindingPoint;
+	bool pCompact;
 	bool pAllocateBuffer;
 	
 	char *pWriteBuffer;
@@ -72,6 +78,12 @@ public:
 	/** Set binding point. */
 	void SetBindingPoint( int bindingPoint );
 	
+	/** Compact elements. If true mapping individual elements is prohibited. */
+	inline bool GetCompact() const{ return pCompact; }
+	
+	/** Set if elements are compact. If true mapping individual elements is prohibited. */
+	void SetCompact( bool compact );
+	
 	/** Activate buffer. */
 	virtual void Activate() const;
 	
@@ -95,8 +107,19 @@ public:
 	 */
 	virtual void MapBuffer( int element );
 	
+	/**
+	 * Map buffer for specific elements discarding content.
+	 * 
+	 * Data outside the element range is retained. Any attempt to call SetParameter* with
+	 * an element index other than the one used for mapping throws an exception.
+	 */
+	virtual void MapBuffer( int element, int count );
+	
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
+	
+	/** Direct access to write buffer. Use with care. Can be nullptr. */
+	inline char *GetWriteBuffer() const{ return pWriteBuffer; }
 	
 	/** Get platform alignment requirements. */
 	virtual int GetAlignmentRequirements() const;

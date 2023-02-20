@@ -27,12 +27,12 @@ class deoglDOctree;
 
 
 /**
- * @brief Generic Octree Node Visitor.
+ * Generic Octree Node Visitor.
  *
  */
 class deoglDOctreeVisitor{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new octree node visitor. */
 	deoglDOctreeVisitor();
@@ -40,7 +40,7 @@ public:
 	virtual ~deoglDOctreeVisitor();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/** Visits an octree node. */
 	virtual void VisitNode( deoglDOctree *node, int intersection );

@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include <libdscript/libdscript.h>
 
@@ -578,7 +577,7 @@ void deClassDVector::nfOpDot::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dsRealObject *objVec = rt->GetValue( 0 )->GetRealObject();
 	if( ! objVec ) DSTHROW( dueNullPointer );
 	
-	rt->PushFloat( vector * clsDVector->GetDVector( objVec ) );
+	rt->PushFloat( ( float )( vector * clsDVector->GetDVector( objVec ) ) );
 }
 
 // public func DVector %( DVector v )
@@ -718,7 +717,7 @@ void deClassDVector::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *m
 	
 	const unsigned short p = ( unsigned short )precision;
 	char format[ 21 ];
-	sprintf( format, "(%%.%huf,%%.%huf,%%.%huf)", p, p, p );
+	snprintf( format, sizeof( format ), "(%%.%huf,%%.%huf,%%.%huf)", p, p, p );
 	
 	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
 	decString str;

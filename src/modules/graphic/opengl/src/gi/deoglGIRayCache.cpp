@@ -26,9 +26,8 @@
 #include "deoglGI.h"
 #include "deoglGIRayCache.h"
 #include "../capabilities/deoglCapabilities.h"
-#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
-#include "../renderthread/deoglRTFramebuffer.h"
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -51,8 +50,7 @@ pTexDistance( renderThread ),
 pTexNormal( renderThread ),
 pTexDiffuse( renderThread ),
 pTexReflectivity( renderThread ),
-pTexLight( renderThread ),
-pFBOResult( renderThread, false )
+pTexLight( renderThread )
 {
 	if( raysPerProbe < 16 || probeCount < 64 || layerCount < 1 ){
 		DETHROW( deeInvalidParam );
@@ -61,7 +59,7 @@ pFBOResult( renderThread, false )
 	try{
 		pCreateFBO();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pCleanUp();
 		throw;
 	}
@@ -135,12 +133,6 @@ void deoglGIRayCache::pCreateFBO(){
 	// diffuse and reflectivity: (15M, 4M) [14680064, 3670016]
 	// total: (37M, 9M) [37748736, 9437184]
 	// 
-	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
-	#ifdef GI_USE_RAY_CACHE
-	const GLenum buffers[ 5 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
-		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
-	#endif
-	
 	const int width = pProbesPerLine * pRaysPerProbe;
 	const int height = pProbeCount / pProbesPerLine;
 	
@@ -156,13 +148,13 @@ void deoglGIRayCache::pCreateFBO(){
 		pTexDistance.CreateTexture();
 		
 		if( ! pTexNormal.GetTexture() ){
-			pTexNormal.SetFBOFormatSNorm( 3, 8 );
+			pTexNormal.SetFBOFormatSNorm( 4, 8 ); // image load/store supports only 1, 2 and 4 not 3
 		}
 		pTexNormal.SetSize( width, height, pLayerCount );
 		pTexNormal.CreateTexture();
 		
 		if( ! pTexDiffuse.GetTexture() ){
-			pTexDiffuse.SetFBOFormat( 3, false );
+			pTexDiffuse.SetFBOFormat( 4, false ); // image load/store supports only 1, 2 and 4 not 3
 		}
 		pTexDiffuse.SetSize( width, height, pLayerCount );
 		pTexDiffuse.CreateTexture();
@@ -174,39 +166,32 @@ void deoglGIRayCache::pCreateFBO(){
 		pTexReflectivity.CreateTexture();
 		
 		if( ! pTexLight.GetTexture() ){
-			pTexLight.SetFBOFormat( 3, true );
+			pTexLight.SetFBOFormat( 4, true ); // image load/store supports only 1, 2 and 4 not 3
 		}
 		pTexLight.SetSize( width, height, pLayerCount );
 		pTexLight.CreateTexture();
 	#endif
 	
-	// update framebuffer if required and clear textures
+	// clear textures
 	#ifdef GI_USE_RAY_CACHE
-		pRenderThread.GetFramebuffer().Activate( &pFBOResult );
+		deoglPixelBuffer::Ref pixbuf;
 		
-		pFBOResult.DetachAllImages();
-		pFBOResult.AttachColorArrayTexture( 0, &pTexDistance );
-		pFBOResult.AttachColorArrayTexture( 1, &pTexNormal );
-		pFBOResult.AttachColorArrayTexture( 2, &pTexDiffuse );
-		pFBOResult.AttachColorArrayTexture( 3, &pTexReflectivity );
-		pFBOResult.AttachColorArrayTexture( 4, &pTexLight );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 5, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOResult.Verify();
+		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, pLayerCount ) );
+		pixbuf->SetToFloatColor( 10000.0f, 10000.0f, 10000.0f, 10000.0f );
+		pTexDistance.SetPixels( pixbuf );
 		
-		const GLfloat clearDistance[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 10000.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistance[ 0 ] ) );
+		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfByte4, width, height, pLayerCount ) );
+		pixbuf->SetToFloatColor( 0.0f, 0.0f, 1.0f, 0.0f );
+		pTexNormal.SetPixels( pixbuf );
 		
-		const GLfloat clearNormal[ 4 ] = { 0.0f, 0.0f, 1.0f, 0.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 1, &clearNormal[ 0 ] ) );
+		pixbuf->SetToFloatColor( 1.0f, 1.0f, 1.0f, 0.0f );
+		pTexDiffuse.SetPixels( pixbuf );
 		
-		const GLfloat clearDiffuse[ 4 ] = { 1.0f, 1.0f, 1.0f, 0.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 2, &clearDiffuse[ 0 ] ) );
+		pixbuf->SetToFloatColor( 0.0f, 0.0f, 0.0f, 1.0f );
+		pTexReflectivity.SetPixels( pixbuf );
 		
-		const GLfloat clearReflectivity[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 3, &clearReflectivity[ 0 ] ) );
-		
-		const GLfloat clearLight[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 4, &clearLight[ 0 ] ) );
+		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, pLayerCount ) );
+		pixbuf->SetToFloatColor( 0.0f, 0.0f, 0.0f, 0.0f );
+		pTexLight.SetPixels( pixbuf );
 	#endif
 }

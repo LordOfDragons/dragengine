@@ -182,21 +182,16 @@ public:
 	void DropForeignCubeMaps();
 	
 	/** Activate shadow cubemap (depth only) with the given size for solid shadow casting. */
-	void ActivateSolidCubeMap( int size );
+	void ActivateSolidCubeMap( int size, bool useFloatDepth );
 	
 	/** Activate shadow cubemap face (depth only) with the given size for solid shadow casting. */
-	void ActivateSolidCubeMapFace( int size, int face );
+	void ActivateSolidCubeMapFace( int size, bool useFloatDepth, int face );
 	
 	/** Activate shadow cubemap (depth and color) with the given size for transparent shadow casting. */
-	void ActivateTransparentCubeMap( int size );
+	void ActivateTransparentCubeMap( int size, bool useFloatDepth );
 	
 	/** Activate shadow cubemap face (depth and color) with the given size for transparent shadow casting. */
-	void ActivateTransparentCubeMapFace( int size, int face );
-	
-	
-	
-	/** Copy shadow map with the given size into the shadow cube face with the given size. */
-	void CopyShadowMapToShadowCube( int size, int face );
+	void ActivateTransparentCubeMapFace( int size, bool useFloatDepth, int face );
 	
 	
 	
@@ -277,10 +272,10 @@ public:
 	void DropForeignAmbientCubeMaps();
 	
 	/** Activate ambient cubemap with size. */
-	void ActivateAmbientCubeMap( int size );
+	void ActivateAmbientCubeMap( int size, bool useFloatDepth );
 	
 	/** Activate ambient cubemap face with size. */
-	void ActivateAmbientCubeMapFace( int size, int face );
+	void ActivateAmbientCubeMapFace( int size, bool useFloatDepth, int face );
 	
 	
 	

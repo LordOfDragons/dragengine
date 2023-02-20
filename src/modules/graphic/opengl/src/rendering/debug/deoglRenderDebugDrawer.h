@@ -30,35 +30,40 @@ class deoglRDebugDrawer;
 
 
 /**
- * @brief Render Debug Drawer.
- *
- * Provides support for rendering debug drawers.
+ * Render Debug Drawer.
  */
 class deoglRenderDebugDrawer : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderShapeXRay;
-	deoglShaderProgramUsage pShaderShapeXRayStereo;
-	deoglShaderProgramUsage pShaderShapeSolid;
-	deoglShaderProgramUsage pShaderShapeSolidStereo;
-	deoglShaderProgramUsage pShaderMeshXRay;
-	deoglShaderProgramUsage pShaderMeshXRayStereo;
-	deoglShaderProgramUsage pShaderMeshSolid;
-	deoglShaderProgramUsage pShaderMeshSolidStereo;
+	const deoglPipeline *pPipelineShapeXRay;
+	const deoglPipeline *pPipelineShapeXRayStereo;
+	const deoglPipeline *pPipelineShapeSolid;
+	const deoglPipeline *pPipelineShapeSolidStereo;
+	const deoglPipeline *pPipelineMeshXRay;
+	const deoglPipeline *pPipelineMeshXRayStereo;
+	const deoglPipeline *pPipelineMeshSolid;
+	const deoglPipeline *pPipelineMeshSolidStereo;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new renderer. */
+	/** Create renderer. */
 	deoglRenderDebugDrawer( deoglRenderThread &renderThread );
-	/** Cleans up the renderer. */
+	
+	/** Clean up renderer. */
 	virtual ~deoglRenderDebugDrawer();
 	/*@}*/
 	
-	/** @name Rendering */
+	
+	
+	/** \name Rendering */
 	/*@{*/
-	/** Renders debug drawers. */
+	/** Render debug drawers. */
 	void RenderDebugDrawers( deoglRenderPlan &plan );
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

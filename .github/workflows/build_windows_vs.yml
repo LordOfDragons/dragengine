@@ -1,0 +1,130 @@
+name: Build Windows VS
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        required: true
+        type: string
+      buildVersion:
+        required: true
+        type: string
+      artifactArchive:
+        required: true
+        type: string
+      debugBuild:
+        type: boolean
+        required: false
+        default: false
+      lfscache:
+        required: false
+        default: true
+        type: boolean
+        
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch'
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        description: 'Release Version'
+        required: true
+        type: string
+        default: nightly
+      buildVersion:
+        description: 'Build Version'
+        required: true
+        type: string
+        default: 9999
+      artifactArchive:
+        description: 'Artifact Archive'
+        required: true
+        type: string
+        default: "archives-windows"
+      debugBuild:
+        description: 'Debug Build'
+        type: boolean
+        required: false
+        default: false
+      lfscache:
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: ${{ !inputs.lfscache }}
+          submodules: 'recursive'
+          ref: ${{ inputs.branch }}
+      
+      - name: Create LFS file hash list
+        if: ${{ inputs.lfscache }}
+        run: (git lfs ls-files -l) | ForEach-Object { $_.Split(" ")[0] } | sort | Out-File -FilePath ".lfs-objects-id"
+
+      - name: Restore LFS Cache
+        uses: actions/cache@v3
+        id: lfs-vs-cache
+        if: ${{ inputs.lfscache }}
+        with:
+          path: .git/lfs
+          key: lfs-vs-cache-${{ hashFiles('.lfs-objects-id') }}
+          restore-keys: lfs-vs-cache-
+
+      - name: Git LFS Pull
+        if: ${{ inputs.lfscache }}
+        run: |
+          git lfs pull
+          git lfs logs last
+      
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+        
+      - name: Restore NuGet packages
+        working-directory: vs
+        run: nuget restore dragengine.sln
+      
+      - name: Init custom.py
+        run: |
+          $Content = Get-Content -Raw -Path "${{ github.workspace }}/.github/workflows/custom_windows.py"
+          $Content = $Content -creplace "ReleaseVersion","${{ inputs.releaseVersion }}"
+          $Content = $Content -creplace "BuildVersion","${{ inputs.buildVersion }}"
+          $Content = $Content -creplace "DebugBuild","${{ inputs.debugBuild && 'yes' || 'no' }}"
+          Set-Content -Path "custom.py" -Value $Content
+        
+      - name: Build
+        working-directory: vs
+        run: |
+          $Config = "${{ inputs.debugBuild && 'Debug' || 'Release' }}"
+          $BuilVersion = "${{ inputs.buildVersion }}"
+          msbuild /m -maxcpucount /p:Configuration=$Config /p:BuildVersion=$BuilVersion dragengine.sln
+      
+      - name: Archive
+        run: |
+          $DistributeDir = "${{ github.workspace }}/vs/x64/${{ inputs.debugBuild && 'Debug' || 'Release' }}/Distribute"
+          Compress-Archive -Path "$DistributeDir/Dragengine/Application/*" -DestinationPath "dragengine-${{ inputs.releaseVersion }}-windows64.zip"
+          Compress-Archive -Path "$DistributeDir/Dragengine/SDK/*" -DestinationPath "dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip"
+          Compress-Archive -Path "$DistributeDir/Dragengine/Debug/*" -DestinationPath "dragengine-dbg-${{ inputs.releaseVersion }}-windows64.zip"
+        
+      - name: Store Archives
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifactArchive }}
+          path: |
+            dragengine-${{ inputs.releaseVersion }}-windows64.zip
+            dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip
+            dragengine-dbg-${{ inputs.releaseVersion }}-windows64.zip
+            # deigde-${{ inputs.releaseVersion }}-windows64.zip
+            # deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip
+            # despecial-${{ inputs.releaseVersion }}-windows64.zip
+          if-no-files-found: error

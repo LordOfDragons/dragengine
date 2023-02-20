@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module parameter no culling.
+ * Module parameter no culling.
  */
 class deoglPDebugNoCulling : public deoglParameterBool{
 public:

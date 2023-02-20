@@ -26,6 +26,7 @@
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/rendered/deoglSkinRendered.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
+#include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -55,11 +56,22 @@ class deBillboard;
  * Render billboard.
  */
 class deoglRBillboard : public deObject, public deoglOcclusionTestListener{
-public:
+private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldComputeElement{
+		deoglRBillboard &pBillboard;
+	public:
+		WorldComputeElement( deoglRBillboard &billboard );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+	};
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	deoglRSkin *pSkin;
 	deoglSkinTexture *pUseSkinTexture;
@@ -81,6 +93,7 @@ public:
 	float pSortDistance;
 	bool pOccluded;
 	bool pDirtyPrepareSkinStateRenderables;
+	bool pDirtyRenderSkinStateRenderables;
 	
 	deoglEnvironmentMap *pRenderEnvMap;
 	deoglEnvironmentMap *pRenderEnvMapFade;
@@ -111,6 +124,8 @@ public:
 	bool pRenderVisible;
 	
 	bool pMarked;
+	
+	uint32_t pCSOctreeIndex;
 	
 	bool pWorldMarkedRemove;
 	
@@ -191,6 +206,7 @@ public:
 	
 	void DirtyPrepareSkinStateRenderables();
 	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();
 	
@@ -208,7 +224,7 @@ public:
 	inline deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup() const{ return *pSharedSPBRTIGroup; }
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -248,7 +264,7 @@ public:
 	 * Obtain texture units configuration for a shader type.
 	 * \details Bare call not to be used directly.
 	 */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
@@ -409,6 +425,10 @@ public:
 	
 	/** Set sky shadow split mask. */
 	void SetSkyShadowSplitMask( int mask );
+	
+	/** Compute shader octree index. */
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
+	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
 	/*@}*/
 	
 	
@@ -470,6 +490,9 @@ public:
 	
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	
+	/** Prepare for render render. Called by deoglRWorld if registered previously. */
+	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();

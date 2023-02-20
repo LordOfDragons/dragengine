@@ -26,6 +26,7 @@
 
 #include "../deoglBasics.h"
 #include "../skin/deoglSkinTexture.h"
+#include "../world/deoglWorldComputeElement.h"
 
 class deoglRPropFieldType;
 class deoglTexUnitsConfig;
@@ -52,8 +53,21 @@ public:
 	
 	
 private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldComputeElement{
+		deoglPropFieldCluster &pCluster;
+	public:
+		WorldComputeElement( deoglPropFieldCluster &cluster );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+	};
+	
+	
+	
 	deoglRPropFieldType &pPropFieldType;
 	deoglRenderThread &pRenderThread; // to avoid segfault during destructor
+	
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	decVector pMinExtend;
 	decVector pMaxExtend;
@@ -145,7 +159,7 @@ public:
 	void PrepareBendStateData( const dePropFieldType &type );
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -182,7 +196,7 @@ public:
 	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	/** Mark texture units configurations dirty. */
 	void MarkTUCsDirty();
@@ -192,6 +206,20 @@ public:
 	
 	/** Mark render task shared instance dirty. */
 	void DirtyRTSInstance();
+	
+	
+	
+	/** Add to world compute. */
+	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute. */
+	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute textures. */
+	void UpdateWorldComputeTextures( deoglWorldCompute &worldCompute );
+	
+	/** Remove from world compute. */
+	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
 	/*@}*/
 	
 	

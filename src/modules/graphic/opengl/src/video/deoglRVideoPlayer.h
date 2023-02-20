@@ -22,17 +22,18 @@
 #ifndef _DEOGLRVIDEOPLAYER_H_
 #define _DEOGLRVIDEOPLAYER_H_
 
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/deObject.h>
 
 class deoglRVideo;
-class deoglPixelBuffer;
 class deoglRenderThread;
 class deoglTexture;
 
 
 
 /**
- * \brief Render video player.
+ * Render video player.
  */
 class deoglRVideoPlayer : public deObject{
 private:
@@ -46,17 +47,17 @@ private:
 	int pHeight;
 	int pComponentCount;
 	
-	deoglPixelBuffer *pPixelBuffer;
+	deoglPixelBuffer::Ref pPixelBuffer;
 	deoglTexture *pTexture;
 	bool pDirtyTexture;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create video player target. */
+	/** Create video player target. */
 	deoglRVideoPlayer( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up video player target. */
+	/** Clean up video player target. */
 	virtual ~deoglRVideoPlayer();
 	/*@}*/
 	
@@ -64,56 +65,53 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render video or \em NULL if not set. */
+	/** Render video or \em NULL if not set. */
 	inline deoglRVideo *GetVideo() const{ return pVideo; }
 	
-	/** \brief Set render video or \em NULL if not set. */
+	/** Set render video or \em NULL if not set. */
 	void SetVideo( deoglRVideo *video );
 	
-	/** \brief Cached frame or -1 if not set. */
+	/** Cached frame or -1 if not set. */
 	inline deoglTexture *GetCachedFrameTexture() const{ return pCachedFrameTexture; }
 	
-	/** \brief Set cached frame or -1 if not set. */
+	/** Set cached frame or -1 if not set. */
 	void SetCachedFrameTexture( deoglTexture *texture );
 	
-	/** \brief Set update cached frame texture. */
+	/** Set update cached frame texture. */
 	void SetUpdateCachedFrameTexture( int updateCachedFrameTexture );
 	
-	/** \brief Has cached frame texture or update cached frame. */
+	/** Has cached frame texture or update cached frame. */
 	bool HasCachedFrameTexture() const;
 	
 	
 	
-	/** \brief Width of video. */
+	/** Width of video. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height of video. */
+	/** Height of video. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief Component count. */
+	/** Component count. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/**
-	 * \brief Set video size.
+	 * Set video size.
 	 * \details Deletes the texture and pixel buffer if set.
 	 */
 	void SetVideoSize( int width, int height, int componentCount );
 	
 	/**
-	 * \brief Set pixel buffer to update texture with.
-	 * \details Sets pixel dirty true. Does not free the old pixel buffer. If a pixel
-	 *          buffer is still set during destruction the pixel buffer is freed. This
-	 *          allows to swap pixel buffer with the decode thread.
+	 * Set pixel buffer to update texture with.
 	 * \returns Previously set pixel buffer.
 	 */
-	deoglPixelBuffer *SetPixelBuffer( deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref SetPixelBuffer( deoglPixelBuffer *pixelBuffer );
 	
-	/** \brief Texture or \em NULL if not existing. */
+	/** Texture or \em NULL if not existing. */
 	deoglTexture *GetTexture() const;
 	
 	
 	
-	/** \brief Update texture if dirty. */
+	/** Update texture if dirty. */
 	void UpdateTexture();
 	/*@}*/
 };

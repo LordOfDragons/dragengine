@@ -22,6 +22,8 @@
 #ifndef _DEOGLWORLDOCTREE_H_
 #define _DEOGLWORLDOCTREE_H_
 
+#include <stdint.h>
+
 #include "../billboard/deoglBillboardList.h"
 #include "../envmap/deoglEnvironmentMapList.h"
 #include "../particle/deoglParticleEmitterInstanceList.h"
@@ -34,6 +36,7 @@ class deoglRComponent;
 class deoglRLight;
 class deoglRLumimeter;
 class deoglWorldOctreeVisitor;
+class deoglWorldCSOctree;
 
 
 
@@ -51,6 +54,12 @@ private:
 	decPointerList pComponents;
 	decPointerList pLights;
 	decPointerList pLumimeters;
+	
+	int pCSChildCount;
+	int pCSLocalElementCount;
+	int pCSNodeCount;
+	int pCSElementCount;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -117,6 +126,20 @@ public:
 	
 	/** TEMPORARY HACK!. */
 	void VisitNodesCollidingVolume( deoglWorldOctreeVisitor *visitor, deoglDCollisionVolume *volume );
+	
+	
+	
+	/** Compute shader node count. Valid after UpdateCSCounts() has been called. */
+	inline int GetCSNodeCount() const{ return pCSNodeCount; }
+	
+	/** Compute shader element count. Valid after UpdateCSCounts() has been called. */
+	inline int GetCSElementCount() const{ return pCSElementCount; }
+	
+	/** Update compute shader node and element counts. */
+	void UpdateCSCounts();
+	
+	/** Write compute shader data. */
+	void WriteCSData( deoglWorldCSOctree &csoctree, int nodeIndex );
 	/*@}*/
 	
 	

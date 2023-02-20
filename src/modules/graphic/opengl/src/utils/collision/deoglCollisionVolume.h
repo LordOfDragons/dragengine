@@ -35,7 +35,7 @@ class deoglCollisionVolumeVisitor;
 
 
 /**
- * @brief Base class for collision volumes.
+ * Base class for collision volumes.
  *
  * The collision detection system uses a double dispatch system
  * to determine collisions between various volumes. The first
@@ -64,7 +64,7 @@ class deoglCollisionVolumeVisitor;
  */
 class deoglCollisionVolume{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision volume. */
 	deoglCollisionVolume();
@@ -72,7 +72,7 @@ public:
 	virtual ~deoglCollisionVolume();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	/**
 	 * Determines if this volume collides with the given one. The
@@ -92,7 +92,7 @@ public:
 	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal ) = 0;
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	/**
 	 * Determines if the given sphere collides with this volume. The
@@ -205,7 +205,7 @@ public:
 	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal ) = 0;
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	/**
 	 * Retrieves the sphere volume best enclosing this volume.
@@ -217,7 +217,7 @@ public:
 	virtual void GetEnclosingBox( deoglCollisionBox *box ) = 0;
 	/*@}*/
 
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decVector &point ) = 0;
@@ -243,7 +243,7 @@ public:
 	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	/** Visits the collision volume. */
 	virtual void Visit( deoglCollisionVolumeVisitor *visitor ) = 0;

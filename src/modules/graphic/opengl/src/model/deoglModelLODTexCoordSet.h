@@ -29,7 +29,7 @@ struct oglModelVertex;
 
 
 /**
- * @brief Model LOD mesh texture coordinate set.
+ * Model LOD mesh texture coordinate set.
  */
 class deoglModelLODTexCoordSet{
 public:
@@ -41,7 +41,7 @@ public:
 	int pTangentCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new model lod texture coordinate set. */
 	deoglModelLODTexCoordSet();
@@ -49,7 +49,7 @@ public:
 	~deoglModelLODTexCoordSet();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the texture coordinates. */
 	inline decVector2 *GetTextureCoordinates() const{ return pTexCoords; }

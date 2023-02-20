@@ -46,10 +46,14 @@ deoglCollideListLight::deoglCollideListLight() :
 pLight( NULL ),
 pCulled( false ),
 pCameraInside( false ),
-    pCameraInsideOccQueryBox( true ){
+pCameraInsideOccQueryBox( true ),
+pOcclusionQuery( nullptr ){
 }
 
 deoglCollideListLight::~deoglCollideListLight(){
+	if( pOcclusionQuery ){
+		delete pOcclusionQuery;
+	}
 }
 
 
@@ -58,7 +62,7 @@ deoglCollideListLight::~deoglCollideListLight(){
 ///////////////
 
 void deoglCollideListLight::Clear(){
-	SetLight( NULL );
+	SetLight( nullptr );
 	pCulled = false;
 }
 
@@ -71,16 +75,14 @@ void deoglCollideListLight::SetCulled( bool culled ){
 }
 
 void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
-	if( ! pLight ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pLight )
 	
 	if( pCulled ){ // happens if affecting GI but not camera
 		pCameraInside = false;
 		return;
 	}
 	
-	const float safetyMargin = 0.01; // 1cm should be enough to be safe
+	const float safetyMargin = 0.01f; // 1cm should be enough to be safe
 	const decDVector &cameraPosition = plan.GetCameraPosition();
 	const decDVector &minExtend = pLight->GetMinimumExtend();
 	const decDVector &maxExtend = pLight->GetMaximumExtend();
@@ -160,9 +162,7 @@ void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
 
 void deoglCollideListLight::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
 const decDVector &cameraPosition ){
-	if( ! pLight ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pLight )
 	
 	pCulled = false;
 	
@@ -176,27 +176,25 @@ void deoglCollideListLight::OcclusionTestInvisible(){
 }
 
 deoglOcclusionQuery &deoglCollideListLight::GetOcclusionQuery(){
-	if( ! pLight ){
-		DETHROW( deeInvalidParam );
+	if( ! pOcclusionQuery ){
+		DEASSERT_NOTNULL( pLight )
+		pOcclusionQuery = new deoglOcclusionQuery( pLight->GetRenderThread() );
 	}
-	
-	return pLight->GetOcclusionQuery(); // temporary. move to this class later on
+	return *pOcclusionQuery;
 }
 
 bool deoglCollideListLight::IsHiddenByOccQuery() const{
-	if( ! pLight ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pLight )
 	
-// 	if( ! pCameraInside && pLight->HasOcclusionQuery() ){
-	if( ! pCameraInsideOccQueryBox && pLight->HasOcclusionQuery() ){
+// 	if( ! pCameraInside && pOcclusionQuery ){
+	if( ! pCameraInsideOccQueryBox && pOcclusionQuery ){
 		// check if the query result exists already
 		//if( pOcclusionQuery->HasResult() ){
 			// retrieve the result. later on we are going to store this value
 			// somewhere so we do not have to trip down to the driver to get
 			// the result since lights can be queried multiple times if they
 			// should be drawn. might be improved once upon time.
-			return ! pLight->GetOcclusionQuery().GetResultAny();
+			return ! pOcclusionQuery->GetResultAny();
 		//}
 	}
 	return false;

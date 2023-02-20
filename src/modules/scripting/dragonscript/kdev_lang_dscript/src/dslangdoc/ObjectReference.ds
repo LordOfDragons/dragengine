@@ -1,0 +1,81 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Object reference.
+ * 
+ * Allows to store a reference to an object. This can be used to retrieve object by
+ * reference from method calls or from block calls.
+ * 
+ * Example for call by reference:
+ * \code{ds}
+ * public func myFunction()
+ *    var ObjectReference returnToMe = ObjectReference.new()
+ *    callByRef(returnToMe)
+ *    // result is returnToMe.get() = "hello"
+ * end
+ * 
+ * public func void callByRef(ObjectReference returnToMe)
+ *    returnToMe.set("hello")
+ * end
+ * \endcode
+ * 
+ * Example for block usage:
+ * \code{ds}
+ * public func myFunction()
+ *    var ObjectReference sumMe = ObjectReference.new(0)
+ *    Array.newWith(2, 7, 11).forEach(block int each
+ *       sumMe.set((sumMe.get() cast int) + each)
+ *    end)
+ *    // result is sumMe.get() = 20
+ * end
+ * \endcode
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class ObjectReference
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create empty object reference. */
+	public func new()
+	end
+	
+	/** \brief Create object reference with initial value. */
+	public func new( Object object )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Stored object. */
+	public func Object get()
+		return null
+	end
+	
+	/** \brief Set stored object. */
+	public func void set( Object object )
+	end
+	
+	
+	
+	/**
+	 * \brief Object reference is equal to another object.
+	 * \returns \em true if \em other is of type ObjectReference and both have the same object set.
+	*/
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	/*@}*/
+end

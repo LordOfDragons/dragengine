@@ -187,7 +187,7 @@ dsFunction( init.clsCDistMap, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 void deClassCurveDistanceMapping::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decCurveDistanceMapping * const curve = ( ( sDistMapNatDat* )p_GetNativeData( myself ) )->mapping;
 	
-	rt->PushInt( ( intptr_t )curve );
+	rt->PushInt( ( int )( intptr_t )curve );
 }
 
 // public func bool equals( Object obj )

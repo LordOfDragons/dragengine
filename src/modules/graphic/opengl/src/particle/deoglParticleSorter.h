@@ -28,7 +28,7 @@ class deoglRParticleEmitterInstance;
 
 
 /**
- * @brief Particle Sorter.
+ * Particle Sorter.
  */
 class deoglParticleSorter{
 public:
@@ -44,7 +44,7 @@ private:
 	int pParticleSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new particle sorter. */
 	deoglParticleSorter();
@@ -52,7 +52,7 @@ public:
 	virtual ~deoglParticleSorter();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of particles. */
 	inline int GetParticleCount() const{ return pParticleCount; }

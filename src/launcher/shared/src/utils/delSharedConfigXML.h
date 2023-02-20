@@ -31,7 +31,7 @@ class delGPModule;
 /**
  * \brief Shared Load/Save Config XML.
  */
-class delSharedConfigXML : public delBaseXML{
+class DE_DLL_EXPORT delSharedConfigXML : public delBaseXML{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

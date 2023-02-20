@@ -50,7 +50,6 @@ pMatrix( nodePose.GetTransformation().QuickMultiply( scene.GetTransformation() )
 pMatrixInverse( pMatrix.QuickInvert() )
 {
 	const int childCount = nodePose.GetNodeCount();
-	deObjectReference refBone;
 	int i;
 	
 	for( i=0; i<childCount; i++ ){
@@ -64,17 +63,16 @@ pMatrixInverse( pMatrix.QuickInvert() )
 			continue;
 		}
 		
-		refBone.TakeOver( new fbxRigBone( *this, nodePoseBone, nodeModel ) );
-		fbxRigBone &bone = ( fbxRigBone& )( deObject& )refBone;
-		bone.SetIndex( pBones.GetCount() );
+		const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodePoseBone, nodeModel ) ) );
+		bone->SetIndex( pBones.GetCount() );
 		
-		if( GetBoneNamed( bone.GetName() ) ){
+		if( GetBoneNamed( bone->GetName() ) ){
 			decString message;
-			message.Format( "duplicate rig bone '%s'", bone.GetName().GetString() );
+			message.Format( "duplicate rig bone '%s'", bone->GetName().GetString() );
 			DETHROW_INFO( deeInvalidParam, message );
 		}
 		
-		pBones.Add( refBone );
+		pBones.Add( bone );
 	}
 	
 	const int boneCount = pBones.GetCount();

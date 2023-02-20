@@ -155,7 +155,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 
 void deClassNetworkMessage::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deNetworkMessage * const message = ( ( sNMNatDat* )p_GetNativeData( myself ) )->message;
-	rt->PushInt( ( intptr_t )message );
+	rt->PushInt( ( int )( intptr_t )message );
 }
 
 // public func bool equals( Object object )

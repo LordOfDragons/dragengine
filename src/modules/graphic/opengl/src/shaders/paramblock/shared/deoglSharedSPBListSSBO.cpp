@@ -38,7 +38,8 @@
 
 deoglSharedSPBListSSBO::deoglSharedSPBListSSBO( deoglRenderThread &renderThread,
 deoglSPBlockSSBO *layout ) :
-deoglSharedSPBList( renderThread, layout ){
+deoglSharedSPBList( renderThread, layout ),
+pLayoutSSBO( *layout ){
 }
 
 
@@ -46,6 +47,6 @@ deoglSharedSPBList( renderThread, layout ){
 // Management
 ///////////////
 
-deoglShaderParameterBlock *deoglSharedSPBListSSBO::pCreateBlock() const{
-	 return new deoglSPBlockSSBO( ( const deoglSPBlockSSBO & )GetLayout() );
+deoglShaderParameterBlock::Ref deoglSharedSPBListSSBO::pCreateBlock() const{
+	 return deoglShaderParameterBlock::Ref::New( new deoglSPBlockSSBO( pLayoutSSBO ) );
 }

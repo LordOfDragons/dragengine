@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "deoglSkinShader.h"
 #include "deoglSkinShaderManager.h"
@@ -32,7 +33,6 @@
 #include "../../envmap/deoglEnvironmentMap.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../rendering/deoglRenderReflection.h"
-#include "../../rendering/task/shared/deoglRenderTaskSharedShader.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTBufferObject.h"
 #include "../../renderthread/deoglRTChoices.h"
@@ -45,10 +45,9 @@
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/deoglShaderUnitSourceCode.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
 #include "../../shaders/paramblock/deoglSPBlockMemory.h"
-#include "../../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
@@ -88,8 +87,7 @@ static const char *vTextureTargetNames[ deoglSkinShader::ETT_COUNT ] = {
 	"texSamples", // ettSamples
 	"texSubInstance1", // ettSubInstance1
 	"texSubInstance2", // ettSubInstance2
-	"texHeightMapMask", // ettHeightMapMask
-	"texXRayDepth" // ettXRayDepth
+	"texHeightMapMask" // ettHeightMapMask
 };
 
 static const char *vTextureUniformTargetNames[ deoglSkinShader::ETUT_COUNT ] = {
@@ -400,6 +398,17 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	deoglSkinShader::eiutInstOutlineEmissivityTint // eiutInstOutlineEmissivityTint ( vec3 )
 };
 
+// cache revision. if skin config or skin unit sources change in any way increment this
+// value to make sure existing caches are invalidate
+#define SHADER_CACHE_REVISION 1
+
+int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
+
+// MinGW bug workaround
+#if defined OS_W32 && defined __MINGW64__
+#undef PRIx64
+#define PRIx64 "I64x"
+#endif
 
 
 // Class deoglSkinShader
@@ -415,9 +424,7 @@ pConfig( config ),
 pUsedTextureTargetCount( 0 ),
 pUsedInstanceUniformTargetCount( 0 ),
 pTargetSPBInstanceIndexBase( -1 ),
-pTargetDrawIDOffset( -1 ),
-pSources( NULL ),
-pShader( NULL )
+pTargetDrawIDOffset( -1 )
 {
 	int i;
 	
@@ -430,12 +437,6 @@ pShader( NULL )
 }
 
 deoglSkinShader::~deoglSkinShader(){
-	if( pShader ){
-		delete pShader;
-	}
-	if( pSources ){
-		delete pSources;
-	}
 }
 
 
@@ -484,332 +485,229 @@ void deoglSkinShader::PrepareShader(){
 
 
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread ){
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread ){
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
 	// this shader parameter block will not be optimzed. the layout is always the
 	// same no matter what configuration is used for skins. this is also why this
 	// method is a static method not an regular method
 	
-	deoglSPBlockUBO *spb = nullptr;
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( ERUT_COUNT );
 	
-	try{
-		spb = new deoglSPBlockUBO( renderThread );
-		spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( ERUT_COUNT );
-		
-		spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3
-		spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 2 ); // mat4
-		spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
-		spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 6 ); // mat3
-		spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-		spb->GetParameterAt( erutMatrixSkyBody ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
-		spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
-		spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 2 ); // vec2
-		
-		spb->GetParameterAt( erutDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutEnvMapLodLevel ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		spb->GetParameterAt( erutNorRoughCorrStrength ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		
-		spb->GetParameterAt( erutSkinDoesReflections ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
-		spb->GetParameterAt( erutFlipCulling ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
-		spb->GetParameterAt( erutClearDepthValue ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		
-		spb->GetParameterAt( erutViewport ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
-		spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		
-		spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		
-		spb->GetParameterAt( erutDepthOffset ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 4 ); // vec4
-		
-		spb->GetParameterAt( erutParticleLightHack ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		
-		spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		
-		spb->GetParameterAt( erutCameraStereoMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-		
-		spb->GetParameterAt( erutCameraRange ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutCameraAdaptedIntensity ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		
-		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutFSScreenCoordToTexCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutFSTexCoordToScreenCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		
-		spb->GetParameterAt( erutSSAOParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSAOParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSAOParams3 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		
-		spb->GetParameterAt( erutSSSSSParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSSSSParams2 ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // ivec2
-		
-		spb->GetParameterAt( erutSSRParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSRParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSRParams3 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // ivec4
-		
-		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-		spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-		
-		spb->GetParameterAt( erutGIHighestCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		
-		spb->GetParameterAt( erutToneMapSceneKey ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutToneMapAdaption ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		spb->GetParameterAt( erutToneMapBloom ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutDebugDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutConditions1 ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
-	}
+	spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3
+	spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 2 ); // mat4
+	spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
+	spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 6 ); // mat3
+	spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+	spb->GetParameterAt( erutMatrixSkyBody ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
+	spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
+	spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 2 ); // vec2
 	
+	spb->GetParameterAt( erutDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutEnvMapLodLevel ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	spb->GetParameterAt( erutNorRoughCorrStrength ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	
+	spb->GetParameterAt( erutSkinDoesReflections ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
+	spb->GetParameterAt( erutFlipCulling ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
+	spb->GetParameterAt( erutClearDepthValue ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	
+	spb->GetParameterAt( erutViewport ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
+	spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	
+	spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	
+	spb->GetParameterAt( erutDepthOffset ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 4 ); // vec4
+	
+	spb->GetParameterAt( erutParticleLightHack ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	
+	spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	
+	spb->GetParameterAt( erutCameraStereoMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
+	
+	spb->GetParameterAt( erutCameraRange ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutCameraAdaptedIntensity ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	
+	spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutFSScreenCoordToTexCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutFSTexCoordToScreenCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	
+	spb->GetParameterAt( erutSSAOParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSAOParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSAOParams3 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	
+	spb->GetParameterAt( erutSSSSSParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSSSSParams2 ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // ivec2
+	
+	spb->GetParameterAt( erutSSRParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSRParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSRParams3 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // ivec4
+	
+	spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
+	spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+	
+	spb->GetParameterAt( erutGIHighestCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	
+	spb->GetParameterAt( erutToneMapSceneKey ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutToneMapAdaption ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	spb->GetParameterAt( erutToneMapBloom ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutDebugDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutConditions1 ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4
+	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
 	return spb;
 }
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBOccMap( deoglRenderThread &renderThread ){
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBOccMap( deoglRenderThread &renderThread ){
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	deoglSPBlockUBO *ompb = NULL;
+	const deoglSPBlockUBO::Ref ompb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	ompb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	ompb->SetParameterCount( 4 );
+	ompb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
+	ompb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
+	ompb->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4 pTransformZ[ 6 ]
+	ompb->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pZToDepth
 	
-	try{
-		ompb = new deoglSPBlockUBO( renderThread );
-		ompb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		ompb->SetParameterCount( 4 );
-		ompb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
-		ompb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
-		ompb->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4 pTransformZ[ 6 ]
-		ompb->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pZToDepth
-		
-		ompb->MapToStd140();
-		ompb->SetBindingPoint( 0 );//deoglSkinShader::eubRenderParameters );
-		
-	}catch( const deException & ){
-		if( ompb ){
-			ompb->FreeReference();
-		}
-		throw;
-	}
-	
+	ompb->MapToStd140();
+	ompb->SetBindingPoint( 0 );//deoglSkinShader::eubRenderParameters );
 	return ompb;
 }
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBSpecial( deoglRenderThread &renderThread ){
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBSpecial( deoglRenderThread &renderThread ){
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	deoglSPBlockUBO *spb = NULL;
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( 1 );
 	
-	try{
-		spb = new deoglSPBlockUBO( renderThread );
-		spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( 1 );
-		
-		spb->GetParameterAt( esutLayerVisibility ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerVisibility
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubSpecialParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
-	}
+	spb->GetParameterAt( esutLayerVisibility ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerVisibility
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglSkinShader::eubSpecialParameters );
 	return spb;
 }
 
 
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBTexParam( deoglRenderThread &renderThread ){
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBTexParam( deoglRenderThread &renderThread ){
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	deoglSPBlockUBO *spb = NULL;
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	spb->SetParameterCount( ETUT_COUNT );
 	
-	try{
-		spb = new deoglSPBlockUBO( renderThread );
-		spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		spb->SetParameterCount( ETUT_COUNT );
-		
-		int i;
-		for( i=0; i<ETUT_COUNT; i++ ){
-			spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
-				vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubTextureParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
-	}
-	
-	return spb;
-}
-
-deoglSPBlockUBO *deoglSkinShader::CreateSPBInstParam() const{
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	deoglSPBlockUBO *spb = NULL;
 	int i;
-	
-	try{
-		spb = new deoglSPBlockUBO( pRenderThread );
-		spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( pUsedInstanceUniformTargetCount );
-		
-		for( i=0; i<EIUT_COUNT; i++ ){
-			const int target = pInstanceUniformTargets[ i ];
-			if( target != -1 ){
-				spb->GetParameterAt( target ).SetAll( vInstanceSPBParamDefs[ i ].dataType,
-					vInstanceSPBParamDefs[ i ].componentCount,
-					vInstanceSPBParamDefs[ i ].vectorCount, 1 );
-			}
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
+	for( i=0; i<ETUT_COUNT; i++ ){
+		spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
+			vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglSkinShader::eubTextureParameters );
 	return spb;
 }
 
-deoglSPBlockUBO *deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread ){
-	deoglSPBlockUBO *ubo = NULL;
-	int i;
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBInstParam() const{
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	try{
-		ubo = new deoglSPBlockUBO( renderThread );
-		ubo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		ubo->SetParameterCount( vUBOInstParamMapCount );
-		
-		for( i=0; i<vUBOInstParamMapCount; i++ ){
-			const sSPBParameterDefinition &pdef = vInstanceSPBParamDefs[ vUBOInstParamMap[ i ] ];
-			ubo->GetParameterAt( i ).SetAll( pdef.dataType, pdef.componentCount, pdef.vectorCount, 1 );
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
+	
+	int i;
+	for( i=0; i<EIUT_COUNT; i++ ){
+		const int target = pInstanceUniformTargets[ i ];
+		if( target != -1 ){
+			spb->GetParameterAt( target ).SetAll( vInstanceSPBParamDefs[ i ].dataType,
+				vInstanceSPBParamDefs[ i ].componentCount,
+				vInstanceSPBParamDefs[ i ].vectorCount, 1 );
 		}
-		
-		ubo->MapToStd140();
-		ubo->SetBindingPoint( eubInstanceParameters );
-		
-	}catch( const deException & ){
-		if( ubo ){
-			ubo->FreeReference();
-		}
-		throw;
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
+	return spb;
+}
+
+deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread ){
+	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	ubo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ubo->SetCompact( false );
+	ubo->SetParameterCount( vUBOInstParamMapCount );
+	
+	int i;
+	for( i=0; i<vUBOInstParamMapCount; i++ ){
+		const sSPBParameterDefinition &pdef = vInstanceSPBParamDefs[ vUBOInstParamMap[ i ] ];
+		ubo->GetParameterAt( i ).SetAll( pdef.dataType, pdef.componentCount, pdef.vectorCount, 1 );
+	}
+	
+	ubo->MapToStd140();
+	ubo->SetBindingPoint( eubInstanceParameters );
 	return ubo;
 }
 
-deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread ){
-	deoglSPBlockSSBO *ssbo = NULL;
-	int i;
+deoglSPBlockSSBO::Ref deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread ){
+	const deoglSPBlockSSBO::Ref ssbo( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( renderThread ) ) );
+	ssbo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ssbo->SetCompact( false );
+	ssbo->SetParameterCount( vUBOInstParamMapCount );
 	
-	try{
-		ssbo = new deoglSPBlockSSBO( renderThread );
-		ssbo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		ssbo->SetParameterCount( vUBOInstParamMapCount );
-		
-		for( i=0; i<vUBOInstParamMapCount; i++ ){
-			const sSPBParameterDefinition &pdef = vInstanceSPBParamDefs[ vUBOInstParamMap[ i ] ];
-			ssbo->GetParameterAt( i ).SetAll( pdef.dataType, pdef.componentCount, pdef.vectorCount, 1 );
-		}
-		
-		ssbo->MapToStd140();
-		ssbo->SetBindingPoint( essboInstanceParameters );
-		
-	}catch( const deException & ){
-		if( ssbo ){
-			ssbo->FreeReference();
-		}
-		throw;
+	int i;
+	for( i=0; i<vUBOInstParamMapCount; i++ ){
+		const sSPBParameterDefinition &pdef = vInstanceSPBParamDefs[ vUBOInstParamMap[ i ] ];
+		ssbo->GetParameterAt( i ).SetAll( pdef.dataType, pdef.componentCount, pdef.vectorCount, 1 );
 	}
 	
+	ssbo->MapToStd140();
+	ssbo->SetBindingPoint( essboInstanceParameters );
 	return ssbo;
 }
 
-deoglSPBlockUBO *deoglSkinShader::CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread ){
-	deoglSPBlockUBO * const spb = new deoglSPBlockUBO( renderThread );
-	int i;
+deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread ){
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	spb->SetCompact( false );
+	spb->SetParameterCount( ETUT_COUNT );
 	
-	try{
-		spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		spb->SetParameterCount( ETUT_COUNT );
-		
-		for( i=0; i<ETUT_COUNT; i++ ){
-			spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
-				vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( eubTextureParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
+	int i;
+	for( i=0; i<ETUT_COUNT; i++ ){
+		spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
+			vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( eubTextureParameters );
 	return spb;
 }
 
-deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread ){
-	deoglSPBlockSSBO * const spb = new deoglSPBlockSSBO( renderThread );
-	int i;
+deoglSPBlockSSBO::Ref deoglSkinShader::CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread ){
+	const deoglSPBlockSSBO::Ref spb( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( renderThread ) ) );
+	spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	spb->SetCompact( false );
+	spb->SetParameterCount( ETUT_COUNT );
 	
-	try{
-		spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		spb->SetParameterCount( ETUT_COUNT );
-		
-		for( i=0; i<ETUT_COUNT; i++ ){
-			spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
-				vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( essboTextureParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
+	int i;
+	for( i=0; i<ETUT_COUNT; i++ ){
+		spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
+			vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( essboTextureParameters );
 	return spb;
 }
 
@@ -1470,14 +1368,8 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ){
 		units[ pTextureTargets[ ettDepthTest ] ].EnableSpecial( deoglTexUnitConfig::estPrevDepth,
 			pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 	}
-	
-	if( pTextureTargets[ ettXRayDepth ] != -1 ){
-		units[ pTextureTargets[ ettXRayDepth ] ].EnableSpecial( deoglTexUnitConfig::estXRayDepth,
-			pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
-	}
 }
 
-int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
 
 void deoglSkinShader::SetTUCPerObjectEnvMap( deoglTexUnitConfig *units,
 deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap *envmapFade ){
@@ -1630,17 +1522,11 @@ void deoglSkinShader::GenerateShader(){
 	deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
 	
-	if( pShader ){
-		delete pShader;
-		pShader = NULL;
-	}
-	if( pSources ){
-		delete pSources;
-		pSources = NULL;
-	}
+	pShader = nullptr;
+	pSources = nullptr;
 	
 	try{
-		pSources = new deoglShaderSources;
+		pSources.TakeOver( new deoglShaderSources );
 		
 		pSources->SetVersion( "150" );
 		
@@ -1657,7 +1543,7 @@ void deoglSkinShader::GenerateShader(){
 		InitShaderParameters();
 		
 		// create shader
-		pShader = new deoglShaderProgram( pRenderThread, pSources, defines );
+		pShader.TakeOver( new deoglShaderProgram( pRenderThread, pSources, defines ) );
 		
 		// add unit source codes from source files
 		const decString &pathVSC = pSources->GetPathVertexSourceCode();
@@ -1710,11 +1596,48 @@ void deoglSkinShader::GenerateShader(){
 			}
 		}
 		
+		// cache id
+		decStringList cacheIdParts, cacheIdComponents;
+		decString cacheIdFormat;
+		
+		cacheIdFormat.Format( "skin%d", SHADER_CACHE_REVISION );
+		cacheIdParts.Add( cacheIdFormat );
+		
+		cacheIdFormat.Format( "%x,%x,%" PRIx64 ",%x", pConfig.GetKey1(),
+			pConfig.GetKey2(), pConfig.GetKey3(), pConfig.GetKey4() );
+		cacheIdParts.Add( cacheIdFormat );
+		
+		cacheIdComponents.Add( pSources->GetPathVertexSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathGeometrySourceCode() );
+		cacheIdComponents.Add( pSources->GetPathFragmentSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathTessellationControlSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathTessellationEvaluationSourceCode() );
+		cacheIdParts.Add( cacheIdComponents.Join( "," ) );
+		cacheIdComponents.RemoveAll();
+		
+		cacheIdParts.Add( defines.CalcCacheId() );
+		
+		int i;
+		char cacheIdBuffer[ EIUT_COUNT * 2 + 1 ];
+		for( i=0; i<ETT_COUNT; i++ ){
+			snprintf( &cacheIdBuffer[ i * 2 ], 5, "%02hhx", ( uint8_t )( pTextureTargets[ i ] + 1 ) );
+		}
+		cacheIdParts.Add( cacheIdBuffer );
+		
+		for( i=0; i<EIUT_COUNT; i++ ){
+			snprintf( &cacheIdBuffer[ i * 2 ], 5, "%02hhx", ( uint8_t )( pInstanceUniformTargets[ i ] + 1 ) );
+		}
+		cacheIdParts.Add( cacheIdBuffer );
+		
+		snprintf( cacheIdBuffer, sizeof( cacheIdBuffer ), "%x", 0
+			| ( pRenderThread.GetChoices().GetRealTransparentParticles() ? 0x1 : 0 )
+			| ( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ? 0x2 : 0 ) );
+		cacheIdParts.Add( cacheIdBuffer );
+		
+		pShader->SetCacheId( cacheIdParts.Join( ";" ) );
+		
 		// compile shader
-		pShader->SetCompiled( pRenderThread.GetShader().GetShaderManager().GetLanguage()->CompileShader( *pShader ) );
-		pShader->EnsureRTSShader();
-		pShader->GetRTSShader()->SetSPBInstanceIndexBase( pTargetSPBInstanceIndexBase );
-		pShader->GetRTSShader()->SetDrawIDOffset( pTargetDrawIDOffset );
+		pShader->SetCompiled( smgr.GetLanguage()->CompileShader( *pShader ) );
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();
@@ -1741,52 +1664,52 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	// tessellation
 	if( pConfig.GetTessellationMode() != deoglSkinShaderConfig::etmNone ){
-		defines.SetDefine( "HAS_TESSELLATION_SHADER", true );
+		defines.SetDefines( "HAS_TESSELLATION_SHADER" );
 		
 		if( pConfig.GetTessellationMode() == deoglSkinShaderConfig::etmLinear ){
-			defines.SetDefine( "TESSELLATION_LINEAR", true );
+			defines.SetDefines( "TESSELLATION_LINEAR" );
 		}
 	}
 	
 	// geometry type definitions
 	if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmPropField ){
-		defines.SetDefine( "PROP_FIELD", true );
+		defines.SetDefines( "PROP_FIELD" );
 		
 	}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmHeightMap ){
-		defines.SetDefine( "HEIGHT_MAP", true );
+		defines.SetDefines( "HEIGHT_MAP" );
 		
 	}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle ){
-		defines.SetDefine( "PARTICLE", true );
+		defines.SetDefines( "PARTICLE" );
 		
 		if( pConfig.GetParticleMode() == deoglSkinShaderConfig::epmRibbon ){
-			defines.SetDefine( "PARTICLE_RIBBON", true );
+			defines.SetDefines( "PARTICLE_RIBBON" );
 			
 		}else if( pConfig.GetParticleMode() == deoglSkinShaderConfig::epmBeam ){
-			defines.SetDefine( "PARTICLE_BEAM", true );
+			defines.SetDefines( "PARTICLE_BEAM" );
 		}
 		
 	}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmDecal ){
-		defines.SetDefine( "DECAL", true );
+		defines.SetDefines( "DECAL" );
 	}
 	
 	// depth definitions
 	if( pConfig.GetDepthMode() == deoglSkinShaderConfig::edmOrthogonal ){
-		defines.SetDefine( "DEPTH_ORTHOGONAL", true );
-		defines.SetDefine( "DEPTH_OFFSET", true );
+		defines.SetDefines( "DEPTH_ORTHOGONAL" );
+		defines.SetDefines( "DEPTH_OFFSET" );
 		
 	}else if( pConfig.GetDepthMode() == deoglSkinShaderConfig::edmDistance ){
-		defines.SetDefine( "DEPTH_DISTANCE", true );
-		defines.SetDefine( "DEPTH_OFFSET", true );
+		defines.SetDefines( "DEPTH_DISTANCE" );
+		defines.SetDefines( "DEPTH_OFFSET" );
 	}
 	
 	// shading configuration definitions
 	switch( pConfig.GetMaterialNormalModeDec() ){
 	case deoglSkinShaderConfig::emnmIntBasic:
-		defines.SetDefine( "MATERIAL_NORMAL_DEC_INTBASIC", true );
+		defines.SetDefines( "MATERIAL_NORMAL_DEC_INTBASIC" );
 		break;
 		
 	case deoglSkinShaderConfig::emnmSpheremap:
-		defines.SetDefine( "MATERIAL_NORMAL_DEC_SPHEREMAP", true );
+		defines.SetDefines( "MATERIAL_NORMAL_DEC_SPHEREMAP" );
 		break;
 		
 	default:
@@ -1795,11 +1718,11 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	switch( pConfig.GetMaterialNormalModeEnc() ){
 	case deoglSkinShaderConfig::emnmIntBasic:
-		defines.SetDefine( "MATERIAL_NORMAL_ENC_INTBASIC", true );
+		defines.SetDefines( "MATERIAL_NORMAL_ENC_INTBASIC" );
 		break;
 		
 	case deoglSkinShaderConfig::emnmSpheremap:
-		defines.SetDefine( "MATERIAL_NORMAL_ENC_SPHEREMAP", true );
+		defines.SetDefines( "MATERIAL_NORMAL_ENC_SPHEREMAP" );
 		break;
 		
 	default:
@@ -1808,77 +1731,77 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	// texture usage definitions
 	if( pConfig.GetTextureColor() ){
-		defines.SetDefine( "TEXTURE_COLOR", true );
+		defines.SetDefines( "TEXTURE_COLOR" );
 	}
 	if( pConfig.GetTextureColorTintMask() ){
-		defines.SetDefine( "TEXTURE_COLOR_TINT_MASK", true );
+		defines.SetDefines( "TEXTURE_COLOR_TINT_MASK" );
 	}
 	if( pConfig.GetTextureTransparency() ){
-		defines.SetDefine( "TEXTURE_TRANSPARENCY", true );
+		defines.SetDefines( "TEXTURE_TRANSPARENCY" );
 	}
 	if( pConfig.GetTextureSolidity() ){
-		defines.SetDefine( "TEXTURE_SOLIDITY", true );
+		defines.SetDefines( "TEXTURE_SOLIDITY" );
 	}
 	if( pConfig.GetTextureNormal() ){
-		defines.SetDefine( "TEXTURE_NORMAL", true );
+		defines.SetDefines( "TEXTURE_NORMAL" );
 	}
 	if( pConfig.GetTextureHeight() ){
-		defines.SetDefine( "TEXTURE_HEIGHT", true );
+		defines.SetDefines( "TEXTURE_HEIGHT" );
 	}
 	if( pConfig.GetTextureReflectivity() ){
-		defines.SetDefine( "TEXTURE_REFLECTIVITY", true );
+		defines.SetDefines( "TEXTURE_REFLECTIVITY" );
 	}
 	if( pConfig.GetTextureRoughness() ){
-		defines.SetDefine( "TEXTURE_ROUGHNESS", true );
+		defines.SetDefines( "TEXTURE_ROUGHNESS" );
 	}
 	if( pConfig.GetTextureEnvMap() ){
-		defines.SetDefine( "TEXTURE_ENVMAP", true );
+		defines.SetDefines( "TEXTURE_ENVMAP" );
 		
 		if( pConfig.GetTextureEnvMapEqui() ){
-			defines.SetDefine( "TEXTURE_ENVMAP_EQUI", true );
+			defines.SetDefines( "TEXTURE_ENVMAP_EQUI" );
 		}
 		
 		if( REFLECTION_TEST_MODE < 2 ){
-			defines.SetDefine( "TEXTURE_ENVMAP_FADE", true );
+			defines.SetDefines( "TEXTURE_ENVMAP_FADE" );
 		}
 	}
 	if( pConfig.GetTextureEmissivity() ){
-		defines.SetDefine( "TEXTURE_EMISSIVITY", true );
+		defines.SetDefines( "TEXTURE_EMISSIVITY" );
 	}
 	if( pConfig.GetTextureAbsorption() ){
-		defines.SetDefine( "TEXTURE_ABSORPTION", true );
+		defines.SetDefines( "TEXTURE_ABSORPTION" );
 	}
 	if( pConfig.GetTextureRenderColor() ){
-		defines.SetDefine( "TEXTURE_RENDERCOLOR", true );
+		defines.SetDefines( "TEXTURE_RENDERCOLOR" );
 	}
 	if( pConfig.GetTextureRefractionDistort() ){
-		defines.SetDefine( "TEXTURE_REFRACTION_DISTORT", true );
+		defines.SetDefines( "TEXTURE_REFRACTION_DISTORT" );
 	}
 	if( pConfig.GetTextureAO() ){
-		defines.SetDefine( "TEXTURE_AO", true );
+		defines.SetDefines( "TEXTURE_AO" );
 	}
 	if( pConfig.GetTextureEnvRoom() ){
-		defines.SetDefine( "TEXTURE_ENVROOM", true );
+		defines.SetDefines( "TEXTURE_ENVROOM" );
 	}
 	if( pConfig.GetTextureEnvRoomMask() ){
-		defines.SetDefine( "TEXTURE_ENVROOM_MASK", true );
+		defines.SetDefines( "TEXTURE_ENVROOM_MASK" );
 	}
 	if( pConfig.GetTextureEnvRoomEmissivity() ){
-		defines.SetDefine( "TEXTURE_ENVROOM_EMISSIVITY", true );
+		defines.SetDefines( "TEXTURE_ENVROOM_EMISSIVITY" );
 	}
 	if( pConfig.GetTextureRimEmissivity() ){
-		defines.SetDefine( "TEXTURE_RIM_EMISSIVITY", true );
+		defines.SetDefines( "TEXTURE_RIM_EMISSIVITY" );
 	}
 	if( pConfig.GetTextureNonPbrAlbedo() ){
-		defines.SetDefine( "TEXTURE_NONPBR_ALBEDO", true );
+		defines.SetDefines( "TEXTURE_NONPBR_ALBEDO" );
 	}
 	if( pConfig.GetTextureNonPbrMetalness() ){
-		defines.SetDefine( "TEXTURE_NONPBR_METALNESS", true );
+		defines.SetDefines( "TEXTURE_NONPBR_METALNESS" );
 	}
 	
 	// shading definitions
 	if( pConfig.GetMaskedSolidity() ){
-		defines.SetDefine( "MASKED_SOLIDITY", true );
+		defines.SetDefines( "MASKED_SOLIDITY" );
 	}
 	
 	switch( pConfig.GetDepthTestMode() ){
@@ -1895,47 +1818,29 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	if( pConfig.GetClipPlane() ){
-		defines.SetDefine( "CLIP_PLANE", true );
-	}
-	if( pConfig.GetNoZClip() ){
-		defines.SetDefine( "NO_ZCLIP", true );
+		defines.SetDefines( "CLIP_PLANE" );
 	}
 	if( pConfig.GetDecodeInDepth() ){
-		defines.SetDefine( "DECODE_IN_DEPTH", true );
+		defines.SetDefines( "DECODE_IN_DEPTH" );
 	}
 	if( pConfig.GetEncodeOutDepth() ){
-		defines.SetDefine( "ENCODE_OUT_DEPTH", true );
+		defines.SetDefines( "ENCODE_OUT_DEPTH" );
 	}
 	if( pConfig.GetInverseDepth() ){
-		defines.SetDefine( "INVERSE_DEPTH", true );
+		defines.SetDefines( "INVERSE_DEPTH" );
 	}
 	
 	if( pConfig.GetGSRenderCube() ){
-		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
-			DETHROW( deeInvalidParam );
-		}
-		
 		defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
 		
 	}else if( pConfig.GetGSRenderCascaded() ){
-		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		defines.SetDefine( "GS_RENDER_CASCADED", true );
+		defines.SetDefines( "GS_RENDER_CASCADED" );
 		
 	}else if( pConfig.GetGSRenderStereo() ){
-		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		defines.SetDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		
 	}else if( pConfig.GetVSRenderStereo() ){
-		if( ! pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
-			DETHROW( deeInvalidParam );
-		}
-		
+		DEASSERT_TRUE( pRenderThread.GetChoices().GetRenderStereoVSLayer() )
 		defines.SetDefines( "VS_RENDER_STEREO" );
 	}
 	
@@ -1943,7 +1848,7 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	const deoglRTBufferObject &bo = pRenderThread.GetBufferObject();
 	
 	if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
-		defines.SetDefine( "SHARED_SPB_USE_SSBO", true );
+		defines.SetDefines( "SHARED_SPB_USE_SSBO" );
 		
 		if( bo.GetLayoutSkinInstanceSSBO()->GetOffsetPadding() >= 16 ){
 			defines.SetDefine( "SHARED_SPB_PADDING", bo.GetLayoutSkinInstanceSSBO()->GetOffsetPadding() / 16 );
@@ -1971,7 +1876,7 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	if( pConfig.GetSharedSPB() ){ // affects only instance parameters
-		defines.SetDefine( "SHARED_SPB", true );
+		defines.SetDefines( "SHARED_SPB" );
 		if( bo.GetInstanceArraySizeUBO() > 0 ){
 			defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", bo.GetInstanceArraySizeUBO() );
 		}
@@ -1979,19 +1884,19 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	// output definitions
 	if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() < 8 ){
-		defines.SetDefine( "OUTPUT_LIMITBUFFERS", true );
+		defines.SetDefines( "OUTPUT_LIMITBUFFERS" );
 	}
 	
 	if( pConfig.GetOutputConstant() ){
-		defines.SetDefine( "OUTPUT_CONSTANT", true );
+		defines.SetDefines( "OUTPUT_CONSTANT" );
 		
 	}else if( pConfig.GetOutputColor() ){
-		defines.SetDefine( "OUTPUT_COLOR", true );
+		defines.SetDefines( "OUTPUT_COLOR" );
 	}
 	if( ! pConfig.GetLuminanceOnly() ){
 		if( pConfig.GetGeometryMode() != deoglSkinShaderConfig::egmParticle
 		|| GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-			defines.SetDefine( "OUTPUT_MATERIAL_PROPERTIES", true );
+			defines.SetDefines( "OUTPUT_MATERIAL_PROPERTIES" );
 		}
 	}
 	
@@ -2000,126 +1905,126 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		// ^== needs an option to select if this is required or not
 	
 	if( pConfig.GetUseNormalRoughnessCorrection() ){
-		defines.SetDefine( "USE_NORMAL_ROUGHNESS_CORRECTION", true );
+		defines.SetDefines( "USE_NORMAL_ROUGHNESS_CORRECTION" );
 	}
 	
 	if( pConfig.GetAmbientLightProbe() ){
-		defines.SetDefine( "AMBIENT_LIGHT_PROBE", true );
+		defines.SetDefines( "AMBIENT_LIGHT_PROBE" );
 	}
 	
 	if( pConfig.GetBillboard() ){
-		defines.SetDefine( "BILLBOARD", true );
+		defines.SetDefines( "BILLBOARD" );
 	}
 	
 	if( pConfig.GetSkinReflections() ){
-		defines.SetDefine( "SKIN_REFLECTIONS", true );
+		defines.SetDefines( "SKIN_REFLECTIONS" );
 	}
 	
 	if( pConfig.GetFadeOutRange() ){
-		defines.SetDefine( "FADEOUT_RANGE", true );
+		defines.SetDefines( "FADEOUT_RANGE" );
 	}
 	
 	if( pConfig.GetVariations() ){
-		defines.SetDefine( "WITH_VARIATIONS", true );
+		defines.SetDefines( "WITH_VARIATIONS" );
 	}
 	
 	if( pConfig.GetOutline() ){
-		defines.SetDefine( "WITH_OUTLINE", true );
+		defines.SetDefines( "WITH_OUTLINE" );
 	}
 	if( pConfig.GetOutlineThicknessScreen() ){
-		defines.SetDefine( "WITH_OUTLINE_THICKNESS_SCREEN", true );
+		defines.SetDefines( "WITH_OUTLINE_THICKNESS_SCREEN" );
 	}
 	if( pConfig.GetLuminanceOnly() ){
-		defines.SetDefine( "LUMINANCE_ONLY", true );
+		defines.SetDefines( "LUMINANCE_ONLY" );
 	}
 	
 	// dynamic texture property usage definitions
 	if( pConfig.GetDynamicColorTint() ){
-		defines.SetDefine( "DYNAMIC_COLOR_TINT", true );
+		defines.SetDefines( "DYNAMIC_COLOR_TINT" );
 	}
 	if( pConfig.GetDynamicColorGamma() ){
-		defines.SetDefine( "DYNAMIC_COLOR_GAMMA", true );
+		defines.SetDefines( "DYNAMIC_COLOR_GAMMA" );
 	}
 	if( pConfig.GetDynamicColorSolidityMultiplier() ){
-		defines.SetDefine( "DYNAMIC_COLOR_SOLIDITY_MULTIPLIER", true );
+		defines.SetDefines( "DYNAMIC_COLOR_SOLIDITY_MULTIPLIER" );
 	}
 	if( pConfig.GetDynamicAmbientOcclusionSolidityMultiplier() ){
-		defines.SetDefine( "DYNAMIC_AO_SOLIDITY_MULTIPLIER", true );
+		defines.SetDefines( "DYNAMIC_AO_SOLIDITY_MULTIPLIER" );
 	}
 	if( pConfig.GetDynamicTransparencyMultiplier() ){
-		defines.SetDefine( "DYNAMIC_TRANSPARENCY_MULTIPLIER", true );
+		defines.SetDefines( "DYNAMIC_TRANSPARENCY_MULTIPLIER" );
 	}
 	if( pConfig.GetDynamicSolidityMultiplier() ){
-		defines.SetDefine( "DYNAMIC_SOLIDITY_MULTIPLIER", true );
+		defines.SetDefines( "DYNAMIC_SOLIDITY_MULTIPLIER" );
 	}
 	if( pConfig.GetDynamicHeightRemap() ){
-		defines.SetDefine( "DYNAMIC_HEIGHT_REMAP", true );
+		defines.SetDefines( "DYNAMIC_HEIGHT_REMAP" );
 	}
 	if( pConfig.GetDynamicNormalStrength() ){
-		defines.SetDefine( "DYNAMIC_NORMAL_STRENGTH", true );
+		defines.SetDefines( "DYNAMIC_NORMAL_STRENGTH" );
 	}
 	if( pConfig.GetDynamicNormalSolidityMultiplier() ){
-		defines.SetDefine( "DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER", true );
+		defines.SetDefines( "DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER" );
 	}
 	if( pConfig.GetDynamicRoughnessRemap() ){
-		defines.SetDefine( "DYNAMIC_ROUGHNESS_REMAP", true );
+		defines.SetDefines( "DYNAMIC_ROUGHNESS_REMAP" );
 	}
 	if( pConfig.GetDynamicRoughnessGamma() ){
-		defines.SetDefine( "DYNAMIC_ROUGHNESS_GAMMA", true );
+		defines.SetDefines( "DYNAMIC_ROUGHNESS_GAMMA" );
 	}
 	if( pConfig.GetDynamicRoughnessSolidityMultiplier() ){
-		defines.SetDefine( "DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER", true );
+		defines.SetDefines( "DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER" );
 	}
 	if( pConfig.GetDynamicReflectivitySolidityMultiplier() ){
-		defines.SetDefine( "DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER", true );
+		defines.SetDefines( "DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER" );
 	}
 	if( pConfig.GetDynamicReflectivityMultiplier() ){
-		defines.SetDefine( "DYNAMIC_REFLECTIVITY_MULTIPLIER", true );
+		defines.SetDefines( "DYNAMIC_REFLECTIVITY_MULTIPLIER" );
 	}
 	if( pConfig.GetDynamicRefractionDistortStrength() ){
-		defines.SetDefine( "DYNAMIC_REFRACTION_DISTORT_STRENGTH", true );
+		defines.SetDefines( "DYNAMIC_REFRACTION_DISTORT_STRENGTH" );
 	}
 	if( pConfig.GetDynamicEmissivityIntensity() || pConfig.GetDynamicEmissivityTint() ){
-		defines.SetDefine( "DYNAMIC_EMISSIVITY_INTENSITY", true );
+		defines.SetDefines( "DYNAMIC_EMISSIVITY_INTENSITY" );
 	}
 	if( pConfig.GetDynamicEnvRoomSize() ){
-		defines.SetDefine( "DYNAMIC_ENVROOM_SIZE", true );
+		defines.SetDefines( "DYNAMIC_ENVROOM_SIZE" );
 	}
 	if( pConfig.GetDynamicEnvRoomOffset() ){
-		defines.SetDefine( "DYNAMIC_ENVROOM_OFFSET", true );
+		defines.SetDefines( "DYNAMIC_ENVROOM_OFFSET" );
 	}
 	if( pConfig.GetDynamicEnvRoomEmissivityIntensity() || pConfig.GetDynamicEnvRoomEmissivityTint() ){
-		defines.SetDefine( "DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY", true );
+		defines.SetDefines( "DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY" );
 	}
 	if( pConfig.GetDynamicVariation() ){
-		defines.SetDefine( "DYNAMIC_VARIATION", true );
+		defines.SetDefines( "DYNAMIC_VARIATION" );
 	}
 	if( pConfig.GetDynamicRimEmissivityIntensity() || pConfig.GetDynamicRimEmissivityTint() ){
-		defines.SetDefine( "DYNAMIC_RIM_EMISSIVITY_INTENSITY", true );
+		defines.SetDefines( "DYNAMIC_RIM_EMISSIVITY_INTENSITY" );
 	}
 	if( pConfig.GetDynamicRimAngle() ){
-		defines.SetDefine( "DYNAMIC_RIM_ANGLE", true );
+		defines.SetDefines( "DYNAMIC_RIM_ANGLE" );
 	}
 	if( pConfig.GetDynamicRimExponent() ){
-		defines.SetDefine( "DYNAMIC_RIM_EXPONENT", true );
+		defines.SetDefines( "DYNAMIC_RIM_EXPONENT" );
 	}
 	if( pConfig.GetDynamicOutlineColor() ){
-		defines.SetDefine( "DYNAMIC_OUTLINE_COLOR", true );
+		defines.SetDefines( "DYNAMIC_OUTLINE_COLOR" );
 	}
 	if( pConfig.GetDynamicOutlineColorTint() ){
-		defines.SetDefine( "DYNAMIC_OUTLINE_COLOR_TINT", true );
+		defines.SetDefines( "DYNAMIC_OUTLINE_COLOR_TINT" );
 	}
 	if( pConfig.GetDynamicOutlineThickness() ){
-		defines.SetDefine( "DYNAMIC_OUTLINE_THICKNESS", true );
+		defines.SetDefines( "DYNAMIC_OUTLINE_THICKNESS" );
 	}
 	if( pConfig.GetDynamicOutlineSolidity() ){
-		defines.SetDefine( "DYNAMIC_OUTLINE_SOLIDITY", true );
+		defines.SetDefines( "DYNAMIC_OUTLINE_SOLIDITY" );
 	}
 	if( pConfig.GetDynamicOutlineEmissivity() ){
-		defines.SetDefine( "DYNAMIC_OUTLINE_EMISSIVITY", true );
+		defines.SetDefines( "DYNAMIC_OUTLINE_EMISSIVITY" );
 	}
 	if( pConfig.GetDynamicOutlineEmissivityTint() ){
-		defines.SetDefine( "DYNAMIC_OUTLINE_EMISSIVITY_TINT", true );
+		defines.SetDefines( "DYNAMIC_OUTLINE_EMISSIVITY_TINT" );
 	}
 }
 
@@ -2363,8 +2268,6 @@ void deoglSkinShader::UpdateTextureTargets(){
 	}else if( geometryMode == deoglSkinShaderConfig::egmHeightMap ){
 		pTextureTargets[ ettHeightMapMask ] = textureUnitNumber++;
 	}
-	
-	pTextureTargets[ ettXRayDepth ] = textureUnitNumber++;
 	
 	pUsedTextureTargetCount = textureUnitNumber;
 }

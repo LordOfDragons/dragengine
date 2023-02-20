@@ -66,9 +66,11 @@ private:
 	int pSSBOMaxBlocksVertex;
 	int pSSBOMaxBlocksFragment;
 	int pSSBOMaxBlocksGeometry;
+	int pSSBOMaxBlocksCompute;
 	int pUBOOffsetAlignment;
 	int pGeometryShaderMaxVertices;
 	int pGeometryShaderMaxComponents;
+	int pNumProgramBinaryFormats;
 	
 	deoglCapCheckATLUnbind pATLUnbind;
 	deoglCapCheckUBOIndirectMatrixAccess pUBOIndirectMatrixAccess;
@@ -135,6 +137,9 @@ public:
 	/** Maximum number of supported SSBO per geometry shader. */
 	inline int GetSSBOMaxBlocksGeometry() const{ return pSSBOMaxBlocksGeometry; }
 	
+	/** Maximum number of supported SSBO per geometry shader. */
+	inline int GetSSBOMaxBlocksCompute() const{ return pSSBOMaxBlocksCompute; }
+	
 	/** Uniform buffer offset alignment. */
 	inline int GetUBOOffsetAlignment() const{ return pUBOOffsetAlignment; }
 	
@@ -151,6 +156,9 @@ public:
 	 * OpenGL Spec requires a minimum value of \em 1024.
 	 */
 	inline int GetGeometryShaderMaxComponents() const{ return pGeometryShaderMaxComponents; }
+	
+	/** Count of binary shader formats the driver supports. */
+	inline int GetNumProgramBinaryFormats() const{ return pNumProgramBinaryFormats; }
 	
 	
 	

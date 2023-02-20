@@ -1,0 +1,5 @@
+<Project>
+    <PropertyGroup>
+        <BuildVersion>9999</BuildVersion>
+    </PropertyGroup>
+</Project>

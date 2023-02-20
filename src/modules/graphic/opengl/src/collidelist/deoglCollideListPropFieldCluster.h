@@ -26,7 +26,6 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglCollideListPropFieldType;
 class deoglOcclusionTest;
 class deoglPropFieldCluster;
 
@@ -36,9 +35,7 @@ class deoglPropFieldCluster;
  */
 class deoglCollideListPropFieldCluster : public deoglOcclusionTestListener{
 private:
-	deoglCollideListPropFieldType &pType;
 	deoglPropFieldCluster *pCluster;
-	
 	bool pCulled;
 	int pCascadeMask;
 	
@@ -48,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create cluster. */
-	deoglCollideListPropFieldCluster( deoglCollideListPropFieldType &type );
+	deoglCollideListPropFieldCluster();
 	
 	/** Clean up cluster. */
 	~deoglCollideListPropFieldCluster();
@@ -66,8 +63,6 @@ public:
 	
 	/** Set cluster. */
 	void SetCluster( deoglPropFieldCluster *cluster );
-	
-	
 	
 	/** Component is culled. */
 	inline bool GetCulled() const{ return pCulled; }

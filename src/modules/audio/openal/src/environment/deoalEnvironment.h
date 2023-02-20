@@ -63,6 +63,7 @@ private:
 	float pAttenuationRolloff;
 	float pAttenuationDistanceOffset;
 	decLayerMask pLayerMask;
+	bool pValid;
 	
 	float pGainLow;
 	float pGainMedium;
@@ -150,6 +151,9 @@ public:
 	
 	/** \brief Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
+	
+	/** \brief Environment data are valid. */
+	inline bool GetValid() const{ return pValid; }
 	
 	
 	

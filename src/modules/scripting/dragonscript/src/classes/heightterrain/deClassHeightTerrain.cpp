@@ -1147,7 +1147,7 @@ dsFunction( init.clsHT, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 
 void deClassHeightTerrain::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deHeightTerrain * const hterrain = ( ( sHTNatDat* )p_GetNativeData( myself ) )->hterrain;
-	rt->PushInt( ( intptr_t )hterrain );
+	rt->PushInt( ( int )( intptr_t )hterrain );
 }
 
 // public func bool equals( Object object )

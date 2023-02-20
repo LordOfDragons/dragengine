@@ -27,16 +27,15 @@
 #include "plan/deoglRenderPlan.h"
 #include "task/deoglRenderTask.h"
 #include "task/deoglRenderTaskInstance.h"
-#include "task/deoglRenderTaskShader.h"
+#include "task/deoglRenderTaskPipeline.h"
 #include "task/deoglRenderTaskTexture.h"
 #include "task/deoglRenderTaskVAO.h"
 #include "task/shared/deoglRenderTaskSharedInstance.h"
-#include "task/shared/deoglRenderTaskSharedShader.h"
 #include "task/shared/deoglRenderTaskSharedTexture.h"
 #include "task/shared/deoglRenderTaskSharedVAO.h"
 #include "task/persistent/deoglPersistentRenderTask.h"
 #include "task/persistent/deoglPersistentRenderTaskInstance.h"
-#include "task/persistent/deoglPersistentRenderTaskShader.h"
+#include "task/persistent/deoglPersistentRenderTaskPipeline.h"
 #include "task/persistent/deoglPersistentRenderTaskTexture.h"
 #include "task/persistent/deoglPersistentRenderTaskVAO.h"
 
@@ -53,6 +52,7 @@
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../light/deoglRLight.h"
 #include "../light/volume/deoglLightVolume.h"
+#include "../pipeline/deoglPipeline.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -90,63 +90,6 @@
 
 
 
-// Definitions
-////////////////
-
-#define FACTOR_EXPONENT		255.0f
-
-enum eSPRenderTaskBare{
-	sprtbMatrixMVP,
-	sprtbMatrixMV
-};
-
-enum eSPRenderTaskDepth{
-	sprtdMatrixMVP,
-	sprtdMatrixMV,
-	sprtdMatrixDiffuse,
-	sprtdMaterialGamma,
-	sprtdClipPlane,
-	sprtdViewport
-};
-
-enum eSPRenderTaskGeometry{
-	sprtgMatrixMVP,
-	sprtgMatrixMV,
-	sprtgMatrixNor,
-	sprtgTexMatrixDiffuse,
-	sprtgTexMatrixNormal,
-	sprtgTexMatrixEmissive,
-	sprtgTexMatrixAO,
-	sprtgColor,
-	sprtgColorGamma,
-	sprtgAmbient,
-	sprtgReflectivity,
-	sprtgEnvMapParam,
-	sprtgRoughness,
-	sprtgEmissivity,
-	sprtgViewport,
-	sprtgDistortion,
-	sprtgTemporary,
-	sprtgMatrixEnvMap
-};
-
-enum eSPRenderTaskEnvMap{
-	sprtemMatrixMVP,
-	sprtemMatrixNor,
-	sprtemTexMatrixDiffuse,
-	sprtemTexMatrixEmissive,
-	sprtemColor,
-	sprtemColorGamma,
-	sprtemAmbient,
-	sprtemEmissivity,
-	
-	sprtemSkyLightView,
-	sprtemSkyLightColor,
-	sprtemSkyAmbientColor
-};
-
-
-
 // Class deoglRenderGeometry
 //////////////////////////////
 
@@ -154,44 +97,21 @@ enum eSPRenderTaskEnvMap{
 ////////////////////////////
 
 deoglRenderGeometry::deoglRenderGeometry( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
-// 	deoglConfiguration &config = ogl->GetConfiguration();
-// 	const bool useEncodeDepth = config.GetUseEncodeDepth();
-	
-	#ifndef ANDROID
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
-// 		sources = shaderManager.GetSourcesNamed( "DefRen Geometry Particle Old" );
-// 		defines.SetDefine( "HAS_MAP_EMISSIVE", "1" );
-// 		if( useEncodeDepth ){
-// 			defines.SetDefine( "GEOM_ENCODED_DEPTH", "1" );
-// 		}
-// 		pShaderParticle = shaderManager.GetProgramWith( sources, defines );
-// 		defines.RemoveAllDefines();
-		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Transform Positions" );
-		pShaderTransformPositions = shaderManager.GetProgramWith( sources, defines );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Calculate Normals Tangents" );
-		pShaderCalcNormalsTangents = shaderManager.GetProgramWith( sources, defines );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Write Skinned VBO" );
-		pShaderWriteSkinnedVBO = shaderManager.GetProgramWith( sources, defines );
-		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Approx Transform VNT" );
-		pShaderApproxTransformVNT = shaderManager.GetProgramWith( sources, defines );
+		// approximate transform vertices, normals and tangents
+		pipconf.Reset();
+		pipconf.SetType( deoglPipelineConfiguration::etCompute );
+		pipconf.SetShader( renderThread, "DefRen Approx Transform VNT", defines );
+		pPipelineApproxTransformVNT = pipelineManager.GetWith( pipconf );
 		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
 	}
-	#endif
 }
 
 deoglRenderGeometry::~deoglRenderGeometry(){
@@ -213,68 +133,20 @@ void deoglRenderGeometry::SetAmbient( const decColor &color ){
 // Rendering
 //////////////
 
-/*
-if( uniformSetup == deoglRenderTaskShader::eusEnvMap ){
-	const decColor &emissivity = skinTexture.GetEmissivity();
-	const float emissivityIntensity = renderTaskTexture->emissivityIntensity;
-	float colorGamma = skinTexture.GetColorGamma();
-	
-	shader.SetParameterColor4( sprtemAmbient, ambient );
-	shader.SetParameterFloat( sprtemEmissivity, emissivity.r * emissivityIntensity, emissivity.g * emissivityIntensity, emissivity.b * emissivityIntensity );
-	shader.SetParameterFloat( sprtemColorGamma, colorGamma, colorGamma, colorGamma, 1.0f );
-	
-	// sky light
-	decVector skyLightDir = -( decMatrix::CreateRotation( 61.0f * DEG2RAD, 62.0f * DEG2RAD, 0.0f ) ).TransformView();
-	const float skyLightIntensity = 16.0f * CANDELA_TO_INTENSITY;
-	const float skyAmbientIntensity = 4.0f * CANDELA_TO_INTENSITY;
-	
-	decColor skyLightColor = decColor( 1.0f, 1.0f, 1.0f );
-	skyLightColor.r = powf( skyLightColor.r, OGL_RENDER_GAMMA );
-	skyLightColor.g = powf( skyLightColor.g, OGL_RENDER_GAMMA );
-	skyLightColor.b = powf( skyLightColor.b, OGL_RENDER_GAMMA );
-	
-	decVector vector = params.plan->GetWorld()->GetWorld()->GetLightColorMatrix().Transform( skyLightColor.r, skyLightColor.g, skyLightColor.b );
-	skyLightColor = decColor( vector.x, vector.y, vector.z );
-	
-	skyLightDir.Normalize();
-	
-	shader.SetParameterDVector3( sprtemSkyLightView, -params.matrixCamera.TransformNormal( skyLightDir ).ToVector() );
-	shader.SetParameterColor3( sprtemSkyLightColor, skyLightColor * skyLightIntensity );
-	shader.SetParameterColor3( sprtemSkyAmbientColor, skyLightColor * skyAmbientIntensity );
-}
-*/
-
-/*
-if( uniformSetup == deoglRenderTaskShader::eusEnvMap ){
-	shader.SetParameterDMatrix4x4( sprtemMatrixMVP, matrixMV * params.matrixProjection );
-	shader.SetParameterDMatrix3x3( sprtemMatrixNor, matrixMV.GetRotationMatrix().Invert().Transpose() );
-	shader.SetParameterColor4( sprtemColor, renderTaskInstance->GetColorTint(), 1.0f );
-	
-	shader.SetParameterColor3( sprtemEmissivity, renderTaskInstance->GetEmissivity() );
-	
-	shader.SetParameterTexMatrix3x2( sprtemTexMatrixDiffuse, matrixTC );
-	shader.SetParameterTexMatrix3x2( sprtemTexMatrixEmissive, matrixTC );
-}
-*/
-
 void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
-	const int shaderCount = renderTask.GetShaderCount();
-	if( shaderCount == 0 ){
+	const int pipelineCount = renderTask.GetPipelineCount();
+	if( pipelineCount == 0 ){
 		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.RenderTask" );
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
-	const bool forceDoubleSided = renderTask.GetForceDoubleSided();
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 // 	const int strideIndirect = sizeof( oglDrawIndirectCommand );
 	deoglShaderParameterBlock *spbSIIndexInstance = NULL;
-	bool curDoubleSided = false;
 	deoglVAO *curVAO = NULL;
 	int i, j, k, l, m;
-	
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
 	
@@ -283,13 +155,15 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 	}
 	
 	try{
-		for( i=0; i<shaderCount; i++ ){
-			const deoglRenderTaskShader &rtshader = *renderTask.GetShaderAt( i );
-			const int targetSPBInstanceIndexBase = rtshader.GetShader()->GetSPBInstanceIndexBase();
-			const int targetDrawIDOffset = rtshader.GetShader()->GetDrawIDOffset();
-			deoglShaderProgram &shaderProgram = *rtshader.GetShader()->GetShader();
-			deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
-			renderThread.GetShader().ActivateShader( &shaderProgram );
+		for( i=0; i<pipelineCount; i++ ){
+			const deoglRenderTaskPipeline &rtpipeline = *renderTask.GetPipelineAt( i );
+			const deoglPipeline &pipeline = *rtpipeline.GetPipeline();
+			const deoglPipelineConfiguration &pipconf = pipeline.GetGlConfiguration();
+			const int targetSPBInstanceIndexBase = pipconf.GetSPBInstanceIndexBase();
+			const int targetDrawIDOffset = pipconf.GetDrawIDOffset();
+			deoglShaderCompiled &shader = pipeline.GetGlShader();
+			
+			pipeline.Activate();
 			
 			if( renderParamBlock ){
 				renderParamBlock->Activate();
@@ -299,9 +173,9 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 				shader.SetParameterInt( targetDrawIDOffset, 0 );
 			}
 			
-			const int textureCount = rtshader.GetTextureCount();
+			const int textureCount = rtpipeline.GetTextureCount();
 			for( j=0; j<textureCount; j++ ){
-				const deoglRenderTaskTexture &rttexture = *rtshader.GetTextureAt( j );
+				const deoglRenderTaskTexture &rttexture = *rtpipeline.GetTextureAt( j );
 				const deoglTexUnitsConfig * const tuc = rttexture.GetTexture()->GetTUC();
 				if( tuc ){
 					tuc->Apply();
@@ -330,7 +204,6 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 					for( l=0; l<instanceCount; l++ ){
 						const deoglRenderTaskInstance &rtinstance = *rtvao.GetInstanceAt( l );
 						const deoglRenderTaskSharedInstance &instance = *rtinstance.GetInstance();
-						const bool doubleSided = instance.GetDoubleSided() | forceDoubleSided;
 						
 						if( instance.GetParameterBlock() ){
 							instance.GetParameterBlock()->Activate();
@@ -351,18 +224,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 						
 						if( targetSPBInstanceIndexBase != -1 ){
 							shader.SetParameterInt( targetSPBInstanceIndexBase,
-							rtinstance.GetSIIndexInstanceFirst() );
-						}
-						
-						if( doubleSided != curDoubleSided ){
-							if( doubleSided ){
-								OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-								
-							}else{
-								OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-							}
-							
-							curDoubleSided = doubleSided;
+								rtinstance.GetSIIndexInstanceFirst() );
 						}
 						
 						GLenum primitiveType = instance.GetPrimitiveType();
@@ -505,8 +367,8 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 }
 
 void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTask ){
-	const decPointerLinkedList::cListEntry *iterShader = renderTask.GetRootShader();
-	if( ! iterShader ){
+	const decPointerLinkedList::cListEntry *iterPipeline = renderTask.GetRootPipeline();
+	if( ! iterPipeline ){
 		return;
 	}
 	
@@ -514,24 +376,22 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 	const deoglShaderParameterBlock *spbSIIndexInstance = NULL;
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.RenderTask(Persistent)" );
-	bool curDoubleSided = false;
 	const deoglVAO *curVAO = NULL;
-	
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
 	
-	while( iterShader ){
-		const deoglPersistentRenderTaskShader &rtshader = *( ( deoglPersistentRenderTaskShader* )iterShader->GetOwner() );
-		const deoglShaderCompiled &shader = *rtshader.GetShader()->GetCompiled();
+	while( iterPipeline ){
+		const deoglPersistentRenderTaskPipeline &rtpipeline = *( ( deoglPersistentRenderTaskPipeline* )iterPipeline->GetOwner() );
+		const deoglPipeline &pipeline = *rtpipeline.GetPipeline();
+		deoglShaderCompiled &shader = pipeline.GetGlShader();
 		
-		renderThread.GetShader().ActivateShader( rtshader.GetShader() );
+		pipeline.Activate();
 		
 		if( renderParamBlock ){
 			renderParamBlock->Activate();
 		}
 		
-		const decPointerLinkedList::cListEntry *iterTexture = rtshader.GetRootTexture();
+		const decPointerLinkedList::cListEntry *iterTexture = rtpipeline.GetRootTexture();
 		while( iterTexture ){
 			const deoglPersistentRenderTaskTexture &texture = *( ( deoglPersistentRenderTaskTexture* )iterTexture->GetOwner() );
 			
@@ -560,7 +420,6 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 				
 				while( iterInstance ){
 					const deoglPersistentRenderTaskInstance &instance = *( ( deoglPersistentRenderTaskInstance* )iterInstance->GetOwner() );
-					const bool doubleSided = instance.GetDoubleSided();
 					
 					if( instance.GetParameterBlock() ){
 						instance.GetParameterBlock()->Activate();
@@ -579,20 +438,8 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 						spbSIIndexInstance = instance.GetSIIndexInstanceSPB();
 					}
 					
-					if( rtshader.GetSPBInstanceIndexBase() != -1 ){
-						shader.SetParameterInt( rtshader.GetSPBInstanceIndexBase(),
-							instance.GetSIIndexInstanceFirst() );
-					}
-					
-					if( doubleSided != curDoubleSided ){
-						if( doubleSided ){
-							OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-							
-						}else{
-							OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-						}
-						
-						curDoubleSided = doubleSided;
+					if( rtpipeline.GetSPBInstanceIndexBase() != -1 ){
+						shader.SetParameterInt( rtpipeline.GetSPBInstanceIndexBase(), instance.GetSIIndexInstanceFirst() );
 					}
 					
 					GLenum primitiveType = instance.GetPrimitiveType();
@@ -652,7 +499,7 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 			}
 			iterTexture = iterTexture->GetNext();
 		}
-		iterShader = iterShader->GetNext();
+		iterPipeline = iterPipeline->GetNext();
 	}
 	
 	pglBindVertexArray( 0 );
@@ -660,165 +507,32 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 
 
 
-void deoglRenderGeometry::TransformPositions( const deoglVAO &vao, GLuint tboWeightMatrices,
-GLuint vboTransformed, int firstPoint, int pointCount ){
-	#ifdef ANDROID
-	DETHROW( deeInvalidAction );
-	#endif
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.TransformPositions" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	
-	renderThread.GetShader().ActivateShader( pShaderTransformPositions );
-	
-	tsmgr.EnableTBO( 0, tboWeightMatrices, GetSamplerClampNearest() );
-	
-	if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
-		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	}
-	OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
-	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, vboTransformed ) );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( vao.GetVAO() ) );
-	
-	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, firstPoint, pointCount ) );
-	OGL_CHECK( renderThread, pglEndTransformFeedback() );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
-}
-
-void deoglRenderGeometry::CalcNormalsTangents( const deoglVAO &vao, GLuint tboPositions,
-deoglFramebuffer *fbo, int outputWidth, int outputHeight, int positionCount,
-int normalCount, int /*tangentCount*/, int firstPoint, int pointCount ){
-	#ifdef ANDROID
-	DETHROW( deeInvalidAction );
-	#endif
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.CalcNormalsTangents" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	
-	// set states
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	// prepare fbo
-	renderThread.GetFramebuffer().Activate( fbo );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, outputWidth, outputHeight ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	
-	// clear the texture
-	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, clearColor ) );
-	
-	// set shader
-	renderThread.GetShader().ActivateShader( pShaderCalcNormalsTangents );
-	deoglShaderCompiled &shader = *pShaderCalcNormalsTangents->GetCompiled();
-	
-	shader.SetParameterFloat( 0, 2.0f / ( float )outputWidth, 2.0f / ( float )outputHeight,
-		0.5f / ( float )outputWidth - 1.0f, 0.5f / ( float )outputHeight - 1.0f );
-	shader.SetParameterInt( 1, outputWidth );
-	shader.SetParameterInt( 2, positionCount, positionCount + normalCount );
-	
-	// bind textures
-	tsmgr.EnableTBO( 0, tboPositions, GetSamplerClampNearest() );
-	
-	// render
-	OGL_CHECK( renderThread, pglBindVertexArray( vao.GetVAO() ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, firstPoint, pointCount ) );
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-}
-
-void deoglRenderGeometry::WriteSkinnedVBO( const deoglVAO &vao, GLuint tboPositions,
-deoglTexture &texNorTan, GLuint vboSkinned, int positionCount, int normalCount,
-int firstPoint, int pointCount ){
-	#ifdef ANDROID
-	DETHROW( deeInvalidAction );
-	#endif
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.WriteSkinnedVBO" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	
-	// set shader
-	renderThread.GetShader().ActivateShader( pShaderWriteSkinnedVBO );
-	deoglShaderCompiled &shader = *pShaderWriteSkinnedVBO->GetCompiled();
-	
-	shader.SetParameterInt( 0, texNorTan.GetWidth() );
-	shader.SetParameterInt( 1, positionCount, positionCount + normalCount );
-	
-	// bind textures
-	tsmgr.EnableTBO( 0, tboPositions, GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, texNorTan, GetSamplerClampNearest() );
-	
-	// set states
-	if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
-		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	}
-	OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
-	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, vboSkinned ) );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( vao.GetVAO() ) );
-	
-	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, firstPoint, pointCount ) );
-	OGL_CHECK( renderThread, pglEndTransformFeedback() );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
-}
-
-void deoglRenderGeometry::ApproxTransformVNT( const deoglVAO &vao,
-GLuint tboWeightMatrices, GLuint vboTransformed, int firstPoint, int pointCount ){
-	#ifdef ANDROID
-	// android OpenGL ES 3.0 does not support texture buffer objects
-	DETHROW( deeInvalidAction );
-	#endif
-	
+void deoglRenderGeometry::ApproxTransformVNT( GLuint vao, GLuint vbo,
+const deoglSPBlockSSBO *weightMatrices, const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.ApproxTransformVNT" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
-	renderThread.GetShader().ActivateShader( pShaderApproxTransformVNT );
+	pPipelineApproxTransformVNT->Activate();
 	
-	tsmgr.EnableTBO( 0, tboWeightMatrices, GetSamplerClampNearest() );
-	
-	if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
-		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, vbo) );
+	transformed.Activate();
+	if( weightMatrices ){
+		weightMatrices->Activate();
 	}
-	OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
 	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, vboTransformed ) );
+	pPipelineApproxTransformVNT->GetGlShader().SetParameterUInt( 0, firstPoint, pointCount );
 	
-	OGL_CHECK( renderThread, pglBindVertexArray( vao.GetVAO() ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( ( pointCount - 1 ) / 64 + 1, 1, 1 ) );
 	
-	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, firstPoint, pointCount ) );
-	OGL_CHECK( renderThread, pglEndTransformFeedback() );
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0) );
+	transformed.Deactivate();
+	if( weightMatrices ){
+		weightMatrices->Deactivate();
+	}
 	
+	OGL_CHECK( renderThread, pglBindVertexArray( vao ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
-	
-	// WARNING temporary hack. without this line below some immediately following rendering
-	//         into render targets result in strange results where texture data is not written
-	//         to framebuffers although the result is correct.
-	//         
-	// NOTE we have to replace this with compute shaders. TBF is unstable and error prone
-	glFlush();
 }
 
 

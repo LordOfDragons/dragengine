@@ -34,7 +34,7 @@
 /**
  * \brief Game patch.
  */
-class delPatch : public deObject{
+class DE_DLL_EXPORT delPatch : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<delPatch> Ref;

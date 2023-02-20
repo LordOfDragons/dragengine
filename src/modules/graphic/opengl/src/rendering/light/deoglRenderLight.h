@@ -32,7 +32,6 @@ class deoglRenderLightSpot;
 class deoglRenderGI;
 class deoglRenderTask;
 class deoglRLight;
-class deoglSPBlockUBO;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
 
@@ -42,16 +41,19 @@ class deoglRenderPlanMasked;
  */
 class deoglRenderLight : public deoglRenderLightBase{
 private:
-	deoglShaderProgramUsage pShaderAOLocal;
-	deoglShaderProgramUsage pShaderAOLocalStereo;
-	deoglShaderProgramUsage pShaderAOBlur1;
-	deoglShaderProgramUsage pShaderAOBlur1Stereo;
-	deoglShaderProgramUsage pShaderAOBlur2;
-	deoglShaderProgramUsage pShaderAOBlur2Stereo;
-	deoglShaderProgramUsage pShaderDebugAO;
+	const deoglPipeline *pPipelineAOLocal;
+	const deoglPipeline *pPipelineAOLocalStereo;
+	const deoglPipeline *pPipelineAOBlur1;
+	const deoglPipeline *pPipelineAOBlur1Stereo;
+	const deoglPipeline *pPipelineAOBlur2;
+	const deoglPipeline *pPipelineAOBlur2Stereo;
+	const deoglPipeline *pPipelineDebugAO;
 	
-	deoglShaderProgramUsage pShaderSSSSS;
-	deoglShaderProgramUsage pShaderSSSSSStereo;
+	const deoglPipeline *pPipelineSSSSS;
+	const deoglPipeline *pPipelineSSSSSStereo;
+	
+	const deoglPipeline *pPipelineCopyDepth;
+	const deoglPipeline *pPipelineCopyDepthStereo;
 	
 	deoglRenderLightSpot *pRenderLightSpot;
 	deoglRenderLightSky *pRenderLightSky;
@@ -59,8 +61,8 @@ private:
 	deoglRenderLightParticles *pRenderLightParticles;
 	deoglRenderGI *pRenderGI;
 	
-	deoglSPBlockUBO *pShadowPB;
-	deoglSPBlockUBO *pOccMapPB;
+	deoglSPBlockUBO::Ref pShadowPB;
+	deoglSPBlockUBO::Ref pOccMapPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	
@@ -107,10 +109,10 @@ public:
 	
 	
 	/** Shadow render parameter block. */
-	inline deoglSPBlockUBO *GetShadowPB() const{ return pShadowPB; }
+	inline const deoglSPBlockUBO::Ref &GetShadowPB() const{ return pShadowPB; }
 	
 	/** Occmap render parameter block. */
-	inline deoglSPBlockUBO *GetOccMapPB() const{ return pOccMapPB; }
+	inline const deoglSPBlockUBO::Ref &GetOccMapPB() const{ return pOccMapPB; }
 	
 	/** Render task. */
 	inline deoglRenderTask &GetRenderTask() const{ return *pRenderTask; }
@@ -152,6 +154,9 @@ public:
 	
 	/** Render screen space sub surface scattering. */
 	void RenderSSSSS( deoglRenderPlan &plan, bool solid );
+	
+	/** Copy first depth to third depth. */
+	void CopyDepth1ToDepth3( deoglRenderPlan &plan );
 	
 	
 	

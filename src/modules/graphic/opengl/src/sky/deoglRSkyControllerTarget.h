@@ -28,7 +28,7 @@ class deoglRSkyInstance;
 
 
 /**
- * \brief Sky controller target.
+ * Sky controller target.
  */
 class deoglRSkyControllerTarget{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create sky controller target. */
+	/** Create sky controller target. */
 	deoglRSkyControllerTarget( const deSkyControllerTarget &target );
 	
-	/** \brief Clean up sky controller target. */
+	/** Clean up sky controller target. */
 	~deoglRSkyControllerTarget();
 	/*@}*/
 	
@@ -51,13 +51,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of links. */
+	/** Number of links. */
 	inline int GetLinkCount() const{ return pLinkCount; }
 	
-	/** \brief Link at index. */
+	/** Link at index. */
 	int GetLinkAt( int index ) const;
 	
-	/** \brief Value of target. */
+	/** Value of target. */
 	float GetValue( const deoglRSkyInstance &instance, float defaultValue ) const;
 	/*@}*/
 };

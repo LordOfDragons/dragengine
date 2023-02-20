@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module Parameter Screen Space Reflection Coverage Power Ray Length.
+ * Module Parameter Screen Space Reflection Coverage Power Ray Length.
  */
 class deoglPSSRCoveragePowerRayLength : public deoglParameterFloat{
 public:

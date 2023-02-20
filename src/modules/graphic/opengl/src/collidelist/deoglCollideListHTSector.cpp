@@ -91,11 +91,11 @@ deoglCollideListHTSCluster *deoglCollideListHTSector::AddCluster( const decPoint
 		cluster = ( deoglCollideListHTSCluster* )pClusters.GetAt( pClusterCount );
 		
 	}else{
-		cluster = new deoglCollideListHTSCluster( *this );
+		cluster = new deoglCollideListHTSCluster;
 		pClusters.Add( cluster );
 	}
 	
-	cluster->SetCoordinates( coordinates );
+	cluster->SetCluster( &pSector->GetClusterAt( coordinates ) );
 	pClusterCount++;
 	return cluster;
 }

@@ -30,7 +30,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Parameter.
+ * Parameter.
  * 
  * Base class for all openal parameters. Every parameter stores information about
  * the parameter itself and provides methods to retrieves or alter the current value.
@@ -44,10 +44,10 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter. */
+	/** Create parameter. */
 	deoglParameter( deGraphicOpenGl &oal );
 	
-	/** \brief Clean up parameter. */
+	/** Clean up parameter. */
 	virtual ~deoglParameter();
 	/*@}*/
 	
@@ -55,10 +55,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Current value. */
+	/** Current value. */
 	virtual decString GetParameterValue() = 0;
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterValue( const char *value ) = 0;
 	/*@}*/
 };

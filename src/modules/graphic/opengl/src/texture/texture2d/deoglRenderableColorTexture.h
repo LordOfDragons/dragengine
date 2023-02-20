@@ -28,7 +28,7 @@ class deoglTexture;
 
 
 /**
- * @brief Renderable Color Texture.
+ * Renderable Color Texture.
  * Stores a renderable texture of any kind. Renderable textures can not be
  * used by more than one entity at the same time. They can also not change
  * the size of format once created. They can though be reused if the entity
@@ -47,7 +47,7 @@ private:
 	int pMemoryUsageGPU;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable texture. */
 	deoglRenderableColorTexture( deoglRenderThread &renderThread, int width, int height, int componentCount, bool isFloat );
@@ -55,7 +55,7 @@ public:
 	~deoglRenderableColorTexture();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the width. */
 	inline int GetWidth() const{ return pWidth; }

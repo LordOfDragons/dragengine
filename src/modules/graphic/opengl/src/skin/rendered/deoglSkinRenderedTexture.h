@@ -32,7 +32,7 @@ class deoglRSkin;
 
 
 /**
- * \brief Skin rendered texture.
+ * Skin rendered texture.
  */
 class deoglSkinRenderedTexture{
 private:
@@ -47,11 +47,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin state rendered. */
+	/** Create skin state rendered. */
 	deoglSkinRenderedTexture( deoglSkinRendered &skinRendered, deoglRSkin &skin,
 		int texture, int modelTexture );
 	
-	/** \brief Clean up skin state rendered. */
+	/** Clean up skin state rendered. */
 	~deoglSkinRenderedTexture();
 	/*@}*/
 	
@@ -59,13 +59,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Skin rendered. */
+	/** Skin rendered. */
 	inline deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
-	/** \brief Add render plans. */
+	/** Add render plans. */
 	void AddRenderPlans( deoglRenderPlan &plan );
 	
-	/** \brief Drop objects containing delayed deletion support. */
+	/** Drop objects containing delayed deletion support. */
 	void DropDelayedDeletionObjects();
 	/*@}*/
 	

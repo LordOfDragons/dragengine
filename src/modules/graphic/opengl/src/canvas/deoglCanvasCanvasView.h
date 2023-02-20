@@ -31,7 +31,7 @@ class deCanvasCanvasView;
 
 
 /**
- * \brief Canvas view peer.
+ * Canvas view peer.
  */
 class deoglCanvasCanvasView : public deoglCanvas, deoglCanvasViewListener{
 private:
@@ -43,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglCanvasCanvasView( deGraphicOpenGl &ogl, deCanvasCanvasView &canvas );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglCanvasCanvasView();
 	/*@}*/
 	
@@ -54,11 +54,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Drop render canvas if not \em NULL. */
+	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();
 	
 	/**
-	 * \brief Prepare content for render thread counterpart.
+	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
 	virtual void SyncContentToRender();
@@ -74,14 +74,14 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Content changed. */
+	/** Content changed. */
 	virtual void ContentChanged();
 	/*@}*/
 	
 	
 	
 protected:
-	/** \brief Create render canvas. Subclass responsibility. */
+	/** Create render canvas. Subclass responsibility. */
 	virtual deoglRCanvas *CreateRCanvas();
 };
 

@@ -19,18 +19,25 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "../dragengine_configuration.h"
+
 #ifdef OS_W32
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
-// required before shlobj.h or SHGetKnownFolderPath is not found
-#ifdef _WIN32_WINNT
-#undef _WIN32_WINNT
+#ifndef OS_W32_VS
+#include <unistd.h>
 #endif
-#define _WIN32_WINNT _WIN32_WINNT_WIN7
+
+#ifndef OS_W32_VS
+	// required before shlobj.h or SHGetKnownFolderPath is not found
+	#ifdef _WIN32_WINNT
+	#undef _WIN32_WINNT
+	#endif
+	#define _WIN32_WINNT _WIN32_WINNT_WIN7
+#endif
 
 
 // required before shlobj.h or FOLDERID_* constants are not present
@@ -412,7 +419,7 @@ decString deOSWindows::ParseNativePath( const char *path ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int folderPathLen = wcslen( folderPath );
+	const int folderPathLen = ( int )wcslen( folderPath );
 	decUnicodeString ustrFolderPath;
 	int i;
 	
@@ -436,7 +443,7 @@ void deOSWindows::UnicodeToWide( const decUnicodeString &unicode, wchar_t *wide,
 	}
 	
 	for( i=0; i<count; i++ ){
-		wide[ i ] = unicode[ i ];
+		wide[ i ] = ( wchar_t )unicode[ i ];
 	}
 	wide[ i ] = 0;
 }
@@ -446,7 +453,7 @@ decString deOSWindows::WideToUtf8( const wchar_t *wide ){
 }
 
 decUnicodeString deOSWindows::WideToUnicode( const wchar_t *wide ){
-	const int count = wcslen( wide );
+	const int count = ( int )wcslen( wide );
 	decUnicodeString unicode;
 	int i;
 	

@@ -26,7 +26,7 @@
 
 
 /**
- * \brief LOD Max Pixel Error Parameter.
+ * LOD Max Pixel Error Parameter.
  */
 class deoglPLODMaxPixelError : public deoglParameterInt{
 public:

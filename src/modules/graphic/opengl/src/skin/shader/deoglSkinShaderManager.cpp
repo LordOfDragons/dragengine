@@ -135,9 +135,10 @@ bool deoglSkinShaderManager::HasShaderWith( deoglSkinShaderConfig &configuration
 	const int count = pShaderList.GetCount();
 	int i;
 	
+	configuration.UpdateKey();
+	
 	for( i=0; i<count; i++ ){
 		const deoglSkinShader &shader = *( ( deoglSkinShader* )pShaderList.GetAt( i ) );
-		
 		if( shader.GetConfig() == configuration ){
 			return true;
 		}
@@ -149,6 +150,8 @@ bool deoglSkinShaderManager::HasShaderWith( deoglSkinShaderConfig &configuration
 deoglSkinShader::Ref deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
 	const int count = pShaderList.GetCount();
 	int i;
+	
+	configuration.UpdateKey();
 	
 	for( i=0; i<count; i++ ){
 		deoglSkinShader * const shader = ( deoglSkinShader* )pShaderList.GetAt( i );

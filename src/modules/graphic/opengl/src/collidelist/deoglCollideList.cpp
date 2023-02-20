@@ -28,7 +28,9 @@
 #include "deoglCollideListLight.h"
 #include "deoglCollideListPropField.h"
 #include "deoglCollideListPropFieldType.h"
+#include "deoglCollideListPropFieldCluster.h"
 #include "deoglCollideListHTSector.h"
+#include "deoglCollideListHTSCluster.h"
 #include "deoglCLVisitorElements.h"
 
 #include "../component/deoglRComponent.h"
@@ -81,9 +83,17 @@ deoglCollideList::deoglCollideList(){
 	pHTSectorCount = 0;
 	pHTSectorSize = 0;
 	
+	pHTSClusters = nullptr;
+	pHTSClusterCount = 0;
+	pHTSClusterSize = 0;
+	
 	pPropFields = NULL;
 	pPropFieldCount = 0;
 	pPropFieldSize = 0;
+	
+	pPropFieldClusters = NULL;
+	pPropFieldClusterCount = 0;
+	pPropFieldClusterSize = 0;
 	
 	pTransformVolume = NULL;
 	
@@ -106,7 +116,9 @@ deoglCollideList::~deoglCollideList(){
 ///////////////
 
 void deoglCollideList::Clear(){
+	RemoveAllPropFieldClusters();
 	RemoveAllPropFields();
+	RemoveAllHTSClusters();
 	RemoveAllHTSectors();
 	RemoveAllBillboards();
 	RemoveAllLights();
@@ -726,6 +738,47 @@ void deoglCollideList::AddHTSectorsColliding( deoglHTView *htview, deoglDCollisi
 
 
 
+// Height Terrain Sector Clusters
+///////////////////////////////////
+
+deoglCollideListHTSCluster *deoglCollideList::GetHTSClusterAt( int index ) const{
+	if( index < 0 || index >= pHTSClusterCount ) DETHROW( deeInvalidParam );
+	return pHTSClusters[ index ];
+}
+
+deoglCollideListHTSCluster *deoglCollideList::AddHTSCluster( deoglHTViewSectorCluster *cluster ){
+	DEASSERT_NOTNULL( cluster )
+	
+	if( pHTSClusterCount == pHTSClusterSize ){
+		const int newSize = pHTSClusterCount * 3 / 2 + 1;
+		deoglCollideListHTSCluster ** const newArray = new deoglCollideListHTSCluster*[ newSize ];
+		if( newSize > pHTSClusterSize ){
+			memset( newArray + pHTSClusterSize, 0, sizeof( deoglCollideListHTSCluster* ) * ( newSize - pHTSClusterSize ) );
+		}
+		if( pHTSClusters ){
+			memcpy( newArray, pHTSClusters, sizeof( deoglCollideListHTSCluster* ) * pHTSClusterSize );
+			delete [] pHTSClusters;
+		}
+		pHTSClusters = newArray;
+		pHTSClusterSize = newSize;
+	}
+	
+	if( ! pHTSClusters[ pHTSClusterCount ] ){
+		pHTSClusters[ pHTSClusterCount ] = new deoglCollideListHTSCluster;
+	}
+	pHTSClusters[ pHTSClusterCount ]->SetCluster( cluster );
+	return pHTSClusters[ pHTSClusterCount++ ];
+}
+
+void deoglCollideList::RemoveAllHTSClusters(){
+	while( pHTSClusterCount > 0 ){
+		pHTSClusterCount--;
+		pHTSClusters[ pHTSClusterCount ]->Clear();
+	}
+}
+
+
+
 // Prop Fields
 ////////////////
 
@@ -823,6 +876,52 @@ void deoglCollideList::AddPropFieldsColliding( deoglRWorld &world, deoglDCollisi
 	}
 }
 
+
+
+// Prop Field Clusters
+////////////////////////
+
+deoglCollideListPropFieldCluster *deoglCollideList::GetPropFieldClusterAt( int index ) const{
+	if( index < 0 || index >= pPropFieldClusterCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pPropFieldClusters[ index ];
+}
+
+deoglCollideListPropFieldCluster *deoglCollideList::AddPropFieldCluster( deoglPropFieldCluster *cluster ){
+	DEASSERT_NOTNULL( cluster )
+	
+	if( pPropFieldClusterCount == pPropFieldClusterSize ){
+		const int newSize = pPropFieldClusterCount * 3 / 2 + 1;
+		deoglCollideListPropFieldCluster ** const newArray = new deoglCollideListPropFieldCluster*[ newSize ];
+		if( newSize > pPropFieldClusterSize ){
+			memset( newArray + pPropFieldClusterSize, '\0',
+				sizeof( deoglCollideListPropFieldCluster* ) * ( newSize - pPropFieldClusterSize ) );
+		}
+		if( pPropFieldClusters ){
+			memcpy( newArray, pPropFieldClusters, sizeof( deoglCollideListPropFieldCluster* ) * pPropFieldClusterSize );
+			delete [] pPropFieldClusters;
+		}
+		pPropFieldClusters = newArray;
+		pPropFieldClusterSize = newSize;
+	}
+	
+	if( ! pPropFieldClusters[ pPropFieldClusterCount ] ){
+		pPropFieldClusters[ pPropFieldClusterCount ] = new deoglCollideListPropFieldCluster;
+	}
+	pPropFieldClusters[ pPropFieldClusterCount ]->SetCluster( cluster );
+	return pPropFieldClusters[ pPropFieldClusterCount++ ];
+}
+
+void deoglCollideList::RemoveAllPropFieldClusters(){
+	while( pPropFieldClusterCount > 0 ){
+		pPropFieldClusterCount--;
+		pPropFieldClusters[ pPropFieldClusterCount ]->Clear();
+	}
+}
+
+
+
 #if 0
 void deoglCollideList::AddParticlesColliding( deoglRWorld *world, deoglDCollisionVolume *volume ){
 	if( ! world || ! volume ) DETHROW( deeInvalidParam );
@@ -864,12 +963,30 @@ void deoglCollideList::AddParticlesColliding( deoglRWorld *world, deoglDCollisio
 void deoglCollideList::pCleanUp(){
 	Clear();
 	
+	if( pPropFieldClusters ){
+		while( pPropFieldClusterSize > 0 ){
+			if( pPropFieldClusters[ pPropFieldClusterSize - 1 ] ) delete pPropFieldClusters[ pPropFieldClusterSize - 1 ];
+			pPropFieldClusterSize--;
+		}
+		delete [] pPropFieldClusters;
+	}
+	
 	if( pPropFields ){
 		while( pPropFieldSize > 0 ){
 			if( pPropFields[ pPropFieldSize - 1 ] ) delete pPropFields[ pPropFieldSize - 1 ];
 			pPropFieldSize--;
 		}
 		delete [] pPropFields;
+	}
+	
+	if( pHTSClusters ){
+		while( pHTSClusterSize > 0 ){
+			if( pHTSClusters[ pHTSClusterSize - 1 ] ){
+				delete pHTSClusters[ pHTSClusterSize - 1 ];
+			}
+			pHTSClusterSize--;
+		}
+		delete [] pHTSClusters;
 	}
 	
 	if( pHTSectors ){

@@ -51,6 +51,9 @@ void deoglRDSRenderable::SetName( const char *name ){
 	pName = name;
 }
 
+void deoglRDSRenderable::Render( const deoglRenderPlanMasked* ){
+}
+
 float deoglRDSRenderable::GetRenderValue( float defaultValue ){
 	return defaultValue;
 }

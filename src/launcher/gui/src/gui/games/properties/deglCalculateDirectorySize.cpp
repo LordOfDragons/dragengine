@@ -139,7 +139,7 @@ public:
 	}
 	
 	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path ){
-		pOwner.IncrementSize( vfs.GetFileSize( path ) );
+		pOwner.IncrementSize( ( int )vfs.GetFileSize( path ) );
 		return ! pAbort;
 	}
 	

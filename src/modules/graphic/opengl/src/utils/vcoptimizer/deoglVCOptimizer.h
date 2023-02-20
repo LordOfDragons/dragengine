@@ -29,7 +29,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Vertex Cache Optimizer.
+ * Vertex Cache Optimizer.
  * 
  * Based on http://home.comcast.net/~tom_forsyth/papers/fast_vert_cache_opt.html .
  */

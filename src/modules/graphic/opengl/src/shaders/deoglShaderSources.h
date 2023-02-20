@@ -22,9 +22,10 @@
 #ifndef _DEOSLSHADERSOURCES_H_
 #define _DEOSLSHADERSOURCES_H_
 
-#include <dragengine/common/string/decStringList.h>
-
 #include "deoglShaderBindingList.h"
+
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/deObject.h>
 
 class deLogger;
 class decBaseFileReader;
@@ -37,7 +38,12 @@ class decXmlElementTag;
  * Stores the source code of a shader program. Typically this is a vertex program source
  * code and a fragment program source code. The Name is used to reference shader sources.
  */
-class deoglShaderSources{
+class deoglShaderSources : public deObject{
+public:
+	typedef deTObjectReference<deoglShaderSources> Ref;
+	
+	
+	
 private:
 	decString pName;
 	decString pFilename;
@@ -64,18 +70,26 @@ private:
 	decStringList pFeedbackList;
 	bool pFeedbackInterleaved;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create . */
+	/** Create shader sources. */
 	deoglShaderSources();
-	/** Loads . */
+	
+	/** Load shader sources. */
 	deoglShaderSources( deLogger &logger, decBaseFileReader &reader );
-	/** Cleans up the shader source code object. */
-	~deoglShaderSources();
+	
+protected:
+	/** Clean up shader sources. */
+	virtual ~deoglShaderSources();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }

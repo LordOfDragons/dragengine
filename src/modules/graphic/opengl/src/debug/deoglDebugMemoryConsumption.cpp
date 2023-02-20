@@ -76,7 +76,6 @@ void deoglDebugMemoryConsumption::LogConsumption(){
 	pLog( consumption.textureArrayRenderable );
 	pLog( consumption.textureCubeRenderable );
 	
-	pLog( consumption.renderbuffer );
 	pLog( consumption.skin );
 	pLog( consumption.bufferObject );
 	pLog( consumption.deferredRendering );
@@ -112,12 +111,6 @@ void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionTexture &con
 	pLog( consumption.depthUncompressed );
 }
 
-void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionRenderBuffer &consumption ){
-	pLog( consumption.all );
-	pLog( consumption.color );
-	pLog( consumption.depth );
-}
-
 void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionSkin &consumption ){
 	pLog( consumption.all );
 	pLog( consumption.allCompressed );
@@ -138,7 +131,6 @@ void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionBufferObject
 void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionDeferredRendering &consumption ){
 	pLog( consumption.target );
 	pLog( consumption.texture );
-	pLog( consumption.renderBuffer );
 }
 
 void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionShadow &consumption ){

@@ -28,7 +28,7 @@
 
 
 /**
- * \brief OpenGL decal mesh builder convex volume face.
+ * OpenGL decal mesh builder convex volume face.
  * 
  * Spezialized version of the convex volume face used by the decal mesh builder.
  */
@@ -41,10 +41,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create decal mesh builder convex volume face. */
+	/** Create decal mesh builder convex volume face. */
 	deoglDMBConvexVolumeFace();
 	
-	/** \brief Clean up decal mesh builder convex volume face. */
+	/** Clean up decal mesh builder convex volume face. */
 	virtual ~deoglDMBConvexVolumeFace();
 	/*@}*/
 	
@@ -52,10 +52,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Decal face. */
+	/** Decal face. */
 	inline bool GetDecalFace() const{ return pDecalFace; }
 	
-	/** \brief Set if decal face. */
+	/** Set if decal face. */
 	void SetDecalFace( bool decalFace );
 	/*@}*/
 };

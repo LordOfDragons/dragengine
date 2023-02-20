@@ -420,32 +420,39 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	
 	const deoxrInstance &instance = GetInstance();
 	const int bindingCount = 10 * count;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
+	deoxrInstance::sSuggestBinding * const bindings = new deoxrInstance::sSuggestBinding[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
-	int i;
-	for( i=0; i<count; i++ ){
-		const RoleAction &roleAction = *( ( RoleAction* )pRoleActions.GetAt( i ) );
-		const decString basePath( roleAction.path.GetName() );
+	try{
+		int i;
+		for( i=0; i<count; i++ ){
+			const RoleAction &roleAction = *( ( RoleAction* )pRoleActions.GetAt( i ) );
+			const decString basePath( roleAction.path.GetName() );
 		
-		( b++ )->Set( roleAction.action, deoxrPath( instance, basePath + "/input/grip/pose" ) );
+			( b++ )->Set( roleAction.action, deoxrPath( instance, basePath + "/input/grip/pose" ) );
 		
-		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
+			pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
+			pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
+			pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
 		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
-		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
+			pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
+			pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
 		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
-		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
-		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
+			pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
+			pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
+			pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
 		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
-	}
+			pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		}
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+		GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+		delete [] bindings;
+
+	}catch( const deException & ){
+		delete [] bindings;
+		throw;
+	}
 #endif
 	
 }

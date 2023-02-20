@@ -16,6 +16,9 @@
  * returns \em null if all regular references to the object haved been released.
  * 
  * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 fixed class WeakReference
 	/** \name Constructors */
@@ -40,6 +43,24 @@ fixed class WeakReference
 	
 	/** \brief Set object or \em null. */
 	public func void set( Object object )
+	end
+	
+	/**
+	 * \brief Run block if get() returns non-null value.
+	 * \version 1.3
+	 * 
+	 * Block receives as only argument the object which is guaranteed to be non-null.
+	 */
+	public func void run( Block ablock )
+	end
+	
+	/**
+	 * \brief Run block if get() returns non-null value and object is castable to block argument.
+	 * \version 1.3
+	 * 
+	 * Block receives as only argument the object which is guaranteed to be non-null.
+	 */
+	public func void runCastable( Block ablock )
 	end
 	
 	

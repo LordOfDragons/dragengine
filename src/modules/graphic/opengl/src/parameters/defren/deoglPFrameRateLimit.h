@@ -26,16 +26,16 @@
 
 
 /**
- * \brief Frame rate limit parameter.
+ * Frame rate limit parameter.
  */
 class deoglPFrameRateLimit : public deoglParameterInt{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter. */
+	/** Create parameter. */
 	deoglPFrameRateLimit( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up parameter. */
+	/** Clean up parameter. */
 	virtual ~deoglPFrameRateLimit();
 	/*@}*/
 	
@@ -43,10 +43,10 @@ public:
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** \brief Current value. */
+	/** Current value. */
 	virtual int GetParameterInt();
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterInt( int value );
 	/*@}*/
 };

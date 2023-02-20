@@ -26,7 +26,7 @@
 #include "deoglPersistentRenderTaskPool.h"
 #include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskVAO.h"
-#include "deoglPersistentRenderTaskShader.h"
+#include "deoglPersistentRenderTaskPipeline.h"
 #include "../../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../../../vao/deoglVAO.h"
 
@@ -42,9 +42,8 @@
 
 deoglPersistentRenderTaskTexture::deoglPersistentRenderTaskTexture( deoglPersistentRenderTaskPool &pool ) :
 pPool( pool ),
-pLLShader( this ),
-
-pParentShader( NULL ),
+pLLTexture( this ),
+pParentPipeline( NULL ),
 pTUC( NULL ),
 pParamBlock( NULL ){
 }
@@ -58,8 +57,8 @@ deoglPersistentRenderTaskTexture::~deoglPersistentRenderTaskTexture(){
 // Management
 ///////////////
 
-void deoglPersistentRenderTaskTexture::SetParentShader( deoglPersistentRenderTaskShader *shader ){
-	pParentShader = shader;
+void deoglPersistentRenderTaskTexture::SetParentPipeline( deoglPersistentRenderTaskPipeline *pipeline ){
+	pParentPipeline = pipeline;
 }
 
 void deoglPersistentRenderTaskTexture::SetTUC( const deoglTexUnitsConfig *tuc ){
@@ -168,7 +167,7 @@ void deoglPersistentRenderTaskTexture::RemoveAllVAOs(){
 void deoglPersistentRenderTaskTexture::Clear(){
 	RemoveAllVAOs();
 	
-	pParentShader = NULL;
+	pParentPipeline = NULL;
 	pTUC = NULL;
 	pParamBlock = NULL;
 }
@@ -178,7 +177,7 @@ void deoglPersistentRenderTaskTexture::RemoveFromParentIfEmpty(){
 		return;
 	}
 	
-	deoglPersistentRenderTaskShader * const shader = pParentShader;
-	shader->RemoveTexture( this ); // clears pParentShader
-	shader->RemoveFromParentIfEmpty();
+	deoglPersistentRenderTaskPipeline * const pipeline = pParentPipeline;
+	pipeline->RemoveTexture( this ); // clears pParentShader
+	pipeline->RemoveFromParentIfEmpty();
 }

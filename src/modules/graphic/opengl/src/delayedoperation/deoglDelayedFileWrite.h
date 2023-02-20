@@ -31,7 +31,7 @@ class decBaseFileWriter;
 
 
 /**
- * \brief Delayed file write.
+ * Delayed file write.
  */
 class deoglDelayedFileWrite{
 private:
@@ -41,10 +41,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create delayed file write object. */
+	/** Create delayed file write object. */
 	deoglDelayedFileWrite( const decPath &path );
 	
-	/** \brief Clean up delayed file write object. */
+	/** Clean up delayed file write object. */
 	~deoglDelayedFileWrite();
 	/*@}*/
 	
@@ -52,11 +52,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Create file writer for the memory file. */
+	/** Create file writer for the memory file. */
 	decBaseFileWriter *GetFileWriter() const;
 	
 	/**
-	 * \brief Write file to virtual file system.
+	 * Write file to virtual file system.
 	 * \details This has to be called during main thread.
 	 */
 	void SaveFile( deVirtualFileSystem &vfs );

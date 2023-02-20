@@ -34,7 +34,7 @@ class deoglWorld;
 
 
 /**
- * \brief Sky peer.
+ * Sky peer.
  */
 class deoglSkyInstance : public deBaseGraphicSkyInstance{
 private:
@@ -68,30 +68,30 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Sky instance. */
+	/** Sky instance. */
 	inline const deSkyInstance &GetInstance() const{ return pInstance; }
 	
 	
 	
-	/** \brief Render instance. */
+	/** Render instance. */
 	inline deoglRSkyInstance *GetRInstance() const{ return pRInstance; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
-	/** \brief Update sky instance. */
+	/** Update sky instance. */
 	void Update( float elapsed );
 	
 	
 	
-	/** \brief Parent world or \em NULL if not in a world. */
+	/** Parent world or \em NULL if not in a world. */
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
-	 * \brief Set parent world or \em NULL if not in a world.
+	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
 	void SetParentWorld( deoglWorld *world );
@@ -101,16 +101,16 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Sky changed. */
+	/** Sky changed. */
 	virtual void SkyChanged();
 	
-	/** \brief order changed. */
+	/** order changed. */
 	virtual void OrderChanged();
 	
-	/** \brief Controller changed. */
+	/** Controller changed. */
 	virtual void ControllerChanged( int index );
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	/*@}*/
 };

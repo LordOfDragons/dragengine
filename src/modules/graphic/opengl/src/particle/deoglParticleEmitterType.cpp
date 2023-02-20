@@ -78,7 +78,7 @@ void deoglParticleEmitterType::SyncToRender(){
 		
 		pRType->CheckEmitLight( pType );
 		pRType->UpdateParameterSamples( pType );
-		pRType->DropLightShaders();
+		pRType->DropPipelines();
 		
 		pDirtyType = false;
 	}

@@ -461,7 +461,7 @@ dsFunction( init.clsMUID, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 void deClassMutableID::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decUniqueID * const id = ( ( sMUIDNatDat* )p_GetNativeData( myself ) )->id;
 	
-	rt->PushInt( ( intptr_t )id );
+	rt->PushInt( ( int )( intptr_t )id );
 }
 
 // public func bool equals( Object object )

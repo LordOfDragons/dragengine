@@ -39,6 +39,7 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTRenderers.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../world/deoglRCamera.h"
 
@@ -135,7 +136,7 @@ decDMatrix deoglVREye::CreateProjectionDMatrix( float znear, float zfar ) const{
 	m.a31 = 0.0;
 	m.a32 = 0.0;
 	
-	if( pVR.GetCamera().GetRenderThread().GetDeferredRendering().GetUseInverseDepth() ){
+	if( pVR.GetCamera().GetRenderThread().GetChoices().GetUseInverseDepth() ){
 		// due to inverse depth changing z-clamping
 		m.a33 = 0.0;
 		m.a34 = znear;

@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Prop Field Cluster Generator.
+ * Prop Field Cluster Generator.
  * Generates clusters out of a list of points using a Kd-Tree type data structure.
  */
 class deoglPFClusterGenerator{
@@ -50,7 +50,7 @@ private:
 	deoglPFClusterGenerator *pNode2;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new prop field cluster generator. */
 	deoglPFClusterGenerator( const decVector2 &minExtend, const decVector2 &maxExtend, int maxEntryCount );
@@ -58,7 +58,7 @@ public:
 	~deoglPFClusterGenerator();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the minimum extend. */
 	inline const decVector2 &GetMinExtend() const{ return pMinExtend; }

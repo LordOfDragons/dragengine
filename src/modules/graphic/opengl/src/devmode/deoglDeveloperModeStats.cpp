@@ -226,10 +226,14 @@ void deoglDeveloperModeStats::CombinedTextures( const decUnicodeArgumentList &co
 	while( combinedTexture ){
 		const decColor &color = combinedTexture->GetColor();
 		
-		text.Format( "- color=(%d,%d,%d,%d) images=(%p,%p,%p,%p) usage=%d\n", ( int )( color.r * 255.0 ),
-			( int )( color.g * 255.0 ), ( int )( color.b * 255.0 ), ( int )( color.a * 255.0 ),
-			combinedTexture->GetImageAt( 0 ), combinedTexture->GetImageAt( 1 ), combinedTexture->GetImageAt( 2 ),
-			combinedTexture->GetImageAt( 3 ), combinedTexture->GetUsageCount() );
+		text.Format( "- color=(%d,%d,%d,%d) images=(%p,%p,%p,%p) usage=%d\n",
+			( int )( color.r * 255.0 ), ( int )( color.g * 255.0 ),
+			( int )( color.b * 255.0 ), ( int )( color.a * 255.0 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 0 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 1 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 2 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 3 ),
+			combinedTexture->GetUsageCount() );
 		answer.AppendFromUTF8( text.GetString() );
 		
 		combinedTexture = combinedTexture->GetLLNext();
@@ -237,15 +241,13 @@ void deoglDeveloperModeStats::CombinedTextures( const decUnicodeArgumentList &co
 }
 
 void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
-	int ss, shaderSourcesCount;
-	int sst, shaderSourcesTextureCount;
-	int ssp, shaderSourcesParameterCount;
+	const decObjectList smsources( pRenderThread.GetShader().GetShaderManager().GetSourcesAsList() );
+	int ss, sst, ssp;
 	decString text;
 	
-	shaderSourcesCount = shaderManager.GetSourcesCount();
+	const int shaderSourcesCount = smsources.GetCount();
 	for( ss=0; ss<shaderSourcesCount; ss++ ){
-		const deoglShaderSources &sources = *shaderManager.GetSourcesAt( ss );
+		const deoglShaderSources &sources = *( deoglShaderSources* )smsources.GetAt( ss );
 		const deoglShaderBindingList &textureList = sources.GetTextureList();
 		const decStringList &parameterList = sources.GetParameterList();
 		
@@ -267,15 +269,16 @@ void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &comma
 			answer.AppendFromUTF8( text.GetString() );
 		}
 		
-		shaderSourcesTextureCount = textureList.GetCount();
+		const int shaderSourcesTextureCount = textureList.GetCount();
 		text.Set( "   - Textures:" );
 		for( sst=0; sst<shaderSourcesTextureCount; sst++ ){
-			text.AppendFormat( "%s %s(%d)", sst == 0 ? "" : ",", textureList.GetNameAt( sst ), textureList.GetTargetAt( sst ) );
+			text.AppendFormat( "%s %s(%d)", sst == 0 ? "" : ",",
+				textureList.GetNameAt( sst ).GetString(), textureList.GetTargetAt( sst ) );
 		}
 		text.Append( "\n" );
 		answer.AppendFromUTF8( text.GetString() );
 		
-		shaderSourcesParameterCount = parameterList.GetCount();
+		const int shaderSourcesParameterCount = parameterList.GetCount();
 		text.Set( "   - Parameters:" );
 		for( ssp=0; ssp<shaderSourcesParameterCount; ssp++ ){
 			text.AppendFormat( "%s %s", ssp == 0 ? "" : ",", parameterList.GetAt( ssp ).GetString() );
@@ -294,7 +297,7 @@ void deoglDeveloperModeStats::ShaderPrograms( const decUnicodeArgumentList &comm
 	
 	programCount = shaderManager.GetProgramCount();
 	for( p=0; p<programCount; p++ ){
-		const deoglShaderProgram &program = shaderManager.GetProgramAt( p );
+		const deoglShaderProgram &program = *shaderManager.GetProgramAt( p );
 		const deoglShaderDefines &defines = program.GetDefines();
 		
 		text.Format( "- Shader '%s' Defines(", program.GetSources()->GetName().GetString() );

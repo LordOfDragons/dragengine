@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Bounding volume hierarchie node.
+ * Bounding volume hierarchie node.
  * 
  * Stores either 2 children nodes or a list of primitives. If the node contains child nodes
  * the index of the left nodes is stored. The index of the right node is the index of the
@@ -47,10 +47,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create bvh node. */
+	/** Create bvh node. */
 	deoglBVHNode();
 	
-	/** \brief Clean up generic octree object. */
+	/** Clean up generic octree object. */
 	~deoglBVHNode();
 	/*@}*/
 	
@@ -58,31 +58,31 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Minimum extend. */
+	/** Minimum extend. */
 	inline const decVector &GetMinExtend() const{ return pMinExtend; }
 	
-	/** \brief Maximum extend. */
+	/** Maximum extend. */
 	inline const decVector &GetMaxExtend() const{ return pMaxExtend; }
 	
-	/** \brief Set extends. */
+	/** Set extends. */
 	void SetExtends( const decVector &minExtend, const decVector &maxExtend );
 	
-	/** \brief Index of first child or primitive. */
+	/** Index of first child or primitive. */
 	inline int GetFirstIndex() const{ return pFirstIndex; }
 	
-	/** \brief Set index of first child or primitive. */
+	/** Set index of first child or primitive. */
 	void SetFirstIndex( int index );
 	
-	/** \brief Count of primitives. */
+	/** Count of primitives. */
 	inline int GetPrimitiveCount() const{ return pPrimitiveCount; }
 	
-	/** \brief Set count of primitives. */
+	/** Set count of primitives. */
 	void SetPrimitiveCount( int count );
 	
-	/** \brief Node is leaf node containing primitives. */
+	/** Node is leaf node containing primitives. */
 	inline bool IsLeaf() const{ return pPrimitiveCount > 0; }
 	
-	/** \brief Clear node. */
+	/** Clear node. */
 	void Clear();
 	/*@}*/
 };

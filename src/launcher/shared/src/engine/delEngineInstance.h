@@ -41,7 +41,7 @@ class decObjectOrderedSet;
 /**
  * \brief Game engine instance.
  */
-class delEngineInstance : public deObject{
+class DE_DLL_EXPORT delEngineInstance : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<delEngineInstance> Ref;
@@ -53,7 +53,7 @@ public:
 	 * \brief Factory creating engine instances.
 	 * \version 1.10
 	 */
-	class Factory : public deObject{
+	class DE_DLL_EXPORT Factory : public deObject{
 	public:
 		/** \brief Type holding strong reference. */
 		typedef deTObjectReference<Factory> Ref;

@@ -172,7 +172,7 @@ decrbPanelModuleStatus::~decrbPanelModuleStatus(){
 void decrbPanelModuleStatus::UpdateModuleStatus(){
 	int selection = pCBModule->getCurrentItem();
 	deLoadableModule *loadedModule;
-	char numBuf[ 20 ];
+	decString numBuf;
 	
 	if( selection == -1 ){
 		pEditType->setText( "?" );
@@ -316,8 +316,8 @@ void decrbPanelModuleStatus::UpdateModuleStatus(){
 			deLibraryModule *libraryModule = loadedModule->CastToLibraryModule();
 			
 			pEditLibName->setText( libraryModule->GetLibFileName().GetString() );
-			sprintf( ( char* )&numBuf, "%i", libraryModule->GetLibFileSize() );
-			pEditLibSize->setText( numBuf );
+			numBuf.Format( "%d", libraryModule->GetLibFileSize() );
+			pEditLibSize->setText( numBuf.GetString() );
 			pEditLibHash->setText( libraryModule->GetLibFileHash().GetString() );
 			
 			switch( libraryModule->GetErrorCode() ){

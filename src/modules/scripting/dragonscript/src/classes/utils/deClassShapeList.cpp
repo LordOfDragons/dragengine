@@ -1313,7 +1313,7 @@ dsFunction( init.clsShaList, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 void deClassShapeList::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decShapeList * const shapeList = ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList;
 	
-	rt->PushInt( ( intptr_t )shapeList );
+	rt->PushInt( ( int )( intptr_t )shapeList );
 }
 
 // public func bool equals( Object object )

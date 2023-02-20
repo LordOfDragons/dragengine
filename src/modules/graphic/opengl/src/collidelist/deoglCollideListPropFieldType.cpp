@@ -90,7 +90,8 @@ deoglCollideListPropFieldCluster *deoglCollideListPropFieldType::AddCluster( deo
 		clcluster = ( deoglCollideListPropFieldCluster* )pClusters.GetAt( pClusterCount );
 		
 	}else{
-		clcluster = new deoglCollideListPropFieldCluster( *this );
+		clcluster = new deoglCollideListPropFieldCluster;
+		clcluster->SetCluster( cluster );
 		pClusters.Add( clcluster );
 	}
 	

@@ -426,7 +426,7 @@ class Desktop extends Container
 		end
 		
 		onMousePointerChanged(MousePointerEvent.new(this,\
-			MousePointerEvent.idMousePointerMoved, pMousePointerInstance))
+			MousePointerEvent.idMousePointerChanged, pMousePointerInstance))
 	end
 	
 	/** \brief Mouse pointer instance or null. */

@@ -480,9 +480,9 @@ void deClassPoint3::nfOpDivide::RunFunction( dsRunTime *rt, dsValue *myself ){
 	clsPt3->PushPoint( rt, point / rt->GetValue( 0 )->GetInt() );
 }
 
-// public func float *( Point3 v )
+// public func int *( Point3 v )
 deClassPoint3::nfOpDot::nfOpDot( const sInitData &init ) : dsFunction( init.clsPt3,
-"*", DSFT_OPERATOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+"*", DSFT_OPERATOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
 	p_AddParameter( init.clsPt3 ); // v
 }
 void deClassPoint3::nfOpDot::RunFunction( dsRunTime *rt, dsValue *myself ){
@@ -490,7 +490,7 @@ void deClassPoint3::nfOpDot::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassPoint3 *clsPt3 = ( deClassPoint3* )GetOwnerClass();
 	dsRealObject *objPt = rt->GetValue( 0 )->GetRealObject();
 	if( ! objPt ) DSTHROW( dueNullPointer );
-	rt->PushFloat( point * clsPt3->GetPoint( objPt ) );
+	rt->PushInt( point * clsPt3->GetPoint( objPt ) );
 }
 
 // public func bool <( Point3 v )
@@ -585,7 +585,7 @@ deClassPoint3::nfToString::nfToString( const sInitData &init ) : dsFunction( ini
 void deClassPoint3::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decPoint3 &point = ( ( sPt3NatDat* )p_GetNativeData( myself ) )->point;
 	char buffer[ 50 ];
-	sprintf( ( char* )&buffer, "(%i,%i,%i)", point.x, point.y, point.z );
+	snprintf( ( char* )&buffer, sizeof( buffer ), "(%i,%i,%i)", point.x, point.y, point.z );
 	rt->PushString( buffer );
 }
 

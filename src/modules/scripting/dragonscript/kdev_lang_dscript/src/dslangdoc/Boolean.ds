@@ -45,7 +45,7 @@ fixed class Boolean
 	
 	/** \brief Hash code for use as dictionary keys. */
 	public func int hashCode()
-		return 0
+		return  0
 	end
 	
 	/** \brief String representation of boolean value. */

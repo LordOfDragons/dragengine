@@ -200,12 +200,11 @@ UBOLAYOUT uniform RenderParameters{
 	// render conditions, aka specializations
 	
 	// x: use clip plane
-	// y: use XRay
+	// y: -
 	// z: -
 	// w: -
 	bvec4 pConditions1;
 	#define pCondClipPlane (pConditions1.x)
-	#define pCondXRay (pConditions1.y)
 };
 
 // helper functions

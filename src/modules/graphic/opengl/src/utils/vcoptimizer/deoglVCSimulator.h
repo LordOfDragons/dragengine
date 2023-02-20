@@ -25,7 +25,7 @@
 
 
 /**
- * @brief Vertex Cache Simulator.
+ * Vertex Cache Simulator.
  * Simulates a FIFO type cache of fixed size.
  */
 class deoglVCSimulator{
@@ -37,7 +37,7 @@ private:
 	int pFaceCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new vertex cache simulator. */
 	deoglVCSimulator();
@@ -45,7 +45,7 @@ public:
 	~deoglVCSimulator();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the cache size. */
 	inline int GetCacheSize() const{ return pCacheSize; }

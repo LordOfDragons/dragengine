@@ -30,7 +30,7 @@ class delFileFormat;
 /**
  * \brief File Format List.
  */
-class delFileFormatList{
+class DE_DLL_EXPORT delFileFormatList{
 private:
 	decObjectList pFormats;
 	

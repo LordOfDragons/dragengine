@@ -144,6 +144,11 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_fragment_layer_viewport",
 	"GL_ARB_shader_draw_parameters",
 	"GL_ARB_shader_viewport_layer_array",
+	"GL_ARB_depth_clamp",
+	"GL_ARB_shading_language_420pack",
+	"GL_ARB_shader_atomic_counters",
+	"GL_ARB_shader_atomic_counter_ops",
+	"GL_ARB_gpu_shader_fp64",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -282,6 +287,16 @@ void deoglExtensions::PrintSummary(){
 
 bool deoglExtensions::VerifyPresence(){
 	bool allPresent = pHasRequiredFunctions;
+	
+	allPresent &= pHasExtension[ ext_ARB_depth_clamp ];
+	allPresent &= pHasExtension[ ext_ARB_copy_image ] || pHasExtension[ ext_NV_copy_image ];
+	allPresent &= pHasExtension[ ext_ARB_compute_shader ];
+	allPresent &= pHasExtension[ ext_ARB_shader_storage_buffer_object ];
+	allPresent &= pHasExtension[ ext_ARB_shader_image_load_store ];
+	allPresent &= pHasExtension[ ext_ARB_shading_language_420pack ];
+	allPresent &= pHasExtension[ ext_ARB_shader_atomic_counters ];
+	// allPresent &= pHasExtension[ ext_ARB_gpu_shader_fp64 ];
+	allPresent &= pSupportsGeometryShader;
 	
 	return allPresent;
 }
@@ -520,43 +535,20 @@ void deoglExtensions::pScanVersion(){
 void deoglExtensions::pScanExtensions(){
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	const char *strXExtensions = ( const char * )glXGetClientString( pRenderThread.GetContext().GetDisplay(), GLX_EXTENSIONS );
-#endif
-
-#ifdef ANDROID
-	const char *strAExtensions = ( const char * )eglQueryString( pRenderThread.GetContext().GetDisplay(), EGL_EXTENSIONS );
-#endif
-
-#ifdef OS_BEOS
-	//const char *strXExtensions = ( const char * )glXGetClientString( pRenderThread.GetContext().GetDisplay(), GLX_EXTENSIONS );
-#endif
-
-	const char *strExtensions = ( const char * )glGetString( GL_EXTENSIONS );
-	PFNGLGETSTRINGIPROC pglGetStringi = NULL;
-	int i;
-	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( ! strXExtensions ){
 		strXExtensions = "";
 	}
 #endif
-
+	
 #ifdef ANDROID
+	const char *strAExtensions = ( const char * )eglQueryString( pRenderThread.GetContext().GetDisplay(), EGL_EXTENSIONS );
 	if( ! strAExtensions ){
 		strAExtensions = "";
 	}
 #endif
 	
-#ifdef OS_BEOS
-	//if( ! strXExtensions ){
-	//	strXExtensions = "";
-	//}
-#endif
-
-	if( ! strExtensions ){
-		strExtensions = "";
-	}
-	
-	pglGetStringi = (PFNGLGETSTRINGIPROC)pRenderThread.GetContext().GetFunctionPointer( "glGetStringi" );
+	PFNGLGETSTRINGIPROC pglGetStringi = ( PFNGLGETSTRINGIPROC )pRenderThread.GetContext().GetFunctionPointer( "glGetStringi" );
+	int i;
 	
 	if( pglGetStringi ){
 		GLint extensionCount = 0;
@@ -567,27 +559,9 @@ void deoglExtensions::pScanExtensions(){
 		}
 		
 	}else{
-		const char *stringEnd = strExtensions + strlen( strExtensions ) + 1;
-		const char *delimiter;
-		decString token;
-		int tokenLength;
-		
-		while( strExtensions != stringEnd ){
-			delimiter = strchr( strExtensions, ' ' );
-			
-			if( ! delimiter ){
-				delimiter = strExtensions + strlen( strExtensions );
-			}
-			
-			tokenLength = ( int )( delimiter - strExtensions );
-			
-			if( tokenLength > 0 ){
-				token.Set( ' ', tokenLength );
-				strncpy( ( char* )token.GetString(), strExtensions, tokenLength );
-				pStrListExtensions.Add( token );
-			}
-			
-			strExtensions = delimiter + 1;
+		const char * const strExtensions = ( const char * )glGetString( GL_EXTENSIONS );
+		if( strExtensions ){
+			pStrListExtensions = decString( strExtensions ).Split( ' ' );
 		}
 	}
 	
@@ -818,6 +792,14 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	
 	// GL_EXT_gpu_shader4 : opengl version 3.0
 	pGetRequiredFunction( (void**)&pglBindFragDataLocation, "glBindFragDataLocation" );
+	pGetRequiredFunction( (void**)&pglUniform1ui, "glUniform1ui" );
+	pGetRequiredFunction( (void**)&pglUniform2ui, "glUniform2ui" );
+	pGetRequiredFunction( (void**)&pglUniform3ui, "glUniform3ui" );
+	pGetRequiredFunction( (void**)&pglUniform4ui, "glUniform4ui" );
+	pGetRequiredFunction( (void**)&pglUniform1uiv, "glUniform1uiv" );
+	pGetRequiredFunction( (void**)&pglUniform2uiv, "glUniform2uiv" );
+	pGetRequiredFunction( (void**)&pglUniform3uiv, "glUniform3uiv" );
+	pGetRequiredFunction( (void**)&pglUniform4uiv, "glUniform4uiv" );
 	
 	// GL_EXT_texture_array : opengl version 3.0
 	pGetRequiredFunction( (void**)&pglFramebufferTextureLayer, "glFramebufferTextureLayer" );
@@ -924,6 +906,9 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// no opengl version: 2.0 stuff
 	pGetRequiredFunction( (void**)&pglMultiDrawArrays, "glMultiDrawArrays" );
 	pGetRequiredFunction( (void**)&pglMultiDrawElements, "glMultiDrawElements" );
+	
+	// GL_ARB_copy_buffer : no opengl version
+	pGetRequiredFunction( (void**)&pglCopyBufferSubData, "glCopyBufferSubData" );
 }
 
 void deoglExtensions::pFetchOptionalFunctions(){
@@ -997,6 +982,13 @@ void deoglExtensions::pFetchOptionalFunctions(){
 // 		pGetOptionalFunctionArbExt( (void**)&pglGetIntegerIndexedv, "glGetIntegerIndexedv", ext_ARB_viewport_array );
 	}
 	
+	// GL_ARB_get_program_binar : opengl version 4.1
+	if( pHasExtension[ ext_ARB_get_program_binary ] ){
+		pGetOptionalFunctionArbExt( (void**)&pglGetProgramBinary, "glGetProgramBinary", ext_ARB_get_program_binary );
+		pGetOptionalFunctionArbExt( (void**)&pglProgramBinary, "glProgramBinary", ext_ARB_get_program_binary );
+		pGetOptionalFunctionArbExt( (void**)&pglProgramParameteri, "glProgramParameteri", ext_ARB_get_program_binary );
+	}
+	
 	// GL_EXT_transform_feedback_instanced : opengl version 4.2
 	if( pHasExtension[ ext_ARB_transform_feedback_instanced ] ){
 		pGetOptionalFunctionArbExt( (void**)&pglDrawTransformFeedbackInstanced,
@@ -1066,10 +1058,6 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// GL_ARB_geometry_shader4 : no opengl version
 	if( pHasExtension[ ext_ARB_geometry_shader4 ] ){
 		pGetOptionalFunctionArbExt( (void**)&pglFramebufferTextureFace, "glFramebufferTextureFace", ext_ARB_geometry_shader4 );
-	}
-	
-	// GL_ARB_copy_buffer : no opengl version
-	if( pHasExtension[ ext_ARB_copy_buffer ] ){
 	}
 	
 	// GL_ARB_texture_multisample : no opengl version

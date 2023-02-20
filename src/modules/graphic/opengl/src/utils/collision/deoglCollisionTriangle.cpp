@@ -165,7 +165,7 @@ void deoglCollisionTriangle::GetEnclosingSphere( deoglCollisionSphere *sphere ){
 	distVector = pCorners[ 2 ] - center;
 	distSquared = distVector * distVector;
 	if( distSquared > radiusSquared ) radiusSquared = distSquared;
-	sphere->SetAll( center, sqrt( radiusSquared ) );
+	sphere->SetAll( center, sqrtf( radiusSquared ) );
 }
 
 void deoglCollisionTriangle::GetEnclosingBox( deoglCollisionBox *box ){
@@ -401,7 +401,7 @@ float deoglCollisionTriangle::SphereMoveHitsTriangle( deoglCollisionSphere *sphe
 		if( disc < 0.0f ){
 			lambda = 1.0f;
 		}else{
-			lambda = ( b - sqrt( disc ) ) / a; // payed respect to left out -
+			lambda = ( b - sqrtf( disc ) ) / a; // payed respect to left out -
 		}
 		if( lambda < 0.0f || lambda > 1.0f ) lambda = 1.0f;
 		return lambda;
@@ -645,7 +645,7 @@ float deoglCollisionTriangle::BoxMoveHitsTriangle( deoglCollisionBox *box, const
 		tnormal = pEdges[ i ] % bax;
 		if( ! tnormal.IsZero() ){
 			tnormal.Normalize();
-			projBox = fabs( tnormal * bay ) * bhs.y + fabs( tnormal * baz ) * bhs.z;
+			projBox = fabsf( tnormal * bay ) * bhs.y + fabsf( tnormal * baz ) * bhs.z;
 			dot1 = corners[ id1 ] * tnormal;
 			if( dot1 > 0.0f ){
 				dot2 = corners[ id2 ] * tnormal - projBox;
@@ -686,7 +686,7 @@ float deoglCollisionTriangle::BoxMoveHitsTriangle( deoglCollisionBox *box, const
 		tnormal = pEdges[ i ] % bay;
 		if( ! tnormal.IsZero() ){
 			tnormal.Normalize();
-			projBox = fabs( tnormal * bax ) * bhs.x + fabs( tnormal * baz ) * bhs.z;
+			projBox = fabsf( tnormal * bax ) * bhs.x + fabsf( tnormal * baz ) * bhs.z;
 			dot1 = corners[ id1 ] * tnormal;
 			if( dot1 > 0.0f ){
 				dot2 = corners[ id2 ] * tnormal - projBox;
@@ -727,7 +727,7 @@ float deoglCollisionTriangle::BoxMoveHitsTriangle( deoglCollisionBox *box, const
 		tnormal = pEdges[ i ] % baz;
 		if( ! tnormal.IsZero() ){
 			tnormal.Normalize();
-			projBox = fabs( tnormal * bax ) * bhs.x + fabs( tnormal * bay ) * bhs.y;
+			projBox = fabsf( tnormal * bax ) * bhs.x + fabsf( tnormal * bay ) * bhs.y;
 			dot1 = corners[ id1 ] * tnormal;
 			if( dot1 > 0.0f ){
 				dot2 = corners[ id2 ] * tnormal - projBox;
@@ -775,9 +775,9 @@ float deoglCollisionTriangle::BoxMoveHitsTriangle( deoglCollisionBox *box, const
 			}else{
 				projPoint = deoglCollisionDetection::ClosestPointOnTriangleEdge( pCorners[ 0 ],
 					pCorners[ 1 ], pCorners[ 2 ], projPoint ) - bc;
-				float fx = fabs( projPoint.x );
-				float fy = fabs( projPoint.y );
-				float fz = fabs( projPoint.z );
+				float fx = fabsf( projPoint.x );
+				float fy = fabsf( projPoint.y );
+				float fz = fabsf( projPoint.z );
 				if( fx > fy ){
 					if( fx > fz ){
 						if( projPoint.x > 0.0f ){

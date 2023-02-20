@@ -119,7 +119,6 @@ private:
 	bool pUseOneFBO;
 	bool pUseEncodeDepth;
 	bool pDisableStencil;
-	bool pStencilOnlyOnRB;
 	
 	int pDefRenSizeLimit;
 	bool pUseHDRR;
@@ -303,10 +302,6 @@ public:
 	inline bool GetDisableStencil() const{ return pDisableStencil; }
 	/** Sets if stencil buffer is disabled ( broken hardware fix ). */
 	void SetDisableStencil( bool disableStencil );
-	/** Determines if the stencil buffer is only used on renderbuffers ( broken hardware fix ). */
-	inline bool GetStencilOnlyOnRB() const{ return pStencilOnlyOnRB; }
-	/** Sets if stencil buffer is used only on renderbuffers ( broken hardware fix ). */
-	void SetStencilOnlyOnRB( bool stencilOnlyOnRB );
 	
 	/** Retrieves the size limit for rendering using deferred rendering or 0 for no limit. */
 	inline int GetDefRenSizeLimit() const{ return pDefRenSizeLimit; }

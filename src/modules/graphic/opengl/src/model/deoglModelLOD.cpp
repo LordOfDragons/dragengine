@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
 #include "deoglRModel.h"
@@ -31,7 +30,6 @@
 #include "face/deoglModelFace.h"
 #include "octree/deoglModelOctree.h"
 #include "texture/deoglModelTexture.h"
-#include "../deoglPreloader.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
@@ -545,6 +543,12 @@ void deoglModelLOD::pCalcErrorMetrics( const deModel &engModel ){
 	// drop octree. saves CPU memory. will be created and kept if somebody really needs it
 	delete pOctree;
 	pOctree = NULL;
+	
+	// sanity check
+	if( pMaxError == initLODDistance ){
+		pModel.GetRenderThread().GetLogger().LogWarnFormat(
+			"Model(%s,%d): Max error matches init LOD distance!", pModel.GetFilename().GetString(), pLODIndex );
+	}
 }
 
 
@@ -841,23 +845,23 @@ void deoglModelLOD::pCleanUp(){
 	}
 	
 	if( pVBOBlockWithWeight ){
-		pVBOBlockWithWeight->GetVBO()->RemoveBlock( pVBOBlockWithWeight );
+		pVBOBlockWithWeight->DelayedRemove();
 		pVBOBlockWithWeight->FreeReference();
 	}
 	if( pVBOBlockWriteSkinnedVBO ){
-		pVBOBlockWriteSkinnedVBO->GetVBO()->RemoveBlock( pVBOBlockWriteSkinnedVBO );
+		pVBOBlockWriteSkinnedVBO->DelayedRemove();
 		pVBOBlockWriteSkinnedVBO->FreeReference();
 	}
 	if( pVBOBlockCalcNormalTangent ){
-		pVBOBlockCalcNormalTangent->GetVBO()->RemoveBlock( pVBOBlockCalcNormalTangent );
+		pVBOBlockCalcNormalTangent->DelayedRemove();
 		pVBOBlockCalcNormalTangent->FreeReference();
 	}
 	if( pVBOBlockPositionWeight ){
-		pVBOBlockPositionWeight->GetVBO()->RemoveBlock( pVBOBlockPositionWeight );
+		pVBOBlockPositionWeight->DelayedRemove();
 		pVBOBlockPositionWeight->FreeReference();
 	}
 	if( pVBOBlock ){
-		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->DelayedRemove();
 		pVBOBlock->FreeReference();
 	}
 	
@@ -1151,7 +1155,7 @@ void deoglModelLOD::pBuildArrays( const deModel &engModel ){
 			oglModelPosition &out = pPositions[ pPositionCount ];
 			
 			out.position = in.GetPosition();
-			out.weight = in.GetWeightSet();
+			out.weights = in.GetWeightSet();
 		}
 	}
 	
@@ -1486,7 +1490,7 @@ void deoglModelLOD::pWriteVBODataPositionWeight(){
 		dataPosition[ 0 ] = ( GLfloat )pPositions[ i ].position.x;
 		dataPosition[ 1 ] = ( GLfloat )pPositions[ i ].position.y;
 		dataPosition[ 2 ] = ( GLfloat )pPositions[ i ].position.z;
-		*dataWeight = ( GLint )pPositions[ i ].weight;
+		*dataWeight = ( GLint )pPositions[ i ].weights;
 	}
 }
 
@@ -1549,9 +1553,7 @@ void deoglModelLOD::pWriteVBODataWriteSkinnedVBO(){
 }
 
 void deoglModelLOD::pWriteVBODataWithWeight(){
-	if( ! pVBOBlockWithWeight ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pVBOBlockWithWeight )
 	
 	deoglVBOWriterModel writerVBO( pModel.GetRenderThread() );
 	int i;
@@ -1563,9 +1565,8 @@ void deoglModelLOD::pWriteVBODataWithWeight(){
 		
 		writerVBO.WritePoint( pPositions[ vertex.position ].position, pNormals[ vertex.normal ],
 			pTangents[ vertex.tangent ], pNegateTangents[ vertex.tangent ],
-			pTexCoords[ vertex.texcoord ], pPositions[ vertex.position ].normal );
-		
-		writerVBO.WriteWeight( pPositions[ vertex.position ].weight );
+			pTexCoords[ vertex.texcoord ], pPositions[ vertex.position ].normal,
+			pPositions[ vertex.position ].weights );
 	}
 	
 // 	int maxCount = 0;

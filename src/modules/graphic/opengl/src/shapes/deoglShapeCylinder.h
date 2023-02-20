@@ -29,11 +29,11 @@
 
 
 /**
- * @brief Cylinder Shape.
+ * Cylinder Shape.
  */
 class deoglShapeCylinder : public deoglShape{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
 	deoglShapeCylinder( deoglRenderThread &renderThread );
@@ -41,7 +41,7 @@ public:
 	virtual ~deoglShapeCylinder();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Calculate matrices for cylinder parameters. */
 	void CalcMatrices( decMatrix &matrix1, decMatrix &matrix2, const decVector &position,

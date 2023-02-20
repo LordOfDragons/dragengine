@@ -32,7 +32,7 @@ class delEngineModule;
 /**
  * \brief Engine Module List.
  */
-class delEngineModuleList{
+class DE_DLL_EXPORT delEngineModuleList{
 private:
 	decObjectList pModules;
 	

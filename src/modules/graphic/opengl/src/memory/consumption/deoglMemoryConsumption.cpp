@@ -62,6 +62,5 @@ unsigned long long deoglMemoryConsumption::Total() const{
 		+ texture3D.all.GetConsumption()
 		+ textureArray.all.GetConsumption()
 		+ textureCube.all.GetConsumption()
-		+ renderbuffer.all.GetConsumption()
 		+ bufferObject.all.GetConsumption();
 }

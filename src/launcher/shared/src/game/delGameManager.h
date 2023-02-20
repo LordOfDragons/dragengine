@@ -36,7 +36,7 @@ class delEngineInstance;
 /**
  * \brief Game Manager.
  */
-class delGameManager{
+class DE_DLL_EXPORT delGameManager{
 private:
 	delLauncher &pLauncher;
 	delGameList pGames;

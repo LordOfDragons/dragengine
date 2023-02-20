@@ -25,7 +25,6 @@
 class deoglRenderThread;
 class deoglMemoryConsumptionGPU;
 class deoglMemoryConsumptionTexture;
-class deoglMemoryConsumptionRenderBuffer;
 class deoglMemoryConsumptionSkin;
 class deoglMemoryConsumptionBufferObject;
 class deoglMemoryConsumptionDeferredRendering;
@@ -69,7 +68,6 @@ public:
 private:
 	void pLog( const deoglMemoryConsumptionGPU &consumption );
 	void pLog( const deoglMemoryConsumptionTexture &consumption );
-	void pLog( const deoglMemoryConsumptionRenderBuffer &consumption );
 	void pLog( const deoglMemoryConsumptionSkin &consumption );
 	void pLog( const deoglMemoryConsumptionBufferObject &consumption );
 	void pLog( const deoglMemoryConsumptionDeferredRendering &consumption );

@@ -86,14 +86,7 @@ static decTimer dtimer;
 ////////////////////////////
 
 deoglRenderGeometryPass::deoglRenderGeometryPass( deoglRenderThread &renderThread ) :
-deoglRenderBase( renderThread )
-{
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
-	deoglShaderDefines defines;
-	
-	sources = shaderManager.GetSourcesNamed( "DefRen Skin Debug" );
-	pShaderDebug = shaderManager.GetProgramWith( sources, defines );
+deoglRenderBase( renderThread ){
 }
 
 deoglRenderGeometryPass::~deoglRenderGeometryPass(){
@@ -143,25 +136,8 @@ void deoglRenderGeometryPass::RenderDecals( deoglRenderPlan &plan, bool xray ){
 DBG_ENTER("RenderDecals")
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GeometryPass.RenderDecals" );
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	
-	// set opengl states
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_POLYGON_OFFSET_FILL ) );
-	
-	if( defren.GetUseInverseDepth() ){
-		OGL_CHECK( renderThread, pglPolygonOffset( -config.GetDecalOffsetScale(), -config.GetDecalOffsetBias() ) );
-		
-	}else{
-		OGL_CHECK( renderThread, pglPolygonOffset( config.GetDecalOffsetScale(), config.GetDecalOffsetBias() ) );
-	}
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 	
 	// render using render task
 	deoglRenderPlanTasks &tasks = plan.GetTasks();
@@ -170,9 +146,6 @@ DBG_ENTER("RenderDecals")
 	deoglRenderTask &renderTask = xray ? tasks.GetSolidDecalsXRayTask() : tasks.GetSolidDecalsTask();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	rengeom.RenderTask( renderTask );
-	
-	// cleanup
-	OGL_CHECK( renderThread, glDisable( GL_POLYGON_OFFSET_FILL ) );
 DBG_EXIT("RenderDecals")
 }
 
@@ -186,12 +159,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
 	deoglConfiguration &config = renderThread.GetConfiguration();
-	
-	// switch to wireframe mode if required
-	if( renderThread.GetConfiguration().GetDebugWireframe() ){
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	}
-	
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	// render pre-pass depth. this includes rendering depth, occlusion testing and transparency counting
 	rendepth.RenderSolidDepthPass( plan, mask, xray );
@@ -207,37 +175,19 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	//      would avoid the need to switch FBO attachment. maybe glDrawBuffers switching
 	//      temporarily can help? needs first some research if glDrawBuffers has similar
 	//      caveats performance wise as switching FBOs has
+	SetViewport( plan );
 // 	defren.ActivateFBOMaterialColor();
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	SetCullMode( plan.GetFlipCulling() );
-	
-	if( mask ){
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x01, 0x01 ) );
-		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) ); // transparency disables this
-		
-	}else{
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	}
-	
 	if( ! xray ){
 		QUICK_DEBUG_START( 16, 19 )
-		renderThread.GetRenderers().GetSky().RenderSky( plan );
+		renderThread.GetRenderers().GetSky().RenderSky( plan, mask );
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometrySky, true );
 		QUICK_DEBUG_END
 	}
 	
 	
 	// activate material fbo and clear all color attachments except color and depth buffer
+	pPipelineClearBuffers->Activate();
 	defren.ActivateFBOMaterialColor();
-	
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-		// required since sky pass needs TTTF
-	
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 	
 	const GLfloat clearDiffuse[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const GLfloat clearNormal[ 4 ] = { 0.5f, 0.5f, 1.0f, 0.0f };
@@ -261,24 +211,16 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 2, &clearReflectivity[ 0 ] ) );
 	}
 	
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	
 	
 	// render geometry
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_EQUAL ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
-	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+	state.StencilMask( plan.GetStencilWriteMask() );
 	
 	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x01 ) );
+		state.StencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x00 ) );
+		state.StencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 );
 	}
 	
 	
@@ -290,42 +232,31 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	// height terrain has to come first since it has to be handled differently
 	deoglDebugTraceGroup debugTraceHT( renderThread, "GeometryPass.RenderSolidGeometryPass.HeightTerrain" );
 	renderTask = xray ? &tasks.GetSolidGeometryHeight1XRayTask() : &tasks.GetSolidGeometryHeight1Task();
-	if( renderTask->GetShaderCount() > 0 ){
+	if( renderTask->GetPipelineCount() > 0 ){
 		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 		rengeom.RenderTask( *renderTask );
 	}
 	
 	renderTask = xray ? &tasks.GetSolidGeometryHeight2XRayTask() : &tasks.GetSolidGeometryHeight2Task();
-	if( renderTask->GetShaderCount() > 0 ){
+	if( renderTask->GetPipelineCount() > 0 ){
 		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 		rengeom.RenderTask( *renderTask );
 	}
 	
 	// other content
 	deoglDebugTraceGroup debugTraceOther( debugTraceHT, "GeometryPass.RenderSolidGeometryPass.Geometry" );
-	if( defren.GetUseFadeOutRange() && false /* alpha blend problem */ ){
-		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	renderTask = xray ? &tasks.GetSolidGeometryXRayTask() : &tasks.GetSolidGeometryTask();
+	if( renderTask->GetPipelineCount() > 0 ){
+		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		rengeom.RenderTask( *renderTask );
 	}
 	
-	renderTask = xray ? &tasks.GetSolidGeometryXRayTask() : &tasks.GetSolidGeometryTask();
-	renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-	rengeom.RenderTask( *renderTask );
-	
 	// outline
+	deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "GeometryPass.RenderSolidGeometryPass.Outline" );
 	renderTask = xray ? &tasks.GetSolidGeometryOutlineXRayTask() : &tasks.GetSolidGeometryOutlineTask();
-	if( renderTask->GetShaderCount() > 0 ){
-		deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "GeometryPass.RenderSolidGeometryPass.Outline" );
+	if( renderTask->GetPipelineCount() > 0 ){
 		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( *renderTask );
-		SetCullMode( plan.GetFlipCulling() );
 	}
 	
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
@@ -333,7 +264,6 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	// decals
 	RenderDecals( plan, xray );
-// 	OGL_CHECK( renderThread, glDepthFunc( GL_EQUAL ) );  // WARNING! this can disable z-optimizations if switched, really necessary???????????
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true );
 	QUICK_DEBUG_END
 	
@@ -343,9 +273,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	// trashes mip map levels although no depth writing is enabled
 	if( config.GetSSAOEnable() && ! plan.GetNoReflections() ){
 		rendepth.DownsampleDepth( plan );
-		//OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-		//OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-		//OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+		SetViewport( plan );
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDownsampleDepth, true );
 	}
 	
@@ -353,11 +281,6 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	if( ! plan.GetNoReflections() ){
 		renderThread.GetRenderers().GetLight().RenderAO( plan, true );
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometrySSAO, true );
-	}
-	
-	// if we used wireframe mode disable it now
-	if( renderThread.GetConfiguration().GetDebugWireframe() ){
-		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
 DBG_EXIT("RenderSolidGeometryPass")
 }
@@ -379,7 +302,7 @@ void deoglRenderGeometryPass::RenderLuminanceOnly( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
 	}
 	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
@@ -387,7 +310,7 @@ void deoglRenderGeometryPass::RenderLuminanceOnly( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	
-	const GLfloat clearDepth = defren.GetClearDepthValueRegular();
+	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	const GLfloat clearLuminance[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const GLfloat clearNormal[ 4 ] = { 0.5f, 0.5f, 1.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
@@ -401,7 +324,7 @@ void deoglRenderGeometryPass::RenderLuminanceOnly( deoglRenderPlan &plan ){
 	
 	// render geometry
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	renderTask.Clear();

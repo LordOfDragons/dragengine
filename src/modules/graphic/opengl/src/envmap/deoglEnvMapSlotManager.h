@@ -30,7 +30,7 @@ class deoglEnvironmentMap;
 
 
 /**
- * @brief Environment Map Slot Manager.
+ * Environment Map Slot Manager.
  * Manages a list of environment map slots. Slots can be empty or referencing an environment map using
  * a last used counter. A fixed number of slots is managed with the possibility to enlarge if required.
  * New environment maps are assigned a slot if not in the list already and their last use is reset to 0.
@@ -56,7 +56,7 @@ private:
 	int pUsedSlotsCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new environment map slot manager. */
 	deoglEnvMapSlotManager( deoglRenderThread &renderThread );
@@ -64,9 +64,9 @@ public:
 	~deoglEnvMapSlotManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	/** Retrieves the array texture. */
 	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }

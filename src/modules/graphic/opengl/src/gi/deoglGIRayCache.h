@@ -22,7 +22,6 @@
 #ifndef _DEOGLGIRAYCACHE_H_
 #define _DEOGLGIRAYCACHE_H_
 
-#include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 
 class deoglRenderThread;
@@ -46,7 +45,6 @@ private:
 	deoglArrayTexture pTexDiffuse;
 	deoglArrayTexture pTexReflectivity;
 	deoglArrayTexture pTexLight;
-	deoglFramebuffer pFBOResult;
 	
 	
 	
@@ -112,9 +110,6 @@ public:
 	/** Light texture. */
 	inline deoglArrayTexture &GetTextureLight(){ return pTexLight; }
 	inline const deoglArrayTexture &GetTextureLight() const{ return pTexLight; }
-	
-	/** Result FBO. */
-	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }
 	/*@}*/
 	
 	

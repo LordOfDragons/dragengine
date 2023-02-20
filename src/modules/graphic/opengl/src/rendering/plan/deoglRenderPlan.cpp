@@ -29,6 +29,7 @@
 #include "deoglRenderPlanMasked.h"
 #include "deoglRenderPlanEnvMap.h"
 #include "parallel/deoglRPTFindContent.h"
+#include "../deoglRenderCompute.h"
 #include "../deoglRenderOcclusion.h"
 #include "../deoglRenderReflection.h"
 #include "../deoglRenderWorld.h"
@@ -70,6 +71,7 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTShader.h"
 #include "../../shadow/deoglShadowMapper.h"
 #include "../../shadow/deoglShadowCaster.h"
 #include "../../skin/deoglRSkin.h"
@@ -88,6 +90,7 @@
 #include "../../vr/deoglVR.h"
 #include "../../world/deoglRCamera.h"
 #include "../../world/deoglRWorld.h"
+#include "../../world/deoglWorldOctree.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -124,6 +127,7 @@ pLodLevelOffset( 0 ),
 pOcclusionMap( NULL ),
 pOcclusionTest( NULL ),
 pGIState( NULL ),
+pCompute( *this ),
 pTasks( *this ),
 pTaskFindContent( NULL )
 {
@@ -153,8 +157,6 @@ pTaskFindContent( NULL )
 	
 	pFBOTarget = NULL;
 	pFBOMaterial = NULL;
-	
-	pHTView = NULL;
 	
 	pDirtyProjMat = true;
 	
@@ -229,9 +231,7 @@ deoglRenderPlan::~deoglRenderPlan(){
 		delete [] pLights;
 	}
 	
-	if( pHTView ){
-		delete pHTView;
-	}
+	pHTView = nullptr;
 	
 	if( pDebug ){
 		delete pDebug;
@@ -279,10 +279,7 @@ void deoglRenderPlan::SetWorld( deoglRWorld *world ){
 		}
 	}
 	
-	if( pHTView ){
-		delete pHTView;
-		pHTView = NULL;
-	}
+	pHTView = nullptr;
 }
 
 void deoglRenderPlan::SetLevel( int level ){
@@ -365,6 +362,8 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	
 	// these calls run in parallel with above started tasks
 	pWorld->PrepareForRender( *this, mask );
+	pRenderThread.GetShader().UpdateSSBOSkinTextures();
+	pCompute.UpdateElementGeometries();
 	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
@@ -423,8 +422,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// NOTE these calls indirectly access projection matrix. this requires per-eye updating
 	const int componentCount = pCollideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
-		deoglRComponent &oglComponent = *pCollideList.GetComponentAt( i )->GetComponent();
-		oglComponent.AddSkinStateRenderPlans( *this );
+		pCollideList.GetComponentAt( i )->GetComponent()->AddSkinStateRenderPlans( *this );
 	}
 	
 	const int billboardCount = pCollideList.GetBillboardCount();
@@ -525,7 +523,7 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pFrustumMatrix = defren.CreateFrustumDMatrix( pViewportWidth, pViewportHeight,
 			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance );
 		
-		if( defren.GetUseInverseDepth() ){
+		if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 			pDepthToPosition.x = -pCameraImageDistance;
 			pDepthToPosition.y = 0.0f;
 			
@@ -534,8 +532,8 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 			pDepthToPosition.y = 1.0f;
 		}
 		
-		pDepthToPosition.z = 1.0f / pProjectionMatrix.a11;
-		pDepthToPosition.w = 1.0f / pProjectionMatrix.a22;
+		pDepthToPosition.z = 1.0f / ( float )pProjectionMatrix.a11;
+		pDepthToPosition.w = 1.0f / ( float )pProjectionMatrix.a22;
 		pDepthToPosition2.Set( 0.0f, 0.0f );
 		
 		// depth sample offset is required to reconstruct depth from nearby depth samples.
@@ -569,17 +567,17 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pProjectionMatrix = vreye.CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
 		pFrustumMatrix = vreye.CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
 		
-		pDepthToPosition.z = 1.0f / pProjectionMatrix.a11;
-		pDepthToPosition.w = 1.0f / pProjectionMatrix.a22;
-		pDepthToPosition2.Set( -pProjectionMatrix.a13, -pProjectionMatrix.a23 );
+		pDepthToPosition.z = 1.0f / ( float )pProjectionMatrix.a11;
+		pDepthToPosition.w = 1.0f / ( float )pProjectionMatrix.a22;
+		pDepthToPosition2.Set( ( float )-pProjectionMatrix.a13, ( float )-pProjectionMatrix.a23 );
 		
 		// right eye
 		pProjectionMatrixStereo = vr.GetRightEye().CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
 		pFrustumMatrixStereo = vr.GetRightEye().CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
 		
-		pDepthToPositionStereo.z = 1.0f / pProjectionMatrixStereo.a11;
-		pDepthToPositionStereo.w = 1.0f / pProjectionMatrixStereo.a22;
-		pDepthToPositionStereo2.Set( -pProjectionMatrixStereo.a13, -pProjectionMatrixStereo.a23 );
+		pDepthToPositionStereo.z = 1.0f / ( float )pProjectionMatrixStereo.a11;
+		pDepthToPositionStereo.w = 1.0f / ( float )pProjectionMatrixStereo.a22;
+		pDepthToPositionStereo2.Set( ( float )-pProjectionMatrixStereo.a13, ( float )-pProjectionMatrixStereo.a23 );
 	}
 	
 	// determine frustum to use
@@ -768,6 +766,20 @@ void deoglRenderPlan::pPlanShadowCasting(){
 
 void deoglRenderPlan::pStartFindContent(){
 	INIT_SPECIAL_TIMING
+	
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pCompute.PrepareWorldCompute();
+		pCompute.PrepareBuffers();
+		
+		deoglRenderCompute &renderCompute = pRenderThread.GetRenderers().GetCompute();
+		
+		if( pWorld->GetCompute().GetUpdateElementCount() > 0 ){
+			renderCompute.UpdateElements( *this );
+		}
+		
+		renderCompute.FindContent( *this );
+	}
+	
 	// sky lights
 	int i;
 	for( i=0; i<pSkyLightCount; i++ ){
@@ -775,32 +787,38 @@ void deoglRenderPlan::pStartFindContent(){
 	}
 	
 	// camera view
-	if( pTaskFindContent ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NULL( pTaskFindContent )
 	
 	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();
 	
-	pTaskFindContent = new deoglRPTFindContent( *this );
-	pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
+	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pTaskFindContent = new deoglRPTFindContent( *this );
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
+	}
 }
 
 void deoglRenderPlan::pWaitFinishedFindContent(){
-	if( ! pTaskFindContent ){
-		return;
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pCompute.ReadVisibleElements();
+		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent( *this );
+		
+	}else{
+		if( ! pTaskFindContent ){
+			return;
+		}
+		
+	// 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) WaitFinishedFindContent(%p)", this, pTaskFindContent );
+		pTaskFindContent->GetSemaphore().Wait();
+		
+		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
+			*this, pTaskFindContent->GetElapsedTime() );
+		
+		pTaskFindContent->FreeReference();
+		pTaskFindContent = NULL;
 	}
-	
-// 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) WaitFinishedFindContent(%p)", this, pTaskFindContent );
-	pTaskFindContent->GetSemaphore().Wait();
-	
-	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
-		*this, pTaskFindContent->GetElapsedTime() );
-	
-	pTaskFindContent->FreeReference();
-	pTaskFindContent = NULL;
 }
 
 void deoglRenderPlan::pPlanGI(){
@@ -1221,7 +1239,7 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 		// pFinishOcclusionTests to avoid stalling
 		if( pOcclusionTest->GetInputDataCount() > 0
 		&& pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
-			pOcclusionTest->UpdateVBO();
+			pOcclusionTest->UpdateSSBO();
 			if( pDebug ){
 				pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
 			}
@@ -1235,6 +1253,7 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 
 void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask ){
 	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
+		pTasks.StartBuildTasks( mask );
 		return;
 	}
 	INIT_SPECIAL_TIMING
@@ -1440,7 +1459,9 @@ void deoglRenderPlan::CleanUp(){
 	}
 	
 	pTasks.CleanUp();
-	pWaitFinishedFindContent();
+	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pWaitFinishedFindContent();
+	}
 	
 	RemoveAllSkyInstances();
 	RemoveAllMaskedPlans();
@@ -2183,17 +2204,15 @@ void deoglRenderPlan::pBuildLightPlan(){
 
 void deoglRenderPlan::pUpdateHTView(){
 	if( pHTView && pWorld && &pHTView->GetHeightTerrain() == pWorld->GetHeightTerrain() ){
-		pHTView->PrepareForRendering();
+		pHTView->Prepare();
 		return;
 	}
 	
-	if( pHTView ){
-		delete pHTView;
-		pHTView = NULL;
-	}
+	pHTView = nullptr;
 	
 	if( pWorld && pWorld->GetHeightTerrain() ){
-		pHTView = new deoglHTView( pWorld->GetHeightTerrain() );
+		pHTView.TakeOver( new deoglHTView( pWorld->GetHeightTerrain() ) );
+		pHTView->Prepare();
 	}
 }
 

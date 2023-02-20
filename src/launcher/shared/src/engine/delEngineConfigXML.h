@@ -36,7 +36,7 @@ class decBaseFileWriter;
 /**
  * \brief Load/Save Engine Config XML.
  */
-class delEngineConfigXML : public delSharedConfigXML{
+class DE_DLL_EXPORT delEngineConfigXML : public delSharedConfigXML{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -24,7 +24,6 @@
 
 #include "delEngineInstance.h"
 
-#include <unistd.h>
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #endif
@@ -34,10 +33,10 @@
  * \brief Instance of game engine running in different process.
  * \version 1.10
  */
-class delEngineInstanceThreaded : public delEngineInstance{
+class DE_DLL_EXPORT delEngineInstanceThreaded : public delEngineInstance{
 public:
 	/** \brief Factory creating engine instances. */
-	class Factory : public delEngineInstance::Factory{
+	class DE_DLL_EXPORT Factory : public delEngineInstance::Factory{
 	public:
 		/** \brief Factory constructor. */
 		Factory();

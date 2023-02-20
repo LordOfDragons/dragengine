@@ -30,7 +30,7 @@ class deoglCaptureCanvas;
 
 
 /**
- * \brief Capture canvas list.
+ * Capture canvas list.
  */
 class deoglCaptureCanvasList{
 private:
@@ -41,10 +41,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create list. */
+	/** Create list. */
 	deoglCaptureCanvasList( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up list. */
+	/** Clean up list. */
 	~deoglCaptureCanvasList();
 	/*@}*/
 	
@@ -52,25 +52,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of capture canvas. */
+	/** Number of capture canvas. */
 	int GetCount() const;
 	
-	/** \brief Capture canvas at index. */
+	/** Capture canvas at index. */
 	deoglCaptureCanvas *GetAt( int index ) const;
 	
-	/** \brief Add capture canvas. */
+	/** Add capture canvas. */
 	void Add( deoglCaptureCanvas *captureCanvas );
 	
-	/** \brief Remove capture canvas . */
+	/** Remove capture canvas . */
 	void Remove( deoglCaptureCanvas *captureCanvas );
 	
-	/** \brief Removes all capture canvas. */
+	/** Removes all capture canvas. */
 	void RemoveAll();
 	
 	
 	
 	/**
-	 * \brief Update capture canvas if required.
+	 * Update capture canvas if required.
 	 * \details For finished captures the image is created from the pixel buffer and
 	 *          stored for the game scripts to retrieve. For pending captures the
 	 *          capture process is started.

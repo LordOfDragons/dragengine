@@ -32,7 +32,7 @@ class deoglShaderUnitSourceCode;
 
 
 /**
- * @brief Light Shader Manager.
+ * Light Shader Manager.
  */
 class deoglLightShaderManager{
 public:
@@ -52,7 +52,7 @@ private:
 	int pMaintananceInterval;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
 	deoglLightShaderManager( deoglRenderThread &renderThread );
@@ -60,9 +60,9 @@ public:
 	~deoglLightShaderManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves a unit source code path. */
