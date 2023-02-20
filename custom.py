@@ -9,7 +9,6 @@ with_verbose = 'no'
 ##################################
 with_system_zlib = 'yes'
 with_system_libpng = 'yes'
-with_system_sndio = 'yes'
 with_system_libapng ='yes'
 with_system_libjpeg ='yes'
 with_system_libwebp = 'yes'
