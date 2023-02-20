@@ -38,7 +38,7 @@ class decBaseFileReader;
 /**
  * \brief Load particle emitter file in the Drag[en]gine Particle Emitter format.
  */
-class igdeLoadParticleEmitter : public igdeBaseXML{
+class DE_DLL_EXPORT igdeLoadParticleEmitter : public igdeBaseXML{
 private:
 	igdeEnvironment &pEnvironment;
 	

@@ -37,7 +37,7 @@ class igdeGDCLight;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSOLight : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSOLight : public igdeWOSubObject{
 private:
 	const igdeGDCLight &pGDLight;
 	deLightReference pLight;

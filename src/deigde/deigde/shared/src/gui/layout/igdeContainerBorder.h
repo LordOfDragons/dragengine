@@ -37,7 +37,7 @@
  * size. The left and right areas touch up to the top and bottom widget. Hence the top and
  * bottom sides have priority over the left and side side.
  */
-class igdeContainerBorder : public igdeContainer{
+class DE_DLL_EXPORT igdeContainerBorder : public igdeContainer{
 public:
 	/** \brief Area. */
 	enum eArea{

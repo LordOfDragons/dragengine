@@ -42,7 +42,7 @@ class deLogger;
  * Game classes only contain the name of the class file and some classification
  * information useful searching for the right class to use.
  */
-class igdeGDClassManager{
+class DE_DLL_EXPORT igdeGDClassManager{
 private:
 	decObjectOrderedSet pClasses;
 	

@@ -22,6 +22,9 @@
 #ifndef _IGDEWOSOVISITOR_H_
 #define _IGDEWOSOVISITOR_H_
 
+#include <dragengine/dragengine_export.h>
+
+
 class igdeWOSubObject;
 class igdeWOSOBillboard;
 class igdeWOSOLight;
@@ -37,7 +40,7 @@ class igdeWOSOComponent;
 /**
  * \brief Object wrapper sub object visitor.
  */
-class igdeWOSOVisitor{
+class DE_DLL_EXPORT igdeWOSOVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

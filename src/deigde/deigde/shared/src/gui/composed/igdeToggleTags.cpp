@@ -160,7 +160,7 @@ decStringSet igdeToggleTags::GetTags() const{
 }
 
 void igdeToggleTags::SetTags( const decStringSet &tags ){
-	const decString selection( pListBox->GetSelectedItem() ? pListBox->GetSelectedItem()->GetText() : "" );
+	const decString selection( pListBox->GetSelectedItem() ? pListBox->GetSelectedItem()->GetText() : decString() );
 	const int count = tags.GetCount();
 	int i;
 	

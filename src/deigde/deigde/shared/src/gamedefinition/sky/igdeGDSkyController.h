@@ -30,7 +30,7 @@
 /**
  * \brief Game definition sky default controller value.
  */
-class igdeGDSkyController : public deObject{
+class DE_DLL_EXPORT igdeGDSkyController : public deObject{
 private:
 	decString pName;
 	float pValue;

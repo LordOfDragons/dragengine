@@ -40,7 +40,7 @@ class decUnicodeStringList;
  * The definition of editor module is stored in an XML file not in this class.
  * This is just the editor module itself.
  */
-class igdeEditorModule{
+class DE_DLL_EXPORT igdeEditorModule{
 private:
 	igdeEnvironment &pEnvironment;
 	decString pLoggingName;

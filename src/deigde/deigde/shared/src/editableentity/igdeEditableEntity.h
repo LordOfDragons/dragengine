@@ -56,7 +56,7 @@ class deLogger;
  * entity has changed since the last time it has been saved. The SetChanged
  * and SetSaved methods send notifications if the respective state changed.
  */
-class igdeEditableEntity : public deObject{
+class DE_DLL_EXPORT igdeEditableEntity : public deObject{
 private:
 	igdeEnvironment *pEnvironment;
 	

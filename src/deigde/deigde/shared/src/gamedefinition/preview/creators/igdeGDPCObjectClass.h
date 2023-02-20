@@ -38,7 +38,7 @@ class igdeWSky;
 /**
  * \brief Create preview for game definition object class asynchronously.
  */
-class igdeGDPCObjectClass : public igdeGDPreviewCreator{
+class DE_DLL_EXPORT igdeGDPCObjectClass : public igdeGDPreviewCreator{
 private:
 	class cAsyncFinished : public igdeWObject::cAsyncLoadFinished {
 	public:

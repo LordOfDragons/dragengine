@@ -28,7 +28,7 @@
 /**
  * \brief IGDE UI CheckBox with text and icon.
  */
-class igdeCheckBox : public igdeButton{
+class DE_DLL_EXPORT igdeCheckBox : public igdeButton{
 private:
 	bool pChecked;
 	

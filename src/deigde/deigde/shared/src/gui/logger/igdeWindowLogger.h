@@ -34,7 +34,7 @@ class igdeWindowLoggerListener;
 /**
  * \brief Logger window.
  */
-class igdeWindowLogger : public igdeWindow{
+class DE_DLL_EXPORT igdeWindowLogger : public igdeWindow{
 public:
 	/** \brief Warning style name. */
 	static const char *styleWarning;

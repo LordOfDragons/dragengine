@@ -31,19 +31,10 @@
 
 
 
-// Events
-///////////
-
-FXDEFMAP( igdeNativeFoxToolBarSeparator ) igdeNativeFoxToolBarSeparatorMap[] = {
-};
-
-
-
 // Class igdeNativeFoxToolBarSeparator
-//////////////////////////////
+////////////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxToolBarSeparator, FXSeparator,
-	igdeNativeFoxToolBarSeparatorMap, ARRAYNUMBER( igdeNativeFoxToolBarSeparatorMap ) )
+FXIMPLEMENT( igdeNativeFoxToolBarSeparator, FXSeparator, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

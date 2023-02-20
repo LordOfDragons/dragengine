@@ -37,7 +37,7 @@ class igdeEnvironment;
  * with a file manager, registered file types are opened with their preferred application
  * and URL are openned with their preferred application.
  */
-class igdeActionExternOpen : public igdeAction{
+class DE_DLL_EXPORT igdeActionExternOpen : public igdeAction{
 private:
 	igdeEnvironment &pEnvironment;
 	decString pPath;

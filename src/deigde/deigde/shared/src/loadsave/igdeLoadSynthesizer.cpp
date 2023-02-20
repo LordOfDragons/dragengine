@@ -294,7 +294,7 @@ const char *basePath, deSynthesizer &synthesizer ){
 						source->SetSound( sound );
 						sound->FreeReference();
 						
-					}catch( const deException &e ){
+					}catch( const deException & ){
 						if( sound ){
 							sound->FreeReference();
 						}
@@ -451,7 +451,7 @@ const char *basePath, deSynthesizer &synthesizer ){
 						source->AddSound( sound );
 						sound->FreeReference();
 						
-					}catch( const deException &e ){
+					}catch( const deException & ){
 						if( sound ){
 							sound->FreeReference();
 						}
@@ -619,7 +619,7 @@ const char *basePath, deSynthesizer &synthesizer ){
 					childSynthesizer->FreeReference();
 					reader->FreeReference();
 					
-				}catch( const deException &e ){
+				}catch( const deException & ){
 					if( childSynthesizer ){
 						childSynthesizer->FreeReference();
 					}

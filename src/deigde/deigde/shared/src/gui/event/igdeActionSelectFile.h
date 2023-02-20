@@ -38,7 +38,7 @@ class igdeTextField;
  * Select file using file dialog or resource browser if suitable. Requires a target
  * igdeTextField to obtain/store the file path.
  */
-class igdeActionSelectFile : public igdeAction{
+class DE_DLL_EXPORT igdeActionSelectFile : public igdeAction{
 private:
 	igdeEnvironment &pEnvironment;
 	igdeFilePatternList pFilePatterns;

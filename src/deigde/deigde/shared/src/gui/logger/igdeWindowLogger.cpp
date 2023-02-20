@@ -205,7 +205,7 @@ void igdeWindowLogger::OnLogsCleared(){
 
 void igdeWindowLogger::pRemoveOldLines(){
 	const char * const logs = pEditLogs->GetText();
-	const int length = strlen( logs );
+	const int length = ( int )strlen( logs );
 	int count = pLogger->GetHistorySize();
 	int i;
 	

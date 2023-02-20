@@ -28,7 +28,7 @@
 /**
  * \brief IGDE UI Container Widget scrolling one widget.
  */
-class igdeContainerScroll : public igdeContainer{
+class DE_DLL_EXPORT igdeContainerScroll : public igdeContainer{
 private:
 	bool pCanScrollX;
 	bool pCanScrollY;

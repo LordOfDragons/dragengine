@@ -41,7 +41,7 @@ class deSkyController;
  * Provides a simple way to display a sky from game definition or a custom sky.
  * The sky can be modified by changing controller values.
  */
-class igdeWSky{
+class DE_DLL_EXPORT igdeWSky{
 public:
 	/** \brief Asynchronous loading finished. */
 	class cAsyncLoadFinished{

@@ -36,7 +36,7 @@ class igdeGDCForceField;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSOForceField : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSOForceField : public igdeWOSubObject{
 private:
 	const igdeGDCForceField &pGDForceField;
 	deForceFieldReference pForceField;

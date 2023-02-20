@@ -37,7 +37,7 @@ class igdeEditDirectory;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeEditDirectoryReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeEditDirectoryReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

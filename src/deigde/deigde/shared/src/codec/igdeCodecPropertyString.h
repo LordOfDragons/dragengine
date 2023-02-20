@@ -35,7 +35,7 @@ class decShapeBox;
  * 
  * Provides support for encoding/decoding various data types from/to property strings.
  */
-class igdeCodecPropertyString{
+class DE_DLL_EXPORT igdeCodecPropertyString{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

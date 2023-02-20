@@ -35,7 +35,7 @@ class igdeGDCNavigationSpace;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSONavigationSpace : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSONavigationSpace : public igdeWOSubObject{
 private:
 	const igdeGDCNavigationSpace &pGDNavigationSpace;
 	deNavigationSpaceReference pNavigationSpace;

@@ -350,7 +350,13 @@ const char *title, igdeFont::sConfiguration &config ){
 	
 	FXFontDesc fdesc;
 	memset( &fdesc, '\0', sizeof( FXFontDesc ) );
+	
+	#ifdef OS_W32_VS
+	strcpy_s( fdesc.face, sizeof( fdesc.face ), config.name.GetString() );
+	#else
 	strcpy( fdesc.face, config.name.GetString() );
+	#endif
+
 	fdesc.size = ( int )( config.size * 10 + 0.5f );
 	fdesc.weight = config.bold ? FXFont::Bold : FXFont::Normal,
 	fdesc.slant = config.italic ? FXFont::Italic : FXFont::Straight;

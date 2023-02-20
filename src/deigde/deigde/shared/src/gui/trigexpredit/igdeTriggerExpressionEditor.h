@@ -44,7 +44,7 @@ class igdeTreeItem;
 /**
  * \brief Trigger Expression Editor.
  */
-class igdeTriggerExpressionEditor : public igdeContainerFlow, igdeActionListener{
+class DE_DLL_EXPORT igdeTriggerExpressionEditor : public igdeContainerFlow, igdeActionListener{
 private:
 	igdeTriggerExpressionParser *pParser;
 	const igdeTriggerTargetList *pTargetList;

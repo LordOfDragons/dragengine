@@ -36,7 +36,7 @@ class igdeGDCBillboard;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSOBillboard : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSOBillboard : public igdeWOSubObject{
 private:
 	const igdeGDCBillboard &pGDBillboard;
 	deBillboardReference pBillboard;

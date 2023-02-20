@@ -40,7 +40,7 @@ class igdeNVBoardListener;
 /**
  * \brief IGDE UI NodeView Board.
  */
-class igdeNVBoard : public igdeContainer{
+class DE_DLL_EXPORT igdeNVBoard : public igdeContainer{
 private:
 	decColor pBgColor;
 	bool pEnabled;

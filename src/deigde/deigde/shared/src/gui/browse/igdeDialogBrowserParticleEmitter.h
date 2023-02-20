@@ -31,7 +31,7 @@ class igdeGDParticleEmitter;
 /**
  * \brief Dialog for user to browse particle emitter.
  */
-class igdeDialogBrowserParticleEmitter : public igdeDialogBrowser{
+class DE_DLL_EXPORT igdeDialogBrowserParticleEmitter : public igdeDialogBrowser{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

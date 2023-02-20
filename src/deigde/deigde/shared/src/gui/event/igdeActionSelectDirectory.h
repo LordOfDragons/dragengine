@@ -36,7 +36,7 @@ class igdeTextField;
  * 
  * Select file using directory dialog. Requires a target igdeTextField to obtain/store the file path.
  */
-class igdeActionSelectDirectory : public igdeAction{
+class DE_DLL_EXPORT igdeActionSelectDirectory : public igdeAction{
 private:
 	igdeEnvironment &pEnvironment;
 	bool pUseGameVFS;

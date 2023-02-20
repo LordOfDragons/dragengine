@@ -35,7 +35,7 @@ class deFileResource;
  * Listener for a resource loader task. Notifies about the
  * successfull or failed loading of a resource.
  */
-class igdeResourceLoaderListener : public deObject{
+class DE_DLL_EXPORT igdeResourceLoaderListener : public deObject{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

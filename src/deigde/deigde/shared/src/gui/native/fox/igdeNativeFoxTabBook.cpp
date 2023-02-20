@@ -58,10 +58,7 @@ public:
 	virtual FXbool canFocus() const;
 };
 
-FXDEFMAP( igdeNativeFoxTabBookHeader ) igdeNativeFoxTabBookHeaderMap[] = { };
-
-FXIMPLEMENT( igdeNativeFoxTabBookHeader, FXToggleButton, igdeNativeFoxTabBookHeaderMap,
-	ARRAYNUMBER( igdeNativeFoxTabBookHeaderMap ) )
+FXIMPLEMENT( igdeNativeFoxTabBookHeader, FXToggleButton, nullptr, 0 )
 
 igdeNativeFoxTabBookHeader::igdeNativeFoxTabBookHeader(){ }
 
@@ -230,7 +227,7 @@ igdeFont *igdeNativeFoxTabBook::TabBookFont( const igdeTabBook &powner, const ig
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::tabBookFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::tabBookFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::tabBookFontSize ) ){
@@ -238,7 +235,7 @@ igdeFont *igdeNativeFoxTabBook::TabBookFont( const igdeTabBook &powner, const ig
 			igdeGuiThemePropertyNames::tabBookFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

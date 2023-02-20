@@ -37,7 +37,7 @@ class igdeEditPropertyValueListener;
  *       it as property valueer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeEditPropertyValueListenerReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeEditPropertyValueListenerReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

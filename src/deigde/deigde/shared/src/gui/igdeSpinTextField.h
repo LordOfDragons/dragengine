@@ -36,7 +36,7 @@ class igdeSpinTextFieldListener;
 /**
  * \brief IGDE UI SpinTextField.
  */
-class igdeSpinTextField : public igdeWidget{
+class DE_DLL_EXPORT igdeSpinTextField : public igdeWidget{
 private:
 	bool pEnabled;
 	int pColumns;

@@ -42,7 +42,7 @@ class decLayerMask;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSubObject : public deObject{
+class DE_DLL_EXPORT igdeWOSubObject : public deObject{
 private:
 	igdeWObject &pWrapper;
 	const decString pPrefix;

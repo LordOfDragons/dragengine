@@ -31,7 +31,7 @@ class igdeGDSkin;
 /**
  * \brief Dialog for user to browse skin.
  */
-class igdeDialogBrowserSkin : public igdeDialogBrowser{
+class DE_DLL_EXPORT igdeDialogBrowserSkin : public igdeDialogBrowser{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -32,7 +32,7 @@ class igdeEditDirectory;
 /**
  * \brief IGDE UI EditDirectory Listener.
  */
-class igdeEditDirectoryListener : public deObject{
+class DE_DLL_EXPORT igdeEditDirectoryListener : public deObject{
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

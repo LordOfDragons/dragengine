@@ -39,7 +39,7 @@
  * child and next sibbling and weak references to the parent and previous sibling. Tree items
  * can be collapsed or expanded. By default tree items are collapsed.
  */
-class igdeTreeItem : public deObject{
+class DE_DLL_EXPORT igdeTreeItem : public deObject{
 private:
 	decString pText;
 	decString pDescription;

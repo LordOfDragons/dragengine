@@ -42,10 +42,7 @@
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxProgressBar ) igdeNativeFoxProgressBarMap[] = { };
-
-FXIMPLEMENT( igdeNativeFoxProgressBar, FXProgressBar,
-	igdeNativeFoxProgressBarMap, ARRAYNUMBER( igdeNativeFoxProgressBarMap ) )
+FXIMPLEMENT( igdeNativeFoxProgressBar, FXProgressBar, nullptr, 0 )
 
 
 
@@ -154,7 +151,7 @@ igdeFont *igdeNativeFoxProgressBar::ProgressBarFont( const igdeProgressBar &pown
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::progressBarFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::progressBarFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::progressBarFontSize ) ){
@@ -162,7 +159,7 @@ igdeFont *igdeNativeFoxProgressBar::ProgressBarFont( const igdeProgressBar &pown
 			igdeGuiThemePropertyNames::progressBarFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

@@ -37,7 +37,7 @@ class igdeGDCSpeaker;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSOSpeaker : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSOSpeaker : public igdeWOSubObject{
 private:
 	const igdeGDCSpeaker &pGDSpeaker;
 	deSpeakerReference pSpeaker;

@@ -29,18 +29,10 @@
 
 
 
-// Events
-///////////
-
-FXDEFMAP( igdeNativeFoxMenuSeparator ) igdeNativeFoxMenuSeparatorMap[] = { };
-
-
-
 // Class igdeNativeFoxMenuSeparator
 /////////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxMenuSeparator, FXMenuSeparator,
-	igdeNativeFoxMenuSeparatorMap, ARRAYNUMBER( igdeNativeFoxMenuSeparatorMap ) )
+FXIMPLEMENT( igdeNativeFoxMenuSeparator, FXMenuSeparator, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

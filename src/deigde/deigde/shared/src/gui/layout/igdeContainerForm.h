@@ -35,7 +35,7 @@
  * 
  * This layout is best used for dialog or side panels showing labelled properties.
  */
-class igdeContainerForm : public igdeContainer{
+class DE_DLL_EXPORT igdeContainerForm : public igdeContainer{
 public:
 	/** \brief Stretching. */
 	enum eStretching{

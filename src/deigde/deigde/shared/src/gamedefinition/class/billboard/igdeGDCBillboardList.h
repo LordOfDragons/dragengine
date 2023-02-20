@@ -31,7 +31,7 @@ class igdeGDCBillboard;
 /**
  * \brief Game Definition Class Billboard List.
  */
-class igdeGDCBillboardList{
+class DE_DLL_EXPORT igdeGDCBillboardList{
 private:
 	decObjectOrderedSet pBillboards;
 	

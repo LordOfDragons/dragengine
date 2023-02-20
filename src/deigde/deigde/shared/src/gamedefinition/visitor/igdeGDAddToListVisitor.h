@@ -35,7 +35,7 @@ class igdeListItemReference;
 /**
  * \brief Visitor adding the visited game definition elements to a list.
  */
-class igdeGDAddToListVisitor : public igdeGDVisitor{
+class DE_DLL_EXPORT igdeGDAddToListVisitor : public igdeGDVisitor{
 private:
 	igdeEnvironment &pEnvironment;
 	igdeIconListBoxReference pIconListBox;

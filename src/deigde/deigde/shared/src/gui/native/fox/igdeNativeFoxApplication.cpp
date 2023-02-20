@@ -45,10 +45,7 @@
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxApplication ) igdeNativeFoxApplicationMap[] = { };
-
-FXIMPLEMENT( igdeNativeFoxApplication, FXApp,
-	igdeNativeFoxApplicationMap, ARRAYNUMBER( igdeNativeFoxApplicationMap ) )
+FXIMPLEMENT( igdeNativeFoxApplication, FXApp, nullptr, 0 )
 
 
 
@@ -145,7 +142,11 @@ void igdeNativeFoxApplication::Initialize( decUnicodeStringList &arguments ){
 	for( i=0; i<pFoxArgCount; i++ ){
 		const decString argument( arguments.GetAt( i ).ToUTF8() );
 		pFoxArgs[ i ] = new char[ argument.GetLength() + 1 ];
+		#ifdef OS_W32_VS
+		strcpy_s( pFoxArgs[ i ], argument.GetLength() + 1, argument.GetString() );
+		#else
 		strcpy( pFoxArgs[ i ], argument.GetString() );
+		#endif
 	}
 	
 	arguments.RemoveFrom( 0 );

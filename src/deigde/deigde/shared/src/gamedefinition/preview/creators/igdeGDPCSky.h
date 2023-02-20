@@ -36,7 +36,7 @@ class igdeWSky;
 /**
  * \brief Create preview for game definition sky asynchronously.
  */
-class igdeGDPCSky : public igdeGDPreviewCreator{
+class DE_DLL_EXPORT igdeGDPCSky : public igdeGDPreviewCreator{
 private:
 	igdeGDSky *pGDSky;
 	

@@ -121,7 +121,7 @@ FXbool igdeNativeFoxCheckBox::canFocus() const{
 }
 
 void igdeNativeFoxCheckBox::UpdateChecked(){
-	if( pOwner->GetChecked() != getCheck() ){
+	if( pOwner->GetChecked() != ( bool )getCheck() ){
 		setCheck( pOwner->GetChecked() );
 	}
 }
@@ -184,7 +184,7 @@ igdeFont *igdeNativeFoxCheckBox::CheckBoxFont( const igdeCheckBox &powner, const
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::checkBoxFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::checkBoxFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::checkBoxFontSize ) ){
@@ -192,7 +192,7 @@ igdeFont *igdeNativeFoxCheckBox::CheckBoxFont( const igdeCheckBox &powner, const
 			igdeGuiThemePropertyNames::checkBoxFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

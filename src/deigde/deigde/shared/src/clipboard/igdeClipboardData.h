@@ -36,7 +36,7 @@
  * clipboard type names. The application uses the clipboard type name to locate
  * data it can paste.
  */
-class igdeClipboardData : public deObject{
+class DE_DLL_EXPORT igdeClipboardData : public deObject{
 private:
 	decString pTypeName;
 	

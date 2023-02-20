@@ -42,7 +42,7 @@ class igdeListItem;
  * 
  * \todo igdeComboBox has to be a subclass of igdeTextField once done.
  */
-class igdeComboBox : public igdeWidget{
+class DE_DLL_EXPORT igdeComboBox : public igdeWidget{
 private:
 	bool pEnabled;
 	decObjectList pItems;

@@ -30,7 +30,7 @@
 /**
  * \brief IGDE UI Hot Key.
  */
-class igdeHotKey{
+class DE_DLL_EXPORT igdeHotKey{
 private:
 	deInputEvent::eKeyCodes pKeyCode;
 	int pKey;

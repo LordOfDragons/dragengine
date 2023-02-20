@@ -33,7 +33,7 @@
  * the minimum size instead of being stretched. This allows to create equally stretched
  * widgets separated by non-stretched widgets.
  */
-class igdeContainerBoxAlternate : public igdeContainerBox{
+class DE_DLL_EXPORT igdeContainerBoxAlternate : public igdeContainerBox{
 private:
 	bool pStretchOdd;
 	

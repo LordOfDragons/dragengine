@@ -43,7 +43,7 @@ class deLogger;
 /**
  * \brief Base class for IGDE UI Widgets.
  */
-class igdeWidget : public deObject{
+class DE_DLL_EXPORT igdeWidget : public deObject{
 private:
 	igdeEnvironment &pEnvironment;
 	void *pNativeWidget;

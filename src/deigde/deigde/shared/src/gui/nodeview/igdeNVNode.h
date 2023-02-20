@@ -38,7 +38,7 @@ class igdeNVNodeListener;
 /**
  * \brief IGDE UI NodeView Node.
  */
-class igdeNVNode : public igdeContainer{
+class DE_DLL_EXPORT igdeNVNode : public igdeContainer{
 private:
 	decString pTitle;
 	decString pDescription;

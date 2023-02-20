@@ -32,7 +32,7 @@ class igdeScrollBar;
 /**
  * \brief IGDE UI ScrollBar Listener.
  */
-class igdeScrollBarListener : public deObject{
+class DE_DLL_EXPORT igdeScrollBarListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

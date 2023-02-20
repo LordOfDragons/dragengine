@@ -28,7 +28,7 @@
 /**
  * \brief IGDE UI Toggle button with text and icon.
  */
-class igdeToggleButton : public igdeButton{
+class DE_DLL_EXPORT igdeToggleButton : public igdeButton{
 private:
 	bool pToggled;
 	

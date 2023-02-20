@@ -40,7 +40,7 @@ class igdeEnvironment;
 /**
  * \brief Trigger table panel.
  */
-class igdeWPTriggerTable : public igdeContainerFlow, igdeActionListener{
+class DE_DLL_EXPORT igdeWPTriggerTable : public igdeContainerFlow, igdeActionListener{
 private:
 	igdeTriggerTargetList *pTriggerTargetList;
 	

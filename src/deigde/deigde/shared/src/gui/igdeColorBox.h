@@ -36,7 +36,7 @@ class igdeColorBoxListener;
 /**
  * \brief IGDE UI Box with color showing a color picker dialog if clicked.
  */
-class igdeColorBox : public igdeWidget{
+class DE_DLL_EXPORT igdeColorBox : public igdeWidget{
 public:
 	class cActionCopy : public igdeAction{
 		igdeColorBox &pColorBox;

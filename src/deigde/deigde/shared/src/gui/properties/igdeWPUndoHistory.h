@@ -35,7 +35,7 @@ class igdeUndoSystem;
 /**
  * \brief Undo history panel.
  */
-class igdeWPUndoHistory : public igdeContainerBox{
+class DE_DLL_EXPORT igdeWPUndoHistory : public igdeContainerBox{
 private:
 	igdeUndoSystem *pUndoSystem;
 	igdeListBoxReference pListUndo;

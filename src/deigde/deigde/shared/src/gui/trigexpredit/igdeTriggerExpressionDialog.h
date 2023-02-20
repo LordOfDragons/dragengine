@@ -34,7 +34,7 @@ class igdeTriggerTargetList;
 /**
  * \brief Trigger Expression Dialog.
  */
-class igdeTriggerExpressionDialog : public igdeDialog{
+class DE_DLL_EXPORT igdeTriggerExpressionDialog : public igdeDialog{
 private:
 	igdeWidgetReference pEditor;
 	

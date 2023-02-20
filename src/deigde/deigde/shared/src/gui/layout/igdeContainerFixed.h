@@ -28,7 +28,7 @@
 /**
  * \brief IGDE UI Container Widget grouping widgets without laying them out.
  */
-class igdeContainerFixed : public igdeContainer{
+class DE_DLL_EXPORT igdeContainerFixed : public igdeContainer{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

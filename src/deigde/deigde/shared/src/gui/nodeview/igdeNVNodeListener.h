@@ -33,7 +33,7 @@ class igdeMenuCascade;
 /**
  * \brief IGDE UI NVNode Listener.
  */
-class igdeNVNodeListener : public deObject{
+class DE_DLL_EXPORT igdeNVNodeListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

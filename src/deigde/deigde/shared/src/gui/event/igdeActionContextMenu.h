@@ -39,7 +39,7 @@ class igdeMenuCascade;
  * or before using the action for the first time. If the widget does not exist when the
  * context menu is supposed to be shown this action becomes a no-op.
  */
-class igdeActionContextMenu : public igdeAction{
+class DE_DLL_EXPORT igdeActionContextMenu : public igdeAction{
 private:
 	igdeWidgetReference pWidget;
 	

@@ -37,7 +37,7 @@ class igdeContainerScroll;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeContainerScrollReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeContainerScrollReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

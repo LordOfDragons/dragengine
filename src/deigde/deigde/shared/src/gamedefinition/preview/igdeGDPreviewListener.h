@@ -31,7 +31,7 @@ class deImage;
 /**
  * \brief Listener for creating preview images.
  */
-class igdeGDPreviewListener : public deObject{
+class DE_DLL_EXPORT igdeGDPreviewListener : public deObject{
 public:
 	/**  \name Constructors and Destructors */
 	/*@{*/

@@ -31,7 +31,7 @@ class igdeWindowLogger;
 /**
  * \brief Logger window listener.
  */
-class igdeWindowLoggerListener : public igdeLoggerHistoryListener{
+class DE_DLL_EXPORT igdeWindowLoggerListener : public igdeLoggerHistoryListener{
 private:
 	igdeWindowLogger &pWindow;
 	

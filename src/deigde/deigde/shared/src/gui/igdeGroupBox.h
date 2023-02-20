@@ -30,7 +30,7 @@
 /**
  * \brief IGDE UI Container decorating one widget with a titled border.
  */
-class igdeGroupBox : public igdeContainer{
+class DE_DLL_EXPORT igdeGroupBox : public igdeContainer{
 public:
 	/** \brief Title alignment. */
 	enum eTitleAlignment{

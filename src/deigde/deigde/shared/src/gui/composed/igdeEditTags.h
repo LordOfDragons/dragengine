@@ -39,7 +39,7 @@ class decStringSet;
 /**
  * \brief Tag list.
  */
-class igdeEditTags : public igdeContainerFlow, igdeActionListener{
+class DE_DLL_EXPORT igdeEditTags : public igdeContainerFlow, igdeActionListener{
 protected:
 	/** \brief Action adding a tag. */
 	class cActionAdd : public igdeAction{

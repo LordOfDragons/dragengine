@@ -35,7 +35,7 @@
  * altered without changing the shape faces just by changing position, orientation and
  * scaling of the individual shapes.
  */
-class igdeWConnection{
+class DE_DLL_EXPORT igdeWConnection{
 private:
 	igdeWDebugDrawerShape pDDSConnection;
 	igdeWDebugDrawerShape pDDSArrowAnchor;

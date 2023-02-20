@@ -36,7 +36,7 @@ class igdeEnvironment;
  * 
  * Undo action. Set Undo System to use or NULL if not available.
  */
-class igdeActionUndo : public igdeAction{
+class DE_DLL_EXPORT igdeActionUndo : public igdeAction{
 private:
 	igdeEnvironment &pEnvironment;
 	igdeUndoSystem *pUndoSystem;

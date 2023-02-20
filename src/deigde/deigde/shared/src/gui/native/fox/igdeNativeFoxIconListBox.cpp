@@ -69,9 +69,7 @@ public:
 	void UpdateFromItem();
 };
 
-FXDEFMAP( igdeNativeFoxIconListBoxItem ) igdeNativeFoxIconListBoxItemMap[] = {};
-
-FXIMPLEMENT( igdeNativeFoxIconListBoxItem, FXIconItem, igdeNativeFoxIconListBoxItemMap, ARRAYNUMBER( igdeNativeFoxIconListBoxItemMap ) )
+FXIMPLEMENT( igdeNativeFoxIconListBoxItem, FXIconItem, nullptr, 0 )
 
 igdeNativeFoxIconListBoxItem::igdeNativeFoxIconListBoxItem(){ }
 
@@ -163,11 +161,13 @@ pFont( IconListBoxFont( powner, guitheme ) ),
 pListBox( new FXIconList( this, this, ID_LISTBOX, IconListBoxFlags( powner ) ) ),
 pResizer( NULL )
 {
+	#ifndef OS_W32_VS
 	(void)IconListBoxPadLeft;
 	(void)IconListBoxPadRight;
 	(void)IconListBoxPadTop;
 	(void)IconListBoxPadBottom;
-	
+	#endif
+
 	if( ! pOwner->GetVisible() ){
 		hide();
 	}
@@ -403,7 +403,7 @@ igdeFont *igdeNativeFoxIconListBox::IconListBoxFont( const igdeIconListBox &pown
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::listBoxFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::listBoxFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::listBoxFontSize ) ){
@@ -411,7 +411,7 @@ igdeFont *igdeNativeFoxIconListBox::IconListBoxFont( const igdeIconListBox &pown
 			igdeGuiThemePropertyNames::listBoxFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

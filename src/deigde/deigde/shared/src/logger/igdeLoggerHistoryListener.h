@@ -35,7 +35,7 @@ class igdeLoggerHistoryEntry;
  * Listener for a logger history object. Supports notification about
  * entries being added to the history.
  */
-class igdeLoggerHistoryListener : public deObject{
+class DE_DLL_EXPORT igdeLoggerHistoryListener : public deObject{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

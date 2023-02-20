@@ -35,7 +35,7 @@ class igdeGDCEnvMapProbe;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSOEnvMapProbe : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSOEnvMapProbe : public igdeWOSubObject{
 private:
 	const igdeGDCEnvMapProbe &pGDEnvMapProbe;
 	deEnvMapProbeReference pEnvMapProbe;

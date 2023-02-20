@@ -31,7 +31,7 @@ class igdeGDSky;
 /**
  * \brief Dialog for user to browse sky.
  */
-class igdeDialogBrowserSky : public igdeDialogBrowser{
+class DE_DLL_EXPORT igdeDialogBrowserSky : public igdeDialogBrowser{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

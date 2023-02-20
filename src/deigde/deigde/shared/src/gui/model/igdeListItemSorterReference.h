@@ -37,7 +37,7 @@ class igdeListItemSorter;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeListItemSorterReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeListItemSorterReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

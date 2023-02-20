@@ -35,7 +35,7 @@ class igdeGameDefinition;
 /**
  * \brief Game definition particle emitter.
  */
-class igdeGDParticleEmitter : public deObject{
+class DE_DLL_EXPORT igdeGDParticleEmitter : public deObject{
 private:
 	decString pPath;
 	decString pName;

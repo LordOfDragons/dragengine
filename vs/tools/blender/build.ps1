@@ -1,0 +1,24 @@
+﻿param (
+    [Parameter(Mandatory=$true)][string]$SourceDir,
+    [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$BuildVersion
+)
+
+Import-Module "$PSScriptRoot\..\..\shared.psm1"
+
+
+# build
+$ArchiveName = "blender-addon-dragengine-$BuildVersion.zip"
+$ArchivePath = "$OutputDir\$ArchiveName"
+
+Write-Host "Blender Scripts: Compress to '$ArchivePath'"
+
+Compress-Archive -Path "$SourceDir\dragengine-import-export" -DestinationPath $ArchivePath
+
+
+# application
+$DataTargetDir = "$OutputDir\$PathDistIGDEShares\tools"
+
+Write-Host "Blender Scripts: Copy to '$DataTargetDir'"
+
+Install-Files -Path $ArchivePath -Destination $DataTargetDir

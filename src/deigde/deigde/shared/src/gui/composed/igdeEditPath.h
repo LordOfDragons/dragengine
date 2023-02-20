@@ -51,7 +51,7 @@ class igdeUIHelper;
  * the path can be selected with. If more than one source exists a popup menu is used to
  * allow the user to select the source to use to locate the path.
  */
-class igdeEditPath : public igdeContainerFlow{
+class DE_DLL_EXPORT igdeEditPath : public igdeContainerFlow{
 protected:
 	/** \brief Text field listener. */
 	class cListenerTextField : public igdeTextFieldListener{

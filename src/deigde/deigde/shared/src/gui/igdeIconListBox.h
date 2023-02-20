@@ -43,7 +43,7 @@ class igdeListItemReference;
 /**
  * \brief IGDE UI IconListBox.
  */
-class igdeIconListBox : public igdeWidget{
+class DE_DLL_EXPORT igdeIconListBox : public igdeWidget{
 public:
 	/** \brief Selection mode. */
 	enum eSelectionMode{

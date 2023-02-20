@@ -31,7 +31,7 @@ class igdeGDProperty;
 /**
  * \brief Property list.
  */
-class igdeGDPropertyList{
+class DE_DLL_EXPORT igdeGDPropertyList{
 private:
 	decObjectOrderedSet pProperties;
 	

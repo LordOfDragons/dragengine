@@ -37,7 +37,7 @@ class igdeEditPropertyValue;
  *       it as tagser and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeEditPropertyValueReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeEditPropertyValueReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

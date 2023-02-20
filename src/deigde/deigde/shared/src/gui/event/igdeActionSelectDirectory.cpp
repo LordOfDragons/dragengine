@@ -92,5 +92,5 @@ bool igdeActionSelectDirectory::AcceptDirectory( decString& ){
 }
 
 decString igdeActionSelectDirectory::DefaultDirectory(){
-	return pUseGameVFS ? "/" : decPath::CreateWorkingDirectory().GetPathNative();
+	return pUseGameVFS ? decString( "/" ) : decPath::CreateWorkingDirectory().GetPathNative();
 }

@@ -31,7 +31,7 @@
 /**
  * \brief Dialog bezier curve clamp parameters.
  */
-class igdeDialogCurveBezierClamp : public igdeDialog{
+class DE_DLL_EXPORT igdeDialogCurveBezierClamp : public igdeDialog{
 private:
 	igdeCheckBoxReference pChkClamp;
 	igdeEditVector2Reference pEditMinimum;

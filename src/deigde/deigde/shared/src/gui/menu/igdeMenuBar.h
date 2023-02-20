@@ -28,7 +28,7 @@
 /**
  * \brief IGDE MenuBar.
  */
-class igdeMenuBar : public igdeContainer{
+class DE_DLL_EXPORT igdeMenuBar : public igdeContainer{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

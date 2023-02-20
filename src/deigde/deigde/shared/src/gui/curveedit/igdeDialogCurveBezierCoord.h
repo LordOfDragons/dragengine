@@ -32,7 +32,7 @@
 /**
  * \brief Dialog bezier curve coordinates.
  */
-class igdeDialogCurveBezierCoord : public igdeDialog{
+class DE_DLL_EXPORT igdeDialogCurveBezierCoord : public igdeDialog{
 private:
 	decCurveBezierPoint pPoint;
 	igdeEditVector2Reference pEditPoint;

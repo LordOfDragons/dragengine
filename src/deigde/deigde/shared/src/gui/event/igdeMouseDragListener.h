@@ -30,7 +30,7 @@
  * 
  * Supports draging with left/right button and shift/control modifier keys.
  */
-class igdeMouseDragListener : public igdeMouseKeyListener{
+class DE_DLL_EXPORT igdeMouseDragListener : public igdeMouseKeyListener{
 public:
 	/** \brief Drag state. */
 	enum eDragState{

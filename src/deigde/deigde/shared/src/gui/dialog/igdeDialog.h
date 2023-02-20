@@ -41,7 +41,7 @@ class igdeContainerReference;
  * Accepts one child widget which is usually of container type. Supports convenience
  * method to add content using a button bar at the bottom.
  */
-class igdeDialog : public igdeWindow{
+class DE_DLL_EXPORT igdeDialog : public igdeWindow{
 public:
 	/**
 	 * \brief Accept dialog action calling Accept() on dialog.

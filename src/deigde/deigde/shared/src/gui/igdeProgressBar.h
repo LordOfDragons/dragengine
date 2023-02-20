@@ -32,7 +32,7 @@
 /**
  * \brief IGDE UI ProgressBar.
  */
-class igdeProgressBar : public igdeWidget{
+class DE_DLL_EXPORT igdeProgressBar : public igdeWidget{
 public:
 	/** \brief Orientation. */
 	enum eOrientation{

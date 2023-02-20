@@ -42,7 +42,7 @@
  * required or if the task finished. Progress is measured from 0 to 1
  * usually displayed as 100 percent.
  */
-class igdeStepableTask{
+class DE_DLL_EXPORT igdeStepableTask{
 private:
 	decString pMessage;
 	float pProgress;

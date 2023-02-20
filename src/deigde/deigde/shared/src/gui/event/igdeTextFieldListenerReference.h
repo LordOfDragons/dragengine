@@ -37,7 +37,7 @@ class igdeTextFieldListener;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeTextFieldListenerReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeTextFieldListenerReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -31,7 +31,7 @@ class igdeGDCSpeaker;
 /**
  * \brief Game definition class speaker list.
  */
-class igdeGDCSpeakerList{
+class DE_DLL_EXPORT igdeGDCSpeakerList{
 private:
 	decObjectOrderedSet pSpeakers;
 	

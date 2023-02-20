@@ -31,7 +31,7 @@
 /**
  * \brief Game definition class speaker.
  */
-class igdeGDCSpeaker : public deObject{
+class DE_DLL_EXPORT igdeGDCSpeaker : public deObject{
 public:
 	/** \brief Properties. */
 	enum eProperties{
