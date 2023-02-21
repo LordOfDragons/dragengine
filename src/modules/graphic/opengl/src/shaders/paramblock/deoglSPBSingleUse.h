@@ -22,6 +22,8 @@
 #ifndef _DEOGLSPBSINGLEUSE_H_
 #define _DEOGLSPBSINGLEUSE_H_
 
+#include <stdint.h>
+
 #include "deoglShaderParameterBlock.h"
 
 #include <dragengine/common/collection/decObjectList.h>

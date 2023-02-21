@@ -818,7 +818,10 @@
     <ClInclude Include="..\..\src\dragengine\src\deObjectReference.h" />
     <ClInclude Include="..\..\src\dragengine\src\deTObjectReference.h" />
     <ClInclude Include="..\..\src\dragengine\src\doxy_main.h" />
-    <ClInclude Include="..\..\src\dragengine\src\dragengine_configuration.h" />
+    <ClInclude Include="..\..\src\dragengine\src\dragengine_configuration.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\dragengine_export.h" />
     <ClInclude Include="..\..\src\dragengine\src\errortracing\deErrorTrace.h" />
     <ClInclude Include="..\..\src\dragengine\src\errortracing\deErrorTracePoint.h" />
