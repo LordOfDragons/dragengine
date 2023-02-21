@@ -156,6 +156,8 @@ installLibDevelop = [envIGDELib.InstallAs(os.path.join(pathInclude, refDir.rel_p
 
 installLibRuntime = []
 
+installData = []
+
 archiveLibDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in sharedHeaders}
 archiveLib = {}
 
@@ -190,7 +192,7 @@ globFiles(envIGDEApp, 'shared/data', '*', dataFiles)
 for f in dataFiles:
 	path = f.split('/')
 	filename = os.path.join(pathShare, *path[2:])
-	installLibRuntime.append(envIGDELib.InstallAs(filename, f))
+	installData.append(envIGDELib.InstallAs(filename, f))
 	archiveLib[filename] = envIGDELib.File(f).srcnode()
 
 if envIGDELib['igde_toolkit'] == 'fox':
@@ -203,7 +205,9 @@ if envIGDELib['igde_toolkit'] == 'fox':
 
 targetInstallLibDevelop = envIGDELib.Alias('deigde_shared_develop', installLibDevelop)
 targetInstallLibRuntime = envIGDELib.Alias('deigde_shared_runtime', installLibRuntime)
-targetInstallLib = envIGDELib.Alias('deigde_shared', [targetInstallLibRuntime, targetInstallLibDevelop])
+targetInstallData = envIGDELib.Alias('deigde_data', installData)
+targetInstallLib = envIGDELib.Alias('deigde_shared', [
+    targetInstallLibRuntime, targetInstallLibDevelop, targetInstallData])
 
 cpppath = [envIGDELib.Dir('include')]
 cpppath.extend(parent_targets['delauncher']['cpppath'])
@@ -334,8 +338,8 @@ if envIGDEApp['OSWindows'] and envIGDEApp['CROSSCOMPILE_CLANG'] and envIGDEApp['
 	install.append(envIGDEApp.Install(pathModule, 'deigde.pdb'))
 	archive['{}/deigde.pdb'.format(pathModule)] = envIGDEApp.File('deigde.pdb')
 
-
-targetInstallApp = envIGDEApp.Alias('deigde', installApp)
+targetInstallApp = envIGDEApp.Alias('install_deigde_runtime', installApp)
+targetInstall = envIGDEApp.Alias('deigde', targetInstallApp)
 
 # source directory required for special commands
 srcdir = Dir('.').srcnode().abspath
@@ -354,8 +358,8 @@ buildCloc = envIGDEApp.Alias('deigde_cloc', buildClocBare)
 parent_targets['deigde'] = {
 	'name' : 'Drag[en]gine IGDE',
 	'build' : targetBuildApp,
-	'install' : targetInstallApp,
-	'install-igde-runtime' : targetInstallApp,
+	'install' : targetInstall,
+	'install-igde-runtime': targetInstallApp,
 	'archive-igde' : archiveApp,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}
