@@ -178,6 +178,10 @@ int deoglSPBlockReadBackSSBO::GetAlignmentRequirements() const{
 	return pCompact ? 0 : GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
 }
 
+deoglShaderParameterBlock *deoglSPBlockReadBackSSBO::Copy() const{
+	return new deoglSPBlockReadBackSSBO( *this );
+}
+
 void deoglSPBlockReadBackSSBO::TransferFrom( const deoglSPBlockSSBO &ssbo ){
 	TransferFrom( ssbo, GetElementCount() );
 }

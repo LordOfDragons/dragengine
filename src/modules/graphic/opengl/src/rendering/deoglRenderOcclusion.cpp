@@ -303,22 +303,25 @@ pAddToRenderTask( NULL )
 		
 		
 		
-		pRenderParamBlock.TakeOver( new deoglSPBlockUBO( renderThread ) );
-		pRenderParamBlock->SetRowMajor( indirectMatrixAccess );
-		pRenderParamBlock->SetParameterCount( 5 );
-		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
-		pRenderParamBlock->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
-		pRenderParamBlock->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4 pTransformZ[ 6 ]
-		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pZToDepth
-		pRenderParamBlock->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4 pClipPlane[ 2 ]
-		pRenderParamBlock->MapToStd140();
-		pRenderParamBlock->SetBindingPoint( deoglSkinShader::eubRenderParameters );
 		
-		pOccMapFrustumParamBlock.TakeOver( new deoglSPBlockUBO( renderThread) );
-		pOccMapFrustumParamBlock->SetParameterCount( 1 );
-		pOccMapFrustumParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
-		pOccMapFrustumParamBlock->MapToStd140();
-		pOccMapFrustumParamBlock->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
+		deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+		ubo->SetRowMajor( indirectMatrixAccess );
+		ubo->SetParameterCount( 5 );
+		ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
+		ubo->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
+		ubo->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4 pTransformZ[ 6 ]
+		ubo->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pZToDepth
+		ubo->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4 pClipPlane[ 2 ]
+		ubo->MapToStd140();
+		ubo->SetBindingPoint( deoglSkinShader::eubRenderParameters );
+		pRenderParamBlockSingleUse.TakeOver( deoglSPBSingleUse::Ref::New( new deoglSPBSingleUse( renderThread, ubo ) ) );
+		
+		ubo.TakeOver( new deoglSPBlockUBO( renderThread) );
+		ubo->SetParameterCount( 1 );
+		ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
+		ubo->MapToStd140();
+		ubo->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
+		pOccMapFrustumParamBlockSingleUse.TakeOver( deoglSPBSingleUse::Ref::New( new deoglSPBSingleUse( renderThread, ubo ) ) );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -487,6 +490,7 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 	
 	// linear depth: use non-infinite projection matrix 
 	const decDMatrix &matrixProjection = plan.GetFrustumMatrix();
+	pRenderParamBlock = ( deoglSPBlockUBO* )pRenderParamBlockSingleUse->Next();
 	{
 		const deoglSPBMapBuffer mapped( pRenderParamBlock );
 		// 0: pMatrixVP[ 0 ]
@@ -720,6 +724,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	// using a scaling matrix filled with the far frustum point coordinates. only the back faces of the
 	// frustum are rendered.
 	if( renderFrustumPlanesMatrix ){// && false ){
+		pOccMapFrustumParamBlock = ( deoglSPBlockUBO* )pOccMapFrustumParamBlockSingleUse->Next();
 		{
 			const deoglSPBMapBuffer mapped( pOccMapFrustumParamBlock );
 			// 0: pMatrixModel

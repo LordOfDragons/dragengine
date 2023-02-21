@@ -218,7 +218,7 @@ bool deoglGIState::CameraForceToneMapAdaption() const{
 
 void deoglGIState::PrepareUBOClearProbes() const{
 	deoglGICascade &cascade = GetActiveCascade();
-	cascade.UpdateUBOParameters( pRenderThread.GetGI().GetUBOParameter(), 0, pBVHDynamic );
+	cascade.UpdateUBOParameters( pRenderThread.GetGI().NextUBOParameter(), 0, pBVHDynamic );
 	cascade.PrepareUBOClearProbes( GetUBOClearProbes() );
 }
 
@@ -315,24 +315,24 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 void deoglGIState::PrepareUBOState() const{
 	deoglGICascade &cascade = GetActiveCascade();
 	const int count = cascade.GetUpdateProbeCount();
-	cascade.UpdateUBOParameters( pRenderThread.GetGI().GetUBOParameter(), count, pBVHDynamic );
+	cascade.UpdateUBOParameters( pRenderThread.GetGI().NextUBOParameter(), count, pBVHDynamic );
 	pPrepareUBORayDirections();
 	
 	if( count > 0 ){
-		cascade.UpdateUBOProbeIndices( pRenderThread.GetGI().GetUBOProbeIndex() );
-		cascade.UpdateUBOProbePosition( pRenderThread.GetGI().GetUBOProbePosition() );
+		cascade.UpdateUBOProbeIndices( pRenderThread.GetGI().NextUBOProbeIndex() );
+		cascade.UpdateUBOProbePosition( pRenderThread.GetGI().NextUBOProbePosition() );
 	}
 }
 
 void deoglGIState::PrepareUBOStateRayCache() const{
 	deoglGICascade &cascade = GetActiveCascade();
 	const int count = cascade.GetRayCacheProbeCount();
-	cascade.UpdateUBOParameters( pRenderThread.GetGI().GetUBOParameter(), count, pBVHStatic );
+	cascade.UpdateUBOParameters( pRenderThread.GetGI().NextUBOParameter(), count, pBVHStatic );
 	pPrepareUBORayDirections();
 	
 	if( count > 0 ){
-		cascade.UpdateUBOProbeIndicesRayCache( pRenderThread.GetGI().GetUBOProbeIndex() );
-		cascade.UpdateUBOProbePositionRayCache( pRenderThread.GetGI().GetUBOProbePosition() );
+		cascade.UpdateUBOProbeIndicesRayCache( pRenderThread.GetGI().NextUBOProbeIndex() );
+		cascade.UpdateUBOProbePositionRayCache( pRenderThread.GetGI().NextUBOProbePosition() );
 	}
 }
 
@@ -797,7 +797,7 @@ void deoglGIState::pPrepareUBORayDirections() const{
 	const deoglGITraceRays &traceRays = gi.GetTraceRays();
 	const int raysPerProbe = traceRays.GetRaysPerProbe();
 	
-	deoglSPBlockUBO &ubo = pRenderThread.GetGI().GetUBORayDirection();
+	deoglSPBlockUBO &ubo = pRenderThread.GetGI().NextUBORayDirection();
 	const deoglSPBMapBuffer mapped( ubo );
 	
 // #define GI_USE_RANDOM_DIRECTION 1

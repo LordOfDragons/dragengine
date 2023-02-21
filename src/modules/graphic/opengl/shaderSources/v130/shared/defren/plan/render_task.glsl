@@ -79,6 +79,7 @@ requirements:
       this way atomicAdd() with negative count (actually count - 1) could be used on parent
       pipeline, texture and vao. then the counts would be correct for one instance per group
       of sub instances
+      => not a good solution to use negative counts. not using this method
    
    => another solution would be to update the counts only on ssbo.instances[instance].count .
       then a run can be made across all instances and for each instance with count > 0 the
@@ -87,11 +88,22 @@ requirements:
       can be carried further by updating only the parent vao counts. then run vaos and update
       the parent texture counts (with count not 1) and so forth. this would be the least count
       of atomic operations required to update all counters properly
+   
+   => another solution would be to update first the instance count by 1. if the old count
+      as returned by atomicAdd is 0 also increment pipeline, texture and vao count. this
+      way the counts are only incremented by one instance (the first one) and only one
+      shader run is required. might be slower than multiple runs as above but is the most
+      simple solution to implement and validate
 
 3) run shader across all pipelines in the intermediate buffer allocating continuous blocks to
    pipelines with count > 0 (dispatch from firstPipeline to firstPipeline + pipelinCount).
    for this a shared atomic counter can be used since the result is not required afterwards
    - ssbo.pipelines[invocation].first = atomicAdd(sharedVarCounter, ssbo.pipelines[invocation].count)
+   
+   => problem: since child elements can be used across multiple parent elements this would
+               require pipelineCount * textureCount * vaoCount * instanceCount entries to
+               cover the worst case. the required memory would explode.
+               => this solution is thus not working
    
 4) run shader across all textures in the intermediate buffer allocating continuous blocks to
    textures with count > 0 (dispatch from firstTexture to firstTexture + textureCount).

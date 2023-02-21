@@ -151,6 +151,9 @@ public:
 	/** Get platform alignment requirements. */
 	virtual int GetAlignmentRequirements() const;
 	
+	/** Create copy of shader parameter block. */
+	virtual deoglShaderParameterBlock *Copy() const;
+	
 	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();
 	

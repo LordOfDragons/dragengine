@@ -41,6 +41,7 @@ class decLayerMask;
  */
 class deoglRenderSky : public deoglRenderBase{
 private:
+	deoglSPBSingleUse::Ref pRenderSkyIntoEnvMapPBSingleUse;
 	deoglSPBlockUBO::Ref pRenderSkyIntoEnvMapPB;
 	
 	const deoglPipeline *pPipelineSkySphere;

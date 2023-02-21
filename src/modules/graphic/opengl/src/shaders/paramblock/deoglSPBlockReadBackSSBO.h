@@ -104,6 +104,9 @@ public:
 	/** Get platform alignment requirements. */
 	virtual int GetAlignmentRequirements() const;
 	
+	/** Create copy of shader parameter block. */
+	virtual deoglShaderParameterBlock *Copy() const;
+	
 	/** Start transfering data from SSBO to PBO asynchronously. */
 	void TransferFrom( const deoglSPBlockSSBO &ssbo );
 	void TransferFrom( const deoglSPBlockSSBO &ssbo, int elementCount );

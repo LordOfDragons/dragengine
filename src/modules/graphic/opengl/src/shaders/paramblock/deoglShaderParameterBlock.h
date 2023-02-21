@@ -168,6 +168,9 @@ public:
 	/** Ensure buffer exists. Calls MapBuffer() then UnmapBuffer(). */
 	virtual void EnsureBuffer();
 	
+	/** Create copy of shader parameter block. */
+	virtual deoglShaderParameterBlock *Copy() const = 0;
+	
 	
 	
 	/** Clear mapped buffer to 0. */

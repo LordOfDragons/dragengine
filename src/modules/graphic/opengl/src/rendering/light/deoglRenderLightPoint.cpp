@@ -1493,15 +1493,15 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	const bool useGSRenderCube = renderThread.GetChoices().GetRenderCubeGS();
 	
 	// setup render parameters
-	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+	deoglSPBlockUBO *renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
 	
 	if( useGSRenderCube ){
 		// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this
-		const deoglSPBMapBuffer mapped( renderParamBlock );
+		const deoglSPBMapBuffer mapped( *renderParamBlock );
 		
-		renderParamBlock.SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
+		renderParamBlock->SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
 			shadowParams.shadowScale, shadowParams.shadowOffset );
-		renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+		renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 			smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
 		
 		decDMatrix matProj( shadowParams.matrixProjection );
@@ -1509,20 +1509,20 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			matProj.a34 -= 0.0001f;
 		}
 		
-		renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
+		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
 		
 		for( cmf=0; cmf<6; cmf++ ){
 			deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, pCubeFaces[ cmf ] );
 			
-			renderParamBlock.SetParameterDataArrayMat4x3(
+			renderParamBlock->SetParameterDataArrayMat4x3(
 				deoglSkinShader::erutMatrixV, cmf, matrixCamera );
-			renderParamBlock.SetParameterDataArrayMat4x4(
+			renderParamBlock->SetParameterDataArrayMat4x4(
 				deoglSkinShader::erutMatrixVP, cmf, matrixCamera * matProj );
-			renderParamBlock.SetParameterDataArrayMat3x3(
+			renderParamBlock->SetParameterDataArrayMat3x3(
 				deoglSkinShader::erutMatrixVn, cmf, matrixCamera.GetRotationMatrix().Invert() );
 		}
 		
-		renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+		renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 	}
 	
 	addToRenderTask.Reset();
@@ -1572,7 +1572,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		DebugTimer4Reset( plan, false );
 		
 		renderTask.Clear();
-		renderTask.SetRenderParamBlock( &renderParamBlock );
+		renderTask.SetRenderParamBlock( renderParamBlock );
 		renderTask.SetUseSPBInstanceFlags( true );
 		
 		addToRenderTask.SetSolid( true );
@@ -1612,12 +1612,15 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			DebugTimer4Reset( plan, false );
 			deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, cmf );
 			
+			if( cmf > 0 ){
+				renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
+			}
 			{
-				const deoglSPBMapBuffer mapped( renderParamBlock );
+				const deoglSPBMapBuffer mapped( *renderParamBlock );
 				
-				renderParamBlock.SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
+				renderParamBlock->SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
 					shadowParams.shadowScale, shadowParams.shadowOffset );
-				renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+				renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 					smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
 				
 				decDMatrix matProj( shadowParams.matrixProjection );
@@ -1625,16 +1628,16 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 					matProj.a34 -= 0.0001f;
 				}
 				
-				renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
+				renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
 				
-				renderParamBlock.SetParameterDataMat4x3(
+				renderParamBlock->SetParameterDataMat4x3(
 					deoglSkinShader::erutMatrixV, matrixCamera );
-				renderParamBlock.SetParameterDataMat4x4(
+				renderParamBlock->SetParameterDataMat4x4(
 					deoglSkinShader::erutMatrixVP, matrixCamera * matProj );
-				renderParamBlock.SetParameterDataMat3x3(
+				renderParamBlock->SetParameterDataMat3x3(
 					deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
 				
-				renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+				renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 			}
 			
 			shadowMapper.ActivateSolidCubeMapFace( shadowParams.solidShadowMapSize, useInverseDepth, pCubeFaces[ cmf ] );
@@ -1664,7 +1667,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			}
 			
 			renderTask.Clear();
-			renderTask.SetRenderParamBlock( &renderParamBlock );
+			renderTask.SetRenderParamBlock( renderParamBlock );
 			
 			addToRenderTask.SetSolid( true );
 			addToRenderTask.SetFilterCubeFace( cmf );
@@ -1723,7 +1726,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			DebugTimer4Reset( plan, false );
 			
 			renderTask.Clear();
-			renderTask.SetRenderParamBlock( &renderParamBlock );
+			renderTask.SetRenderParamBlock( renderParamBlock );
 			
 			if( shadowParams.collideList1 ){
 				addToRenderTask.AddComponents( *shadowParams.collideList1 );
@@ -1758,12 +1761,13 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 				DebugTimer4Reset( plan, false );
 				deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, cmf );
 				
+				renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
 				{
-					const deoglSPBMapBuffer mapped( renderParamBlock );
+					const deoglSPBMapBuffer mapped( *renderParamBlock );
 					
-					renderParamBlock.SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
+					renderParamBlock->SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
 						shadowParams.shadowScale, shadowParams.shadowOffset );
-					renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+					renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 						smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
 					
 					decDMatrix matProj( shadowParams.matrixProjection );
@@ -1771,14 +1775,14 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 						matProj.a34 -= 0.0001f;
 					}
 					
-					renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
+					renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
 						
-					renderParamBlock.SetParameterDataMat4x3(
+					renderParamBlock->SetParameterDataMat4x3(
 						deoglSkinShader::erutMatrixV, matrixCamera );
-					renderParamBlock.SetParameterDataMat4x4(
+					renderParamBlock->SetParameterDataMat4x4(
 						deoglSkinShader::erutMatrixVP, matrixCamera * matProj );
 					
-					renderParamBlock.SetParameterDataBVec4(
+					renderParamBlock->SetParameterDataBVec4(
 						deoglSkinShader::erutConditions1, false, false, false, false );
 				}
 				
@@ -1797,7 +1801,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 				}
 				
 				renderTask.Clear();
-				renderTask.SetRenderParamBlock( &renderParamBlock );
+				renderTask.SetRenderParamBlock( renderParamBlock );
 				
 				if( shadowParams.collideList1 ){
 					addToRenderTask.AddComponents( *shadowParams.collideList1 );
@@ -1856,21 +1860,21 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	const bool useGSRenderCube = renderThread.GetChoices().GetRenderCubeGS();
 	
 	// setup render parameters
-	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetOccMapPB();
+	deoglSPBlockUBO *renderParamBlock = renderThread.GetRenderers().GetLight().NextOccMapPB();
 	
 	if( useGSRenderCube ){
 		// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this
-		const deoglSPBMapBuffer mapped( renderParamBlock );
+		const deoglSPBMapBuffer mapped( *renderParamBlock );
 		
 		for( cmf=0; cmf<6; cmf++ ){
 			deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, pCubeFaces[ cmf ] );
 			
-		renderParamBlock.SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
+		renderParamBlock->SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
 		//renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 		// 	smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
 		
-		renderParamBlock.SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );
-			renderParamBlock.SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * shadowParams.matrixProjection );
+		renderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );
+			renderParamBlock->SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * shadowParams.matrixProjection );
 		}
 		
 		// object render cube face special parameter have been already updated by RenderShadowMaps
@@ -1896,7 +1900,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	if( useGSRenderCube ){
 		// cube map activate already by clear
 		renderTask.Clear();
-		renderTask.SetRenderParamBlock( &renderParamBlock );
+		renderTask.SetRenderParamBlock( renderParamBlock );
 		renderTask.SetUseSPBInstanceFlags( true );
 		
 		if( shadowParams.collideList1 ){
@@ -1921,14 +1925,17 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		for( cmf=0; cmf<6; cmf++ ){
 			deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, cmf );
 			
+			if( cmf > 0 ){
+				renderParamBlock = renderThread.GetRenderers().GetLight().NextOccMapPB();
+			}
 			{
-				const deoglSPBMapBuffer mapped( renderParamBlock );
-				renderParamBlock.SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
+				const deoglSPBMapBuffer mapped( *renderParamBlock );
+				renderParamBlock->SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
 				//renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 				// 	smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
 				
-				renderParamBlock.SetParameterDataMat4x4( 0, matrixCamera * shadowParams.matrixProjection );
-				renderParamBlock.SetParameterDataMat4x3( 1, matrixCamera );
+				renderParamBlock->SetParameterDataMat4x4( 0, matrixCamera * shadowParams.matrixProjection );
+				renderParamBlock->SetParameterDataMat4x3( 1, matrixCamera );
 			}
 			
 			shadowMapper.ActivateAmbientCubeMapFace( shadowParams.ambientMapSize, useInverseDepth, pCubeFaces[ cmf ] );
@@ -1939,7 +1946,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			}
 			
 			renderTask.Clear();
-			renderTask.SetRenderParamBlock( &renderParamBlock );
+			renderTask.SetRenderParamBlock( renderParamBlock );
 			
 			addToRenderTask.SetFilterCubeFace( cmf );
 			if( shadowParams.collideList2 ){

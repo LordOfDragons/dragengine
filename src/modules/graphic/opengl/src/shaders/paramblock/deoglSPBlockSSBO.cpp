@@ -308,6 +308,10 @@ int deoglSPBlockSSBO::GetAlignmentRequirements() const{
 	return pCompact ? 0 : GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
 }
 
+deoglShaderParameterBlock *deoglSPBlockSSBO::Copy() const{
+	return new deoglSPBlockSSBO( *this );
+}
+
 void deoglSPBlockSSBO::MapToStd430(){
 	DETHROW( deeInvalidParam );
 	// TODO same as std130 but arrays of continuous floats are better packed

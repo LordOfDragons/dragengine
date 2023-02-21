@@ -124,6 +124,9 @@ public:
 	/** Get platform alignment requirements. */
 	virtual int GetAlignmentRequirements() const;
 	
+	/** Create copy of shader parameter block. */
+	virtual deoglShaderParameterBlock *Copy() const;
+	
 	/** Debug print configuration. */
 	void DebugPrintConfig( const char *name );
 	/*@}*/

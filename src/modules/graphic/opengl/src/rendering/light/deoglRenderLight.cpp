@@ -129,8 +129,10 @@ pAddToRenderTask( NULL )
 	
 	renderThread.GetShader().SetCommonDefines( commonDefines );
 	
-	pShadowPB.TakeOver( deoglSkinShader::CreateSPBRender( renderThread ) );
-	pOccMapPB.TakeOver( deoglSkinShader::CreateSPBOccMap( renderThread ) );
+	pShadowPBSingleUse.TakeOver( new deoglSPBSingleUse( renderThread,
+		deoglSkinShader::CreateSPBRender( renderThread ) ) );
+	pOccMapPBSingleUse.TakeOver( new deoglSPBSingleUse( renderThread,
+		deoglSkinShader::CreateSPBOccMap( renderThread ) ) );
 	
 	pRenderTask = new deoglRenderTask( renderThread );
 	pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -310,6 +312,16 @@ deoglRenderLight::~deoglRenderLight(){
 
 // Rendering
 //////////////
+
+const deoglSPBlockUBO::Ref &deoglRenderLight::NextShadowPB(){
+	pShadowPB = ( deoglSPBlockUBO* )pShadowPBSingleUse->Next();
+	return pShadowPB;
+}
+
+const deoglSPBlockUBO::Ref & deoglRenderLight::NextOccMapPB(){
+	pOccMapPB = ( deoglSPBlockUBO* )pOccMapPBSingleUse->Next();
+	return pOccMapPB;
+}
 
 void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray ){
 	deoglRenderThread &renderThread = GetRenderThread();

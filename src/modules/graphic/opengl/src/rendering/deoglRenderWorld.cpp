@@ -181,7 +181,8 @@ pDebugInfo( renderThread )
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
-		pRenderPB.TakeOver( deoglSkinShader::CreateSPBRender( renderThread ) );
+		pRenderPBSingleUse.TakeOver( new deoglSPBSingleUse( renderThread,
+			deoglSkinShader::CreateSPBRender( renderThread ) ) );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -857,6 +858,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const bool condClipPlane = mask && mask->GetUseClipPlane();
 	
 	// fill parameter blocks
+	pRenderPB = ( deoglSPBlockUBO* )pRenderPBSingleUse->Next();
+	
 	deoglSPBlockUBO * const spbBlocks[ 1 ] = { pRenderPB };
 	
 	for( i=0; i<1; i++ ){

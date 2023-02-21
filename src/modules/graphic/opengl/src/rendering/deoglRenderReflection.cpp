@@ -476,15 +476,16 @@ deoglRenderBase( renderThread )
 		
 		
 		
-		pRenderParamBlock.TakeOver( new deoglSPBlockUBO( renderThread ) );
-		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
-		pRenderParamBlock->SetParameterCount( 4 );
-		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
-		pRenderParamBlock->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
-		pRenderParamBlock->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
-		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
-		pRenderParamBlock->MapToStd140();
-		pRenderParamBlock->SetBindingPoint( 1 );
+		deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+		ubo->SetRowMajor( ! indirectMatrixAccessBug );
+		ubo->SetParameterCount( 4 );
+		ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
+		ubo->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
+		ubo->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
+		ubo->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
+		ubo->MapToStd140();
+		ubo->SetBindingPoint( 1 );
+		pRenderParamBlockSingleUse.TakeOver( new deoglSPBSingleUse( renderThread, ubo ) );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -507,19 +508,20 @@ deoglRenderBase( renderThread )
 		}
 		
 		
-		pEnvMapsParamBlock.TakeOver( new deoglSPBlockUBO( renderThread ) );
-		pEnvMapsParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
-		pEnvMapsParamBlock->SetParameterCount( 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapMatrixInfluence ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapMatrixReflBox ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapInfluenceBorder ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapInfluenceScale ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapPosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapRoughness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapPriority ).SetAll( deoglSPBParameter::evtInt, 1, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-		pEnvMapsParamBlock->MapToStd140();
-		pEnvMapsParamBlock->SetBindingPoint( 1 );
+		ubo.TakeOver( new deoglSPBlockUBO( renderThread ) );
+		ubo->SetRowMajor( ! indirectMatrixAccessBug );
+		ubo->SetParameterCount( 8 );
+		ubo->GetParameterAt( spbarEnvMapMatrixInfluence ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
+		ubo->GetParameterAt( spbarEnvMapMatrixReflBox ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
+		ubo->GetParameterAt( spbarEnvMapInfluenceBorder ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapInfluenceScale ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapPosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapRoughness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapPriority ).SetAll( deoglSPBParameter::evtInt, 1, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+		ubo->MapToStd140();
+		ubo->SetBindingPoint( 1 );
+		pEnvMapsParamBlockSingleUse.TakeOver( new deoglSPBSingleUse( renderThread, ubo ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -1142,8 +1144,10 @@ void deoglRenderReflection::UpdateRenderParameterBlock( deoglRenderPlan &plan ){
 	const deoglEnvMapSlotManager &envMapSlotMgr = renderThread.GetEnvMapSlotManager();
 	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
 	const int count = decMath::min( envMapSlotMgr.GetUsedSlotCount(), 100 );
-	const deoglSPBMapBuffer mapped( pRenderParamBlock );
 	int i;
+	
+	pRenderParamBlock = ( deoglSPBlockUBO* )pRenderParamBlockSingleUse->Next();
+	const deoglSPBMapBuffer mapped( pRenderParamBlock );
 	
 	// we use a blend zone of width 1m
 	pRenderParamBlock->SetParameterDataVec2( spbr2BlendFactors,
@@ -1759,6 +1763,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	const deoglCubeMap *envMapCubes[ 8 ] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
 	const float envMapRoughnessBase = ( float )PI * 0.5f;
 	
+	pEnvMapsParamBlock = ( deoglSPBlockUBO* )pEnvMapsParamBlockSingleUse->Next();
 	{
 		const deoglSPBMapBuffer mapped( pEnvMapsParamBlock );
 		for( i=0; envMapCount<8 && i<plan.GetEnvMapCount(); i++ ){

@@ -61,7 +61,9 @@ private:
 	const deoglPipeline *pPipelineOccTestSun;
 	const deoglPipeline *pPipelineOccMapCube;
 	
+	deoglSPBSingleUse::Ref pRenderParamBlockSingleUse;
 	deoglSPBlockUBO::Ref pRenderParamBlock;
+	deoglSPBSingleUse::Ref pOccMapFrustumParamBlockSingleUse;
 	deoglSPBlockUBO::Ref pOccMapFrustumParamBlock;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;

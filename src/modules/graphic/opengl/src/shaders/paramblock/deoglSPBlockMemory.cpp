@@ -113,6 +113,10 @@ void deoglSPBlockMemory::UnmapBuffer(){
 	pClearMapped();
 }
 
+deoglShaderParameterBlock *deoglSPBlockMemory::Copy() const{
+	return new deoglSPBlockMemory( *this );
+}
+
 
 
 // Private Functions
