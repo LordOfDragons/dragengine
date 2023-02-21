@@ -95,10 +95,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>animdeanim</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\animation\deanim\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>animdeanim</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\animation\deanim\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

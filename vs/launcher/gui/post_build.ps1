@@ -10,7 +10,7 @@ Import-Module "$PSScriptRoot\..\..\shared.psm1"
 $TargetDir = "$OutputDir\$PathDistDELauncherBin"
 Write-Host "GUI Launcher: Copy Program to '$TargetDir'"
 
-Install-Files -Path "$OutputDir\delauncher-gui.exe" -Destination $TargetDir
+Install-Files -Path "$OutputDir\launcher\gui\delauncher-gui.exe" -Destination $TargetDir
 
 
 # dependencies
@@ -23,4 +23,4 @@ Copy-Files -SourceDir $FoxDir -TargetDir $TargetDir -Pattern "*.dll"
 $TargetDir = "$OutputDir\$PathDistDEPdbLauncherBin"
 Write-Host "GUI Launcher: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path "$OutputDir\delauncher-gui.pdb" -Destination $TargetDir
+Install-Files -Path "$OutputDir\launcher\gui\delauncher-gui.pdb" -Destination $TargetDir

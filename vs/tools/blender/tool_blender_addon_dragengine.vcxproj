@@ -73,9 +73,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>blender-addon-dragengine-$(BuildVersion).zip</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\tools\blender\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>blender-addon-dragengine-$(BuildVersion).zip</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\tools\blender\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

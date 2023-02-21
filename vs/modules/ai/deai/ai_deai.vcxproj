@@ -161,11 +161,13 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>aideai</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\ai\deai\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>aideai</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\ai\deai\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

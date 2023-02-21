@@ -98,10 +98,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>animfbx</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\animation\animfbx\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>animfbx</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\animation\animfbx\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

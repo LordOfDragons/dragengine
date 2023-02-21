@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\image\jpeg\$Version"
 
 Write-Host "JPEG Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "imgjpeg.dll"
+$Library = "$OutputDir\de_module\image\jpeg\imgjpeg.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\image\jpeg\$Version"
 Write-Host "JPEG Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "imgjpeg.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\image\jpeg\imgjpeg.pdb" -Destination $TargetDir

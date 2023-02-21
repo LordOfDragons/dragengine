@@ -98,10 +98,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>skinfbx</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\skin\fbxskin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>skinfbx</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\skin\fbxskin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

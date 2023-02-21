@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\input\w32input\$Version"
 
 Write-Host "Windows Input Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "inpw32.dll"
+$Library = "$OutputDir\de_module\input\w32input\inpw32.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -27,4 +27,4 @@ Copy-Files -Pattern "*" -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\da
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\input\w32input\$Version"
 Write-Host "Windows Input Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "inpw32.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\input\w32input\inpw32.pdb" -Destination $TargetDir

@@ -421,7 +421,7 @@ void aeWPAnimator::UpdateAnimator(){
 		const decStringSet &boneList = pAnimator->GetListBones();
 		const int boneCount = boneList.GetCount();
 		const decString selection( pListBones->GetSelectedItem()
-			? pListBones->GetSelectedItem()->GetText() : "" );
+			? pListBones->GetSelectedItem()->GetText() : decString() );
 		int i;
 		
 		pListBones->RemoveAllItems();

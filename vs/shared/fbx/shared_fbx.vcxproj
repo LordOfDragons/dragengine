@@ -150,11 +150,13 @@
     <LinkIncremental>true</LinkIncremental>
     <TargetName>sharedfbx</TargetName>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\shared\fbx\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>sharedfbx</TargetName>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\shared\fbx\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

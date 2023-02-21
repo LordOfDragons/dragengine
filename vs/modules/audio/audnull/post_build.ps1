@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\audio\null\$Version"
 
 Write-Host "NullAudio Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "audnull.dll"
+$Library = "$OutputDir\de_module\audio\null\audnull.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\audio\null\$Version"
 Write-Host "NullAudio Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "audnull.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\audio\null\audnull.pdb" -Destination $TargetDir

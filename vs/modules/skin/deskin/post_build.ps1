@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\skin\deskin\$Version"
 
 Write-Host "DESkin Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "skindeskin.dll"
+$Library = "$OutputDir\de_module\skin\deskin\skindeskin.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\skin\deskin\$Version"
 Write-Host "DESkin Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "skindeskin.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\skin\deskin\skindeskin.pdb" -Destination $TargetDir

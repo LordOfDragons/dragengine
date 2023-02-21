@@ -13,7 +13,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\scripting\dragonscript\$Version"
 
 Write-Host "DragonScript Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "scrdscript.dll"
+$Library = "$OutputDir\de_module\scripting\dragonscript\scrdscript.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -46,5 +46,5 @@ Copy-Files -SourceDir "$RuntimeDir\dsinstall" -Pattern "*" -TargetDir $RuntimeTa
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\scripting\dragonscript\$Version"
 Write-Host "DragonScript Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "scrdscript.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\scripting\dragonscript\scrdscript.pdb" -Destination $TargetDir
 Install-Files "$RuntimeDir\pdb" -Destination $TargetDir

@@ -194,7 +194,7 @@ public:
 class cWakeboardInteraction : public igdeMouseKeyListener {
 	aeView3D &pView;
 	decPoint pMouseLocation;
-	decPoint pOldWakeTilt;
+	decVector pOldWakeTilt;
 	decPoint pAnchorMouseLocation;
 	float pSpeed;
 	

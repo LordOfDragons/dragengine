@@ -159,11 +159,13 @@
     <TargetName>sharedvulkan</TargetName>
     <PublicIncludeDirectories>$(SolutionDir)..\src\shared\vulkan\extern\include;$(SolutionDir)$(Platform)\$(Configuration)\include\shared</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\shared\vulkan\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>sharedvulkan</TargetName>
     <PublicIncludeDirectories>$(SolutionDir)..\src\shared\vulkan\extern\include;$(SolutionDir)$(Platform)\$(Configuration)\include\shared</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\shared\vulkan\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

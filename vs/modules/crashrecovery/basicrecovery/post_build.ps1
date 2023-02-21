@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\crashrecovery\basicrecovery\$Ver
 
 Write-Host "CRBasicRecovery Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "crbasicrecovery.dll"
+$Library = "$OutputDir\de_module\crashrecovery\basicrecovery\crbasicrecovery.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\crashrecovery\basicrecovery\$Version"
 Write-Host "CRBasicRecovery Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "crbasicrecovery.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\crashrecovery\basicrecovery\crbasicrecovery.pdb" -Destination $TargetDir

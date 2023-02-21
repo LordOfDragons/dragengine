@@ -178,6 +178,7 @@
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <AllProjectBMIsArePublic />
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\launcher\shared\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>delauncher</TargetName>
@@ -186,6 +187,7 @@
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <AllProjectBMIsArePublic />
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\launcher\shared\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

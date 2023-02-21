@@ -6,22 +6,24 @@
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 
 # application
-$Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
+$TargetDir = "$OutputDir\$PathDistIGDEDataModules\animator"
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistIgdeEditors\font\$Version"
+Write-Host "Animator Editor: Copy Module to '$TargetDir'"
 
-Write-Host "Font Editor: Copy Module to '$TargetDir'"
-
-$Library = Join-Path -Path $OutputDir -ChildPath "font.dll"
+$Library = "$OutputDir\igde_editor\animator\animator.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
-Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
-    -Destination (Join-Path -Path $TargetDir -ChildPath "module.xml")`
-    -Library $Library -Version $Version
+Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml" -Library $Library
+
+
+$DataTargetDir = "$OutputDir\$PathDistIGDESharesModules\animator"
+Write-Host "Animator Editor: Copy Data to '$DataTargetDir'"
+
+Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir "$DataTargetDir" -Pattern "*"
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
-Write-Host "Font Editor: Copy PDBs to '$TargetDir'"
+$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules"
+Write-Host "Animator Editor: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "font.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\igde_editor\animator\animator.pdb" -Destination $TargetDir

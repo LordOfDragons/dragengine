@@ -78,7 +78,7 @@ function Copy-Manifest {
         [Parameter(Mandatory=$true)][string]$Path,
         [Parameter(Mandatory=$true)][string]$Destination,
         [Parameter(Mandatory=$true)][string]$Library,
-        [Parameter(Mandatory=$true)][string]$Version
+        [Parameter(Mandatory=$false)][string]$Version = "1.0"
     )
 
     $ItemLibrary = Get-Item -Path $Library

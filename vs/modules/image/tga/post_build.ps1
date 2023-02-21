@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\image\tga\$Version"
 
 Write-Host "TGA Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "imgtga.dll"
+$Library = "$OutputDir\de_module\image\tga\imgtga.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\image\tga\$Version"
 Write-Host "TGA Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "imgtga.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\image\tga\imgtga.pdb" -Destination $TargetDir

@@ -102,9 +102,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>sndoggvorbis</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\sound\oggvorbis\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>sndoggvorbis</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\sound\oggvorbis\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

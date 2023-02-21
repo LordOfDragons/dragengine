@@ -9,7 +9,7 @@ Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 # build
 $ArchiveName = "blender-addon-dragengine-$BuildVersion.zip"
-$ArchivePath = "$OutputDir\$ArchiveName"
+$ArchivePath = "$OutputDir\tools\blender\$ArchiveName"
 
 Write-Host "Blender Scripts: Compress to '$ArchivePath'"
 

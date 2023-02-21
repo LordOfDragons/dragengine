@@ -163,10 +163,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>anideanimator</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\animator\deanimator\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>anideanimator</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\animator\deanimator\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
