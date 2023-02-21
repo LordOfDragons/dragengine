@@ -22,7 +22,7 @@
 #ifndef _THEMENAMES_H_
 #define _THEMENAMES_H_
 
-#include <dragengine\dragengine_export.h>
+#include <dragengine/dragengine_export.h>
 
 /**
  * \brief Names for gui themes provided by the basic IGDE implementation.
