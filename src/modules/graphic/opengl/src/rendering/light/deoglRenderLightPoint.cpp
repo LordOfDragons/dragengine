@@ -663,7 +663,7 @@ void deoglRenderLightPoint::RenderLight( deoglRenderPlanLight &planLight, bool s
 const deoglRenderPlanMasked *mask ){
 	// determine what needs to be rendered
 	deoglCollideListLight &cllight = *planLight.GetLight();
-	if( cllight.IsHiddenByOccQuery() ){
+	if( ! cllight.GetCulled() && cllight.IsHiddenByOccQuery() ){
 		cllight.SetCulled( true );
 	}
 	

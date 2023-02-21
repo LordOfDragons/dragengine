@@ -229,7 +229,7 @@ pAddToRenderTask( NULL )
 			pipconf.Reset();
 			pipconf.DisableMasks();
 			pipconf.EnableDepthTestLessEqual();
-			pipconf.EnableCulling( false );
+			// pipconf.EnableCulling( false ); // less errors if disabled
 			
 			defines = commonDefines;
 			
@@ -860,7 +860,7 @@ const deoglRenderPlanMasked *mask, bool perspective ){
 	
 	for( i=0; i<lightCount; i++ ){
 		deoglCollideListLight &cllight = *clist.GetLightAt( i );
-		if( cllight.GetCameraInside() ){
+		if( cllight.GetCulled() || cllight.GetCameraInside() || cllight.GetCameraInsideOccQueryBox() ){
 			continue;
 		}
 		

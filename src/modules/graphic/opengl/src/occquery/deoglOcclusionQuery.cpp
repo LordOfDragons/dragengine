@@ -44,13 +44,9 @@ pRenderThread( renderThread ),
 pQuery( 0 )
 {
 	OGL_CHECK( renderThread, pglGenQueries( 1, &pQuery ) );
-	if( ! pQuery ){
-		DETHROW( deeOutOfMemory );
-	}
 }
 
 deoglOcclusionQuery::~deoglOcclusionQuery(){
-	//EndQuery();
 	pRenderThread.GetDelayedOperations().DeleteOpenGLQuery( pQuery );
 }
 
@@ -115,9 +111,7 @@ void deoglOcclusionQuery::EndQuery(){
 
 bool deoglOcclusionQuery::HasResult() const{
 	GLuint result;
-	
 	OGL_CHECK( pRenderThread, pglGetQueryObjectuiv( pQuery, GL_QUERY_RESULT_AVAILABLE, &result ) );
-	
 	return result == GL_TRUE;
 }
 
