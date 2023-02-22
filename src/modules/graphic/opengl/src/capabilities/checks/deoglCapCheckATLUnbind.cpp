@@ -58,7 +58,7 @@ void deoglCapCheckATLUnbind::Check( GLuint fbo ){
 	}
 	
 	// this version works on ati but causes invalid_operation on nvidia
-	glGetError(); // clear error code
+	oglClearError();
 	pglFramebufferTexture( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0 );
 	if( glGetError() == GL_NO_ERROR ){
 		pResult = 1;
@@ -66,7 +66,7 @@ void deoglCapCheckATLUnbind::Check( GLuint fbo ){
 	
 	// this version works on nvidia but causes invalid_operation on ati
 	if( pResult == 0 ){
-		glGetError(); // clear error code
+		oglClearError();
 		pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0, 0 );
 		if( glGetError() == GL_NO_ERROR ){
 			pResult = 2;

@@ -56,21 +56,13 @@ class deoglRenderThread;
 
 
 
-#ifdef WITH_DEBUG
-#define OGL_CHECKCOMMANDS 1
-#endif
+void oglClearError();
 
-#ifdef OGL_CHECKCOMMANDS
-	void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line );
-	#define OGL_CHECK( renderThread, cmd )		glGetError(); cmd; dbgCheckOglError( renderThread, __FILE__, __LINE__ )
-	#define OGLX_CHECK( renderThread, cmd )		if( ( cmd ) == False ) (renderThread).GetLogger().LogErrorFormat( "failed at %s:%i\n", __FILE__, __LINE__ )
-	#define OGL_IF_CHECK(cmd)			cmd
-	
-#else
-	#define OGL_CHECK(renderThread,cmd)			cmd
-	#define OGLX_CHECK(renderThread,cmd)		cmd
-	#define OGL_IF_CHECK(cmd)
-#endif
+void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line );
+
+#define OGL_CHECK(renderThread,cmd) oglClearError(); cmd; dbgCheckOglError(renderThread, __FILE__, __LINE__)
+#define OGLX_CHECK(renderThread,cmd) if((cmd) == False) (renderThread).GetLogger().LogErrorFormat("failed at %s:%i\n", __FILE__, __LINE__)
+#define OGL_IF_CHECK(cmd) cmd
 
 
 

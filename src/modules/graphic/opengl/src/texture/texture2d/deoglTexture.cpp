@@ -280,7 +280,7 @@ void deoglTexture::SetPixelsLevelLayer( int level, const deoglPixelBuffer &pixel
 		
 	}else{
 #ifdef OS_ANDROID
-		glGetError();
+		oglClearError();
 		pglTexSubImage2D( GL_TEXTURE_2D, level, 0, 0, width, height, pixelBuffer.GetGLPixelFormat(),
 			pixelBuffer.GetGLPixelType(), ( const GLvoid * )pixelBufferData );
 		if(glGetError() == GL_INVALID_OPERATION){

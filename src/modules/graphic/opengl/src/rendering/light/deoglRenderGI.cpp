@@ -274,6 +274,8 @@ deoglRenderLightBase( renderThread )
 		pPipelineDebugProbeOffsetXRay = pipelineManager.GetWith( pipconf );
 		
 		
+		pipconf2.SetEnableDepthTest( false );
+		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
 		pipconf2.SetShader( renderThread, sources, defines );
 		pPipelineDebugProbeUpdatePass1 = pipelineManager.GetWith( pipconf2 );

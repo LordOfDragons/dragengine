@@ -289,7 +289,7 @@ void deoglTextureStageManager::BindTexture( int stage, GLuint texture, GLenum ty
 		}
 		
 		#ifdef OS_ANDROID
-		glGetError();
+		oglClearError();
 		glBindTexture( type, texture );
 		if(glGetError() == GL_INVALID_ENUM){
 			pRenderThread.GetLogger().LogInfoFormat(
