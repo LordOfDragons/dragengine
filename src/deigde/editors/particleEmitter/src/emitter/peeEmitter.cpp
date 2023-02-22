@@ -299,7 +299,7 @@ void peeEmitter::Update( float elapsed ){
 		pBurstTimer += elapsed;
 		
 		if( pBurstTimer >= burstTime ){
-			pBurstTimer = fmod( pBurstTimer, burstTime );
+			pBurstTimer = fmodf( pBurstTimer, burstTime );
 			pEngEmitterInstance->ResetBurst();
 			pEngEmitterInstance->SetEnableCasting( pEnableCasting );
 		}

@@ -35,7 +35,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		projTestRunProcess process( pipeIn, pipeOut );
 		process.Run();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( pipeIn != INVALID_HANDLE_VALUE ){
 			CloseHandle( pipeIn );
 		}

@@ -22,11 +22,156 @@
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\shared\igde_shared.vcxproj">
+      <Project>{1dcfacb0-ab85-4adc-b18a-91322511c121}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\deigde\editors\particleEmitter\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\configuration\peeConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\configuration\peeConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeController.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeControllerList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeEmitterListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeType.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeTypeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\curves\peeWindowCurves.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\curves\peeWindowCurvesListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeTaskSyncGameDefinition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeViewEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeWindowMain.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeWindowMainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWindowProperties.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPController.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPControllerListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPType.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPTypeListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPUndoHistory.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPUndoHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPView.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPViewListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\loadsave\peeLoadSaveEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\loadsave\peeLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\particleEmitterEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\peeIGDEModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveDown.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveUp.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetLower.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetUpper.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerToggleClamp.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerToggleFrozen.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerToggleLinkToTime.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\emitter\peeUEmitterSetBurstLifetime.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\emitter\peeUEmitterToggleEmitBurst.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetControllerSpread.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetControllerValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveBeam.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveProgress.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveSpread.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetSpread.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeMoveDown.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeMoveUp.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetCastFrom.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetCollisionResponse.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetEmitController.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetEmitMinImpulse.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetIntervalAsDistance.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetModelPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetModelSkinPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetPathCollisionEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetPathTrailEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetPhysicsSize.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetSimulationType.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetSkinPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetTrailController.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\configuration\peeConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\configuration\peeConfigurationXML.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeController.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeControllerList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeEmitterListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeParameter.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeType.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeTypeList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\curves\peeWindowCurves.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\curves\peeWindowCurvesListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeTaskSyncGameDefinition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeViewEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeWindowMainListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWindowProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPController.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPControllerListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPType.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPTypeListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPUndoHistory.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPUndoHistoryListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPView.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPViewListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\loadsave\peeLoadSaveEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\loadsave\peeLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\particleEmitterEditor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\peeIGDEModule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveDown.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveUp.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetLower.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetUpper.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerToggleClamp.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerToggleFrozen.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerToggleLinkToTime.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\emitter\peeUEmitterSetBurstLifetime.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\emitter\peeUEmitterToggleEmitBurst.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetControllerSpread.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetControllerValue.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurve.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveBeam.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveProgress.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveSpread.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveValue.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetSpread.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetValue.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeMoveDown.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeMoveUp.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetCastFrom.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetCollisionResponse.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetEmitController.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetEmitMinImpulse.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetIntervalAsDistance.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetModelPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetModelSkinPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetPathCollisionEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetPathTrailEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetPhysicsSize.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetSimulationType.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetSkinPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetTrailController.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3053cc7a-3e6f-483b-a2c8-d6be96830156}</ProjectGuid>
+    <ProjectGuid>{9DD15E0A-FB96-4354-B034-6BF772EA22F1}</ProjectGuid>
     <RootNamespace>deai</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>editor particleemitter</ProjectName>
@@ -86,11 +231,13 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>particleemitter</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\particleemitter\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>particleemitter</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\particleemitter\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

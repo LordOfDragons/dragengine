@@ -580,7 +580,7 @@ const gdeProperty* &property ) const{
 		return false;
 	}
 	
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	const int count = pInherits.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
@@ -617,7 +617,7 @@ bool gdeObjectClass::NamedPropertyDefaultValue( const char *name, decString &val
 		return true;
 	}
 	
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	const int count = pInherits.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){

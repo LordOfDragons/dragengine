@@ -528,7 +528,7 @@ void peeType::pLoadSkin(){
 				pEngSkin = pEngine->GetSkinManager()->LoadSkin( pSkinPath, "/" );
 			}
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( pEmitter ){
 				pEngSkin = pEmitter->GetEnvironment()->GetErrorSkin();
 				pEngSkin->AddReference();
@@ -579,7 +579,7 @@ void peeType::pLoadModelSkin(){
 				pEngCastSkin = pEngine->GetSkinManager()->LoadSkin( pModelSkinPath, "/" );
 			}
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( pEmitter ){
 				pEngCastSkin = pEmitter->GetEnvironment()->GetErrorSkin();
 				pEngCastSkin->AddReference();

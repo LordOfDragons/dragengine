@@ -1441,7 +1441,7 @@ void gdeWPSObjectClass::UpdateProperty(){
 void gdeWPSObjectClass::UpdatePropertyValues(){
 	const gdeObjectClass * const objectClass = GetObjectClass();
 	decString selection( pListPropertyValues->GetSelectedItem()
-		? pListPropertyValues->GetSelectedItem()->GetText() : "" );
+		? pListPropertyValues->GetSelectedItem()->GetText() : decString() );
 	
 	pListPropertyValues->RemoveAllItems();
 	

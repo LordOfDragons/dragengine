@@ -147,7 +147,7 @@ void cePCBOption::Layout( const cePlayerChoiceBox &pcbox, bool selected ){
 			canvasText->SetColor( pcbox.GetTextColor() );
 		}
 		canvasText->SetFont( font );
-		canvasText->SetFontSize( textHeight );
+		canvasText->SetFontSize( ( float )textHeight );
 		canvasText->SetText( text );
 		canvasText->SetOrder( 0.0f );
 		canvasText->SetSize( pCanvasView->GetSize() );

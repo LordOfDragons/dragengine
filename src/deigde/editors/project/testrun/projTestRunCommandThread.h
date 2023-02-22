@@ -22,9 +22,12 @@
 #ifndef _PROJTESTRUNCOMMANDTHREAD_H_
 #define _PROJTESTRUNCOMMANDTHREAD_H_
 
-#include <unistd.h>
+#include <dragengine/dragengine_configuration.h>
+
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
+#else
+#include <unistd.h>
 #endif
 
 #include <dragengine/common/string/decString.h>

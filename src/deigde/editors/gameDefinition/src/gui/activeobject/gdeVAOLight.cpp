@@ -155,7 +155,7 @@ void gdeVAOLight::AttachResources(){
 		attachCollider->AddAttachment( attachment );
 		attachment = NULL;
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( attachment ){
 			delete attachment;
 		}
@@ -299,7 +299,7 @@ void gdeVAOLight::pCreateLight(){
 		try{
 			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			skin = environment.GetErrorSkin();
 		}
 	}

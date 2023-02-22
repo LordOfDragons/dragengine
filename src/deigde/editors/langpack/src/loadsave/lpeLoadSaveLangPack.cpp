@@ -146,7 +146,7 @@ void lpeLoadSaveLangPack::LoadLangPack( lpeLangPack *langpack, decBaseFileReader
 		
 		engLangPack->FreeReference();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( entry ){
 			entry->FreeReference();
 		}

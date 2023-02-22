@@ -262,7 +262,7 @@ void cePlayerChoiceBox::UpdateCanvas(){
 	pCanvasView->SetSize( decPoint( parentSize.x, boxHeight ) );
 	
 	// add option canvas
-	float y = pPadding;
+	int y = pPadding;
 	
 	for( i=0; i<count; i++ ){
 		deCanvasView * const textCanvas = pOptions.GetAt( i )->GetCanvasView();

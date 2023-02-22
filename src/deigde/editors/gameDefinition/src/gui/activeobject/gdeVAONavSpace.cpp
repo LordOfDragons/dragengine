@@ -201,7 +201,7 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 			gdeOCNavigationSpace::epAttachRotation ), pOCNavSpace->GetRotation() ) );
 		pDDSSpace->AddNavSpaceFaces( *navspace );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( navspace ){
 			navspace->FreeReference();
 			navspace = NULL;
