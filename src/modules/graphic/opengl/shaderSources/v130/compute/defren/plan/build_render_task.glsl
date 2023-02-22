@@ -35,10 +35,10 @@ UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
 layout( local_size_x=64 ) in;
 
 
-// layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
+layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
 layout( binding=0, offset=12 ) uniform atomic_uint pNextIndex;
 
-// const uint dispatchWorkGroupSize = uint( 64 );
+const uint dispatchWorkGroupSize = uint( 64 );
 
 
 void main( void ){
@@ -101,7 +101,7 @@ void main( void ){
 	// if the count of steps increases by the dispatch workgroup size increment also the
 	// work group count. this way the upcoming dispatch indirect calls know the count
 	// of workgroups to run
-// 	if( nextIndex % dispatchWorkGroupSize == uint( 0 ) ){
-// 		atomicCounterIncrement( pDispatchWorkGroupCount );
-// 	}
+	if( nextIndex % dispatchWorkGroupSize == uint( 0 ) ){
+		atomicCounterIncrement( pDispatchWorkGroupCount );
+	}
 }

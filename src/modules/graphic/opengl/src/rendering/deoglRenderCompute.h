@@ -25,6 +25,7 @@
 #include "deoglRenderBase.h"
 
 class deoglRenderPlanSkyLight;
+class deoglComputeRenderTask;
 
 
 /**
@@ -79,6 +80,9 @@ public:
 	void FindContent( const deoglRenderPlan &plan );
 	void FindContentSkyLight( const deoglRenderPlanSkyLight &planLight );
 	void FindContentSkyLightGI( const deoglRenderPlanSkyLight &planLight );
+	
+	/** Buil render task. */
+	void BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
 	/*@}*/
 	
 	

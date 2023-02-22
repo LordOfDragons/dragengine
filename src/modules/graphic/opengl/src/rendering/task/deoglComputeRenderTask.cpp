@@ -24,11 +24,13 @@
 #include <string.h>
 
 #include "deoglComputeRenderTask.h"
+#include "shared/deoglRenderTaskSharedPool.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../../pipeline/deoglPipelineManager.h"
 #include "../../world/deoglWorldCompute.h"
 
 #include <dragengine/common/exceptions.h>
@@ -43,7 +45,10 @@
 
 deoglComputeRenderTask::deoglComputeRenderTask( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pRenderVSStereo( false )
+pRenderVSStereo( false ),
+pStepsResolved( nullptr ),
+pStepsResolvedSize( 0 ),
+pStepsResolvedCount( 0 )
 {
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
@@ -62,20 +67,34 @@ pRenderVSStereo( false )
 	
 	pSSBOSteps.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOSteps->SetRowMajor( rowMajor );
-	pSSBOSteps->SetParameterCount( 6 );
+	pSSBOSteps->SetParameterCount( 7 );
 	pSSBOSteps->GetParameterAt( etpPipeline ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpTuc ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpVao ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpSpbInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpSpecialFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOSteps->GetParameterAt( etpSubInstanceCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->MapToStd140();
 	pSSBOSteps->SetBindingPoint( 4 );
+	
+	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOCounters->SetRowMajor( rowMajor );
+	pSSBOCounters->SetParameterCount( 2 );
+	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
+	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pSSBOCounters->SetElementCount( 1 );
+	pSSBOCounters->MapToStd140();
+	pSSBOCounters->SetBindingPoint( 3 );
+	pSSBOCounters->SetBindingPointAtomic( 0 );
 	
 	Clear();
 }
 
 deoglComputeRenderTask::~deoglComputeRenderTask(){
+	if( pStepsResolved ){
+		delete [] pStepsResolved;
+	}
 }
 
 
@@ -106,12 +125,18 @@ void deoglComputeRenderTask::Clear(){
 	pFilterCubeFace = -1;
 	
 	pUseSpecialParamBlock = false;
+	
+	pStepsResolvedCount = 0;
 }
 
 
 
 void deoglComputeRenderTask::SetRenderVSStereo( bool renderVSStereo ){
 	pRenderVSStereo = renderVSStereo;
+}
+
+void deoglComputeRenderTask::SetRenderParamBlock( deoglSPBlockUBO *paramBlock ){
+	pRenderParamBlock = paramBlock;
 }
 
 
@@ -196,12 +221,63 @@ void deoglComputeRenderTask::PrepareBuffers( const deoglWorldCompute &worldCompu
 	const int count = worldCompute.GetElementGeometryCount();
 	DEASSERT_TRUE( count > 0 )
 	
+	pStepsResolvedCount = 0;
+	
 	pPrepareConfig( worldCompute );
+	pClearCounters();
 	
 	if( count > pSSBOSteps->GetElementCount() ){
 		pSSBOSteps->SetElementCount( count );
 		pSSBOSteps->EnsureBuffer();
 	}
+}
+
+void deoglComputeRenderTask::ReadBackSteps( const deoglWorldCompute &worldCompute ){
+	pStepsResolvedCount = 0;
+	
+	if( worldCompute.GetElementGeometryCount() == 0 ){
+		return;
+	}
+	
+		decTimer timer;
+	const sCounters &counters = *( sCounters* )pSSBOCounters->ReadBuffer( 1 );
+	const int count = counters.counter;
+	if( count == 0 ){
+		return;
+	}
+	
+	if( count > pStepsResolvedSize ){
+		if( pStepsResolved ){
+			delete [] pStepsResolved;
+			pStepsResolved = nullptr;
+			pStepsResolvedSize = 0;
+		}
+		
+		pStepsResolved = new sStepResolved[ count ];
+		pStepsResolvedSize = count;
+	}
+	
+	const sStep * const steps = ( const sStep* )pSSBOSteps->ReadBuffer( count );
+		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys", count, (int)(timer.GetElapsedTime()*1e6f));
+	
+	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
+	const deoglPipelineManager &pipManager = pRenderThread.GetPipelineManager();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		sStepResolved &resolved = pStepsResolved[ i ];
+		const sStep &step = steps[ i ];
+		
+		resolved.pipeline = pipManager.GetAt( step.pipeline );
+		resolved.texture = &rtsPool.GetTextureAt( step.tuc );
+		resolved.vao = &rtsPool.GetVAOAt( step.vao );
+		resolved.instance = &rtsPool.GetInstanceAt( step.instance );
+		resolved.spbInstance = step.spbInstance;
+		resolved.specialFlags = step.specialFlags;
+		resolved.subInstanceCount = step.subInstanceCount;
+	}
+	pStepsResolvedCount = count;
+		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys", count, (int)(timer.GetElapsedTime()*1e6f));
 }
 
 
@@ -280,5 +356,16 @@ void deoglComputeRenderTask::pRenderFilter( int &filter, int &mask ) const{
 		if( pDecal ){
 			filter |= ertfDecal;
 		}
+	}
+}
+
+void deoglComputeRenderTask::pClearCounters(){
+	deoglSPBlockSSBO &ssbo = pSSBOCounters;
+	const deoglSPBMapBuffer mapped( ssbo );
+	int i;
+	
+	for( i=0; i<1; i++ ){
+		ssbo.SetParameterDataUVec3( 0, i, 0, 1, 1 ); // work group size (x=0)
+		ssbo.SetParameterDataUInt( 1, i, 0 ); // count
 	}
 }

@@ -25,6 +25,7 @@
 #include "deoglRenderCompute.h"
 #include "plan/deoglRenderPlan.h"
 #include "plan/deoglRenderPlanSkyLight.h"
+#include "task/deoglComputeRenderTask.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugTraceGroup.h"
@@ -295,6 +296,31 @@ void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &p
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
 		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+}
+
+void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.BuildRenderTask" );
+	
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	const int egcount = wcompute.GetElementGeometryCount();
+	DEASSERT_TRUE( egcount > 0 )
+	
+	// build render task
+	pPipelineBuildRenderTask->Activate();
+	
+	renderTask.GetUBOConfig()->Activate();
+	wcompute.GetSSBOElements()->Activate();
+	wcompute.GetSSBOElementGeometries()->Activate();
+	renderThread.GetShader().GetSSBOSkinTextures()->Activate();
+	renderTask.GetSSBOSteps()->Activate();
+	renderTask.GetSSBOCounters()->ActivateAtomic();
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( egcount - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	
+	// sort render task
 }
 
 

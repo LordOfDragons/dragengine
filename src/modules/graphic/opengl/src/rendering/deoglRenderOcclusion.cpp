@@ -229,6 +229,7 @@ pAddToRenderTask( NULL )
 			pipconf.Reset();
 			pipconf.DisableMasks();
 			pipconf.EnableDepthTestLessEqual();
+			pipconf.SetDepthClamp(true); // prevent wrong results
 			// pipconf.EnableCulling( false ); // less errors if disabled
 			
 			defines = commonDefines;

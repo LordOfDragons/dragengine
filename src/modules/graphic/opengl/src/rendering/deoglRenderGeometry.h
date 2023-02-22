@@ -33,6 +33,7 @@ class deoglPersistentRenderTask;
 class deoglRComponent;
 class deoglRenderPlan;
 class deoglRenderTask;
+class deoglComputeRenderTask;
 class deoglRLight;
 class deoglSkinState;
 class deoglSkinTexture;
@@ -75,8 +76,7 @@ public:
 	/*@{*/
 	/** Render a render task. */
 	void RenderTask( const deoglRenderTask &renderTask );
-	
-	/** Render a persistent render task. */
+	void RenderTask( const deoglComputeRenderTask &renderTask );
 	void RenderTask( const deoglPersistentRenderTask &renderTask );
 	
 	void ApproxTransformVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO *weightMatrices,

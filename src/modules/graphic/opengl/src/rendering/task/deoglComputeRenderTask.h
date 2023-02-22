@@ -25,14 +25,15 @@
 #include <stdint.h>
 
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
+#include "../../shaders/paramblock/deoglSPBlockReadBackSSBO.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../skin/pipeline/deoglSkinTexturePipelinesList.h"
 
 class deoglRenderThread;
 class deoglPipeline;
-class deoglTexUnitsConfig;
-class deoglVAO;
 class deoglRenderTaskSharedInstance;
+class deoglRenderTaskSharedTexture;
+class deoglRenderTaskSharedVAO;
 class deoglWorldCompute;
 
 
@@ -61,27 +62,37 @@ public:
 		etpVao,
 		etpInstance,
 		etpSpbInstance,
-		etpSpecialFlags
+		etpSpecialFlags,
+		etpSubInstanceCount
 	};
 	
-	/** Task. */
-	struct sTask{
+	/** Step. */
+	struct sStep{
 		uint32_t pipeline;
 		uint32_t tuc;
 		uint32_t vao;
 		uint32_t instance;
 		uint32_t spbInstance;
 		uint32_t specialFlags;
+		uint32_t subInstanceCount;
+		uint32_t padding;
 	};
 	
-	/** Task resolved. */
-	struct sTaskResolved{
+	/** Counters. */
+	struct sCounters{
+		uint32_t workGroupSize[ 3 ];
+		uint32_t counter;
+	};
+	
+	/** Step resolved. */
+	struct sStepResolved{
 		const deoglPipeline *pipeline;
-		const deoglTexUnitsConfig *tuc;
-		const deoglVAO *vao;
+		const deoglRenderTaskSharedTexture *texture;
+		const deoglRenderTaskSharedVAO *vao;
 		const deoglRenderTaskSharedInstance *instance;
 		int spbInstance;
 		int specialFlags;
+		int subInstanceCount;
 	};
 	
 	
@@ -91,8 +102,10 @@ private:
 	
 	deoglSPBlockUBO::Ref pUBOConfig;
 	deoglSPBlockSSBO::Ref pSSBOSteps;
+	deoglSPBlockSSBO::Ref pSSBOCounters;
 	
 	bool pRenderVSStereo;
+	deoglSPBlockUBO::Ref pRenderParamBlock;
 	
 	int pSkinPipelineLists;
 	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
@@ -121,6 +134,10 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
+	sStepResolved *pStepsResolved;
+	int pStepsResolvedSize;
+	int pStepsResolvedCount;
+	
 	
 	
 public:
@@ -146,6 +163,9 @@ public:
 	/** Render steps SSBO. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOSteps() const{ return pSSBOSteps; }
 	
+	/** Counters SSBO. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
+	
 	
 	
 	/** Clear. */
@@ -158,6 +178,12 @@ public:
 	
 	/** Set use vertex shader stereo rendering. */
 	void SetRenderVSStereo( bool renderVSStereo );
+	
+	/** Render parameter shader parameter block or nullptr. */
+	inline const deoglSPBlockUBO::Ref &GetRenderParamBlock() const{ return pRenderParamBlock; }
+	
+	/** Set render parameter shader parameter block or nullptr. */
+	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
 	
 	
 	
@@ -279,6 +305,17 @@ public:
 	
 	/** Prepare buffers. */
 	void PrepareBuffers( const deoglWorldCompute &worldCompute );
+	
+	/** Read back render task steps. */
+	void ReadBackSteps( const deoglWorldCompute &worldCompute );
+	
+	
+	
+	/** Count of resolved render steps. */
+	inline int GetCountSteps() const{ return pStepsResolvedCount; }
+	
+	/** Resolved render steps direct access. */
+	inline const sStepResolved *GetSteps() const{ return pStepsResolved; }
 	/*@}*/
 	
 	
@@ -286,6 +323,7 @@ public:
 private:
 	void pPrepareConfig( const deoglWorldCompute &worldCompute );
 	void pRenderFilter( int &filter, int &mask ) const;
+	void pClearCounters();
 };
 
 #endif
