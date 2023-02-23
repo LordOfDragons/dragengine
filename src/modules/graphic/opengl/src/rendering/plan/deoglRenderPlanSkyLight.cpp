@@ -1080,16 +1080,9 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	
 	const deoglGICascade &cascade = giState->GetSkyShadowCascade();
 	
-	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
 	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * pLayer->GetMatrix() );
 	
 	pGIShadowSize = 2048; // 1024
-	
-	pGIShadowLayer.frustumNear = 0.0f;
-	pGIShadowLayer.frustumFar = 1.0f;
-	pGIShadowLayer.layerBorder = 1.0f;
-	pGIShadowLayer.zscale = config.GetDistShadowScale();
-	pGIShadowLayer.zoffset = config.GetDistShadowBias();
 	
 	deoglCollisionBox colBoxGI( decVector(), cascade.GetDetectionBox(), matLig.Invert().ToQuaternion() );
 	deoglCollisionBox enclosingBox;
@@ -1097,6 +1090,24 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	
 	pGIShadowLayer.minExtend = enclosingBox.GetCenter() - enclosingBox.GetHalfSize();
 	pGIShadowLayer.maxExtend = enclosingBox.GetCenter() + enclosingBox.GetHalfSize();
+	
+	pGIShadowLayer.scale.z = 1.0f / ( pGIShadowLayer.maxExtend.z - pGIShadowLayer.minExtend.z );
+	
+	const float smDepthScaleFactor = 1.2f; // TODO add config option
+	const float smSize = pGIShadowLayer.maxExtend.x - pGIShadowLayer.minExtend.x;
+	const float smDepthScale = pGIShadowLayer.scale.z * 2.0f;
+	const float smOffsetScale = smSize / pGIShadowSize;
+	const float smOffsetBias = smOffsetScale;
+	
+	pGIShadowLayer.zscale = smOffsetScale * smDepthScaleFactor * smDepthScale;
+	pGIShadowLayer.zoffset = smOffsetBias * smDepthScaleFactor * smDepthScale;
+	// sky shadow uses this to eliminate artifacts in cascades: 1, 1.5, 2, 2.5
+	// pGIShadowLayer.zscale *= 2.5f;
+	// pGIShadowLayer.zoffset *= 2.5f;
+	
+	pGIShadowLayer.frustumNear = 0.0f;
+	pGIShadowLayer.frustumFar = 1.0f;
+	pGIShadowLayer.layerBorder = 1.0f;
 	
 	deoglSkyLayerGICascade &slgs = *pLayer->AddGICascade( cascade );
 	slgs.Update();

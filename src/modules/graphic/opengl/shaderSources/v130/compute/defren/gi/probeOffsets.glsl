@@ -138,7 +138,7 @@ void main( void ){
 				
 			#else
 				ivec2 rayTC = rayOffset + ivec2( rayIndex, 0 );
-				rayPosition = imageLoad( texPosition, rayTC ); // position, distance
+				vec4 rayPosition = imageLoad( texPosition, rayTC ); // position, distance
 				#define rayDistance rayPosition.w
 			#endif
 			
