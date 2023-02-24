@@ -62,13 +62,18 @@ decDiskFileReader::decDiskFileReader( const char *filename ){
 		}
 		
 		#ifdef OS_W32_VS
-		if( _wfopen_s( &pFile, widePath, L"rb" ) ){
+		pFile = _wfsopen( widePath, L"rb", _SH_DENYNO );
+		if( ! pFile ){
+			errno_t result = 0;
+			_get_errno( &result );
+			DETHROW_INFO( deeFileNotFound, pFormatError( result ) );
+		}
 		#else
 		pFile = _wfopen( widePath, L"rb" );
 		if( ! pFile ){
-		#endif
 			DETHROW_INFO( deeFileNotFound, filename );
 		}
+		#endif
 		
 		pLength = ( int )( ( ( uint64_t )fa.nFileSizeHigh << 32 ) + ( uint64_t )fa.nFileSizeLow );
 		
@@ -193,3 +198,19 @@ decBaseFileReader::Ref decDiskFileReader::Duplicate(){
 	}
 	return reader;
 }
+
+
+
+// Private Functions
+//////////////////////
+
+#ifdef OS_W32_VS
+decString decDiskFileReader::pFormatError( errno_t error ) const{
+	char buffer[ 100 ];
+	strerror_s( buffer, sizeof( buffer ), error );
+
+	decString message;
+	message.Format( "%s: %s (%d)", pFilename, buffer, error );
+	return message;
+}
+#endif

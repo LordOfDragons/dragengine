@@ -99,6 +99,13 @@ public:
 	/** \brief Duplicate file writer. */
 	virtual decBaseFileWriter::Ref Duplicate();
 	/*@}*/
+
+
+
+private:
+#ifdef OS_W32_VS
+	decString pFormatError( errno_t error ) const;
+#endif
 };
 
 #endif

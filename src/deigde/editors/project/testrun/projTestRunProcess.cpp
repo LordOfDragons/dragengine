@@ -234,7 +234,12 @@ void projTestRunProcess::Run(){
 			pLogger->LogException( LOGSOURCE, e );
 			
 		}else{
+#ifdef OS_W32
+			MessageBoxA( NULL, e.FormatOutput().Join( "\n" ).GetString(),
+				"Test-Runner Error", MB_OK | MB_ICONERROR );
+#else
 			e.PrintError();
+#endif
 		}
 		pStopEngine();
 		throw;
