@@ -145,7 +145,7 @@ void dellLauncher::pUpdateEnvironment(){
 	const decPath pathGames( pWorkingDir ); //+ decPath::CreatePathUnix( "games" ) );
 	const decPath pathLogs( pWorkingDir + decPath::CreatePathUnix( "logs" ) );
 	
-	pPathConfigUser = pathBase + decPath::CreatePathUnix( "config/user/delauncher"  );
+	pPathConfigUser = pathBase + decPath::CreatePathUnix( "config/user/delauncher" );
 	
 	pEnvParamsStore.Add( decString( "DE_ENGINE_PATH=" ) + pathEngineLib.GetPathNative() );
 	pEnvParamsStore.Add( decString( "DE_SHARE_PATH=" ) + pathEngineShare.GetPathNative() );

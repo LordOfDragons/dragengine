@@ -3996,5 +3996,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dragengine_configuration.h" />
+    <ClInclude Include="..\..\src\dragengine\src\dragengine_configuration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
