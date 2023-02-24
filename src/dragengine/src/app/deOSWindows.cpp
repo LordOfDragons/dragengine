@@ -76,73 +76,113 @@ pCurWindow( NULL )
 	pScreenWidth = GetSystemMetrics( SM_CXFULLSCREEN );
 	pScreenHeight = GetSystemMetrics( SM_CYFULLSCREEN );
 	
-	#ifndef OS_W32_APPSTORE
+#ifndef OS_W32_APPSTORE
+#ifdef OS_W32
+	TCHAR value[ 256 ];
+#else
 	const char *value;
-	#endif
+#endif
+#endif
 	decPath path;
 	
-	#ifdef OS_W32_APPSTORE
+#ifdef OS_W32_APPSTORE
 	pPathEngineBase = GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathEngine", "" );
 	if( pPathEngineBase.IsEmpty() ){
 		DETHROW_INFO( deeInvalidParam, "PathEngine registry value is not set" );
 	}
-	#else
+#else
 	pPathEngineBase = GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathEngine", DE_ENGINE_BASE_PATH );
-	#endif
+#endif
 	
 	pPathEngine = pPathEngineBase + "\\Data";
-	#ifndef OS_W32_APPSTORE
+#ifndef OS_W32_APPSTORE
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DE_ENGINE_PATH", &value[ 0 ], sizeof( value ) ) ){
+		pPathEngine = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DE_ENGINE_PATH" );
 	if( value ){
 		pPathEngine = value;
 	}
-	#endif
+#endif
+#endif
 	pPathEngine = ParseNativePath( pPathEngine );
 	
 	//pPathShare = GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathEngineShare", DE_SHARE_PATH );
 	pPathShare = pPathEngineBase + "\\Share";
-	#ifndef OS_W32_APPSTORE
+#ifndef OS_W32_APPSTORE
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DE_SHARE_PATH", &value[ 0 ], sizeof( value ) ) ){
+		pPathShare = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DE_SHARE_PATH" );
 	if( value ){
 		pPathShare = value;
 	}
-	#endif
+#endif
+#endif
 	pPathShare = ParseNativePath( pPathShare );
 	
 	pPathSystemConfig = pPathEngineBase + "\\Config";
-	#ifndef OS_W32_APPSTORE
+#ifndef OS_W32_APPSTORE
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], sizeof( value ) ) ){
+		pPathSystemConfig = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DE_CONFIG_PATH" );
 	if( value ){
 		pPathSystemConfig = value;
 	}
-	#endif
+#endif
+#endif
 	pPathSystemConfig = ParseNativePath( pPathSystemConfig );
 	
 	pPathUserConfig = "@RoamingAppData\\Dragengine\\Config";
-	#ifndef OS_W32_APPSTORE
+#ifndef OS_W32_APPSTORE
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], sizeof( value ) ) ){
+		pPathUserConfig = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DE_CONFIG_PATH" );
 	if( value ){
 		pPathUserConfig = value;
 	}
-	#endif
+#endif
+#endif
 	pPathUserConfig = ParseNativePath( pPathUserConfig );
 	
 	pPathUserCache = "@LocalAppData\\Dragengine\\Cache";
-	#ifndef OS_W32_APPSTORE
+#ifndef OS_W32_APPSTORE
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DE_CACHE_PATH", &value[ 0 ], sizeof( value ) ) ){
+		pPathUserCache = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DE_CACHE_PATH" );
 	if( value ){
 		pPathUserCache = value;
 	}
-	#endif
+#endif
+#endif
 	pPathUserCache = ParseNativePath( pPathUserCache );
 	
 	pPathUserCapture = "@LocalAppData\\Dragengine\\Capture";
-	#ifndef OS_W32_APPSTORE
+#ifndef OS_W32_APPSTORE
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DE_CAPTURE_PATH", &value[ 0 ], sizeof( value ) ) ){
+		pPathUserCapture = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DE_CAPTURE_PATH" );
 	if( value ){
 		pPathUserCapture = value;
 	}
-	#endif
+#endif
+#endif
 	pPathUserCapture = ParseNativePath( pPathUserCapture );
 }
 
