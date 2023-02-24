@@ -46,7 +46,12 @@ Copy-Files -SourceDir "$RuntimeDir\dsinstall" -Pattern "*" -TargetDir $RuntimeTa
 $DataTargetDir = "$OutputDir\$PathDistIGDEShares"
 Write-Host "DragonScript Module: Copy IGDE Data to '$DataTargetDir'"
 
-Copy-Files -SourceDir "$SourceDir\..\igde\gamedefs" -TargetDir "$DataTargetDir\gamedefs" -Pattern "*.degd"
+$PathModuleShared = "%{DE_SHARE_PATH}\modules\scripting\dragonscript\$Version\data"
+
+Copy-Files -SourceDir "$SourceDir\..\igde\gamedefs"`
+    -TargetDir "$DataTargetDir\gamedefs" -Pattern "*.degd"`
+    -Replace1Key "%{PATH_MODULE_SHARED}" -Replace1Value "$PathModuleShared"
+
 Copy-Files -SourceDir "$SourceDir\..\igde\templates" -TargetDir "$DataTargetDir\templates" -Pattern "*"
 
 

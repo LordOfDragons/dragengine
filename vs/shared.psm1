@@ -43,7 +43,9 @@ function Copy-Files {
     param (
         [Parameter(Mandatory=$true)][string]$SourceDir,
         [Parameter(Mandatory=$true)][string]$TargetDir,
-        [Parameter(Mandatory=$true)][string]$Pattern
+        [Parameter(Mandatory=$true)][string]$Pattern,
+        [Parameter(Mandatory=$false)][string]$Replace1Key,
+        [Parameter(Mandatory=$false)][string]$Replace1Value
     )
 
     $SourceDir = Resolve-Path $SourceDir
@@ -62,7 +64,15 @@ function Copy-Files {
         if (!(Test-Path $ParentPath)) {
             New-Item -ItemType Directory $ParentPath | Out-Null
         }
-        Copy-Item -Path $_.FullName -Destination (Join-Path -Path $TargetDir -ChildPath $RelativePath) -Force
+        
+        if ($Replace1Key) {
+            $Content = Get-Content -Raw -Path $_.FullName
+            $Content = $Content -creplace "$Replace1Key","$Replace1Value"
+            Set-Content -Path "$TargetDir\$RelativePath" -Value $Content
+
+        }else{
+            Copy-Item -Path $_.FullName -Destination "$TargetDir\$RelativePath" -Force
+        }
     }
 }
 
