@@ -102,6 +102,7 @@ void dellLauncher::Run(){
 	pWorkingDir.SetWorkingDirectory();
 	pUpdateEnvironment();
 	pLauncher = new Launcher;
+	pLauncher->SetEngineInstanceFactory( delEngineInstance::Factory::Ref::New( new delEngineInstanceDirect::Factory() ) );
 	
 	dellRunGame( *this ).Run();
 }
