@@ -161,7 +161,7 @@ void meHeightTerrainPFType::SetPathSkin( const char *path ){
 		try{
 			pSkin = pEngine->GetSkinManager()->LoadSkin( pPathSkin.GetString(), "/" );
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( pPFLayer && pPFLayer->GetHTSector() && pPFLayer->GetHTSector()->GetHeightTerrain() ){
 				pSkin = pPFLayer->GetHTSector()->GetHeightTerrain()->GetWorld().GetEnvironment()->GetErrorSkin();
 				pSkin->AddReference();

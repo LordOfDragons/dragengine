@@ -64,7 +64,7 @@ class deBaseScriptingCollider;
 class DE_DLL_EXPORT igdeWObject{
 public:
 	/** \brief Asynchronous loading finished. */
-	class cAsyncLoadFinished{
+	class DE_DLL_EXPORT cAsyncLoadFinished{
 	public:
 		/** \brief Create listener. */
 		cAsyncLoadFinished();

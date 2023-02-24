@@ -22,10 +22,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <unistd.h>
 
 #ifdef OS_UNIX
 #	include <pwd.h>
+#	include <unistd.h>
 #endif
 
 #ifdef OS_W32
@@ -279,15 +279,19 @@ void igdeConfiguration::SetMaxRecentProjectEntries( int entries ){
 
 
 void igdeConfiguration::LocatePath(){
-	const char *value;
 	decPath pathHome;
 	decPath path;
+
+#ifdef OS_W32
+	TCHAR value[ 256 ];
+#else
+	const char *value;
+#endif
 	
 #ifdef OS_W32
 	decString pathIgde = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathIgde", IGDE_PATH );
-	value = getenv( "DEIGDE_PATH" );
-	if( value ){
-		pathIgde = value;
+	if( GetEnvironmentVariable( L"DEIGDE_PATH", &value[ 0 ], sizeof( value ) ) ){
+		pathIgde = deOSWindows().WideToUtf8( value );
 	}
 	pathIgde = deOSWindows::ParseNativePath( pathIgde );
 #endif
@@ -301,10 +305,17 @@ void igdeConfiguration::LocatePath(){
 	pPathConfigSystem = pathIgde + "\\Config";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_SYS_CONFIG", &value[ 0 ], sizeof( value ) ) ){
+		pPathConfigSystem = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_SYS_CONFIG" );
 	if( value ){
 		pPathConfigSystem = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathConfigSystem = deOSWindows::ParseNativePath( pPathConfigSystem );
 #endif
@@ -356,18 +367,32 @@ void igdeConfiguration::LocatePath(){
 	
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_USER_CONFIG", &value[ 0 ], sizeof( value ) ) ){
+		pPathConfigUser = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_USER_CONFIG" );
 	if( value ){
 		pPathConfigUser = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathConfigUser = deOSWindows::ParseNativePath( pPathConfigUser );
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_PROJECTS", &value[ 0 ], sizeof( value ) ) ){
+		pPathProjects = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_PROJECTS" );
 	if( value ){
 		pPathProjects = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathProjects = deOSWindows::ParseNativePath( pPathProjects );
 #endif
@@ -379,10 +404,17 @@ void igdeConfiguration::LocatePath(){
 	pPathShares = pathIgde + "\\Share";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_SHARES", &value[ 0 ], sizeof( value ) ) ){
+		pPathShares = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_SHARES" );
 	if( value ){
 		pPathShares = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathShares = deOSWindows::ParseNativePath( pPathShares );
 #endif
@@ -414,10 +446,17 @@ void igdeConfiguration::LocatePath(){
 	pPathLib = pathIgde + "\\Data";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_LIB", &value[ 0 ], sizeof( value ) ) ){
+		pPathLib = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_LIB" );
 	if( value ){
 		pPathLib = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathLib = deOSWindows::ParseNativePath( pPathLib );
 #endif
@@ -431,13 +470,20 @@ void igdeConfiguration::LocatePath(){
 	pPathLogs = "@LocalAppData\\DEIGDE\\Logs";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_LOGS", &value[ 0 ], sizeof( value ) ) ){
+		pPathLogs = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_LOGS" );
 	if( value ){
 		pPathLogs = value;
 	}
-	#ifdef OS_W32
+#endif
+
+#ifdef OS_W32
 	pPathLogs = deOSWindows::ParseNativePath( pPathLogs );
-	#endif
+#endif
 }
 
 void igdeConfiguration::InitVirtualFileSystem(){

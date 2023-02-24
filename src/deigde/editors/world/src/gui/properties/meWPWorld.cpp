@@ -700,7 +700,7 @@ void meWPWorld::UpdatePathFindTest(){
 		pEditPFTGoalPosition->SetDVector( pft.GetGoalPosition() );
 		pEditPFTLayer->SetInteger( pft.GetLayer() );
 		pCBPFTSpaceType->SetSelectionWithData( ( void* )( intptr_t )pft.GetSpaceType() );
-		pEditPFTBlockingCost->SetInteger( pft.GetBlockingCost() );
+		pEditPFTBlockingCost->SetInteger( ( int )( pft.GetBlockingCost() + 0.1f ) );
 		pChkPFTShowPath->SetChecked( pft.GetShowPath() );
 		
 	}else{

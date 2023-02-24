@@ -423,13 +423,13 @@ const seSynthesizer &synthesizer, const seSourceSynthesizer &source ){
 		seController * const controller = source.GetControllerAt( i );
 		
 		writer.WriteOpeningTagStart( "connection" );
-		writer.WriteAttributeFloat( "target", i );
+		writer.WriteAttributeInt( "target", i );
 		
 		if( controller ){
-			writer.WriteAttributeFloat( "controller", controllers.IndexOf( controller ) );
+			writer.WriteAttributeInt( "controller", controllers.IndexOf( controller ) );
 			
 		}else{
-			writer.WriteAttributeFloat( "controller", -1 );
+			writer.WriteAttributeInt( "controller", -1 );
 		}
 		
 		writer.WriteOpeningTagEnd( true );

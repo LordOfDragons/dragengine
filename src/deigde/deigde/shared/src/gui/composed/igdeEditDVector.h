@@ -42,7 +42,7 @@ class igdeUIHelper;
 class DE_DLL_EXPORT igdeEditDVector : public igdeContainerBoxAlternate{
 protected:
 	/** \brief Text field listener. */
-	class cListener : public igdeTextFieldListener{
+	class DE_DLL_EXPORT cListener : public igdeTextFieldListener{
 	protected:
 		igdeEditDVector &pEditDVector;
 		igdeTextFieldReference pTextX;

@@ -36,8 +36,8 @@ class seUSynthesizerSetChannelCount : public igdeUndo{
 private:
 	seSynthesizer *pSynthesizer;
 	
-	float pOldChannelCount;
-	float pNewChannelCount;
+	int pOldChannelCount;
+	int pNewChannelCount;
 	
 	
 	
@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSynthesizerSetChannelCount( seSynthesizer *synthesizer, float newChannelCount );
+	seUSynthesizerSetChannelCount( seSynthesizer *synthesizer, int newChannelCount );
 	
 protected:
 	/** \brief Clean up undo action. */

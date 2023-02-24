@@ -182,7 +182,7 @@ public:
 			return;
 		}
 		
-		decString filename( pWindow.GetGameProject() ? pWindow.GetGameProject()->GetFilePath() : "" );
+		decString filename( pWindow.GetGameProject() ? pWindow.GetGameProject()->GetFilePath() : decString() );
 		if( igdeCommonDialogs::GetFileOpen( &pWindow, "Open Game Project",
 		pWindow.GetLoadSaveSystem()->GetOpenFilePatternList( igdeLoadSaveSystem::efplGameProject ), filename ) ){
 			pWindow.LoadGameProject( filename );
@@ -634,7 +634,7 @@ pTaskSyncGameDefinition( NULL )
 		
 		CreatePlaceholderGameProject();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pCleanUp();
 		throw;
 	}

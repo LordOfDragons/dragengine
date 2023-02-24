@@ -13,7 +13,12 @@
 
 #ifdef OS_W32
 // entry point for windows32 helper binary
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ){
+#ifdef OS_W32_VS
+int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow )
+#else
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+#endif
+{
 	const HANDLE pipeIn = GetStdHandle( STD_INPUT_HANDLE );
 	if( pipeIn == INVALID_HANDLE_VALUE ){
 		return -1;

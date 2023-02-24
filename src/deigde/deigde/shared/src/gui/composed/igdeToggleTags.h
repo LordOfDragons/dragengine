@@ -45,7 +45,7 @@ class decStringSet;
 class DE_DLL_EXPORT igdeToggleTags : public igdeContainerFlow, igdeActionListener{
 protected:
 	/** \brief Action enable all tags. */
-	class cActionEnableAll : public igdeAction{
+	class DE_DLL_EXPORT cActionEnableAll : public igdeAction{
 	protected:
 		igdeToggleTags &pWidget;
 		
@@ -55,7 +55,7 @@ protected:
 	};
 	
 	/** \brief Action disable all tags. */
-	class cActionDisableAll : public igdeAction{
+	class DE_DLL_EXPORT cActionDisableAll : public igdeAction{
 	protected:
 		igdeToggleTags &pWidget;
 		

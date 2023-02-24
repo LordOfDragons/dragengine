@@ -22,6 +22,8 @@
 #ifndef _MELSWORLD_H_
 #define _MELSWORLD_H_
 
+#include <dragengine/common/string/decString.h>
+
 class meWorld;
 class decXmlElementTag;
 class decBaseFileReader;
@@ -36,25 +38,30 @@ class igdeStepableTask;
  */
 class meLSWorld{
 private:
-	char *pName;
-	char *pPattern;
+	decString pName;
+	decString pPattern;
+
+
+
 public:
 	// constructor, destructor
 	meLSWorld();
 	virtual ~meLSWorld();
+
 	// management
-	inline const char *GetName() const{ return ( const char * )pName; }
+	inline const decString &GetName() const{ return pName; }
+
 	void SetName( const char *name );
-	inline const char *GetPattern() const{ return ( const char * )pPattern; }
+
+	inline const decString &GetPattern() const{ return pPattern; }
+
 	void SetPattern( const char *pattern );
+
 	// loading and saving
 	virtual void SaveWorld( meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file ) = 0;
 	
 	/** \brief Create stepable loader. */
 	virtual igdeStepableTask *CreateLoadTask( meWorld *world, decBaseFileReader *file ) = 0;
-	
-private:
-	void pLSWCleanUp();
 };
 
 // end of include only once

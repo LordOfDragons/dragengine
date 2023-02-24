@@ -216,7 +216,7 @@ const igdeTexturePropertyList &knownPropertyList ){
 		
 		engSkin->FreeReference();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( nodeGroup ){
 			nodeGroup->FreeReference();
 		}
@@ -252,7 +252,7 @@ sePropertyNodeGroup *seLoadSaveSkin::LoadPropertyNodeGroup( const deSkinProperty
 			childNode = NULL;
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( childNode ){
 			childNode->FreeReference();
 		}
@@ -313,7 +313,7 @@ sePropertyNode *seLoadSaveSkin::LoadPropertyNode( deSkinPropertyNode &engNode ){
 			DETHROW( deeInvalidParam );
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( childNode ){
 			childNode->FreeReference();
 		}
@@ -345,7 +345,7 @@ void seLoadSaveSkin::LoadPropertyNodeCommon( sePropertyNode &node, const deSkinP
 			node.SetMask( mask );
 			mask->FreeReference();
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( mask ){
 				mask->FreeReference();
 			}

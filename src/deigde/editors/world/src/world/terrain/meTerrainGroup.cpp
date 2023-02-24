@@ -36,7 +36,6 @@
 ////////////////////////////
 
 meTerrainGroup::meTerrainGroup( const char *name ){
-	pName = NULL;
 	pObjects = NULL;
 	pObjectCount = 0;
 	pObjectSize = 0;
@@ -58,12 +57,9 @@ meTerrainGroup::~meTerrainGroup(){
 ///////////////
 
 void meTerrainGroup::SetName( const char *name ){
-	if( ! name || ! name[ 0 ] ) DETHROW( deeInvalidParam );
-	char *newStr = new char[ strlen( name ) + 1 ];
-	if( ! newStr ) DETHROW( deeOutOfMemory );
-	strcpy( newStr, name );
-	if( pName ) delete [] pName;
-	pName = newStr;
+	DEASSERT_NOTNULL( name )
+	DEASSERT_NOTNULL( name[ 0 ] )
+	pName = name;
 }
 
 
@@ -126,5 +122,4 @@ void meTerrainGroup::RemoveAllObjects(){
 void meTerrainGroup::pCleanUp(){
 	RemoveAllObjects();
 	if( pObjects ) delete [] pObjects;
-	if( pName) delete [] pName;
 }

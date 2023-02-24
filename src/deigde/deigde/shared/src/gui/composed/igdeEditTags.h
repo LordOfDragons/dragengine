@@ -42,7 +42,7 @@ class decStringSet;
 class DE_DLL_EXPORT igdeEditTags : public igdeContainerFlow, igdeActionListener{
 protected:
 	/** \brief Action adding a tag. */
-	class cActionAdd : public igdeAction{
+	class DE_DLL_EXPORT cActionAdd : public igdeAction{
 	protected:
 		igdeEditTags &pWidget;
 		
@@ -52,7 +52,7 @@ protected:
 	};
 	
 	/** \brief Action removing selected tag. */
-	class cActionRemove : public igdeAction{
+	class DE_DLL_EXPORT cActionRemove : public igdeAction{
 	protected:
 		igdeEditTags &pWidget;
 		
@@ -62,7 +62,7 @@ protected:
 	};
 	
 	/** \brief Action removing all tags. */
-	class cActionClear : public igdeAction{
+	class DE_DLL_EXPORT cActionClear : public igdeAction{
 	protected:
 		igdeEditTags &pWidget;
 		

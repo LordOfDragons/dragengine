@@ -776,7 +776,7 @@ void reWPView::UpdateCamera(){
 		pEditCamHiInt->SetFloat( camera->GetHighestIntensity() );
 		
 		pChkCamAttach->SetChecked( camera->GetAttachToBone() );
-		pCBCamBone->SetText( camera->GetBone() ? camera->GetBone()->GetName() : "" );
+		pCBCamBone->SetText( camera->GetBone() ? camera->GetBone()->GetName() : decString() );
 		pEditCamRelPosition->SetVector( camera->GetRelativePosition() );
 		pEditCamRelRotation->SetVector( camera->GetRelativeOrientation() );
 		

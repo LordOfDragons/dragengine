@@ -69,6 +69,7 @@
 #undef RemoveProp
 #undef GetMessage
 #undef GetProp
+#undef GetClassName
 
 
 #ifdef OS_W32_VS

@@ -242,7 +242,7 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 		// time to release the rig resource
 		engRig->FreeReference();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		//e.PrintError();
 		if( constraint ) constraint->FreeReference();
 		if( rigBone ) rigBone->FreeReference();

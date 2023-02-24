@@ -105,17 +105,17 @@ void meLoadSaveNavTest::pWriteNavTest( decXmlWriter &writer, const meWorld &worl
 	// start position
 	const decDVector &startPosition = pathFindTest.GetStartPosition();
 	writer.WriteOpeningTagStart( "startPosition" );
-	writer.WriteAttributeFloat( "x", startPosition.x );
-	writer.WriteAttributeFloat( "y", startPosition.y );
-	writer.WriteAttributeFloat( "z", startPosition.z );
+	writer.WriteAttributeFloat( "x", ( float )startPosition.x );
+	writer.WriteAttributeFloat( "y", ( float )startPosition.y );
+	writer.WriteAttributeFloat( "z", ( float )startPosition.z );
 	writer.WriteOpeningTagEnd( true );
 	
 	// goal position
 	const decDVector &goalPosition = pathFindTest.GetGoalPosition();
 	writer.WriteOpeningTagStart( "goalPosition" );
-	writer.WriteAttributeFloat( "x", goalPosition.x );
-	writer.WriteAttributeFloat( "y", goalPosition.y );
-	writer.WriteAttributeFloat( "z", goalPosition.z );
+	writer.WriteAttributeFloat( "x", ( float )goalPosition.x );
+	writer.WriteAttributeFloat( "y", ( float )goalPosition.y );
+	writer.WriteAttributeFloat( "z", ( float )goalPosition.z );
 	writer.WriteOpeningTagEnd( true );
 	
 	// layer

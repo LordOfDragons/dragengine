@@ -218,7 +218,6 @@ void projTestRunProcess::ReadFromPipe( void *data, int length ){
 void projTestRunProcess::Run(){
 	try{
 		pReadRunParameters();
-		pCreateLogger();
 		
 		pLogConfiguration();
 		pLauncher.LocatePath();
@@ -238,6 +237,7 @@ void projTestRunProcess::Run(){
 			e.PrintError();
 		}
 		pStopEngine();
+		throw;
 	}
 	
 	if( pLogger ){
@@ -260,6 +260,9 @@ void projTestRunProcess::pReadRunParameters(){
 	int i, count;
 	
 	pRunParameters.pathLogFile = ReadString16FromPipe();
+	pCreateLogger();
+	pLogger->LogInfo( LOGSOURCE, "TestRunner launched. Reading run parameters..." );
+
 	pRunParameters.pathDataDirectory = ReadString16FromPipe();
 	pRunParameters.pathOverlay = ReadString16FromPipe();
 	pRunParameters.pathConfig = ReadString16FromPipe();
@@ -314,6 +317,8 @@ void projTestRunProcess::pReadRunParameters(){
 	pRunParameters.moduleVR = ReadString16FromPipe();
 	
 // 	WriteUCharToPipe( projTestRunConstants::ercSuccess );
+
+	pLogger->LogInfo( LOGSOURCE, "Run parameters read" );
 }
 
 void projTestRunProcess::pLogConfiguration(){

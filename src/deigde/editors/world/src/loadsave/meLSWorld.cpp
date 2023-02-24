@@ -37,20 +37,9 @@
 ////////////////////////////
 
 meLSWorld::meLSWorld(){
-	pName = NULL;
-	pPattern = NULL;
-	
-	try{
-		SetName( "" );
-		SetPattern( "" );
-	}catch( const deException & ){
-		pLSWCleanUp();
-		throw;
-	}
 }
 
 meLSWorld::~meLSWorld(){
-	pLSWCleanUp();
 }
 
 
@@ -59,29 +48,9 @@ meLSWorld::~meLSWorld(){
 ///////////////
 
 void meLSWorld::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
-	char *newStr = new char[ strlen( name ) + 1 ];
-	if( ! newStr ) DETHROW( deeOutOfMemory );
-	strcpy( newStr, name );
-	if( pName ) delete [] pName;
-	pName = newStr;
+	pName = name;
 }
 
 void meLSWorld::SetPattern( const char *pattern ){
-	if( ! pattern ) DETHROW( deeInvalidParam );
-	char *newStr = new char[ strlen( pattern ) + 1 ];
-	if( ! newStr ) DETHROW( deeOutOfMemory );
-	strcpy( newStr, pattern );
-	if( pPattern ) delete [] pPattern;
-	pPattern = newStr;
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meLSWorld::pLSWCleanUp(){
-	if( pPattern ) delete [] pPattern;
-	if( pName ) delete [] pName;
+	pPattern = pattern;
 }

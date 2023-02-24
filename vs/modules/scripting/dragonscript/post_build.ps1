@@ -42,6 +42,14 @@ Write-Host "DragonScript Module: Copy Runtime to '$RuntimeTargetDir'"
 Copy-Files -SourceDir "$RuntimeDir\dsinstall" -Pattern "*" -TargetDir $RuntimeTargetDir
 
 
+# igde
+$DataTargetDir = "$OutputDir\$PathDistIGDEShares"
+Write-Host "DragonScript Module: Copy IGDE Data to '$DataTargetDir'"
+
+Copy-Files -SourceDir "$SourceDir\..\igde\gamedefs" -TargetDir "$DataTargetDir\gamedefs" -Pattern "*.degd"
+Copy-Files -SourceDir "$SourceDir\..\igde\templates" -TargetDir "$DataTargetDir\templates" -Pattern "*"
+
+
 # debug
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\scripting\dragonscript\$Version"
 Write-Host "DragonScript Module: Copy PDBs to '$TargetDir'"

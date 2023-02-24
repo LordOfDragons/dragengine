@@ -357,7 +357,8 @@ public:
 	void SetProgressText( const char *text );
 	
 	/** Retrieves the minimum frame update time. */
-	inline int GetMinUpdateTime() const{ return pMinUpdateTime; }
+	inline float GetMinUpdateTime() const{ return pMinUpdateTime; }
+
 	/** Sets the minimum frame update time. */
 	void SetMinUpdateTime( float seconds );
 	

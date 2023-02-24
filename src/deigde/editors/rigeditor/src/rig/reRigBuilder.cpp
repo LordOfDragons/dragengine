@@ -106,7 +106,7 @@ void reRigBuilder::BuildRig( deRig *engRig ){
 			engRig->SetRootBone( -1 );
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( shape ) delete shape;
 	}
 	
@@ -176,7 +176,7 @@ void reRigBuilder::BuildRigBone( deRig *engRig, reRigBone *rigBone ){
 		// add to the rig
 		engRig->AddBone( engBone );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( engConstraint ) delete engConstraint;
 		if( shape ) delete shape;
 		if( engBone ) delete engBone;

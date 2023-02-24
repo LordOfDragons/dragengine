@@ -54,7 +54,7 @@ class igdeWSky;
  */
 class DE_DLL_EXPORT igdeWPSky : public igdeContainerFlow, igdeActionListener{
 private:
-	class Controller : public deObject{
+	class DE_DLL_EXPORT Controller : public deObject{
 	public:
 		typedef deTObjectReference<Controller> Ref;
 		

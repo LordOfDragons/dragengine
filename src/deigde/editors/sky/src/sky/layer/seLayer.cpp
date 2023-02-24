@@ -432,7 +432,7 @@ void seLayer::pUpdateSkin(){
 	try{
 		pEngSkin.TakeOver( skinMgr.LoadSkin( pPathSkin, basePath ) );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( pSky ){
 			pEngSkin = pSky->GetEnvironment()->GetErrorSkin();
 		}

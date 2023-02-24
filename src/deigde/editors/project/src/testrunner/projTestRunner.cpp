@@ -204,6 +204,9 @@ bool projTestRunner::IsRunning(){
 			return true; // still running
 			
 		}else{
+			pWindowMain.GetLogger()->LogInfoFormat( LOGSOURCE,
+				"Test-Runner stopped running with exit code %d", exitCode );
+
 			pProcessHandle = INVALID_HANDLE_VALUE;
 			return false; // process stopped
 		}
@@ -247,6 +250,9 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 	
 	pProfile = profile;
 	pLauncherProfile = launcherProfile;
+	
+	pWindowMain.GetLogger()->LogInfoFormat( LOGSOURCE,
+		"Launching Test-Runner using profile '%s'...", profile->GetName().GetString() );
 	
 	#ifdef OS_W32
 	if( pProcessHandle == INVALID_HANDLE_VALUE ){
@@ -422,12 +428,16 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 	}
 	#endif
 	
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Test-Runner launched" );
+
 	// init log file for reading. has to be done before sending the launc parameters since
 	// the log file path is determined in pInitLogFile
 	pInitLogFile();
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Log-file prepared" );
 	
 	// send launch parameters
 	pSendLaunchParameters();
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Run parameters send to Test-Runner" );
 }
 
 void projTestRunner::Stop(){
@@ -435,6 +445,8 @@ void projTestRunner::Stop(){
 		return;
 	}
 	
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Stopping Test-Runner..." );
+
 	#ifdef OS_W32
 	if( pProcessHandle != INVALID_HANDLE_VALUE ){
 		WaitForSingleObject( pProcessHandle, 5000 );
@@ -481,6 +493,8 @@ void projTestRunner::Stop(){
 	
 	pProfile = NULL;
 	pLauncherProfile = NULL;
+
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Test-Runner stopped" );
 }
 
 void projTestRunner::Kill(){
@@ -488,6 +502,8 @@ void projTestRunner::Kill(){
 		return;
 	}
 	
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Killing Test-Runner..." );
+
 	#ifdef OS_W32
 	if( pProcessHandle != INVALID_HANDLE_VALUE ){
 		TerminateProcess( pProcessHandle, 0 );
@@ -536,6 +552,8 @@ void projTestRunner::Kill(){
 	
 	pProfile = NULL;
 	pLauncherProfile = NULL;
+
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Test-Runner killed" );
 }
 
 
@@ -722,7 +740,7 @@ void projTestRunner::pInitLogFile(){
 	pPathLogFile = path.GetPathNative();
 	
 	// create log file or truncate it to 0 length if present
-	( new decDiskFileWriter( pPathLogFile, false ) )->FreeReference();
+	decDiskFileWriter::Ref::New( new decDiskFileWriter( pPathLogFile, false ) );
 	
 	// open file for reading
 	pLogFileReader.TakeOver( new decDiskFileReader( pPathLogFile ) );
