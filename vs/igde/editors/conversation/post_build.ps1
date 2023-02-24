@@ -6,6 +6,8 @@
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 
 # application
+$Version = Get-Version -Path "$SourceDir\..\SConscript"
+
 $TargetDir = "$OutputDir\$PathDistIGDEDataModules\conversation"
 
 Write-Host "Conversation Editor: Copy Module to '$TargetDir'"
@@ -13,7 +15,8 @@ Write-Host "Conversation Editor: Copy Module to '$TargetDir'"
 $Library = "$OutputDir\igde_editor\conversation\conversation.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
-Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml" -Library $Library
+Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml"`
+    -Library $Library -Version $Version
 
 
 $DataTargetDir = "$OutputDir\$PathDistIGDESharesModules\conversation"

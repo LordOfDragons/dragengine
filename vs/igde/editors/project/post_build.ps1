@@ -6,6 +6,8 @@
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 
 # application
+$Version = Get-Version -Path "$SourceDir\..\SConscript"
+
 $TargetDir = "$OutputDir\$PathDistIGDEDataModules\project"
 
 Write-Host "Project Editor: Copy Module to '$TargetDir'"
@@ -13,7 +15,8 @@ Write-Host "Project Editor: Copy Module to '$TargetDir'"
 $Library = "$OutputDir\igde_editor\project\project.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
-Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml" -Library $Library
+Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml"`
+    -Library $Library -Version $Version
 
 
 $DataTargetDir = "$OutputDir\$PathDistIGDESharesModules\project"
