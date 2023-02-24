@@ -13,7 +13,7 @@ $ArchivePath = "$OutputDir\tools\blender\$ArchiveName"
 
 Write-Host "Blender Scripts: Compress to '$ArchivePath'"
 
-Compress-Archive -Path "$SourceDir\dragengine-import-export" -DestinationPath $ArchivePath
+Compress-Archive -Path "$SourceDir\dragengine-import-export" -DestinationPath $ArchivePath -Force
 
 
 # application

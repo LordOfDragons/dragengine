@@ -291,7 +291,7 @@ void igdeConfiguration::LocatePath(){
 #ifdef OS_W32
 	decString pathIgde = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathIgde", IGDE_PATH );
 	if( GetEnvironmentVariable( L"DEIGDE_PATH", &value[ 0 ], sizeof( value ) ) ){
-		pathIgde = deOSWindows().WideToUtf8( value );
+		pathIgde = deOSWindows::WideToUtf8( value );
 	}
 	pathIgde = deOSWindows::ParseNativePath( pathIgde );
 #endif
@@ -307,7 +307,7 @@ void igdeConfiguration::LocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DEIGDE_SYS_CONFIG", &value[ 0 ], sizeof( value ) ) ){
-		pPathConfigSystem = deOSWindows().WideToUtf8( value );
+		pPathConfigSystem = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DEIGDE_SYS_CONFIG" );
@@ -369,7 +369,7 @@ void igdeConfiguration::LocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DEIGDE_USER_CONFIG", &value[ 0 ], sizeof( value ) ) ){
-		pPathConfigUser = deOSWindows().WideToUtf8( value );
+		pPathConfigUser = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DEIGDE_USER_CONFIG" );
@@ -384,7 +384,7 @@ void igdeConfiguration::LocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DEIGDE_PROJECTS", &value[ 0 ], sizeof( value ) ) ){
-		pPathProjects = deOSWindows().WideToUtf8( value );
+		pPathProjects = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DEIGDE_PROJECTS" );
@@ -406,7 +406,7 @@ void igdeConfiguration::LocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DEIGDE_SHARES", &value[ 0 ], sizeof( value ) ) ){
-		pPathShares = deOSWindows().WideToUtf8( value );
+		pPathShares = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DEIGDE_SHARES" );
@@ -448,7 +448,7 @@ void igdeConfiguration::LocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DEIGDE_LIB", &value[ 0 ], sizeof( value ) ) ){
-		pPathLib = deOSWindows().WideToUtf8( value );
+		pPathLib = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DEIGDE_LIB" );
@@ -472,7 +472,7 @@ void igdeConfiguration::LocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DEIGDE_LOGS", &value[ 0 ], sizeof( value ) ) ){
-		pPathLogs = deOSWindows().WideToUtf8( value );
+		pPathLogs = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DEIGDE_LOGS" );

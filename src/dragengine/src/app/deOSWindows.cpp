@@ -98,7 +98,7 @@ pCurWindow( NULL )
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DE_ENGINE_PATH", &value[ 0 ], sizeof( value ) ) ){
-		pPathEngine = deOSWindows().WideToUtf8( value );
+		pPathEngine = WideToUtf8( value );
 	}
 #else
 	value = getenv( "DE_ENGINE_PATH" );
@@ -114,7 +114,7 @@ pCurWindow( NULL )
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DE_SHARE_PATH", &value[ 0 ], sizeof( value ) ) ){
-		pPathShare = deOSWindows().WideToUtf8( value );
+		pPathShare = WideToUtf8( value );
 	}
 #else
 	value = getenv( "DE_SHARE_PATH" );
@@ -129,7 +129,7 @@ pCurWindow( NULL )
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], sizeof( value ) ) ){
-		pPathSystemConfig = deOSWindows().WideToUtf8( value );
+		pPathSystemConfig = WideToUtf8( value );
 	}
 #else
 	value = getenv( "DE_CONFIG_PATH" );
@@ -144,7 +144,7 @@ pCurWindow( NULL )
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], sizeof( value ) ) ){
-		pPathUserConfig = deOSWindows().WideToUtf8( value );
+		pPathUserConfig = WideToUtf8( value );
 	}
 #else
 	value = getenv( "DE_CONFIG_PATH" );
@@ -159,7 +159,7 @@ pCurWindow( NULL )
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DE_CACHE_PATH", &value[ 0 ], sizeof( value ) ) ){
-		pPathUserCache = deOSWindows().WideToUtf8( value );
+		pPathUserCache = WideToUtf8( value );
 	}
 #else
 	value = getenv( "DE_CACHE_PATH" );
@@ -174,7 +174,7 @@ pCurWindow( NULL )
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DE_CAPTURE_PATH", &value[ 0 ], sizeof( value ) ) ){
-		pPathUserCapture = deOSWindows().WideToUtf8( value );
+		pPathUserCapture = WideToUtf8( value );
 	}
 #else
 	value = getenv( "DE_CAPTURE_PATH" );
