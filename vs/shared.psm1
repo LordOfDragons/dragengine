@@ -178,3 +178,8 @@ New-Variable -Name PathDistIGDEPdbData -Value "$PathDistIGDEPdbBase\Data" -Scope
 New-Variable -Name PathDistIGDEPdbDataModules -Value "$PathDistIGDEPdbData\modules" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEPdbSystem -Value "$PathDistIGDEDebug\@System" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEPdbBin -Value "$PathDistIGDEPdbBase\Bin" -Scope Global -Option ReadOnly -Force
+
+
+
+New-Variable -Name PathDistLive -Value "Distribute\Live" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistLivePdb -Value "$PathDistLive" -Scope Global -Option ReadOnly -Force
