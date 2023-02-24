@@ -31,7 +31,7 @@ jobs:
       artifactTools: tools-crossplatform
   
   build_windows:
-    uses: ./.github/workflows/build_windows.yml
+    uses: ./.github/workflows/build_windows_vs.yml
     with:
       branch: ${{ github.event.inputs.branch }}
       releaseVersion: ${{ github.event.inputs.version }}
