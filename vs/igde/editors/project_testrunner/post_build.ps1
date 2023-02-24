@@ -31,7 +31,7 @@ Copy-Files -SourceDir $FoxDir -TargetDir $TargetDir -Pattern "*.dll"
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules"
+$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules\project"
 Write-Host "Project Editor TestRunner: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$BaseDir\testrunner.pdb" -Destination $TargetDir

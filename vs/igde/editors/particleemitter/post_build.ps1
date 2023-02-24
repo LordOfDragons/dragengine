@@ -23,7 +23,7 @@ Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir "$DataTargetDir" -Pattern 
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules"
+$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules\particleemitter"
 Write-Host "Particle Emitter Editor: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\igde_editor\particleemitter\particleemitter.pdb" -Destination $TargetDir

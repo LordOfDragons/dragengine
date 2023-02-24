@@ -23,7 +23,7 @@ Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir "$DataTargetDir" -Pattern 
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules"
+$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules\rig"
 Write-Host "Rig Editor: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\igde_editor\rig\rig.pdb" -Destination $TargetDir

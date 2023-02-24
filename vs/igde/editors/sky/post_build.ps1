@@ -23,7 +23,7 @@ Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir "$DataTargetDir" -Pattern 
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules"
+$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules\sky"
 Write-Host "Sky Editor: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\igde_editor\sky\sky.pdb" -Destination $TargetDir

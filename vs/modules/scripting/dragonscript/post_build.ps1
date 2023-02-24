@@ -60,4 +60,4 @@ $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\scripting\dragonscript\$Versi
 Write-Host "DragonScript Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\de_module\scripting\dragonscript\scrdscript.pdb" -Destination $TargetDir
-Install-Files "$RuntimeDir\pdb" -Destination $TargetDir
+Install-Files "$RuntimeDir\pdb\libdscript.pdb" -Destination $TargetDir

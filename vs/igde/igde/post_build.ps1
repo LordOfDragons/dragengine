@@ -19,7 +19,7 @@ Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir $DataTargetDir -Pattern "*
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistIGDEPdbBase"
+$TargetDir = "$OutputDir\$PathDistIGDEPdbBin"
 Write-Host "Igde Debug: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\deigde\deigde.pdb" -Destination $TargetDir
