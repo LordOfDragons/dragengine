@@ -118,6 +118,7 @@ jobs:
           Compress-Archive -Path "$DistributeDir/Igde/Application/*" -DestinationPath "deigde-${{ inputs.releaseVersion }}-windows64.zip"
           Compress-Archive -Path "$DistributeDir/Igde/SDK/*" -DestinationPath "deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip"
           Compress-Archive -Path "$DistributeDir/Igde/Debug/*" -DestinationPath "deigde-dbg-${{ inputs.releaseVersion }}-windows64.zip"
+          Compress-Archive -Path "$DistributeDir/Live/*" -DestinationPath "despecial-${{ inputs.releaseVersion }}-windows64.zip"
         
       - name: Store Archives
         uses: actions/upload-artifact@v3
@@ -130,5 +131,5 @@ jobs:
             deigde-${{ inputs.releaseVersion }}-windows64.zip
             deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip
             deigde-dbg-${{ inputs.releaseVersion }}-windows64.zip
-            # despecial-${{ inputs.releaseVersion }}-windows64.zip
+            despecial-${{ inputs.releaseVersion }}-windows64.zip
           if-no-files-found: error
