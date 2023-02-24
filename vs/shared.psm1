@@ -168,7 +168,7 @@ New-Variable -Name PathDistIGDESystem -Value "$PathDistIGDE\@System" -Scope Glob
 New-Variable -Name PathDistIGDEBin -Value "$PathDistIGDEBase\Bin" -Scope Global -Option ReadOnly -Force
 
 New-Variable -Name PathDistIGDESdk -Value "Distribute\Igde\SDK" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistIGDESdkBase -Value "$PathDistIGDESdk\@ProgramFiles\Igde\SDK" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDESdkBase -Value "$PathDistIGDESdk\@ProgramFiles\DEIGDE\SDK" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDESdkInc -Value "$PathDistIGDESdkBase\include" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDESdkLib -Value "$PathDistIGDESdkBase\lib" -Scope Global -Option ReadOnly -Force
 
