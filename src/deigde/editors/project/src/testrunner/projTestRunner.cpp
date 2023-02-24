@@ -205,7 +205,7 @@ bool projTestRunner::IsRunning(){
 			
 		}else{
 			pWindowMain.GetLogger()->LogInfoFormat( LOGSOURCE,
-				"Test-Runner stopped running with exit code %d", exitCode );
+				"Test-Runner stopped running with exit code %d", ( int )exitCode );
 
 			pProcessHandle = INVALID_HANDLE_VALUE;
 			return false; // process stopped
