@@ -951,7 +951,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pInitCapabilities();
 	
 	if( ! pExtensions->VerifyPresence() ){ // capabilities possibly disabled extensions
-		DETHROW( deeInvalidAction );
+		DETHROW_INFO( deeInvalidAction,
+			"Required extensions or functions could not be found. Please see logs" );
 	}
 	
 	// debug information
@@ -1415,7 +1416,8 @@ void deoglRenderThread::pInitExtensions(){
 	//}
 	
 	if( ! pExtensions->VerifyPresence() ){
-		DETHROW( deeInvalidAction );
+		DETHROW_INFO( deeInvalidAction,
+			"Required extensions or functions could not be found. Please see logs" );
 	}
 	
 	// enable states never touched again later (and that can not be changed)
