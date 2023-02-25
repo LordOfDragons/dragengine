@@ -101,8 +101,11 @@ with zipfile.ZipFile(os.path.join(buildDir, '{}.msixupload'.format(baseName)), '
 
 
 # igde
+
 # copied until microsoft provides a solution for this problem
 copyArchiveFiles(artifactDragengine, os.path.join(buildDir, 'msix/deigde'))
+copyArchiveFiles(artifactDragengineDbg, os.path.join(buildDir, 'appxsym/deigde'))
+
 # end of microsoft hack
 copyArchiveFiles(artifactIgde, os.path.join(buildDir, 'msix/deigde'))
 copyDataFiles(os.path.join(srcDir, 'msix-data/deigde'), os.path.join(buildDir, 'msix/deigde'))
