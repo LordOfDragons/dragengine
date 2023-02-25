@@ -499,6 +499,9 @@ private:
 		const char *funcNameExtension1, const char *funcNameExtension2, int extensionIndex );
 	void pGetOptionalFunctionExt( void **funcPointer, const char *funcName, int extensionIndex );
 	void pGetOptionalFunctionArbExt( void **funcPointer, const char *funcName, int extensionIndex );
+	
+	bool pVerifyExtensionPresent( eExtensions extension ) const;
+	bool pVerifyExtensionPresent( eExtensions extension1, eExtensions extension2 ) const;
 };
 
 #endif

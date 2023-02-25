@@ -288,14 +288,14 @@ void deoglExtensions::PrintSummary(){
 bool deoglExtensions::VerifyPresence(){
 	bool allPresent = pHasRequiredFunctions;
 	
-	allPresent &= pHasExtension[ ext_ARB_depth_clamp ];
-	allPresent &= pHasExtension[ ext_ARB_copy_image ] || pHasExtension[ ext_NV_copy_image ];
-	allPresent &= pHasExtension[ ext_ARB_compute_shader ];
-	allPresent &= pHasExtension[ ext_ARB_shader_storage_buffer_object ];
-	allPresent &= pHasExtension[ ext_ARB_shader_image_load_store ];
-	allPresent &= pHasExtension[ ext_ARB_shading_language_420pack ];
-	allPresent &= pHasExtension[ ext_ARB_shader_atomic_counters ];
-	// allPresent &= pHasExtension[ ext_ARB_gpu_shader_fp64 ];
+	allPresent &= pVerifyExtensionPresent( ext_ARB_depth_clamp );
+	allPresent &= pVerifyExtensionPresent( ext_ARB_copy_image, ext_NV_copy_image );
+	allPresent &= pVerifyExtensionPresent( ext_ARB_compute_shader );
+	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_storage_buffer_object );
+	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_image_load_store );
+	allPresent &= pVerifyExtensionPresent( ext_ARB_shading_language_420pack );
+	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_atomic_counters );
+	// allPresent &= pVerifyExtensionPresent( ext_ARB_gpu_shader_fp64 );
 	allPresent &= pSupportsGeometryShader;
 	
 	return allPresent;
@@ -1342,4 +1342,19 @@ void deoglExtensions::pGetOptionalFunctionArbExt( void **funcPointer, const char
 	const decString funcNameARB = decString( funcName ) + "ARB";
 	const decString funcNameExt = decString( funcName ) + "Ext";
 	pGetOptionalFunction( funcPointer, funcName, funcNameARB, funcNameExt, extensionIndex );
+}
+
+bool deoglExtensions::pVerifyExtensionPresent( eExtensions extension ) const{
+	if( ! pHasExtension[ extension ] ){
+		pRenderThread.GetLogger().LogErrorFormat( "Missing required extension: %s", vExtensionNames[ extension ] );
+	}
+	return pHasExtension[ extension ];
+}
+
+bool deoglExtensions::pVerifyExtensionPresent( eExtensions extension1, eExtensions extension2 ) const{
+	if( ! pHasExtension[ extension1 ] || pHasExtension[ extension2 ] ){
+		pRenderThread.GetLogger().LogErrorFormat( "Missing required extension: %s or %s",
+			vExtensionNames[ extension1 ], vExtensionNames[ extension2 ] );
+	}
+	return pHasExtension[ extension1 ] || pHasExtension[ extension2 ];
 }
