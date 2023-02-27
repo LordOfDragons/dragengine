@@ -6,6 +6,7 @@
 	
 	<shaderStorageBlock name='Element' target='0'/>
 	<shaderStorageBlock name='VisibleElement' target='1'/>
+	<shaderStorageBlock name='ElementCullResult' target='2'/>
 	
 	<sourceCode unit='compute'>v130/compute/defren/plan/find_content_element.glsl</sourceCode>
 </shader>

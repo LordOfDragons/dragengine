@@ -88,31 +88,26 @@ pPlan( plan )
 	pUBOFindConfig->GetParameterAt( efcpLodOffset ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpLodMethod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->MapToStd140();
-	pUBOFindConfig->SetBindingPoint( 0 );
 	
 	pSSBOSearchNodes.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
 	pSSBOSearchNodes->SetRowMajor( rowMajor );
 	pSSBOSearchNodes->SetParameterCount( 1 );
 	pSSBOSearchNodes->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 	pSSBOSearchNodes->MapToStd140();
-	pSSBOSearchNodes->SetBindingPoint( 2 );
 	
 	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
 	pSSBOCounters->SetRowMajor( rowMajor );
 	pSSBOCounters->SetParameterCount( 2 );
 	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
 	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pSSBOCounters->SetElementCount( 1 );
+	pSSBOCounters->SetElementCount( 2 );
 	pSSBOCounters->MapToStd140();
-	pSSBOCounters->SetBindingPoint( 3 );
-	pSSBOCounters->SetBindingPointAtomic( 0 );
 	
 	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
 	pSSBOVisibleElements->SetRowMajor( rowMajor );
 	pSSBOVisibleElements->SetParameterCount( 1 );
 	pSSBOVisibleElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 	pSSBOVisibleElements->MapToStd140();
-	pSSBOVisibleElements->SetBindingPoint( 1 );
 }
 
 deoglRenderPlanCompute::~deoglRenderPlanCompute(){
@@ -388,7 +383,7 @@ void deoglRenderPlanCompute::pClearCounters(){
 	const deoglSPBMapBuffer mapped( ssbo );
 	int i;
 	
-	for( i=0; i<1; i++ ){
+	for( i=0; i<ssbo.GetElementCount(); i++ ){
 		ssbo.SetParameterDataUVec3( 0, i, 0, 1, 1 ); // work group size (x=0)
 		ssbo.SetParameterDataUInt( 1, i, 0 ); // count
 	}

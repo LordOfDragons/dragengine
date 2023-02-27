@@ -5,12 +5,12 @@ precision highp int;
 #include "v130/shared/defren/plan/world_element.glsl"
 
 
-UBOLAYOUT_BIND(0) writeonly buffer Element {
-	sElement pElement[];
+UBOLAYOUT_BIND(0) readonly buffer UpdateElement {
+	sElement pUpdateElement[];
 };
 
-UBOLAYOUT_BIND(1) readonly buffer UpdateElement {
-	sElement pUpdateElement[];
+UBOLAYOUT_BIND(1) writeonly buffer Element {
+	sElement pElement[];
 };
 
 uniform uint pUpdateElementCount;

@@ -153,41 +153,55 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
 	const deoglDebugTraceGroup dt( pPlan.GetRenderThread(), "PlanTasks.BuildRenderTasks" );
 	const deoglRenderPlanCompute &compute = pPlan.GetCompute();
+	deoglSPBlockSSBO &counters = compute.GetSSBOCounters();
+	
+	const int elementCount = pPlan.GetWorld()->GetCompute().GetElementCount();
+	if( elementCount > renderCompute.GetSSBOElementCullResult()->GetElementCount() ){
+		renderCompute.GetSSBOElementCullResult()->SetElementCount( elementCount );
+		renderCompute.GetSSBOElementCullResult()->EnsureBuffer();
+	}
+	
+	const int geometryCount = pPlan.GetWorld()->GetCompute().GetElementGeometryCount();
+	if( geometryCount > renderCompute.GetSSBOVisibleGeometries()->GetElementCount() ){
+		renderCompute.GetSSBOVisibleGeometries()->SetElementCount( geometryCount );
+		renderCompute.GetSSBOVisibleGeometries()->EnsureBuffer();
+	}
 	
 	renderCompute.ClearCullResult( pPlan );
 	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
-		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), false );
+		compute.GetSSBOVisibleElements(), counters, false );
+	renderCompute.FindGeometries( pPlan, counters );
 	
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
 	pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
-	renderCompute.BuildRenderTask( pPlan, pCRTSolidDepth );
+	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepth );
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidGeometry" );
 	pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
-	renderCompute.BuildRenderTask( pPlan, pCRTSolidGeometry );
+	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometry );
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidDepth" );
 	pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
-	renderCompute.BuildRenderTask( pPlan, pCRTSolidDepthXRay );
+	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepthXRay );
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidGeometry" );
 	pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
-	renderCompute.BuildRenderTask( pPlan, pCRTSolidGeometryXRay );
+	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometryXRay );
 	}
 	
 	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
 		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), true );
 	
-	// start sky light render task building. by doing it here we can continue updating rull
+	// start sky light render task building. by doing it here we can continue updating cull
 	// results avoiding to do another ClearCullResult()
-	int i;
-	for( i=0; i<pPlan.GetSkyLightCount(); i++ ){
+	// int i;
+	// for( i=0; i<pPlan.GetSkyLightCount(); i++ ){
 		// pPlan.GetSkyLightAt( i )->StartBuildRT();
-	}
+	// }
 }
 
 void deoglRenderPlanTasks::StartBuildTasks( const deoglRenderPlanMasked *mask ){

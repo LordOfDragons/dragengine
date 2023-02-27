@@ -117,8 +117,14 @@ public:
 	/** Activate buffer as atomic buffer. */
 	void ActivateAtomic() const;
 	
+	/** Activate buffer as atomic buffer overriding binding point. */
+	void ActivateAtomic( int bindingPoint ) const;
+	
 	/** Deactivate buffer as atomic buffer. */
 	void DeactivateAtomic() const;
+	
+	/** Deactivate buffer as atomic buffer overriding binding point. */
+	void DeactivateAtomic( int bindingPoint ) const;
 	
 	/** Activate buffer as dispatch indirect. */
 	void ActivateDispatchIndirect() const;

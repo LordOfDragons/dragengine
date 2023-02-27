@@ -39,6 +39,7 @@ private:
 	const deoglPipeline *pPipelineFindContentElement;
 	const deoglPipeline *pPipelineFindContentSkyLight;
 	const deoglPipeline *pPipelineFindContentSkyLightGI;
+	const deoglPipeline *pPipelineFindGeometries;
 	const deoglPipeline *pPipelineClearCullResult;
 	const deoglPipeline *pPipelineUpdateCullResultSet;
 	const deoglPipeline *pPipelineUpdateCullResultClear;
@@ -47,6 +48,8 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
 	deoglSPBlockSSBO::Ref pSSBOUpdateElementGeometries;
 	deoglSPBlockSSBO::Ref pSSBOUpdateIndices;
+	deoglSPBlockSSBO::Ref pSSBOElementCullResult;
+	deoglSPBlockSSBO::Ref pSSBOVisibleGeometries;
 	
 	
 	
@@ -73,6 +76,12 @@ public:
 	/** SSBO update element geometry index. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateIndices() const{ return pSSBOUpdateIndices; }
 	
+	/** SSBO element cull result. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOElementCullResult() const{ return pSSBOElementCullResult; }
+	
+	/** SSBO visible geometries. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleGeometries() const{ return pSSBOVisibleGeometries; }
+	
 	/** Update elements. */
 	void UpdateElements( const deoglRenderPlan &plan );
 	
@@ -91,8 +100,12 @@ public:
 	void UpdateCullResult( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
 		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, bool clear );
 	
+	/** Find geometries. */
+	void FindGeometries( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters );
+	
 	/** Buil render task. */
-	void BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
+	void BuildRenderTask( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters,
+		deoglComputeRenderTask &renderTask );
 	/*@}*/
 	
 	

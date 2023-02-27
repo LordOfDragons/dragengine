@@ -172,7 +172,6 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 		pSSBOSkinTextures->SetParameterCount( 1 );
 		pSSBOSkinTextures->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 		pSSBOSkinTextures->MapToStd140();
-		pSSBOSkinTextures->SetBindingPoint( 2 );
 		pSSBOSkinTextures->SetElementCount( 1 );
 	}
 	

@@ -392,7 +392,7 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 	}
 	
 		// decTimer timer;
-	const sCounters * const counters = ( sCounters* )pSSBOCounters->ReadBuffer();
+	const sCounters * const counters = ( sCounters* )pSSBOCounters->ReadBuffer( 1 );
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = counters[ 0 ].counter;
 	if( indexCount == 0 ){

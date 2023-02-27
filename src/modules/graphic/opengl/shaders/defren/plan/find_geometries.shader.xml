@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Find Geometries</name>
+	
+	<parameter name='pGeometryCount'/>
+	
+	<shaderStorageBlock name='ElementGeometry' target='0'/>
+	<shaderStorageBlock name='ElementCullResult' target='1'/>
+	<shaderStorageBlock name='VisibleGeometry' target='2'/>
+	
+	<sourceCode unit='compute'>v130/compute/defren/plan/find_geometries.glsl</sourceCode>
+</shader>

@@ -116,7 +116,7 @@ void deoglRComponent::WorldComputeElement::UpdateData( sDataElement &data ) cons
 	data.SetExtends( pComponent.GetMinimumExtend() - refpos, pComponent.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pComponent.GetLayerMask() );
 	data.geometryCount = ( pComponent.GetTextureCount() + pComponent.GetOutlineTextureCount() ) * pComponent.GetLODCount();
-	data.highestLod = pComponent.GetLODCount() - 1;
+	data.highestLod = decMath::min( pComponent.GetLODCount() - 1, 15 );
 	
 	data.flags = ( uint32_t )deoglWorldCompute::eefComponent;
 	if( ! pComponent.GetRenderStatic() ){

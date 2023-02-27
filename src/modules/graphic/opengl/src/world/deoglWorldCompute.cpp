@@ -69,7 +69,6 @@ pUpdateElementGeometryCount( 0 )
 	pSSBOElements->GetParameterAt( espeCullResult ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->GetParameterAt( espeLodIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->MapToStd140();
-	pSSBOElements->SetBindingPoint( 0 );
 	
 	pSSBOElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOElementGeometries->SetRowMajor( rowMajor );
@@ -84,7 +83,6 @@ pUpdateElementGeometryCount( 0 )
 	pSSBOElementGeometries->GetParameterAt( espetSPBInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElementGeometries->GetParameterAt( espetTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOElementGeometries->MapToStd140();
-	pSSBOElementGeometries->SetBindingPoint( 3 );
 	
 	pSharedSPBGeometries.TakeOver( new deoglSharedBlockSPB( pSSBOElementGeometries ) );
 }

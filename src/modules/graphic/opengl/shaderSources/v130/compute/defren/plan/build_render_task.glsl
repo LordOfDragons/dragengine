@@ -10,16 +10,25 @@ precision highp int;
 #include "v130/shared/defren/plan/render_task.glsl"
 
 
-UBOLAYOUT_BIND(0) readonly buffer Element {
-	sElement pElement[];
-};
-
-UBOLAYOUT_BIND(3) readonly buffer ElementGeometry {
+UBOLAYOUT_BIND(0) readonly buffer ElementGeometry {
 	sElementGeometry pElementGeometries[];
 };
 
-UBOLAYOUT_BIND(2) readonly buffer SkinTexturePipelines {
+UBOLAYOUT_BIND(1) readonly buffer SkinTexturePipelines {
 	uvec4 pSkinTexturePipelines[];
+};
+
+UBOLAYOUT_BIND(2) readonly buffer VisibleGeometry {
+	uvec4 pVisibleGeometry[];
+};
+
+struct sCounter {
+	uvec3 workGroupSize;
+	uint counter;
+};
+
+UBOLAYOUT_BIND(3) readonly buffer Counters {
+	sCounter pVisibleGeometryCounters[ 2 ];
 };
 
 UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
@@ -47,36 +56,24 @@ const uint dispatchWorkGroupSize = uint( 64 );
 void main( void ){
 	#define config pRenderTaskConfig[ pPass ]
 	
-	if( gl_GlobalInvocationID.x >= config.elementGeometryCount ){
+	if( gl_GlobalInvocationID.x >= pVisibleGeometryCounters[ 1 ].counter ){
 		return;
 	}
 	
-	uint index = gl_GlobalInvocationID.x;
-	uint elementIndex = pElementGeometries[ index ].element;
-	bvec3 cond;
+	uint visibleIndex = gl_GlobalInvocationID.x;
 	
+	uint visInd1 = visibleIndex / uint( 4 );
+	uint visInd2 = visibleIndex % uint( 4 );
+	uint visibleGeometry = pVisibleGeometry[ visInd1 ][ visInd2 ];
 	
-	uint cullResult = pElement[ elementIndex ].cullResult;
+	uint geometryIndex = visibleGeometry & uint( 0xffffff );
 	
-	// check if element is visible. cullResult is actually composed of the visibility (bit 8)
-	// and the cull result flags (bit 0-7). since though the cull result flags are not
-	// written unless the element is visible the value of cullResult is always 0 if the
-	// element is invisible and not 0 if visible
-	cond.x = cullResult == uint( 0 );
-	
-	// check geometry matches the lod level selected for the element
-	cond.y = pElementGeometries[ index ].lod != pElement[ elementIndex ].lodIndex;
-	
-	if( any( cond.xy ) ){
-		return;
-	}
-	
-	
-	uint pipelineBase = pElementGeometries[ index ].pipelineBase;
+	uint pipelineBase = pElementGeometries[ geometryIndex ].pipelineBase;
 	uint pipelineList = pipelineBase & uint( 0xff );
 	uint pipelineModifier = pipelineBase >> uint( 8 );
 	
 	// filter by pipeline list
+	bvec3 cond;
 	cond.x = ( config.filterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
 	
 	// filter cube face. we are using here the fact that if element is visible the bit 8
@@ -85,11 +82,12 @@ void main( void ){
 	// this line is then the same as this calculation given filter has only 1 face bit set:
 	// 
 	//   ((filter & 0x100) == 0x100) && ((cullResult & 0x3f) & (filter & 0x3f)) == 0
-	// 
-	cond.y = ( cullResult & config.filterCubeFace ) == uint( 0x100 );
+	//
+	uint cullFlags = visibleGeometry >> uint( 24 );
+	cond.y = ( ( cullFlags | ecrVisible ) & config.filterCubeFace ) == ecrVisible;
 	
 	// filter by render task filters. config.renderTaskFilters contains config.renderTaskFilterMask
-	cond.z = ( pElementGeometries[ index ].renderFilter & config.renderTaskFilterMask ) != config.renderTaskFilter;
+	cond.z = ( pElementGeometries[ geometryIndex ].renderFilter & config.renderTaskFilterMask ) != config.renderTaskFilter;
 	
 	if( any( cond ) ){
 		return;
@@ -99,9 +97,8 @@ void main( void ){
 	// add to render task
 	uint nextIndex = atomicCounterIncrement( pNextIndex );
 	
-	setRenderTaskStepGeometry( nextIndex, pPass, index,
-		pipelineList, config.pipelineType, config.pipelineModifier | pipelineModifier,
-		cullResult & uint( 0xff ) ); // NOTE masking not necessarily required
+	setRenderTaskStepGeometry( nextIndex, pPass, geometryIndex, pipelineList,
+		config.pipelineType, config.pipelineModifier | pipelineModifier, cullFlags );
 	
 	// if the count of steps increases by the dispatch workgroup size increment also the
 	// work group count. this way the upcoming dispatch indirect calls know the count

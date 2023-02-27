@@ -4,7 +4,8 @@
 	
 	<shaderStorageBlock name='Element' target='0'/>
 	<shaderStorageBlock name='VisibleElement' target='1'/>
-	<shaderStorageBlock name='Counters' target='3'/>
+	<shaderStorageBlock name='Counters' target='2'/>
+	<shaderStorageBlock name='ElementCullResult' target='3'/>
 	
 	<sourceCode unit='compute'>v130/compute/defren/plan/update_cull_result.glsl</sourceCode>
 </shader>

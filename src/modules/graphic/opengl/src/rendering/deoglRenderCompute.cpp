@@ -82,7 +82,6 @@ deoglRenderBase( renderThread )
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeCullResult ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLodIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElements->MapToStd140();
-	pSSBOUpdateElements->SetBindingPoint( 1 );
 	
 	pSSBOUpdateElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOUpdateElementGeometries->SetRowMajor( rowMajor );
@@ -97,14 +96,24 @@ deoglRenderBase( renderThread )
 	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetSPBInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOUpdateElementGeometries->MapToStd140();
-	pSSBOUpdateElementGeometries->SetBindingPoint( 1 );
 	
 	pSSBOUpdateIndices.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOUpdateIndices->SetRowMajor( rowMajor );
 	pSSBOUpdateIndices->SetParameterCount( 1 );
 	pSSBOUpdateIndices->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOUpdateIndices->MapToStd140();
-	pSSBOUpdateIndices->SetBindingPoint( 2 );
+	
+	pSSBOElementCullResult.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOElementCullResult->SetRowMajor( rowMajor );
+	pSSBOElementCullResult->SetParameterCount( 1 );
+	pSSBOElementCullResult->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+	pSSBOElementCullResult->MapToStd140();
+	
+	pSSBOVisibleGeometries.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOVisibleGeometries->SetRowMajor( rowMajor );
+	pSSBOVisibleGeometries->SetParameterCount( 1 );
+	pSSBOVisibleGeometries->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+	pSSBOVisibleGeometries->MapToStd140();
 	
 	
 	// update elements
@@ -132,7 +141,6 @@ deoglRenderBase( renderThread )
 	
 	// find content sky light
 	defines = commonDefines;
-	defines.SetDefines( "DIRECT_ELEMENTS" );
 	defines.SetDefines( "CULL_SKY_LIGHT_FRUSTUM" );
 	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
 	pPipelineFindContentSkyLight = pipelineManager.GetWith( pipconf );
@@ -140,11 +148,15 @@ deoglRenderBase( renderThread )
 	
 	// find content sky light GI
 	defines = commonDefines;
-	defines.SetDefines( "DIRECT_ELEMENTS" );
 	defines.SetDefines( "CULL_SKY_LIGHT_GIBOX" );
 	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
 	pPipelineFindContentSkyLightGI = pipelineManager.GetWith( pipconf );
 	
+	
+	// find geometries
+	defines = commonDefines;
+	pipconf.SetShader( renderThread, "DefRen Plan Find Geometries", defines );
+	pPipelineFindGeometries = pipelineManager.GetWith( pipconf );
 	
 	
 	// clear cull result
@@ -185,8 +197,8 @@ void deoglRenderCompute::UpdateElements( const deoglRenderPlan &plan ){
 	
 	pPipelineUpdateElements->Activate();
 	
-	wcompute.GetSSBOElements()->Activate();
-	pSSBOUpdateElements->Activate();
+	wcompute.GetSSBOElements()->Activate( 0 );
+	pSSBOUpdateElements->Activate( 1 );
 	
 	pPipelineUpdateElements->GetGlShader().SetParameterUInt( 0, wcompute.GetUpdateElementCount() );
 	OGL_CHECK( renderThread, pglDispatchCompute(
@@ -205,9 +217,9 @@ void deoglRenderCompute::UpdateElementGeometries( const deoglRenderPlan &plan ){
 	
 	pPipelineUpdateElementGeometries->Activate();
 	
-	wcompute.GetSSBOElementGeometries()->Activate();
-	pSSBOUpdateElementGeometries->Activate();
-	pSSBOUpdateIndices->Activate();
+	pSSBOUpdateElementGeometries->Activate( 0 );
+	pSSBOUpdateIndices->Activate( 1 );
+	wcompute.GetSSBOElementGeometries()->Activate( 2 );
 	
 	pPipelineUpdateElementGeometries->GetGlShader().SetParameterUInt( 0, wcompute.GetUpdateElementCount() );
 	OGL_CHECK( renderThread, pglDispatchCompute(
@@ -225,46 +237,13 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContent" );
 	const deoglRenderPlanCompute &planCompute = plan.GetCompute();
 	
-	
-	// find nodes
-#if 0
-	pPipelineFindContentNode->Activate();
-	
-	planCompute.GetUBOFindConfig()->Activate();
-	octree.GetSSBONodes()->Activate();
-	octree.GetSSBOElements()->Activate();
-	planCompute.GetSSBOSearchNodes()->Activate();
-	planCompute.GetSSBOCounters()->ActivateAtomic();
-	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( octree.GetNodeCount() - 1 ) / 64 + 1, 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
-	
-	
-	pPipelineFindContentElement->Activate();
-	
-	planCompute.GetUBOFindConfig()->Activate();
-	octree.GetSSBONodes()->Activate();
-	octree.GetSSBOElements()->Activate();
-	planCompute.GetSSBOSearchNodes()->Activate();
-	planCompute.GetSSBOCounters()->Activate();
-	planCompute.GetSSBOVisibleElements()->Activate();
-	planCompute.GetSSBOCounters()->ActivateAtomic();
-	
-	planCompute.GetSSBOCounters()->ActivateDispatchIndirect();
-	OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
-	planCompute.GetSSBOCounters()->DeactivateDispatchIndirect();
-#endif
-	
 	// find content
 	pPipelineFindContentElement->Activate();
 	
-	planCompute.GetUBOFindConfig()->Activate();
-	wcompute.GetSSBOElements()->Activate();
-	planCompute.GetSSBOVisibleElements()->Activate();
-	planCompute.GetSSBOCounters()->ActivateAtomic();
-		/* TEMP */ if(wcompute.GetSSBOElementGeometries()->GetSSBO()) wcompute.GetSSBOElementGeometries()->Activate();
+	planCompute.GetUBOFindConfig()->Activate( 0 );
+	wcompute.GetSSBOElements()->Activate( 0 );
+	planCompute.GetSSBOVisibleElements()->Activate( 1 );
+	planCompute.GetSSBOCounters()->ActivateAtomic( 0 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
@@ -282,10 +261,10 @@ void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &pla
 	
 	pPipelineFindContentSkyLight->Activate();
 	
-	planLight.GetUBOFindConfig()->Activate();
-	wcompute.GetSSBOElements()->Activate();
-	planLight.GetSSBOVisibleElements()->Activate();
-	planLight.GetSSBOCounters()->ActivateAtomic();
+	planLight.GetUBOFindConfig()->Activate( 0 );
+	wcompute.GetSSBOElements()->Activate( 0 );
+	planLight.GetSSBOVisibleElements()->Activate( 1 );
+	planLight.GetSSBOCounters()->ActivateAtomic( 0 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
@@ -303,10 +282,10 @@ void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &p
 	
 	pPipelineFindContentSkyLightGI->Activate();
 	
-	planLight.GetUBOFindConfigGI()->Activate();
-	wcompute.GetSSBOElements()->Activate();
-	planLight.GetSSBOVisibleElementsGI()->Activate();
-	planLight.GetSSBOCountersGI()->ActivateAtomic();
+	planLight.GetUBOFindConfigGI()->Activate( 0 );
+	wcompute.GetSSBOElements()->Activate( 0 );
+	planLight.GetSSBOVisibleElementsGI()->Activate( 1 );
+	planLight.GetSSBOCountersGI()->ActivateAtomic( 0 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
@@ -325,10 +304,11 @@ void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
 	
 	pPipelineClearCullResult->Activate();
 	
-	pPipelineClearCullResult->GetGlShader().SetParameterUInt( 0, elementCount );
-	wcompute.GetSSBOElements()->Activate();
+	const int count = ( elementCount - 1 ) / 4 + 1;
+	pPipelineClearCullResult->GetGlShader().SetParameterUInt( 0, count );
+	pSSBOElementCullResult->Activate( 0 );
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( elementCount - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
 }
 
@@ -339,10 +319,11 @@ const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, bool 
 	
 	( clear ? pPipelineUpdateCullResultClear : pPipelineUpdateCullResultSet )->Activate();
 	
-	findConfig.Activate();
-	plan.GetWorld()->GetCompute().GetSSBOElements()->Activate();
-	visibleElements.Activate();
-	counters.Activate();
+	findConfig.Activate( 0 );
+	plan.GetWorld()->GetCompute().GetSSBOElements()->Activate( 0 );
+	visibleElements.Activate( 1 );
+	counters.Activate( 2 );
+	pSSBOElementCullResult->Activate( 3 );
 	
 	counters.ActivateDispatchIndirect();
 	OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
@@ -350,23 +331,49 @@ const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, bool 
 	counters.DeactivateDispatchIndirect();
 }
 
-void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask ){
+void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters ){
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	const int geometryCount = wcompute.GetElementGeometryCount();
+	if( geometryCount == 0 ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindGeometries" );
+	
+	pPipelineFindGeometries->Activate();
+	
+	wcompute.GetSSBOElementGeometries()->Activate( 0 );
+	pSSBOElementCullResult->Activate( 1 );
+	pSSBOVisibleGeometries->Activate( 2 );
+	counters.ActivateAtomic( 0 );
+	
+	pPipelineFindGeometries->GetGlShader().SetParameterUInt( 0, geometryCount );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( geometryCount - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+}
+
+void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan,
+const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.BuildRenderTask" );
 	
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
-	const int geometryCount = wcompute.GetElementGeometryCount();
-	DEASSERT_TRUE( geometryCount > 0 )
+	DEASSERT_TRUE( wcompute.GetElementGeometryCount() > 0 )
 	
 	// build render task
 	pPipelineBuildRenderTask->Activate();
 	
-	renderTask.GetUBOConfig()->Activate();
-	wcompute.GetSSBOElements()->Activate();
-	wcompute.GetSSBOElementGeometries()->Activate();
-	renderThread.GetShader().GetSSBOSkinTextures()->Activate();
-	renderTask.GetSSBOSteps()->Activate();
-	renderTask.GetSSBOCounters()->ActivateAtomic();
+	renderTask.GetUBOConfig()->Activate( 0 );
+	wcompute.GetSSBOElementGeometries()->Activate( 0 );
+	renderThread.GetShader().GetSSBOSkinTextures()->Activate( 1 );
+	pSSBOVisibleGeometries->Activate( 2 );
+	counters.Activate( 3 );
+	renderTask.GetSSBOSteps()->Activate( 4 );
+	renderTask.GetSSBOCounters()->ActivateAtomic( 0 );
+	
+	counters.ActivateDispatchIndirect();
 	
 	deoglShaderCompiled &shader = pPipelineBuildRenderTask->GetGlShader();
 	const int passCount = renderTask.GetPassCount();
@@ -374,10 +381,12 @@ void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan, deoglComp
 	
 	for( i=0; i<passCount; i++ ){
 		shader.SetParameterInt( 0, i );
-		OGL_CHECK( renderThread, pglDispatchCompute( ( geometryCount - 1 ) / 64 + 1, 1, 1 ) );
-		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
-			| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+		OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
 	}
+	
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	counters.DeactivateDispatchIndirect();
 	
 	// sort render task
 }
