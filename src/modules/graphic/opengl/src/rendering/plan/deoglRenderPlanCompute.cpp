@@ -60,7 +60,7 @@ pPlan( plan )
 	
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( plan.GetRenderThread() ) );
 	pUBOFindConfig->SetRowMajor( rowMajor );
-	pUBOFindConfig->SetParameterCount( 22 );
+	pUBOFindConfig->SetParameterCount( 26 );
 	pUBOFindConfig->GetParameterAt( efcpNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4[6]
@@ -83,6 +83,10 @@ pPlan( plan )
 	pUBOFindConfig->GetParameterAt( efcpSplitMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 4 ); // vec3[4]
 	pUBOFindConfig->GetParameterAt( efcpSplitSizeThreshold ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 4 ); // vec2[4]
 	pUBOFindConfig->GetParameterAt( efcpSplitCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	pUBOFindConfig->GetParameterAt( efcpLodFactor ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	pUBOFindConfig->GetParameterAt( efcpLodMaxPixelError ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	pUBOFindConfig->GetParameterAt( efcpLodOffset ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pUBOFindConfig->GetParameterAt( efcpLodMethod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->MapToStd140();
 	pUBOFindConfig->SetBindingPoint( 0 );
 	
@@ -225,6 +229,9 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 					cluster.GetHTSector()->GetIndex() )->GetClusterAt( cluster.GetIndex() ) );
 			}
 			break;
+			
+		case deoglWorldComputeElement::eetDecal:
+			break;
 		}
 	}
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: list %dys", (int)(timer.GetElapsedTime()*1e6f));
@@ -355,6 +362,18 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 		cullFlags |= deoglWorldCSOctree::ecsefComponentDynamic;
 	}
 	ubo.SetParameterDataUInt( efcpCullFlags, cullFlags );
+	
+	// lod calculation
+	const float fovX = pPlan.GetCameraFov();
+	const float fovY = fovX * pPlan.GetCameraFovRatio();
+	const float maxPixelError = pPlan.GetLodMaxPixelError();
+	const float lodFactorX = tanf( fovX * 0.5f ) * maxPixelError / pPlan.GetViewportWidth();
+	const float lodFactorY = tanf( fovY * 0.5f ) * maxPixelError / pPlan.GetViewportHeight();
+	
+	ubo.SetParameterDataFloat( efcpLodFactor, decMath::min( lodFactorX, lodFactorY ) );
+	ubo.SetParameterDataFloat( efcpLodMaxPixelError, pPlan.GetLodMaxPixelError() );
+	ubo.SetParameterDataUInt( efcpLodOffset, pPlan.GetLodLevelOffset() );
+	ubo.SetParameterDataUInt( efcpLodMethod, elmProjection );
 }
 
 void deoglRenderPlanCompute::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count ){

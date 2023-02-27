@@ -2,6 +2,8 @@
 <shader>
 	<name>DefRen Plan Build Render Task</name>
 	
+	<parameter name='pPass'/>
+	
 	<uniformBlock name='RenderTaskConfig' target='0'/>
 	
 	<shaderStorageBlock name='Element' target='0'/>

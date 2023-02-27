@@ -57,7 +57,19 @@ public:
 		efcpSplitMinExtend,
 		efcpSplitMaxExtend,
 		efcpSplitSizeThreshold,
-		efcpSplitCount
+		efcpSplitCount,
+		efcpLodFactor,
+		efcpLodMaxPixelError,
+		efcpLodOffset,
+		efcpLodMethod
+	};
+	
+	/** Lod method. */
+	enum eLodMethod{
+		elmLowest,
+		elmHighest,
+		elmProjection,
+		elmOrthogonal
 	};
 	
 	

@@ -23,6 +23,7 @@
 #define _DEOGLRENDERERPLANTASKS_H_
 
 #include "../task/deoglRenderTask.h"
+#include "../task/deoglComputeRenderTask.h"
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
@@ -55,6 +56,12 @@ private:
 	
 	deoglRPTBuildRTsDepth *pTaskDepth;
 	deoglRPTBuildRTsGeometry *pTaskGeometry;
+	
+	deoglComputeRenderTask::Ref pCRTSolidDepth;
+	deoglComputeRenderTask::Ref pCRTSolidGeometry;
+	
+	deoglComputeRenderTask::Ref pCRTSolidDepthXRay;
+	deoglComputeRenderTask::Ref pCRTSolidGeometryXRay;
 	
 	
 	
@@ -107,6 +114,17 @@ public:
 	
 	
 	
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepth() const{ return pCRTSolidDepth; }
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometry() const{ return pCRTSolidGeometry; }
+	
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepthXRay() const{ return pCRTSolidDepthXRay; }
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometryXRay() const{ return pCRTSolidGeometryXRay; }
+	
+	
+	
+	/** Build compute render tasks. */
+	void BuildComputeRenderTasks( const deoglRenderPlanMasked *mask );
+	
 	/** Start building render tasks. */
 	void StartBuildTasks( const deoglRenderPlanMasked *mask );
 	
@@ -117,6 +135,15 @@ public:
 	/** Clean up after rendering. */
 	void CleanUp();
 	/*@}*/
+	
+	
+	
+private:
+	void pBuildCRTSolidDepth( deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray );
+	
+	void pBuildCRTSolidGeometry( deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray );
 };
 
 #endif

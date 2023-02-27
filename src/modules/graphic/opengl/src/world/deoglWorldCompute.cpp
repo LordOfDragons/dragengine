@@ -56,7 +56,7 @@ pUpdateElementGeometryCount( 0 )
 	
 	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOElements->SetRowMajor( rowMajor );
-	pSSBOElements->SetParameterCount( 9 );
+	pSSBOElements->SetParameterCount( 11 );
 	pSSBOElements->GetParameterAt( espeMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
 	pSSBOElements->GetParameterAt( espeFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->GetParameterAt( espeMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
@@ -64,8 +64,10 @@ pUpdateElementGeometryCount( 0 )
 	pSSBOElements->GetParameterAt( espeLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
 	pSSBOElements->GetParameterAt( espeFirstGeometry ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->GetParameterAt( espeGeometryCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElements->GetParameterAt( espeLodFirst ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElements->GetParameterAt( espeLodCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeLodFactors ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
+	pSSBOElements->GetParameterAt( espeHighestLod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeCullResult ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeLodIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->MapToStd140();
 	pSSBOElements->SetBindingPoint( 0 );
 	
@@ -96,6 +98,7 @@ deoglWorldCompute::~deoglWorldCompute(){
 	for( i=0; i<count; i++ ){
 		deoglWorldComputeElement &element = *( deoglWorldComputeElement* )pElements.GetAt( i );
 		element.SetIndex( -1 );
+		element.SetWorldCompute( nullptr );
 		element.GetSPBGeometries() = nullptr;
 	}
 	pElements.RemoveAll();
@@ -147,6 +150,7 @@ void deoglWorldCompute::AddElement( deoglWorldComputeElement *element ){
 	const int index = pElements.GetCount();
 	
 	pElements.Add( element );
+	element->SetWorldCompute( this );
 	element->SetIndex( index );
 	element->SetUpdateRequired( true );
 	
@@ -180,6 +184,7 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 	
 	element->GetSPBGeometries() = nullptr;
 	element->SetIndex( -1 );
+	element->SetWorldCompute( nullptr );
 	element->SetUpdateRequired( false );
 	element->SetUpdateGeometriesRequired( false );
 	
@@ -278,7 +283,7 @@ void deoglWorldCompute::pFullUpdateSSBOElements(){
 
 void deoglWorldCompute::pUpdateSSBOElement( deoglWorldComputeElement &element,
 deoglWorldComputeElement::sDataElement &data ){
-	element.UpdateData( *this, data );
+	element.UpdateData( data );
 	element.SetUpdateRequired( false );
 	
 	pCheckElementGeometryCount( element, data );
@@ -286,7 +291,6 @@ deoglWorldComputeElement::sDataElement &data ){
 	if( element.GetSPBGeometries() ){
 		data.firstGeometry = ( uint32_t )element.GetSPBGeometries()->GetIndex();
 	}
-	// data.lodFirst = ( uint32_t )element.GetFirstLod();
 }
 
 void deoglWorldCompute::pCheckElementGeometryCount( deoglWorldComputeElement &element,

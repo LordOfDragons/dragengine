@@ -1,9 +1,8 @@
 
 // set render task step
-void setRenderTaskStepGeometry( in uint renderStep, in uint geometry, in uint pipelineList,
-in uint pipelineType, in uint pipelineModifier, in uint specialFlags ){
-	setRenderTaskStep(
-		renderStep,
+void setRenderTaskStepGeometry( in uint renderStep, in uint pass, in uint geometry,
+in uint pipelineList, in uint pipelineType, in uint pipelineModifier, in uint specialFlags ){
+	setRenderTaskStep( renderStep, pass,
 		skinTexturePipeline(
 			pElementGeometries[ geometry ].skinTexture,
 			pipelineList,

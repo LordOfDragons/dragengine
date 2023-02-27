@@ -572,6 +572,12 @@ void deoglRenderPlanSkyLight::pPrepareFindConfig(){
 	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpCullFlags, cullFlags );
 	
 	pSetSplits( ubo, backtrack );
+	
+	// lod calculation
+	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodFactor, 0.0f );
+	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodMaxPixelError, pPlan.GetLodMaxPixelError() );
+	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodOffset, pPlan.GetLodLevelOffset() );
+	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodMethod, deoglRenderPlanCompute::elmOrthogonal );
 }
 
 void deoglRenderPlanSkyLight::pPrepareFindConfigGI(){
@@ -646,6 +652,12 @@ void deoglRenderPlanSkyLight::pPrepareFindConfigGI(){
 	// splits are not used for GI shadows but the minimum size restriction is.
 	// to avoid creating another method the AddSplit method is used for this
 	pSetGISplits( ubo );
+	
+	// lod calculation
+	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodFactor, 0.0f );
+	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodMaxPixelError, 1.0f );
+	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodOffset, 0 );
+	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodMethod, deoglRenderPlanCompute::elmHighest );
 }
 
 void deoglRenderPlanSkyLight::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count ){

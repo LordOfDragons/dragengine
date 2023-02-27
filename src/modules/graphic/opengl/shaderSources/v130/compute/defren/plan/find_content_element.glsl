@@ -14,8 +14,13 @@ precision highp int;
 	#include "v130/shared/defren/plan/split_mask.glsl"
 #endif
 
+#ifdef UPDATE_CULL_RESULT
+	#define ELEMENT_ACCESS_MODE
+#else
+	#define ELEMENT_ACCESS_MODE readonly
+#endif
 
-UBOLAYOUT_BIND(0) buffer Element {
+UBOLAYOUT_BIND(0) ELEMENT_ACCESS_MODE buffer Element {
 	sElement pElement[];
 };
 
@@ -38,6 +43,11 @@ UBOLAYOUT_BIND(3) readonly buffer Counters {
 UBOLAYOUT_BIND(3) readonly buffer ElementGeometry {
 	sElementGeometry pElementGeometries[];
 };
+
+
+#ifdef UPDATE_CULL_RESULT
+	#include "v130/shared/defren/plan/calc_lod.glsl"
+#endif
 
 
 layout( local_size_x=64 ) in;
@@ -101,6 +111,10 @@ void main( void ){
 			cond.x = intersectFrustum( minExtend, maxExtend );
 			cond.y = isLight && intersectGI( minExtend, maxExtend );
 			if( ! any( cond.xy ) ){
+				#ifdef UPDATE_CULL_RESULT
+					pElement[ index ].cullResult = 0;
+					pElement[ index ].lodIndex = 0;
+				#endif
 				SKIP_ELEMENT
 			}
 		#endif
@@ -124,6 +138,10 @@ void main( void ){
 				cond.y = notIntersectLightFrustum( npos, nhe );
 				
 				if( any( cond.xy ) ){
+					#ifdef UPDATE_CULL_RESULT
+						pElement[ index ].cullResult = 0;
+						pElement[ index ].lodIndex = 0;
+					#endif
 					SKIP_ELEMENT
 				}
 			#endif
@@ -133,6 +151,10 @@ void main( void ){
 				cond.yz = lessThanEqual( nhe.xy * vec2( 2 ), pSplitSizeThreshold[ 0 ] );
 				
 				if( any( cond.xyz ) ){
+					#ifdef UPDATE_CULL_RESULT
+						pElement[ index ].cullResult = 0;
+						pElement[ index ].lodIndex = 0;
+					#endif
 					SKIP_ELEMENT
 				}
 			#endif
@@ -144,6 +166,10 @@ void main( void ){
 		cond.y = any( notEqual( layerMask, uvec2( 0 ) ) ); // element.layerMask.IsNotEmpty()
 		cond.zw = equal( pLayerMask & layerMask, uvec2( 0 ) ); // pLayerMask.MatchesNot(element.layerMask)
 		if( all( cond ) ){
+			#ifdef UPDATE_CULL_RESULT
+				pElement[ index ].cullResult = 0;
+				pElement[ index ].lodIndex = 0;
+			#endif
 			SKIP_ELEMENT
 		}
 		
@@ -156,6 +182,10 @@ void main( void ){
 			cond.x = ! isLight;
 			cond.y = radius < dist * pErrorScaling;
 			if( all( cond.xy ) ){
+				#ifdef UPDATE_CULL_RESULT
+					pElement[ index ].cullResult = 0;
+					pElement[ index ].lodIndex = 0;
+				#endif
 				SKIP_ELEMENT
 			}
 		#endif
@@ -163,6 +193,10 @@ void main( void ){
 		// cull dynamic if required. used for components only since only only those
 		// set the static flag. if more complex culling is required this can be extended
 		if( ( pCullFlags & flags ) != uint( 0 ) ){
+			#ifdef UPDATE_CULL_RESULT
+				pElement[ index ].cullResult = 0;
+				pElement[ index ].lodIndex = 0;
+			#endif
 			SKIP_ELEMENT
 		}
 		
@@ -187,7 +221,10 @@ void main( void ){
 		}
 		
 		// update element with result
-		pElement[ index ].cullResult = resultFlags | ecrVisible;
+		#ifdef UPDATE_CULL_RESULT
+			pElement[ index ].cullResult = resultFlags | ecrVisible;
+			pElement[ index ].lodIndex = calcLod( index );
+		#endif
 		
 	#ifndef DIRECT_ELEMENTS
 	}

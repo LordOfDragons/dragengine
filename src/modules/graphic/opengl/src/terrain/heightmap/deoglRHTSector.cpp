@@ -143,19 +143,27 @@ void deoglRHTSector::AddToWorldCompute( deoglWorldCompute &worldCompute ){
 	}
 }
 
-void deoglRHTSector::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
+void deoglRHTSector::UpdateWorldCompute(){
+	if( ! pHeightTerrain.GetParentWorld() ){
+		return;
+	}
+	
 	const int count = pClusterCount * pClusterCount;
 	int i;
 	for( i=0; i<count; i++ ){
-		pClusters[ i ].UpdateWorldCompute( worldCompute );
+		pClusters[ i ].UpdateWorldCompute();
 	}
 }
 
-void deoglRHTSector::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
+void deoglRHTSector::RemoveFromWorldCompute(){
+	if( ! pHeightTerrain.GetParentWorld() ){
+		return;
+	}
+	
 	const int count = pClusterCount * pClusterCount;
 	int i;
 	for( i=0; i<count; i++ ){
-		pClusters[ i ].RemoveFromWorldCompute( worldCompute );
+		pClusters[ i ].RemoveFromWorldCompute();
 	}
 }
 
@@ -229,13 +237,14 @@ deoglHTSCluster & deoglRHTSector::GetClusterAt( const decPoint &coordinate ) con
 }
 
 void deoglRHTSector::ClustersUpdateWorldComputeElementTextures(){
-	if( pHeightTerrain.GetParentWorld() ){
-		deoglWorldCompute &worldCompute = pHeightTerrain.GetParentWorld()->GetCompute();
-		const int count = pClusterCount * pClusterCount;
-		int i;
-		for( i=0; i<count; i++ ){
-			pClusters[ i ].UpdateWorldComputeTexturres( worldCompute );
-		}
+	if( ! pHeightTerrain.GetParentWorld() ){
+		return;
+	}
+	
+	const int count = pClusterCount * pClusterCount;
+	int i;
+	for( i=0; i<count; i++ ){
+		pClusters[ i ].UpdateWorldComputeTextures();
 	}
 }
 
@@ -644,9 +653,7 @@ void deoglRHTSector::pSyncHeightMap( const deHeightTerrainSector &sector, const 
 		}
 	}
 	
-	if( pHeightTerrain.GetParentWorld() ){
-		UpdateWorldCompute( pHeightTerrain.GetParentWorld()->GetCompute() );
-	}
+	UpdateWorldCompute();
 }
 
 

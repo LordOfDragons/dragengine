@@ -132,10 +132,10 @@ public:
 	void AddToWorldCompute( deoglWorldCompute &worldCompute );
 	
 	/** Update world compute. */
-	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	void UpdateWorldCompute();
 	
 	/** Remove from world compute. */
-	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
+	void RemoveFromWorldCompute();
 	
 	/** Prepare for render. */
 	void PrepareForRender();

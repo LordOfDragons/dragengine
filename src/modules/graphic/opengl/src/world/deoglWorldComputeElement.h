@@ -52,7 +52,8 @@ public:
 		eetParticleEmitter,
 		eetLight,
 		eetPropFieldCluster,
-		eetHeightTerrainSectorCluster
+		eetHeightTerrainSectorCluster,
+		eetDecal
 	};
 	
 	/** Data element. */
@@ -67,9 +68,13 @@ public:
 		uint32_t firstGeometry;
 		uint32_t geometryCount;
 		
-		uint32_t lodFirst;
-		uint32_t lodCount;
-		uint32_t padding[ 2 ];
+		float lodFactors[ 4 ];
+		uint32_t highestLod;
+		
+		uint32_t cullResult;
+		uint32_t lodIndex;
+		
+		uint32_t padding;
 		
 		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
 		void SetLayerMask( const decLayerMask &layerMask );
@@ -109,6 +114,7 @@ public:
 private:
 	const eElementTypes pType;
 	const void * const pOwner;
+	deoglWorldCompute *pWorldCompute;
 	int pIndex;
 	bool pUpdateRequired;
 	bool pUpdateGeometriesRequired;
@@ -138,13 +144,36 @@ public:
 	/** Owner. */
 	inline const void *GetOwner() const{ return pOwner; }
 	
-	/** Index. */
+	/** World compute or nullptr if not added to one. */
+	inline deoglWorldCompute *GetWorldCompute() const{ return pWorldCompute; }
+	
+	/** World compute reference or throws exception if not added to one. */
+	deoglWorldCompute &GetWorldComputeRef() const;
+	
+	/** Index or -1 if not added to a world compute. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
+	/** World reference position. Call this only if GetWorldCompute() is not nullptr. */
+	const decDVector &GetReferencePosition() const;
+	
+	/** Update element if added to a world compute. */
+	void ComputeUpdateElement();
+	
+	/** Update element geometries if added to a world compute. */
+	void ComputeUpdateElementGeometries();
+	
+	/** Update element and geometries if added to a world compute. */
+	void ComputeUpdateElementAndGeometries();
+	
+	/** Remove element if added to a world compute. */
+	void RemoveFromCompute();
+	
+	
+	
 	/** Update data element. */
-	virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const = 0;
+	virtual void UpdateData( sDataElement &data ) const = 0;
 	
 	/** Update data element geometries. */
 	virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
@@ -165,6 +194,9 @@ public:
 	
 	/** \name deoglWorldCompute */
 	/*@{*/
+	/** Set world compute. For use by deoglWorldCompute only. */
+	void SetWorldCompute( deoglWorldCompute *worldCompute );
+	
 	/** Set index. For use by deoglWorldCompute only. */
 	void SetIndex( int index );
 	

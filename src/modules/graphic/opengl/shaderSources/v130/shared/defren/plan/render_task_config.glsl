@@ -1,23 +1,29 @@
 
-UBOLAYOUT uniform RenderTaskConfig{
+struct sRenderTaskConfig{
 	// count of element geometries
-	uint pElementGeometryCount;
+	uint elementGeometryCount;
 	
 	// filter by cube face. value is composed like this:
 	// - bit 0-5: mask of cube faces. only one bit has to be set
 	// - bit 8: enable filter by cube face
-	uint pFilterCubeFace;
+	uint filterCubeFace;
 	
 	// filter by render task filters.
-	uint pRenderTaskFilter; // filter & filterMask
-	uint pRenderTaskFilterMask;
+	uint renderTaskFilter; // filter & filterMask
+	uint renderTaskFilterMask;
 	
 	// filter by pipeline list. mask of bits representing epl* values (1 << epl*)
-	uint pFilterPipelineLists;
+	uint filterPipelineLists;
 	
 	// pipeline type
-	uint pPipelineType;
+	uint pipelineType;
 	
 	// pipeline modifiers
-	uint pPipelineModifier;
+	uint pipelineModifier;
+};
+
+#define MAX_RENDER_TASK_CONFIG 8
+
+UBOLAYOUT uniform RenderTaskConfig {
+	sRenderTaskConfig pRenderTaskConfig[ MAX_RENDER_TASK_CONFIG ];
 };

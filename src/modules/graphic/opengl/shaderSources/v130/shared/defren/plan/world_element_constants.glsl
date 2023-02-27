@@ -6,6 +6,7 @@ const uint efParticleEmitter = uint( 0x8 );
 const uint efLight = uint( 0x10 );
 const uint efPropFieldCluster = uint( 0x20 );
 const uint efHeightTerrainSectorCluster = uint( 0x40 );
+const uint efDecal = uint( 0x80 );
 
 
 // element render filters
@@ -76,3 +77,10 @@ const uint ettGIMaterial = uint( 7 );
 
 // cull result
 const uint ecrVisible = uint( 0x100 );
+
+
+// lod method
+const uint lmLowest = uint( 0 );
+const uint lmHighest = uint( 1 );
+const uint lmProjection = uint( 2 );
+const uint lmOrthogonal = uint( 3 );

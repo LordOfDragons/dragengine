@@ -85,7 +85,7 @@ private:
 		deoglRComponent &pComponent;
 	public:
 		WorldComputeElement( deoglRComponent &component );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateData( sDataElement &data ) const;
 		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
 	};
 	

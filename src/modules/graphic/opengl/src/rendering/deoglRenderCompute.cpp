@@ -69,7 +69,7 @@ deoglRenderBase( renderThread )
 	// SSBOs
 	pSSBOUpdateElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOUpdateElements->SetRowMajor( rowMajor );
-	pSSBOUpdateElements->SetParameterCount( 9 );
+	pSSBOUpdateElements->SetParameterCount( 11 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
@@ -77,8 +77,10 @@ deoglRenderBase( renderThread )
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeFirstGeometry ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeGeometryCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLodFirst ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLodCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLodFactors ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeHighestLod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeCullResult ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLodIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElements->MapToStd140();
 	pSSBOUpdateElements->SetBindingPoint( 1 );
 	
@@ -144,6 +146,20 @@ deoglRenderBase( renderThread )
 	pPipelineFindContentSkyLightGI = pipelineManager.GetWith( pipconf );
 	
 	
+	
+	// clear cull result
+	defines = commonDefines;
+	pipconf.SetShader( renderThread, "DefRen Plan Clear Cull Result", defines );
+	pPipelineClearCullResult = pipelineManager.GetWith( pipconf );
+	
+	// update cull result
+	pipconf.SetShader( renderThread, "DefRen Plan Update Cull Result", defines );
+	pPipelineUpdateCullResultSet = pipelineManager.GetWith( pipconf );
+	
+	defines.SetDefines( "CLEAR_CULL_RESULT" );
+	pPipelineUpdateCullResultClear = pipelineManager.GetWith( pipconf );
+	
+	
 	// build render task
 	defines = commonDefines;
 	pipconf.SetShader( renderThread, "DefRen Plan Build Render Task", defines );
@@ -200,14 +216,13 @@ void deoglRenderCompute::UpdateElementGeometries( const deoglRenderPlan &plan ){
 }
 
 void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContent" );
-	
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	if( wcompute.GetElementCount() == 0 ){
 		return;
 	}
 	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContent" );
 	const deoglRenderPlanCompute &planCompute = plan.GetCompute();
 	
 	
@@ -257,13 +272,13 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 }
 
 void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &planLight ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLight" );
-	
 	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
 	if( wcompute.GetElementCount() == 0 ){
 		return;
 	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLight" );
 	
 	pPipelineFindContentSkyLight->Activate();
 	
@@ -278,13 +293,13 @@ void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &pla
 }
 
 void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &planLight ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLightGI" );
-	
 	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
 	if( wcompute.GetElementCount() == 0 ){
 		return;
 	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLightGI" );
 	
 	pPipelineFindContentSkyLightGI->Activate();
 	
@@ -298,13 +313,50 @@ void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &p
 		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
 }
 
+void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	const int elementCount = wcompute.GetElementCount();
+	if( elementCount == 0 ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.ClearCullResult" );
+	
+	pPipelineClearCullResult->Activate();
+	
+	pPipelineClearCullResult->GetGlShader().SetParameterUInt( 0, elementCount );
+	wcompute.GetSSBOElements()->Activate();
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( elementCount - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+}
+
+void deoglRenderCompute::UpdateCullResult( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
+const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, bool clear ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.UpdateCullResult" );
+	
+	( clear ? pPipelineUpdateCullResultClear : pPipelineUpdateCullResultSet )->Activate();
+	
+	findConfig.Activate();
+	plan.GetWorld()->GetCompute().GetSSBOElements()->Activate();
+	visibleElements.Activate();
+	counters.Activate();
+	
+	counters.ActivateDispatchIndirect();
+	OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+	counters.DeactivateDispatchIndirect();
+}
+
 void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.BuildRenderTask" );
 	
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
-	const int egcount = wcompute.GetElementGeometryCount();
-	DEASSERT_TRUE( egcount > 0 )
+	const int geometryCount = wcompute.GetElementGeometryCount();
+	DEASSERT_TRUE( geometryCount > 0 )
 	
 	// build render task
 	pPipelineBuildRenderTask->Activate();
@@ -316,9 +368,16 @@ void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan, deoglComp
 	renderTask.GetSSBOSteps()->Activate();
 	renderTask.GetSSBOCounters()->ActivateAtomic();
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( egcount - 1 ) / 64 + 1, 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	deoglShaderCompiled &shader = pPipelineBuildRenderTask->GetGlShader();
+	const int passCount = renderTask.GetPassCount();
+	int i;
+	
+	for( i=0; i<passCount; i++ ){
+		shader.SetParameterInt( 0, i );
+		OGL_CHECK( renderThread, pglDispatchCompute( ( geometryCount - 1 ) / 64 + 1, 1, 1 ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+			| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	}
 	
 	// sort render task
 }

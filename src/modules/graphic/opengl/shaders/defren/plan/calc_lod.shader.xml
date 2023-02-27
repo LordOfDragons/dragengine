@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Calc LOD</name>
+	
+	<shaderStorageBlock name='Element' target='0'/>
+	<shaderStorageBlock name='VisibleElement' target='1'/>
+	<shaderStorageBlock name='Counters' target='3'/>
+	
+	<sourceCode unit='compute'>v130/compute/defren/plan/calc_lod.glsl</sourceCode>
+</shader>

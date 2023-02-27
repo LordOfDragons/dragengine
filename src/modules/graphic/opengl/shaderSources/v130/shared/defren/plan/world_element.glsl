@@ -13,23 +13,17 @@ struct sElement{
 	uint firstGeometry;
 	uint geometryCount;
 	
-	// lod informatin if present
-	// NOTE lod information is per ModelLOD and thus shared
-	uint lodFirst;
-	uint lodCount;
+	// lod information if present
+	vec4 lodFactors; // lod factors for lod level 1 to 4
+	
+	uint highestLod;
 	
 	// results
 	uint cullResult; // result of culling. written by find_content* shaders.
 	                 // bit 0-7: flags (like cascade or cube face)
 	                 // bit 8: visible (or culled, ecrVisible)
 	
-	uint lodIndex; // 8-bit: output of calc_lod_level* shaderrs
-};
-
-
-struct sElementLod{
-	float maxError;
-	float avgError;
+	uint lodIndex; // 8-bit: output of calc_lod_level* shaders
 };
 
 

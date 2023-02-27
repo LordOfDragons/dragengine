@@ -19,6 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "deoglWorldCompute.h"
 #include "deoglWorldComputeElement.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
@@ -26,6 +27,7 @@
 #include "../rendering/task/shared/deoglRenderTaskSharedVAO.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../vao/deoglVAO.h"
+#include "../world/deoglRWorld.h"
 
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -80,6 +82,7 @@ giMaterial( nullptr ){
 deoglWorldComputeElement::deoglWorldComputeElement( eElementTypes type, const void *owner ) :
 pType( type ),
 pOwner( owner ),
+pWorldCompute( nullptr ),
 pIndex( -1 ),
 pUpdateRequired( false ),
 pUpdateGeometriesRequired( false )
@@ -94,6 +97,42 @@ deoglWorldComputeElement::~deoglWorldComputeElement(){
 
 // Management
 ///////////////
+
+deoglWorldCompute &deoglWorldComputeElement::GetWorldComputeRef() const{
+	DEASSERT_NOTNULL( pWorldCompute )
+	return *pWorldCompute;
+}
+
+const decDVector &deoglWorldComputeElement::GetReferencePosition() const{
+	return pWorldCompute->GetWorld().GetReferencePosition();
+}
+
+void deoglWorldComputeElement::ComputeUpdateElement(){
+	if( pWorldCompute ){
+		pWorldCompute->UpdateElement( this );
+	}
+}
+
+void deoglWorldComputeElement::ComputeUpdateElementGeometries(){
+	if( pWorldCompute ){
+		pWorldCompute->UpdateElementGeometries( this );
+	}
+}
+
+void deoglWorldComputeElement::ComputeUpdateElementAndGeometries(){
+	if( pWorldCompute ){
+		pWorldCompute->UpdateElement( this );
+		pWorldCompute->UpdateElementGeometries( this );
+	}
+}
+
+void deoglWorldComputeElement::RemoveFromCompute(){
+	if( pWorldCompute ){
+		pWorldCompute->RemoveElement( this );
+	}
+}
+
+
 
 void deoglWorldComputeElement::UpdateDataGeometries( sDataElementGeometry* ) const{
 }
@@ -139,6 +178,10 @@ void deoglWorldComputeElement::SetDataGeometryTUCs( sDataElementGeometry &data, 
 }
 
 
+
+void deoglWorldComputeElement::SetWorldCompute( deoglWorldCompute *worldCompute ){
+	pWorldCompute = worldCompute;
+}
 
 void deoglWorldComputeElement::SetIndex( int index ){
 	pIndex = index;

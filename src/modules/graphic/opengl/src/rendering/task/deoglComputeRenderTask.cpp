@@ -37,6 +37,23 @@
 
 
 
+// Class deoglComputeRenderTask::cGuard
+/////////////////////////////////////////
+
+deoglComputeRenderTask::cGuard::cGuard( deoglComputeRenderTask &renderTask,
+	const deoglWorldCompute &worldCompute, int passCount ) :
+pRenderTask( renderTask ),
+pWorldCompute( worldCompute )
+{
+	renderTask.BeginPrepare( passCount );
+}
+
+deoglComputeRenderTask::cGuard::~cGuard(){
+	pRenderTask.EndPrepare( pWorldCompute );
+}
+
+
+
 // Class deoglComputeRenderTask
 /////////////////////////////////
 
@@ -45,6 +62,8 @@
 
 deoglComputeRenderTask::deoglComputeRenderTask( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
+pPassCount( 0 ),
+pPass( -1 ),
 pRenderVSStereo( false ),
 pStepsResolved( nullptr ),
 pStepsResolvedSize( 0 ),
@@ -102,11 +121,29 @@ deoglComputeRenderTask::~deoglComputeRenderTask(){
 // Management
 ///////////////
 
+void deoglComputeRenderTask::BeginPrepare( int passCount ){
+	DEASSERT_TRUE( pPass == -1 )
+	DEASSERT_TRUE( passCount > 0 )
+	DEASSERT_TRUE( passCount < 8 )  // hard limit in shader
+	
+	if( passCount > pUBOConfig->GetElementCount() ){
+		pUBOConfig->SetElementCount( passCount );
+	}
+	
+	pUBOConfig->MapBuffer();
+	
+	pPassCount = passCount;
+	pPass = 0;
+}
+
 void deoglComputeRenderTask::Clear(){
 	pSkinPipelineType = deoglSkinTexturePipelines::etGeometry;
 	pSkinPipelineLists = 0;
+	pSkinPipelineModifier = 0;
 	
 	pSolid = false;
+	pFilterSolid = true;
+	
 	pNoShadowNone = false;
 	pNoNotReflected = false;
 	pNoRendered = false;
@@ -127,6 +164,96 @@ void deoglComputeRenderTask::Clear(){
 	pUseSpecialParamBlock = false;
 	
 	pStepsResolvedCount = 0;
+}
+
+void deoglComputeRenderTask::EndPass( const deoglWorldCompute &worldCompute ){
+	DEASSERT_TRUE( pPass >= 0 )
+	DEASSERT_TRUE( pPass < pPassCount )
+	
+	int filter, mask;
+	pRenderFilter( filter, mask );
+	
+	int pipelineModifier = pSkinPipelineModifier;
+	if( pForceDoubleSided ){
+		pipelineModifier |= deoglSkinTexturePipelines::emDoubleSided;
+	}
+	
+	pUBOConfig->SetParameterDataUInt( ecpElementGeometryCount, pPass, worldCompute.GetElementGeometryCount() );
+	pUBOConfig->SetParameterDataUInt( ecpFilterCubeFace, pPass, pFilterCubeFace != -1 ? 0x100 | pFilterCubeFace : 0 );
+	pUBOConfig->SetParameterDataUInt( ecpRenderTaskFilter, pPass, filter & mask );
+	pUBOConfig->SetParameterDataUInt( ecpRenderTaskFilterMask, pPass, mask );
+	pUBOConfig->SetParameterDataUInt( ecpFilterPipelineLists, pPass, pSkinPipelineLists );
+	pUBOConfig->SetParameterDataUInt( ecpPipelineType, pPass, pSkinPipelineType );
+	pUBOConfig->SetParameterDataUInt( ecpPipelineModifier, pPass, pipelineModifier );
+	
+	pPass++;
+}
+
+void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute ){
+	const int count = worldCompute.GetElementGeometryCount();
+	DEASSERT_TRUE( pPass != -1 )
+	DEASSERT_TRUE( count > 0 )
+	
+	pPass = -1;
+	pStepsResolvedCount = 0;
+	
+	pUBOConfig->UnmapBuffer();
+	pClearCounters();
+	
+	if( count > pSSBOSteps->GetElementCount() ){
+		pSSBOSteps->SetElementCount( count );
+		pSSBOSteps->EnsureBuffer();
+	}
+}
+
+void deoglComputeRenderTask::ReadBackSteps( const deoglWorldCompute &worldCompute ){
+	DEASSERT_TRUE( pPass == -1 )
+	
+	pStepsResolvedCount = 0;
+	
+	if( worldCompute.GetElementGeometryCount() == 0 ){
+		return;
+	}
+	
+		decTimer timer;
+	const sCounters &counters = *( sCounters* )pSSBOCounters->ReadBuffer( 1 );
+	const int count = counters.counter;
+	if( count == 0 ){
+		return;
+	}
+	
+	if( count > pStepsResolvedSize ){
+		if( pStepsResolved ){
+			delete [] pStepsResolved;
+			pStepsResolved = nullptr;
+			pStepsResolvedSize = 0;
+		}
+		
+		pStepsResolved = new sStepResolved[ count ];
+		pStepsResolvedSize = count;
+	}
+	
+	const sStep * const steps = ( const sStep* )pSSBOSteps->ReadBuffer( count );
+		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys", count, (int)(timer.GetElapsedTime()*1e6f));
+	
+	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
+	const deoglPipelineManager &pipManager = pRenderThread.GetPipelineManager();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		sStepResolved &resolved = pStepsResolved[ i ];
+		const sStep &step = steps[ i ];
+		
+		resolved.pipeline = pipManager.GetAt( step.pipeline );
+		resolved.texture = &rtsPool.GetTextureAt( step.tuc );
+		resolved.vao = &rtsPool.GetVAOAt( step.vao );
+		resolved.instance = &rtsPool.GetInstanceAt( step.instance );
+		resolved.spbInstance = step.spbInstance;
+		resolved.specialFlags = step.specialFlags;
+		resolved.subInstanceCount = step.subInstanceCount;
+	}
+	pStepsResolvedCount = count;
+		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys", count, (int)(timer.GetElapsedTime()*1e6f));
 }
 
 
@@ -157,10 +284,18 @@ void deoglComputeRenderTask::SetSkinPipelineType( deoglSkinTexturePipelines::eTy
 	pSkinPipelineType = type;
 }
 
+void deoglComputeRenderTask::SetSkinPipelineModifier( int modifier ){
+	pSkinPipelineModifier = modifier;
+}
+
 
 
 void deoglComputeRenderTask::SetSolid( bool solid ){
 	pSolid = solid;
+}
+
+void deoglComputeRenderTask::SetFilterSolid( bool filterSolid ){
+	pFilterSolid = filterSolid;
 }
 
 void deoglComputeRenderTask::SetNoNotReflected( bool noNotReflected ){
@@ -217,111 +352,31 @@ void deoglComputeRenderTask::SetUseSpecialParamBlock( bool use ){
 
 
 
-void deoglComputeRenderTask::PrepareBuffers( const deoglWorldCompute &worldCompute ){
-	const int count = worldCompute.GetElementGeometryCount();
-	DEASSERT_TRUE( count > 0 )
-	
-	pStepsResolvedCount = 0;
-	
-	pPrepareConfig( worldCompute );
-	pClearCounters();
-	
-	if( count > pSSBOSteps->GetElementCount() ){
-		pSSBOSteps->SetElementCount( count );
-		pSSBOSteps->EnsureBuffer();
-	}
-}
-
-void deoglComputeRenderTask::ReadBackSteps( const deoglWorldCompute &worldCompute ){
-	pStepsResolvedCount = 0;
-	
-	if( worldCompute.GetElementGeometryCount() == 0 ){
-		return;
-	}
-	
-		decTimer timer;
-	const sCounters &counters = *( sCounters* )pSSBOCounters->ReadBuffer( 1 );
-	const int count = counters.counter;
-	if( count == 0 ){
-		return;
-	}
-	
-	if( count > pStepsResolvedSize ){
-		if( pStepsResolved ){
-			delete [] pStepsResolved;
-			pStepsResolved = nullptr;
-			pStepsResolvedSize = 0;
-		}
-		
-		pStepsResolved = new sStepResolved[ count ];
-		pStepsResolvedSize = count;
-	}
-	
-	const sStep * const steps = ( const sStep* )pSSBOSteps->ReadBuffer( count );
-		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys", count, (int)(timer.GetElapsedTime()*1e6f));
-	
-	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
-	const deoglPipelineManager &pipManager = pRenderThread.GetPipelineManager();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		sStepResolved &resolved = pStepsResolved[ i ];
-		const sStep &step = steps[ i ];
-		
-		resolved.pipeline = pipManager.GetAt( step.pipeline );
-		resolved.texture = &rtsPool.GetTextureAt( step.tuc );
-		resolved.vao = &rtsPool.GetVAOAt( step.vao );
-		resolved.instance = &rtsPool.GetInstanceAt( step.instance );
-		resolved.spbInstance = step.spbInstance;
-		resolved.specialFlags = step.specialFlags;
-		resolved.subInstanceCount = step.subInstanceCount;
-	}
-	pStepsResolvedCount = count;
-		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys", count, (int)(timer.GetElapsedTime()*1e6f));
-}
-
-
-
 // Private Functions
 //////////////////////
 
-void deoglComputeRenderTask::pPrepareConfig( const deoglWorldCompute &worldCompute ){
-	int filter, mask;
-	pRenderFilter( filter, mask );
-	
-	int pipelineModifier = 0;
-	if( pForceDoubleSided ){
-		pipelineModifier |= deoglSkinTexturePipelines::emDoubleSided;
-	}
-	
-	deoglSPBlockUBO &ubo = pUBOConfig;
-	const deoglSPBMapBuffer mapped( ubo );
-	
-	ubo.SetParameterDataUInt( ecpElementGeometryCount, worldCompute.GetElementGeometryCount() );
-	ubo.SetParameterDataUInt( ecpFilterCubeFace, pFilterCubeFace != -1 ? 0x100 | pFilterCubeFace : 0 );
-	ubo.SetParameterDataUInt( ecpRenderTaskFilter, filter & mask );
-	ubo.SetParameterDataUInt( ecpRenderTaskFilterMask, mask );
-	ubo.SetParameterDataUInt( ecpFilterPipelineLists, pSkinPipelineLists );
-	ubo.SetParameterDataUInt( ecpPipelineType, pSkinPipelineType );
-	ubo.SetParameterDataUInt( ecpPipelineModifier, pipelineModifier );
-}
-
 void deoglComputeRenderTask::pRenderFilter( int &filter, int &mask ) const{
-	filter = ertfRender;
 	mask = ertfRender;
+	filter = ertfRender;
 	
+	mask |= ertfOutline;
 	if( pOutline ){
 		filter |= ertfOutline;
-		if( pSolid ){
-			filter |= ertfOutlineSolid;
+	}
+	
+	if( pFilterSolid ){
+		if( pOutline ){
+			mask |= ertfOutlineSolid;
+			if( pSolid ){
+				filter |= ertfOutlineSolid;
+			}
+			
+		}else{
+			mask |= ertfSolid;
+			if( pSolid ){
+				filter |= ertfSolid;
+			}
 		}
-		mask |= ertfOutline | ertfOutlineSolid;
-		
-	}else{
-		if( pSolid ){
-			filter |= ertfSolid;
-		}
-		mask |= ertfSolid;
 	}
 	
 	if( pFilterXRay ){

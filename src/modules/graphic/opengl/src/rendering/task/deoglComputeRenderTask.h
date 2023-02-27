@@ -68,6 +68,7 @@ public:
 	
 	/** Step. */
 	struct sStep{
+		uint32_t pass;
 		uint32_t pipeline;
 		uint32_t tuc;
 		uint32_t vao;
@@ -75,7 +76,6 @@ public:
 		uint32_t spbInstance;
 		uint32_t specialFlags;
 		uint32_t subInstanceCount;
-		uint32_t padding;
 	};
 	
 	/** Counters. */
@@ -95,6 +95,17 @@ public:
 		int subInstanceCount;
 	};
 	
+	/** Prepare guard. */
+	class cGuard{
+	private:
+		deoglComputeRenderTask &pRenderTask;
+		const deoglWorldCompute &pWorldCompute;
+		
+	public:
+		cGuard( deoglComputeRenderTask &renderTask, const deoglWorldCompute &worldCompute, int passCount );
+		~cGuard();
+	};
+	
 	
 	
 private:
@@ -104,13 +115,19 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOSteps;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	
+	int pPassCount;
+	int pPass;
+	
 	bool pRenderVSStereo;
 	deoglSPBlockUBO::Ref pRenderParamBlock;
 	
 	int pSkinPipelineLists;
 	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
+	int pSkinPipelineModifier;
 	
 	bool pSolid;
+	bool pFilterSolid;
+	
 	bool pNoShadowNone;
 	bool pNoNotReflected;
 	bool pNoRendered;
@@ -168,8 +185,25 @@ public:
 	
 	
 	
+	/** Begin preparing render task. */
+	void BeginPrepare( int passCount );
+	
 	/** Clear. */
 	void Clear();
+	
+	/** End pass switching to the next one. */
+	void EndPass( const deoglWorldCompute &worldCompute );
+	
+	/** Finish preparing render task. */
+	void EndPrepare( const deoglWorldCompute &worldCompute );
+	
+	/** Read back render task steps. */
+	void ReadBackSteps( const deoglWorldCompute &worldCompute );
+	
+	
+	
+	/** Pass count. */
+	inline int GetPassCount() const{ return pPassCount; }
 	
 	
 	
@@ -205,6 +239,12 @@ public:
 	/** Set pipeline type. */
 	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
 	
+	/** Pipeline modifier. */
+	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
+	
+	/** Set pipeline modifier. */
+	void SetSkinPipelineModifier( int modifier );
+	
 	
 	
 	/** Solid or transparent textures are added. */
@@ -212,6 +252,14 @@ public:
 	
 	/** Set if solid or transparent texture are added. */
 	void SetSolid( bool solid );
+	
+	/** Filter solid. */
+	inline bool GetFilterSolid() const{ return pFilterSolid; }
+	
+	/** Set to filter solid. */
+	void SetFilterSolid( bool filterSolid );
+	
+	
 	
 	/** Textures with the shadow none property are not added. */
 	inline bool GetNoShadowNone() const{ return pNoShadowNone; }
@@ -303,14 +351,6 @@ public:
 	
 	
 	
-	/** Prepare buffers. */
-	void PrepareBuffers( const deoglWorldCompute &worldCompute );
-	
-	/** Read back render task steps. */
-	void ReadBackSteps( const deoglWorldCompute &worldCompute );
-	
-	
-	
 	/** Count of resolved render steps. */
 	inline int GetCountSteps() const{ return pStepsResolvedCount; }
 	
@@ -321,7 +361,6 @@ public:
 	
 	
 private:
-	void pPrepareConfig( const deoglWorldCompute &worldCompute );
 	void pRenderFilter( int &filter, int &mask ) const;
 	void pClearCounters();
 };

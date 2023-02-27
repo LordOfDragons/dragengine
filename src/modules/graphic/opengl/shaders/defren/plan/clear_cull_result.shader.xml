@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Clear Cull Result</name>
+	
+	<parameter name='pElementCount'/>
+	
+	<shaderStorageBlock name='Element' target='0'/>
+	
+	<sourceCode unit='compute'>v130/compute/defren/plan/clear_cull_result.glsl</sourceCode>
+</shader>

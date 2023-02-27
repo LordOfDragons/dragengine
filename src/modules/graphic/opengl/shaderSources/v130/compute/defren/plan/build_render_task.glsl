@@ -32,6 +32,9 @@ UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
 #include "v130/shared/defren/plan/render_task_set_geometry.glsl"
 
 
+uniform int pPass;
+
+
 layout( local_size_x=64 ) in;
 
 
@@ -42,7 +45,9 @@ const uint dispatchWorkGroupSize = uint( 64 );
 
 
 void main( void ){
-	if( gl_GlobalInvocationID.x >= pElementGeometryCount ){
+	#define config pRenderTaskConfig[ pPass ]
+	
+	if( gl_GlobalInvocationID.x >= config.elementGeometryCount ){
 		return;
 	}
 	
@@ -72,19 +77,19 @@ void main( void ){
 	uint pipelineModifier = pipelineBase >> uint( 8 );
 	
 	// filter by pipeline list
-	cond.x = ( pFilterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
+	cond.x = ( config.filterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
 	
 	// filter cube face. we are using here the fact that if element is visible the bit 8
 	// in the cull mask is set. the same bit is used to indicate if filter cube face has
-	// to be used. this way cullResult and pFilterCubeFace can be directly compared.
+	// to be used. this way cullResult and config.filterCubeFace can be directly compared.
 	// this line is then the same as this calculation given filter has only 1 face bit set:
 	// 
 	//   ((filter & 0x100) == 0x100) && ((cullResult & 0x3f) & (filter & 0x3f)) == 0
 	// 
-	cond.y = ( cullResult & pFilterCubeFace ) == uint( 0x100 );
+	cond.y = ( cullResult & config.filterCubeFace ) == uint( 0x100 );
 	
-	// filter by render task filters. pRenderTaskFilters contains pRenderTaskFilterMask
-	cond.z = ( pElementGeometries[ index ].renderFilter & pRenderTaskFilterMask ) != pRenderTaskFilter;
+	// filter by render task filters. config.renderTaskFilters contains config.renderTaskFilterMask
+	cond.z = ( pElementGeometries[ index ].renderFilter & config.renderTaskFilterMask ) != config.renderTaskFilter;
 	
 	if( any( cond ) ){
 		return;
@@ -94,8 +99,8 @@ void main( void ){
 	// add to render task
 	uint nextIndex = atomicCounterIncrement( pNextIndex );
 	
-	setRenderTaskStepGeometry( nextIndex, index,
-		pipelineList, pPipelineType, pPipelineModifier | pipelineModifier,
+	setRenderTaskStepGeometry( nextIndex, pPass, index,
+		pipelineList, config.pipelineType, config.pipelineModifier | pipelineModifier,
 		cullResult & uint( 0xff ) ); // NOTE masking not necessarily required
 	
 	// if the count of steps increases by the dispatch workgroup size increment also the

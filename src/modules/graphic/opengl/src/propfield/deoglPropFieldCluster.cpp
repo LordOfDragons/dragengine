@@ -73,15 +73,14 @@ deoglWorldComputeElement( eetPropFieldCluster, &cluster ),
 pCluster( cluster ){
 }
 
-void deoglPropFieldCluster::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, sDataElement &data ) const{
-	const decDVector position( pCluster.GetPropFieldType().GetPropField().GetPosition()
-		- worldCompute.GetWorld().GetReferencePosition() );
+void deoglPropFieldCluster::WorldComputeElement::UpdateData( sDataElement &data ) const{
+	const decDVector position( pCluster.GetPropFieldType().GetPropField().GetPosition() - GetReferencePosition() );
 	
 	data.SetExtends( position + pCluster.GetMinimumExtend(), position + pCluster.GetMaximumExtend() );
 	data.SetEmptyLayerMask();
 	data.flags = ( uint32_t )deoglWorldCompute::eefPropFieldCluster;
 	data.geometryCount = 1;
+	data.highestLod = 0;
 }
 
 void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
@@ -216,9 +215,7 @@ void deoglPropFieldCluster::SetExtends( const decVector &minExtend, const decVec
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 	
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		pPropFieldType.GetPropField().GetParentWorld()->GetCompute().UpdateElement( pWorldComputeElement );
-	}
+	pWorldComputeElement->ComputeUpdateElement();
 }
 
 void deoglPropFieldCluster::SetInstanceCount( int count ){
@@ -376,18 +373,12 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexturePipel
 void deoglPropFieldCluster::MarkTUCsDirty(){
 	pDirtyTUCs = true;
 	pPropFieldType.ClusterRequiresPrepareForRender();
-	
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		UpdateWorldComputeTextures( pPropFieldType.GetPropField().GetParentWorld()->GetCompute() );
-	}
+	UpdateWorldComputeTextures();
 }
 
 void deoglPropFieldCluster::DirtyRTSInstance(){
 	pDirtyRTSInstance = true;
-	
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		UpdateWorldComputeTextures( pPropFieldType.GetPropField().GetParentWorld()->GetCompute() );
-	}
+	UpdateWorldComputeTextures();
 }
 
 
@@ -396,22 +387,16 @@ void deoglPropFieldCluster::AddToWorldCompute( deoglWorldCompute &worldCompute )
 	worldCompute.AddElement( pWorldComputeElement );
 }
 
-void deoglPropFieldCluster::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		worldCompute.UpdateElement( pWorldComputeElement );
-	}
+void deoglPropFieldCluster::UpdateWorldCompute(){
+	pWorldComputeElement->ComputeUpdateElement();
 }
 
-void deoglPropFieldCluster::UpdateWorldComputeTextures( deoglWorldCompute &worldCompute ){
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		worldCompute.UpdateElementGeometries( pWorldComputeElement );
-	}
+void deoglPropFieldCluster::UpdateWorldComputeTextures(){
+	pWorldComputeElement->ComputeUpdateElementGeometries();
 }
 
-void deoglPropFieldCluster::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		worldCompute.RemoveElement( pWorldComputeElement );
-	}
+void deoglPropFieldCluster::RemoveFromWorldCompute(){
+	pWorldComputeElement->RemoveFromCompute();
 }
 
 

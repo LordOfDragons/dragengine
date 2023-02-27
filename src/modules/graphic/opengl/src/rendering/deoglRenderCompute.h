@@ -39,6 +39,9 @@ private:
 	const deoglPipeline *pPipelineFindContentElement;
 	const deoglPipeline *pPipelineFindContentSkyLight;
 	const deoglPipeline *pPipelineFindContentSkyLightGI;
+	const deoglPipeline *pPipelineClearCullResult;
+	const deoglPipeline *pPipelineUpdateCullResultSet;
+	const deoglPipeline *pPipelineUpdateCullResultClear;
 	const deoglPipeline *pPipelineBuildRenderTask;
 	
 	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
@@ -80,6 +83,13 @@ public:
 	void FindContent( const deoglRenderPlan &plan );
 	void FindContentSkyLight( const deoglRenderPlanSkyLight &planLight );
 	void FindContentSkyLightGI( const deoglRenderPlanSkyLight &planLight );
+	
+	/** Clear cull result. */
+	void ClearCullResult( const deoglRenderPlan &plan );
+	
+	/** Update cull result. */
+	void UpdateCullResult( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
+		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, bool clear );
 	
 	/** Buil render task. */
 	void BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );

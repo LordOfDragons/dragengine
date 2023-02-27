@@ -1,6 +1,10 @@
 
 // render task step.
 struct sRenderTask{
+	// render pass
+	// NOTE fits into 3-bit (8 max at the time being)
+	uint pass;
+	
 	// pipeline index
 	// NOTE fits into 16-bit
 	uint pipeline;

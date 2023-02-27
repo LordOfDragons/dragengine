@@ -81,9 +81,8 @@ void deoglRPropField::SetParentWorld( deoglRWorld *world ){
 	int i;
 	
 	if( pParentWorld ){
-		deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
 		for( i=0; i<count; i++ ){
-			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->RemoveFromWorldCompute( worldCompute );
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->RemoveFromWorldCompute();
 		}
 	}
 	
@@ -156,9 +155,8 @@ void deoglRPropField::UpdateExtends( const dePropField &propField ){
 	pMaxExtend.z = pPosition.z + ( double )maxExtend.z + 0.01;
 	
 	if( pParentWorld ){
-		deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
 		for( i=0; i<typeCount; i++ ){
-			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->UpdateWorldCompute( worldCompute );
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->UpdateWorldCompute();
 		}
 	}
 	

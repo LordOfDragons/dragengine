@@ -33,6 +33,6 @@ void main( void ){
 	pElement[ t ].layerMask = pUpdateElement[ s ].layerMask;
 	pElement[ t ].firstGeometry = pUpdateElement[ s ].firstGeometry;
 	pElement[ t ].geometryCount = pUpdateElement[ s ].geometryCount;
-	pElement[ t ].lodFirst = pUpdateElement[ s ].lodFirst;
-	pElement[ t ].lodCount = pUpdateElement[ s ].lodCount;
+	pElement[ t ].lodFactors = pUpdateElement[ s ].lodFactors;
+	pElement[ t ].highestLod = pUpdateElement[ s ].highestLod;
 }

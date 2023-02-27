@@ -63,13 +63,13 @@ deoglWorldComputeElement( eetParticleEmitter, &emitter ),
 pEmitter( emitter ){
 }
 
-void deoglRParticleEmitterInstance::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, sDataElement &data ) const{
-	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
+void deoglRParticleEmitterInstance::WorldComputeElement::UpdateData( sDataElement &data ) const{
+	const decDVector &refpos = GetReferencePosition();
 	data.SetExtends( pEmitter.GetMinExtend() - refpos, pEmitter.GetMaxExtend() - refpos );
 	data.SetLayerMask( pEmitter.GetLayerMask() );
 	data.flags = ( uint32_t )deoglWorldCompute::eefParticleEmitter;
 	data.geometryCount = 0; //1;
+	data.highestLod = 0;
 }
 
 void deoglRParticleEmitterInstance::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
@@ -175,9 +175,7 @@ void deoglRParticleEmitterInstance::SetParentWorld( deoglRWorld *world ){
 		pRenderEnvMap->FreeReference();
 		pRenderEnvMap = NULL;
 	}
-	if( pParentWorld && pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
-	}
+	pWorldComputeElement->RemoveFromCompute();
 	if( pOctreeNode ){
 		pOctreeNode->RemoveParticleEmitter( this );
 		pOctreeNode = NULL;
@@ -197,8 +195,8 @@ void deoglRParticleEmitterInstance::UpdateOctreeNode(){
 		//if( pParticleEmitter->GetVisible() ){
 			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this );
 			
-			if( pWorldComputeElement->GetIndex() != -1 ){
-				pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+			if( pWorldComputeElement->GetWorldCompute() ){
+				pWorldComputeElement->ComputeUpdateElement();
 				
 			}else{
 				pParentWorld->GetCompute().AddElement( pWorldComputeElement );

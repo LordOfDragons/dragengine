@@ -111,17 +111,34 @@ deoglWorldComputeElement( eetComponent, &component ),
 pComponent( component ){
 }
 
-void deoglRComponent::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, sDataElement &data ) const{
-	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
+void deoglRComponent::WorldComputeElement::UpdateData( sDataElement &data ) const{
+	const decDVector &refpos = GetReferencePosition();
 	data.SetExtends( pComponent.GetMinimumExtend() - refpos, pComponent.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pComponent.GetLayerMask() );
 	data.geometryCount = ( pComponent.GetTextureCount() + pComponent.GetOutlineTextureCount() ) * pComponent.GetLODCount();
-	data.lodCount = pComponent.GetLODCount();
+	data.highestLod = pComponent.GetLODCount() - 1;
 	
 	data.flags = ( uint32_t )deoglWorldCompute::eefComponent;
 	if( ! pComponent.GetRenderStatic() ){
 		data.flags |= deoglWorldCompute::eefComponentDynamic;
+	}
+	
+	if( pComponent.GetModel() ){
+		const deoglRModel &model = *pComponent.GetModel();
+		const int lodCount = model.GetLODCount();
+		
+		if( lodCount > 1 ){
+			const float errorScaling = pComponent.GetLODErrorScaling();
+			int i;
+			
+			for( i=1; i<lodCount; i++ ){
+				data.lodFactors[ i - 1 ] = model.GetLODAt( i ).GetMaxError() * errorScaling;
+			}
+			
+			data.lodFactors[ 1 ] = decMath::max( data.lodFactors[ 1 ], data.lodFactors[ 0 ] + FLOAT_SAFE_EPSILON );
+			data.lodFactors[ 2 ] = decMath::max( data.lodFactors[ 2 ], data.lodFactors[ 1 ] + FLOAT_SAFE_EPSILON );
+			data.lodFactors[ 3 ] = decMath::max( data.lodFactors[ 3 ], data.lodFactors[ 2 ] + FLOAT_SAFE_EPSILON );
+		}
 	}
 }
 
@@ -306,10 +323,14 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 		pEnvMap->SetWorld( parentWorld );
 	}*/
 	
+	const int decalCount = pDecals.GetCount();
+	int i;
+	
 	if( pParentWorld ){
-		if( pWorldComputeElement->GetIndex() != -1 ){
-			pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+		for( i=0; i<decalCount; i++ ){
+			( ( deoglRDecal* )pDecals.GetAt( i ) )->RemoveFromWorldCompute();
 		}
+		pWorldComputeElement->RemoveFromCompute();
 		
 		// make sure we are unregistered from the old world. this is required since the
 		// calls above can potentially smuggle in an AddPrepareForRenderComponent() call
@@ -360,14 +381,24 @@ void deoglRComponent::UpdateOctreeNode(){
 	}
 	
 	// insert into parent world octree
+	const int decalCount = pDecals.GetCount();
+	int i;
+	
 	if( pVisible && pModel ){
 		pParentWorld->GetOctree().InsertComponentIntoTree( this );
 		
-		if( pWorldComputeElement->GetIndex() != -1 ){
-			pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+		if( pWorldComputeElement->GetWorldCompute() ){
+			pWorldComputeElement->ComputeUpdateElement();
+			for( i=0; i<decalCount; i++ ){
+				( ( deoglRDecal* )pDecals.GetAt( i ) )->UpdateWorldCompute();
+			}
 			
 		}else{
-			pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+			deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
+			worldCompute.AddElement( pWorldComputeElement );
+			for( i=0; i<decalCount; i++ ){
+				( ( deoglRDecal* )pDecals.GetAt( i ) )->AddToWorldCompute( worldCompute );
+			}
 		}
 		
 		// visit the world for touching lights
@@ -378,9 +409,11 @@ void deoglRComponent::UpdateOctreeNode(){
 // 			hackCSSpecialTime += timer.GetElapsedTime();
 		
 	}else{
-		if( pWorldComputeElement->GetIndex() != -1 ){
-			pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+		for( i=0; i<decalCount; i++ ){
+			( ( deoglRDecal* )pDecals.GetAt( i ) )->RemoveFromWorldCompute();
 		}
+		pWorldComputeElement->RemoveFromCompute();
+		
 		if( pOctreeNode ){
 			pOctreeNode->RemoveComponent( this );
 		}
@@ -806,10 +839,7 @@ void deoglRComponent::InvalidateVAO(){
 		( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->InvalidateVAO();
 	}
 	
-	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
-		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
-	}
+	pWorldComputeElement->ComputeUpdateElementAndGeometries();
 }
 
 
@@ -1081,8 +1111,9 @@ void deoglRComponent::SetRenderStatic( bool isStatic ){
 	
 	pRenderStatic = isStatic;
 	
-	int i, count = pLightList.GetCount();
-	for( i=0; i<count; i++ ){
+	const int lightCount = pLightList.GetCount();
+	int i;
+	for( i=0; i<lightCount; i++ ){
 		deoglRLight &light = *pLightList.GetAt( i );
 		light.RemoveComponent( this );
 		light.AddComponent( this );
@@ -1090,6 +1121,13 @@ void deoglRComponent::SetRenderStatic( bool isStatic ){
 	
 	NotifyRenderStaticChanged();
 // 	NotifySkiesUpdateStatic();
+	
+	pWorldComputeElement->ComputeUpdateElement();
+	
+	const int decalCount = pDecals.GetCount();
+	for( i=0; i<decalCount; i++ ){
+		( ( deoglRDecal* )pDecals.GetAt( i ) )->UpdateWorldCompute();
+	}
 }
 
 void deoglRComponent::ResetRenderStatic(){
@@ -1289,11 +1327,11 @@ void deoglRComponent::PrepareQuickDispose(){
 	
 	pLightList.RemoveAll();
 	
-	int i, count = pDecals.GetCount();
+	const int count = pDecals.GetCount();
+	int i;
 	for( i=0; i<count; i++ ){
 		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareQuickDispose();
 	}
-	pDecals.RemoveAll();
 }
 
 
@@ -1494,10 +1532,7 @@ void deoglRComponent::UpdateTexturesUseSkin(){
 		}
 	}
 	
-	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
-		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
-	}
+	pWorldComputeElement->ComputeUpdateElementAndGeometries();
 }
 
 void deoglRComponent::DirtyTextureTUCs(){
@@ -1508,9 +1543,7 @@ void deoglRComponent::DirtyTextureTUCs(){
 	pDirtyTextureTUCs = true;
 	pRequiresPrepareForRender();
 	
-	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
-	}
+	pWorldComputeElement->ComputeUpdateElementGeometries();
 }
 
 void deoglRComponent::DirtyTextureParamBlocks(){

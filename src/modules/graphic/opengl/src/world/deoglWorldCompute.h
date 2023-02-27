@@ -51,7 +51,8 @@ public:
 		eefParticleEmitter = 0x8,
 		eefLight = 0x10,
 		eefPropFieldCluster = 0x20,
-		eefHeightTerrainSectorCluster = 0x40
+		eefHeightTerrainSectorCluster = 0x40,
+		eefDecal = 0x80
 	};
 	
 	/** Shader element parameters. */
@@ -63,8 +64,10 @@ public:
 		espeLayerMask,
 		espeFirstGeometry,
 		espeGeometryCount,
-		espeLodFirst,
-		espeLodCount
+		espeLodFactors,
+		espeHighestLod,
+		espeCullResult,
+		espeLodIndex
 	};
 	
 	/** Shader element geometry parameters. */

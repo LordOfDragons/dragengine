@@ -23,15 +23,20 @@
 #include <string.h>
 
 #include "deoglRenderPlan.h"
+#include "deoglRenderPlanMasked.h"
 #include "deoglRenderPlanTasks.h"
 #include "parallel/deoglRPTBuildRTsDepth.h"
 #include "parallel/deoglRPTBuildRTsGeometry.h"
 #include "../../deGraphicOpenGl.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../rendering/deoglRenderCanvas.h"
+#include "../../rendering/deoglRenderCompute.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
+#include "../../world/deoglRWorld.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -83,6 +88,12 @@ pTaskGeometry( NULL )
 	pSolidGeometryHeight2XRayTask = new deoglRenderTask( renderthread );
 	pSolidGeometryOutlineXRayTask = new deoglRenderTask( renderthread );
 	pSolidDecalsXRayTask = new deoglRenderTask( renderthread );
+	
+	pCRTSolidDepth.TakeOver( new deoglComputeRenderTask( renderthread ) );
+	pCRTSolidGeometry.TakeOver( new deoglComputeRenderTask( renderthread ) );
+	
+	pCRTSolidDepthXRay.TakeOver( new deoglComputeRenderTask( renderthread ) );
+	pCRTSolidGeometryXRay.TakeOver( new deoglComputeRenderTask( renderthread ) );
 }
 
 deoglRenderPlanTasks::~deoglRenderPlanTasks(){
@@ -138,6 +149,47 @@ deoglRenderPlanTasks::~deoglRenderPlanTasks(){
 // Management
 ///////////////
 
+void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked *mask ){
+	deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
+	const deoglDebugTraceGroup dt( pPlan.GetRenderThread(), "PlanTasks.BuildRenderTasks" );
+	const deoglRenderPlanCompute &compute = pPlan.GetCompute();
+	
+	renderCompute.ClearCullResult( pPlan );
+	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
+		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), false );
+	
+	{
+	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
+	pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
+	renderCompute.BuildRenderTask( pPlan, pCRTSolidDepth );
+	}
+	{
+	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidGeometry" );
+	pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
+	renderCompute.BuildRenderTask( pPlan, pCRTSolidGeometry );
+	}
+	{
+	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidDepth" );
+	pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
+	renderCompute.BuildRenderTask( pPlan, pCRTSolidDepthXRay );
+	}
+	{
+	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidGeometry" );
+	pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
+	renderCompute.BuildRenderTask( pPlan, pCRTSolidGeometryXRay );
+	}
+	
+	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
+		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), true );
+	
+	// start sky light render task building. by doing it here we can continue updating rull
+	// results avoiding to do another ClearCullResult()
+	int i;
+	for( i=0; i<pPlan.GetSkyLightCount(); i++ ){
+		// pPlan.GetSkyLightAt( i )->StartBuildRT();
+	}
+}
+
 void deoglRenderPlanTasks::StartBuildTasks( const deoglRenderPlanMasked *mask ){
 	if( pTaskDepth || pTaskGeometry ){
 		DETHROW( deeInvalidParam );
@@ -150,6 +202,10 @@ void deoglRenderPlanTasks::StartBuildTasks( const deoglRenderPlanMasked *mask ){
 	
 	pTaskGeometry = new deoglRPTBuildRTsGeometry( *this, mask );
 	pp.AddTaskAsync( pTaskGeometry );
+	
+	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		BuildComputeRenderTasks( mask );
+	}
 }
 
 void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
@@ -221,4 +277,140 @@ void deoglRenderPlanTasks::CleanUp(){
 	pSolidGeometryHeight2XRayTask->Clear();
 	pSolidGeometryOutlineXRayTask->Clear();
 	pSolidDecalsXRayTask->Clear();
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglRenderPlanTasks::pBuildCRTSolidDepth( deoglComputeRenderTask &renderTask,
+const deoglRenderPlanMasked *mask, bool xray ){
+	const deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
+	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 2 );
+	
+	renderTask.Clear();
+	
+	renderTask.SetSolid( true );
+	renderTask.SetNoNotReflected( pPlan.GetNoReflections() );
+	renderTask.SetNoRendered( mask );
+	if( xray ){
+		renderTask.SetFilterXRay( true );
+		renderTask.SetXRay( true );
+	}
+	renderTask.SetRenderVSStereo( pPlan.GetRenderStereo()
+		&& pPlan.GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
+	
+	if( mask && mask->GetUseClipPlane() ){
+		renderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepthClipPlane );
+		
+	}else{
+		renderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepth );
+	}
+	
+	int pipelineModifier = 0;
+	if( pPlan.GetFlipCulling() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+	}
+	if( pPlan.GetRenderStereo() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
+	}
+	renderTask.SetSkinPipelineModifier( pipelineModifier );
+	
+	
+	// pass 1: regular depth
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptBillboard );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropField );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropFieldImposter );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap1 );
+	
+	if( pPlan.GetRenderThread().GetChoices().GetRealTransparentParticles() ){
+		// addToRenderTask.AddParticles( collideList );
+	}
+	
+	renderTask.EndPass( worldCompute );
+	
+	
+	// pass 2: outline depth
+	renderTask.SetOutline( true );
+	renderTask.SetFilterDecal( true );
+	renderTask.SetDecal( false );
+	
+	renderTask.SetSkinPipelineLists( 0 );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	
+	renderTask.EndPass( worldCompute );
+}
+
+void deoglRenderPlanTasks::pBuildCRTSolidGeometry( deoglComputeRenderTask &renderTask,
+const deoglRenderPlanMasked*, bool xray ){
+	const deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
+	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 4 );
+	
+	renderTask.Clear();
+	
+	renderTask.SetSolid( true );
+	renderTask.SetNoNotReflected( pPlan.GetNoReflections() );
+	renderTask.SetNoRendered( true );
+	renderTask.SetFilterXRay( true );
+	renderTask.SetXRay( xray );
+	renderTask.SetRenderVSStereo( pPlan.GetRenderStereo()
+		&& pPlan.GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
+	
+	renderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
+	
+	int pipelineModifier = 0;
+	if( pPlan.GetFlipCulling() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+	}
+	if( pPlan.GetRenderStereo() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
+	}
+	renderTask.SetSkinPipelineModifier( pipelineModifier );
+	
+	
+	// pass 1: regular, no decals, no overdraw, no outline
+	renderTask.SetFilterDecal( true );
+	renderTask.SetDecal( false );
+	
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptBillboard );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropField );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropFieldImposter );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap1 );
+	
+	if( pPlan.GetRenderThread().GetChoices().GetRealTransparentParticles() ){
+		// addToRenderTask.AddParticles( collideList );
+	}
+	
+	renderTask.EndPass( worldCompute );
+	
+	
+	// pass 2: height terrain overdraw, no outline
+	renderTask.SetSkinPipelineLists( 0 );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap2 );
+	
+	renderTask.EndPass( worldCompute );
+	
+	
+	// pass 3: outline
+	renderTask.SetOutline( true );
+	
+	renderTask.SetSkinPipelineLists( 0 );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	
+	renderTask.EndPass( worldCompute );
+	
+	
+	// pass 4: model decals, decals
+	renderTask.SetOutline( false );
+	renderTask.SetDecal( true );
+	renderTask.SetFilterSolid( false );
+	
+	renderTask.SetSkinPipelineLists( 0 );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptDecal );
+	
+	renderTask.EndPass( worldCompute );
 }
