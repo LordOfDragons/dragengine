@@ -114,7 +114,6 @@ private:
 	deoglSPBlockUBO::Ref pUBOConfig;
 	deoglSPBlockSSBO::Ref pSSBOSteps;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
-	deoglSPBlockSSBO::Ref pSSBOInstanceIndex;
 	
 	deoglSPBlockReadBackSSBO::Ref pSSBOStepsReadBack;
 	deoglSPBlockReadBackSSBO::Ref pSSBOCountersReadBack;
@@ -188,9 +187,6 @@ public:
 	
 	/** Counters SSBO. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
-	
-	/** Instance index SSBO. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOInstanceIndex() const{ return pSSBOInstanceIndex; }
 	
 	
 	

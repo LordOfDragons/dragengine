@@ -104,13 +104,6 @@ pStepsResolvedCount( 0 )
 	pSSBOCounters->SetElementCount( 1 );
 	pSSBOCounters->MapToStd140();
 	
-	pSSBOInstanceIndex.TakeOver( new deoglSPBlockSSBO( renderThread ) );
-	pSSBOInstanceIndex->SetRowMajor( rowMajor );
-	pSSBOInstanceIndex->SetParameterCount( 1 );
-	pSSBOInstanceIndex->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // ivec4
-	pSSBOInstanceIndex->MapToStd140();
-	pSSBOInstanceIndex->SetBindingPoint( deoglSkinShader::essboInstanceIndex );
-	
 	pSSBOStepsReadBack.TakeOver( new deoglSPBlockReadBackSSBO( pSSBOSteps ) );
 	
 	pSSBOCountersReadBack.TakeOver( new deoglSPBlockReadBackSSBO( pSSBOCounters ) );
@@ -213,12 +206,6 @@ void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute )
 	if( count > pSSBOSteps->GetElementCount() ){
 		pSSBOSteps->SetElementCount( count );
 		pSSBOSteps->EnsureBuffer();
-	}
-	
-	const int instanceIndexCount = pUseSPBInstanceFlags ? count * 2 : count;
-	if( instanceIndexCount > pSSBOInstanceIndex->GetElementCount() ){
-		pSSBOInstanceIndex->SetElementCount( instanceIndexCount );
-		pSSBOInstanceIndex->EnsureBuffer();
 	}
 }
 

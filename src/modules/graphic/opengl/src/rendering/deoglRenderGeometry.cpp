@@ -378,18 +378,16 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 // 	const int strideIndirect = sizeof( oglDrawIndirectCommand );
+	const deoglShaderParameterBlock * const ssboIndexInstance = renderTask.GetSSBOSteps();
 	const deoglComputeRenderTask::sStepResolved * const steps = renderTask.GetSteps();
 	const deoglPipeline *curPipeline = nullptr;
 	const deoglRenderTaskSharedTexture *curTexture = nullptr;
 	const deoglRenderTaskSharedVAO *curVAO = nullptr;
 	const deoglRenderTaskSharedInstance *curInstance = nullptr;
-	deoglShaderParameterBlock *spbSIIndexInstance = nullptr; // TODO renderTask has exactly one of those
-		(void)spbSIIndexInstance;
 	int i = 0, m = 0;
 	
 	deoglShaderCompiled *shader = nullptr;
 	int targetSPBInstanceIndexBase = -1;
-		(void)targetSPBInstanceIndexBase;
 	int targetDrawIDOffset = -1;
 	
 	const deoglVAO *vao = nullptr;
@@ -427,6 +425,9 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 				
 				if( renderParamBlock ){
 					renderParamBlock->Activate();
+				}
+				if( ssboIndexInstance ){
+					ssboIndexInstance->Activate();
 				}
 				
 				if( targetDrawIDOffset != -1 ){
@@ -481,25 +482,18 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 				firstPoint = curInstance->GetFirstPoint();
 				indexPointer = ( GLvoid* )( intptr_t )( indexSize * firstIndex );
 				
-				/* TODO (requires SSBO with elementGeometryCount maximum size)
-				if( rtinstance.GetSIIndexInstanceSPB() != spbSIIndexInstance ){
-					if( rtinstance.GetSIIndexInstanceSPB() ){
-						rtinstance.GetSIIndexInstanceSPB()->Activate();
-					}
-					spbSIIndexInstance = rtinstance.GetSIIndexInstanceSPB();
-				}
-				
 				if( targetSPBInstanceIndexBase != -1 ){
-					shader->SetParameterInt( targetSPBInstanceIndexBase, rtinstance.GetSIIndexInstanceFirst() );
+					shader->SetParameterInt( targetSPBInstanceIndexBase, i );
 				}
-				*/
 				
 				if( pglPatchParameteri && shader->GetHasTessellation() ){
-					OGL_CHECK( renderThread, pglPatchParameteri(
-						GL_PATCH_VERTICES, curInstance->GetTessPatchVertexCount() ) );
+					OGL_CHECK( renderThread, pglPatchParameteri( GL_PATCH_VERTICES,
+						curInstance->GetTessPatchVertexCount() ) );
 					primitiveType = GL_PATCHES;
 				}
 			}
+			
+			const int realSubInstanceCount = step.subInstanceCount + subInstanceCount;
 			
 			if( renderVSStereo ){
 				#if 0
@@ -514,8 +508,6 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 						rtinstance.GetDrawIndirectCount(), strideIndirect ) );
 				}
 				#endif
-				
-				const int realSubInstanceCount = step.subInstanceCount + subInstanceCount;
 				
 				if( realSubInstanceCount == 0 ){
 					if( indexCount == 0 ){
@@ -561,11 +553,11 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 								indexCount, indexGLType, indexPointer, realSubInstanceCount ) );
 						}
 					}
+					
+					i += decMath::max( step.subInstanceCount - 1, 0 );
 				}
 				
 			}else{
-				const int realSubInstanceCount = step.subInstanceCount + subInstanceCount;
-				
 				if( realSubInstanceCount == 0 ){
 					if( indexCount == 0 ){
 						OGL_CHECK( renderThread, glDrawArrays( primitiveType, firstPoint, pointCount ) );
@@ -599,6 +591,8 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 						OGL_CHECK( renderThread, pglDrawElementsInstanced( primitiveType,
 							indexCount, indexGLType, indexPointer, realSubInstanceCount ) );
 					}
+					
+					i += decMath::max( step.subInstanceCount - 1, 0 );
 				}
 			}
 		}
@@ -611,13 +605,13 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 		pglBindBuffer( GL_DRAW_INDIRECT_BUFFER, 0 );
 		
 		renderThread.GetLogger().LogErrorFormat( "Render compute task failed: step=%d m=%d"
-			" pip=%d tex=%d vao=%d inst=%d spbsiii=%p tspbiib=%d tdido=%d indtype=%x"
+			" pip=%d tex=%d vao=%d inst=%d tspbiib=%d tdido=%d indtype=%x"
 			" primtype=%d sicnt=%d indcnt=%d indfir=%d indsize=%d pntcnt=%d pntfir=%d",
 			i, m, curPipeline ? curPipeline->GetRTSPipelineIndex() : -1,
 			curTexture ? curTexture->GetIndex() : -1, curVAO ? curVAO->GetIndex() : -1,
-			curInstance ? curInstance->GetIndex() : -1, spbSIIndexInstance,
-			targetSPBInstanceIndexBase, targetDrawIDOffset, indexGLType, primitiveType,
-			subInstanceCount, indexCount, firstIndex, indexSize, pointCount, firstPoint );
+			curInstance ? curInstance->GetIndex() : -1, targetSPBInstanceIndexBase,
+			targetDrawIDOffset, indexGLType, primitiveType, subInstanceCount, indexCount,
+			firstIndex, indexSize, pointCount, firstPoint );
 		
 		throw;
 	}

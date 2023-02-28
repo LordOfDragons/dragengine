@@ -9,5 +9,5 @@ in uint vao, in uint instance, in uint spbInstance, in uint specialFlags ){
 	pRenderTask[ renderStep ].instance = instance;
 	pRenderTask[ renderStep ].spbInstance = spbInstance;
 	pRenderTask[ renderStep ].specialFlags = specialFlags;
-	pRenderTask[ renderStep ].subInstanceCount = uint( 0 );
+	pRenderTask[ renderStep ].subInstanceCount = uint( 1 );
 }

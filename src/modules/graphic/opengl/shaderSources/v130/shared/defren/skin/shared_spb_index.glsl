@@ -14,8 +14,10 @@
 // 
 
 #ifdef SPB_SSBO_INSTANCE_ARRAY
+	#include "v130/shared/defren/plan/render_task.glsl"
+	
 	UBOLAYOUT_BIND(1) readonly buffer InstanceIndexSSBO{
-		ivec4 pSPBInstanceIndex[];
+		sRenderTask pSPBInstanceIndex[];
 	};
 	
 #else

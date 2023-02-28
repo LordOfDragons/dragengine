@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglRenderTaskInstance.h"
+#include "deoglComputeRenderTask.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/deoglSPBlockMemory.h"
@@ -123,6 +124,20 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags ){
 		for( i=0; i<pSubInstanceCount; i++ ){
 			data[ i ].index = ( GLuint )pSubInstances[ i ].instance;
 		}
+	}
+}
+
+void deoglRenderTaskInstance::WriteSIIndexInstanceCompute(){
+	DEASSERT_NOTNULL( pSIIndexInstanceSPB )
+	
+	deoglComputeRenderTask::sStep * const data = ( deoglComputeRenderTask::sStep* )
+		pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+	
+	int i;
+	for( i=0; i<pSubInstanceCount; i++ ){
+		const sSubInstance &subInstance = pSubInstances[ i ];
+		data[ i ].spbInstance = ( uint32_t )subInstance.instance;
+		data[ i ].specialFlags = ( uint32_t )subInstance.flags;
 	}
 }
 

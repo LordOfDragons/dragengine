@@ -27,18 +27,26 @@
 	{ // scoping to drop temporary variables freeing registers
 	int _spbIndexIndex = pSPBInstanceIndexBase + gl_InstanceID;
 	
-	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
-		ivec2 _spbIndexCoord = ivec2( _spbIndexIndex / 2, ( _spbIndexIndex % 2 ) * 2 );
-		//int spbIndex = pSPBInstanceIndex[ _spbIndexCoord.x ][ _spbIndexCoord.y ];
-		//int spbFlags = pSPBInstanceIndex[ _spbIndexCoord.x ][ _spbIndexCoord.y + 1 ];
-		ivec4 _spbTempIndex = pSPBInstanceIndex[ _spbIndexCoord.x ];
-		spbIndex = _spbTempIndex[ _spbIndexCoord.y ];
-		spbFlags = _spbTempIndex[ _spbIndexCoord.y + 1 ];
+	#ifdef SPB_SSBO_INSTANCE_ARRAY
+		spbIndex = int( pSPBInstanceIndex[ _spbIndexIndex ].spbInstance );
+		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+			spbFlags = int( pSPBInstanceIndex[ _spbIndexIndex ].specialFlags );
+		#endif
 		
 	#else
-		//int spbIndex = pSPBInstanceIndex[ _spbIndexIndex / 4 ][ _spbIndexIndex % 4 ];
-		ivec4 _spbTempIndex = pSPBInstanceIndex[ _spbIndexIndex / 4 ];
-		spbIndex = _spbTempIndex[ _spbIndexIndex % 4 ];
+		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+			ivec2 _spbIndexCoord = ivec2( _spbIndexIndex / 2, ( _spbIndexIndex % 2 ) * 2 );
+			//int spbIndex = pSPBInstanceIndex[ _spbIndexCoord.x ][ _spbIndexCoord.y ];
+			//int spbFlags = pSPBInstanceIndex[ _spbIndexCoord.x ][ _spbIndexCoord.y + 1 ];
+			ivec4 _spbTempIndex = pSPBInstanceIndex[ _spbIndexCoord.x ];
+			spbIndex = _spbTempIndex[ _spbIndexCoord.y ];
+			spbFlags = _spbTempIndex[ _spbIndexCoord.y + 1 ];
+			
+		#else
+			//int spbIndex = pSPBInstanceIndex[ _spbIndexIndex / 4 ][ _spbIndexIndex % 4 ];
+			ivec4 _spbTempIndex = pSPBInstanceIndex[ _spbIndexIndex / 4 ];
+			spbIndex = _spbTempIndex[ _spbIndexIndex % 4 ];
+		#endif
 	#endif
 	} // end of scoping
 	

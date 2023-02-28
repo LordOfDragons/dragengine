@@ -78,6 +78,7 @@ private:
 	GLuint pTBOInstances;
 	deoglShaderParameterBlockList pSPBInstances;
 	int pSPBInstanceMaxEntries;
+	int pSPBInstanceIndexCount;
 	bool pUseSPBInstanceFlags;
 	bool pRenderVSStereo;
 	GLuint pVBODrawIndirect;
