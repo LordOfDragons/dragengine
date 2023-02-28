@@ -257,6 +257,46 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
 	pSolidDepthOutlineXRayTask->PrepareForRender();
 }
 
+// DEBUG
+#if 0
+
+#include "../task/deoglRenderTaskPipeline.h"
+#include "../task/deoglRenderTaskTexture.h"
+#include "../task/deoglRenderTaskVAO.h"
+#include "../task/deoglRenderTaskInstance.h"
+#include "../task/shared/deoglRenderTaskSharedTexture.h"
+#include "../task/shared/deoglRenderTaskSharedVAO.h"
+#include "../task/shared/deoglRenderTaskSharedInstance.h"
+static void LogRT(deoglRTLogger &l, const char *name, int pass, const deoglRenderTask &rt){
+	l.LogInfoFormat("%s: %d", name, rt.GetTotalSubInstanceCount());
+	int p, t, v, i, s, pc = rt.GetPipelineCount();
+	for(p=0; p<pc; p++){
+		const deoglRenderTaskPipeline &pp = *rt.GetPipelineAt(p);
+		const int tc = pp.GetTextureCount();
+		for(t=0; t<tc; t++){
+			const deoglRenderTaskTexture &tt = *pp.GetTextureAt(t);
+			const int vc = tt.GetVAOCount();
+			for(v=0; v<vc; v++){
+				const deoglRenderTaskVAO &vv = *tt.GetVAOAt(v);
+				const int ic = vv.GetInstanceCount();
+				for(i=0; i<ic; i++){
+					const deoglRenderTaskInstance &ii = *vv.GetInstanceAt(i);
+					const int sc = ii.GetSubInstanceCount();
+					for(s=0; s<sc; s++){
+						const deoglRenderTaskInstance::sSubInstance &ss = ii.GetSubInstanceAt(s);
+						l.LogInfoFormat("pass=%d pipeline=%d tuc=%d vao=%d instance=%d spbInst=%d specFlags=%x",
+							pass, pp.GetPipeline()->GetRTSPipelineIndex(), tt.GetTexture()->GetIndex(),
+							vv.GetVAO()->GetIndex(), ii.GetInstance()->GetIndex(), ss.instance + 1, ss.flags);
+					}
+				}
+			}
+		}
+	}
+}
+
+#endif
+// DEBUG
+
 void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
 	if( ! pTaskGeometry ){
 		return;
@@ -282,6 +322,13 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
 	pSolidGeometryHeight2XRayTask->PrepareForRender();
 	pSolidGeometryOutlineXRayTask->PrepareForRender();
 	pSolidDecalsXRayTask->PrepareForRender();
+	
+	// DEBUG
+#if 0
+	deoglRTLogger &l = pPlan.GetRenderThread().GetLogger();
+	LogRT(l, "SolidGeometryTask", 0, *pSolidGeometryTask);
+	LogRT(l, "SolidDecalsTask", 3, *pSolidDecalsTask);
+#endif
 }
 
 void deoglRenderPlanTasks::CleanUp(){

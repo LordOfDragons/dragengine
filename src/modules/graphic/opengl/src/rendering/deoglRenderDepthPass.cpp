@@ -322,14 +322,21 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
 	}
 	
-	deoglRenderTask *renderTask;
+	deoglRenderTask *renderTask = nullptr;
+	deoglComputeRenderTask *computeRenderTask = nullptr;
 	
 	if( solid ){
 		deoglRenderPlanTasks &tasks = plan.GetTasks();
 		tasks.WaitFinishBuildingTasksDepth();
 		
-		renderTask = xray ? &tasks.GetSolidDepthXRayTask() : &tasks.GetSolidDepthTask();
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+			computeRenderTask = xray ? tasks.GetCRTSolidDepth() : tasks.GetCRTSolidDepthXRay();
+			computeRenderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+			
+		}else{
+			renderTask = xray ? &tasks.GetSolidDepthXRayTask() : &tasks.GetSolidDepthTask();
+			renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		}
 		
 	}else{
 		DebugTimer1Reset( plan, true );
@@ -380,7 +387,8 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthTask, true );
 	}
 	
-	if( renderTask->GetPipelineCount() > 0 ){
+	if( ( renderTask && renderTask->GetPipelineCount() > 0 )
+	|| ( computeRenderTask && computeRenderTask->GetCountSteps() > 0 ) ){
 		if( planDebug && plan.GetRenderPassNumber() == 1 ){
 			const int componentCount = collideList.GetComponentCount();
 			deoglEnvironmentMapList envMapList;
@@ -409,10 +417,15 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		
 		if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
 			renderThread.GetLogger().LogInfo( "RenderWorld.pRenderDepthPass: render task" );
-			renderTask->DebugPrint( renderThread.GetLogger() );
+			if( renderTask ) renderTask->DebugPrint( renderThread.GetLogger() );
 		}
 		
-		rengeom.RenderTask( *renderTask );
+		if( computeRenderTask ){
+			rengeom.RenderTask( *computeRenderTask );
+			
+		}else{
+			rengeom.RenderTask( *renderTask );
+		}
 		
 		if( solid ){
 			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDepthRender, true );
