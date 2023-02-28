@@ -176,25 +176,29 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
 	pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
 	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepth );
+	pCRTSolidDepth->BeginReadBackCounters();
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidGeometry" );
 	pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
 	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometry );
+	pCRTSolidGeometry->BeginReadBackCounters();
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidDepth" );
 	pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
 	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepthXRay );
+	pCRTSolidDepthXRay->BeginReadBackCounters();
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidGeometry" );
 	pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
 	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometryXRay );
+	pCRTSolidGeometryXRay->BeginReadBackCounters();
 	}
 	
-	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
-		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), true );
+	// renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
+	// 	compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), true );
 	
 	// start sky light render task building. by doing it here we can continue updating cull
 	// results avoiding to do another ClearCullResult()
@@ -202,6 +206,20 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	// for( i=0; i<pPlan.GetSkyLightCount(); i++ ){
 		// pPlan.GetSkyLightAt( i )->StartBuildRT();
 	// }
+}
+
+void deoglRenderPlanTasks::BeginReadBackComputeRenderTasks(){
+	pCRTSolidDepth->BeginReadBackSteps();
+	pCRTSolidGeometry->BeginReadBackSteps();
+	pCRTSolidDepthXRay->BeginReadBackSteps();
+	pCRTSolidGeometryXRay->BeginReadBackSteps();
+}
+
+void deoglRenderPlanTasks::FinishReadBackComputeRenderTasks(){
+	pCRTSolidDepth->ReadBackSteps();
+	pCRTSolidGeometry->ReadBackSteps();
+	pCRTSolidDepthXRay->ReadBackSteps();
+	pCRTSolidGeometryXRay->ReadBackSteps();
 }
 
 void deoglRenderPlanTasks::StartBuildTasks( const deoglRenderPlanMasked *mask ){
@@ -216,10 +234,6 @@ void deoglRenderPlanTasks::StartBuildTasks( const deoglRenderPlanMasked *mask ){
 	
 	pTaskGeometry = new deoglRPTBuildRTsGeometry( *this, mask );
 	pp.AddTaskAsync( pTaskGeometry );
-	
-	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
-		BuildComputeRenderTasks( mask );
-	}
 }
 
 void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){

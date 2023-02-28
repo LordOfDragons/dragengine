@@ -409,12 +409,12 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 			// pipeline
 			if( step.pipeline != curPipeline ){
 				curPipeline = step.pipeline;
-				step.pipeline->Activate();
+				curPipeline->Activate();
 				
-				const deoglPipelineConfiguration &pipconf = step.pipeline->GetGlConfiguration();
+				const deoglPipelineConfiguration &pipconf = curPipeline->GetGlConfiguration();
 				targetSPBInstanceIndexBase = pipconf.GetSPBInstanceIndexBase();
 				targetDrawIDOffset = pipconf.GetDrawIDOffset();
-				shader = &step.pipeline->GetGlShader();
+				shader = &curPipeline->GetGlShader();
 				
 				if( renderParamBlock ){
 					renderParamBlock->Activate();
@@ -428,8 +428,8 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 			// texture
 			if( step.texture != curTexture ){
 				curTexture = step.texture;
-			
-				const deoglTexUnitsConfig * const tuc = step.texture->GetTUC();
+				
+				const deoglTexUnitsConfig * const tuc = curTexture->GetTUC();
 				if( tuc ){
 					tuc->Apply();
 					if( tuc->GetParameterBlock() ){
@@ -442,7 +442,7 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 			if( step.vao != curVAO ){
 				curVAO = step.vao;
 				
-				vao = step.vao->GetVAO();
+				vao = curVAO->GetVAO();
 				indexGLType = vao->GetIndexGLType();
 				indexSize = vao->GetIndexSize();
 				
@@ -556,7 +556,7 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 				if( subInstanceCount == 0 ){
 					if( instance.GetIndexCount() == 0 ){
 						OGL_CHECK( renderThread, glDrawArrays( primitiveType,
-								instance.GetFirstPoint(), instance.GetPointCount() ) );
+							instance.GetFirstPoint(), instance.GetPointCount() ) );
 						
 					}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
 						// renderTaskInstance->GetFirstPoint() as base-vertex. required since

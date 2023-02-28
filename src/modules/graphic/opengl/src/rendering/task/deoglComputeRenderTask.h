@@ -115,6 +115,10 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOSteps;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	
+	deoglSPBlockReadBackSSBO::Ref pSSBOStepsReadBack;
+	deoglSPBlockReadBackSSBO::Ref pSSBOCountersReadBack;
+	int pReadBackStepCount;
+	
 	int pPassCount;
 	int pPass;
 	
@@ -197,8 +201,14 @@ public:
 	/** Finish preparing render task. */
 	void EndPrepare( const deoglWorldCompute &worldCompute );
 	
+	/** Begin read back counters. */
+	void BeginReadBackCounters();
+	
+	/** Begin read back render steps. */
+	void BeginReadBackSteps();
+	
 	/** Read back render task steps. */
-	void ReadBackSteps( const deoglWorldCompute &worldCompute );
+	void ReadBackSteps();
 	
 	
 	

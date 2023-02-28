@@ -50,7 +50,7 @@ void main( void ){
 	uint cullResult = uint( 0 );
 	
 	#ifndef CLEAR_CULL_RESULT
-		cullResult = composeElementCullResult( visibleElement >> uint( 24 ), calcLod( index ) );
+		cullResult = composeElementCullResult( visibleElement >> uint( 24 ), calcLod( elementIndex ) );
 	#endif
 	
 	setElementCullResult( elementIndex, cullResult );

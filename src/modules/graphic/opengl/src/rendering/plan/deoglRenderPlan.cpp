@@ -416,6 +416,9 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// finish occlusion testing. we can not do this later since this usually removes a large
 	// quantity of elements. processing those below just to drop them later on is not helping
 	pFinishOcclusionTests( mask );
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pTasks.BuildComputeRenderTasks( mask );
+	}
 	SPECIAL_TIMER_PRINT("FinishOcclusionTests")
 	
 	// update dynamic skins and masked rendering if required
@@ -443,6 +446,10 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// finish preparations
 	for( i=0; i<pSkyLightCount; i++ ){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->FinishPrepare();
+	}
+	
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pTasks.BeginReadBackComputeRenderTasks();
 	}
 	renderCanvas.SampleDebugInfoPlanPrepareFinish( *this );
 	SPECIAL_TIMER_PRINT("Finish")

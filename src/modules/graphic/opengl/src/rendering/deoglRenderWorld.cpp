@@ -399,6 +399,9 @@ DEBUG_RESET_TIMER
 	// solid pass
 	QUICK_DEBUG_START( 15, 19 )
 	//if( ! plan->GetFBOTarget() )
+	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+		plan.GetTasks().FinishReadBackComputeRenderTasks();
+	}
 	renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask, false );
 	if( debugMainPass ){
 		DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometry, true );

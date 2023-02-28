@@ -82,7 +82,6 @@ pStepsResolvedCount( 0 )
 	pUBOConfig->GetParameterAt( ecpPipelineType ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->GetParameterAt( ecpPipelineModifier ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->MapToStd140();
-	pUBOConfig->SetBindingPoint( 0 );
 	
 	pSSBOSteps.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOSteps->SetRowMajor( rowMajor );
@@ -95,7 +94,6 @@ pStepsResolvedCount( 0 )
 	pSSBOSteps->GetParameterAt( etpSpecialFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpSubInstanceCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->MapToStd140();
-	pSSBOSteps->SetBindingPoint( 4 );
 	
 	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOCounters->SetRowMajor( rowMajor );
@@ -104,8 +102,11 @@ pStepsResolvedCount( 0 )
 	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pSSBOCounters->SetElementCount( 1 );
 	pSSBOCounters->MapToStd140();
-	pSSBOCounters->SetBindingPoint( 3 );
-	pSSBOCounters->SetBindingPointAtomic( 0 );
+	
+	pSSBOStepsReadBack.TakeOver( new deoglSPBlockReadBackSSBO( pSSBOSteps ) );
+	
+	pSSBOCountersReadBack.TakeOver( new deoglSPBlockReadBackSSBO( pSSBOCounters ) );
+	pSSBOCountersReadBack->SetElementCount( 1 );
 	
 	Clear();
 }
@@ -206,41 +207,63 @@ void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute )
 	}
 }
 
-void deoglComputeRenderTask::ReadBackSteps( const deoglWorldCompute &worldCompute ){
+void deoglComputeRenderTask::BeginReadBackCounters(){
+	DEASSERT_TRUE( pPass == -1 )
+	pReadBackStepCount = 0;
+	pSSBOCountersReadBack->TransferFrom( pSSBOCounters, 1 );
+}
+
+void deoglComputeRenderTask::BeginReadBackSteps(){
+	DEASSERT_TRUE( pPass == -1 )
+	
+		decTimer timer;
+	const deoglSPBMapBuffer mapped( pSSBOCountersReadBack, 0, 1 );
+	const sCounters &counters = *( sCounters* )pSSBOCountersReadBack->GetMappedBuffer();
+	pReadBackStepCount = counters.counter;
+	if( pReadBackStepCount == 0 ){
+		return;
+	}
+	
+	if( pReadBackStepCount > pSSBOStepsReadBack->GetElementCount() ){
+		pSSBOStepsReadBack->SetElementCount( pReadBackStepCount );
+	}
+	
+	pSSBOStepsReadBack->TransferFrom( pSSBOSteps, pReadBackStepCount );
+		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.BeginReadBackSteps: read %dys. %d steps",
+			(int)(timer.GetElapsedTime()*1e6f), pReadBackStepCount);
+}
+
+void deoglComputeRenderTask::ReadBackSteps(){
 	DEASSERT_TRUE( pPass == -1 )
 	
 	pStepsResolvedCount = 0;
 	
-	if( worldCompute.GetElementGeometryCount() == 0 ){
+	if( pReadBackStepCount == 0 ){
 		return;
 	}
 	
 		decTimer timer;
-	const sCounters &counters = *( sCounters* )pSSBOCounters->ReadBuffer( 1 );
-	const int count = counters.counter;
-	if( count == 0 ){
-		return;
-	}
-	
-	if( count > pStepsResolvedSize ){
+	if( pReadBackStepCount > pStepsResolvedSize ){
 		if( pStepsResolved ){
 			delete [] pStepsResolved;
 			pStepsResolved = nullptr;
 			pStepsResolvedSize = 0;
 		}
 		
-		pStepsResolved = new sStepResolved[ count ];
-		pStepsResolvedSize = count;
+		pStepsResolved = new sStepResolved[ pReadBackStepCount ];
+		pStepsResolvedSize = pReadBackStepCount;
 	}
 	
-	const sStep * const steps = ( const sStep* )pSSBOSteps->ReadBuffer( count );
-		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys", count, (int)(timer.GetElapsedTime()*1e6f));
+	const deoglSPBMapBuffer mapped( pSSBOStepsReadBack, 0, pReadBackStepCount );
+	const sStep * const steps = ( const sStep* )pSSBOStepsReadBack->GetMappedBuffer();
+		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
+			pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
 	
 	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
 	const deoglPipelineManager &pipManager = pRenderThread.GetPipelineManager();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for( i=0; i<pReadBackStepCount; i++ ){
 		sStepResolved &resolved = pStepsResolved[ i ];
 		const sStep &step = steps[ i ];
 		
@@ -252,8 +275,9 @@ void deoglComputeRenderTask::ReadBackSteps( const deoglWorldCompute &worldComput
 		resolved.specialFlags = step.specialFlags;
 		resolved.subInstanceCount = step.subInstanceCount;
 	}
-	pStepsResolvedCount = count;
-		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys", count, (int)(timer.GetElapsedTime()*1e6f));
+	pStepsResolvedCount = pReadBackStepCount;
+		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys",
+			pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
 }
 
 
