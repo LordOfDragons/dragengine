@@ -284,7 +284,7 @@ deoglRenderLightBase( renderThread )
 		pipconf.EnableCulling( false );
 		pipconf.EnablePolygonOffset( useInverseDepth ? -smOffsetScale : smOffsetScale, -smOffsetBias );
 		
-		renderers.GetOcclusion().AddOccMapDefines( defines );
+		AddSharedSPBDefines( defines );
 		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );

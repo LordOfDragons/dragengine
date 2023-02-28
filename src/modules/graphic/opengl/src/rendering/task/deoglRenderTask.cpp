@@ -485,7 +485,7 @@ void deoglRenderTask::pCalcSPBInstancesMaxEntries(){
 
 void deoglRenderTask::pAssignSPBInstances(){
 	const int componentsPerIndex = pUseSPBInstanceFlags ? 2 : 1;
-	deoglShaderParameterBlock *paramBlock = NULL;
+	deoglShaderParameterBlock *paramBlock = nullptr;
 	int paramBlockCount = 0;
 	int firstIndex = 0;
 	int i, j, k, l;
@@ -582,13 +582,24 @@ void deoglRenderTask::pUpdateSPBInstances(){
 void deoglRenderTask::pCreateSPBInstanceParamBlock(){
 	// since std140 layout adds a lot of padding between array elements we use ivec4.
 	// this groups indices in blocks of four so the final index is pSPB[i/4][i%4]
-	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
-	ubo->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-	ubo->SetParameterCount( 1 );
-	ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
-	ubo->MapToStd140();
-	ubo->SetBindingPoint( deoglSkinShader::eubInstanceIndex );
-	pSPBInstances.Add( ubo );
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		const deoglSPBlockSSBO::Ref ssbo( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( pRenderThread ) ) );
+		ssbo->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		ssbo->SetParameterCount( 1 );
+		ssbo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+		ssbo->MapToStd140();
+		ssbo->SetBindingPoint( deoglSkinShader::essboInstanceIndex );
+		pSPBInstances.Add( ssbo );
+		
+	}else{
+		const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+		ubo->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		ubo->SetParameterCount( 1 );
+		ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+		ubo->MapToStd140();
+		ubo->SetBindingPoint( deoglSkinShader::eubInstanceIndex );
+		pSPBInstances.Add( ubo );
+	}
 }
 
 void deoglRenderTask::pUpdateVBODrawIndirect(){

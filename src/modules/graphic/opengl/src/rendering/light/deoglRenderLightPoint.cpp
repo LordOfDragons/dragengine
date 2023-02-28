@@ -288,7 +288,7 @@ pVAOCopyShadow( nullptr )
 		pipconf.EnableCulling( false );
 		pipconf.EnablePolygonOffset( useInverseDepth ? -smOffsetScale : smOffsetScale, -smOffsetBias );
 		
-		renderers.GetOcclusion().AddOccMapDefines( defines );
+		AddSharedSPBDefines( defines );
 		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );
@@ -297,7 +297,7 @@ pVAOCopyShadow( nullptr )
 		// occlusion map cube
 		if( renderCubeGS ){
 			defines = commonDefines;
-			renderers.GetOcclusion().AddOccMapDefines( defines );
+			AddSharedSPBDefines( defines );
 			defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
 			
 			pipconf.SetShader( renderThread, "DefRen Occlusion OccMap Cube", defines );

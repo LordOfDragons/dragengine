@@ -100,10 +100,7 @@ int firstIndex ){
 }
 
 void deoglRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags ){
-	if( ! pSIIndexInstanceSPB ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_NOTNULL( pSIIndexInstanceSPB )
 	int i;
 	
 	if( useFlags ){
@@ -125,32 +122,6 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags ){
 		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
 		for( i=0; i<pSubInstanceCount; i++ ){
 			data[ i ].index = ( GLuint )pSubInstances[ i ].instance;
-		}
-	}
-}
-
-void deoglRenderTaskInstance::WriteSIIndexInstanceShort( bool useFlags ){
-	int i;
-	
-	if( useFlags ){
-		struct sIndexFlags{
-			GLushort index;
-			GLushort flags;
-		};
-		sIndexFlags * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for( i=0; i<pSubInstanceCount; i++ ){
-			const sSubInstance &subInstance = pSubInstances[ i ];
-			data[ i ].index = ( GLushort )subInstance.instance;
-			data[ i ].flags = ( GLushort )subInstance.flags;
-		}
-		
-	}else{
-		struct sIndex{
-			GLuint index;
-		};
-		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for( i=0; i<pSubInstanceCount; i++ ){
-			data[ i ].index = ( GLushort )pSubInstances[ i ].instance;
 		}
 	}
 }

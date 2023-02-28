@@ -142,7 +142,7 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	}
 	
 	// temporary until working properly
-	if( HASEXT( ext_ARB_shader_atomic_counter_ops ) ){
+	if( HASEXT( ext_ARB_shader_atomic_counter_ops ) && pUseSSBORender ){
 		pUseComputeRenderTask = false;
 		
 	}else{

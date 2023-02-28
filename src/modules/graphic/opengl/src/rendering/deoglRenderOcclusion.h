@@ -82,9 +82,6 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** Add basic defines for occlusion map shaders. */
-	void AddOccMapDefines( deoglShaderDefines &defines );
-	
 	/** Render occlusion tests. */
 	void RenderTestsCamera( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	

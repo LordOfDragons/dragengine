@@ -8,17 +8,24 @@
 // 
 // this requires a bit of bit operation to obtain the correct index.
 // 
-// UBOLAYOUT uniform ivec4 pSharedSPBIndices[ ?? ];
+// UBOLAYOUT uniform ivec4 pSPBInstanceIndex[ ?? ];
 // 
-// const int pSPBIndex = pSharedSPBIndices[ gl_InstanceID / 4 ][ gl_InstanceID % 4 ];
+// const int pSPBIndex = pSPBInstanceIndex[ gl_InstanceID / 4 ][ gl_InstanceID % 4 ];
 // 
 
-UBOLAYOUT uniform InstanceIndex{
-	#ifdef SPB_INSTANCE_ARRAY_SIZE
-	ivec4 pSPBInstanceIndex[ SPB_INSTANCE_ARRAY_SIZE ];
-	#else
-	ivec4 pSPBInstanceIndex[];
-	#endif
-};
+#ifdef SPB_SSBO_INSTANCE_ARRAY
+	UBOLAYOUT_BIND(1) readonly buffer InstanceIndexSSBO{
+		ivec4 pSPBInstanceIndex[];
+	};
+	
+#else
+	UBOLAYOUT uniform InstanceIndex{
+		#ifdef SPB_INSTANCE_ARRAY_SIZE
+		ivec4 pSPBInstanceIndex[ SPB_INSTANCE_ARRAY_SIZE ];
+		#else
+		ivec4 pSPBInstanceIndex[];
+		#endif
+	};
+#endif
 
 uniform int pSPBInstanceIndexBase;

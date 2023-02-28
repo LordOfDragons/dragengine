@@ -182,7 +182,7 @@ pAddToRenderTask( NULL )
 		
 		// occlusion map
 		commonOccMapDefines = commonDefines;
-		AddOccMapDefines( commonOccMapDefines );
+		AddSharedSPBDefines( commonOccMapDefines );
 		
 		for( modifiers=0; modifiers<epmSingle<<1; modifiers++ ){
 			pipconf.Reset();
@@ -390,42 +390,6 @@ deoglRenderOcclusion::~deoglRenderOcclusion(){
 
 // Rendering
 //////////////
-
-void deoglRenderOcclusion::AddOccMapDefines( deoglShaderDefines &defines ){
-	AddBasicDefines( defines );
-	
-	const deoglRenderThread &renderThread = GetRenderThread();
-	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
-	decString value;
-	
-	defines.SetDefine( "SHARED_SPB", true );
-	
-	if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
-		defines.SetDefine( "SHARED_SPB_USE_SSBO", true );
-		
-		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
-			value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
-			defines.SetDefine( "SHARED_SPB_PADDING", value );
-		}
-		
-	}else{
-		// NOTE UBO requires array size to be constant, SSBO does not
-		if( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() > 0 ){
-			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
-			defines.SetDefine( "SHARED_SPB_ARRAY_SIZE", value );
-		}
-		
-		if( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() >= 16 ){
-			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
-			defines.SetDefine( "SHARED_SPB_PADDING", value );
-		}
-	}
-	
-	if( bo.GetInstanceArraySizeUBO() > 0 ){
-		value.SetValue( bo.GetInstanceArraySizeUBO() );
-		defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
-	}
-}
 
 /*
 Implementation Note

@@ -98,9 +98,6 @@ public:
 	/** Write sub instance indices for instance shared SPB. */
 	void WriteSIIndexInstanceInt( bool useFlags );
 	
-	/** Write sub instance indices for instance shared SPB. */
-	void WriteSIIndexInstanceShort( bool useFlags );
-	
 	/** Draw indirect index. */
 	inline int GetDrawIndirectIndex() const{ return pDrawIndirectIndex; }
 	

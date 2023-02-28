@@ -1877,8 +1877,14 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	if( pConfig.GetSharedSPB() ){ // affects only instance parameters
 		defines.SetDefines( "SHARED_SPB" );
-		if( bo.GetInstanceArraySizeUBO() > 0 ){
-			defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", bo.GetInstanceArraySizeUBO() );
+		
+		if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+			defines.SetDefines( "SPB_SSBO_INSTANCE_ARRAY" );
+			
+		}else{
+			if( bo.GetInstanceArraySizeUBO() > 0 ){
+				defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", bo.GetInstanceArraySizeUBO() );
+			}
 		}
 	}
 	

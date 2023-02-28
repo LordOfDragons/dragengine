@@ -64,6 +64,7 @@ deoglComputeRenderTask::deoglComputeRenderTask( deoglRenderThread &renderThread 
 pRenderThread( renderThread ),
 pPassCount( 0 ),
 pPass( -1 ),
+pUseSPBInstanceFlags( false ),
 pRenderVSStereo( false ),
 pStepsResolved( nullptr ),
 pStepsResolvedSize( 0 ),
@@ -102,6 +103,13 @@ pStepsResolvedCount( 0 )
 	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pSSBOCounters->SetElementCount( 1 );
 	pSSBOCounters->MapToStd140();
+	
+	pSSBOInstanceIndex.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOInstanceIndex->SetRowMajor( rowMajor );
+	pSSBOInstanceIndex->SetParameterCount( 1 );
+	pSSBOInstanceIndex->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // ivec4
+	pSSBOInstanceIndex->MapToStd140();
+	pSSBOInstanceIndex->SetBindingPoint( deoglSkinShader::essboInstanceIndex );
 	
 	pSSBOStepsReadBack.TakeOver( new deoglSPBlockReadBackSSBO( pSSBOSteps ) );
 	
@@ -163,6 +171,7 @@ void deoglComputeRenderTask::Clear(){
 	pFilterCubeFace = -1;
 	
 	pUseSpecialParamBlock = false;
+	pUseSPBInstanceFlags = false;
 	
 	pStepsResolvedCount = 0;
 }
@@ -204,6 +213,12 @@ void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute )
 	if( count > pSSBOSteps->GetElementCount() ){
 		pSSBOSteps->SetElementCount( count );
 		pSSBOSteps->EnsureBuffer();
+	}
+	
+	const int instanceIndexCount = pUseSPBInstanceFlags ? count * 2 : count;
+	if( instanceIndexCount > pSSBOInstanceIndex->GetElementCount() ){
+		pSSBOInstanceIndex->SetElementCount( instanceIndexCount );
+		pSSBOInstanceIndex->EnsureBuffer();
 	}
 }
 
@@ -281,6 +296,10 @@ void deoglComputeRenderTask::ReadBackSteps(){
 }
 
 
+
+void deoglComputeRenderTask::SetUseSPBInstanceFlags( bool useFlags ){
+	pUseSPBInstanceFlags = useFlags;
+}
 
 void deoglComputeRenderTask::SetRenderVSStereo( bool renderVSStereo ){
 	pRenderVSStereo = renderVSStereo;

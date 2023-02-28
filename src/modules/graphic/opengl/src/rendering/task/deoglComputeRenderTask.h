@@ -114,6 +114,7 @@ private:
 	deoglSPBlockUBO::Ref pUBOConfig;
 	deoglSPBlockSSBO::Ref pSSBOSteps;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
+	deoglSPBlockSSBO::Ref pSSBOInstanceIndex;
 	
 	deoglSPBlockReadBackSSBO::Ref pSSBOStepsReadBack;
 	deoglSPBlockReadBackSSBO::Ref pSSBOCountersReadBack;
@@ -122,6 +123,7 @@ private:
 	int pPassCount;
 	int pPass;
 	
+	bool pUseSPBInstanceFlags;
 	bool pRenderVSStereo;
 	deoglSPBlockUBO::Ref pRenderParamBlock;
 	
@@ -187,6 +189,9 @@ public:
 	/** Counters SSBO. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
 	
+	/** Instance index SSBO. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOInstanceIndex() const{ return pSSBOInstanceIndex; }
+	
 	
 	
 	/** Begin preparing render task. */
@@ -216,6 +221,12 @@ public:
 	inline int GetPassCount() const{ return pPassCount; }
 	
 	
+	
+	/** Use SPB instance flags. */
+	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
+	
+	/** Set use instance flags. */
+	void SetUseSPBInstanceFlags( bool useFlags );
 	
 	/** Use vertex shader stereo rendering. */
 	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
