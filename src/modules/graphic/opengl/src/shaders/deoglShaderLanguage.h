@@ -56,6 +56,8 @@ private:
 	decString pGLSLVersion;
 	decStringList pGLSLExtensions;
 	
+	int pGLSLVersionNumber;
+	
 	deoglShaderPreprocessor pPreprocessor;
 	
 public:

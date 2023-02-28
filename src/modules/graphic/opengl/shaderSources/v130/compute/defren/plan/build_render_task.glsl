@@ -41,7 +41,7 @@ UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
 #include "v130/shared/defren/plan/render_task_set_geometry.glsl"
 
 
-uniform int pPass;
+uniform uint pPass;
 
 
 layout( local_size_x=64 ) in;

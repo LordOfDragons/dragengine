@@ -233,30 +233,37 @@ pPreprocessor( renderThread )
 			switch( ext.GetGLVersion() ){
 			case deoglExtensions::evgl3p2:
 				pGLSLVersion = "150";
+				pGLSLVersionNumber = 150;
 				break;
 				
 			case deoglExtensions::evgl3p1:
 				pGLSLVersion = "140";
+				pGLSLVersionNumber = 140;
 				break;
 				
 			case deoglExtensions::evgl3p0:
 				pGLSLVersion = "130";
+				pGLSLVersionNumber = 130;
 				break;
 				
 			case deoglExtensions::evgl2p1:
 				pGLSLVersion = "120";
+				pGLSLVersionNumber = 120;
 				break;
 				
 			default:
 				pGLSLVersion = "110";
+				pGLSLVersionNumber = 110;
 			}
 			
 		}else{
 			pGLSLVersion.Format( "%d%0d0 core", ext.GetGLVersionMajor(), ext.GetGLVersionMinor() );
+			pGLSLVersionNumber = 100 * ext.GetGLVersionMajor() + 10 * ext.GetGLVersionMinor();
 		}
 		
 	}else{
 		pGLSLVersion.Format( "%d%0d0 es", ext.GetGLVersionMajor(), ext.GetGLVersionMinor() );
+		pGLSLVersionNumber = 100 * ext.GetGLVersionMajor() + 10 * ext.GetGLVersionMinor();
 	}
 	
 	// some extensions provide functionality which is not present in the supported GLSL
@@ -1047,6 +1054,11 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 	for( i=0; i<extCount; i++ ){
 		line.Format( "#extension %s : require\n", pGLSLExtensions.GetAt( i ).GetString() );
 		pPreprocessor.SourcesAppend( line, false );
+	}
+	
+	// add version selection defines
+	if( pGLSLVersionNumber >= 450 ){
+		pPreprocessor.SetSymbol( "GLSL_450", "1" );
 	}
 	
 	// add symbols

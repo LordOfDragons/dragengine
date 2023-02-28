@@ -29,8 +29,16 @@ uint calcLodProjection( in uint index ){
 	if( elementDistance > 1 ){
 		float maxError = pLodFactor * elementDistance;
 		
+		#ifdef GLSL_450
 		uvec4 lod = mix( uvec4( 0 ), uvec4( 1, 2, 3, 4 ),
 			lessThanEqual( pElement[ index ].lodFactors, vec4( maxError ) ) );
+		#else
+		uvec4 lod = uvec4(
+			pElement[ index ].lodFactors.x <= maxError ? uint( 1 ) : uint( 0 ),
+			pElement[ index ].lodFactors.y <= maxError ? uint( 1 ) : uint( 0 ),
+			pElement[ index ].lodFactors.z <= maxError ? uint( 1 ) : uint( 0 ),
+			pElement[ index ].lodFactors.w <= maxError ? uint( 1 ) : uint( 0 ) );
+		#endif
 		
 		lod.xy = max( lod.xy, lod.zw );
 		lodLevel = max( lod.x, lod.y );

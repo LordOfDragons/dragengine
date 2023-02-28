@@ -380,7 +380,7 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask ){
 	int i;
 	
 	for( i=0; i<passCount; i++ ){
-		shader.SetParameterInt( 0, i );
+		shader.SetParameterUInt( 0, i );
 		OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
 		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
 	}
