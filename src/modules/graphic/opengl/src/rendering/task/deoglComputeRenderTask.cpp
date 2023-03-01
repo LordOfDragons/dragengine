@@ -385,11 +385,45 @@ void deoglComputeRenderTask::SetUseSpecialParamBlock( bool use ){
 
 
 
-void deoglComputeRenderTask::DebugSimple( deoglRTLogger &logger ){
-	int i;
+void deoglComputeRenderTask::DebugSimple( deoglRTLogger &logger, bool sorted ){
+	int i, j;
+	sStepResolved *ss = nullptr;
+	if( sorted && pStepsResolvedCount > 0 ){
+		ss = new sStepResolved[ pStepsResolvedCount ];
+		memcpy( ss, pStepsResolved, sizeof( sStepResolved ) * pStepsResolvedCount );
+		for( i=1; i<pStepsResolvedCount - 1; i++ ){
+			const sStepResolved &p = ss[ i - 1 ];
+			for( j=i; j<pStepsResolvedCount; j++ ){
+				const sStepResolved &c = ss[ j ];
+				if( c.pipeline == p.pipeline && c.texture == p.texture && c.vao == p.vao && c.instance == p.instance ) break;
+			}
+			if( j == pStepsResolvedCount ){
+				for( j=i; j<pStepsResolvedCount; j++ ){
+					const sStepResolved &c = ss[ j ];
+					if( c.pipeline == p.pipeline && c.texture == p.texture && c.vao == p.vao ) break;
+				}
+			}
+			if( j == pStepsResolvedCount ){
+				for( j=i; j<pStepsResolvedCount; j++ ){
+					const sStepResolved &c = ss[ j ];
+					if( c.pipeline == p.pipeline && c.texture == p.texture ) break;
+				}
+			}
+			if( j == pStepsResolvedCount ){
+				for( j=i; j<pStepsResolvedCount; j++ ){
+					const sStepResolved &c = ss[ j ];
+					if( c.pipeline == p.pipeline ) break;
+				}
+			}
+			if( j < pStepsResolvedCount ){
+				const sStepResolved t( ss[ i ] ); ss[ i ] = ss[ j ]; ss[ j ] = t;
+			}
+		}
+	}
+	
 	logger.LogInfoFormat( "ComputeRenderTask %p", this );
 	for( i=0; i<pStepsResolvedCount; i++ ){
-		const sStepResolved &s = pStepsResolved[ i ];
+		const sStepResolved &s = ss ? ss[ i ] : pStepsResolved[ i ];
 		logger.LogInfoFormat( "- %d: p=%d t=%d v=%d i=%d [pc=%d fp=%d ic=%d fi=%d] si[i=%d f=%x]", i,
 			s.pipeline ? s.pipeline->GetRTSIndex() : -1, s.texture ? s.texture->GetIndex() : -1,
 			s.vao ? s.vao->GetIndex() : -1, s.instance ? s.instance->GetIndex() : -1,
@@ -397,6 +431,8 @@ void deoglComputeRenderTask::DebugSimple( deoglRTLogger &logger ){
 			s.instance ? s.instance->GetIndexCount() : 0, s.instance ? s.instance->GetFirstIndex() : 0,
 			s.spbInstance, s.specialFlags );
 	}
+	
+	if( ss ) delete [] ss;
 }
 
 

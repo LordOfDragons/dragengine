@@ -382,7 +382,7 @@ public:
 	/** \name Debug */
 	/*@{*/
 	/** Debug print. */
-	void DebugSimple( deoglRTLogger &logger );
+	void DebugSimple( deoglRTLogger &logger, bool sorted );
 	/*@}*/
 	
 	
