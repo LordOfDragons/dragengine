@@ -210,7 +210,7 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 					const deoglSkinTexturePipeline * const stp = stps.GetWith( ( deoglSkinTexturePipelines::eTypes )k, l );
 					
 					if( stp ){
-						*( values++ ) = ( uint16_t )decMath::max( stp->GetPipeline()->GetRTSPipelineIndex(), 0 );
+						*( values++ ) = ( uint16_t )decMath::max( stp->GetPipeline()->GetRTSIndex(), 0 );
 						
 					}else{
 						*( values++ ) = 0;

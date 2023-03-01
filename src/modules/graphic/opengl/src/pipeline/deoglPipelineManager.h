@@ -26,6 +26,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decPointerList.h>
 
 class deoglRenderThread;
 class deoglPipeline;
@@ -45,6 +46,8 @@ private:
 	deoglRenderThread &pRenderThread;
 	deoglPipelineState pState;
 	decObjectList pPipelines;
+	
+	decPointerList pRTSPipelines;
 	
 	
 	
@@ -76,9 +79,12 @@ public:
 	/** Pipeline at index. Caller does not hold reference. */
 	const deoglPipeline *GetAt( int index ) const;
 	
+	/** Pipeline with RTS index or nullptr. Caller does not hold reference. */
+	const deoglPipeline *GetWithRTSIndex( int index ) const;
+	
 	/** Pipeline with configuration creating it if absent. Caller does not hold reference. */
 	const deoglPipeline *GetWith( const deoglPipelineConfiguration &configuration,
-		bool assignRTSPipelineIndex = false );
+		bool assignRTSIndex = false );
 	
 	/** Pipeline with configuration is present. */
 	bool HasWith( const deoglPipelineConfiguration &configuration ) const;

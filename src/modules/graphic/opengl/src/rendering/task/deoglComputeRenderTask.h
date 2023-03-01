@@ -73,7 +73,7 @@ public:
 		uint32_t tuc;
 		uint32_t vao;
 		uint32_t instance;
-		uint32_t spbInstance;
+		uint32_t spbInstance; // SPBInstance + 1
 		uint32_t specialFlags;
 		uint32_t subInstanceCount;
 	};

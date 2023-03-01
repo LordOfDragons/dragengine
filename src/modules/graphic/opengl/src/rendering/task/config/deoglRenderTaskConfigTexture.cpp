@@ -52,7 +52,7 @@ void deoglRenderTaskConfigTexture::SetRenderTaskFilter( int filter ){
 
 void deoglRenderTaskConfigTexture::SetPipeline( const deoglPipeline *pipeline ){
 	pPipeline = pipeline;
-	pPipelineIndex = pipeline ? pipeline->GetRTSPipelineIndex() : -1;
+	pPipelineIndex = pipeline ? pipeline->GetRTSIndex() : -1;
 }
 
 void deoglRenderTaskConfigTexture::SetTexture( const deoglRenderTaskSharedTexture *texture ){

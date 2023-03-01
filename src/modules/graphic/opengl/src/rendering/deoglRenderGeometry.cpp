@@ -374,7 +374,7 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.RenderTask" );
+	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.RenderTaskCompute" );
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 // 	const int strideIndirect = sizeof( oglDrawIndirectCommand );
@@ -401,7 +401,6 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 	int pointCount = 0;
 	int firstPoint = 0;
 	
-	
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
 	
 	if( renderVSStereo ){
@@ -424,10 +423,10 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 				shader = &curPipeline->GetGlShader();
 				
 				if( renderParamBlock ){
-					renderParamBlock->Activate();
+					renderParamBlock->Activate( deoglSkinShader::eubRenderParameters );
 				}
 				if( ssboIndexInstance ){
-					ssboIndexInstance->Activate();
+					ssboIndexInstance->Activate( deoglSkinShader::essboInstanceIndex );
 				}
 				
 				if( targetDrawIDOffset != -1 ){
@@ -482,15 +481,15 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 				firstPoint = curInstance->GetFirstPoint();
 				indexPointer = ( GLvoid* )( intptr_t )( indexSize * firstIndex );
 				
-				if( targetSPBInstanceIndexBase != -1 ){
-					shader->SetParameterInt( targetSPBInstanceIndexBase, i );
-				}
-				
 				if( pglPatchParameteri && shader->GetHasTessellation() ){
 					OGL_CHECK( renderThread, pglPatchParameteri( GL_PATCH_VERTICES,
 						curInstance->GetTessPatchVertexCount() ) );
 					primitiveType = GL_PATCHES;
 				}
+			}
+			
+			if( targetSPBInstanceIndexBase != -1 ){
+				shader->SetParameterInt( targetSPBInstanceIndexBase, i );
 			}
 			
 			const int realSubInstanceCount = step.subInstanceCount + subInstanceCount;
@@ -605,15 +604,15 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 		pglBindBuffer( GL_DRAW_INDIRECT_BUFFER, 0 );
 		
 		renderThread.GetLogger().LogErrorFormat( "Render compute task failed: step=%d m=%d"
-			" pip=%d tex=%d vao=%d inst=%d tspbiib=%d tdido=%d indtype=%x"
-			" primtype=%d sicnt=%d indcnt=%d indfir=%d indsize=%d pntcnt=%d pntfir=%d",
-			i, m, curPipeline ? curPipeline->GetRTSPipelineIndex() : -1,
+			" pip=%d tex=%d vao=%d inst=%d tspbiib=%d tdido=%d indtype=%x primtype=%d sicnt=%d"
+			" ssicnt=%d indcnt=%d indfir=%d indsize=%d pntcnt=%d pntfir=%d",
+			i, m, curPipeline ? curPipeline->GetRTSIndex() : -1,
 			curTexture ? curTexture->GetIndex() : -1, curVAO ? curVAO->GetIndex() : -1,
 			curInstance ? curInstance->GetIndex() : -1, targetSPBInstanceIndexBase,
-			targetDrawIDOffset, indexGLType, primitiveType, subInstanceCount, indexCount,
-			firstIndex, indexSize, pointCount, firstPoint );
+			targetDrawIDOffset, indexGLType, primitiveType, subInstanceCount,
+			steps[ i ].subInstanceCount, indexCount, firstIndex, indexSize, pointCount, firstPoint );
 		
-		throw;
+		// throw;
 	}
 }
 

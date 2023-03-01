@@ -269,11 +269,11 @@ void deoglComputeRenderTask::ReadBackSteps(){
 		sStepResolved &resolved = pStepsResolved[ i ];
 		const sStep &step = steps[ i ];
 		
-		resolved.pipeline = pipManager.GetAt( step.pipeline );
+		resolved.pipeline = pipManager.GetWithRTSIndex( step.pipeline );
 		resolved.texture = &rtsPool.GetTextureAt( step.tuc );
 		resolved.vao = &rtsPool.GetVAOAt( step.vao );
 		resolved.instance = &rtsPool.GetInstanceAt( step.instance );
-		resolved.spbInstance = step.spbInstance;
+		resolved.spbInstance = ( int )step.spbInstance - 1;
 		resolved.specialFlags = step.specialFlags;
 		resolved.subInstanceCount = step.subInstanceCount;
 	}

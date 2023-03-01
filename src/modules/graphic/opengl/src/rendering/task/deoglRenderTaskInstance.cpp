@@ -136,7 +136,7 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceCompute(){
 	int i;
 	for( i=0; i<pSubInstanceCount; i++ ){
 		const sSubInstance &subInstance = pSubInstances[ i ];
-		data[ i ].spbInstance = ( uint32_t )subInstance.instance;
+		data[ i ].spbInstance = ( uint32_t )( subInstance.instance + 1 );
 		data[ i ].specialFlags = ( uint32_t )subInstance.flags;
 	}
 }

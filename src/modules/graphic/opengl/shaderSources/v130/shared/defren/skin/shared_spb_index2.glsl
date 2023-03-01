@@ -28,7 +28,7 @@
 	int _spbIndexIndex = pSPBInstanceIndexBase + gl_InstanceID;
 	
 	#ifdef SPB_SSBO_INSTANCE_ARRAY
-		spbIndex = int( pSPBInstanceIndex[ _spbIndexIndex ].spbInstance );
+		spbIndex = int( pSPBInstanceIndex[ _spbIndexIndex ].spbInstance ) - 1;
 		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			spbFlags = int( pSPBInstanceIndex[ _spbIndexIndex ].specialFlags );
 		#endif

@@ -179,7 +179,7 @@ deoglRenderTaskPipeline *deoglRenderTask::GetPipelineAt( int index ) const{
 }
 
 deoglRenderTaskPipeline *deoglRenderTask::AddPipeline( const deoglPipeline *pipeline ){
-	const int index = pipeline->GetRTSPipelineIndex();
+	const int index = pipeline->GetRTSIndex();
 	DEASSERT_TRUE( index >= 0 )
 	
 	if( index >= pHasPipelineCount ){
@@ -487,6 +487,10 @@ void deoglRenderTask::pCalcSPBInstancesMaxEntries(){
 
 void deoglRenderTask::pAssignSPBInstances(){
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		if( pSPBInstances.GetCount() == 0 ){
+			pCreateSPBInstanceParamBlock();
+		}
+		
 		deoglShaderParameterBlock * const paramBlock = pSPBInstances.GetAt( 0 );
 		int i, j, k, l;
 		

@@ -9,5 +9,13 @@ in uint vao, in uint instance, in uint spbInstance, in uint specialFlags ){
 	pRenderTask[ renderStep ].instance = instance;
 	pRenderTask[ renderStep ].spbInstance = spbInstance;
 	pRenderTask[ renderStep ].specialFlags = specialFlags;
-	pRenderTask[ renderStep ].subInstanceCount = uint( 1 );
+	
+	// this is a bit special. in the CPU version a sub instance is added by all geometry
+	// not requiring instancing. for all these sub instance count has to be set to 1.
+	// those requiring instancing though require sub instance count to be set to 0.
+	// prop field clusters for example are such geometry.
+	// 
+	// this distinction is required to later on properly group sub instances. this is
+	// only allowed for geometries not requiring explicit instancing
+	pRenderTask[ renderStep ].subInstanceCount = spbInstance == uint( 0 ) ? uint( 0 ) : uint( 1 );
 }

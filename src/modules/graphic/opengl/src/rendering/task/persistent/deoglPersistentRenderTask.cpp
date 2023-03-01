@@ -162,7 +162,7 @@ deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::GetPipelineWith( c
 	DEASSERT_NOTNULL( pipeline )
 	
 	deoglPersistentRenderTaskPipeline *rtpipeline;
-	return pPipelinesMap.GetAt( pipeline, pipeline->GetRTSPipelineIndex(), ( void** )&rtpipeline ) ? rtpipeline : nullptr;
+	return pPipelinesMap.GetAt( pipeline, pipeline->GetRTSIndex(), ( void** )&rtpipeline ) ? rtpipeline : nullptr;
 }
 
 deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::AddPipeline( const deoglPipeline *pipeline ){
@@ -177,14 +177,14 @@ deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::AddPipeline( const
 	pPipelines.Add( &rtpipeline->GetLLTask() );
 	rtpipeline->SetParentTask( this );
 	rtpipeline->SetPipeline( pipeline );
-	pPipelinesMap.SetAt( pipeline, pipeline->GetRTSPipelineIndex(), rtpipeline );
+	pPipelinesMap.SetAt( pipeline, pipeline->GetRTSIndex(), rtpipeline );
 	return rtpipeline;
 }
 
 void deoglPersistentRenderTask::RemovePipeline( deoglPersistentRenderTaskPipeline *pipeline ){
 	DEASSERT_NOTNULL( pipeline )
 	
-	pPipelinesMap.Remove( pipeline->GetPipeline(), pipeline->GetPipeline()->GetRTSPipelineIndex() );
+	pPipelinesMap.Remove( pipeline->GetPipeline(), pipeline->GetPipeline()->GetRTSIndex() );
 	pPipelines.Remove( &pipeline->GetLLTask() );
 	pPool.ReturnPipeline( pipeline );
 }

@@ -586,7 +586,7 @@ void deoglPropFieldCluster::pUpdateRTSInstances(){
 	}
 	
 	pRTSInstance->SetParameterBlock( pPropFieldType.GetParamBlock() );
-	pRTSInstance->SetParameterBlockSpecial( NULL );
+	pRTSInstance->SetParameterBlockSpecial( nullptr );
 	pRTSInstance->SetPointCount( 0 );
 	pRTSInstance->SetPrimitiveType( GL_TRIANGLES );
 	
