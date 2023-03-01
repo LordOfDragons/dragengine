@@ -161,8 +161,6 @@ void main( void ){
 		// cooperative processing
 		int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
 		
-		barrier();
-		
 		if( rayIndex < pGIRaysPerProbe ){
 			ivec2 rayTC = rayOffset + ivec2( rayIndex, 0 );
 			
@@ -182,8 +180,7 @@ void main( void ){
 					vRayData[ gl_LocalInvocationIndex ].position.w, pGIMaxProbeDistance );
 			#endif
 		}
-		
-		barrier();
+		barrier(); memoryBarrier();
 		
 		
 		// per invocation processing

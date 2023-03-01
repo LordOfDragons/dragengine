@@ -129,8 +129,6 @@ void main( void ){
 		// cooperative processing
 		int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
 		
-		barrier();
-		
 		if( rayIndex < pGIRaysPerProbe ){
 			#ifdef WITH_RAY_CACHE
 				ivec3 rayTC = ivec3( rayOffset + ivec2( rayIndex, 0 ), pGICascade );
@@ -214,16 +212,16 @@ void main( void ){
 				}
 			}
 		}
-		
-		barrier();
+		barrier(); memoryBarrier();
 		
 		
 		// per invocation processing. combine all results
 		for( i=0; i<combineParams64Count; i++ ){
 			combineRays( combineParams64Mul[ i ] * uvec3( gl_LocalInvocationIndex ) + combineParams64Add[ i ] );
-			barrier();
+			barrier(); memoryBarrier();
 		}
 		combineRays( combineParams64Last );
+		barrier(); memoryBarrier();
 		
 		// apply. this does not require invocation masking since we use only invoc[0] in the end
 		counts += vRayData[ 0 ].counts;
