@@ -330,7 +330,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		tasks.WaitFinishBuildingTasksDepth();
 		
 		if( renderThread.GetChoices().GetUseComputeRenderTask() ){
-			computeRenderTask = xray ? tasks.GetCRTSolidDepth() : tasks.GetCRTSolidDepthXRay();
+			computeRenderTask = xray ? tasks.GetCRTSolidDepthXRay() : tasks.GetCRTSolidDepth();
 			computeRenderTask->SetRenderParamBlock( renworld.GetRenderPB() );
 			
 		}else{

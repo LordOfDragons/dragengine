@@ -105,7 +105,7 @@ public:
 	
 	/** Buil render task. */
 	void BuildRenderTask( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters,
-		deoglComputeRenderTask &renderTask );
+		deoglComputeRenderTask &renderTask, int dispatchOffset );
 	/*@}*/
 	
 	

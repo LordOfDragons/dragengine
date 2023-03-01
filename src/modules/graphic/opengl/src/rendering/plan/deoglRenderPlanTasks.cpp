@@ -154,6 +154,7 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	const deoglDebugTraceGroup dt( pPlan.GetRenderThread(), "PlanTasks.BuildRenderTasks" );
 	const deoglRenderPlanCompute &compute = pPlan.GetCompute();
 	deoglSPBlockSSBO &counters = compute.GetSSBOCounters();
+	const int dispatchOffset = sizeof( deoglComputeRenderTask::sCounters );
 	
 	const int elementCount = pPlan.GetWorld()->GetCompute().GetElementCount();
 	if( elementCount > renderCompute.GetSSBOElementCullResult()->GetElementCount() ){
@@ -175,25 +176,25 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
 	pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
-	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepth );
+	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepth, dispatchOffset );
 	pCRTSolidDepth->BeginReadBackCounters();
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidGeometry" );
 	pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
-	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometry );
+	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometry, dispatchOffset );
 	pCRTSolidGeometry->BeginReadBackCounters();
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidDepth" );
 	pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
-	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepthXRay );
+	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepthXRay, dispatchOffset );
 	pCRTSolidDepthXRay->BeginReadBackCounters();
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidGeometry" );
 	pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
-	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometryXRay );
+	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometryXRay, dispatchOffset );
 	pCRTSolidGeometryXRay->BeginReadBackCounters();
 	}
 	

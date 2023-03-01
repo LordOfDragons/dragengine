@@ -247,7 +247,7 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 }
 
 void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &planLight ){
@@ -268,7 +268,7 @@ void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &pla
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 }
 
 void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &planLight ){
@@ -289,7 +289,7 @@ void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &p
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 }
 
 void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
@@ -351,11 +351,12 @@ void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan, const deog
 	pPipelineFindGeometries->GetGlShader().SetParameterUInt( 0, geometryCount );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( geometryCount - 1 ) / 64 + 1, 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 }
 
 void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan,
-const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask ){
+const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispatchOffset ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.BuildRenderTask" );
 	
@@ -381,11 +382,12 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask ){
 	
 	for( i=0; i<passCount; i++ ){
 		shader.SetParameterUInt( 0, i );
-		OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
+		OGL_CHECK( renderThread, pglDispatchComputeIndirect( dispatchOffset ) );
 		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
 	}
 	
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT
+		| GL_BUFFER_UPDATE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 	counters.DeactivateDispatchIndirect();
 	
 	// sort render task

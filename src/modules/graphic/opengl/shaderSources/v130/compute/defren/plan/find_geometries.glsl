@@ -66,4 +66,11 @@ void main( void ){
 	uint visInd2 = visibleIndex % uint( 4 );
 	
 	pVisibleGeometry[ visInd1 ][ visInd2 ] = index | ( cullResult << uint( 24 ) );
+	
+	// if the count of visible elements increases by the dispatch workgroup size
+	// increment also the work group count. this way the upcoming dispatch
+	// indirect calls know the count of workgroups to run
+	if( visibleIndex % dispatchWorkGroupSize == uint( 0 ) ){
+		atomicCounterIncrement( pDispatchWorkGroupCount );
+	}
 }
