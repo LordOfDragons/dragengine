@@ -234,8 +234,8 @@ void deoglComputeRenderTask::BeginReadBackSteps(){
 	}
 	
 	pSSBOStepsReadBack->TransferFrom( pSSBOSteps, pReadBackStepCount );
-		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.BeginReadBackSteps: read %dys. %d steps",
-			(int)(timer.GetElapsedTime()*1e6f), pReadBackStepCount);
+		// pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.BeginReadBackSteps: read %dys. %d steps",
+		// 	(int)(timer.GetElapsedTime()*1e6f), pReadBackStepCount);
 }
 
 void deoglComputeRenderTask::ReadBackSteps(){
@@ -261,8 +261,8 @@ void deoglComputeRenderTask::ReadBackSteps(){
 	
 	const deoglSPBMapBuffer mapped( pSSBOStepsReadBack, 0, pReadBackStepCount );
 	const sStep * const steps = ( const sStep* )pSSBOStepsReadBack->GetMappedBuffer();
-		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
-			pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
+		// pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
+		// 	pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
 	
 	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
 	const deoglPipelineManager &pipManager = pRenderThread.GetPipelineManager();
@@ -281,8 +281,8 @@ void deoglComputeRenderTask::ReadBackSteps(){
 		resolved.subInstanceCount = step.subInstanceCount;
 	}
 	pStepsResolvedCount = pReadBackStepCount;
-		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys",
-			pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
+		// pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys",
+		// 	pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
 }
 
 

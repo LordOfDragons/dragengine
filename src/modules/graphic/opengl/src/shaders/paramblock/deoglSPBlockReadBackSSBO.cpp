@@ -194,6 +194,10 @@ void deoglSPBlockReadBackSSBO::TransferFrom( const deoglSPBlockSSBO &ssbo, int e
 	
 	EnsureBuffer();
 	
+	// NOTE the logic use here would be copy from GL_COPY_READ_BUFFER to GL_COPY_WRITE_BUFFER.
+	//      unfortunately this is slower than copying from GL_SHADER_STORAGE_BUFFER to
+	//      GL_PIXEL_PACK_BUFFER. for this reason GL_PIXEL_PACK_BUFFER is used
+	
 	ssbo.Activate( 0 );
 	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
 	
