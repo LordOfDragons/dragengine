@@ -466,6 +466,44 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 	}
 }
 
+void deoglRenderTask::DebugSimple( deoglRTLogger &logger ){
+	int p, t, v, i, s, step = 0;
+	decString text;
+	
+	logger.LogInfoFormat( "RenderTask %p", this );
+	
+	for( p=0; p<pPipelineCount; p++ ){
+		const deoglRenderTaskPipeline &pipeline = *( ( deoglRenderTaskPipeline* )pPipelines.GetAt( p ) );
+		const int pi = pipeline.GetPipeline()->GetRTSIndex();
+		const int textureCount = pipeline.GetTextureCount();
+		for( t=0; t<textureCount; t++ ){
+			const deoglRenderTaskTexture &texture = *pipeline.GetTextureAt( t );
+			const int ti = texture.GetTexture()->GetIndex();
+			const int vaoCount = texture.GetVAOCount();
+			for( v=0; v<vaoCount; v++ ){
+				const deoglRenderTaskVAO &vao = *texture.GetVAOAt( v );
+				const int vi = vao.GetVAO()->GetIndex();
+				const int instanceCount = vao.GetInstanceCount();
+				for( i=0; i<instanceCount; i++ ){
+					const deoglRenderTaskInstance &instance = *vao.GetInstanceAt( i );
+					const int ii = instance.GetInstance()->GetIndex();
+					const int subInstanceCount = instance.GetSubInstanceCount();
+					text.Format( "p=%d t=%d v=%d i=%d [pc=%d fp=%d ic=%d fi=%d]", pi, ti, vi, ii,
+						instance.GetInstance()->GetPointCount(), instance.GetInstance()->GetFirstPoint(),
+						instance.GetInstance()->GetIndexCount(), instance.GetInstance()->GetFirstIndex() );
+					for( s=0; s<subInstanceCount; s++ ){
+						const deoglRenderTaskInstance::sSubInstance &si = instance.GetSubInstanceAt( s );
+						logger.LogInfoFormat( "- %d: %s si[i=%d f=%x]", step++, text.GetString(), si.instance, si.flags );
+					}
+					if( subInstanceCount == 0 ){
+						logger.LogInfoFormat( "- %d: %s", step++, text.GetString() );
+					}
+				}
+			}
+		}
+	}
+}
+
 
 
 // Private Functions

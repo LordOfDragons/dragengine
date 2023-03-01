@@ -35,6 +35,8 @@ class deoglRenderTaskSharedInstance;
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
 class deoglWorldCompute;
+class deoglRTLogger;
+
 
 
 /**
@@ -373,6 +375,14 @@ public:
 	
 	/** Resolved render steps direct access. */
 	inline const sStepResolved *GetSteps() const{ return pStepsResolved; }
+	/*@}*/
+	
+	
+	
+	/** \name Debug */
+	/*@{*/
+	/** Debug print. */
+	void DebugSimple( deoglRTLogger &logger );
 	/*@}*/
 	
 	

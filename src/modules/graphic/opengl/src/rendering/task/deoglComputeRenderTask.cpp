@@ -25,6 +25,9 @@
 
 #include "deoglComputeRenderTask.h"
 #include "shared/deoglRenderTaskSharedPool.h"
+#include "shared/deoglRenderTaskSharedTexture.h"
+#include "shared/deoglRenderTaskSharedVAO.h"
+#include "shared/deoglRenderTaskSharedInstance.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -378,6 +381,22 @@ void deoglComputeRenderTask::SetFilterCubeFace( int cubeFace ){
 
 void deoglComputeRenderTask::SetUseSpecialParamBlock( bool use ){
 	pUseSpecialParamBlock = use;
+}
+
+
+
+void deoglComputeRenderTask::DebugSimple( deoglRTLogger &logger ){
+	int i;
+	logger.LogInfoFormat( "ComputeRenderTask %p", this );
+	for( i=0; i<pStepsResolvedCount; i++ ){
+		const sStepResolved &s = pStepsResolved[ i ];
+		logger.LogInfoFormat( "- %d: p=%d t=%d v=%d i=%d [pc=%d fp=%d ic=%d fi=%d] si[i=%d f=%x]", i,
+			s.pipeline ? s.pipeline->GetRTSIndex() : -1, s.texture ? s.texture->GetIndex() : -1,
+			s.vao ? s.vao->GetIndex() : -1, s.instance ? s.instance->GetIndex() : -1,
+			s.instance ? s.instance->GetPointCount() : 0, s.instance ? s.instance->GetFirstPoint() : 0,
+			s.instance ? s.instance->GetIndexCount() : 0, s.instance ? s.instance->GetFirstIndex() : 0,
+			s.spbInstance, s.specialFlags );
+	}
 }
 
 

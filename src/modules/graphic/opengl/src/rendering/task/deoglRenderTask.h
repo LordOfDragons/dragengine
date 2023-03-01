@@ -201,6 +201,7 @@ public:
 	/*@{*/
 	/** Debug print. */
 	void DebugPrint( deoglRTLogger &rtlogger );
+	void DebugSimple( deoglRTLogger &logger );
 	/*@}*/
 	
 	
