@@ -58,6 +58,7 @@ private:
 	GLfloat pClearDepthValueRegular;
 	GLfloat pClearDepthValueReversed;
 	bool pUseComputeRenderTask;
+	bool pUseDirectStateAccess;
 	
 	
 	
@@ -133,6 +134,9 @@ public:
 	
 	/** Use compute shader render task. */
 	inline bool GetUseComputeRenderTask() const{ return pUseComputeRenderTask; }
+	
+	/** Use direct state access. */
+	inline bool GetUseDirectStateAccess() const{ return pUseDirectStateAccess; }
 	/*@}*/
 };
 

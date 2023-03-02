@@ -499,6 +499,48 @@ GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTPROC pglMultiDrawElementsIndirect = nullptr;
 
 
 
+// GL_ARB_direct_state_access : opengl version 4.4
+////////////////////////////////////////////////////
+
+GLAPI PFNGLNAMEDBUFFERSTORAGEPROC pglNamedBufferStorage = nullptr;
+GLAPI PFNGLNAMEDBUFFERDATAPROC pglNamedBufferData = nullptr;
+GLAPI PFNGLNAMEDBUFFERSUBDATAPROC pglNamedBufferSubData = nullptr;
+GLAPI PFNGLCOPYNAMEDBUFFERSUBDATAPROC pglCopyNamedBufferSubData = nullptr;
+GLAPI PFNGLCLEARNAMEDBUFFERDATAPROC pglClearNamedBufferData = nullptr;
+GLAPI PFNGLCLEARNAMEDBUFFERSUBDATAPROC pglClearNamedBufferSubData = nullptr;
+GLAPI PFNGLMAPNAMEDBUFFERPROC pglMapNamedBuffer = nullptr;
+GLAPI PFNGLMAPNAMEDBUFFERRANGEPROC pglMapNamedBufferRange = nullptr;
+GLAPI PFNGLUNMAPNAMEDBUFFERPROC pglUnmapNamedBuffer = nullptr;
+GLAPI PFNGLNAMEDFRAMEBUFFERTEXTUREPROC pglNamedFramebufferTexture = nullptr;
+GLAPI PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC pglNamedFramebufferTextureLayer = nullptr;
+GLAPI PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC pglNamedFramebufferDrawBuffers = nullptr;
+GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFVPROC pglClearNamedFramebufferfv = nullptr;
+GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFIPROC pglClearNamedFramebufferfi = nullptr;
+GLAPI PFNGLBLITNAMEDFRAMEBUFFERPROC pglBlitNamedFramebuffer = nullptr;
+GLAPI PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC pglCheckNamedFramebufferStatus = nullptr;
+GLAPI PFNGLTEXTUREBUFFERPROC pglTextureBuffer = nullptr;
+GLAPI PFNGLTEXTUREBUFFERRANGEPROC pglTextureBufferRange = nullptr;
+GLAPI PFNGLTEXTURESTORAGE2DPROC pglTextureStorage2D = nullptr;
+GLAPI PFNGLTEXTURESTORAGE3DPROC pglTextureStorage3D = nullptr;
+GLAPI PFNGLTEXTURESUBIMAGE2DPROC pglTextureSubImage2D = nullptr;
+GLAPI PFNGLTEXTURESUBIMAGE3DPROC pglTextureSubImage3D = nullptr;
+GLAPI PFNGLCOMPRESSEDTEXTURESUBIMAGE2DPROC pglCompressedTextureSubImage2D = nullptr;
+GLAPI PFNGLCOMPRESSEDTEXTURESUBIMAGE3DPROC pglCompressedTextureSubImage3D = nullptr;
+GLAPI PFNGLCOPYTEXTURESUBIMAGE2DPROC pglCopyTextureSubImage2D = nullptr;
+GLAPI PFNGLCOPYTEXTURESUBIMAGE3DPROC pglCopyTextureSubImage3D = nullptr;
+GLAPI PFNGLTEXTUREPARAMETERIPROC pglTextureParameteri = nullptr;
+GLAPI PFNGLGENERATETEXTUREMIPMAPPROC pglGenerateTextureMipmap = nullptr;
+GLAPI PFNGLBINDTEXTUREUNITPROC pglBindTextureUnit = nullptr;
+GLAPI PFNGLGETCOMPRESSEDTEXTUREIMAGEPROC pglGetCompressedTextureImage = nullptr;
+GLAPI PFNGLGETTEXTURELEVELPARAMETERIVPROC pglGetTextureLevelParameteriv = nullptr;
+GLAPI PFNGLENABLEVERTEXARRAYATTRIBPROC pglEnableVertexArrayAttrib = nullptr;
+GLAPI PFNGLVERTEXARRAYELEMENTBUFFERPROC pglVertexArrayElementBuffer = nullptr;
+GLAPI PFNGLVERTEXARRAYVERTEXBUFFERSPROC pglVertexArrayVertexBuffers = nullptr;
+GLAPI PFNGLVERTEXARRAYATTRIBBINDINGPROC pglVertexArrayAttribBinding = nullptr;
+GLAPI PFNGLVERTEXARRAYBINDINGDIVISORPROC pglVertexArrayBindingDivisor = nullptr;
+
+
+
 // GL_ARB_clip_control : opengl version 4.5
 /////////////////////////////////////////////
 

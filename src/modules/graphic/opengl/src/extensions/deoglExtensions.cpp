@@ -149,6 +149,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_shader_atomic_counters",
 	"GL_ARB_shader_atomic_counter_ops",
 	"GL_ARB_gpu_shader_fp64",
+	"GL_ARB_direct_state_access",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -1039,6 +1040,46 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	if( pHasExtension[ ext_ARB_multi_draw_indirect ] ){
 		pGetOptionalFunction( (void**)&pglMultiDrawArraysIndirect, "glMultiDrawArraysIndirect", ext_ARB_multi_draw_indirect );
 		pGetOptionalFunction( (void**)&pglMultiDrawElementsIndirect, "glMultiDrawElementsIndirect", ext_ARB_multi_draw_indirect );
+	}
+	
+	// GL_ARB_direct_state_access : opengl version 4.4
+	if( pHasExtension[ ext_ARB_direct_state_access ] ){
+		pGetOptionalFunction( (void**)&pglNamedBufferStorage, "glNamedBufferStorage", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglNamedBufferData, "glNamedBufferData", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglNamedBufferSubData, "glNamedBufferSubData", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglCopyNamedBufferSubData, "glCopyNamedBufferSubData", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglClearNamedBufferData, "glClearNamedBufferData", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglClearNamedBufferSubData, "glClearNamedBufferSubData", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglMapNamedBuffer, "glMapNamedBuffer", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglMapNamedBufferRange, "glMapNamedBufferRange", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglUnmapNamedBuffer, "glUnmapNamedBuffer", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglNamedFramebufferTexture, "glNamedFramebufferTexture", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglNamedFramebufferTextureLayer, "glNamedFramebufferTextureLayer", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglNamedFramebufferDrawBuffers, "glNamedFramebufferDrawBuffers", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglClearNamedFramebufferfv, "glClearNamedFramebufferfv", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglClearNamedFramebufferfi, "glClearNamedFramebufferfi", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglBlitNamedFramebuffer, "glBlitNamedFramebuffer", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglCheckNamedFramebufferStatus, "glCheckNamedFramebufferStatus", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglTextureBuffer, "glTextureBuffer", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglTextureBufferRange, "glTextureBufferRange", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglTextureStorage2D, "glTextureStorage2D", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglTextureStorage3D, "glTextureStorage3D", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglTextureSubImage2D, "glTextureSubImage2D", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglTextureSubImage3D, "glTextureSubImage3D", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglCompressedTextureSubImage2D, "glCompressedTextureSubImage2D", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglCompressedTextureSubImage3D, "glCompressedTextureSubImage3D", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglCopyTextureSubImage2D, "glCopyTextureSubImage2D", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglCopyTextureSubImage3D, "glCopyTextureSubImage3D", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglTextureParameteri, "glTextureParameteri", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglGenerateTextureMipmap, "glGenerateTextureMipmap", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglBindTextureUnit, "glBindTextureUnit", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglGetCompressedTextureImage, "glGetCompressedTextureImage", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglGetTextureLevelParameteriv, "glGetTextureLevelParameteriv", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglEnableVertexArrayAttrib, "glEnableVertexArrayAttrib", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglVertexArrayElementBuffer, "glVertexArrayElementBuffer", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglVertexArrayVertexBuffers, "glVertexArrayVertexBuffers", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglVertexArrayAttribBinding, "glVertexArrayAttribBinding", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglVertexArrayBindingDivisor, "glVertexArrayBindingDivisor", ext_ARB_direct_state_access );
 	}
 	
 	// GL_ARB_clip_control : opengl version 4.5

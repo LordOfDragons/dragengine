@@ -141,6 +141,8 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 		pClearDepthValueReversed = ( GLfloat )0.0f;
 	}
 	
+	pUseDirectStateAccess = HASEXT( ext_ARB_direct_state_access );
+	
 	// temporary until working properly
 	if( HASEXT( ext_ARB_shader_atomic_counter_ops ) && pUseSSBORender ){
 		pUseComputeRenderTask = false;

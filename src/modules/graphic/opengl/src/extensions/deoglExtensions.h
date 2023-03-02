@@ -334,6 +334,7 @@ public:
 		ext_ARB_shader_atomic_counters,
 		ext_ARB_shader_atomic_counter_ops,
 		ext_ARB_gpu_shader_fp64,
+		ext_ARB_direct_state_access,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,
