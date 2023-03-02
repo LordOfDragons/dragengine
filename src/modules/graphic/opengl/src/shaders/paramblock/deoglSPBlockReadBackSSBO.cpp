@@ -31,6 +31,7 @@
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTChoices.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
@@ -47,7 +48,9 @@ deoglSPBlockReadBackSSBO::deoglSPBlockReadBackSSBO( deoglRenderThread &renderThr
 deoglShaderParameterBlock( renderThread ),
 pSSBO( 0 ),
 pCompact( true ),
-pAllocateBuffer( true )
+pAllocateBuffer( true ),
+pPersistentMapped( nullptr ),
+pFenceTransfer( 0 )
 {
 	DEASSERT_NOTNULL( pglMapBuffer )
 }
@@ -56,19 +59,26 @@ deoglSPBlockReadBackSSBO::deoglSPBlockReadBackSSBO( const deoglSPBlockReadBackSS
 deoglShaderParameterBlock( paramBlock ),
 pSSBO( 0 ),
 pCompact( paramBlock.pCompact ),
-pAllocateBuffer( true ){
+pAllocateBuffer( true ),
+pPersistentMapped( nullptr ),
+pFenceTransfer( 0 ){
 }
 
 deoglSPBlockReadBackSSBO::deoglSPBlockReadBackSSBO( const deoglSPBlockSSBO &paramBlock ) :
 deoglShaderParameterBlock( paramBlock ),
 pSSBO( 0 ),
 pCompact( paramBlock.GetCompact() ),
-pAllocateBuffer( true ){
+pAllocateBuffer( true ),
+pPersistentMapped( nullptr ),
+pFenceTransfer( 0 ){
 }
 
 deoglSPBlockReadBackSSBO::~deoglSPBlockReadBackSSBO(){
 	if( IsBufferMapped() ){
 		pClearMapped();
+	}
+	if( pPersistentMapped ){
+		OGL_CHECK( GetRenderThread(), pglUnmapNamedBuffer( pSSBO ) );
 	}
 	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
 }
@@ -103,20 +113,7 @@ void deoglSPBlockReadBackSSBO::Deactivate( int ) const{
 }
 
 void deoglSPBlockReadBackSSBO::MapBuffer(){
-	DEASSERT_FALSE( IsBufferMapped()  )
-	DEASSERT_TRUE( GetBufferSize() > 0 )
-	DEASSERT_NOTNULL( pSSBO )
-	
-	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
-	char *data;
-	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
-	OGL_CHECK( renderThread, data = ( char* )pglMapBufferRange(
-		GL_PIXEL_PACK_BUFFER, 0, GetBufferSize(), GL_MAP_READ_BIT ) );
-	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
-	DEASSERT_NOTNULL( data )
-	
-	pSetMapped( data );
+	MapBuffer( 0, GetElementCount() );
 }
 
 void deoglSPBlockReadBackSSBO::MapBuffer( int element ){
@@ -131,26 +128,34 @@ void deoglSPBlockReadBackSSBO::MapBuffer( int element, int count ){
 	DEASSERT_TRUE( element + count <= GetElementCount() )
 	
 	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
-	const int stride = GetElementStride();
-	char *data;
 	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
-	OGL_CHECK( renderThread, data = ( char* )pglMapBufferRange(
-		GL_PIXEL_PACK_BUFFER, stride * element, stride * count, GL_MAP_READ_BIT ) );
-	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
-	DEASSERT_NOTNULL( data )
-	
-	pSetMapped( data, element, count );
+	if( pPersistentMapped ){
+		OGL_FENCE_WAIT( renderThread, pFenceTransfer );
+		pSetMapped( pPersistentMapped + GetElementStride() * element, element, count );
+		
+	}else{
+		const int stride = GetElementStride();
+		char *data;
+		
+		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
+		OGL_CHECK( renderThread, data = ( char* )pglMapBufferRange(
+			GL_PIXEL_PACK_BUFFER, stride * element, stride * count, GL_MAP_READ_BIT ) );
+		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
+		DEASSERT_NOTNULL( data )
+		
+		pSetMapped( data, element, count );
+	}
 }
 
 void deoglSPBlockReadBackSSBO::UnmapBuffer(){
 	DEASSERT_TRUE( IsBufferMapped() )
 	
-	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
-	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
-	OGL_CHECK( renderThread, pglUnmapBuffer( GL_PIXEL_PACK_BUFFER ) );
-	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
+	if( ! pPersistentMapped ){
+		OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
+		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
+		OGL_CHECK( renderThread, pglUnmapBuffer( GL_PIXEL_PACK_BUFFER ) );
+		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
+	}
 	
 	pClearMapped();
 }
@@ -160,16 +165,33 @@ void deoglSPBlockReadBackSSBO::EnsureBuffer(){
 	
 	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
 	
+	if( pAllocateBuffer && pSSBO && renderThread.GetChoices().GetUseDirectStateAccess() ){
+		if( pPersistentMapped ){
+			OGL_CHECK( renderThread, pglUnmapNamedBuffer( pSSBO ) );
+			pPersistentMapped = nullptr;
+		}
+		GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
+		pSSBO = 0;
+	}
+	
 	if( ! pSSBO ){
 		OGL_CHECK( renderThread, pglGenBuffers( 1, &pSSBO ) );
 		pAllocateBuffer = true;
 	}
 	
 	if( pAllocateBuffer ){
-		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
-		OGL_CHECK( renderThread, pglBufferData( GL_PIXEL_PACK_BUFFER,
-			GetBufferSize(), nullptr, GL_DYNAMIC_READ ) );
-		OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
+		if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+			OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, GetBufferSize(), nullptr,
+				GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_CLIENT_STORAGE_BIT ) );
+			OGL_CHECK( renderThread, pPersistentMapped = ( char* )pglMapNamedBufferRange(
+				pSSBO, 0, GetBufferSize(), GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT ) );
+			
+		}else{
+			OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
+			OGL_CHECK( renderThread, pglBufferData( GL_PIXEL_PACK_BUFFER,
+				GetBufferSize(), nullptr, GL_DYNAMIC_READ ) );
+			OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
+		}
 		pAllocateBuffer = false;
 	}
 }
@@ -194,18 +216,25 @@ void deoglSPBlockReadBackSSBO::TransferFrom( const deoglSPBlockSSBO &ssbo, int e
 	
 	EnsureBuffer();
 	
-	// NOTE the logic use here would be copy from GL_COPY_READ_BUFFER to GL_COPY_WRITE_BUFFER.
-	//      unfortunately this is slower than copying from GL_SHADER_STORAGE_BUFFER to
-	//      GL_PIXEL_PACK_BUFFER. for this reason GL_PIXEL_PACK_BUFFER is used
-	
-	ssbo.Activate( 0 );
-	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
-	
-	OGL_CHECK( renderThread, pglCopyBufferSubData( GL_SHADER_STORAGE_BUFFER,
-		GL_PIXEL_PACK_BUFFER, 0, 0, GetElementStride() * elementCount ) );
-	
-	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
-	ssbo.Deactivate( 0 );
+	if( pPersistentMapped ){
+		OGL_CHECK( renderThread, pglCopyNamedBufferSubData( ssbo.GetSSBO(), pSSBO,
+			0, 0, GetElementStride() * elementCount ) );
+		pFenceTransfer = pglFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+		
+	}else{
+		// NOTE the logic use here would be copy from GL_COPY_READ_BUFFER to GL_COPY_WRITE_BUFFER.
+		//      unfortunately this is slower than copying from GL_SHADER_STORAGE_BUFFER to
+		//      GL_PIXEL_PACK_BUFFER. for this reason GL_PIXEL_PACK_BUFFER is used
+		
+		ssbo.Activate( 0 );
+		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
+		
+		OGL_CHECK( renderThread, pglCopyBufferSubData( GL_SHADER_STORAGE_BUFFER,
+			GL_PIXEL_PACK_BUFFER, 0, 0, GetElementStride() * elementCount ) );
+		
+		OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
+		ssbo.Deactivate( 0 );
+	}
 }
 
 

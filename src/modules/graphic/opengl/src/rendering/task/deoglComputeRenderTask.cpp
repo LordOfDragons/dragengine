@@ -126,6 +126,8 @@ deoglComputeRenderTask::~deoglComputeRenderTask(){
 // Management
 ///////////////
 
+#define DO_READ_BACK_TIMINGS
+
 void deoglComputeRenderTask::BeginPrepare( int passCount ){
 	DEASSERT_TRUE( pPass == -1 )
 	DEASSERT_TRUE( passCount > 0 )
@@ -234,8 +236,10 @@ void deoglComputeRenderTask::BeginReadBackSteps(){
 	}
 	
 	pSSBOStepsReadBack->TransferFrom( pSSBOSteps, pReadBackStepCount );
-		// pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.BeginReadBackSteps: read %dys. %d steps",
-		// 	(int)(timer.GetElapsedTime()*1e6f), pReadBackStepCount);
+#ifdef DO_READ_BACK_TIMINGS
+	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.BeginReadBackSteps: read %dys. %d steps",
+		(int)(timer.GetElapsedTime()*1e6f), pReadBackStepCount);
+#endif
 }
 
 void deoglComputeRenderTask::ReadBackSteps(){
@@ -261,8 +265,10 @@ void deoglComputeRenderTask::ReadBackSteps(){
 	
 	const deoglSPBMapBuffer mapped( pSSBOStepsReadBack, 0, pReadBackStepCount );
 	const sStep * const steps = ( const sStep* )pSSBOStepsReadBack->GetMappedBuffer();
-		// pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
-		// 	pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
+#ifdef DO_READ_BACK_TIMINGS
+	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
+		pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
+#endif
 	
 	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
 	const deoglPipelineManager &pipManager = pRenderThread.GetPipelineManager();
@@ -281,8 +287,10 @@ void deoglComputeRenderTask::ReadBackSteps(){
 		resolved.subInstanceCount = step.subInstanceCount;
 	}
 	pStepsResolvedCount = pReadBackStepCount;
-		// pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys",
-		// 	pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
+#ifdef DO_READ_BACK_TIMINGS
+	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys",
+		pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
+#endif
 }
 
 

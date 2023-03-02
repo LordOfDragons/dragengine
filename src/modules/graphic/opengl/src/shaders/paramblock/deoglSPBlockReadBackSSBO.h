@@ -40,6 +40,8 @@ private:
 	GLuint pSSBO;
 	bool pCompact;
 	bool pAllocateBuffer;
+	char *pPersistentMapped;
+	GLsync pFenceTransfer;
 	
 	
 	
