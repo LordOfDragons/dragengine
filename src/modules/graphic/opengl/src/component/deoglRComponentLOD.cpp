@@ -285,7 +285,7 @@ void deoglRComponentLOD::WriteWeightMatricesSSBO(){
 	PrepareWeights();
 	
 	if( ! pSSBOWeightMatrices ){
-		pSSBOWeightMatrices.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+		pSSBOWeightMatrices.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 		deoglSPBlockSSBO &ssbo = pSSBOWeightMatrices;
 		ssbo.SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 		ssbo.SetParameterCount( 1 );
@@ -719,7 +719,7 @@ void deoglRComponentLOD::pEnsureVBO(){
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	const int pointCount = pComponent.GetModel()->GetLODAt( pLODIndex ).GetVertexCount();
 	
-	pVBO.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pVBO.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etGpu ) );
 	
 	deoglSPBlockSSBO &vbo = pVBO;
 	vbo.SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );

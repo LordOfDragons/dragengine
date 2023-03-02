@@ -67,7 +67,7 @@ deoglRenderBase( renderThread )
 	
 	
 	// SSBOs
-	pSSBOUpdateElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOUpdateElements.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOUpdateElements->SetRowMajor( rowMajor );
 	pSSBOUpdateElements->SetParameterCount( 11 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
@@ -83,7 +83,7 @@ deoglRenderBase( renderThread )
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLodIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElements->MapToStd140();
 	
-	pSSBOUpdateElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOUpdateElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOUpdateElementGeometries->SetRowMajor( rowMajor );
 	pSSBOUpdateElementGeometries->SetParameterCount( 9 );
 	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetElement ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
@@ -97,19 +97,19 @@ deoglRenderBase( renderThread )
 	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOUpdateElementGeometries->MapToStd140();
 	
-	pSSBOUpdateIndices.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOUpdateIndices.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOUpdateIndices->SetRowMajor( rowMajor );
 	pSSBOUpdateIndices->SetParameterCount( 1 );
 	pSSBOUpdateIndices->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOUpdateIndices->MapToStd140();
 	
-	pSSBOElementCullResult.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOElementCullResult.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etGpu ) );
 	pSSBOElementCullResult->SetRowMajor( rowMajor );
 	pSSBOElementCullResult->SetParameterCount( 1 );
 	pSSBOElementCullResult->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOElementCullResult->MapToStd140();
 	
-	pSSBOVisibleGeometries.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOVisibleGeometries.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etGpu ) );
 	pSSBOVisibleGeometries->SetRowMajor( rowMajor );
 	pSSBOVisibleGeometries->SetParameterCount( 1 );
 	pSSBOVisibleGeometries->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
@@ -197,8 +197,8 @@ void deoglRenderCompute::UpdateElements( const deoglRenderPlan &plan ){
 	
 	pPipelineUpdateElements->Activate();
 	
-	wcompute.GetSSBOElements()->Activate( 0 );
-	pSSBOUpdateElements->Activate( 1 );
+	pSSBOUpdateElements->Activate( 0 );
+	wcompute.GetSSBOElements()->Activate( 1 );
 	
 	pPipelineUpdateElements->GetGlShader().SetParameterUInt( 0, wcompute.GetUpdateElementCount() );
 	OGL_CHECK( renderThread, pglDispatchCompute(
@@ -247,8 +247,11 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT
-		| GL_COMMAND_BARRIER_BIT | GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+	
+	planCompute.GetSSBOVisibleElements()->GPUFinishedWriting();
+	planCompute.GetSSBOCounters()->GPUFinishedWriting();
+	planCompute.GetSSBOCounters()->GPUReadToCPU( 1 );
 }
 
 void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &planLight ){
@@ -269,8 +272,11 @@ void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &pla
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT
-		| GL_COMMAND_BARRIER_BIT | GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+	
+	planLight.GetSSBOVisibleElements()->GPUFinishedWriting();
+	planLight.GetSSBOCounters()->GPUFinishedWriting();
+	planLight.GetSSBOCounters()->GPUReadToCPU( 1 );
 }
 
 void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &planLight ){
@@ -291,8 +297,11 @@ void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &p
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT
-		| GL_COMMAND_BARRIER_BIT | GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+	
+	planLight.GetSSBOVisibleElementsGI()->GPUFinishedWriting();
+	planLight.GetSSBOCountersGI()->GPUFinishedWriting();
+	planLight.GetSSBOCountersGI()->GPUReadToCPU( 1 );
 }
 
 void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
@@ -305,6 +314,7 @@ void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.ClearCullResult" );
 	
+	/*
 	pPipelineClearCullResult->Activate();
 	
 	const int count = ( elementCount - 1 ) / 4 + 1;
@@ -313,6 +323,9 @@ void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+	*/
+	
+	pSSBOElementCullResult->ClearDataUInt( ( elementCount - 1 ) / 4 + 1, 0, 0, 0, 0 );
 }
 
 void deoglRenderCompute::UpdateCullResult( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
@@ -389,11 +402,15 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
 	}
 	
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT
-		| GL_BUFFER_UPDATE_BARRIER_BIT | GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 	counters.DeactivateDispatchIndirect();
 	
 	// sort render task
+	
+	
+	renderTask.GetSSBOSteps()->GPUFinishedWriting();
+	renderTask.GetSSBOCounters()->GPUFinishedWriting();
+	renderTask.GetSSBOCounters()->GPUReadToCPU( 1 );
 }
 
 

@@ -75,7 +75,7 @@ pElementLinkSize( 0 )
 {
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
-	pSSBONodes.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBONodes.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBONodes->SetRowMajor( rowMajor );
 	pSSBONodes->SetParameterCount( 5 );
 	pSSBONodes->GetParameterAt( ecsnpMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
@@ -86,7 +86,7 @@ pElementLinkSize( 0 )
 	pSSBONodes->MapToStd140();
 	pSSBONodes->SetBindingPoint( 1 );
 	
-	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOElements->SetRowMajor( rowMajor );
 	pSSBOElements->SetParameterCount( 5 );
 	pSSBOElements->GetParameterAt( ecsepMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
@@ -145,8 +145,8 @@ void deoglWorldCSOctree::BeginWriting( int nodeCount, int elementCount ){
 	pSSBONodes->MapBuffer();
 	pSSBOElements->MapBuffer();
 	
-	pPtrNode = ( sCSNode* )pSSBONodes->GetWriteBuffer();
-	pPtrElement = ( sCSElement* )pSSBOElements->GetWriteBuffer();
+	pPtrNode = ( sCSNode* )pSSBONodes->GetMappedBuffer();
+	pPtrElement = ( sCSElement* )pSSBOElements->GetMappedBuffer();
 	
 	if( elementCount > pElementLinkSize ){
 		if( pElementLinks ){

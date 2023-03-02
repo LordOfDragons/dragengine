@@ -32,10 +32,38 @@ class deoglSPBlockSSBO : public deoglShaderParameterBlock{
 public:
 	typedef deTObjectReference<deoglSPBlockSSBO> Ref;
 	
+	/** Type. */
+	enum eType{
+		/**
+		 * CPU writes content once then uses it for GPU reading only.
+		 */
+		etStatic,
+		
+		/**
+		 * CPU writes content often (typically every frame update) while using
+		 * it for the GPU reading the content.
+		 */
+		etStream,
+		
+		/**
+		 * CPU reads content written by GPU. CPU does not read content.
+		 * GPU potentially reads content in other render steps.
+		 */
+		etRead,
+		
+		/**
+		 * GPU writes content and reads it in later render steps. CPU never writes
+		 * nor reads the content. Hence this is a pure GPU only buffer.
+		 */
+		etGpu
+	};
+	
 	
 	
 private:
+	const eType pType;
 	GLuint pSSBO;
+	GLuint pSSBORead;
 	int pBindingPoint;
 	int pBindingPointUBO;
 	int pBindingPointAtomic;
@@ -44,7 +72,9 @@ private:
 	
 	char *pWriteBuffer;
 	int pWriteBufferCapacity;
-	bool pWriteBufferUsed;
+	
+	char *pPersistentMapped;
+	GLsync pFenceTransfer;
 	
 	int pMemoryGPUSSBO;
 	
@@ -54,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader storage buffer object. */
-	deoglSPBlockSSBO( deoglRenderThread &renderThread );
+	deoglSPBlockSSBO( deoglRenderThread &renderThread, eType );
 	
 	/** Create copy of shader storage buffer object. */
 	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock );
@@ -69,6 +99,9 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** Type. */
+	inline eType GetType() const{ return pType; }
+	
 	/** Shader storage buffer object or 0 if not created yet. */
 	inline GLuint GetSSBO() const{ return pSSBO; }
 	
@@ -154,6 +187,28 @@ public:
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
 	
+	/** Ensure buffer exists. */
+	virtual void EnsureBuffer();
+	
+	/** Clear buffer. */
+	void ClearDataUInt( int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a );
+	void ClearDataFloat( int count, float r, float g, float b, float a );
+	
+	/** GPU finished writing data to SSBO. */
+	void GPUFinishedWriting();
+	
+	/** Asynchronously read data from GPU to CPU. */
+	void GPUReadToCPU();
+	void GPUReadToCPU( int elementCount );
+	
+	/** Map buffer for reading. */
+	void MapBufferRead();
+	void MapBufferRead( int element );
+	void MapBufferRead( int element, int count );
+	
+	/** Unmap buffer after reading. */
+	void UnmapBufferRead();
+	
 	/** Get platform alignment requirements. */
 	virtual int GetAlignmentRequirements() const;
 	
@@ -162,15 +217,6 @@ public:
 	
 	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();
-	
-	/** Read data from SSBO into write buffer. Returns write buffer memory pointer. */
-	char *ReadBuffer();
-	
-	/** Read partial data from SSBO into write buffer. Returns write buffer memory pointer. */
-	char *ReadBuffer( int elementCount );
-	
-	/** Direct access to write buffer. Use with care. Can be nullptr. */
-	inline char *GetWriteBuffer() const{ return pWriteBuffer; }
 	
 	
 	
@@ -190,6 +236,9 @@ protected:
 	
 private:
 	void pGrowWriteBuffer( int size );
+	void pEnsureSSBO();
+	void pEnsurePersistMapped( GLenum flagsStorage );
+	void pEnsurePersistMapped( GLenum flagsStorage, GLenum flagsMap );
 };
 
 #endif

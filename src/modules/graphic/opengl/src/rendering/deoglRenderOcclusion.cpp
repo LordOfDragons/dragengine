@@ -886,10 +886,9 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 	occlusionTest.GetSSBOResult()->Activate();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( inputDataCount - 1 ) / 64 + 1, 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
 	
-	occlusionTest.GetSSBOInput()->Deactivate();
-	occlusionTest.GetSSBOResult()->Deactivate();
+	occlusionTest.GetSSBOResult()->GPUFinishedWriting();
+	occlusionTest.GetSSBOResult()->GPUReadToCPU( ( inputDataCount - 1 ) / 4 + 1 );
 	DEBUG_PRINT_TIMER( "RenderOcclusionTests Compute" );
 }
 
@@ -984,10 +983,9 @@ const decMatrix &matrixCamera2Stereo ){
 	occlusionTest.GetSSBOResult()->Activate();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( inputDataCount - 1 ) / 64 + 1, 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
 	
-	occlusionTest.GetSSBOInput()->Deactivate();
-	occlusionTest.GetSSBOResult()->Deactivate();
+	occlusionTest.GetSSBOResult()->GPUFinishedWriting();
+	occlusionTest.GetSSBOResult()->GPUReadToCPU( ( inputDataCount - 1 ) / 4 + 1 );
 	DEBUG_PRINT_TIMER( "Compute" );
 }
 
@@ -1028,10 +1026,9 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 	occlusionTest.GetSSBOResult()->Activate();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( inputDataCount - 1 ) / 64 + 1, 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
 	
-	occlusionTest.GetSSBOInput()->Deactivate();
-	occlusionTest.GetSSBOResult()->Deactivate();
+	occlusionTest.GetSSBOResult()->GPUFinishedWriting();
+	occlusionTest.GetSSBOResult()->GPUReadToCPU( ( inputDataCount - 1 ) / 4 + 1 );
 	DEBUG_PRINT_TIMER( "Compute" );
 	
 	// read back results

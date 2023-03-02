@@ -685,7 +685,8 @@ void deoglRenderTask::pCreateSPBInstanceParamBlock(){
 	// since std140 layout adds a lot of padding between array elements we use ivec4.
 	// this groups indices in blocks of four so the final index is pSPB[i/4][i%4]
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		const deoglSPBlockSSBO::Ref ssbo( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( pRenderThread ) ) );
+		const deoglSPBlockSSBO::Ref ssbo( deoglSPBlockSSBO::Ref::New(
+			new deoglSPBlockSSBO( pRenderThread, deoglSPBlockSSBO::etStream ) ) );
 		ssbo->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 		ssbo->SetParameterCount( 2 ); // just 8 components in total
 		ssbo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );

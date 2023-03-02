@@ -786,9 +786,17 @@ extern GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTPROC pglMultiDrawElementsIndirect;
 
 
 
+// GL_ARB_clear_buffer_data : opengl version 4.3
+//////////////////////////////////////////////////
+
+extern GLAPI PFNGLCLEARBUFFERSUBDATAPROC pglClearBufferSubData;
+
+
+
 // GL_ARB_direct_state_access : opengl version 4.4
 ////////////////////////////////////////////////////
 
+extern GLAPI PFNGLCREATEBUFFERSPROC pglCreateBuffers;
 extern GLAPI PFNGLNAMEDBUFFERSTORAGEPROC pglNamedBufferStorage;
 extern GLAPI PFNGLNAMEDBUFFERDATAPROC pglNamedBufferData;
 extern GLAPI PFNGLNAMEDBUFFERSUBDATAPROC pglNamedBufferSubData;
@@ -798,6 +806,7 @@ extern GLAPI PFNGLCLEARNAMEDBUFFERSUBDATAPROC pglClearNamedBufferSubData;
 extern GLAPI PFNGLMAPNAMEDBUFFERPROC pglMapNamedBuffer;
 extern GLAPI PFNGLMAPNAMEDBUFFERRANGEPROC pglMapNamedBufferRange;
 extern GLAPI PFNGLUNMAPNAMEDBUFFERPROC pglUnmapNamedBuffer;
+extern GLAPI PFNGLCREATEFRAMEBUFFERSPROC pglCreateFramebuffers;
 extern GLAPI PFNGLNAMEDFRAMEBUFFERTEXTUREPROC pglNamedFramebufferTexture;
 extern GLAPI PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC pglNamedFramebufferTextureLayer;
 extern GLAPI PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC pglNamedFramebufferDrawBuffers;
@@ -805,6 +814,7 @@ extern GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFVPROC pglClearNamedFramebufferfv;
 extern GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFIPROC pglClearNamedFramebufferfi;
 extern GLAPI PFNGLBLITNAMEDFRAMEBUFFERPROC pglBlitNamedFramebuffer;
 extern GLAPI PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC pglCheckNamedFramebufferStatus;
+extern GLAPI PFNGLCREATETEXTURESPROC pglCreateTextures;
 extern GLAPI PFNGLTEXTUREBUFFERPROC pglTextureBuffer;
 extern GLAPI PFNGLTEXTUREBUFFERRANGEPROC pglTextureBufferRange;
 extern GLAPI PFNGLTEXTURESTORAGE2DPROC pglTextureStorage2D;
@@ -820,6 +830,7 @@ extern GLAPI PFNGLGENERATETEXTUREMIPMAPPROC pglGenerateTextureMipmap;
 extern GLAPI PFNGLBINDTEXTUREUNITPROC pglBindTextureUnit;
 extern GLAPI PFNGLGETCOMPRESSEDTEXTUREIMAGEPROC pglGetCompressedTextureImage;
 extern GLAPI PFNGLGETTEXTURELEVELPARAMETERIVPROC pglGetTextureLevelParameteriv;
+extern GLAPI PFNGLCREATEVERTEXARRAYSPROC pglCreateVertexArrays;
 extern GLAPI PFNGLENABLEVERTEXARRAYATTRIBPROC pglEnableVertexArrayAttrib;
 extern GLAPI PFNGLVERTEXARRAYELEMENTBUFFERPROC pglVertexArrayElementBuffer;
 extern GLAPI PFNGLVERTEXARRAYVERTEXBUFFERSPROC pglVertexArrayVertexBuffers;

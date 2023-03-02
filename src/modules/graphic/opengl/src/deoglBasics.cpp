@@ -208,6 +208,10 @@ void dbgCheckOglError( deoglRenderThread&, const char *file, int line ){
 }
 
 void oglWaitFence( deoglRenderThread &renderThread, GLsync &fence, const char *file, int line ){
+	if( ! fence ){
+		return;
+	}
+	
 	oglClearError();
 	
 	switch( pglClientWaitSync( fence, 0, 1000000000 ) ){ // 1s timeout

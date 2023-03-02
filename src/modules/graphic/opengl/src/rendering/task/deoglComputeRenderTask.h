@@ -25,7 +25,6 @@
 #include <stdint.h>
 
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
-#include "../../shaders/paramblock/deoglSPBlockReadBackSSBO.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../skin/pipeline/deoglSkinTexturePipelinesList.h"
 
@@ -117,8 +116,6 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOSteps;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	
-	deoglSPBlockReadBackSSBO::Ref pSSBOStepsReadBack;
-	deoglSPBlockReadBackSSBO::Ref pSSBOCountersReadBack;
 	int pReadBackStepCount;
 	
 	int pPassCount;
@@ -203,9 +200,6 @@ public:
 	
 	/** Finish preparing render task. */
 	void EndPrepare( const deoglWorldCompute &worldCompute );
-	
-	/** Begin read back counters. */
-	void BeginReadBackCounters();
 	
 	/** Begin read back render steps. */
 	void BeginReadBackSteps();

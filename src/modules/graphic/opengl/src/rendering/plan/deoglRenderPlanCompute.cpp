@@ -36,6 +36,7 @@
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../../shaders/paramblock/deoglSPBMapBufferRead.h"
 #include "../../terrain/heightmap/deoglHTView.h"
 #include "../../terrain/heightmap/deoglHTViewSector.h"
 #include "../../terrain/heightmap/deoglHTViewSectorCluster.h"
@@ -89,13 +90,13 @@ pPlan( plan )
 	pUBOFindConfig->GetParameterAt( efcpLodMethod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->MapToStd140();
 	
-	pSSBOSearchNodes.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
+	pSSBOSearchNodes.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread(), deoglSPBlockSSBO::etGpu ) );
 	pSSBOSearchNodes->SetRowMajor( rowMajor );
 	pSSBOSearchNodes->SetParameterCount( 1 );
 	pSSBOSearchNodes->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 	pSSBOSearchNodes->MapToStd140();
 	
-	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
+	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread(), deoglSPBlockSSBO::etRead ) );
 	pSSBOCounters->SetRowMajor( rowMajor );
 	pSSBOCounters->SetParameterCount( 2 );
 	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
@@ -103,7 +104,7 @@ pPlan( plan )
 	pSSBOCounters->SetElementCount( 2 );
 	pSSBOCounters->MapToStd140();
 	
-	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
+	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread(), deoglSPBlockSSBO::etRead ) );
 	pSSBOVisibleElements->SetRowMajor( rowMajor );
 	pSSBOVisibleElements->SetParameterCount( 1 );
 	pSSBOVisibleElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
@@ -166,7 +167,8 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 	}
 	
 		// decTimer timer;
-	const sCounters &counters = *( sCounters* )pSSBOCounters->ReadBuffer( 1 );
+	const deoglSPBMapBufferRead mappedCounters( pSSBOCounters, 0, 1 );
+	const sCounters &counters = *( sCounters* )pSSBOCounters->GetMappedBuffer();
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = counters.counter;
 	if( indexCount == 0 ){
@@ -181,7 +183,9 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 	deoglParticleEmitterInstanceList &clistParticleEmitterInstanceList = collideList.GetParticleEmitterList();
 	deoglHTView * const htview = pPlan.GetHeightTerrainView();
 	
-	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->ReadBuffer( ( ( indexCount - 1 ) / 4 ) + 1 );
+	pSSBOVisibleElements->GPUReadToCPU( ( ( indexCount - 1 ) / 4 ) + 1 );
+	const deoglSPBMapBufferRead mappedIndices( pSSBOVisibleElements, 0, ( ( indexCount - 1 ) / 4 ) + 1 );
+	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->GetMappedBuffer();
 	int i;
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
@@ -379,14 +383,7 @@ void deoglRenderPlanCompute::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count )
 }
 
 void deoglRenderPlanCompute::pClearCounters(){
-	deoglSPBlockSSBO &ssbo = pSSBOCounters;
-	const deoglSPBMapBuffer mapped( ssbo );
-	int i;
-	
-	for( i=0; i<ssbo.GetElementCount(); i++ ){
-		ssbo.SetParameterDataUVec3( 0, i, 0, 1, 1 ); // work group size (x=0)
-		ssbo.SetParameterDataUInt( 1, i, 0 ); // count
-	}
+	pSSBOCounters->ClearDataUInt( pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }
 
 void deoglRenderPlanCompute::pSetFrustumPlane( deoglSPBlockUBO &ubo, int i, const decDVector& n, double d ){

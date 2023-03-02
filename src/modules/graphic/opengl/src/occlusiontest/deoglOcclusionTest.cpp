@@ -30,6 +30,7 @@
 #include "../extensions/deoglExtensions.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../shaders/paramblock/deoglSPBMapBufferRead.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -49,7 +50,7 @@ pInputDataCount( 0 ),
 pInputDataSize( 0 )
 {
 	try{
-		pSSBOInput.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+		pSSBOInput.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 		pSSBOInput->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 		pSSBOInput->SetParameterCount( 2 );
 		pSSBOInput->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 minExtend
@@ -57,7 +58,7 @@ pInputDataSize( 0 )
 		pSSBOInput->MapToStd140();
 		pSSBOInput->SetBindingPoint( 0 );
 		
-		pSSBOResult.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+		pSSBOResult.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
 		pSSBOResult->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 		pSSBOResult->SetParameterCount( 1 );
 		pSSBOResult->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4 result
@@ -107,7 +108,10 @@ void deoglOcclusionTest::RemoveAllInputData(){
 
 
 void deoglOcclusionTest::UpdateSSBO(){
-	pSSBOInput->SetElementCount( pInputDataCount );
+	const int elementCount = decMath::max( pInputDataCount, 1 );
+	if( elementCount > pSSBOInput->GetElementCount() ){
+		pSSBOInput->SetElementCount( elementCount );
+	}
 	
 	if( pInputDataCount > 0 ){
 		deoglSPBlockSSBO &vbo = pSSBOInput;
@@ -121,8 +125,11 @@ void deoglOcclusionTest::UpdateSSBO(){
 		}
 	}
 	
-	pSSBOResult->SetElementCount( ( pInputDataCount - 1 ) / 4 + 1 );
-	pSSBOResult->EnsureBuffer();
+	const int resultCount = ( elementCount - 1 ) / 4 + 1;
+	if( resultCount > pSSBOResult->GetElementCount() ){
+		pSSBOResult->SetElementCount( resultCount );
+		pSSBOResult->EnsureBuffer();
+	}
 }
 
 void deoglOcclusionTest::UpdateResults(){
@@ -130,7 +137,9 @@ void deoglOcclusionTest::UpdateResults(){
 		return;
 	}
 	
-	const uint32_t * const result = ( const uint32_t * ) pSSBOResult->ReadBuffer();
+	const int resultCount = ( pInputDataCount - 1 ) / 4 + 1;
+	const deoglSPBMapBufferRead mapped( pSSBOResult, 0, resultCount );
+	const uint32_t * const result = ( const uint32_t * )pSSBOResult->GetMappedBuffer();
 	int i;
 	
 	for( i=0; i<pInputDataCount; i++ ){

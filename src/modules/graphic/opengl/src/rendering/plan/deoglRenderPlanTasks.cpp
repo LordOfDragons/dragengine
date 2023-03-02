@@ -177,25 +177,21 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
 	pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
 	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepth, dispatchOffset );
-	pCRTSolidDepth->BeginReadBackCounters();
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidGeometry" );
 	pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
 	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometry, dispatchOffset );
-	pCRTSolidGeometry->BeginReadBackCounters();
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidDepth" );
 	pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
 	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepthXRay, dispatchOffset );
-	pCRTSolidDepthXRay->BeginReadBackCounters();
 	}
 	{
 	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidGeometry" );
 	pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
 	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometryXRay, dispatchOffset );
-	pCRTSolidGeometryXRay->BeginReadBackCounters();
 	}
 	
 	// renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),

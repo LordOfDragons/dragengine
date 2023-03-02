@@ -54,6 +54,7 @@
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../shadow/deoglShadowCaster.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../../shaders/paramblock/deoglSPBMapBufferRead.h"
 #include "../../sky/deoglRSkyInstance.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
 #include "../../sky/deoglSkyLayerGICascade.h"
@@ -392,7 +393,8 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 	}
 	
 		// decTimer timer;
-	const sCounters * const counters = ( sCounters* )pSSBOCounters->ReadBuffer( 1 );
+	const deoglSPBMapBufferRead mappedCounters( pSSBOCounters, 0, 1 );
+	const sCounters * const counters = ( sCounters* )pSSBOCounters->GetMappedBuffer();
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = counters[ 0 ].counter;
 	if( indexCount == 0 ){
@@ -405,7 +407,9 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 	deoglOcclusionTest &occlusionTest = *pOcclusionTest;
 	
 	const int ecount = ( ( indexCount - 1 ) / 4 ) + 1;
-	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->ReadBuffer( ecount );
+	pSSBOVisibleElements->GPUReadToCPU( ecount );
+	const deoglSPBMapBufferRead mappedIndices( pSSBOVisibleElements, 0, ecount );
+	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->GetMappedBuffer();
 	int i;
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
@@ -454,16 +458,20 @@ void deoglRenderPlanSkyLight::ReadVisibleElementsGI(){
 	}
 	
 		// decTimer timer;
-	const sCounters * const counters = ( sCounters* )pSSBOCountersGI->ReadBuffer();
+	const deoglSPBMapBufferRead mappedCounters( pSSBOCountersGI );
+	const sCounters * const counters = ( sCounters* )pSSBOCountersGI->GetMappedBuffer();
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = counters[ 0 ].counter;
 	if( indexCount == 0 ){
 		return;
 	}
+		pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: %d", indexCount); return;
 	
 	// read written visible element indices
 	const int ecount = ( ( indexCount - 1 ) / 4 ) + 1;
-	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElementsGI->ReadBuffer( ecount );
+	pSSBOVisibleElementsGI->GPUReadToCPU( ecount );
+	const deoglSPBMapBufferRead mappedIndices( pSSBOVisibleElementsGI, 0, ecount );
+	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElementsGI->GetMappedBuffer();
 	int i;
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
@@ -663,22 +671,13 @@ void deoglRenderPlanSkyLight::pPrepareFindConfigGI(){
 void deoglRenderPlanSkyLight::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count ){
 	if( count > ssbo.GetElementCount() ){
 		ssbo.SetElementCount( count );
+		ssbo.EnsureBuffer();
 	}
-	ssbo.EnsureBuffer();
 }
 
 void deoglRenderPlanSkyLight::pClearCounters(){
-	deoglSPBlockSSBO * const ssbos[ 2 ] = { pSSBOCounters, pSSBOCountersGI };
-	int i, j;
-	
-	for( i=0; i<2; i++ ){
-		deoglSPBlockSSBO &ssbo = *ssbos[ i ];
-		const deoglSPBMapBuffer mapped( ssbo );
-		for( j=0; j<ssbo.GetElementCount(); j++ ){
-			ssbo.SetParameterDataUVec3( 0, j, 0, 1, 1 ); // work group size (x=0)
-			ssbo.SetParameterDataUInt( 1, j, 0 ); // count
-		}
-	}
+	pSSBOCounters->ClearDataUInt( pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	pSSBOCountersGI->ClearDataUInt( pSSBOCountersGI->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }
 
 void deoglRenderPlanSkyLight::pSetWorldComputeParams( deoglSPBlockUBO &ubo ){

@@ -499,9 +499,17 @@ GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTPROC pglMultiDrawElementsIndirect = nullptr;
 
 
 
+// GL_ARB_clear_buffer_data : opengl version 4.3
+//////////////////////////////////////////////////
+
+GLAPI PFNGLCLEARBUFFERSUBDATAPROC pglClearBufferSubData = nullptr;
+
+
+
 // GL_ARB_direct_state_access : opengl version 4.4
 ////////////////////////////////////////////////////
 
+GLAPI PFNGLCREATEBUFFERSPROC pglCreateBuffers = nullptr;
 GLAPI PFNGLNAMEDBUFFERSTORAGEPROC pglNamedBufferStorage = nullptr;
 GLAPI PFNGLNAMEDBUFFERDATAPROC pglNamedBufferData = nullptr;
 GLAPI PFNGLNAMEDBUFFERSUBDATAPROC pglNamedBufferSubData = nullptr;
@@ -511,6 +519,7 @@ GLAPI PFNGLCLEARNAMEDBUFFERSUBDATAPROC pglClearNamedBufferSubData = nullptr;
 GLAPI PFNGLMAPNAMEDBUFFERPROC pglMapNamedBuffer = nullptr;
 GLAPI PFNGLMAPNAMEDBUFFERRANGEPROC pglMapNamedBufferRange = nullptr;
 GLAPI PFNGLUNMAPNAMEDBUFFERPROC pglUnmapNamedBuffer = nullptr;
+GLAPI PFNGLCREATEFRAMEBUFFERSPROC pglCreateFramebuffers = nullptr;
 GLAPI PFNGLNAMEDFRAMEBUFFERTEXTUREPROC pglNamedFramebufferTexture = nullptr;
 GLAPI PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC pglNamedFramebufferTextureLayer = nullptr;
 GLAPI PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC pglNamedFramebufferDrawBuffers = nullptr;
@@ -518,6 +527,7 @@ GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFVPROC pglClearNamedFramebufferfv = nullptr;
 GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFIPROC pglClearNamedFramebufferfi = nullptr;
 GLAPI PFNGLBLITNAMEDFRAMEBUFFERPROC pglBlitNamedFramebuffer = nullptr;
 GLAPI PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC pglCheckNamedFramebufferStatus = nullptr;
+GLAPI PFNGLCREATETEXTURESPROC pglCreateTextures = nullptr;
 GLAPI PFNGLTEXTUREBUFFERPROC pglTextureBuffer = nullptr;
 GLAPI PFNGLTEXTUREBUFFERRANGEPROC pglTextureBufferRange = nullptr;
 GLAPI PFNGLTEXTURESTORAGE2DPROC pglTextureStorage2D = nullptr;
@@ -533,6 +543,7 @@ GLAPI PFNGLGENERATETEXTUREMIPMAPPROC pglGenerateTextureMipmap = nullptr;
 GLAPI PFNGLBINDTEXTUREUNITPROC pglBindTextureUnit = nullptr;
 GLAPI PFNGLGETCOMPRESSEDTEXTUREIMAGEPROC pglGetCompressedTextureImage = nullptr;
 GLAPI PFNGLGETTEXTURELEVELPARAMETERIVPROC pglGetTextureLevelParameteriv = nullptr;
+GLAPI PFNGLCREATEVERTEXARRAYSPROC pglCreateVertexArrays = nullptr;
 GLAPI PFNGLENABLEVERTEXARRAYATTRIBPROC pglEnableVertexArrayAttrib = nullptr;
 GLAPI PFNGLVERTEXARRAYELEMENTBUFFERPROC pglVertexArrayElementBuffer = nullptr;
 GLAPI PFNGLVERTEXARRAYVERTEXBUFFERSPROC pglVertexArrayVertexBuffers = nullptr;

@@ -675,7 +675,7 @@ void deoglGICascade::UpdateProbeExtendsFromShader( const char *data ){
 	const sProbeExtend * const extends = ( const sProbeExtend * )data;
 	int i;
 	
-	for( i=0; i<pRayCacheProbeCount; i++, data+=6 ){
+	for( i=0; i<pRayCacheProbeCount; i++ ){
 		sProbe &probe = pProbes[ pRayCacheProbes[ i ] ];
 		probe.minExtend = extends[ i ].minExtend;
 		probe.maxExtend = extends[ i ].maxExtend;

@@ -306,6 +306,7 @@ pAddToRenderTask( NULL )
 }
 
 deoglRenderLight::~deoglRenderLight(){
+	pCleanUp();
 }
 
 

@@ -54,7 +54,7 @@ pUpdateElementGeometryCount( 0 )
 	deoglRenderThread &renderThread = world.GetRenderThread();
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
-	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOElements->SetRowMajor( rowMajor );
 	pSSBOElements->SetParameterCount( 11 );
 	pSSBOElements->GetParameterAt( espeMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
@@ -70,7 +70,7 @@ pUpdateElementGeometryCount( 0 )
 	pSSBOElements->GetParameterAt( espeLodIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->MapToStd140();
 	
-	pSSBOElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOElementGeometries->SetRowMajor( rowMajor );
 	pSSBOElementGeometries->SetParameterCount( 9 );
 	pSSBOElementGeometries->GetParameterAt( espetElement ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
@@ -239,7 +239,7 @@ void deoglWorldCompute::pUpdateSSBOElements(){
 	
 	const deoglSPBMapBuffer mapped( ssbo );
 	deoglWorldComputeElement::sDataElement * const data =
-		( deoglWorldComputeElement::sDataElement* )ssbo.GetWriteBuffer();
+		( deoglWorldComputeElement::sDataElement* )ssbo.GetMappedBuffer();
 	int i;
 	
 	memset( data, 0, ssbo.GetElementStride() * count );
@@ -269,7 +269,7 @@ void deoglWorldCompute::pFullUpdateSSBOElements(){
 	
 	const deoglSPBMapBuffer mapped( pSSBOElements );
 	deoglWorldComputeElement::sDataElement * const data =
-		( deoglWorldComputeElement::sDataElement* )pSSBOElements->GetWriteBuffer();
+		( deoglWorldComputeElement::sDataElement* )pSSBOElements->GetMappedBuffer();
 	
 	memset( data, 0, pSSBOElements->GetElementStride() * count );
 	
@@ -369,8 +369,8 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 	
 	const deoglSPBMapBuffer mappedData( ssboData ), mappedIndex( ssboIndex );
 	deoglWorldComputeElement::sDataElementGeometry * const dataData =
-		( deoglWorldComputeElement::sDataElementGeometry* )ssboData.GetWriteBuffer();
-	uint32_t * const dataIndex = ( uint32_t* )ssboIndex.GetWriteBuffer();
+		( deoglWorldComputeElement::sDataElementGeometry* )ssboData.GetMappedBuffer();
+	uint32_t * const dataIndex = ( uint32_t* )ssboIndex.GetMappedBuffer();
 	
 	memset( dataData, 0, ssboData.GetElementStride() * pUpdateElementGeometryCount );
 	memset( dataIndex, 0, ssboIndex.GetElementStride() * countIndex );
@@ -414,7 +414,7 @@ void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 		// decTimer timer;
 	const deoglSPBMapBuffer mapped( pSSBOElementGeometries );
 	deoglWorldComputeElement::sDataElementGeometry * const data =
-		( deoglWorldComputeElement::sDataElementGeometry* )pSSBOElementGeometries->GetWriteBuffer();
+		( deoglWorldComputeElement::sDataElementGeometry* )pSSBOElementGeometries->GetMappedBuffer();
 	
 	pSSBOElementGeometries->Clear();
 	

@@ -45,6 +45,7 @@
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionFrustum.h"
 #include "../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../shaders/paramblock/deoglSPBMapBufferRead.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -435,12 +436,12 @@ void deoglGIState::StartReadBack(){
 	INIT_SPECIAL_TIMING
 	
 	if( pProbesHaveMoved && cascade.GetUpdateProbeCount() > 0 ){
-		pReadBackProbeOffsets->TransferFrom( pPBProbeOffsets, cascade.GetUpdateProbeCount() );
+		pPBProbeOffsets->GPUReadToCPU( cascade.GetUpdateProbeCount() );
 		SPECIAL_TIMER_PRINT("StartReadBack: > ProbeOffsets.TransferFrom")
 	}
 	
 	if( pProbesExtendsChanged && cascade.GetRayCacheProbeCount() > 0 ){
-		pReadBackProbeExtends->TransferFrom( pPBProbeExtends, cascade.GetRayCacheProbeCount() );
+		pPBProbeExtends->GPUReadToCPU( cascade.GetRayCacheProbeCount() );
 		SPECIAL_TIMER_PRINT("StartReadBack: > ProbeExtends.TransferFrom")
 	}
 }
@@ -651,10 +652,10 @@ void deoglGIState::pUpdateProbeOffsetFromShader( deoglGICascade &cascade ){
 	INIT_SPECIAL_TIMING
 	pProbesHaveMoved = false;
 	
-	const deoglSPBMapBuffer mapped( pReadBackProbeOffsets );
+	const deoglSPBMapBufferRead mapped( pPBProbeOffsets, 0, cascade.GetUpdateProbeCount() );
 	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > MapPBO")
 	
-	cascade.UpdateProbeOffsetFromShader( pReadBackProbeOffsets->GetMappedBuffer() );
+	cascade.UpdateProbeOffsetFromShader( pPBProbeOffsets->GetMappedBuffer() );
 	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > UpdateCascade")
 }
 
@@ -666,10 +667,10 @@ void deoglGIState::pUpdateProbeExtendsFromShader( deoglGICascade &cascade ){
 	INIT_SPECIAL_TIMING
 	pProbesExtendsChanged = false;
 	
-	const deoglSPBMapBuffer mapped( pReadBackProbeExtends );
+	const deoglSPBMapBufferRead mapped( pPBProbeExtends, 0, cascade.GetRayCacheProbeCount() );
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > MapPBO")
 	
-	cascade.UpdateProbeExtendsFromShader( pReadBackProbeExtends->GetMappedBuffer() );
+	cascade.UpdateProbeExtendsFromShader( pPBProbeExtends->GetMappedBuffer() );
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > UpdateCascade")
 }
 
@@ -757,7 +758,7 @@ void deoglGIState::pPrepareProbeVBO(){
 	const bool rowMajor = pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
 	// parameter block probe dynamic states
-	pPBProbeDynamicStates.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+	pPBProbeDynamicStates.TakeOver( new deoglSPBlockSSBO( pRenderThread, deoglSPBlockSSBO::etGpu ) );
 	pPBProbeDynamicStates->SetRowMajor( rowMajor );
 	pPBProbeDynamicStates->SetParameterCount( 1 );
 	pPBProbeDynamicStates->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint state
@@ -766,7 +767,7 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeDynamicStates->EnsureBuffer();
 	
 	// parameter block probe offset
-	pPBProbeOffsets.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+	pPBProbeOffsets.TakeOver( new deoglSPBlockSSBO( pRenderThread, deoglSPBlockSSBO::etRead ) );
 	pPBProbeOffsets->SetRowMajor( rowMajor );
 	pPBProbeOffsets->SetParameterCount( 2 );
 	pPBProbeOffsets->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 offset
@@ -775,11 +776,8 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeOffsets->MapToStd140();
 	pPBProbeOffsets->EnsureBuffer();
 	
-	pReadBackProbeOffsets.TakeOver( new deoglSPBlockReadBackSSBO( pPBProbeOffsets ) );
-	pReadBackProbeOffsets->EnsureBuffer();
-	
 	// parameter block probe extends
-	pPBProbeExtends.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+	pPBProbeExtends.TakeOver( new deoglSPBlockSSBO( pRenderThread, deoglSPBlockSSBO::etRead ) );
 	pPBProbeExtends->SetRowMajor( rowMajor );
 	pPBProbeExtends->SetParameterCount( 2 );
 	pPBProbeExtends->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 minExtend
@@ -787,9 +785,6 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeExtends->SetElementCount( GI_MAX_PROBE_COUNT );
 	pPBProbeExtends->MapToStd140();
 	pPBProbeExtends->EnsureBuffer();
-	
-	pReadBackProbeExtends.TakeOver( new deoglSPBlockReadBackSSBO( pPBProbeExtends ) );
-	pReadBackProbeExtends->EnsureBuffer();
 }
 
 void deoglGIState::pPrepareUBORayDirections() const{

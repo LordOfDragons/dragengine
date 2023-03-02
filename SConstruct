@@ -585,6 +585,9 @@ if parent_env['with_debug'] and parent_env['with_sanitize']:
 			"""
 			flags = ['-fsanitize=address']
 		
+		# newer asan can incorrectly flag warnings causing compilation to fail
+		flags.append('-Wno-error')
+		
 		parent_env.Append(SANITIZE_FLAGS = flags)
 
 # for modules hide everything except the entry point. for this the default visibility

@@ -265,7 +265,7 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	if( choices.GetUseSSBORender() ){
 		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
-		pLayoutOccMeshInstanceSSBO.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+		pLayoutOccMeshInstanceSSBO.TakeOver( new deoglSPBlockSSBO( pRenderThread, deoglSPBlockSSBO::etStream ) );
 		pLayoutOccMeshInstanceSSBO->SetRowMajor( rowMajor );
 		pLayoutOccMeshInstanceSSBO->SetCompact( false );
 		pLayoutOccMeshInstanceSSBO->SetParameterCount( 1 );

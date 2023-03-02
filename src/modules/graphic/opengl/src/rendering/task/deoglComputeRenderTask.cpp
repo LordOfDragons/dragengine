@@ -33,6 +33,7 @@
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../../shaders/paramblock/deoglSPBMapBufferRead.h"
 #include "../../pipeline/deoglPipelineManager.h"
 #include "../../world/deoglWorldCompute.h"
 
@@ -87,7 +88,7 @@ pStepsResolvedCount( 0 )
 	pUBOConfig->GetParameterAt( ecpPipelineModifier ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->MapToStd140();
 	
-	pSSBOSteps.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOSteps.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
 	pSSBOSteps->SetRowMajor( rowMajor );
 	pSSBOSteps->SetParameterCount( 7 );
 	pSSBOSteps->GetParameterAt( etpPipeline ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
@@ -99,18 +100,13 @@ pStepsResolvedCount( 0 )
 	pSSBOSteps->GetParameterAt( etpSubInstanceCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->MapToStd140();
 	
-	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
 	pSSBOCounters->SetRowMajor( rowMajor );
 	pSSBOCounters->SetParameterCount( 2 );
 	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
 	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pSSBOCounters->SetElementCount( 1 );
 	pSSBOCounters->MapToStd140();
-	
-	pSSBOStepsReadBack.TakeOver( new deoglSPBlockReadBackSSBO( pSSBOSteps ) );
-	
-	pSSBOCountersReadBack.TakeOver( new deoglSPBlockReadBackSSBO( pSSBOCounters ) );
-	pSSBOCountersReadBack->SetElementCount( 1 );
 	
 	Clear();
 }
@@ -214,28 +210,18 @@ void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute )
 	}
 }
 
-void deoglComputeRenderTask::BeginReadBackCounters(){
-	DEASSERT_TRUE( pPass == -1 )
-	pReadBackStepCount = 0;
-	pSSBOCountersReadBack->TransferFrom( pSSBOCounters, 1 );
-}
-
 void deoglComputeRenderTask::BeginReadBackSteps(){
 	DEASSERT_TRUE( pPass == -1 )
 	
 		decTimer timer;
-	const deoglSPBMapBuffer mapped( pSSBOCountersReadBack, 0, 1 );
-	const sCounters &counters = *( sCounters* )pSSBOCountersReadBack->GetMappedBuffer();
+	const deoglSPBMapBufferRead mapped( pSSBOCounters, 0, 1 );
+	const sCounters &counters = *( sCounters* )pSSBOCounters->GetMappedBuffer();
 	pReadBackStepCount = counters.counter;
 	if( pReadBackStepCount == 0 ){
 		return;
 	}
 	
-	if( pReadBackStepCount > pSSBOStepsReadBack->GetElementCount() ){
-		pSSBOStepsReadBack->SetElementCount( pReadBackStepCount );
-	}
-	
-	pSSBOStepsReadBack->TransferFrom( pSSBOSteps, pReadBackStepCount );
+	pSSBOSteps->GPUReadToCPU( pReadBackStepCount );
 #ifdef DO_READ_BACK_TIMINGS
 	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.BeginReadBackSteps: read %dys. %d steps",
 		(int)(timer.GetElapsedTime()*1e6f), pReadBackStepCount);
@@ -263,8 +249,8 @@ void deoglComputeRenderTask::ReadBackSteps(){
 		pStepsResolvedSize = pReadBackStepCount;
 	}
 	
-	const deoglSPBMapBuffer mapped( pSSBOStepsReadBack, 0, pReadBackStepCount );
-	const sStep * const steps = ( const sStep* )pSSBOStepsReadBack->GetMappedBuffer();
+	const deoglSPBMapBufferRead mapped( pSSBOSteps, 0, pReadBackStepCount );
+	const sStep * const steps = ( const sStep* )pSSBOSteps->GetMappedBuffer();
 #ifdef DO_READ_BACK_TIMINGS
 	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
 		pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
@@ -508,12 +494,5 @@ void deoglComputeRenderTask::pRenderFilter( int &filter, int &mask ) const{
 }
 
 void deoglComputeRenderTask::pClearCounters(){
-	deoglSPBlockSSBO &ssbo = pSSBOCounters;
-	const deoglSPBMapBuffer mapped( ssbo );
-	int i;
-	
-	for( i=0; i<1; i++ ){
-		ssbo.SetParameterDataUVec3( 0, i, 0, 1, 1 ); // work group size (x=0)
-		ssbo.SetParameterDataUInt( 1, i, 0 ); // count
-	}
+	pSSBOCounters->ClearDataUInt( pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }

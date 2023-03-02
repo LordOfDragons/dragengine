@@ -150,6 +150,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_shader_atomic_counter_ops",
 	"GL_ARB_gpu_shader_fp64",
 	"GL_ARB_direct_state_access",
+	"GL_ARB_clear_buffer_object",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -296,6 +297,7 @@ bool deoglExtensions::VerifyPresence(){
 	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_image_load_store );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_shading_language_420pack );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_atomic_counters );
+	allPresent &= pVerifyExtensionPresent( ext_ARB_clear_buffer_object );
 	// allPresent &= pVerifyExtensionPresent( ext_ARB_gpu_shader_fp64 );
 	allPresent &= pSupportsGeometryShader;
 	
@@ -1042,8 +1044,14 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pglMultiDrawElementsIndirect, "glMultiDrawElementsIndirect", ext_ARB_multi_draw_indirect );
 	}
 	
+	// GL_ARB_clear_buffer_object : opengl version 4.3
+	if( pHasExtension[ ext_ARB_clear_buffer_object ] ){
+		pGetOptionalFunction( (void**)&pglClearBufferSubData, "glClearBufferSubData", ext_ARB_clear_buffer_object );
+	}
+	
 	// GL_ARB_direct_state_access : opengl version 4.4
 	if( pHasExtension[ ext_ARB_direct_state_access ] ){
+		pGetOptionalFunction( (void**)&pglCreateBuffers, "glCreateBuffers", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglNamedBufferStorage, "glNamedBufferStorage", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglNamedBufferData, "glNamedBufferData", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglNamedBufferSubData, "glNamedBufferSubData", ext_ARB_direct_state_access );
@@ -1053,6 +1061,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pglMapNamedBuffer, "glMapNamedBuffer", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglMapNamedBufferRange, "glMapNamedBufferRange", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglUnmapNamedBuffer, "glUnmapNamedBuffer", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglCreateFramebuffers, "glCreateFramebuffers", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglNamedFramebufferTexture, "glNamedFramebufferTexture", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglNamedFramebufferTextureLayer, "glNamedFramebufferTextureLayer", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglNamedFramebufferDrawBuffers, "glNamedFramebufferDrawBuffers", ext_ARB_direct_state_access );
@@ -1060,6 +1069,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pglClearNamedFramebufferfi, "glClearNamedFramebufferfi", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglBlitNamedFramebuffer, "glBlitNamedFramebuffer", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglCheckNamedFramebufferStatus, "glCheckNamedFramebufferStatus", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglCreateTextures, "glCreateTextures", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglTextureBuffer, "glTextureBuffer", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglTextureBufferRange, "glTextureBufferRange", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglTextureStorage2D, "glTextureStorage2D", ext_ARB_direct_state_access );
@@ -1075,6 +1085,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pglBindTextureUnit, "glBindTextureUnit", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglGetCompressedTextureImage, "glGetCompressedTextureImage", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglGetTextureLevelParameteriv, "glGetTextureLevelParameteriv", ext_ARB_direct_state_access );
+		pGetOptionalFunction( (void**)&pglCreateVertexArrays, "glCreateVertexArrays", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglEnableVertexArrayAttrib, "glEnableVertexArrayAttrib", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglVertexArrayElementBuffer, "glVertexArrayElementBuffer", ext_ARB_direct_state_access );
 		pGetOptionalFunction( (void**)&pglVertexArrayVertexBuffers, "glVertexArrayVertexBuffers", ext_ARB_direct_state_access );
@@ -1390,7 +1401,7 @@ bool deoglExtensions::pVerifyExtensionPresent( eExtensions extension ) const{
 }
 
 bool deoglExtensions::pVerifyExtensionPresent( eExtensions extension1, eExtensions extension2 ) const{
-	if( ! pHasExtension[ extension1 ] || pHasExtension[ extension2 ] ){
+	if( ! pHasExtension[ extension1 ] && ! pHasExtension[ extension2 ] ){
 		pRenderThread.GetLogger().LogErrorFormat( "Missing required extension: %s or %s",
 			vExtensionNames[ extension1 ], vExtensionNames[ extension2 ] );
 	}
