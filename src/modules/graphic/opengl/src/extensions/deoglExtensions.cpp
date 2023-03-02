@@ -848,9 +848,6 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglDeleteFramebuffers, "glDeleteFramebuffers" );
 	pGetRequiredFunction( (void**)&pglGenFramebuffers, "glGenFramebuffers" );
 	pGetRequiredFunction( (void**)&pglCheckFramebufferStatus, "glCheckFramebufferStatus" );
-	#ifndef ANDROID
-	pGetRequiredFunction( (void**)&pglFramebufferTexture1D, "glFramebufferTexture1D" );
-	#endif
 	pGetRequiredFunction( (void**)&pglFramebufferTexture2D, "glFramebufferTexture2D" );
 	#ifndef ANDROID
 	pGetRequiredFunction( (void**)&pglFramebufferTexture3D, "glFramebufferTexture3D" );

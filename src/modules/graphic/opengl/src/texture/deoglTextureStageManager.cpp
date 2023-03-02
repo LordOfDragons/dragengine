@@ -29,7 +29,6 @@
 #include "texsamplerconfig/deoglTexSamplerConfig.h"
 #include "texture2d/deoglTexture.h"
 #include "texture2d/deoglRenderableColorTexture.h"
-#include "texture1d/deoglTexture1D.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -116,10 +115,6 @@ void deoglTextureStageManager::EnableBareTexture( int stage, const deoglTexture 
 	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D );
 }
 
-void deoglTextureStageManager::EnableBareTexture1D( int stage, const deoglTexture1D &texture ){
-	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D );
-}
-
 void deoglTextureStageManager::EnableBareCubeMap( int stage, const deoglCubeMap &cubemap ){
 	BindTexture( stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP );
 }
@@ -131,11 +126,6 @@ void deoglTextureStageManager::EnableBareTBO( int stage, GLuint tbo ){
 void deoglTextureStageManager::EnableTexture( int stage, const deoglTexture& texture,
 deoglTexSamplerConfig &samplerConfig ){
 	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D, samplerConfig.GetSamplerObject() );
-}
-
-void deoglTextureStageManager::EnableTexture1D( int stage, const deoglTexture1D &texture,
-deoglTexSamplerConfig &samplerConfig ){
-	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_1D, samplerConfig.GetSamplerObject() );
 }
 
 void deoglTextureStageManager::EnableCubeMap( int stage, const deoglCubeMap &cubemap,

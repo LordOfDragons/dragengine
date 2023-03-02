@@ -32,7 +32,6 @@ class deoglCubeMap;
 class deoglRenderThread;
 class deoglRSkin;
 class deoglTexture;
-class deoglTexture1D;
 
 
 /**
@@ -88,9 +87,6 @@ public:
 	
 	/** Enable stage and bind image. */
 	void Enable( int stage, const deoglTexture &texture, int level, eAccess access );
-	
-	/** Enable stage and bind image. */
-	void Enable( int stage, const deoglTexture1D &texture, int level, eAccess access );
 	
 	/** Enable stage and bind cube map. */
 	void Enable( int stage, const deoglCubeMap &cubemap, int level, eAccess access );

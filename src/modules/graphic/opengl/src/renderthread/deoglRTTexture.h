@@ -27,7 +27,6 @@
 class deoglRenderThread;
 
 class deoglCombinedTextureList;
-class deoglRenderableTexture1DManager;
 class deoglRenderableColorArrayTextureManager;
 class deoglRenderableColorCubeMapManager;
 class deoglRenderableColorTextureManager;
@@ -53,7 +52,6 @@ private:
 	deoglRenderableDepthTextureManager *pRenDepthTexMgr;
 	deoglRenderableColorCubeMapManager *pRenColorCubeMgr;
 	deoglRenderableDepthCubeMapManager *pRenDepthCubeMgr;
-	deoglRenderableTexture1DManager *pRenTex1DMgr;
 	deoglRenderableColorArrayTextureManager *pRenColorArrTexMgr;
 	deoglRenderableDepthArrayTextureManager *pRenDepthArrTexMgr;
 	deoglOcclusionMapPool *pOcclusionMapPool;
@@ -92,9 +90,6 @@ public:
 	
 	/** Renderable depth cubemap manager. */
 	inline deoglRenderableDepthCubeMapManager &GetRenderableDepthCubeMap() const{ return *pRenDepthCubeMgr; }
-	
-	/** Renderable 1d texture manager. */
-	inline deoglRenderableTexture1DManager &GetRenderableTexture1D() const{ return *pRenTex1DMgr; }
 	
 	/** Renderable color array texture manager. */
 	inline deoglRenderableColorArrayTextureManager &GetRenderableColorArrayTexture() const{ return *pRenColorArrTexMgr; }

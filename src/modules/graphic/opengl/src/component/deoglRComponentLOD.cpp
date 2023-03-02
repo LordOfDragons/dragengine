@@ -54,7 +54,6 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../texture/deoglTextureStageManager.h"
-#include "../texture/texture1d/deoglTexture1D.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"

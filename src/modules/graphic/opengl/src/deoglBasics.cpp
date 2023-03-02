@@ -120,8 +120,6 @@ public:
 void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 	deoglMemoryConsumption &consumption = renderThread.GetMemoryManager().GetConsumption();
 	const deoglMemoryConsumptionSkin &conSkin = consumption.skin;
-	const deoglMemoryConsumptionTexture &conTex1D = consumption.texture1D;
-	const deoglMemoryConsumptionTexture &conTex1DRen = consumption.texture1DRenderable;
 	const deoglMemoryConsumptionTexture &conTex2D = consumption.texture2D;
 	const deoglMemoryConsumptionTexture &conTex2DRen = consumption.texture2DRenderable;
 	const deoglMemoryConsumptionTexture &conTex3D = consumption.texture3D;
@@ -135,7 +133,6 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 	renderThread.GetLogger().LogWarnFormat(
 		"%" OGLPFLLU "M:"
 		" skin(%d,%dM)"
-		" tex1D(%d,%dM|%d,%dM)"
 		" tex2D(%d,%dM|%d,%dM)"
 		" tex3D(%d,%dM|%d,%dM)"
 		" texArr(%d,%dM|%d,%dM)"
@@ -145,8 +142,7 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 		" ubo(%d,%dM)"
 		" tbo(%d,%dM)"
 		,
-		( conSkin.all.GetConsumption() + conTex1D.all.GetConsumption()
-		+ conTex1DRen.all.GetConsumption() + conTex2D.all.GetConsumption()
+		( conSkin.all.GetConsumption() + conTex2D.all.GetConsumption()
 		+ conTex2DRen.all.GetConsumption() + conTex3D.all.GetConsumption()
 		+ conTex3DRen.all.GetConsumption() + conTexArr.all.GetConsumption()
 		+ conTexArrRen.all.GetConsumption() + conTexCube.all.GetConsumption()
@@ -155,8 +151,6 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 		+ conBO.tbo.GetConsumption() + conBO.ssbo.GetConsumption() ) / 1000000ull,
 		
 		conSkin.all.GetCount(), conSkin.all.GetConsumptionMB(),
-		conTex1D.all.GetCount(), conTex1D.all.GetConsumptionMB(),
-		conTex1DRen.all.GetCount(), conTex1DRen.all.GetConsumptionMB(),
 		conTex2D.all.GetCount(), conTex2D.all.GetConsumptionMB(),
 		conTex2DRen.all.GetCount(), conTex2DRen.all.GetConsumptionMB(),
 		conTex3D.all.GetCount(), conTex3D.all.GetConsumptionMB(),
@@ -211,4 +205,28 @@ void dbgCheckOglError( deoglRenderThread&, const char *file, int line ){
 	}
 	
 	OGL_ON_RENDER_THREAD
+}
+
+void oglWaitFence( deoglRenderThread &renderThread, GLsync &fence, const char *file, int line ){
+	oglClearError();
+	
+	switch( pglClientWaitSync( fence, 0, 1000000000 ) ){ // 1s timeout
+	case GL_ALREADY_SIGNALED:
+	case GL_CONDITION_SATISFIED:
+		fence = 0;
+		return;
+		
+	case GL_TIMEOUT_EXPIRED:
+		fence = 0;
+		throw deeInvalidAction( file, line, "Timeout while waiting for fence" );
+		
+	case GL_WAIT_FAILED:
+		fence = 0;
+		dbgCheckOglError( renderThread, file, line );
+		return;
+		
+	default:
+		fence = 0;
+		throw deeInvalidAction( file, line, "Unknown return value while waiting for fence" );
+	}
 }

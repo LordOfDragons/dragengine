@@ -64,13 +64,11 @@ void deoglDebugMemoryConsumption::LogConsumption(){
 	
 	pRenderThread.GetLogger().LogInfoFormat( "Total: %" OGLPFLLU "MB (%" OGLPFLLU "B)", pLastTotal / 1024000ull, pLastTotal );
 	
-	pLog( consumption.texture1D );
 	pLog( consumption.texture2D );
 	pLog( consumption.texture3D );
 	pLog( consumption.textureArray );
 	pLog( consumption.textureCube );
 	
-	pLog( consumption.texture1DRenderable );
 	pLog( consumption.texture2DRenderable );
 	pLog( consumption.texture3DRenderable );
 	pLog( consumption.textureArrayRenderable );

@@ -29,7 +29,6 @@
 #include "texsamplerconfig/deoglTexSamplerConfig.h"
 #include "texture2d/deoglTexture.h"
 #include "texture2d/deoglRenderableColorTexture.h"
-#include "texture1d/deoglTexture1D.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -107,15 +106,6 @@ void deoglImageStageManager::Enable( int stage, const deoglTexture &texture, int
 	}
 	
 	BindImage( stage, texture.GetTexture(), GL_TEXTURE_2D, level, 0, access, false,
-		( GLenum )texture.GetFormat()->GetFormat() );
-}
-
-void deoglImageStageManager::Enable( int stage, const deoglTexture1D &texture, int level, eAccess access ){
-	if( ! texture.GetFormat() ){
-		DETHROW_INFO( deeNullPointer, "texture.format" );
-	}
-	
-	BindImage( stage, texture.GetTexture(), GL_TEXTURE_1D, level, 0, access, false,
 		( GLenum )texture.GetFormat()->GetFormat() );
 }
 

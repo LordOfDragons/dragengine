@@ -33,7 +33,6 @@ class deoglRenderThread;
 class deoglRSkin;
 class deoglTexSamplerConfig;
 class deoglTexture;
-class deoglTexture1D;
 
 
 
@@ -114,13 +113,6 @@ public:
 	void EnableBareTexture( int stage, const deoglTexture &texture );
 	
 	/**
-	 * Enable stage and bind texture.
-	 * \details Sets no texture parameters. Useful if a texture has to be bound only
-	 *          for manipulating opengl states and is unbound immediately afterwards.
-	 */
-	void EnableBareTexture1D( int stage, const deoglTexture1D &texture );
-	
-	/**
 	 * Enable stage and bind cube map.
 	 * \details Sets no texture parameters. Useful if a cube map has to be bound only
 	 *          for manipulating opengl states and is unbound immediately afterwards.
@@ -138,9 +130,6 @@ public:
 	
 	/** Enable stage and bind texture setting texture properties. */
 	void EnableTexture( int stage, const deoglTexture &texture, deoglTexSamplerConfig &samplerConfig );
-	
-	/** Enable given stage and bind texture setting texture properties. */
-	void EnableTexture1D( int stage, const deoglTexture1D &texture, deoglTexSamplerConfig &samplerConfig );
 	
 	/** Enable stage and bind cube map setting texture properties. */
 	void EnableCubeMap( int stage, const deoglCubeMap &cubemap, deoglTexSamplerConfig &samplerConfig );
