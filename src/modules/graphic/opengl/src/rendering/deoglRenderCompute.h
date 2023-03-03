@@ -40,7 +40,6 @@ private:
 	const deoglPipeline *pPipelineFindContentSkyLight;
 	const deoglPipeline *pPipelineFindContentSkyLightGI;
 	const deoglPipeline *pPipelineFindGeometries;
-	const deoglPipeline *pPipelineClearCullResult;
 	const deoglPipeline *pPipelineUpdateCullResultSet;
 	const deoglPipeline *pPipelineUpdateCullResultClear;
 	const deoglPipeline *pPipelineBuildRenderTask;

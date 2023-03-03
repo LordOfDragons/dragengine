@@ -458,14 +458,13 @@ void deoglRenderPlanSkyLight::ReadVisibleElementsGI(){
 	}
 	
 		// decTimer timer;
-	const deoglSPBMapBufferRead mappedCounters( pSSBOCountersGI );
+	const deoglSPBMapBufferRead mappedCounters( pSSBOCountersGI, 0, 1 );
 	const sCounters * const counters = ( sCounters* )pSSBOCountersGI->GetMappedBuffer();
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = counters[ 0 ].counter;
 	if( indexCount == 0 ){
 		return;
 	}
-		pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: %d", indexCount); return;
 	
 	// read written visible element indices
 	const int ecount = ( ( indexCount - 1 ) / 4 ) + 1;
@@ -476,6 +475,8 @@ void deoglRenderPlanSkyLight::ReadVisibleElementsGI(){
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
 	for( i=0; i<indexCount; i++ ){
+		// NOTE indices are composed of 24-bit index and 8-bit flags. the shader does not write
+		//      flags so we can use the index value directly without "& 0xffffff"
 		const deoglWorldComputeElement &element = wcompute.GetElementAt( indices[ i ] );
 		
 		switch( element.GetType() ){
@@ -1065,6 +1066,10 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 
 void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
 	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		if( ! pPlan.GetUpdateGIState() ){
+			return;
+		}
+		
 		ReadVisibleElementsGI();
 		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan );
 		

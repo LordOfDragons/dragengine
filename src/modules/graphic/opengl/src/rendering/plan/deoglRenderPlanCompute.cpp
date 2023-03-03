@@ -190,6 +190,8 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
 	for( i=0; i<indexCount; i++ ){
+		// NOTE indices are composed of 24-bit index and 8-bit flags. the shader does not write
+		//      flags so we can use the index value directly without "& 0xffffff"
 		const deoglWorldComputeElement &element = wcompute.GetElementAt( indices[ i ] );
 		// continue;
 		
