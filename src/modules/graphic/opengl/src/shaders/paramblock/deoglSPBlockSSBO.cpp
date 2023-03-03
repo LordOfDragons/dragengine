@@ -265,11 +265,11 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 			//OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, size, nullptr, GL_DYNAMIC_STORAGE_BIT ) );
 			OGL_CHECK( renderThread, pglNamedBufferData( pSSBO, size, nullptr, GL_DYNAMIC_DRAW ) );
 			
-			// OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBOLocal, size, nullptr,
-			// 	GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_CLIENT_STORAGE_BIT ) );
-			// OGL_CHECK( renderThread, pPersistentMapped = ( char* )pglMapNamedBufferRange(
-			// 	pSSBOLocal, 0, size, GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT ) );
-			OGL_CHECK( renderThread, pglNamedBufferData( pSSBOLocal, size, nullptr, GL_DYNAMIC_READ ) );
+			OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBOLocal, size, nullptr,
+				GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_CLIENT_STORAGE_BIT ) );
+			OGL_CHECK( renderThread, pPersistentMapped = ( char* )pglMapNamedBufferRange(
+				pSSBOLocal, 0, size, GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT ) );
+			// OGL_CHECK( renderThread, pglNamedBufferData( pSSBOLocal, size, nullptr, GL_DYNAMIC_READ ) );
 			break;
 			
 		case etGpu:
@@ -366,8 +366,8 @@ void deoglSPBlockSSBO::GPUReadToCPU( int elementCount ){
 		
 		// required to make copied data visible in persistently mapped memory.
 		// according to docs fence has to come after memory barrier
-		// OGL_CHECK( renderThread, pglMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
-		// pFenceTransfer = pglFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
+		pFenceTransfer = pglFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
 		
 	}else{
 		// the logic use here would be copy from GL_COPY_READ_BUFFER to GL_COPY_WRITE_BUFFER.
@@ -404,11 +404,11 @@ void deoglSPBlockSSBO::MapBufferRead( int element, int count ){
 	
 	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
 	
-	// if( renderThread.GetChoices().GetUseDirectStateAccess() ){
-	// 	OGL_FENCE_WAIT( renderThread, pFenceTransfer );
-	// }
-	
 	if( pPersistentMapped ){
+		if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+			OGL_FENCE_WAIT( renderThread, pFenceTransfer );
+		}
+		
 		pSetMapped( pPersistentMapped + GetElementStride() * element, element, count );
 		
 	}else{
@@ -510,21 +510,21 @@ void deoglSPBlockSSBO::pEnsureSSBO(){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const bool dsa = renderThread.GetChoices().GetUseDirectStateAccess();
 	
-// 	if( dsa && pAllocateBuffer ){
-// 		if( pSSBOLocal ){
-// 			if( pPersistentMapped ){
-// 				OGL_CHECK( renderThread, pglUnmapNamedBuffer( pSSBOLocal ) );
-// 				pPersistentMapped = nullptr;
-// 			}
-// 			GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBOLocal );
-// 			pSSBOLocal = 0;
-// 		}
-// 		
-// 		if( pSSBO ){
-// 			GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
-// 			pSSBO = 0;
-// 		}
-// 	}
+	if( dsa && pAllocateBuffer ){
+		if( pSSBOLocal ){
+			if( pPersistentMapped ){
+				OGL_CHECK( renderThread, pglUnmapNamedBuffer( pSSBOLocal ) );
+				pPersistentMapped = nullptr;
+			}
+			GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBOLocal );
+			pSSBOLocal = 0;
+		}
+		
+		if( pSSBO ){
+			GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
+			pSSBO = 0;
+		}
+	}
 	
 	if( ! pSSBO ){
 		if( dsa ){
