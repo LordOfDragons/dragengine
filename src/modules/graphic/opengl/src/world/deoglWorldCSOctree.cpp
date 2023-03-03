@@ -139,8 +139,12 @@ void deoglWorldCSOctree::BeginWriting( int nodeCount, int elementCount ){
 		return;
 	}
 	
-	pSSBONodes->SetElementCount( nodeCount );
-	pSSBOElements->SetElementCount( elementCount );
+	if( nodeCount > pSSBONodes->GetElementCount() ){
+		pSSBONodes->SetElementCount( nodeCount );
+	}
+	if( elementCount > pSSBOElements->GetElementCount() ){
+		pSSBOElements->SetElementCount( elementCount );
+	}
 	
 	pSSBONodes->MapBuffer();
 	pSSBOElements->MapBuffer();

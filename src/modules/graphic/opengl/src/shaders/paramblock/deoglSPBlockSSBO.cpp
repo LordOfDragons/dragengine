@@ -47,7 +47,7 @@ deoglSPBlockSSBO::deoglSPBlockSSBO( deoglRenderThread &renderThread, eType type 
 deoglShaderParameterBlock( renderThread ),
 pType( type ),
 pSSBO( 0 ),
-pSSBORead( 0 ),
+pSSBOLocal( 0 ),
 pBindingPoint( 0 ),
 pBindingPointUBO( 0 ),
 pBindingPointAtomic( 0 ),
@@ -64,7 +64,7 @@ deoglSPBlockSSBO::deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock ) :
 deoglShaderParameterBlock( paramBlock ),
 pType( paramBlock.pType ),
 pSSBO( 0 ),
-pSSBORead( 0 ),
+pSSBOLocal( 0 ),
 pBindingPoint( paramBlock.pBindingPoint ),
 pBindingPointUBO( paramBlock.pBindingPointUBO ),
 pBindingPointAtomic( paramBlock.pBindingPointAtomic ),
@@ -85,9 +85,9 @@ deoglSPBlockSSBO::~deoglSPBlockSSBO(){
 		delete [] pWriteBuffer;
 	}
 	if( pPersistentMapped ){
-		OGL_CHECK( GetRenderThread(), pglUnmapNamedBuffer( pSSBO ) );
+		OGL_CHECK( GetRenderThread(), pglUnmapNamedBuffer( pSSBOLocal ) );
 	}
-	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBORead );
+	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBOLocal );
 	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
 }
 
@@ -186,6 +186,7 @@ void deoglSPBlockSSBO::MapBuffer( int element, int count ){
 	DEASSERT_TRUE( pType == etStatic || pType == etStream )
 	DEASSERT_FALSE( IsBufferMapped()  )
 	DEASSERT_TRUE( GetBufferSize() > 0 )
+	
 	if( pType == etStatic ){
 		DEASSERT_TRUE( element == 0 )
 		DEASSERT_TRUE( count == GetElementCount() )
@@ -196,17 +197,10 @@ void deoglSPBlockSSBO::MapBuffer( int element, int count ){
 		DEASSERT_TRUE( element + count <= GetElementCount() )
 	}
 	
-	if( pType == etStream && GetRenderThread().GetChoices().GetUseDirectStateAccess() ){
-		pEnsurePersistMapped( GL_MAP_WRITE_BIT );
-	}
+	EnsureBuffer();
 	
-	if( pPersistentMapped ){
-		pSetMapped( pPersistentMapped + GetElementStride() * element, element, count );
-		
-	}else{
-		pGrowWriteBuffer( GetElementStride() * count );
-		pSetMapped( pWriteBuffer, element, count );
-	}
+	pGrowWriteBuffer( GetElementStride() * count );
+	pSetMapped( pWriteBuffer, element, count );
 }
 
 void deoglSPBlockSSBO::UnmapBuffer(){
@@ -215,39 +209,27 @@ void deoglSPBlockSSBO::UnmapBuffer(){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	
-	if( pPersistentMapped ){
-		OGL_CHECK( renderThread, pglMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
-		
-	}else{
-		const int stride = GetElementStride();
-		const int lower = pGetElementLower();
-		const int upper = pGetElementUpper();
-		
-		const int offset = stride * lower;
-		const int size = stride * ( upper - lower + 1 );
-		
-		if( renderThread.GetChoices().GetUseDirectStateAccess() ){
-			if( pType == etStatic ){
-				pEnsureSSBO();
-				OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, GetBufferSize(), pWriteBuffer, 0 ) );
-			}
+	const int stride = GetElementStride();
+	const int lower = pGetElementLower();
+	const int upper = pGetElementUpper();
+	
+	const int offset = stride * lower;
+	const int size = stride * ( upper - lower + 1 );
+	
+	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+		if( pType == etStatic ){
+			// EnsureBuffer does not create a buffer since we need to upload the data
+			// while creating the buffer. writing it afterwards is an error
+			OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, GetBufferSize(), pWriteBuffer, 0 ) );
 			
 		}else{
-			pEnsureSSBO();
-			
-			if( pAllocateBuffer ){
-				OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, pSSBO ) );
-				OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER,
-					GetBufferSize(), nullptr, GL_DYNAMIC_DRAW ) );
-				pAllocateBuffer = false;
-				
-			}else{
-				OGL_CHECK( renderThread, pglBindBufferRange( GL_SHADER_STORAGE_BUFFER, 0, pSSBO, offset, size ) );
-			}
-			
-			OGL_CHECK( renderThread, pglBufferSubData( GL_SHADER_STORAGE_BUFFER, offset, size, pWriteBuffer ) );
-			OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
+			OGL_CHECK( renderThread, pglNamedBufferSubData( pSSBO, offset, size, pWriteBuffer ) );
 		}
+		
+	}else{
+		OGL_CHECK( renderThread, pglBindBufferRange( GL_SHADER_STORAGE_BUFFER, 0, pSSBO, offset, size ) );
+		OGL_CHECK( renderThread, pglBufferSubData( GL_SHADER_STORAGE_BUFFER, offset, size, pWriteBuffer ) );
+		OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
 	}
 	
 	pClearMapped();
@@ -263,45 +245,52 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const int size = GetBufferSize();
 	
 	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
 		switch( pType ){
 		case etStatic:
+			// this is empty on purpose. data in static buffers can be only written during
+			// buffer creation time. trying to do it afterwards is an error. for this reason
+			// no buffer is created here. the creation will be done in UnmapBuffer()
 			break;
 			
 		case etStream:
-			OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, GetBufferSize(), nullptr,
-				GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT ) );
-			OGL_CHECK( renderThread, pPersistentMapped = ( char* )pglMapNamedBufferRange(
-				pSSBO, 0, GetBufferSize(), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT ) );
+			// OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, size, nullptr, GL_DYNAMIC_STORAGE_BIT ) );
+			OGL_CHECK( renderThread, pglNamedBufferData( pSSBO, size, nullptr, GL_DYNAMIC_DRAW ) );
 			break;
 			
 		case etRead:
-			OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, GetBufferSize(), nullptr,
-				GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_CLIENT_STORAGE_BIT ) );
-			OGL_CHECK( renderThread, pPersistentMapped = ( char* )pglMapNamedBufferRange(
-				pSSBO, 0, GetBufferSize(), GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT ) );
+			// storage buffers at 10x slower than regular buffers for shaders to write to
+			//OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, size, nullptr, GL_DYNAMIC_STORAGE_BIT ) );
+			OGL_CHECK( renderThread, pglNamedBufferData( pSSBO, size, nullptr, GL_DYNAMIC_DRAW ) );
+			
+			// OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBOLocal, size, nullptr,
+			// 	GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_CLIENT_STORAGE_BIT ) );
+			// OGL_CHECK( renderThread, pPersistentMapped = ( char* )pglMapNamedBufferRange(
+			// 	pSSBOLocal, 0, size, GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT ) );
+			OGL_CHECK( renderThread, pglNamedBufferData( pSSBOLocal, size, nullptr, GL_DYNAMIC_READ ) );
 			break;
 			
 		case etGpu:
-			OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, GetBufferSize(), nullptr, 0 ) );
+			// storage buffers at 10x slower than regular buffers for shaders to write to
+			// OGL_CHECK( renderThread, pglNamedBufferStorage( pSSBO, size, nullptr, GL_DYNAMIC_STORAGE_BIT ) );
+			OGL_CHECK( renderThread, pglNamedBufferData( pSSBO, size, nullptr, GL_DYNAMIC_DRAW ) );
 			break;
 		}
 		
 	}else{
 		OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, pSSBO ) );
-		OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER,
-			GetBufferSize(), nullptr, GL_DYNAMIC_DRAW ) );
+		OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER, size, nullptr, GL_DYNAMIC_DRAW ) );
 		OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
 		
 		if( pType == etRead ){
-			if( ! pSSBORead ){
-				OGL_CHECK( renderThread, pglGenBuffers( 1, &pSSBORead ) );
+			if( ! pSSBOLocal ){
+				OGL_CHECK( renderThread, pglGenBuffers( 1, &pSSBOLocal ) );
 			}
 			
-			OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBORead ) );
-			OGL_CHECK( renderThread, pglBufferData( GL_PIXEL_PACK_BUFFER,
-				GetBufferSize(), nullptr, GL_DYNAMIC_READ ) );
+			OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBOLocal ) );
+			OGL_CHECK( renderThread, pglBufferData( GL_PIXEL_PACK_BUFFER, size, nullptr, GL_DYNAMIC_READ ) );
 			OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
 		}
 	}
@@ -309,7 +298,6 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 }
 
 void deoglSPBlockSSBO::ClearDataUInt( int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a ){
-	DEASSERT_FALSE( IsBufferMapped() )
 	DEASSERT_TRUE( count >= 0 )
 	DEASSERT_TRUE( count * 16 <= GetBufferSize() )
 	
@@ -331,7 +319,6 @@ void deoglSPBlockSSBO::ClearDataUInt( int count, uint32_t r, uint32_t g, uint32_
 }
 
 void deoglSPBlockSSBO::ClearDataFloat( int count, float r, float g, float b, float a ){
-	DEASSERT_FALSE( IsBufferMapped() )
 	DEASSERT_TRUE( count >= 0 )
 	DEASSERT_TRUE( count * 16 <= GetBufferSize() )
 	
@@ -355,15 +342,8 @@ void deoglSPBlockSSBO::ClearDataFloat( int count, float r, float g, float b, flo
 void deoglSPBlockSSBO::GPUFinishedWriting(){
 	DEASSERT_TRUE( pType == etRead )
 	
-	deoglRenderThread &renderThread = GetRenderThread();
-	
-	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
-		pFenceTransfer = pglFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
-		OGL_CHECK( renderThread, pglMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
-		
-	}else{
-		OGL_CHECK( renderThread, pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
-	}
+	// required to sync call to glCopy*BufferSubData after compute shader finished
+	OGL_CHECK( GetRenderThread(), pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
 }
 
 void deoglSPBlockSSBO::GPUReadToCPU(){
@@ -375,26 +355,34 @@ void deoglSPBlockSSBO::GPUReadToCPU( int elementCount ){
 	DEASSERT_FALSE( IsBufferMapped() )
 	DEASSERT_TRUE( elementCount >= 0 )
 	DEASSERT_TRUE( elementCount <= GetElementCount() )
+	DEASSERT_NOTNULL( pSSBO )
+	DEASSERT_NOTNULL( pSSBOLocal )
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	
 	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
-		return;
+		OGL_CHECK( renderThread, pglCopyNamedBufferSubData(
+			pSSBO, pSSBOLocal, 0, 0, GetElementStride() * elementCount ) );
+		
+		// required to make copied data visible in persistently mapped memory.
+		// according to docs fence has to come after memory barrier
+		// OGL_CHECK( renderThread, pglMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
+		// pFenceTransfer = pglFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+		
+	}else{
+		// the logic use here would be copy from GL_COPY_READ_BUFFER to GL_COPY_WRITE_BUFFER.
+		// unfortunately this is slower than copying from GL_SHADER_STORAGE_BUFFER to
+		// GL_PIXEL_PACK_BUFFER. for this reason GL_PIXEL_PACK_BUFFER is used
+		
+		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, pSSBO ) );
+		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBOLocal ) );
+		
+		OGL_CHECK( renderThread, pglCopyBufferSubData( GL_SHADER_STORAGE_BUFFER,
+			GL_PIXEL_PACK_BUFFER, 0, 0, GetElementStride() * elementCount ) );
+		
+		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
+		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0 ) );
 	}
-	
-	EnsureBuffer();
-	
-	// NOTE the logic use here would be copy from GL_COPY_READ_BUFFER to GL_COPY_WRITE_BUFFER.
-	//      unfortunately this is slower than copying from GL_SHADER_STORAGE_BUFFER to
-	//      GL_PIXEL_PACK_BUFFER. for this reason GL_PIXEL_PACK_BUFFER is used
-	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, pSSBO ) );
-	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBORead ) );
-	
-	OGL_CHECK( renderThread, pglCopyBufferSubData( GL_SHADER_STORAGE_BUFFER,
-		GL_PIXEL_PACK_BUFFER, 0, 0, GetElementStride() * elementCount ) );
-	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0 ) );
 }
 
 void deoglSPBlockSSBO::MapBufferRead(){
@@ -412,20 +400,22 @@ void deoglSPBlockSSBO::MapBufferRead( int element, int count ){
 	DEASSERT_TRUE( element >= 0 )
 	DEASSERT_TRUE( count > 0 )
 	DEASSERT_TRUE( element + count <= GetElementCount() )
+	DEASSERT_NOTNULL( pSSBOLocal )
 	
 	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
 	
+	// if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+	// 	OGL_FENCE_WAIT( renderThread, pFenceTransfer );
+	// }
+	
 	if( pPersistentMapped ){
-		OGL_FENCE_WAIT( renderThread, pFenceTransfer );
 		pSetMapped( pPersistentMapped + GetElementStride() * element, element, count );
 		
 	}else{
-		DEASSERT_NOTNULL( pSSBORead )
-		
 		const int stride = GetElementStride();
 		char *data;
 		
-		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBORead ) );
+		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBOLocal ) );
 		OGL_CHECK( renderThread, data = ( char* )pglMapBufferRange(
 			GL_PIXEL_PACK_BUFFER, stride * element, stride * count, GL_MAP_READ_BIT ) );
 		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
@@ -440,8 +430,8 @@ void deoglSPBlockSSBO::UnmapBufferRead(){
 	DEASSERT_TRUE( IsBufferMapped() )
 	
 	if( ! pPersistentMapped ){
-		OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
-		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBORead ) );
+		deoglRenderThread &renderThread = GetRenderThread();
+		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBOLocal ) );
 		OGL_CHECK( renderThread, pglUnmapBuffer( GL_PIXEL_PACK_BUFFER ) );
 		OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
 	}
@@ -518,18 +508,26 @@ void deoglSPBlockSSBO::pGrowWriteBuffer( int size ){
 
 void deoglSPBlockSSBO::pEnsureSSBO(){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const bool dsa = renderThread.GetChoices().GetUseDirectStateAccess();
 	
-	if( pSSBO && renderThread.GetChoices().GetUseDirectStateAccess() && pAllocateBuffer ){
-		if( pPersistentMapped ){
-			OGL_CHECK( renderThread, pglUnmapNamedBuffer( pSSBO ) );
-			pPersistentMapped = nullptr;
-		}
-		GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
-		pSSBO = 0;
-	}
+// 	if( dsa && pAllocateBuffer ){
+// 		if( pSSBOLocal ){
+// 			if( pPersistentMapped ){
+// 				OGL_CHECK( renderThread, pglUnmapNamedBuffer( pSSBOLocal ) );
+// 				pPersistentMapped = nullptr;
+// 			}
+// 			GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBOLocal );
+// 			pSSBOLocal = 0;
+// 		}
+// 		
+// 		if( pSSBO ){
+// 			GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
+// 			pSSBO = 0;
+// 		}
+// 	}
 	
 	if( ! pSSBO ){
-		if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+		if( dsa ){
 			OGL_CHECK( renderThread, pglCreateBuffers( 1, &pSSBO ) );
 			
 		}else{
@@ -537,25 +535,15 @@ void deoglSPBlockSSBO::pEnsureSSBO(){
 		}
 		pAllocateBuffer = true;
 	}
-}
-
-void deoglSPBlockSSBO::pEnsurePersistMapped( GLenum flagsStorage ){
-	pEnsurePersistMapped( flagsStorage, flagsStorage );
-}
-
-void deoglSPBlockSSBO::pEnsurePersistMapped( GLenum flagsStorage, GLenum flagsMap ){
-	pEnsureSSBO();
 	
-	if( ! pAllocateBuffer ){
-		return;
+	if( pType == etRead && ! pSSBOLocal ){
+		if( dsa ){
+			OGL_CHECK( renderThread, pglCreateBuffers( 1, &pSSBOLocal ) );
+			
+		}else{
+			OGL_CHECK( renderThread, pglGenBuffers( 1, &pSSBOLocal ) );
+		}
+		
+		pAllocateBuffer = true;
 	}
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	
-	OGL_CHECK( renderThread, pglNamedBufferStorage(
-		pSSBO, GetBufferSize(), nullptr, flagsStorage | GL_MAP_PERSISTENT_BIT ) );
-	OGL_CHECK( renderThread, pPersistentMapped = ( char* )pglMapNamedBufferRange(
-		pSSBO, 0, GetBufferSize(), flagsMap | GL_MAP_PERSISTENT_BIT ) );
-	
-	pAllocateBuffer = false;
 }

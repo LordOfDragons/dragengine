@@ -63,7 +63,7 @@ public:
 private:
 	const eType pType;
 	GLuint pSSBO;
-	GLuint pSSBORead;
+	GLuint pSSBOLocal;
 	int pBindingPoint;
 	int pBindingPointUBO;
 	int pBindingPointAtomic;
@@ -237,8 +237,6 @@ protected:
 private:
 	void pGrowWriteBuffer( int size );
 	void pEnsureSSBO();
-	void pEnsurePersistMapped( GLenum flagsStorage );
-	void pEnsurePersistMapped( GLenum flagsStorage, GLenum flagsMap );
 };
 
 #endif

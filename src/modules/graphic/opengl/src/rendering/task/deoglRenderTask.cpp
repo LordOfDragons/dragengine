@@ -583,8 +583,10 @@ void deoglRenderTask::pAssignSPBInstances(){
 						
 						if( ! paramBlock || firstIndex + rtinstance.GetSubInstanceCount() > pSPBInstanceMaxEntries ){
 							if( paramBlock ){
-								paramBlock->SetElementCount( componentsPerIndex
-									* decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 ) );
+								const int ecount = componentsPerIndex * decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 );
+								if( ecount > paramBlock->GetElementCount() ){
+									paramBlock->SetElementCount( ecount );
+								}
 							}
 							
 							if( paramBlockCount == pSPBInstances.GetCount() ){
@@ -602,8 +604,10 @@ void deoglRenderTask::pAssignSPBInstances(){
 		}
 		
 		if( paramBlock ){
-			paramBlock->SetElementCount( componentsPerIndex
-				* decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 ) );
+			const int ecount = componentsPerIndex * decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 );
+			if( ecount > paramBlock->GetElementCount() ){
+				paramBlock->SetElementCount( ecount );
+			}
 		}
 	}
 }
