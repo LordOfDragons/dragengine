@@ -24,11 +24,6 @@
 
 #include <dragengine/dragengine_configuration.h>
 
-#ifdef OS_W32
-	// required by visual studio
-	#include "include_windows.h"
-#endif
-
 #ifdef ANDROID
 	#undef __glext_h_
 	#define __glext_h_ 1
@@ -62,6 +57,13 @@
 	#undef GL_VERSION_1_3
 	#undef GL_VERSION_1_2
 	#undef __glext_h_
+
+#elif defined OS_W32_VS
+	// required by visual studio
+	#include "include_windows.h"
+	struct __GLsync;
+	typedef struct __GLsync *GLsync;
+	#include <GL/gl.h>
 
 #else
 	// there are tons of broken gl.h and glext.h out in the wild. we have to prevent them from

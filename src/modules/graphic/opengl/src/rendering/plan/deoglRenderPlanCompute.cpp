@@ -367,12 +367,12 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 	// lod calculation
 	const float fovX = pPlan.GetCameraFov();
 	const float fovY = fovX * pPlan.GetCameraFovRatio();
-	const float maxPixelError = pPlan.GetLodMaxPixelError();
+	const float maxPixelError = ( float )pPlan.GetLodMaxPixelError();
 	const float lodFactorX = tanf( fovX * 0.5f ) * maxPixelError / pPlan.GetViewportWidth();
 	const float lodFactorY = tanf( fovY * 0.5f ) * maxPixelError / pPlan.GetViewportHeight();
 	
 	ubo.SetParameterDataFloat( efcpLodFactor, decMath::min( lodFactorX, lodFactorY ) );
-	ubo.SetParameterDataFloat( efcpLodMaxPixelError, pPlan.GetLodMaxPixelError() );
+	ubo.SetParameterDataFloat( efcpLodMaxPixelError, ( float )pPlan.GetLodMaxPixelError() );
 	ubo.SetParameterDataUInt( efcpLodOffset, pPlan.GetLodLevelOffset() );
 	ubo.SetParameterDataUInt( efcpLodMethod, elmProjection );
 }

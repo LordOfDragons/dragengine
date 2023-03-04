@@ -59,6 +59,7 @@ class deoglRenderThread;
 void oglClearError();
 
 void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line );
+
 void oglWaitFence( deoglRenderThread &renderThread, GLsync &fence, const char *file, int line );
 
 #define OGL_CHECK(renderThread,cmd) oglClearError(); cmd; dbgCheckOglError(renderThread, __FILE__, __LINE__)

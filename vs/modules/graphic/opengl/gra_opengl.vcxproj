@@ -417,10 +417,10 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockReadBackSSBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockUBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBufferRead.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBSingleUse.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.h" />
@@ -552,9 +552,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\pixelbuffer\deoglPixelBuffer.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\pixelbuffer\deoglPixelBufferMipMap.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texsamplerconfig\deoglTexSamplerConfig.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1D.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1DManager.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglTexture1D.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTextureManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableDepthTexture.h" />
@@ -1021,10 +1018,10 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockReadBackSSBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockUBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBufferRead.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBSingleUse.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.cpp" />
@@ -1156,9 +1153,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\pixelbuffer\deoglPixelBuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\pixelbuffer\deoglPixelBufferMipMap.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texsamplerconfig\deoglTexSamplerConfig.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1D.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1DManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglTexture1D.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTextureManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableDepthTexture.cpp" />

@@ -22,6 +22,8 @@
 #ifndef _DEOGLSPBLOCKSSBO_H_
 #define _DEOGLSPBLOCKSSBO_H_
 
+#include <stdint.h>
+
 #include "deoglShaderParameterBlock.h"
 
 

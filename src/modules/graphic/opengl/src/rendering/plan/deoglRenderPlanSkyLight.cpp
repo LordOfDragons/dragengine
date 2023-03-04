@@ -584,7 +584,7 @@ void deoglRenderPlanSkyLight::pPrepareFindConfig(){
 	
 	// lod calculation
 	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodFactor, 0.0f );
-	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodMaxPixelError, pPlan.GetLodMaxPixelError() );
+	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodMaxPixelError, ( float )pPlan.GetLodMaxPixelError() );
 	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodOffset, pPlan.GetLodLevelOffset() );
 	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodMethod, deoglRenderPlanCompute::elmOrthogonal );
 }

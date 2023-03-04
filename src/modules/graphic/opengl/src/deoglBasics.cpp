@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#include "deoglGL.h"
+#include "deoglBasics.h"
 
 #include "memory/deoglMemoryManager.h"
 #include "renderthread/deoglRenderThread.h"
