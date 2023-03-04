@@ -58,14 +58,11 @@
 	#undef GL_VERSION_1_2
 	#undef __glext_h_
 
-#elif defined OS_W32_VS
-	// required by visual studio
-	#include "include_windows.h"
-	struct __GLsync;
-	typedef struct __GLsync *GLsync;
-	#include <GL/gl.h>
-
 #else
+	#ifdef OS_W32_VS
+		#include "include_windows.h"
+	#endif
+	
 	// there are tons of broken gl.h and glext.h out in the wild. we have to prevent them from
 	// messing everything up since we have our own glext.h which actually deserves the name.
 	// for this we define tokens where platforms are known containing incorrect definitions
