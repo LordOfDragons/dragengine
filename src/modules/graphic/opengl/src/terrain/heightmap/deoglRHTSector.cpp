@@ -29,7 +29,6 @@
 #include "deoglRHTSector.h"
 #include "deoglTerrainMaskImage.h"
 #include "../../deoglBasics.h"
-#include "../../extensions/deoglExtResult.h"
 #include "../../skin/deoglSkin.h"
 #include "../../skin/deoglSkinTexture.h"
 #include "../../texture/texture2d/deoglTexture.h"

@@ -29,7 +29,6 @@
 #include "deoglDecalMeshBuilderFace.h"
 #include "../component/deoglRComponent.h"
 #include "../envmap/deoglEnvironmentMap.h"
-#include "../extensions/deoglExtResult.h"
 #include "../gi/deoglGIBVHDynamic.h"
 #include "../gi/deoglGIBVHLocal.h"
 #include "../model/deoglModelLOD.h"

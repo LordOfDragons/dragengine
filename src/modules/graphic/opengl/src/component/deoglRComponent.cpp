@@ -38,7 +38,6 @@
 #include "../decal/deoglRDecal.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../envmap/deoglEnvironmentMap.h"
-#include "../extensions/deoglExtResult.h"
 #include "../extensions/deoglExtensions.h"
 #include "../light/deoglRLight.h"
 #include "../model/deoglModelLOD.h"

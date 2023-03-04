@@ -29,7 +29,6 @@
 #include "../deGraphicOpenGl.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../debug/deoglDebugSaveTexture.h"
-#include "../extensions/deoglExtResult.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
 #include "../model/deoglModelLOD.h"

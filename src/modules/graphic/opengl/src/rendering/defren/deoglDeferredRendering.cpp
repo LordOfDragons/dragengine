@@ -30,7 +30,6 @@
 #include "../../debug/deoglDebugTraceGroup.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../extensions/deoglExtensions.h"
-#include "../../extensions/deoglExtResult.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglRestoreFramebuffer.h"
 #include "../../rendering/deoglRenderWorld.h"

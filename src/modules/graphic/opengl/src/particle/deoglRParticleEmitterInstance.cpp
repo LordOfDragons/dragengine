@@ -29,7 +29,6 @@
 #include "deoglRParticleEmitter.h"
 #include "deoglRParticleEmitterInstanceType.h"
 #include "../envmap/deoglEnvironmentMap.h"
-#include "../extensions/deoglExtResult.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../skin/deoglRSkin.h"

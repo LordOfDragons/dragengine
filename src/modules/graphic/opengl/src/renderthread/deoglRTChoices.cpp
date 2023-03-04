@@ -28,7 +28,6 @@
 #include "deoglRTLogger.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../extensions/deoglExtensions.h"
-#include "../extensions/deoglExtResult.h"
 
 #include <dragengine/common/exceptions.h>
 
