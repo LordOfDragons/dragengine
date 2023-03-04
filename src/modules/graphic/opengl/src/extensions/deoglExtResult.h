@@ -35,8 +35,6 @@
  * on http://www.opengl.org/registry/ .
  */
 
-#include "../deoglBasics.h"
-
 // it is often the case that the glext header is already included by the gl header above.
 // this is bad for us since these gl headers usually do not have all the extensions that
 // the module can support. for this we need our own glext header which is the most
