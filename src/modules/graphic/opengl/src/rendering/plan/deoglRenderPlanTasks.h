@@ -125,8 +125,8 @@ public:
 	/** Build compute render tasks. */
 	void BuildComputeRenderTasks( const deoglRenderPlanMasked *mask );
 	
-	/** Begin read back compute render tasks. */
-	void BeginReadBackComputeRenderTasks();
+	/** Sort compute render tasks and begin reading back steps. */
+	void SortComputeRenderTasks();
 	
 	/** Finish read back compute render tasks. */
 	void FinishReadBackComputeRenderTasks();

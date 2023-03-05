@@ -28,10 +28,12 @@
 #include "shared/deoglRenderTaskSharedTexture.h"
 #include "shared/deoglRenderTaskSharedVAO.h"
 #include "shared/deoglRenderTaskSharedInstance.h"
+#include "../deoglRenderCompute.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTChoices.h"
+#include "../../renderthread/deoglRTRenderers.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../shaders/paramblock/deoglSPBMapBufferRead.h"
 #include "../../pipeline/deoglPipelineManager.h"
@@ -90,7 +92,8 @@ pStepsResolvedCount( 0 )
 	
 	pSSBOSteps.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
 	pSSBOSteps->SetRowMajor( rowMajor );
-	pSSBOSteps->SetParameterCount( 7 );
+	pSSBOSteps->SetParameterCount( 8 );
+	pSSBOSteps->GetParameterAt( etpPass ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpPipeline ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpTuc ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpVao ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
@@ -210,21 +213,21 @@ void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute )
 	}
 }
 
-void deoglComputeRenderTask::BeginReadBackSteps(){
+void deoglComputeRenderTask::SortSteps(){
 	DEASSERT_TRUE( pPass == -1 )
 	
 		decTimer timer;
 	const deoglSPBMapBufferRead mapped( pSSBOCounters, 0, 1 );
 	const sCounters &counters = *( sCounters* )pSSBOCounters->GetMappedBuffer();
-	pReadBackStepCount = counters.counter;
-	if( pReadBackStepCount == 0 ){
+	pStepCount = counters.counter;
+	if( pStepCount == 0 ){
 		return;
 	}
 	
-	pSSBOSteps->GPUReadToCPU( pReadBackStepCount );
+	pRenderThread.GetRenderers().GetCompute().SortRenderTask( *this );
 #ifdef DO_READ_BACK_TIMINGS
-	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.BeginReadBackSteps: read %dys. %d steps",
-		(int)(timer.GetElapsedTime()*1e6f), pReadBackStepCount);
+	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.SortSteps: sort %dys. %d steps",
+		(int)(timer.GetElapsedTime()*1e6f), pStepCount);
 #endif
 }
 
@@ -233,34 +236,34 @@ void deoglComputeRenderTask::ReadBackSteps(){
 	
 	pStepsResolvedCount = 0;
 	
-	if( pReadBackStepCount == 0 ){
+	if( pStepCount == 0 ){
 		return;
 	}
 	
 		decTimer timer;
-	if( pReadBackStepCount > pStepsResolvedSize ){
+	if( pStepCount > pStepsResolvedSize ){
 		if( pStepsResolved ){
 			delete [] pStepsResolved;
 			pStepsResolved = nullptr;
 			pStepsResolvedSize = 0;
 		}
 		
-		pStepsResolved = new sStepResolved[ pReadBackStepCount ];
-		pStepsResolvedSize = pReadBackStepCount;
+		pStepsResolved = new sStepResolved[ pStepCount ];
+		pStepsResolvedSize = pStepCount;
 	}
 	
-	const deoglSPBMapBufferRead mapped( pSSBOSteps, 0, pReadBackStepCount );
+	const deoglSPBMapBufferRead mapped( pSSBOSteps, 0, pStepCount );
 	const sStep * const steps = ( const sStep* )pSSBOSteps->GetMappedBuffer();
 #ifdef DO_READ_BACK_TIMINGS
 	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
-		pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
+		pStepCount, (int)(timer.GetElapsedTime()*1e6f));
 #endif
 	
 	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
 	const deoglPipelineManager &pipManager = pRenderThread.GetPipelineManager();
 	int i;
 	
-	for( i=0; i<pReadBackStepCount; i++ ){
+	for( i=0; i<pStepCount; i++ ){
 		sStepResolved &resolved = pStepsResolved[ i ];
 		const sStep &step = steps[ i ];
 		
@@ -272,10 +275,10 @@ void deoglComputeRenderTask::ReadBackSteps(){
 		resolved.specialFlags = step.specialFlags;
 		resolved.subInstanceCount = step.subInstanceCount;
 	}
-	pStepsResolvedCount = pReadBackStepCount;
+	pStepsResolvedCount = pStepCount;
 #ifdef DO_READ_BACK_TIMINGS
 	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys",
-		pReadBackStepCount, (int)(timer.GetElapsedTime()*1e6f));
+		pStepCount, (int)(timer.GetElapsedTime()*1e6f));
 #endif
 }
 

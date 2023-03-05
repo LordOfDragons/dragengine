@@ -26,6 +26,7 @@
 #include "plan/deoglRenderPlan.h"
 #include "plan/deoglRenderPlanSkyLight.h"
 #include "task/deoglComputeRenderTask.h"
+#include "../deoglMath.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugTraceGroup.h"
@@ -43,6 +44,24 @@
 #include "../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
+
+
+
+// Definitions
+////////////////
+
+enum eSortStages{
+	essLocalSort,
+	essLocalDisperse,
+	essGlobalFlip,
+	essGlobalDisperse
+};
+
+enum eSortShaderParameters{
+	esspStage,
+	esspLaneSize,
+	esspStepCount
+};
 
 
 
@@ -171,6 +190,12 @@ deoglRenderBase( renderThread )
 	defines = commonDefines;
 	pipconf.SetShader( renderThread, "DefRen Plan Build Render Task", defines );
 	pPipelineBuildRenderTask = pipelineManager.GetWith( pipconf );
+	
+	
+	// sort render task
+	defines = commonDefines;
+	pipconf.SetShader( renderThread, "DefRen Plan Sort Render Task", defines );
+	pPipelineSortRenderTask = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderCompute::~deoglRenderCompute(){
@@ -364,7 +389,6 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	DEASSERT_TRUE( wcompute.GetElementGeometryCount() > 0 )
 	
-	// build render task
 	pPipelineBuildRenderTask->Activate();
 	
 	renderTask.GetUBOConfig()->Activate( 0 );
@@ -377,12 +401,12 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 	
 	counters.ActivateDispatchIndirect();
 	
-	deoglShaderCompiled &shader = pPipelineBuildRenderTask->GetGlShader();
+	deoglShaderCompiled &shaderBuild = pPipelineBuildRenderTask->GetGlShader();
 	const int passCount = renderTask.GetPassCount();
 	int i;
 	
 	for( i=0; i<passCount; i++ ){
-		shader.SetParameterUInt( 0, i );
+		shaderBuild.SetParameterUInt( 0, i );
 		OGL_CHECK( renderThread, pglDispatchComputeIndirect( dispatchOffset ) );
 		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
 	}
@@ -390,12 +414,62 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 	counters.DeactivateDispatchIndirect();
 	
-	// sort render task
-	
-	
-	renderTask.GetSSBOSteps()->GPUFinishedWriting();
 	renderTask.GetSSBOCounters()->GPUFinishedWriting();
 	renderTask.GetSSBOCounters()->GPUReadToCPU( 1 );
+}
+
+void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
+	const int stepCount = renderTask.GetStepCount();
+	if( stepCount == 0 ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.SortRenderTask" );
+	
+	pPipelineSortRenderTask->Activate();
+	
+	renderTask.GetSSBOSteps()->Activate( 0 );
+	
+	const int maxLanSize = 128; // 64 work group size * 2
+	const int potStepCount = oglPotOf( stepCount );
+	const int workGroupCount = ( ( potStepCount - 1 ) / maxLanSize ) + 1;
+	
+	deoglShaderCompiled &shaderSort = pPipelineSortRenderTask->GetGlShader();
+	shaderSort.SetParameterUInt( esspStepCount, stepCount );
+	
+	// local sorting
+	shaderSort.SetParameterInt( esspStage, essLocalSort );
+	shaderSort.SetParameterUInt( esspLaneSize, maxLanSize );
+	OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+	
+	// global sorting
+	int laneSize, halfLaneSize;
+	for( laneSize = maxLanSize * 2; laneSize <= potStepCount; laneSize *= 2 ){
+		shaderSort.SetParameterInt( esspStage, essGlobalFlip );
+		shaderSort.SetParameterUInt( esspLaneSize, laneSize );
+		OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+		
+		for( halfLaneSize = laneSize / 2; halfLaneSize > 1; halfLaneSize /= 2 ){
+			shaderSort.SetParameterUInt( esspLaneSize, halfLaneSize );
+			
+			if( halfLaneSize <= maxLanSize ){
+				shaderSort.SetParameterInt( esspStage, essLocalDisperse );
+				OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
+				OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+				break;
+			}
+			
+			shaderSort.SetParameterInt( esspStage, essGlobalDisperse );
+			OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
+			OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+		}
+	}
+	
+	renderTask.GetSSBOSteps()->GPUFinishedWriting();
+	renderTask.GetSSBOSteps()->GPUReadToCPU( stepCount );
 }
 
 

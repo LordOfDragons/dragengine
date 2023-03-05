@@ -35,6 +35,14 @@ struct sRenderTask{
 };
 
 /*
+possible compact format (uvec4):
+x: pipeline(0-15), tuc(16-31)
+y: vao(0-15), subInstanceCount(16-31)
+z: instance(0-31)
+w: pass(0-2), specialFlags(3-10), spbInstance(11-31)
+*/
+
+/*
 UBOLAYOUT_BIND(4) buffer RenderTask {
 	sRenderTask pRenderTask[];
 };

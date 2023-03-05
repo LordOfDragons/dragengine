@@ -449,7 +449,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	}
 	
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pTasks.BeginReadBackComputeRenderTasks();
+		pTasks.SortComputeRenderTasks();
 	}
 	renderCanvas.SampleDebugInfoPlanPrepareFinish( *this );
 	SPECIAL_TIMER_PRINT("Finish")

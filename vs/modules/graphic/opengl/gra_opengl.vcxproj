@@ -127,6 +127,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedOperations.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedSaveImage.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglBasics.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglMath.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglCaches.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglDebugFont.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglGL.h" />
@@ -735,6 +736,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedOperations.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedSaveImage.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglBasics.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglMath.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglCaches.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglDebugFont.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglShadowVolume.cpp" />

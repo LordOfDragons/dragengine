@@ -388,7 +388,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	}
 	
 	if( ( renderTask && renderTask->GetPipelineCount() > 0 )
-	|| ( computeRenderTask && computeRenderTask->GetCountSteps() > 0 ) ){
+	|| ( computeRenderTask && computeRenderTask->GetCountStepsResolved() > 0 ) ){
 		if( planDebug && plan.GetRenderPassNumber() == 1 ){
 			const int componentCount = collideList.GetComponentCount();
 			deoglEnvironmentMapList envMapList;

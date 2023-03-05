@@ -58,6 +58,7 @@ public:
 	
 	/** Task parameters. */
 	enum eTaskParameters{
+		etpPass,
 		etpPipeline,
 		etpTuc,
 		etpVao,
@@ -116,8 +117,6 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOSteps;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	
-	int pReadBackStepCount;
-	
 	int pPassCount;
 	int pPass;
 	
@@ -154,6 +153,8 @@ private:
 	int pFiltersMasked;
 	
 	bool pUseSpecialParamBlock;
+	
+	int pStepCount;
 	
 	sStepResolved *pStepsResolved;
 	int pStepsResolvedSize;
@@ -201,8 +202,8 @@ public:
 	/** Finish preparing render task. */
 	void EndPrepare( const deoglWorldCompute &worldCompute );
 	
-	/** Begin read back render steps. */
-	void BeginReadBackSteps();
+	/** Sort render steps and begin reading back steps. */
+	void SortSteps();
 	
 	/** Read back render task steps. */
 	void ReadBackSteps();
@@ -364,11 +365,14 @@ public:
 	
 	
 	
+	/** Count of steps. */
+	inline int GetStepCount() const{ return pStepCount; }
+	
 	/** Count of resolved render steps. */
-	inline int GetCountSteps() const{ return pStepsResolvedCount; }
+	inline int GetCountStepsResolved() const{ return pStepsResolvedCount; }
 	
 	/** Resolved render steps direct access. */
-	inline const sStepResolved *GetSteps() const{ return pStepsResolved; }
+	inline const sStepResolved *GetStepsResolved() const{ return pStepsResolved; }
 	/*@}*/
 	
 	

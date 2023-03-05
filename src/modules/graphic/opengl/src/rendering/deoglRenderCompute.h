@@ -43,6 +43,7 @@ private:
 	const deoglPipeline *pPipelineUpdateCullResultSet;
 	const deoglPipeline *pPipelineUpdateCullResultClear;
 	const deoglPipeline *pPipelineBuildRenderTask;
+	const deoglPipeline *pPipelineSortRenderTask;
 	
 	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
 	deoglSPBlockSSBO::Ref pSSBOUpdateElementGeometries;
@@ -102,9 +103,12 @@ public:
 	/** Find geometries. */
 	void FindGeometries( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters );
 	
-	/** Buil render task. */
+	/** Build render task. */
 	void BuildRenderTask( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters,
 		deoglComputeRenderTask &renderTask, int dispatchOffset );
+	
+	/** Sort render task. */
+	void SortRenderTask( deoglComputeRenderTask &renderTask );
 	/*@}*/
 	
 	

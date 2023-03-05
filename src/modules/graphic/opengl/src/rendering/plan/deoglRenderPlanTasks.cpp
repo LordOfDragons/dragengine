@@ -205,11 +205,11 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	// }
 }
 
-void deoglRenderPlanTasks::BeginReadBackComputeRenderTasks(){
-	pCRTSolidDepth->BeginReadBackSteps();
-	pCRTSolidGeometry->BeginReadBackSteps();
-	pCRTSolidDepthXRay->BeginReadBackSteps();
-	pCRTSolidGeometryXRay->BeginReadBackSteps();
+void deoglRenderPlanTasks::SortComputeRenderTasks(){
+	pCRTSolidDepth->SortSteps();
+	pCRTSolidGeometry->SortSteps();
+	pCRTSolidDepthXRay->SortSteps();
+	pCRTSolidGeometryXRay->SortSteps();
 }
 
 void deoglRenderPlanTasks::FinishReadBackComputeRenderTasks(){

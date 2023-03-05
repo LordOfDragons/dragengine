@@ -368,7 +368,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 }
 
 void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask ){
-	const int stepCount = renderTask.GetCountSteps();
+	const int stepCount = renderTask.GetCountStepsResolved();
 	if( stepCount == 0 ){
 		return;
 	}
@@ -379,7 +379,7 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 // 	const int strideIndirect = sizeof( oglDrawIndirectCommand );
 	const deoglShaderParameterBlock * const ssboIndexInstance = renderTask.GetSSBOSteps();
-	const deoglComputeRenderTask::sStepResolved * const steps = renderTask.GetSteps();
+	const deoglComputeRenderTask::sStepResolved * const steps = renderTask.GetStepsResolved();
 	const deoglPipeline *curPipeline = nullptr;
 	const deoglRenderTaskSharedTexture *curTexture = nullptr;
 	const deoglRenderTaskSharedVAO *curVAO = nullptr;
