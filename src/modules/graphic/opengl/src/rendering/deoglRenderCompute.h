@@ -44,12 +44,15 @@ private:
 	const deoglPipeline *pPipelineUpdateCullResultClear;
 	const deoglPipeline *pPipelineBuildRenderTask;
 	const deoglPipeline *pPipelineSortRenderTask;
+	const deoglPipeline *pPipelineRenderTaskSubInstGroup[ 3 ];
 	
 	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
 	deoglSPBlockSSBO::Ref pSSBOUpdateElementGeometries;
 	deoglSPBlockSSBO::Ref pSSBOUpdateIndices;
 	deoglSPBlockSSBO::Ref pSSBOElementCullResult;
 	deoglSPBlockSSBO::Ref pSSBOVisibleGeometries;
+	deoglSPBlockSSBO::Ref pSSBORenderTaskSubInstGroups;
+	deoglSPBlockSSBO::Ref pSSBORenderTaskSubInstGroupCounter;
 	
 	
 	

@@ -1,0 +1,56 @@
+precision highp float;
+precision highp int;
+
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/plan/render_task.glsl"
+
+
+UBOLAYOUT_BIND(0) readonly buffer SubInstGroup {
+	uvec4 pSubInstGroup[];
+};
+
+struct sCounter {
+	uvec3 workGroupSize;
+	uint counter;
+};
+
+UBOLAYOUT_BIND(1) readonly buffer Counters {
+	sCounter pSubInstGroupCounters[ 1 ];
+};
+
+UBOLAYOUT_BIND(2) buffer RenderTask {
+	sRenderTask pRenderTask[];
+};
+
+
+uniform uint pStepCount;
+
+
+layout( local_size_x=64 ) in;
+
+
+uint getSubInstGroup( in uint index ){
+	return pSubInstGroup[ index / uint( 4 ) ][ index % uint( 4 ) ];
+}
+
+void main( void ){
+	uint count = pSubInstGroupCounters[ 0 ].counter;
+	uint index = gl_GlobalInvocationID.x;
+	if( index >= count ){
+		return;
+	}
+	
+	uint first = getSubInstGroup( index );
+	
+	// over all SSBO invocations from pass 1. for each invocation which has
+	// step[ssbo[id].index].subInstanceCount > 0 update the original step
+	// subInstanceCount with:
+	// - if not last invocation: step[id+1].index - step[id].index
+	// - if last invocation: stepCount - step[id].index
+	if( pRenderTask[ first ].subInstanceCount == 0 ){
+		return;
+	}
+	
+	uint last = index < count - uint( 1 ) ? getSubInstGroup( index + uint( 1 ) ) : pStepCount;
+	pRenderTask[ first ].subInstanceCount = last - first;
+}

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Render Task SubInstGroup Pass 2</name>
+	
+	<parameter name='pStage'/>
+	<parameter name='pLaneSize'/>
+	
+	<shaderStorageBlock name='Counters' target='0'/>
+	<shaderStorageBlock name='SubInstGroup' target='1'/>
+	
+	<sourceCode unit='compute'>v130/compute/defren/plan/render_task_subinstgroup_pass2.glsl</sourceCode>
+</shader>

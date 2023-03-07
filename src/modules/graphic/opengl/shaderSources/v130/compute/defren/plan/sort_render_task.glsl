@@ -5,17 +5,9 @@ precision highp int;
 #include "v130/shared/defren/plan/render_task_sortable.glsl"
 
 
-struct sCounter {
-	uvec3 workGroupSize;
-	uint counter;
-};
-
 UBOLAYOUT_BIND(0) buffer RenderTask {
 	sRenderTaskSortable pRenderTask[];
 };
-
-#include "v130/shared/defren/plan/render_task_sortable_get.glsl"
-#include "v130/shared/defren/plan/render_task_sortable_set.glsl"
 
 
 uniform int pStage;
@@ -254,10 +246,11 @@ void main( void ){
 	// cooperative copying steps from ssbo into shared memory
 	if( pStage <= esLocalDisperse ){
 		// entire block is outside range
-		limit = pStepCount - offset;
-		if( limit == 0 ){
+		if( offset >= pStepCount ){
 			return;
 		}
+		
+		limit = pStepCount - offset;
 		
 		// t*2 => offset+t*2 and t*2+1 => offset+t*2+1
 		i = uvec4( t * uint( 2 ) );

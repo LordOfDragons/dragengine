@@ -63,6 +63,19 @@ enum eSortShaderParameters{
 	esspStepCount
 };
 
+enum eRenderTaskSubInstGroup1Parameters{
+	ertsig1pStepCount
+};
+
+enum eRenderTaskSubInstGroup2Parameters{
+	ertsig2pStage,
+	ertsig2pLaneSize
+};
+
+enum eRenderTaskSubInstGroup3Parameters{
+	ertsig3pStepCount
+};
+
 
 
 // Class deoglRenderCompute
@@ -134,6 +147,21 @@ deoglRenderBase( renderThread )
 	pSSBOVisibleGeometries->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOVisibleGeometries->MapToStd140();
 	
+	pSSBORenderTaskSubInstGroups.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etGpu ) );
+	pSSBORenderTaskSubInstGroups->SetRowMajor( rowMajor );
+	pSSBORenderTaskSubInstGroups->SetParameterCount( 1 );
+	pSSBORenderTaskSubInstGroups->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+	pSSBORenderTaskSubInstGroups->MapToStd140();
+	
+	pSSBORenderTaskSubInstGroupCounter.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
+	pSSBORenderTaskSubInstGroupCounter->SetRowMajor( rowMajor );
+	pSSBORenderTaskSubInstGroupCounter->SetParameterCount( 2 );
+	pSSBORenderTaskSubInstGroupCounter->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
+	pSSBORenderTaskSubInstGroupCounter->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pSSBORenderTaskSubInstGroupCounter->SetElementCount( 1 );
+	pSSBORenderTaskSubInstGroupCounter->MapToStd140();
+	pSSBORenderTaskSubInstGroupCounter->EnsureBuffer();
+	
 	
 	// update elements
 	pipconf.SetShader( renderThread, "DefRen Plan Update Elements", commonDefines );
@@ -196,6 +224,18 @@ deoglRenderBase( renderThread )
 	defines = commonDefines;
 	pipconf.SetShader( renderThread, "DefRen Plan Sort Render Task", defines );
 	pPipelineSortRenderTask = pipelineManager.GetWith( pipconf );
+	
+	
+	// render task sub instance group
+	defines = commonDefines;
+	pipconf.SetShader( renderThread, "DefRen Plan Render Task SubInstGroup Pass 1", defines );
+	pPipelineRenderTaskSubInstGroup[ 0 ] = pipelineManager.GetWith( pipconf );
+	
+	pipconf.SetShader( renderThread, "DefRen Plan Render Task SubInstGroup Pass 2", defines );
+	pPipelineRenderTaskSubInstGroup[ 1 ] = pipelineManager.GetWith( pipconf );
+	
+	pipconf.SetShader( renderThread, "DefRen Plan Render Task SubInstGroup Pass 3", defines );
+	pPipelineRenderTaskSubInstGroup[ 2 ] = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderCompute::~deoglRenderCompute(){
@@ -427,6 +467,18 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.SortRenderTask" );
 	
+	
+	// prepare
+	const int maxSubInstGroupECount = ( ( stepCount - 1 ) / 4 ) + 1;
+	if( maxSubInstGroupECount > pSSBORenderTaskSubInstGroups->GetElementCount() ){
+		pSSBORenderTaskSubInstGroups->SetElementCount( maxSubInstGroupECount );
+		pSSBORenderTaskSubInstGroups->EnsureBuffer();
+	}
+	
+	pSSBORenderTaskSubInstGroupCounter->ClearDataUInt( 1, 0, 1, 1, 0 );
+	
+	
+	// sort render task
 	pPipelineSortRenderTask->Activate();
 	
 	renderTask.GetSSBOSteps()->Activate( 0 );
@@ -467,6 +519,70 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 			OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
 		}
 	}
+	
+	
+	// subinstance grouping
+	
+	// pass 1
+	pPipelineRenderTaskSubInstGroup[ 0 ]->Activate();
+	
+	renderTask.GetSSBOSteps()->Activate( 0 );
+	pSSBORenderTaskSubInstGroups->Activate( 1 );
+	pSSBORenderTaskSubInstGroupCounter->ActivateAtomic( 0 );
+	
+	pPipelineRenderTaskSubInstGroup[ 0 ]->GetGlShader().SetParameterUInt( ertsig1pStepCount, stepCount );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( ( stepCount - 1 ) / 64 ) + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT ) );
+	
+	// pass 2
+	pPipelineRenderTaskSubInstGroup[ 1 ]->Activate();
+	
+	pSSBORenderTaskSubInstGroupCounter->Activate( 0 );
+	pSSBORenderTaskSubInstGroups->Activate( 1 );
+	
+	deoglShaderCompiled &shaderSortSubInstGroup = pPipelineRenderTaskSubInstGroup[ 1 ]->GetGlShader();
+	
+	shaderSortSubInstGroup.SetParameterInt( ertsig2pStage, essLocalSort );
+	shaderSortSubInstGroup.SetParameterUInt( ertsig2pLaneSize, maxLanSize );
+	OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+	
+	for( laneSize = maxLanSize * 2; laneSize <= potStepCount; laneSize *= 2 ){
+		shaderSortSubInstGroup.SetParameterInt( ertsig2pStage, essGlobalFlip );
+		shaderSortSubInstGroup.SetParameterUInt( ertsig2pLaneSize, laneSize );
+		OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+		
+		for( halfLaneSize = laneSize / 2; halfLaneSize > 1; halfLaneSize /= 2 ){
+			shaderSortSubInstGroup.SetParameterUInt( ertsig2pLaneSize, halfLaneSize );
+			
+			if( halfLaneSize <= maxLanSize ){
+				shaderSortSubInstGroup.SetParameterInt( ertsig2pStage, essLocalDisperse );
+				OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
+				OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+				break;
+			}
+			
+			shaderSortSubInstGroup.SetParameterInt( ertsig2pStage, essGlobalDisperse );
+			OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
+			OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+		}
+	}
+	
+	// pass 3
+	pPipelineRenderTaskSubInstGroup[ 2 ]->Activate();
+	
+	pSSBORenderTaskSubInstGroups->Activate( 0 );
+	pSSBORenderTaskSubInstGroupCounter->Activate( 1 );
+	renderTask.GetSSBOSteps()->Activate( 2 );
+	
+	pPipelineRenderTaskSubInstGroup[ 2 ]->GetGlShader().SetParameterUInt( ertsig3pStepCount, stepCount );
+	
+	pSSBORenderTaskSubInstGroupCounter->ActivateDispatchIndirect();
+	OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+	pSSBORenderTaskSubInstGroupCounter->DeactivateDispatchIndirect();
 	
 	renderTask.GetSSBOSteps()->GPUFinishedWriting();
 	renderTask.GetSSBOSteps()->GPUReadToCPU( stepCount );
