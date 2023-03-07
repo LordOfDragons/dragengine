@@ -154,6 +154,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GeometryPass.RenderSolidGeometryPass" );
+	const bool useComputeRenderTask = renderThread.GetChoices().GetUseComputeRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -246,7 +247,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	// other content
 	deoglDebugTraceGroup debugTraceOther( debugTraceHT, "GeometryPass.RenderSolidGeometryPass.Geometry" );
-	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+	if( useComputeRenderTask ){
 		computeRenderTask = xray ? tasks.GetCRTSolidGeometryXRay() : tasks.GetCRTSolidGeometry();
 		if( computeRenderTask->GetStepCount() > 0 ){
 			computeRenderTask->SetRenderParamBlock( renworld.GetRenderPB() );
@@ -262,19 +263,23 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	}
 	
 	// outline
-	deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "GeometryPass.RenderSolidGeometryPass.Outline" );
-	renderTask = xray ? &tasks.GetSolidGeometryOutlineXRayTask() : &tasks.GetSolidGeometryOutlineTask();
-	if( renderTask->GetPipelineCount() > 0 ){
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		rengeom.RenderTask( *renderTask );
+	if( ! useComputeRenderTask ){
+		deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "GeometryPass.RenderSolidGeometryPass.Outline" );
+		renderTask = xray ? &tasks.GetSolidGeometryOutlineXRayTask() : &tasks.GetSolidGeometryOutlineTask();
+		if( renderTask->GetPipelineCount() > 0 ){
+			renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+			rengeom.RenderTask( *renderTask );
+		}
+		
+		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
 	}
-	
-	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
 	debugTraceOther.Close();
 	
 	// decals
-	RenderDecals( plan, xray );
-	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true );
+	if( ! useComputeRenderTask ){
+		RenderDecals( plan, xray );
+		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true );
+	}
 	QUICK_DEBUG_END
 	
 	

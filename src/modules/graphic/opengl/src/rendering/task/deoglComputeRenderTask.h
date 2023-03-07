@@ -143,8 +143,12 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
+	int pCounterSteps;
+	
+	sStep *pSteps;
 	int pStepCount;
-	const sStep *pSteps;
+	int pStepSize;
+	bool pSkipSubInstanceGroups;
 	
 	
 	
@@ -351,11 +355,17 @@ public:
 	
 	
 	
+	/** Steps counter. */
+	inline int GetCounterSteps() const{ return pCounterSteps; }
+	
 	/** Count of steps. */
 	inline int GetStepCount() const{ return pStepCount; }
 	
 	/** Render steps direct access or nullptr if not mapped. */
 	inline const sStep *GetSteps() const{ return pSteps; }
+	
+	/** Skip sub instance groups. */
+	inline bool GetSkipSubInstanceGroups() const{ return pSkipSubInstanceGroups; }
 	/*@}*/
 	
 	

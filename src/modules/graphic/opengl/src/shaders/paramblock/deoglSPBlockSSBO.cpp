@@ -120,7 +120,9 @@ void deoglSPBlockSSBO::Activate() const{
 
 void deoglSPBlockSSBO::Activate( int bindingPoint ) const{
 	DEASSERT_NOTNULL( pSSBO )
-	DEASSERT_FALSE( IsBufferMapped() )
+	if( ! GetRenderThread().GetChoices().GetUseDirectStateAccess() ){
+		DEASSERT_FALSE( IsBufferMapped() )
+	}
 	
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, bindingPoint, pSSBO ) );
 }
@@ -135,7 +137,9 @@ void deoglSPBlockSSBO::Deactivate( int bindingPoint ) const{
 
 void deoglSPBlockSSBO::ActivateUBO() const{
 	DEASSERT_NOTNULL( pSSBO )
-	DEASSERT_FALSE( IsBufferMapped() )
+	if( ! GetRenderThread().GetChoices().GetUseDirectStateAccess() ){
+		DEASSERT_FALSE( IsBufferMapped() )
+	}
 	
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, pBindingPointUBO, pSSBO ) );
 }
@@ -150,7 +154,9 @@ void deoglSPBlockSSBO::ActivateAtomic() const{
 
 void deoglSPBlockSSBO::ActivateAtomic( int bindingPoint ) const{
 	DEASSERT_NOTNULL( pSSBO )
-	DEASSERT_FALSE( IsBufferMapped() )
+	if( ! GetRenderThread().GetChoices().GetUseDirectStateAccess() ){
+		DEASSERT_FALSE( IsBufferMapped() )
+	}
 	
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_ATOMIC_COUNTER_BUFFER, bindingPoint, pSSBO ) );
 }
@@ -165,7 +171,9 @@ void deoglSPBlockSSBO::DeactivateAtomic( int bindingPoint ) const{
 
 void deoglSPBlockSSBO::ActivateDispatchIndirect() const{
 	DEASSERT_NOTNULL( pSSBO )
-	DEASSERT_FALSE( IsBufferMapped() )
+	if( ! GetRenderThread().GetChoices().GetUseDirectStateAccess() ){
+		DEASSERT_FALSE( IsBufferMapped() )
+	}
 	
 	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_DISPATCH_INDIRECT_BUFFER, pSSBO ) );
 }

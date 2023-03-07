@@ -387,6 +387,7 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 // 	const int strideIndirect = sizeof( oglDrawIndirectCommand );
 	const deoglShaderParameterBlock * const ssboIndexInstance = renderTask.GetSSBOSteps();
+	const bool skipSubInstanceGroups = renderTask.GetSkipSubInstanceGroups();
 	const uint32_t undefined = ~( uint32_t )0;
 	uint32_t curPipeline = undefined;
 	uint32_t curTUC = undefined;
@@ -397,6 +398,7 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 	deoglShaderCompiled *shader = nullptr;
 	int targetSPBInstanceIndexBase = -1;
 	int targetDrawIDOffset = -1;
+	int spbInstanceIndexBase = 0;
 	
 	GLenum indexGLType = GL_NONE;
 	GLenum primitiveType = GL_TRIANGLES;
@@ -503,8 +505,11 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 			}
 			
 			if( targetSPBInstanceIndexBase != -1 ){
-				shader->SetParameterInt( targetSPBInstanceIndexBase, i );
+				shader->SetParameterInt( targetSPBInstanceIndexBase, spbInstanceIndexBase );
 			}
+			
+			const int advanceSubInstanceCount = decMath::max( step.subInstanceCount, 1 );
+			spbInstanceIndexBase += advanceSubInstanceCount;
 			
 			const int realSubInstanceCount = step.subInstanceCount + subInstanceCount;
 			
@@ -567,8 +572,9 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 						}
 					}
 					
-					// skip grouped sub instances
-					i += decMath::max( step.subInstanceCount - 1, 0 );
+					if( skipSubInstanceGroups ){
+						i += advanceSubInstanceCount - 1;
+					}
 				}
 				
 			}else{
@@ -606,8 +612,9 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 							indexCount, indexGLType, indexPointer, realSubInstanceCount ) );
 					}
 					
-					// skip grouped sub instances
-					i += decMath::max( step.subInstanceCount - 1, 0 );
+					if( skipSubInstanceGroups ){
+						i += advanceSubInstanceCount - 1;
+					}
 				}
 			}
 		}
@@ -621,10 +628,11 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 		
 		renderThread.GetLogger().LogErrorFormat( "Render compute task failed: step=%d m=%d"
 			" pip=%d tex=%d vao=%d inst=%d tspbiib=%d tdido=%d indtype=%x primtype=%d sicnt=%d"
-			" ssicnt=%d indcnt=%d indfir=%d indsize=%d pntcnt=%d pntfir=%d",
+			" ssicnt=%d indcnt=%d indfir=%d indsize=%d pntcnt=%d pntfir=%d spbiib=%d",
 			i, m, curPipeline, curTUC, curVAO, curInstance, targetSPBInstanceIndexBase,
 			targetDrawIDOffset, indexGLType, primitiveType, subInstanceCount,
-			steps[ i ].subInstanceCount, indexCount, firstIndex, indexSize, pointCount, firstPoint );
+			steps[ i ].subInstanceCount, indexCount, firstIndex, indexSize,
+			pointCount, firstPoint, spbInstanceIndexBase );
 		throw;
 	}
 }

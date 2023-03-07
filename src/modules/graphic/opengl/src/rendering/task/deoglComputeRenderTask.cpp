@@ -72,7 +72,11 @@ pPassCount( 0 ),
 pPass( -1 ),
 pUseSPBInstanceFlags( false ),
 pRenderVSStereo( false ),
-pSteps( nullptr )
+pCounterSteps( 0 ),
+pSteps( nullptr ),
+pStepCount( 0 ),
+pStepSize( 0 ),
+pSkipSubInstanceGroups( false )
 {
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
@@ -114,8 +118,8 @@ pSteps( nullptr )
 }
 
 deoglComputeRenderTask::~deoglComputeRenderTask(){
-	if( pSteps && pSSBOSteps->IsBufferMapped() ){
-		pSSBOSteps->UnmapBufferRead();
+	if( pSteps ){
+		delete [] pSteps;
 	}
 }
 
@@ -131,12 +135,8 @@ void deoglComputeRenderTask::BeginPrepare( int passCount ){
 	DEASSERT_TRUE( passCount > 0 )
 	DEASSERT_TRUE( passCount < 8 )  // hard limit in shader
 	
-	if( pSteps ){
-		if( pSSBOSteps->IsBufferMapped() ){
-			pSSBOSteps->UnmapBufferRead();
-		}
-		pSteps = nullptr;
-	}
+	pStepCount = 0;
+	pCounterSteps = 0;
 	
 	if( passCount > pUBOConfig->GetElementCount() ){
 		pUBOConfig->SetElementCount( passCount );
@@ -222,37 +222,60 @@ void deoglComputeRenderTask::SortSteps(){
 		decTimer timer;
 	const deoglSPBMapBufferRead mapped( pSSBOCounters, 0, 1 );
 	const sCounters &counters = *( sCounters* )pSSBOCounters->GetMappedBuffer();
-	pStepCount = counters.counter;
-	if( pStepCount == 0 ){
+	pCounterSteps = counters.counter;
+	
+	if( pCounterSteps == 0 ){
 		return;
 	}
 	
 	pRenderThread.GetRenderers().GetCompute().SortRenderTask( *this );
 #ifdef DO_READ_BACK_TIMINGS
 	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.SortSteps: sort %dys. %d steps",
-		(int)(timer.GetElapsedTime()*1e6f), pStepCount);
+		(int)(timer.GetElapsedTime()*1e6f), pCounterSteps);
 #endif
+	
+	if( pCounterSteps > pStepSize ){
+		if( pSteps ){
+			delete [] pSteps;
+			pSteps = nullptr;
+		}
+		pSteps = new sStep[ pCounterSteps ];
+		pStepSize = pCounterSteps;
+	}
 }
 
 void deoglComputeRenderTask::ReadBackSteps(){
 	DEASSERT_TRUE( pPass == -1 )
 	
-	if( pStepCount == 0 ){
+	if( pCounterSteps == 0 ){
 		return;
 	}
 	
 		decTimer timer;
-	pSSBOSteps->MapBufferRead( 0, pStepCount );
-	pSteps = ( const sStep* )pSSBOSteps->GetMappedBuffer();
+	const deoglSPBMapBufferRead mapped( pSSBOSteps, 0, pCounterSteps );
+	const sStep * const steps = ( const sStep* )pSSBOSteps->GetMappedBuffer();
+	int i;
+	
 #ifdef DO_READ_BACK_TIMINGS
-	const int elapsed = (int)(timer.GetElapsedTime()*1e6f);
-	int i, igcount=0;
-	for(i=0; i<pStepCount; i++){
-		igcount++;
-		i += decMath::max(pSteps[i].subInstanceCount - 1, 0);
+	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
+		pCounterSteps, (int)(timer.GetElapsedTime()*1e6f));
+#endif
+	
+	pStepCount = 0;
+	for( i=0; i<pCounterSteps; i++ ){
+		pSteps[ pStepCount++ ] = steps[ i ];
+		i += decMath::max( steps[ i ].subInstanceCount - 1, 0 );
 	}
-	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d (%d groups) in %dys",
-		pStepCount, igcount, elapsed);
+	
+	// if steps are copied and the sub instance groups have been skipped already
+	// pSkipSubInstanceGroups has to be set to false. if the SSBO is kept mapped and the steps
+	// are used directly pSkipSubInstanceGroups has to be set to true. later solution can be
+	// only used if direct state access is supported
+	pSkipSubInstanceGroups = false;
+	
+#ifdef DO_READ_BACK_TIMINGS
+	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: copied %d in %dys",
+		pStepCount, (int)(timer.GetElapsedTime()*1e6f));
 #endif
 }
 

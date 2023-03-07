@@ -460,7 +460,7 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 }
 
 void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
-	const int stepCount = renderTask.GetStepCount();
+	const int stepCount = renderTask.GetCounterSteps();
 	if( stepCount == 0 ){
 		return;
 	}
