@@ -400,7 +400,7 @@ DEBUG_RESET_TIMER
 	QUICK_DEBUG_START( 15, 19 )
 	//if( ! plan->GetFBOTarget() )
 	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
-		plan.GetTasks().FinishReadBackComputeRenderTasks();
+		plan.GetTasks()->FinishReadBackComputeRenderTasks();
 	}
 	renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask, false );
 	if( debugMainPass ){
@@ -497,8 +497,8 @@ DEBUG_RESET_TIMER
 	QUICK_DEBUG_END
 	
 	// xray pass
-	if( plan.GetTasks().GetSolidDepthXRayTask().GetPipelineCount() > 0
-	|| plan.GetTasks().GetSolidDepthOutlineXRayTask().GetPipelineCount() > 0
+	if( plan.GetTasks()->GetSolidDepthXRayTask().GetPipelineCount() > 0
+	|| plan.GetTasks()->GetSolidDepthOutlineXRayTask().GetPipelineCount() > 0
 	|| plan.GetHasXRayTransparency() ){
 		// - switch texture but not with secondary depth texture but with third depth texture.
 		//   required for depth textures to stay usable for upcoming render steps.

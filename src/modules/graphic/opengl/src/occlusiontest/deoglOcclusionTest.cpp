@@ -64,6 +64,7 @@ pInputDataSize( 0 )
 		pSSBOResult->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4 result
 		pSSBOResult->MapToStd140();
 		pSSBOResult->SetBindingPoint( 1 );
+		pSSBOResult->EnsureBuffer();
 		
 		pResizeInputData( 256 );
 		
@@ -111,6 +112,7 @@ void deoglOcclusionTest::UpdateSSBO(){
 	const int elementCount = decMath::max( pInputDataCount, 1 );
 	if( elementCount > pSSBOInput->GetElementCount() ){
 		pSSBOInput->SetElementCount( elementCount );
+		pSSBOInput->EnsureBuffer();
 	}
 	
 	if( pInputDataCount > 0 ){

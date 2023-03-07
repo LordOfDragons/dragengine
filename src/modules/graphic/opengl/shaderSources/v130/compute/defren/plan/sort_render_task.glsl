@@ -18,7 +18,7 @@ uniform uint pStepCount;
 layout( local_size_x=64 ) in;
 
 
-const uint cMaxLaneSize = 128;
+const uint cMaxLaneSize = uint( 128 );
 
 shared sRenderTaskSortable vSteps[ cMaxLaneSize ];
 

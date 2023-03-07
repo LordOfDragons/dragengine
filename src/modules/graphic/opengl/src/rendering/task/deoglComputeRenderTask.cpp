@@ -102,6 +102,7 @@ pStepsResolvedCount( 0 )
 	pSSBOSteps->GetParameterAt( etpSpecialFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->GetParameterAt( etpSubInstanceCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOSteps->MapToStd140();
+	pSSBOSteps->EnsureBuffer();
 	
 	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
 	pSSBOCounters->SetRowMajor( rowMajor );

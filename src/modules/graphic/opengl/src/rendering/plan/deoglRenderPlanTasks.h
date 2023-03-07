@@ -34,7 +34,10 @@ class deoglRPTBuildRTsGeometry;
 /**
  * Render Plan tasks.
  */
-class deoglRenderPlanTasks{
+class deoglRenderPlanTasks : public deObject{
+public:
+	typedef deTObjectReference<deoglRenderPlanTasks> Ref;
+	
 private:
 	deoglRenderPlan &pPlan;
 	

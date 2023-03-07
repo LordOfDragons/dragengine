@@ -204,9 +204,9 @@ private:
 	decMatrix pOcclusionTestMatrix;
 	decMatrix pOcclusionTestMatrixStereo;
 	deoglGIState *pGIState;
-	deoglRenderPlanCompute pCompute;
+	deoglRenderPlanCompute::Ref pCompute;
 	
-	deoglRenderPlanTasks pTasks;
+	deoglRenderPlanTasks::Ref pTasks;
 	
 	deoglRPTFindContent *pTaskFindContent;
 	
@@ -682,13 +682,12 @@ public:
 	void DropGIState();
 	
 	/** Compute. */
-	inline deoglRenderPlanCompute &GetCompute(){ return pCompute; }
-	inline const deoglRenderPlanCompute &GetCompute() const{ return pCompute; }
+	inline const deoglRenderPlanCompute::Ref &GetCompute() const{ return pCompute; }
 	
 	
 	
 	/** Tasks. */
-	inline deoglRenderPlanTasks &GetTasks(){ return pTasks; }
+	inline const deoglRenderPlanTasks::Ref &GetTasks() const{ return pTasks; }
 	
 	
 	

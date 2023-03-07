@@ -25,7 +25,7 @@ uniform uint pLaneSize;
 layout( local_size_x=64 ) in;
 
 
-const uint cMaxLaneSize = 128;
+const uint cMaxLaneSize = uint( 128 );
 
 shared uint vGroups[ cMaxLaneSize ];
 

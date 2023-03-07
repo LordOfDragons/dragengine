@@ -47,7 +47,7 @@ void main( void ){
 	// subInstanceCount with:
 	// - if not last invocation: step[id+1].index - step[id].index
 	// - if last invocation: stepCount - step[id].index
-	if( pRenderTask[ first ].subInstanceCount == 0 ){
+	if( pRenderTask[ first ].subInstanceCount == uint( 0 ) ){
 		return;
 	}
 	

@@ -127,8 +127,6 @@ pLodLevelOffset( 0 ),
 pOcclusionMap( NULL ),
 pOcclusionTest( NULL ),
 pGIState( NULL ),
-pCompute( *this ),
-pTasks( *this ),
 pTaskFindContent( NULL )
 {
 	pCamera = NULL;
@@ -338,6 +336,16 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	
 	CleanUp(); // just to make sure everything is clean
 	
+	// we can not create these objects during construction time since they can create OpenGL
+	// objects and render plan objects are potentially created from inside main thread
+	if( ! pCompute ){
+		pCompute.TakeOver( new deoglRenderPlanCompute( *this ) );
+	}
+	if( ! pTasks ){
+		pTasks.TakeOver( new deoglRenderPlanTasks( *this ) );
+	}
+	
+	// the rest is safe
 	pDebugPrepare();
 	pPlanCamera();
 	SPECIAL_TIMER_PRINT("PrepareCamera")
@@ -363,7 +371,9 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// these calls run in parallel with above started tasks
 	pWorld->PrepareForRender( *this, mask );
 	pRenderThread.GetShader().UpdateSSBOSkinTextures();
-	pCompute.UpdateElementGeometries();
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pCompute->UpdateElementGeometries();
+	}
 	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
@@ -417,7 +427,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// quantity of elements. processing those below just to drop them later on is not helping
 	pFinishOcclusionTests( mask );
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pTasks.BuildComputeRenderTasks( mask );
+		pTasks->BuildComputeRenderTasks( mask );
 	}
 	SPECIAL_TIMER_PRINT("FinishOcclusionTests")
 	
@@ -449,7 +459,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	}
 	
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pTasks.SortComputeRenderTasks();
+		pTasks->SortComputeRenderTasks();
 	}
 	renderCanvas.SampleDebugInfoPlanPrepareFinish( *this );
 	SPECIAL_TIMER_PRINT("Finish")
@@ -775,8 +785,8 @@ void deoglRenderPlan::pStartFindContent(){
 	INIT_SPECIAL_TIMING
 	
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pCompute.PrepareWorldCompute();
-		pCompute.PrepareBuffers();
+		pCompute->PrepareWorldCompute();
+		pCompute->PrepareBuffers();
 		
 		deoglRenderCompute &renderCompute = pRenderThread.GetRenderers().GetCompute();
 		
@@ -809,7 +819,7 @@ void deoglRenderPlan::pStartFindContent(){
 
 void deoglRenderPlan::pWaitFinishedFindContent(){
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pCompute.ReadVisibleElements();
+		pCompute->ReadVisibleElements();
 		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent( *this );
 		
 	}else{
@@ -1260,7 +1270,7 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 
 void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask ){
 	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
-		pTasks.StartBuildTasks( mask );
+		pTasks->StartBuildTasks( mask );
 		return;
 	}
 	INIT_SPECIAL_TIMING
@@ -1287,7 +1297,7 @@ void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask )
 	
 	pDebugVisibleCulled();
 	
-	pTasks.StartBuildTasks( mask );
+	pTasks->StartBuildTasks( mask );
 }
 
 void deoglRenderPlan::pDebugPrepare(){
@@ -1465,7 +1475,9 @@ void deoglRenderPlan::CleanUp(){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->CleanUp();
 	}
 	
-	pTasks.CleanUp();
+	if( pTasks ){
+		pTasks->CleanUp();
+	}
 	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
 		pWaitFinishedFindContent();
 	}

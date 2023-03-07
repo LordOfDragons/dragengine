@@ -109,6 +109,7 @@ pPlan( plan )
 	pSSBOVisibleElements->SetParameterCount( 1 );
 	pSSBOVisibleElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 	pSSBOVisibleElements->MapToStd140();
+	pSSBOVisibleElements->EnsureBuffer();
 }
 
 deoglRenderPlanCompute::~deoglRenderPlanCompute(){
@@ -380,8 +381,8 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 void deoglRenderPlanCompute::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count ){
 	if( count > ssbo.GetElementCount() ){
 		ssbo.SetElementCount( count );
+		ssbo.EnsureBuffer();
 	}
-	ssbo.EnsureBuffer();
 }
 
 void deoglRenderPlanCompute::pClearCounters(){

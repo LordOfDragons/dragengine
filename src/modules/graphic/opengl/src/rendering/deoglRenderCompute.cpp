@@ -146,12 +146,14 @@ deoglRenderBase( renderThread )
 	pSSBOVisibleGeometries->SetParameterCount( 1 );
 	pSSBOVisibleGeometries->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOVisibleGeometries->MapToStd140();
+	pSSBOVisibleGeometries->EnsureBuffer();
 	
 	pSSBORenderTaskSubInstGroups.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etGpu ) );
 	pSSBORenderTaskSubInstGroups->SetRowMajor( rowMajor );
 	pSSBORenderTaskSubInstGroups->SetParameterCount( 1 );
 	pSSBORenderTaskSubInstGroups->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBORenderTaskSubInstGroups->MapToStd140();
+	pSSBORenderTaskSubInstGroups->EnsureBuffer();
 	
 	pSSBORenderTaskSubInstGroupCounter.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
 	pSSBORenderTaskSubInstGroupCounter->SetRowMajor( rowMajor );
@@ -160,7 +162,6 @@ deoglRenderBase( renderThread )
 	pSSBORenderTaskSubInstGroupCounter->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pSSBORenderTaskSubInstGroupCounter->SetElementCount( 1 );
 	pSSBORenderTaskSubInstGroupCounter->MapToStd140();
-	pSSBORenderTaskSubInstGroupCounter->EnsureBuffer();
 	
 	
 	// update elements

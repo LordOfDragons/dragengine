@@ -32,8 +32,10 @@ class deoglRenderPlan;
 /**
  * Render Plan compute.
  */
-class deoglRenderPlanCompute{
+class deoglRenderPlanCompute : public deObject{
 public:
+	typedef deTObjectReference<deoglRenderPlanCompute> Ref;
+	
 	/** Find config parameters. */
 	enum eFindConfigParameters{
 		efcpNodeCount,
@@ -101,12 +103,14 @@ public:
 	/** Create render plan compute. */
 	deoglRenderPlanCompute( deoglRenderPlan &plan );
 	
+protected:
 	/** Clean up render plan compute. */
 	~deoglRenderPlanCompute();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** World compute shader octree. */
