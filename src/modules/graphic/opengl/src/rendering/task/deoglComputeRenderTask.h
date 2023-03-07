@@ -86,17 +86,6 @@ public:
 		uint32_t counter;
 	};
 	
-	/** Step resolved. */
-	struct sStepResolved{
-		const deoglPipeline *pipeline;
-		const deoglRenderTaskSharedTexture *texture;
-		const deoglRenderTaskSharedVAO *vao;
-		const deoglRenderTaskSharedInstance *instance;
-		int spbInstance;
-		int specialFlags;
-		int subInstanceCount;
-	};
-	
 	/** Prepare guard. */
 	class cGuard{
 	private:
@@ -155,10 +144,7 @@ private:
 	bool pUseSpecialParamBlock;
 	
 	int pStepCount;
-	
-	sStepResolved *pStepsResolved;
-	int pStepsResolvedSize;
-	int pStepsResolvedCount;
+	const sStep *pSteps;
 	
 	
 	
@@ -368,11 +354,8 @@ public:
 	/** Count of steps. */
 	inline int GetStepCount() const{ return pStepCount; }
 	
-	/** Count of resolved render steps. */
-	inline int GetCountStepsResolved() const{ return pStepsResolvedCount; }
-	
-	/** Resolved render steps direct access. */
-	inline const sStepResolved *GetStepsResolved() const{ return pStepsResolved; }
+	/** Render steps direct access or nullptr if not mapped. */
+	inline const sStep *GetSteps() const{ return pSteps; }
 	/*@}*/
 	
 	

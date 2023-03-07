@@ -72,9 +72,7 @@ pPassCount( 0 ),
 pPass( -1 ),
 pUseSPBInstanceFlags( false ),
 pRenderVSStereo( false ),
-pStepsResolved( nullptr ),
-pStepsResolvedSize( 0 ),
-pStepsResolvedCount( 0 )
+pSteps( nullptr )
 {
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
@@ -116,8 +114,8 @@ pStepsResolvedCount( 0 )
 }
 
 deoglComputeRenderTask::~deoglComputeRenderTask(){
-	if( pStepsResolved ){
-		delete [] pStepsResolved;
+	if( pSteps && pSSBOSteps->IsBufferMapped() ){
+		pSSBOSteps->UnmapBufferRead();
 	}
 }
 
@@ -132,6 +130,13 @@ void deoglComputeRenderTask::BeginPrepare( int passCount ){
 	DEASSERT_TRUE( pPass == -1 )
 	DEASSERT_TRUE( passCount > 0 )
 	DEASSERT_TRUE( passCount < 8 )  // hard limit in shader
+	
+	if( pSteps ){
+		if( pSSBOSteps->IsBufferMapped() ){
+			pSSBOSteps->UnmapBufferRead();
+		}
+		pSteps = nullptr;
+	}
 	
 	if( passCount > pUBOConfig->GetElementCount() ){
 		pUBOConfig->SetElementCount( passCount );
@@ -170,8 +175,6 @@ void deoglComputeRenderTask::Clear(){
 	
 	pUseSpecialParamBlock = false;
 	pUseSPBInstanceFlags = false;
-	
-	pStepsResolvedCount = 0;
 }
 
 void deoglComputeRenderTask::EndPass( const deoglWorldCompute &worldCompute ){
@@ -203,7 +206,6 @@ void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute )
 	DEASSERT_TRUE( count > 0 )
 	
 	pPass = -1;
-	pStepsResolvedCount = 0;
 	
 	pUBOConfig->UnmapBuffer();
 	pClearCounters();
@@ -235,51 +237,22 @@ void deoglComputeRenderTask::SortSteps(){
 void deoglComputeRenderTask::ReadBackSteps(){
 	DEASSERT_TRUE( pPass == -1 )
 	
-	pStepsResolvedCount = 0;
-	
 	if( pStepCount == 0 ){
 		return;
 	}
 	
 		decTimer timer;
-	if( pStepCount > pStepsResolvedSize ){
-		if( pStepsResolved ){
-			delete [] pStepsResolved;
-			pStepsResolved = nullptr;
-			pStepsResolvedSize = 0;
-		}
-		
-		pStepsResolved = new sStepResolved[ pStepCount ];
-		pStepsResolvedSize = pStepCount;
-	}
-	
-	const deoglSPBMapBufferRead mapped( pSSBOSteps, 0, pStepCount );
-	const sStep * const steps = ( const sStep* )pSSBOSteps->GetMappedBuffer();
+	pSSBOSteps->MapBufferRead( 0, pStepCount );
+	pSteps = ( const sStep* )pSSBOSteps->GetMappedBuffer();
 #ifdef DO_READ_BACK_TIMINGS
-	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
-		pStepCount, (int)(timer.GetElapsedTime()*1e6f));
-#endif
-	
-	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
-	const deoglPipelineManager &pipManager = pRenderThread.GetPipelineManager();
-	int i;
-	
-	for( i=0; i<pStepCount; i++ ){
-		sStepResolved &resolved = pStepsResolved[ i ];
-		const sStep &step = steps[ i ];
-		
-		resolved.pipeline = pipManager.GetWithRTSIndex( step.pipeline );
-		resolved.texture = &rtsPool.GetTextureAt( step.tuc );
-		resolved.vao = &rtsPool.GetVAOAt( step.vao );
-		resolved.instance = &rtsPool.GetInstanceAt( step.instance );
-		resolved.spbInstance = ( int )step.spbInstance - 1;
-		resolved.specialFlags = step.specialFlags;
-		resolved.subInstanceCount = step.subInstanceCount;
+	const int elapsed = (int)(timer.GetElapsedTime()*1e6f);
+	int i, igcount=0;
+	for(i=0; i<pStepCount; i++){
+		igcount++;
+		i += decMath::max(pSteps[i].subInstanceCount - 1, 0);
 	}
-	pStepsResolvedCount = pStepCount;
-#ifdef DO_READ_BACK_TIMINGS
-	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: resolved %d in %dys",
-		pStepCount, (int)(timer.GetElapsedTime()*1e6f));
+	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d (%d groups) in %dys",
+		pStepCount, igcount, elapsed);
 #endif
 }
 
@@ -385,49 +358,49 @@ void deoglComputeRenderTask::SetUseSpecialParamBlock( bool use ){
 
 void deoglComputeRenderTask::DebugSimple( deoglRTLogger &logger, bool sorted ){
 	int i, j;
-	sStepResolved *ss = nullptr;
-	if( sorted && pStepsResolvedCount > 0 ){
-		ss = new sStepResolved[ pStepsResolvedCount ];
-		memcpy( ss, pStepsResolved, sizeof( sStepResolved ) * pStepsResolvedCount );
-		for( i=1; i<pStepsResolvedCount - 1; i++ ){
-			const sStepResolved &p = ss[ i - 1 ];
-			for( j=i; j<pStepsResolvedCount; j++ ){
-				const sStepResolved &c = ss[ j ];
-				if( c.pipeline == p.pipeline && c.texture == p.texture && c.vao == p.vao && c.instance == p.instance ) break;
+	sStep *ss = nullptr;
+	if( sorted && pStepCount > 0 && pSteps ){
+		ss = new sStep[ pStepCount ];
+		memcpy( ss, pSteps, sizeof( sStep ) * pStepCount );
+		for( i=1; i<pStepCount - 1; i++ ){
+			const sStep &p = ss[ i - 1 ];
+			for( j=i; j<pStepCount; j++ ){
+				const sStep &c = ss[ j ];
+				if( c.pipeline == p.pipeline && c.tuc == p.tuc && c.vao == p.vao && c.instance == p.instance ) break;
 			}
-			if( j == pStepsResolvedCount ){
-				for( j=i; j<pStepsResolvedCount; j++ ){
-					const sStepResolved &c = ss[ j ];
-					if( c.pipeline == p.pipeline && c.texture == p.texture && c.vao == p.vao ) break;
+			if( j == pStepCount ){
+				for( j=i; j<pStepCount; j++ ){
+					const sStep &c = ss[ j ];
+					if( c.pipeline == p.pipeline && c.tuc == p.tuc && c.vao == p.vao ) break;
 				}
 			}
-			if( j == pStepsResolvedCount ){
-				for( j=i; j<pStepsResolvedCount; j++ ){
-					const sStepResolved &c = ss[ j ];
-					if( c.pipeline == p.pipeline && c.texture == p.texture ) break;
+			if( j == pStepCount ){
+				for( j=i; j<pStepCount; j++ ){
+					const sStep &c = ss[ j ];
+					if( c.pipeline == p.pipeline && c.tuc == p.tuc ) break;
 				}
 			}
-			if( j == pStepsResolvedCount ){
-				for( j=i; j<pStepsResolvedCount; j++ ){
-					const sStepResolved &c = ss[ j ];
+			if( j == pStepCount ){
+				for( j=i; j<pStepCount; j++ ){
+					const sStep &c = ss[ j ];
 					if( c.pipeline == p.pipeline ) break;
 				}
 			}
-			if( j < pStepsResolvedCount ){
-				const sStepResolved t( ss[ i ] ); ss[ i ] = ss[ j ]; ss[ j ] = t;
+			if( j < pStepCount ){
+				const sStep t( ss[ i ] ); ss[ i ] = ss[ j ]; ss[ j ] = t;
 			}
 		}
 	}
 	
 	logger.LogInfoFormat( "ComputeRenderTask %p", this );
-	for( i=0; i<pStepsResolvedCount; i++ ){
-		const sStepResolved &s = ss ? ss[ i ] : pStepsResolved[ i ];
+	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
+	for( i=0; i<pStepCount; i++ ){
+		const sStep &s = ss ? ss[ i ] : pSteps[ i ];
+		const deoglRenderTaskSharedInstance &rtsi = rtsPool.GetInstanceAt(s.instance);
+		
 		logger.LogInfoFormat( "- %d: p=%d t=%d v=%d i=%d [pc=%d fp=%d ic=%d fi=%d] si[i=%d f=%x]", i,
-			s.pipeline ? s.pipeline->GetRTSIndex() : -1, s.texture ? s.texture->GetIndex() : -1,
-			s.vao ? s.vao->GetIndex() : -1, s.instance ? s.instance->GetIndex() : -1,
-			s.instance ? s.instance->GetPointCount() : 0, s.instance ? s.instance->GetFirstPoint() : 0,
-			s.instance ? s.instance->GetIndexCount() : 0, s.instance ? s.instance->GetFirstIndex() : 0,
-			s.spbInstance, s.specialFlags );
+			s.pipeline, s.tuc, s.vao, s.instance, rtsi.GetPointCount(), rtsi.GetFirstPoint(),
+			rtsi.GetIndexCount(), rtsi.GetFirstIndex(), s.spbInstance, s.specialFlags );
 	}
 	
 	if( ss ) delete [] ss;
