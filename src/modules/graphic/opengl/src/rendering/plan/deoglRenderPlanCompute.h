@@ -24,7 +24,6 @@
 
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../../world/deoglWorldCSOctree.h"
 
 class deoglRenderPlan;
 
@@ -86,13 +85,8 @@ private:
 	
 	deoglRenderPlan &pPlan;
 	
-	deoglWorldCSOctree::Ref pWorldCSOctree;
-	
 	deoglSPBlockUBO::Ref pUBOFindConfig;
-	
-	deoglSPBlockSSBO::Ref pSSBOSearchNodes;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
-	
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
 	
 	
@@ -113,9 +107,6 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** World compute shader octree. */
-	inline const deoglWorldCSOctree::Ref &GetWorldCSOctree() const{ return pWorldCSOctree; }
-	
 	/** Prepare world compute shader octree. */
 	void PrepareWorldCompute();
 	
@@ -132,11 +123,7 @@ public:
 	void UpdateElementGeometries();
 	
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
-	
-	inline const deoglSPBlockSSBO::Ref &GetSSBOSearchNodes() const{ return pSSBOSearchNodes; }
-	
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
-	
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
 	/*@}*/
 	
