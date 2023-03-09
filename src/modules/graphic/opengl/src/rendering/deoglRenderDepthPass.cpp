@@ -421,7 +421,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		}
 		
 		if( computeRenderTask ){
-			rengeom.RenderTask( *computeRenderTask );
+			computeRenderTask->Render();
 			
 		}else{
 			rengeom.RenderTask( *renderTask );

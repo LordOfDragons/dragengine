@@ -129,7 +129,7 @@ public:
 	void BuildComputeRenderTasks( const deoglRenderPlanMasked *mask );
 	
 	/** Sort compute render tasks and begin reading back steps. */
-	void SortComputeRenderTasks();
+	void SortComputeRenderTasks( const deoglRenderPlanMasked *mask );
 	
 	/** Finish read back compute render tasks. */
 	void FinishReadBackComputeRenderTasks();

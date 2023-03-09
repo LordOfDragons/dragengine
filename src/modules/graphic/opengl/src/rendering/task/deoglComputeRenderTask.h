@@ -53,7 +53,9 @@ public:
 		ecpRenderTaskFilterMask,
 		ecpFilterPipelineLists,
 		ecpPipelineType,
-		ecpPipelineModifier
+		ecpPipelineModifier,
+		ecpPipelineDoubleSided,
+		ecpPipelineSingleSided
 	};
 	
 	/** Task parameters. */
@@ -86,6 +88,16 @@ public:
 		uint32_t counter;
 	};
 	
+	/** Stage. */
+	enum eStates{
+		esInitial,
+		esPreparing,
+		esBuilding,
+		esBuilt,
+		esSorted,
+		esReady
+	};
+	
 	/** Prepare guard. */
 	class cGuard{
 	private:
@@ -106,6 +118,7 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOSteps;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	
+	eStates pState;
 	int pPassCount;
 	int pPass;
 	
@@ -125,6 +138,7 @@ private:
 	bool pNoRendered;
 	bool pOutline;
 	bool pForceDoubleSided;
+	bool pOcclusion;
 	
 	bool pFilterXRay;
 	bool pXRay;
@@ -136,6 +150,9 @@ private:
 	bool pDecal;
 	
 	int pFilterCubeFace;
+	
+	const deoglPipeline *pPipelineDoubleSided;
+	const deoglPipeline *pPipelineSingleSided;
 	
 	int pFilters;
 	int pFilterMask;
@@ -180,6 +197,9 @@ public:
 	
 	
 	
+	/** State. */
+	inline eStates GetState() const{ return pState; }
+	
 	/** Begin preparing render task. */
 	void BeginPrepare( int passCount );
 	
@@ -192,11 +212,29 @@ public:
 	/** Finish preparing render task. */
 	void EndPrepare( const deoglWorldCompute &worldCompute );
 	
-	/** Sort render steps and begin reading back steps. */
-	void SortSteps();
+	/** Render task is now built. */
+	void MarkBuilt();
+	
+	/**
+	 * Sort render steps and begin reading back steps.
+	 * 
+	 * Checks first if the counters are less than or equal to the steps SSBO element count.
+	 * 
+	 * If the SSBO has not been large enough the SSBO is enlarged, the counter is reset,
+	 * the stage set to esBuilding and false is returned. In this case the caller has to
+	 * rebuild the render task and call SortSteps() again.
+	 * 
+	 * If the SSBO is large enough sorting is done and true is returned. This prevents the
+	 * steps SSBO from growing very large compared to the size required consuming lots of
+	 * GPU memory for nothing
+	 */
+	bool SortSteps();
 	
 	/** Read back render task steps. */
 	void ReadBackSteps();
+	
+	/** Render task. */
+	void Render();
 	
 	
 	
@@ -295,6 +333,12 @@ public:
 	/** Set to force double sided. */
 	void SetForceDoubleSided( bool forceDoubleSided );
 	
+	/** Occlusion. */
+	inline bool GetOcclusion() const{ return pOcclusion; }
+	
+	/** Set occlusion. */
+	void SetOcclusion( bool occlusion );
+	
 	
 	
 	/** Filtering for XRay is enabled. */
@@ -344,6 +388,20 @@ public:
 	
 	/** Set filter by cube face test result or -1 if disabled. */
 	void SetFilterCubeFace( int cubeFace );
+	
+	
+	
+	/** Pipeline for double sided occlusion or nullptr. */
+	inline const deoglPipeline *GetPipelineDoubleSided() const{ return pPipelineDoubleSided; }
+	
+	/** Set pipeline for double sided occlusion or nullptr. */
+	void SetPipelineDoubleSided( const deoglPipeline *pipeline );
+	
+	/** Pipeline for single sided occlusion or nullptr. */
+	inline const deoglPipeline *GetPipelineSingleSided() const{ return pPipelineSingleSided; }
+	
+	/** Set pipeline for single sided occlusion or nullptr. */
+	void SetPipelineSingleSided( const deoglPipeline *pipeline );
 	
 	
 	

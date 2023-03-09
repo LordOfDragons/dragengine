@@ -54,6 +54,7 @@
 #include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTUniqueKey.h"
+#include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../shaders/paramblock/deoglSPBParameter.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
@@ -139,6 +140,15 @@ void deoglRComponent::WorldComputeElement::UpdateData( sDataElement &data ) cons
 			data.lodFactors[ 3 ] = decMath::max( data.lodFactors[ 3 ], data.lodFactors[ 2 ] + FLOAT_SAFE_EPSILON );
 		}
 	}
+	
+	if( pComponent.GetOcclusionMesh() ){
+		if( pComponent.GetOcclusionMesh()->GetDoubleSidedFaceCount() > 0 ){
+			data.geometryCount++;
+		}
+		if( pComponent.GetOcclusionMesh()->GetSingleSidedFaceCount() > 0 ){
+			data.geometryCount++;
+		}
+	}
 }
 
 void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
@@ -194,6 +204,24 @@ void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeo
 				SetDataGeometryTUCs( *data, info2 );
 				data++;
 			}
+		}
+	}
+	
+	if( pComponent.GetOcclusionMesh() ){
+		const deoglROcclusionMesh &occmesh = *pComponent.GetOcclusionMesh();
+		const int rtsi = pComponent.GetOccMeshSharedSPBElement()->GetIndex();
+		const deoglDynamicOcclusionMesh * const dynoccmesh = pComponent.GetDynamicOcclusionMesh();
+		const deoglVAO * const vao = dynoccmesh ? dynoccmesh->GetVAO()
+			: pComponent.GetOcclusionMesh()->GetVBOBlock()->GetVBO()->GetVAO();
+		
+		if( occmesh.GetDoubleSidedFaceCount() > 0 ){
+			SetDataGeometry( *data, ertfOcclusion | ertfDoubleSided, vao,
+				pComponent.GetOccMeshSharedSPBRTIGroup( true ).GetRTSInstance(), rtsi );
+		}
+		
+		if( occmesh.GetSingleSidedFaceCount() > 0 ){
+			SetDataGeometry( *data, ertfOcclusion, vao,
+				pComponent.GetOccMeshSharedSPBRTIGroup( false ).GetRTSInstance(), rtsi );
 		}
 	}
 }
@@ -646,6 +674,8 @@ void deoglRComponent::DynOccMeshRequiresPrepareForRender(){
 void deoglRComponent::InvalidateOccMeshSharedSPBRTIGroup(){
 	pValidOccMeshSharedSPBElement = false;
 	pRequiresPrepareForRender();
+	
+	pWorldComputeElement->ComputeUpdateElementAndGeometries();
 }
 
 void deoglRComponent::MeshChanged(){

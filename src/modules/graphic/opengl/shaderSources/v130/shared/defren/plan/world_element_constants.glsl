@@ -21,6 +21,7 @@ const uint erfHoles = uint( 0x80 );
 const uint erfDecal = uint( 0x100 );
 const uint erfDoubleSided = uint( 0x200 );
 const uint erfXRay = uint( 0x400 );
+const uint erfOcclusion = uint( 0x800 );
 
 
 // element pipeline lists

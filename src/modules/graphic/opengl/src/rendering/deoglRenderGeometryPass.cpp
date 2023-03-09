@@ -249,9 +249,10 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglDebugTraceGroup debugTraceOther( debugTraceHT, "GeometryPass.RenderSolidGeometryPass.Geometry" );
 	if( useComputeRenderTask ){
 		computeRenderTask = xray ? tasks.GetCRTSolidGeometryXRay() : tasks.GetCRTSolidGeometry();
+																												computeRenderTask->DebugSimple(renderThread.GetLogger(), false);
 		if( computeRenderTask->GetStepCount() > 0 ){
 			computeRenderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-			rengeom.RenderTask( *computeRenderTask );
+			computeRenderTask->Render();
 		}
 		
 	}else{

@@ -258,8 +258,30 @@ void devkDevice::pCreateDevice(){
 		}
 	}
 	
+	module.LogInfo( "Queue Families" );
 	for( i=0; i<(int)queueFamilyCount; i++ ){
-		if( ( queueFamilyProperties[ i ].queueFlags & VK_QUEUE_GRAPHICS_BIT ) == VK_QUEUE_GRAPHICS_BIT
+		const VkQueueFlags flags = queueFamilyProperties[ i ].queueFlags;
+		
+		decString text( "-" );
+		if( flags & VK_QUEUE_GRAPHICS_BIT ){
+			text.Append( " graphics" );
+		}
+		if( flags & VK_QUEUE_COMPUTE_BIT ){
+			text.Append( " compute" );
+		}
+		if( flags & VK_QUEUE_TRANSFER_BIT ){
+			text.Append( " transfer" );
+		}
+		if( flags & VK_QUEUE_SPARSE_BINDING_BIT ){
+			text.Append( " sparse" );
+		}
+		if( flags & VK_QUEUE_PROTECTED_BIT ){
+			text.Append( " protected" );
+		}
+		text.AppendFormat( ": %d", queueFamilyProperties[ i ].queueCount );
+		module.LogInfo( text );
+		
+		if( ( flags & VK_QUEUE_GRAPHICS_BIT ) == VK_QUEUE_GRAPHICS_BIT
 		&& pFamilyIndexGraphic == 0 && queueGraphic != -1 ){
 			queueCreateInfo[ queueGraphic ].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueCreateInfo[ queueGraphic ].queueFamilyIndex = i;
@@ -268,8 +290,7 @@ void devkDevice::pCreateDevice(){
 			pFamilyIndexGraphic = i;
 		}
 		
-		if( ( queueFamilyProperties[ i ].queueFlags
-			& ( VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT ) ) == VK_QUEUE_COMPUTE_BIT
+		if( ( flags & ( VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT ) ) == VK_QUEUE_COMPUTE_BIT
 		&& pFamilyIndexCompute == 0 && queueCompute != -1 ){
 			queueCreateInfo[ queueCompute ].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueCreateInfo[ queueCompute ].queueFamilyIndex = i;
@@ -278,8 +299,7 @@ void devkDevice::pCreateDevice(){
 			pFamilyIndexCompute = i;
 		}
 		
-		if( ( queueFamilyProperties[ i ].queueFlags
-			& ( VK_QUEUE_TRANSFER_BIT | VK_QUEUE_GRAPHICS_BIT ) ) == VK_QUEUE_TRANSFER_BIT
+		if( ( flags & ( VK_QUEUE_TRANSFER_BIT | VK_QUEUE_GRAPHICS_BIT ) ) == VK_QUEUE_TRANSFER_BIT
 		&& pFamilyIndexTransfer == 0 && queueTransfer != -1 ){
 			queueCreateInfo[ queueTransfer ].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueCreateInfo[ queueTransfer ].queueFamilyIndex = i;
@@ -384,7 +404,6 @@ void devkDevice::pGetProperties(){
 		VK_API_VERSION_MINOR( pProperties.apiVersion ),
 		VK_API_VERSION_PATCH( pProperties.apiVersion ),
 		VK_API_VERSION_VARIANT( pProperties.apiVersion ) );
-	
 }
 
 void devkDevice::pDetectExtensions(){

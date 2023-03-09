@@ -459,7 +459,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	}
 	
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pTasks->SortComputeRenderTasks();
+		pTasks->SortComputeRenderTasks( mask );
 	}
 	renderCanvas.SampleDebugInfoPlanPrepareFinish( *this );
 	SPECIAL_TIMER_PRINT("Finish")
@@ -784,6 +784,9 @@ void deoglRenderPlan::pPlanShadowCasting(){
 void deoglRenderPlan::pStartFindContent(){
 	INIT_SPECIAL_TIMING
 	
+	// camera view
+	DEASSERT_NULL( pTaskFindContent )
+	
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
 		pCompute->PrepareWorldCompute();
 		pCompute->PrepareBuffers();
@@ -797,15 +800,6 @@ void deoglRenderPlan::pStartFindContent(){
 		renderCompute.FindContent( *this );
 	}
 	
-	// sky lights
-	int i;
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartFindContent();
-	}
-	
-	// camera view
-	DEASSERT_NULL( pTaskFindContent )
-	
 	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
@@ -814,6 +808,12 @@ void deoglRenderPlan::pStartFindContent(){
 	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
 		pTaskFindContent = new deoglRPTFindContent( *this );
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
+	}
+	
+	// sky lights
+	int i;
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartFindContent();
 	}
 }
 

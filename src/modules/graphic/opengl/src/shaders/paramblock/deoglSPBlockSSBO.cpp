@@ -305,9 +305,11 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 	pAllocateBuffer = false;
 }
 
-void deoglSPBlockSSBO::ClearDataUInt( int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a ){
+void deoglSPBlockSSBO::ClearDataUInt( int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a ){
+	DEASSERT_TRUE( offset >= 0 )
+	DEASSERT_TRUE( offset * 16 <= GetBufferSize() )
 	DEASSERT_TRUE( count >= 0 )
-	DEASSERT_TRUE( count * 16 <= GetBufferSize() )
+	DEASSERT_TRUE( ( offset + count ) * 16 <= GetBufferSize() )
 	
 	EnsureBuffer();
 	
@@ -316,19 +318,21 @@ void deoglSPBlockSSBO::ClearDataUInt( int count, uint32_t r, uint32_t g, uint32_
 	
 	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
 		OGL_CHECK( renderThread, pglClearNamedBufferSubData( pSSBO, GL_RGBA32UI,
-			0, count * 16, GL_RGBA_INTEGER, GL_UNSIGNED_INT, v ) );
+			offset * 16, count * 16, GL_RGBA_INTEGER, GL_UNSIGNED_INT, v ) );
 		
 	}else{
 		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, pSSBO ) );
 		OGL_CHECK( renderThread, pglClearBufferSubData( GL_SHADER_STORAGE_BUFFER,
-			GL_RGBA32UI, 0, count * 16, GL_RGBA_INTEGER, GL_UNSIGNED_INT, &v[ 0 ] ) );
+			GL_RGBA32UI, offset * 16, count * 16, GL_RGBA_INTEGER, GL_UNSIGNED_INT, &v[ 0 ] ) );
 		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0 ) );
 	}
 }
 
-void deoglSPBlockSSBO::ClearDataFloat( int count, float r, float g, float b, float a ){
+void deoglSPBlockSSBO::ClearDataFloat( int offset, int count, float r, float g, float b, float a ){
+	DEASSERT_TRUE( offset >= 0 )
+	DEASSERT_TRUE( offset * 16 <= GetBufferSize() )
 	DEASSERT_TRUE( count >= 0 )
-	DEASSERT_TRUE( count * 16 <= GetBufferSize() )
+	DEASSERT_TRUE( ( offset + count ) * 16 <= GetBufferSize() )
 	
 	EnsureBuffer();
 	
@@ -337,12 +341,12 @@ void deoglSPBlockSSBO::ClearDataFloat( int count, float r, float g, float b, flo
 	
 	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
 		OGL_CHECK( renderThread, pglClearNamedBufferSubData( pSSBO, GL_RGBA32F,
-			0, count * 16, GL_RGBA, GL_FLOAT, v ) );
+			offset * 16, count * 16, GL_RGBA, GL_FLOAT, v ) );
 		
 	}else{
 		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, pSSBO ) );
 		OGL_CHECK( renderThread, pglClearBufferSubData( GL_SHADER_STORAGE_BUFFER,
-			GL_RGBA32F, 0, count * 16, GL_RGBA, GL_FLOAT, &v[ 0 ] ) );
+			GL_RGBA32F, offset * 16, count * 16, GL_RGBA, GL_FLOAT, &v[ 0 ] ) );
 		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0 ) );
 	}
 }

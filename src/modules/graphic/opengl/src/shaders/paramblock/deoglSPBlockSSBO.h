@@ -193,8 +193,8 @@ public:
 	virtual void EnsureBuffer();
 	
 	/** Clear buffer. */
-	void ClearDataUInt( int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a );
-	void ClearDataFloat( int count, float r, float g, float b, float a );
+	void ClearDataUInt( int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a );
+	void ClearDataFloat( int offset, int count, float r, float g, float b, float a );
 	
 	/** GPU finished writing data to SSBO. */
 	void GPUFinishedWriting();

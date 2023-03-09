@@ -239,6 +239,10 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: list %dys", (int)(timer.GetElapsedTime()*1e6f));
 }
 
+void deoglRenderPlanCompute::ClearVisibleGeometryCounter(){
+	pSSBOCounters->ClearDataUInt( 1, 1, 0, 1, 1, 0 ); // workGroupSize.xyz, count
+}
+
 void deoglRenderPlanCompute::UpdateElementGeometries(){
 	// decTimer timer;
 	
@@ -386,7 +390,7 @@ void deoglRenderPlanCompute::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count )
 }
 
 void deoglRenderPlanCompute::pClearCounters(){
-	pSSBOCounters->ClearDataUInt( pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	pSSBOCounters->ClearDataUInt( 0, pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }
 
 void deoglRenderPlanCompute::pSetFrustumPlane( deoglSPBlockUBO &ubo, int i, const decDVector& n, double d ){

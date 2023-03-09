@@ -188,6 +188,10 @@ public:
 	
 	/** Set data element geometry TUCs. */
 	void SetDataGeometryTUCs( sDataElementGeometry &data, const sInfoTUC &info ) const;
+	
+	/** Set data element geometry using no texture. */
+	void SetDataGeometry( sDataElementGeometry &data, int renderFilter, const deoglVAO *vao,
+		const deoglRenderTaskSharedInstance *instance, int spbInstance ) const;
 	/*@}*/
 	
 	

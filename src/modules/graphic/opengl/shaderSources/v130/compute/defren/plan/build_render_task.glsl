@@ -5,7 +5,11 @@ precision highp int;
 #include "v130/shared/defren/plan/world_element.glsl"
 #include "v130/shared/defren/plan/world_element_constants.glsl"
 #include "v130/shared/defren/plan/world_element_geometry.glsl"
-#include "v130/shared/defren/plan/skin_texture.glsl"
+
+#ifndef WITH_OCCLUSION
+	#include "v130/shared/defren/plan/skin_texture.glsl"
+#
+
 #include "v130/shared/defren/plan/render_task_config.glsl"
 #include "v130/shared/defren/plan/render_task.glsl"
 
@@ -14,9 +18,11 @@ UBOLAYOUT_BIND(0) readonly buffer ElementGeometry {
 	sElementGeometry pElementGeometries[];
 };
 
+#ifndef WITH_OCCLUSION
 UBOLAYOUT_BIND(1) readonly buffer SkinTexturePipelines {
 	uvec4 pSkinTexturePipelines[];
 };
+#endif
 
 UBOLAYOUT_BIND(2) readonly buffer VisibleGeometry {
 	uvec4 pVisibleGeometry[];
@@ -35,10 +41,16 @@ UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
 	sRenderTask pRenderTask[];
 };
 
-#include "v130/shared/defren/plan/world_element_geometry_tuc.glsl"
-#include "v130/shared/defren/plan/skin_texture_pipeline.glsl"
+#ifndef WITH_OCCLUSION
+	#include "v130/shared/defren/plan/world_element_geometry_tuc.glsl"
+	#include "v130/shared/defren/plan/skin_texture_pipeline.glsl"
+#endif
+
 #include "v130/shared/defren/plan/render_task_set.glsl"
-#include "v130/shared/defren/plan/render_task_set_geometry.glsl"
+
+#ifndef WITH_OCCLUSION
+	#include "v130/shared/defren/plan/render_task_set_geometry.glsl"
+#endif
 
 
 uniform uint pPass;
@@ -68,13 +80,19 @@ void main( void ){
 	
 	uint geometryIndex = visibleGeometry & uint( 0xffffff );
 	
-	uint pipelineBase = pElementGeometries[ geometryIndex ].pipelineBase;
-	uint pipelineList = pipelineBase & uint( 0xff );
-	uint pipelineModifier = pipelineBase >> uint( 8 );
+	#ifndef WITH_OCCLUSION
+		uint pipelineBase = pElementGeometries[ geometryIndex ].pipelineBase;
+		uint pipelineList = pipelineBase & uint( 0xff );
+		uint pipelineModifier = pipelineBase >> uint( 8 );
+	#endif
 	
 	// filter by pipeline list
 	bvec3 cond;
-	cond.x = ( config.filterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
+	#ifdef WITH_OCCLUSION
+		cond.x = false;
+	#else
+		cond.x = ( config.filterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
+	#endif
 	
 	// filter cube face. we are using here the fact that if element is visible the bit 8
 	// in the cull mask is set. the same bit is used to indicate if filter cube face has
@@ -94,11 +112,8 @@ void main( void ){
 	}
 	
 	
-	// add to render task
+	// get next index to store write render task step to
 	uint nextIndex = atomicCounterIncrement( pNextIndex );
-	
-	setRenderTaskStepGeometry( nextIndex, pPass, geometryIndex, pipelineList,
-		config.pipelineType, config.pipelineModifier | pipelineModifier, cullFlags );
 	
 	// if the count of steps increases by the dispatch workgroup size increment also the
 	// work group count. this way the upcoming dispatch indirect calls know the count
@@ -106,4 +121,25 @@ void main( void ){
 	if( nextIndex % dispatchWorkGroupSize == uint( 0 ) ){
 		atomicCounterIncrement( pDispatchWorkGroupCount );
 	}
+	
+	// if SSBO is not large enough do not write step. this avoids creating very large SSBOs
+	// for storing render steps. before sorting it is checked if the SSBO has been large
+	// enough and if not it is enlarged and the task rebuild
+	if( nextIndex >= pRenderTask.length() ){
+		return;
+	}
+	
+	#ifdef WITH_OCCLUSION
+		bool doubleSided = ( pElementGeometries[ geometryIndex ].renderFilter & erfDoubleSided ) == erfDoubleSided;
+		setRenderTaskStep( nextIndex, pPass,
+			doubleSided ? config.pipelineDoubleSided : config.pipelineSingleSided,
+			0, // empty tuc
+			pElementGeometries[ geometry ].vao,
+			pElementGeometries[ geometry ].instance,
+			pElementGeometries[ geometry ].spbInstance,
+			specialFlags );
+	#else
+		setRenderTaskStepGeometry( nextIndex, pPass, geometryIndex, pipelineList,
+			config.pipelineType, config.pipelineModifier | pipelineModifier, cullFlags );
+	#endif
 }

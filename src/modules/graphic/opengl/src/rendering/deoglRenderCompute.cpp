@@ -375,8 +375,13 @@ void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
 		return;
 	}
 	
+	if( count > pSSBOElementCullResult->GetElementCount() ){
+		pSSBOElementCullResult->SetElementCount( count );
+		pSSBOElementCullResult->EnsureBuffer();
+	}
+	
 	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "Compute.ClearCullResult" );
-	pSSBOElementCullResult->ClearDataUInt( ( count - 1 ) / 4 + 1, 0, 0, 0, 0 );
+	pSSBOElementCullResult->ClearDataUInt( 0, ( count - 1 ) / 4 + 1, 0, 0, 0, 0 );
 }
 
 void deoglRenderCompute::UpdateCullResult( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
@@ -403,6 +408,11 @@ void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan, const deog
 	const int count = wcompute.GetElementGeometryCount();
 	if( count == 0 ){
 		return;
+	}
+	
+	if( count > pSSBOVisibleGeometries->GetElementCount() ){
+		pSSBOVisibleGeometries->SetElementCount( count );
+		pSSBOVisibleGeometries->EnsureBuffer();
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
@@ -457,6 +467,7 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 	
 	renderTask.GetSSBOCounters()->GPUFinishedWriting();
 	renderTask.GetSSBOCounters()->GPUReadToCPU( 1 );
+	renderTask.MarkBuilt();
 }
 
 void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
@@ -476,7 +487,7 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 		pSSBORenderTaskSubInstGroups->EnsureBuffer();
 	}
 	
-	pSSBORenderTaskSubInstGroupCounter->ClearDataUInt( 1, 0, 1, 1, 0 );
+	pSSBORenderTaskSubInstGroupCounter->ClearDataUInt( 0, 1, 0, 1, 1, 0 );
 	
 	
 	// sort render task

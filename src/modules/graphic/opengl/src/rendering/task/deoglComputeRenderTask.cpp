@@ -29,6 +29,7 @@
 #include "shared/deoglRenderTaskSharedVAO.h"
 #include "shared/deoglRenderTaskSharedInstance.h"
 #include "../deoglRenderCompute.h"
+#include "../deoglRenderGeometry.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -68,10 +69,13 @@ deoglComputeRenderTask::cGuard::~cGuard(){
 
 deoglComputeRenderTask::deoglComputeRenderTask( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
+pState( esInitial ),
 pPassCount( 0 ),
 pPass( -1 ),
 pUseSPBInstanceFlags( false ),
 pRenderVSStereo( false ),
+pPipelineDoubleSided( nullptr ),
+pPipelineSingleSided( nullptr ),
 pCounterSteps( 0 ),
 pSteps( nullptr ),
 pStepCount( 0 ),
@@ -82,7 +86,7 @@ pSkipSubInstanceGroups( false )
 	
 	pUBOConfig.TakeOver( new deoglSPBlockUBO( renderThread ) );
 	pUBOConfig->SetRowMajor( rowMajor );
-	pUBOConfig->SetParameterCount( 7 );
+	pUBOConfig->SetParameterCount( 9 );
 	pUBOConfig->GetParameterAt( ecpElementGeometryCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->GetParameterAt( ecpFilterCubeFace ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->GetParameterAt( ecpRenderTaskFilter ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
@@ -90,6 +94,8 @@ pSkipSubInstanceGroups( false )
 	pUBOConfig->GetParameterAt( ecpFilterPipelineLists ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->GetParameterAt( ecpPipelineType ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->GetParameterAt( ecpPipelineModifier ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pUBOConfig->GetParameterAt( ecpPipelineDoubleSided ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pUBOConfig->GetParameterAt( ecpPipelineSingleSided ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->MapToStd140();
 	
 	pSSBOSteps.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
@@ -135,6 +141,7 @@ void deoglComputeRenderTask::BeginPrepare( int passCount ){
 	DEASSERT_TRUE( passCount > 0 )
 	DEASSERT_TRUE( passCount < 8 )  // hard limit in shader
 	
+	pState = esPreparing;
 	pStepCount = 0;
 	pCounterSteps = 0;
 	
@@ -161,6 +168,7 @@ void deoglComputeRenderTask::Clear(){
 	pNoRendered = false;
 	pOutline = false;
 	pForceDoubleSided = false;
+	pOcclusion = false;
 	
 	pFilterXRay = false;
 	pXRay = false;
@@ -173,6 +181,9 @@ void deoglComputeRenderTask::Clear(){
 	
 	pFilterCubeFace = -1;
 	
+	pPipelineDoubleSided = nullptr;
+	pPipelineSingleSided = nullptr;
+	
 	pUseSpecialParamBlock = false;
 	pUseSPBInstanceFlags = false;
 }
@@ -180,6 +191,7 @@ void deoglComputeRenderTask::Clear(){
 void deoglComputeRenderTask::EndPass( const deoglWorldCompute &worldCompute ){
 	DEASSERT_TRUE( pPass >= 0 )
 	DEASSERT_TRUE( pPass < pPassCount )
+	DEASSERT_TRUE( pState == esPreparing )
 	
 	int filter, mask;
 	pRenderFilter( filter, mask );
@@ -196,6 +208,11 @@ void deoglComputeRenderTask::EndPass( const deoglWorldCompute &worldCompute ){
 	pUBOConfig->SetParameterDataUInt( ecpFilterPipelineLists, pPass, pSkinPipelineLists );
 	pUBOConfig->SetParameterDataUInt( ecpPipelineType, pPass, pSkinPipelineType );
 	pUBOConfig->SetParameterDataUInt( ecpPipelineModifier, pPass, pipelineModifier );
+	// for occlusion only
+	pUBOConfig->SetParameterDataUInt( ecpPipelineDoubleSided, pPass,
+		pPipelineDoubleSided ? pPipelineDoubleSided->GetRTSIndex() : 0 );
+	pUBOConfig->SetParameterDataUInt( ecpPipelineSingleSided, pPass,
+		pPipelineSingleSided ? pPipelineSingleSided->GetRTSIndex() : 0 );
 	
 	pPass++;
 }
@@ -204,28 +221,51 @@ void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute )
 	const int count = worldCompute.GetElementGeometryCount();
 	DEASSERT_TRUE( pPass != -1 )
 	DEASSERT_TRUE( count > 0 )
+	DEASSERT_TRUE( pState == esPreparing )
 	
 	pPass = -1;
+	pState = esBuilding;
 	
 	pUBOConfig->UnmapBuffer();
 	pClearCounters();
-	
-	if( count > pSSBOSteps->GetElementCount() ){
-		pSSBOSteps->SetElementCount( count );
-		pSSBOSteps->EnsureBuffer();
-	}
 }
 
-void deoglComputeRenderTask::SortSteps(){
+void deoglComputeRenderTask::MarkBuilt(){
+	DEASSERT_TRUE( pState == esBuilding )
+	pState = esBuilt;
+}
+
+bool deoglComputeRenderTask::SortSteps(){
 	DEASSERT_TRUE( pPass == -1 )
+	DEASSERT_TRUE( pState == esBuilt )
 	
 		decTimer timer;
+	{ // scoping required to make sure buffer is not mapped if pClearCounters() is called
 	const deoglSPBMapBufferRead mapped( pSSBOCounters, 0, 1 );
 	const sCounters &counters = *( sCounters* )pSSBOCounters->GetMappedBuffer();
 	pCounterSteps = counters.counter;
+	}
 	
 	if( pCounterSteps == 0 ){
-		return;
+		pState = esSorted;
+		return true;
+	}
+	
+	if( pCounterSteps > pSSBOSteps->GetElementCount() ){
+		// SSBO has not been large enough so build shader stopped writing steps to it.
+		// enlarge the SSBO to be large enough then return false to request a rebuild
+		pRenderThread.GetLogger().LogInfoFormat(
+			"ComputeRenderTask.SortSteps: ssbo not large enough, resized from %d to %d",
+			pSSBOSteps->GetElementCount(), pCounterSteps );
+		
+		pSSBOSteps->SetElementCount( pCounterSteps + 10 );
+		pSSBOSteps->EnsureBuffer();
+		
+		pCounterSteps = 0;
+		pClearCounters();
+		
+		pState = esBuilding;
+		return false;
 	}
 	
 	pRenderThread.GetRenderers().GetCompute().SortRenderTask( *this );
@@ -242,12 +282,17 @@ void deoglComputeRenderTask::SortSteps(){
 		pSteps = new sStep[ pCounterSteps ];
 		pStepSize = pCounterSteps;
 	}
+	
+	pState = esSorted;
+	return true;
 }
 
 void deoglComputeRenderTask::ReadBackSteps(){
 	DEASSERT_TRUE( pPass == -1 )
+	DEASSERT_TRUE( pState == esSorted )
 	
 	if( pCounterSteps == 0 ){
+		pState = esReady;
 		return;
 	}
 	
@@ -273,10 +318,19 @@ void deoglComputeRenderTask::ReadBackSteps(){
 	// only used if direct state access is supported
 	pSkipSubInstanceGroups = false;
 	
+	pState = esReady;
+	
 #ifdef DO_READ_BACK_TIMINGS
 	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: copied %d in %dys",
 		pStepCount, (int)(timer.GetElapsedTime()*1e6f));
 #endif
+}
+
+void deoglComputeRenderTask::Render(){
+	DEASSERT_TRUE( pPass == -1 )
+	DEASSERT_TRUE( pState == esReady )
+	
+	pRenderThread.GetRenderers().GetGeometry().RenderTask( *this );
 }
 
 
@@ -341,6 +395,10 @@ void deoglComputeRenderTask::SetForceDoubleSided( bool forceDoubleSided ){
 	pForceDoubleSided = forceDoubleSided;
 }
 
+void deoglComputeRenderTask::SetOcclusion( bool occlusion ){
+	pOcclusion = occlusion;
+}
+
 void deoglComputeRenderTask::SetFilterXRay( bool filterXRay ){
 	pFilterXRay = filterXRay;
 }
@@ -371,6 +429,14 @@ void deoglComputeRenderTask::SetDecal( bool decal ){
 
 void deoglComputeRenderTask::SetFilterCubeFace( int cubeFace ){
 	pFilterCubeFace = cubeFace;
+}
+
+void deoglComputeRenderTask::SetPipelineDoubleSided( const deoglPipeline *pipeline ){
+	pPipelineDoubleSided = pipeline;
+}
+
+void deoglComputeRenderTask::SetPipelineSingleSided( const deoglPipeline *pipeline ){
+	pPipelineSingleSided = pipeline;
 }
 
 void deoglComputeRenderTask::SetUseSpecialParamBlock( bool use ){
@@ -421,9 +487,9 @@ void deoglComputeRenderTask::DebugSimple( deoglRTLogger &logger, bool sorted ){
 		const sStep &s = ss ? ss[ i ] : pSteps[ i ];
 		const deoglRenderTaskSharedInstance &rtsi = rtsPool.GetInstanceAt(s.instance);
 		
-		logger.LogInfoFormat( "- %d: p=%d t=%d v=%d i=%d [pc=%d fp=%d ic=%d fi=%d] si[i=%d f=%x]", i,
+		logger.LogInfoFormat( "- %d: p=%d t=%d v=%d i=%d [pc=%d fp=%d ic=%d fi=%d] si[c=%d i=%d f=%x]", i,
 			s.pipeline, s.tuc, s.vao, s.instance, rtsi.GetPointCount(), rtsi.GetFirstPoint(),
-			rtsi.GetIndexCount(), rtsi.GetFirstIndex(), s.spbInstance, s.specialFlags );
+			rtsi.GetIndexCount(), rtsi.GetFirstIndex(), s.subInstanceCount, s.spbInstance, s.specialFlags );
 	}
 	
 	if( ss ) delete [] ss;
@@ -491,8 +557,13 @@ void deoglComputeRenderTask::pRenderFilter( int &filter, int &mask ) const{
 			filter |= ertfDecal;
 		}
 	}
+	
+	mask |= ertfOcclusion;
+	if( pOcclusion ){
+		filter |= ertfOcclusion;
+	}
 }
 
 void deoglComputeRenderTask::pClearCounters(){
-	pSSBOCounters->ClearDataUInt( pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	pSSBOCounters->ClearDataUInt( 0, pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }

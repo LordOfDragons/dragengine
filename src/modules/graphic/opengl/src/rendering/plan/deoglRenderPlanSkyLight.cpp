@@ -677,8 +677,8 @@ void deoglRenderPlanSkyLight::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count 
 }
 
 void deoglRenderPlanSkyLight::pClearCounters(){
-	pSSBOCounters->ClearDataUInt( pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
-	pSSBOCountersGI->ClearDataUInt( pSSBOCountersGI->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	pSSBOCounters->ClearDataUInt( 0, pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	pSSBOCountersGI->ClearDataUInt( 0, pSSBOCountersGI->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }
 
 void deoglRenderPlanSkyLight::pSetWorldComputeParams( deoglSPBlockUBO &ubo ){

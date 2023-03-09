@@ -122,8 +122,13 @@ public:
 	/** Prepare buffers. */
 	void PrepareBuffers();
 	
+	/** Read visible elements. */
 	void ReadVisibleElements();
 	
+	/** Clear visible geometries counter. */
+	void ClearVisibleGeometryCounter();
+	
+	/** Update element geometries. */
 	void UpdateElementGeometries();
 	
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }

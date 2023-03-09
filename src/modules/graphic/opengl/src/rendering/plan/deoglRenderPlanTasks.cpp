@@ -156,60 +156,60 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	deoglSPBlockSSBO &counters = compute.GetSSBOCounters();
 	const int dispatchOffset = sizeof( deoglComputeRenderTask::sCounters );
 	
-	const int elementCount = pPlan.GetWorld()->GetCompute().GetElementCount();
-	if( elementCount > renderCompute.GetSSBOElementCullResult()->GetElementCount() ){
-		renderCompute.GetSSBOElementCullResult()->SetElementCount( elementCount );
-		renderCompute.GetSSBOElementCullResult()->EnsureBuffer();
-	}
-	
-	const int geometryCount = pPlan.GetWorld()->GetCompute().GetElementGeometryCount();
-	if( geometryCount > renderCompute.GetSSBOVisibleGeometries()->GetElementCount() ){
-		renderCompute.GetSSBOVisibleGeometries()->SetElementCount( geometryCount );
-		renderCompute.GetSSBOVisibleGeometries()->EnsureBuffer();
-	}
-	
 	renderCompute.ClearCullResult( pPlan );
 	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
 		compute.GetSSBOVisibleElements(), counters, false );
 	renderCompute.FindGeometries( pPlan, counters );
 	
-	{
-	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
-	pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
-	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepth, dispatchOffset );
+	// we check state here since this could be a rebuild due to too small SSBO size.
+	// rebuilding is not required for all render tasks so check first
+	if( pCRTSolidDepth->GetState() != deoglComputeRenderTask::esSorted ){
+		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
+		pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
+		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepth, dispatchOffset );
 	}
-	{
-	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidGeometry" );
-	pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
-	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometry, dispatchOffset );
+	if( pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esSorted ){
+		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidGeometry" );
+		pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
+		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometry, dispatchOffset );
 	}
-	{
-	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidDepth" );
-	pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
-	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepthXRay, dispatchOffset );
+	if( pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esSorted ){
+		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidDepth" );
+		pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
+		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepthXRay, dispatchOffset );
 	}
-	{
-	const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidGeometry" );
-	pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
-	renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometryXRay, dispatchOffset );
+	if( pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esSorted ){
+		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidGeometry" );
+		pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
+		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometryXRay, dispatchOffset );
 	}
-	
-	// renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
-	// 	compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), true );
-	
-	// start sky light render task building. by doing it here we can continue updating cull
-	// results avoiding to do another ClearCullResult()
-	// int i;
-	// for( i=0; i<pPlan.GetSkyLightCount(); i++ ){
-		// pPlan.GetSkyLightAt( i )->StartBuildRT();
-	// }
 }
 
-void deoglRenderPlanTasks::SortComputeRenderTasks(){
-	pCRTSolidDepth->SortSteps();
-	pCRTSolidGeometry->SortSteps();
-	pCRTSolidDepthXRay->SortSteps();
-	pCRTSolidGeometryXRay->SortSteps();
+void deoglRenderPlanTasks::SortComputeRenderTasks( const deoglRenderPlanMasked *mask ){
+	bool ssbosLargeEnough = true;
+	ssbosLargeEnough &= pCRTSolidDepth->SortSteps();
+	ssbosLargeEnough &= pCRTSolidGeometry->SortSteps();
+	ssbosLargeEnough &= pCRTSolidDepthXRay->SortSteps();
+	ssbosLargeEnough &= pCRTSolidGeometryXRay->SortSteps();
+	if( ssbosLargeEnough ){
+		return;
+	}
+	
+	pPlan.GetCompute()->ClearVisibleGeometryCounter();
+	BuildComputeRenderTasks( mask );
+	
+	if( pCRTSolidDepth->GetState() == deoglComputeRenderTask::esBuilt ){
+		DEASSERT_TRUE( pCRTSolidDepth->SortSteps() )
+	}
+	if( pCRTSolidGeometry->GetState() == deoglComputeRenderTask::esBuilt ){
+		DEASSERT_TRUE( pCRTSolidGeometry->SortSteps() )
+	}
+	if( pCRTSolidDepthXRay->GetState() == deoglComputeRenderTask::esBuilt ){
+		DEASSERT_TRUE( pCRTSolidDepthXRay->SortSteps() )
+	}
+	if( pCRTSolidGeometryXRay->GetState() == deoglComputeRenderTask::esBuilt ){
+		DEASSERT_TRUE( pCRTSolidGeometryXRay->SortSteps() )
+	}
 }
 
 void deoglRenderPlanTasks::FinishReadBackComputeRenderTasks(){
@@ -282,7 +282,7 @@ static void LogRT(deoglRTLogger &l, const char *name, int pass, const deoglRende
 					for(s=0; s<sc; s++){
 						const deoglRenderTaskInstance::sSubInstance &ss = ii.GetSubInstanceAt(s);
 						l.LogInfoFormat("pass=%d pipeline=%d tuc=%d vao=%d instance=%d spbInst=%d specFlags=%x",
-							pass, pp.GetPipeline()->GetRTSPipelineIndex(), tt.GetTexture()->GetIndex(),
+							pass, pp.GetPipeline()->GetRTSIndex(), tt.GetTexture()->GetIndex(),
 							vv.GetVAO()->GetIndex(), ii.GetInstance()->GetIndex(), ss.instance + 1, ss.flags);
 					}
 				}

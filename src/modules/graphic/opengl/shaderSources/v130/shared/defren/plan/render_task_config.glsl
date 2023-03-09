@@ -20,6 +20,10 @@ struct sRenderTaskConfig{
 	
 	// pipeline modifiers
 	uint pipelineModifier;
+	
+	// for occlusion rendering using WITH_OCCLUSION
+	uint pipelineDoubleSided;
+	uint pipelineSingleSided;
 };
 
 #define MAX_RENDER_TASK_CONFIG 8
