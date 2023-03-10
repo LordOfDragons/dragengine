@@ -28,10 +28,12 @@
 #include "../../collidelist/deoglCollideListComponent.h"
 #include "../../collidelist/deoglCollideListLight.h"
 #include "../../component/deoglRComponent.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../gi/deoglGICascade.h"
 #include "../../gi/deoglGIState.h"
 #include "../../propfield/deoglRPropField.h"
 #include "../../rendering/deoglRenderCompute.h"
+#include "../../rendering/deoglRenderOcclusion.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
@@ -104,6 +106,11 @@ pPlan( plan )
 	pSSBOVisibleElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 	pSSBOVisibleElements->MapToStd140();
 	pSSBOVisibleElements->EnsureBuffer();
+	
+	pRTOcclusion.TakeOver( new deoglComputeRenderTask( plan.GetRenderThread() ) );
+	pRTOcclusion->SetFilterSolid( false );
+	pRTOcclusion->SetOcclusion( true );
+	pRTOcclusion->EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
 }
 
 deoglRenderPlanCompute::~deoglRenderPlanCompute(){
@@ -286,6 +293,36 @@ void deoglRenderPlanCompute::UpdateElementGeometries(){
 	int pipelineLists = 1 << deoglSkinTexturePipelinesList::eptComponent
 	
 */
+
+void deoglRenderPlanCompute::BuildRTOcclusion( const deoglRenderPlanMasked *mask ){
+	deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
+	deoglRenderOcclusion &renderOcclusion = pPlan.GetRenderThread().GetRenderers().GetOcclusion();
+	deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
+	const deoglDebugTraceGroup debugTrace( pPlan.GetRenderThread(), "PlanCompute.BuildRTOcclusion" );
+	
+	{
+	const deoglComputeRenderTask::cGuard guard( pRTOcclusion, worldCompute, 1 );
+	pRTOcclusion->SetNoRendered( pPlan.GetNoRenderedOccMesh() );
+	pRTOcclusion->SetPipelineDoubleSided( renderOcclusion.GetRenderOcclusionMapRTS( pPlan, mask, true, false ) );
+	pRTOcclusion->SetPipelineSingleSided( renderOcclusion.GetRenderOcclusionMapRTS( pPlan, mask, true, true ) );
+	pRTOcclusion->EndPass( worldCompute );
+	}
+	
+	ClearVisibleGeometryCounter();
+	renderCompute.ClearCullResult( pPlan );
+	renderCompute.UpdateCullResultOcclusion( pPlan, pUBOFindConfig, pSSBOVisibleElements, pSSBOCounters );
+	renderCompute.BuildRenderTaskOcclusion( pPlan, pRTOcclusion );
+}
+
+void deoglRenderPlanCompute::ReadyRTOcclusion( const deoglRenderPlanMasked *mask ){
+	if( pRTOcclusion->SortSteps() ){
+		return;
+	}
+	
+	BuildRTOcclusion( mask );
+	DEASSERT_TRUE( pRTOcclusion->SortSteps() )
+}
+
 
 
 // Protected

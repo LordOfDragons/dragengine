@@ -215,12 +215,12 @@ void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeo
 			: pComponent.GetOcclusionMesh()->GetVBOBlock()->GetVBO()->GetVAO();
 		
 		if( occmesh.GetDoubleSidedFaceCount() > 0 ){
-			SetDataGeometry( *data, ertfOcclusion | ertfDoubleSided, vao,
+			SetDataGeometry( *data, ertfRender | ertfOcclusion | ertfDoubleSided, vao,
 				pComponent.GetOccMeshSharedSPBRTIGroup( true ).GetRTSInstance(), rtsi );
 		}
 		
 		if( occmesh.GetSingleSidedFaceCount() > 0 ){
-			SetDataGeometry( *data, ertfOcclusion, vao,
+			SetDataGeometry( *data, ertfRender | ertfOcclusion, vao,
 				pComponent.GetOccMeshSharedSPBRTIGroup( false ).GetRTSInstance(), rtsi );
 		}
 	}

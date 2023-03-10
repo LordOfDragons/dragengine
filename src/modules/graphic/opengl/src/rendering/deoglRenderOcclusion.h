@@ -94,7 +94,8 @@ public:
 	
 	/** Render occlusion meshes into the occlusion map. */
 	void RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
-	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask &renderTask );
+	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask *renderTask,
+		deoglComputeRenderTask *computeRenderTask );
 	
 	/** Render occlusion queries using active occlusion map. */
 	void RenderOcclusionQueries( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool perspective );

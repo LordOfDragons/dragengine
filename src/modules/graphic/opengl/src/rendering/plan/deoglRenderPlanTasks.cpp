@@ -156,6 +156,8 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	deoglSPBlockSSBO &counters = compute.GetSSBOCounters();
 	const int dispatchOffset = sizeof( deoglComputeRenderTask::sCounters );
 	
+	pPlan.GetCompute()->ClearVisibleGeometryCounter();
+	
 	renderCompute.ClearCullResult( pPlan );
 	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
 		compute.GetSSBOVisibleElements(), counters, false );
@@ -195,7 +197,6 @@ void deoglRenderPlanTasks::SortComputeRenderTasks( const deoglRenderPlanMasked *
 		return;
 	}
 	
-	pPlan.GetCompute()->ClearVisibleGeometryCounter();
 	BuildComputeRenderTasks( mask );
 	
 	if( pCRTSolidDepth->GetState() == deoglComputeRenderTask::esBuilt ){

@@ -22,6 +22,7 @@
 #ifndef _DEOGLRENDERERPLANCOMPUTE_H_
 #define _DEOGLRENDERERPLANCOMPUTE_H_
 
+#include "../task/deoglComputeRenderTask.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 
@@ -89,6 +90,8 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
 	
+	deoglComputeRenderTask::Ref pRTOcclusion;
+	
 	
 	
 public:
@@ -122,9 +125,17 @@ public:
 	/** Update element geometries. */
 	void UpdateElementGeometries();
 	
+	/** Build occlusion render task. */
+	void BuildRTOcclusion( const deoglRenderPlanMasked *mask );
+	
+	/** Ready occlusion render task. */
+	void ReadyRTOcclusion( const deoglRenderPlanMasked *mask );
+	
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
+	
+	inline const deoglComputeRenderTask::Ref &GetRTOcclusion() const{ return pRTOcclusion; }
 	/*@}*/
 	
 	

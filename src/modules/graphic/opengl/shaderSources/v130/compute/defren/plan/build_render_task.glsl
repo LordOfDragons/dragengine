@@ -5,11 +5,7 @@ precision highp int;
 #include "v130/shared/defren/plan/world_element.glsl"
 #include "v130/shared/defren/plan/world_element_constants.glsl"
 #include "v130/shared/defren/plan/world_element_geometry.glsl"
-
-#ifndef WITH_OCCLUSION
-	#include "v130/shared/defren/plan/skin_texture.glsl"
-#
-
+#include "v130/shared/defren/plan/skin_texture.glsl"
 #include "v130/shared/defren/plan/render_task_config.glsl"
 #include "v130/shared/defren/plan/render_task.glsl"
 
@@ -18,11 +14,9 @@ UBOLAYOUT_BIND(0) readonly buffer ElementGeometry {
 	sElementGeometry pElementGeometries[];
 };
 
-#ifndef WITH_OCCLUSION
 UBOLAYOUT_BIND(1) readonly buffer SkinTexturePipelines {
 	uvec4 pSkinTexturePipelines[];
 };
-#endif
 
 UBOLAYOUT_BIND(2) readonly buffer VisibleGeometry {
 	uvec4 pVisibleGeometry[];
@@ -41,16 +35,10 @@ UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
 	sRenderTask pRenderTask[];
 };
 
-#ifndef WITH_OCCLUSION
-	#include "v130/shared/defren/plan/world_element_geometry_tuc.glsl"
-	#include "v130/shared/defren/plan/skin_texture_pipeline.glsl"
-#endif
-
+#include "v130/shared/defren/plan/world_element_geometry_tuc.glsl"
+#include "v130/shared/defren/plan/skin_texture_pipeline.glsl"
 #include "v130/shared/defren/plan/render_task_set.glsl"
-
-#ifndef WITH_OCCLUSION
-	#include "v130/shared/defren/plan/render_task_set_geometry.glsl"
-#endif
+#include "v130/shared/defren/plan/render_task_set_geometry.glsl"
 
 
 uniform uint pPass;
@@ -80,19 +68,13 @@ void main( void ){
 	
 	uint geometryIndex = visibleGeometry & uint( 0xffffff );
 	
-	#ifndef WITH_OCCLUSION
-		uint pipelineBase = pElementGeometries[ geometryIndex ].pipelineBase;
-		uint pipelineList = pipelineBase & uint( 0xff );
-		uint pipelineModifier = pipelineBase >> uint( 8 );
-	#endif
+	uint pipelineBase = pElementGeometries[ geometryIndex ].pipelineBase;
+	uint pipelineList = pipelineBase & uint( 0xff );
+	uint pipelineModifier = pipelineBase >> uint( 8 );
 	
 	// filter by pipeline list
 	bvec3 cond;
-	#ifdef WITH_OCCLUSION
-		cond.x = false;
-	#else
-		cond.x = ( config.filterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
-	#endif
+	cond.x = ( config.filterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
 	
 	// filter cube face. we are using here the fact that if element is visible the bit 8
 	// in the cull mask is set. the same bit is used to indicate if filter cube face has
@@ -129,17 +111,6 @@ void main( void ){
 		return;
 	}
 	
-	#ifdef WITH_OCCLUSION
-		bool doubleSided = ( pElementGeometries[ geometryIndex ].renderFilter & erfDoubleSided ) == erfDoubleSided;
-		setRenderTaskStep( nextIndex, pPass,
-			doubleSided ? config.pipelineDoubleSided : config.pipelineSingleSided,
-			0, // empty tuc
-			pElementGeometries[ geometry ].vao,
-			pElementGeometries[ geometry ].instance,
-			pElementGeometries[ geometry ].spbInstance,
-			specialFlags );
-	#else
-		setRenderTaskStepGeometry( nextIndex, pPass, geometryIndex, pipelineList,
-			config.pipelineType, config.pipelineModifier | pipelineModifier, cullFlags );
-	#endif
+	setRenderTaskStepGeometry( nextIndex, pPass, geometryIndex, pipelineList,
+		config.pipelineType, config.pipelineModifier | pipelineModifier, cullFlags );
 }

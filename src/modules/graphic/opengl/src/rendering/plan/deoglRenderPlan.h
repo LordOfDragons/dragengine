@@ -801,8 +801,8 @@ private:
 	void pPlanSkyLight();
 	void pPlanDominance();
 	void pPlanShadowCasting();
-	void pStartFindContent();
-	void pWaitFinishedFindContent();
+	void pStartFindContent( const deoglRenderPlanMasked *mask );
+	void pWaitFinishedFindContent( const deoglRenderPlanMasked *mask );
 	void pPlanGI();
 	void pUpdateGI();
 	void pPlanLODLevels();

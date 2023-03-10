@@ -180,7 +180,6 @@ deoglRenderBase( renderThread )
 	// pipconf.SetShader( renderThread, "DefRen Plan FindContent Node", defines );
 	// pPipelineFindContentNode = pipelineManager.GetWith( pipconf );
 	
-	defines.SetDefines( "DIRECT_ELEMENTS" );
 	defines.SetDefines( "CULL_VIEW_FRUSTUM" );
 	defines.SetDefines( "CULL_TOO_SMALL" );
 	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
@@ -208,9 +207,15 @@ deoglRenderBase( renderThread )
 	
 	
 	// update cull result
+	defines = commonDefines;
+	pipconf.SetShader( renderThread, "DefRen Plan Update Cull Result", defines );
+	pPipelineUpdateCullResultSetOcclusion = pipelineManager.GetWith( pipconf );
+	
+	defines.SetDefines( "WITH_CALC_LOD" );
 	pipconf.SetShader( renderThread, "DefRen Plan Update Cull Result", defines );
 	pPipelineUpdateCullResultSet = pipelineManager.GetWith( pipconf );
 	
+	defines = commonDefines;
 	defines.SetDefines( "CLEAR_CULL_RESULT" );
 	pPipelineUpdateCullResultClear = pipelineManager.GetWith( pipconf );
 	
@@ -219,6 +224,9 @@ deoglRenderBase( renderThread )
 	defines = commonDefines;
 	pipconf.SetShader( renderThread, "DefRen Plan Build Render Task", defines );
 	pPipelineBuildRenderTask = pipelineManager.GetWith( pipconf );
+	
+	pipconf.SetShader( renderThread, "DefRen Plan Build Render Task Occlusion", defines );
+	pPipelineBuildRenderTaskOcclusion = pipelineManager.GetWith( pipconf );
 	
 	
 	// sort render task
@@ -403,6 +411,25 @@ const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, bool 
 	counters.DeactivateDispatchIndirect();
 }
 
+void deoglRenderCompute::UpdateCullResultOcclusion( const deoglRenderPlan &plan,
+const deoglSPBlockUBO &findConfig, const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.UpdateCullResultOcclusion" );
+	
+	pPipelineUpdateCullResultSetOcclusion->Activate();
+	
+	findConfig.Activate( 0 );
+	plan.GetWorld()->GetCompute().GetSSBOElements()->Activate( 0 );
+	visibleElements.Activate( 1 );
+	counters.Activate( 2 );
+	pSSBOElementCullResult->Activate( 3 );
+	
+	counters.ActivateDispatchIndirect();
+	OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+	counters.DeactivateDispatchIndirect();
+}
+
 void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters ){
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	const int count = wcompute.GetElementGeometryCount();
@@ -464,6 +491,33 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 	
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 	counters.DeactivateDispatchIndirect();
+	
+	renderTask.GetSSBOCounters()->GPUFinishedWriting();
+	renderTask.GetSSBOCounters()->GPUReadToCPU( 1 );
+	renderTask.MarkBuilt();
+}
+
+void deoglRenderCompute::BuildRenderTaskOcclusion( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.BuildRenderTaskOcclusion" );
+	
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	const int count = wcompute.GetElementGeometryCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	pPipelineBuildRenderTaskOcclusion->Activate();
+	
+	renderTask.GetUBOConfig()->Activate( 0 );
+	wcompute.GetSSBOElementGeometries()->Activate( 0 );
+	pSSBOElementCullResult->Activate( 1 );
+	renderTask.GetSSBOSteps()->Activate( 2 );
+	renderTask.GetSSBOCounters()->ActivateAtomic( 0 );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 	
 	renderTask.GetSSBOCounters()->GPUFinishedWriting();
 	renderTask.GetSSBOCounters()->GPUReadToCPU( 1 );

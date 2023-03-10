@@ -41,8 +41,10 @@ private:
 	const deoglPipeline *pPipelineFindContentSkyLightGI;
 	const deoglPipeline *pPipelineFindGeometries;
 	const deoglPipeline *pPipelineUpdateCullResultSet;
+	const deoglPipeline *pPipelineUpdateCullResultSetOcclusion;
 	const deoglPipeline *pPipelineUpdateCullResultClear;
 	const deoglPipeline *pPipelineBuildRenderTask;
+	const deoglPipeline *pPipelineBuildRenderTaskOcclusion;
 	const deoglPipeline *pPipelineSortRenderTask;
 	const deoglPipeline *pPipelineRenderTaskSubInstGroup[ 3 ];
 	
@@ -103,12 +105,17 @@ public:
 	void UpdateCullResult( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
 		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, bool clear );
 	
+	void UpdateCullResultOcclusion( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
+		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters );
+	
 	/** Find geometries. */
 	void FindGeometries( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters );
 	
 	/** Build render task. */
 	void BuildRenderTask( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters,
 		deoglComputeRenderTask &renderTask, int dispatchOffset );
+	
+	void BuildRenderTaskOcclusion( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
 	
 	/** Sort render task. */
 	void SortRenderTask( deoglComputeRenderTask &renderTask );

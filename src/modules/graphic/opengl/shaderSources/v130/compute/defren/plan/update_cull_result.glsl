@@ -27,7 +27,10 @@ UBOLAYOUT_BIND(3) writeonly buffer ElementCullResult {
 
 #ifndef CLEAR_CULL_RESULT
 	#include "v130/shared/defren/plan/find_config.glsl"
-	#include "v130/shared/defren/plan/calc_lod.glsl"
+	
+	#ifdef WITH_CALC_LOD
+		#include "v130/shared/defren/plan/calc_lod.glsl"
+	#endif
 #endif
 
 #include "v130/shared/defren/plan/element_cull_result_set.glsl"
@@ -50,7 +53,16 @@ void main( void ){
 	uint cullResult = uint( 0 );
 	
 	#ifndef CLEAR_CULL_RESULT
-		cullResult = composeElementCullResult( visibleElement >> uint( 24 ), calcLod( elementIndex ) );
+		uint flags = visibleElement >> uint( 24 );
+		uint lod;
+		
+		#ifdef WITH_CALC_LOD
+			lod = calcLod( elementIndex );
+		#else
+			lod = uint( 0 );
+		#endif
+		
+		cullResult = composeElementCullResult( flags, lod );
 	#endif
 	
 	setElementCullResult( elementIndex, cullResult );

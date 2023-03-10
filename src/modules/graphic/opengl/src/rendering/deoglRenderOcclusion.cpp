@@ -630,6 +630,12 @@ const deoglRenderPlanMasked *mask, bool perspective, bool singleSided ) const{
 }
 
 void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	if( GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		plan.GetCompute()->GetRTOcclusion()->ReadBackSteps();
+		RenderOcclusionMap( plan, nullptr, plan.GetCompute()->GetRTOcclusion() );
+		return;
+	}
+	
 	pRenderTask->Clear();
 	
 	pAddToRenderTask->Reset();
@@ -641,10 +647,11 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, const deog
 		GetRenderOcclusionMapRTS( plan, mask, true, false ) );
 	DEBUG_PRINT_TIMER( "RenderOcclusionMap Build RT" );
 	
-	RenderOcclusionMap( plan, *pRenderTask );
+	RenderOcclusionMap( plan, pRenderTask, nullptr );
 }
 
-void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask &renderTask ){
+void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan,
+deoglRenderTask *renderTask, deoglComputeRenderTask *computeRenderTask ){
 	deoglOcclusionMap &occmap = *plan.GetOcclusionMap();
 	const int baselevel = plan.GetOcclusionMapBaseLevel();
 	const decMatrix *renderFrustumPlanesMatrix = NULL;
@@ -721,10 +728,19 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	}
 	
 	// render occlusion map
-	renderTask.SetRenderParamBlock( pRenderParamBlock );
-	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
-	renderTask.PrepareForRender();
-	rengeom.RenderTask( renderTask );
+	if( computeRenderTask ){
+		if( computeRenderTask->GetStepCount() > 0 ){
+			computeRenderTask->SetRenderParamBlock( pRenderParamBlock );
+			computeRenderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
+			computeRenderTask->Render();
+		}
+		
+	}else{
+		renderTask->SetRenderParamBlock( pRenderParamBlock );
+		renderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
+		renderTask->PrepareForRender();
+		rengeom.RenderTask( *renderTask );
+	}
 	DEBUG_PRINT_TIMER( "RenderOcclusionMap Render" );
 	
 	// create mipmap level (z-pyramid)
