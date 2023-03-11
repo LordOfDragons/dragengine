@@ -186,6 +186,11 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 	element->SetUpdateRequired( false );
 	element->SetUpdateGeometriesRequired( false );
 	
+	const int removeIndex = pUpdateElements.IndexOf( element );
+	if( removeIndex != -1 ){
+		pUpdateElements.RemoveFrom( removeIndex );
+	}
+	
 	if( index < last ){
 		deoglWorldComputeElement * const swap = ( deoglWorldComputeElement* )pElements.GetAt( last );
 		pElements.SetAt( index, swap );
@@ -195,7 +200,7 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 			swap->SetUpdateRequired( true );
 			
 			if( pUpdateElements.GetCount() < pFullUpdateLimit ){
-				pUpdateElements.Add( element );
+				pUpdateElements.Add( swap );
 			}
 		}
 	}

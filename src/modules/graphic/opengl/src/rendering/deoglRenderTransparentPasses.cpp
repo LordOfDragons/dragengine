@@ -299,7 +299,7 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	DebugTimer1Reset( plan, false );
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentPasses" );
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses" );
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
 	//deoglTextureStageManager &tsmgr = *renderThread.GetTexture().GetStages();
 	//deoglShaderCompiled *shader;
@@ -319,9 +319,13 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 
 		// render
 		const int passCount = plan.GetTransparencyLayerCount();
+		char debugTrace2abel[] = "TransparentPass #XXX";
 		int p;
 		
 		for( p=0; p<passCount; p++ ){
+			snprintf( debugTrace2abel, sizeof( debugTrace2abel ), "TransparentPass #%hhd", ( char )( p + 1 ) );
+			const deoglDebugTraceGroup debugTrace2( renderThread, debugTrace2abel );
+			
 			// determine the stencil parameters. due to the limited stencil bits available we have
 			// to force a clearing of the stencil buffer render pass bits whenever we run beyond a
 			// given number of passes. currently we use at most 4 bits for the render pass bits.
