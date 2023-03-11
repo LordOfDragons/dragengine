@@ -8,6 +8,7 @@ precision highp int;
 #include "v130/shared/defren/plan/skin_texture.glsl"
 #include "v130/shared/defren/plan/render_task_config.glsl"
 #include "v130/shared/defren/plan/render_task.glsl"
+#include "v130/shared/defren/plan/counter.glsl"
 
 
 UBOLAYOUT_BIND(0) readonly buffer ElementGeometry {
@@ -22,13 +23,8 @@ UBOLAYOUT_BIND(2) readonly buffer VisibleGeometry {
 	uvec4 pVisibleGeometry[];
 };
 
-struct sCounter {
-	uvec3 workGroupSize;
-	uint counter;
-};
-
 UBOLAYOUT_BIND(3) readonly buffer Counters {
-	sCounter pVisibleGeometryCounters[ 2 ];
+	sCounter pRenderComputeCounter[ pRenderComputeCounterCount ];
 };
 
 UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
@@ -56,7 +52,7 @@ const uint dispatchWorkGroupSize = uint( 64 );
 void main( void ){
 	#define config pRenderTaskConfig[ pPass ]
 	
-	if( gl_GlobalInvocationID.x >= pVisibleGeometryCounters[ 1 ].counter ){
+	if( gl_GlobalInvocationID.x >= pRenderComputeCounter[ erccVisibleGeometries ].counter ){
 		return;
 	}
 	

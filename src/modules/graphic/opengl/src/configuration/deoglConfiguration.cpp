@@ -130,7 +130,6 @@ pEnableRetainImageOptimization( true ),
 pBugNo2ComponentFBOTex( false ),
 
 pDebugNoCulling ( false ),
-pOcclusionTestMode( eoctmTransformFeedback ),
 
 pQuickDebug( 0 ),
 
@@ -855,22 +854,6 @@ void deoglConfiguration::SetDebugNoCulling( bool noCulling ){
 		return;
 	}
 	pDebugNoCulling = noCulling;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetOcclusionTestMode( eOcclusionTestModes mode ){
-	if( mode < eoctmNone ){
-		mode = eoctmNone;
-		
-	}else if( mode > eoctmTransformFeedback ){
-		mode = eoctmTransformFeedback;
-	}
-	
-	if( mode == pOcclusionTestMode ){
-		return;
-	}
-	
-	pOcclusionTestMode = mode;
 	pDirty = true;
 }
 

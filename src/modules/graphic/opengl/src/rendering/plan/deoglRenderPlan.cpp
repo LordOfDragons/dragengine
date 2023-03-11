@@ -1252,31 +1252,39 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 	// pFinishOcclusionTests to avoid stalling
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
 		pCompute->ReadyRTOcclusion( mask );
-		pCompute->ReadVisibleElements();
 		
-		if( pOcclusionTest->GetInputDataCount() > 0 && pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
+		// TEMP
+		pCompute->ReadVisibleElements();
+		if( pOcclusionTest->GetInputDataCount() > 0 ){
 			pOcclusionTest->UpdateSSBO();
 			if( pDebug ){
 				pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
 			}
 			SPECIAL_TIMER_PRINT("> UpdateVBO")
 		}
+		// TEMP
 		
 		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
 		SPECIAL_TIMER_PRINT("> Render")
 		
-	}else{
-		if( pOcclusionTest->GetInputDataCount() > 0
-		&& pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
-			pOcclusionTest->UpdateSSBO();
-			if( pDebug ){
-				pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
-			}
-			SPECIAL_TIMER_PRINT("> UpdateVBO")
-			
-			pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
-			SPECIAL_TIMER_PRINT("> Render")
+		// pCompute->ReadVisibleElements();
+		SPECIAL_TIMER_PRINT("> ReadVisibleElements")
+		
+		pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionQueries( *this, mask, true );
+		SPECIAL_TIMER_PRINT("> RenderOcclusionQueries")
+		
+	}else if( pOcclusionTest->GetInputDataCount() > 0 ){
+		pOcclusionTest->UpdateSSBO();
+		if( pDebug ){
+			pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
 		}
+		SPECIAL_TIMER_PRINT("> UpdateVBO")
+		
+		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
+		SPECIAL_TIMER_PRINT("> Render")
+		
+		pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionQueries( *this, mask, true );
+		SPECIAL_TIMER_PRINT("> RenderOcclusionQueries")
 	}
 }
 
@@ -1288,8 +1296,7 @@ void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask )
 	INIT_SPECIAL_TIMING
 	
 	// occlusion tests have been rendered in pRenderOcclusionTests to avoid stalling
-	if( pOcclusionTest->GetInputDataCount() > 0
-	&& pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
+	if( pOcclusionTest->GetInputDataCount() > 0 ){
 		pOcclusionTest->UpdateResults();
 		SPECIAL_TIMER_PRINT("> UpdateResults")
 		

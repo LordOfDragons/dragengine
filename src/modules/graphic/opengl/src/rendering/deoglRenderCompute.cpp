@@ -90,6 +90,14 @@ deoglRenderBase( renderThread )
 	
 	
 	// SSBOs
+	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
+	pSSBOCounters->SetRowMajor( rowMajor );
+	pSSBOCounters->SetParameterCount( 2 );
+	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
+	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pSSBOCounters->SetElementCount( 2 );
+	pSSBOCounters->MapToStd140();
+	
 	pSSBOUpdateElements.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOUpdateElements->SetRowMajor( rowMajor );
 	pSSBOUpdateElements->SetParameterCount( 11 );
@@ -145,13 +153,6 @@ deoglRenderBase( renderThread )
 	pSSBORenderTaskSubInstGroups->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBORenderTaskSubInstGroups->MapToStd140();
 	pSSBORenderTaskSubInstGroups->EnsureBuffer();
-	
-	pSSBORenderTaskSubInstGroupCounter.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
-	pSSBORenderTaskSubInstGroupCounter->SetRowMajor( rowMajor );
-	pSSBORenderTaskSubInstGroupCounter->SetParameterCount( 2 );
-	pSSBORenderTaskSubInstGroupCounter->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
-	pSSBORenderTaskSubInstGroupCounter->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pSSBORenderTaskSubInstGroupCounter->MapToStd140();
 	
 	
 	// update elements
@@ -244,6 +245,10 @@ deoglRenderCompute::~deoglRenderCompute(){
 
 // Rendering
 //////////////
+
+int deoglRenderCompute::CounterDispatchOffset( deoglRenderCompute::eCounters counter ) const{
+	return sizeof( sCounters ) * counter;
+}
 
 void deoglRenderCompute::UpdateElements( const deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
@@ -420,27 +425,29 @@ const deoglSPBlockUBO &findConfig, const deoglSPBlockSSBO &visibleElements, cons
 	counters.DeactivateDispatchIndirect();
 }
 
-void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters ){
+void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan ){
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	const int count = wcompute.GetElementGeometryCount();
 	if( count == 0 ){
 		return;
 	}
 	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindGeometries" );
+	
 	if( count > pSSBOVisibleGeometries->GetElementCount() ){
 		pSSBOVisibleGeometries->SetElementCount( count );
 		pSSBOVisibleGeometries->EnsureBuffer();
 	}
 	
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindGeometries" );
+	pSSBOCounters->ClearDataUInt( ecVisibleGeometries, 1, 0, 1, 1, 0 ); // workGroupSize.xyz, count
 	
 	pPipelineFindGeometries->Activate();
 	
 	wcompute.GetSSBOElementGeometries()->Activate( 0 );
 	pSSBOElementCullResult->Activate( 1 );
 	pSSBOVisibleGeometries->Activate( 2 );
-	counters.ActivateAtomic( 0 );
+	pSSBOCounters->ActivateAtomic( 0 );
 	
 	pPipelineFindGeometries->GetGlShader().SetParameterUInt( 0, count );
 	
@@ -449,8 +456,7 @@ void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan, const deog
 		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 }
 
-void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan,
-const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispatchOffset ){
+void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.BuildRenderTask" );
 	
@@ -463,13 +469,14 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 	wcompute.GetSSBOElementGeometries()->Activate( 0 );
 	renderThread.GetShader().GetSSBOSkinTextures()->Activate( 1 );
 	pSSBOVisibleGeometries->Activate( 2 );
-	counters.Activate( 3 );
+	pSSBOCounters->Activate( 3 );
 	renderTask.GetSSBOSteps()->Activate( 4 );
 	renderTask.GetSSBOCounters()->ActivateAtomic( 0 );
 	
-	counters.ActivateDispatchIndirect();
+	pSSBOCounters->ActivateDispatchIndirect();
 	
 	deoglShaderCompiled &shaderBuild = pPipelineBuildRenderTask->GetGlShader();
+	const int dispatchOffset = CounterDispatchOffset( ecVisibleGeometries );
 	const int passCount = renderTask.GetPassCount();
 	int i;
 	
@@ -480,7 +487,7 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 	}
 	
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
-	counters.DeactivateDispatchIndirect();
+	pSSBOCounters->DeactivateDispatchIndirect();
 	
 	SortRenderTask( renderTask );
 	
@@ -531,16 +538,6 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.SortRenderTask" );
 	
 	
-	// prepare
-	const int maxECount = ( ( maxCount - 1 ) / 4 ) + 1;
-	if( maxECount > pSSBORenderTaskSubInstGroups->GetElementCount() ){
-		pSSBORenderTaskSubInstGroups->SetElementCount( maxECount );
-		pSSBORenderTaskSubInstGroups->EnsureBuffer();
-	}
-	
-	pSSBORenderTaskSubInstGroupCounter->ClearDataUInt( 0, 1, 0, 1, 1, 0 );
-	
-	
 	// sort render task
 	pPipelineSortRenderTask->Activate();
 	
@@ -584,14 +581,20 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	
 	
 	// subinstance grouping
+	const int maxECount = ( ( maxCount - 1 ) / 4 ) + 1;
+	if( maxECount > pSSBORenderTaskSubInstGroups->GetElementCount() ){
+		pSSBORenderTaskSubInstGroups->SetElementCount( maxECount );
+		pSSBORenderTaskSubInstGroups->EnsureBuffer();
+	}
+	pSSBOCounters->ClearDataUInt( ecRenderTaskSubInstanceGroups, 1, 0, 1, 1, 0 );
 	
 	// pass 1
 	pPipelineRenderTaskSubInstGroup[ 0 ]->Activate();
 	
-	renderTask.GetSSBOCounters()->Activate( 0 );
-	renderTask.GetSSBOSteps()->Activate( 1 );
+	renderTask.GetSSBOSteps()->Activate( 0 );
+	renderTask.GetSSBOCounters()->Activate( 1 );
 	pSSBORenderTaskSubInstGroups->Activate( 2 );
-	pSSBORenderTaskSubInstGroupCounter->ActivateAtomic( 0 );
+	pSSBOCounters->ActivateAtomic( 0 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( ( maxCount - 1 ) / 64 ) + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT ) );
@@ -599,7 +602,7 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	// pass 2
 	pPipelineRenderTaskSubInstGroup[ 1 ]->Activate();
 	
-	pSSBORenderTaskSubInstGroupCounter->Activate( 0 );
+	pSSBOCounters->Activate( 0 );
 	pSSBORenderTaskSubInstGroups->Activate( 1 );
 	
 	deoglShaderCompiled &shaderSortSubInstGroup = pPipelineRenderTaskSubInstGroup[ 1 ]->GetGlShader();
@@ -635,14 +638,14 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	pPipelineRenderTaskSubInstGroup[ 2 ]->Activate();
 	
 	pSSBORenderTaskSubInstGroups->Activate( 0 );
-	pSSBORenderTaskSubInstGroupCounter->Activate( 1 );
+	pSSBOCounters->Activate( 1 );
 	renderTask.GetSSBOCounters()->Activate( 2 );
 	renderTask.GetSSBOSteps()->Activate( 3 );
 	
-	pSSBORenderTaskSubInstGroupCounter->ActivateDispatchIndirect();
-	OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
+	pSSBOCounters->ActivateDispatchIndirect();
+	OGL_CHECK( renderThread, pglDispatchComputeIndirect( CounterDispatchOffset( ecRenderTaskSubInstanceGroups ) ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
-	pSSBORenderTaskSubInstGroupCounter->DeactivateDispatchIndirect();
+	pSSBOCounters->DeactivateDispatchIndirect();
 	
 	renderTask.GetSSBOSteps()->GPUFinishedWriting();
 	renderTask.GetSSBOSteps()->GPUReadToCPU();

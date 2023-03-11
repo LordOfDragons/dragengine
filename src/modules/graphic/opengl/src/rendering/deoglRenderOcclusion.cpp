@@ -416,11 +416,6 @@ Depth compare direction has to change from <= to >= if inverse depth is used.
 */
 
 void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
-	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
-	if( config.GetOcclusionTestMode() == deoglConfiguration::eoctmNone ){
-		return;
-	}
-	
 	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "Occlusion.RenderTestsCamera" );
 	deoglRenderPlanDebug * const renderPlanDebug = plan.GetDebug();
 	
@@ -503,9 +498,6 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 		RenderOcclusionMap( plan, mask );
 	}
 	
-	// render occlusion queries
-	RenderOcclusionQueries( plan, mask, true );
-	
 	// render visibility tests. we use linear depth. the shaders do not apply perspective
 	// division to the z coordinate. we thus have to recreate the same transformation applied
 	// during rendering of the occlusion map:
@@ -557,11 +549,6 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 void deoglRenderOcclusion::RenderTestsSkyLayer( deoglRenderPlan &plan,
 deoglRenderPlanSkyLight &planSkyLight ){
 	DEBUG_RESET_TIMERS;
-	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
-	if( config.GetOcclusionTestMode() == deoglConfiguration::eoctmNone ){
-		return;
-	}
-	
 	// calculate the camera matrix fitting around all splits. the camera matrix transform
 	// the points into the range [-1..1] for all axes
 	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "Occlusion.RenderTestsSkyLayer" );
@@ -904,6 +891,13 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 	
 	occlusionTest.GetSSBOResult()->GPUFinishedWriting();
 	occlusionTest.GetSSBOResult()->GPUReadToCPU( ( inputDataCount - 1 ) / 4 + 1 );
+	
+	// TODO replace with
+	// - in plan.GetCompute()->GetSSBOCounters(), plan.GetCompute()->GetSSBOVisibleElements()
+	// - out plan.GetCompute()->GetSSBOCounters(), plan.GetCompute()->GetSSBOVisibleElements2()
+	// which copies from in-visel to out-visel using testing to filter out all invisible elements.
+	// uses counter[1] as input and counter[2] as output. once done counter[2] has to be
+	// copied to counter[1] and plan.GetCompute()->SwapSSBOCounters() called
 	DEBUG_PRINT_TIMER( "RenderOcclusionTests Compute" );
 }
 

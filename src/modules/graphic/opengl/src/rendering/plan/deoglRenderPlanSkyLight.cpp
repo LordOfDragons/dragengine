@@ -273,8 +273,7 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 	
 	// if occlusion test input data are present render the tests. reading back the result
 	// is delayed until used in the sky light renderer. this avoids stalling
-	if( pOcclusionTest->GetInputDataCount() > 0
-	&& pPlan.GetRenderThread().GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
+	if( pOcclusionTest->GetInputDataCount() > 0 ){
 		pOcclusionTest->UpdateSSBO();
 		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( pPlan, *this );
 	}
@@ -294,10 +293,8 @@ void deoglRenderPlanSkyLight::StartBuildRT(){
 	}
 	
 	// potentially stalls if not finished yet
-	if( pPlan.GetRenderThread().GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
-		pOcclusionTest->UpdateResults();
-		pCollideList.RemoveCulledElements();
-	}
+	pOcclusionTest->UpdateResults();
+	pCollideList.RemoveCulledElements();
 	
 	// start parallel task to build split render plans. the first 3 cascades usually have
 	// small amount of content so they can be process sequentially. the 4th cascade on the
@@ -394,7 +391,8 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 	
 		// decTimer timer;
 	const deoglSPBMapBufferRead mappedCounters( pSSBOCounters, 0, 1 );
-	const sCounters * const counters = ( sCounters* )pSSBOCounters->GetMappedBuffer();
+	const deoglRenderCompute::sCounters * const counters =
+		( deoglRenderCompute::sCounters* )pSSBOCounters->GetMappedBuffer();
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = counters[ 0 ].counter;
 	if( indexCount == 0 ){
@@ -459,7 +457,8 @@ void deoglRenderPlanSkyLight::ReadVisibleElementsGI(){
 	
 		// decTimer timer;
 	const deoglSPBMapBufferRead mappedCounters( pSSBOCountersGI, 0, 1 );
-	const sCounters * const counters = ( sCounters* )pSSBOCountersGI->GetMappedBuffer();
+	const deoglRenderCompute::sCounters * const counters =
+		( deoglRenderCompute::sCounters* )pSSBOCountersGI->GetMappedBuffer();
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = counters[ 0 ].counter;
 	if( indexCount == 0 ){
@@ -677,8 +676,8 @@ void deoglRenderPlanSkyLight::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count 
 }
 
 void deoglRenderPlanSkyLight::pClearCounters(){
-	pSSBOCounters->ClearDataUInt( 0, pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
-	pSSBOCountersGI->ClearDataUInt( 0, pSSBOCountersGI->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	pSSBOCounters->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	pSSBOCountersGI->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }
 
 void deoglRenderPlanSkyLight::pSetWorldComputeParams( deoglSPBlockUBO &ubo ){

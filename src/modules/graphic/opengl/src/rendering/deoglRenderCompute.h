@@ -32,6 +32,21 @@ class deoglComputeRenderTask;
  * Compute stuff used by deoglRenderPlan outside of actual rendering.
  */
 class deoglRenderCompute : public deoglRenderBase{
+public:
+	/** Counters. */
+	enum eCounters{
+		ecVisibleGeometries,
+		ecRenderTaskSubInstanceGroups
+	};
+	
+	/** Counters struct. */
+	struct sCounters{
+		uint32_t workGroupSize[ 3 ];
+		uint32_t counter;
+	};
+	
+	
+	
 private:
 	const deoglPipeline *pPipelineUpdateElements;
 	const deoglPipeline *pPipelineUpdateElementGeometries;
@@ -48,13 +63,13 @@ private:
 	const deoglPipeline *pPipelineSortRenderTask;
 	const deoglPipeline *pPipelineRenderTaskSubInstGroup[ 3 ];
 	
+	deoglSPBlockSSBO::Ref pSSBOCounters;
 	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
 	deoglSPBlockSSBO::Ref pSSBOUpdateElementGeometries;
 	deoglSPBlockSSBO::Ref pSSBOUpdateIndices;
 	deoglSPBlockSSBO::Ref pSSBOElementCullResult;
 	deoglSPBlockSSBO::Ref pSSBOVisibleGeometries;
 	deoglSPBlockSSBO::Ref pSSBORenderTaskSubInstGroups;
-	deoglSPBlockSSBO::Ref pSSBORenderTaskSubInstGroupCounter;
 	
 	
 	
@@ -72,6 +87,9 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
+	/** SSBO counters. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
+	
 	/** SSBO update elements. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateElements() const{ return pSSBOUpdateElements; }
 	
@@ -86,6 +104,9 @@ public:
 	
 	/** SSBO visible geometries. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleGeometries() const{ return pSSBOVisibleGeometries; }
+	
+	/** Counters dispatch offset. */
+	int CounterDispatchOffset( eCounters counter ) const;
 	
 	/** Update elements. */
 	void UpdateElements( const deoglRenderPlan &plan );
@@ -109,12 +130,10 @@ public:
 		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters );
 	
 	/** Find geometries. */
-	void FindGeometries( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters );
+	void FindGeometries( const deoglRenderPlan &plan );
 	
 	/** Build render task. */
-	void BuildRenderTask( const deoglRenderPlan &plan, const deoglSPBlockSSBO &counters,
-		deoglComputeRenderTask &renderTask, int dispatchOffset );
-	
+	void BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
 	void BuildRenderTaskOcclusion( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
 	/*@}*/
 	

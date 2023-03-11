@@ -3,19 +3,15 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/plan/render_task.glsl"
+#include "v130/shared/defren/plan/counter.glsl"
 
 
 UBOLAYOUT_BIND(0) readonly buffer SubInstGroup {
 	uvec4 pSubInstGroup[];
 };
 
-struct sCounter {
-	uvec3 workGroupSize;
-	uint counter;
-};
-
 UBOLAYOUT_BIND(1) readonly buffer Counters {
-	sCounter pSubInstGroupCounters[ 1 ];
+	sCounter pRenderComputeCounter[ pRenderComputeCounterCount ];
 };
 
 UBOLAYOUT_BIND(2) readonly buffer CountersRenderTask {
@@ -35,7 +31,7 @@ uint getSubInstGroup( in uint index ){
 }
 
 void main( void ){
-	uint count = pSubInstGroupCounters[ 0 ].counter;
+	uint count = pRenderComputeCounter[ erccRenderTaskSubInstanceGroups ].counter;
 	uint index = gl_GlobalInvocationID.x;
 	if( index >= count ){
 		return;

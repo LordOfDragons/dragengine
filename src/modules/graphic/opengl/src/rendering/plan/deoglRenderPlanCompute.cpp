@@ -92,13 +92,11 @@ pPlan( plan )
 	pUBOFindConfig->GetParameterAt( efcpLodMethod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->MapToStd140();
 	
-	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread(), deoglSPBlockSSBO::etRead ) );
-	pSSBOCounters->SetRowMajor( rowMajor );
-	pSSBOCounters->SetParameterCount( 2 );
-	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
-	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pSSBOCounters->SetElementCount( 3 );
-	pSSBOCounters->MapToStd140();
+	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread().GetRenderers().
+		GetCompute().GetSSBOCounters(), deoglSPBlockSSBO::etRead ) );
+	pSSBOCounters->SetElementCount( 1 );
+	
+	pSSBOCounters2.TakeOver( new deoglSPBlockSSBO( pSSBOCounters ) );
 	
 	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread(), deoglSPBlockSSBO::etRead ) );
 	pSSBOVisibleElements->SetRowMajor( rowMajor );
@@ -140,7 +138,8 @@ void deoglRenderPlanCompute::PrepareBuffers(){
 	pPrepareBuffer( pSSBOVisibleElements, visElCount );
 	pPrepareBuffer( pSSBOVisibleElements2, visElCount );
 	
-	pClearCounters();
+	pSSBOCounters->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	pSSBOCounters2->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
 	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareBuffers: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 }
 
@@ -152,7 +151,8 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 	
 		// decTimer timer;
 	const deoglSPBMapBufferRead mappedCounters( pSSBOCounters, 0, 1 );
-	const sCounters &counters = *( sCounters* )pSSBOCounters->GetMappedBuffer();
+	const deoglRenderCompute::sCounters &counters =
+		*( deoglRenderCompute::sCounters* )pSSBOCounters->GetMappedBuffer();
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = counters.counter;
 	if( indexCount == 0 ){
@@ -220,10 +220,6 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 		}
 	}
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: list %dys", (int)(timer.GetElapsedTime()*1e6f));
-}
-
-void deoglRenderPlanCompute::ClearVisibleGeometryCounter(){
-	pSSBOCounters->ClearDataUInt( 1, 1, 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }
 
 void deoglRenderPlanCompute::UpdateElementGeometries(){
@@ -311,7 +307,6 @@ void deoglRenderPlanCompute::BuildRTOcclusion( const deoglRenderPlanMasked *mask
 	pRTOcclusion->EndPass( worldCompute );
 	}
 	
-	ClearVisibleGeometryCounter();
 	renderCompute.ClearCullResult( pPlan );
 	renderCompute.UpdateCullResultOcclusion( pPlan, pUBOFindConfig, pSSBOVisibleElements, pSSBOCounters );
 	renderCompute.BuildRenderTaskOcclusion( pPlan, pRTOcclusion );
@@ -324,6 +319,16 @@ void deoglRenderPlanCompute::ReadyRTOcclusion( const deoglRenderPlanMasked *mask
 	
 	BuildRTOcclusion( mask );
 	DEASSERT_TRUE( pRTOcclusion->ReadBackSteps() )
+}
+
+void deoglRenderPlanCompute::SwapVisibleElements(){
+	deoglSPBlockSSBO::Ref swap = pSSBOVisibleElements;
+	pSSBOVisibleElements = pSSBOVisibleElements2;
+	pSSBOVisibleElements2 = swap;
+	
+	swap = pSSBOCounters;
+	pSSBOCounters = pSSBOCounters2;
+	pSSBOCounters2 = swap;
 }
 
 
@@ -400,10 +405,6 @@ void deoglRenderPlanCompute::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count )
 		ssbo.SetElementCount( count );
 		ssbo.EnsureBuffer();
 	}
-}
-
-void deoglRenderPlanCompute::pClearCounters(){
-	pSSBOCounters->ClearDataUInt( 0, pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }
 
 void deoglRenderPlanCompute::pSetFrustumPlane( deoglSPBlockUBO &ubo, int i, const decDVector& n, double d ){

@@ -29,8 +29,9 @@ uniform uint pGeometryCount;
 layout( local_size_x=64 ) in;
 
 
-layout( binding=0, offset=16 ) uniform atomic_uint pDispatchWorkGroupCount;
-layout( binding=0, offset=28 ) uniform atomic_uint pNextVisibleIndex;
+// deoglRenderCompute::ecVisibleGeometries = 0
+layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
+layout( binding=0, offset=12 ) uniform atomic_uint pNextVisibleIndex;
 
 const uint dispatchWorkGroupSize = uint( 64 );
 

@@ -4,6 +4,7 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/plan/world_element.glsl"
 #include "v130/shared/defren/plan/world_element_constants.glsl"
+#include "v130/shared/defren/plan/counter.glsl"
 
 #ifndef CLEAR_CULL_RESULT
 UBOLAYOUT_BIND(0) readonly buffer Element {
@@ -16,8 +17,7 @@ UBOLAYOUT_BIND(1) readonly buffer VisibleElement {
 };
 
 UBOLAYOUT_BIND(2) readonly buffer Counters {
-	uvec3 pWorkGroupSize;
-	uint pVisibleElementCount;
+	sCounter pVisibleElementCounter;
 };
 
 UBOLAYOUT_BIND(3) writeonly buffer ElementCullResult {
@@ -40,7 +40,7 @@ layout( local_size_x=64 ) in;
 
 
 void main( void ){
-	if( gl_GlobalInvocationID.x >= pVisibleElementCount ){
+	if( gl_GlobalInvocationID.x >= pVisibleElementCounter.counter ){
 		return;
 	}
 	

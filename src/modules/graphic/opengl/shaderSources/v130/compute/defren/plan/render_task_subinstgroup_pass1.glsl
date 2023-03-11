@@ -3,19 +3,15 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/plan/render_task_sortable.glsl"
+#include "v130/shared/defren/plan/counter.glsl"
 
 
-struct sCounter {
-	uvec3 workGroupSize;
-	uint counter;
-};
-
-UBOLAYOUT_BIND(0) readonly buffer Counters {
-	sCounter pRenderTaskCounters;
-};
-
-UBOLAYOUT_BIND(1) readonly buffer RenderTask {
+UBOLAYOUT_BIND(0) readonly buffer RenderTask {
 	sRenderTaskSortable pRenderTask[];
+};
+
+UBOLAYOUT_BIND(1) readonly buffer Counters {
+	sCounter pRenderTaskCounter;
 };
 
 UBOLAYOUT_BIND(2) writeonly buffer SubInstGroup {
@@ -26,14 +22,15 @@ UBOLAYOUT_BIND(2) writeonly buffer SubInstGroup {
 layout( local_size_x=64 ) in;
 
 
-layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
-layout( binding=0, offset=12 ) uniform atomic_uint pNextIndex;
+// deoglRenderCompute::ecRenderTaskSubInstanceGroups = 1
+layout( binding=0, offset=16 ) uniform atomic_uint pDispatchWorkGroupCount;
+layout( binding=0, offset=28 ) uniform atomic_uint pNextIndex;
 
 const uint dispatchWorkGroupSize = uint( 64 );
 
 
 void main( void ){
-	uint stepCount = min( pRenderTaskCounters.counter, pRenderTask.length() );
+	uint stepCount = min( pRenderTaskCounter.counter, pRenderTask.length() );
 	uint index = gl_GlobalInvocationID.x;
 	if( index >= stepCount ){
 		return;

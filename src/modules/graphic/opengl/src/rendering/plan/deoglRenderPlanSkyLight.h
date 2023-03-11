@@ -67,13 +67,6 @@ public:
 	
 	
 private:
-	/** Counters struct. */
-	struct sCounters{
-		uint32_t workGroupSize[ 3 ];
-		uint32_t counter;
-	};
-	
-	
 	deoglRenderPlan &pPlan;
 	deoglRSkyInstance *pSky;
 	deoglRSkyInstanceLayer *pLayer;

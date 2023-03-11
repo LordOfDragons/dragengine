@@ -358,10 +358,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "bugNo2ComponentFBOTex" ) == 0 ){
 					configuration.SetBugNo2ComponentFBOTex( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
 					
-				}else if( strcmp( name, "occlusionTestMode" ) == 0 ){
-					configuration.SetOcclusionTestMode( ( deoglConfiguration::eOcclusionTestModes )
-						strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
-					
 				}else if( strcmp( name, "disableCubeMapLinearFiltering" ) == 0 ){
 					configuration.SetDisableCubeMapLinearFiltering( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					

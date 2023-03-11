@@ -37,16 +37,6 @@ public:
 		ellDebug
 	};
 	
-	/** Occlusion Test Mode. */
-	enum eOcclusionTestModes{
-		/** No occlusion testing. */
-		eoctmNone,
-		/** VBO to texture occlusion testing. */
-		eoctmVBOToTexture,
-		/** Transform feedback occlusion testing. */
-		eoctmTransformFeedback
-	};
-	
 	/** Environment map method. */
 	enum eEnvironmentMapMethods{
 		/** Single pre-mixed environment map. */
@@ -177,7 +167,6 @@ private:
 	bool pBugNo2ComponentFBOTex;
 	
 	bool pDebugNoCulling;
-	eOcclusionTestModes pOcclusionTestMode;
 	
 	int pQuickDebug;
 	
@@ -517,10 +506,6 @@ public:
 	inline bool GetDebugNoCulling() const{ return pDebugNoCulling; }
 	/** Sets if software culling is disabled. */
 	void SetDebugNoCulling( bool noCulling );
-	/** Retrieves the occlusion test mode. */
-	inline eOcclusionTestModes GetOcclusionTestMode() const{ return pOcclusionTestMode; }
-	/** Sets the occlusion test mode. */
-	void SetOcclusionTestMode( eOcclusionTestModes mode );
 	
 	/** Retrieves the debug snapshot value. */
 	inline int GetDebugSnapshot() const{ return pDebugSnapshot; }

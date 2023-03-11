@@ -153,22 +153,18 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
 	const deoglDebugTraceGroup dt( pPlan.GetRenderThread(), "PlanTasks.BuildRenderTasks" );
 	const deoglRenderPlanCompute &compute = pPlan.GetCompute();
-	deoglSPBlockSSBO &counters = compute.GetSSBOCounters();
-	const int dispatchOffset = sizeof( deoglComputeRenderTask::sCounters );
-	
-	pPlan.GetCompute()->ClearVisibleGeometryCounter();
 	
 	renderCompute.ClearCullResult( pPlan );
 	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
-		compute.GetSSBOVisibleElements(), counters, false );
-	renderCompute.FindGeometries( pPlan, counters );
+		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), false );
+	renderCompute.FindGeometries( pPlan );
 	
 	// we check state here since this could be a rebuild due to too small SSBO size.
 	// rebuilding is not required for all render tasks so check first
 	if( ! ( rebuild && pCRTSolidDepth->GetState() == deoglComputeRenderTask::esReady ) ){
 		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
 		pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
-		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepth, dispatchOffset );
+		renderCompute.BuildRenderTask( pPlan, pCRTSolidDepth );
 	}
 	
 	if( ! ( rebuild && pCRTSolidGeometry->GetState() == deoglComputeRenderTask::esReady ) ){
@@ -176,7 +172,7 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 		if( pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esBuilding ){
 			pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
 		}
-		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometry, dispatchOffset );
+		renderCompute.BuildRenderTask( pPlan, pCRTSolidGeometry );
 	}
 	
 	if( ! ( rebuild && pCRTSolidDepthXRay->GetState() == deoglComputeRenderTask::esReady ) ){
@@ -184,7 +180,7 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 		if( pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esBuilding ){
 			pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
 		}
-		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepthXRay, dispatchOffset );
+		renderCompute.BuildRenderTask( pPlan, pCRTSolidDepthXRay );
 	}
 	
 	if( ! ( rebuild && pCRTSolidGeometryXRay->GetState() == deoglComputeRenderTask::esReady ) ){
@@ -192,7 +188,7 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 		if( pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esBuilding ){
 			pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
 		}
-		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometryXRay, dispatchOffset );
+		renderCompute.BuildRenderTask( pPlan, pCRTSolidGeometryXRay );
 	}
 }
 

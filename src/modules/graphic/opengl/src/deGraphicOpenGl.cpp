@@ -67,7 +67,6 @@
 #include "parameters/debug/deoglPQuickDebug.h"
 #include "parameters/debug/deoglPShowLightCB.h"
 #include "parameters/debug/deoglPOcclusionReduction.h"
-#include "parameters/debug/deoglPOccTestMode.h"
 #include "parameters/debug/deoglPWireframeMode.h"
 #include "parameters/defren/deoglPDefRenSizeLimit.h"
 #include "parameters/defren/deoglPHDRRMaximumIntensity.h"
@@ -691,7 +690,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );
-	pParameters.AddParameter( new deoglPOccTestMode( *this ) );
 	pParameters.AddParameter( new deoglPQuickDebug( *this ) );
 	pParameters.AddParameter( new deoglPShowLightCB( *this ) );
 	pParameters.AddParameter( new deoglPWireframeMode( *this ) );

@@ -111,12 +111,9 @@ pSkipSubInstanceGroups( false )
 	pSSBOSteps->MapToStd140();
 	pSSBOSteps->EnsureBuffer();
 	
-	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
-	pSSBOCounters->SetRowMajor( rowMajor );
-	pSSBOCounters->SetParameterCount( 2 );
-	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
-	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pSSBOCounters->MapToStd140();
+	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( renderThread.GetRenderers().
+		GetCompute().GetSSBOCounters(), deoglSPBlockSSBO::etRead ) );
+	pSSBOCounters->SetElementCount( 1 );
 	
 	Clear();
 }
@@ -241,7 +238,8 @@ bool deoglComputeRenderTask::ReadBackSteps(){
 	int counterSteps;
 	{ // scoping required to make sure buffer is not mapped if pClearCounters() is called
 	const deoglSPBMapBufferRead mapped( pSSBOCounters, 0, 1 );
-	const sCounters &counters = *( sCounters* )pSSBOCounters->GetMappedBuffer();
+	const deoglRenderCompute::sCounters &counters =
+		*( deoglRenderCompute::sCounters* )pSSBOCounters->GetMappedBuffer();
 	counterSteps = counters.counter;
 	}
 	
@@ -553,5 +551,5 @@ void deoglComputeRenderTask::pRenderFilter( int &filter, int &mask ) const{
 }
 
 void deoglComputeRenderTask::pClearCounters(){
-	pSSBOCounters->ClearDataUInt( 0, pSSBOCounters->GetElementCount(), 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	pSSBOCounters->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }

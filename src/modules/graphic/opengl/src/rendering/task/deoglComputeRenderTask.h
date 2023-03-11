@@ -82,12 +82,6 @@ public:
 		uint32_t subInstanceCount;
 	};
 	
-	/** Counters. */
-	struct sCounters{
-		uint32_t workGroupSize[ 3 ];
-		uint32_t counter;
-	};
-	
 	/** Stage. */
 	enum eStates{
 		esInitial,

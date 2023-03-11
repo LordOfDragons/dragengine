@@ -2,15 +2,11 @@ precision highp float;
 precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/plan/counter.glsl"
 
-
-struct sCounter {
-	uvec3 workGroupSize;
-	uint counter;
-};
 
 UBOLAYOUT_BIND(0) readonly buffer Counters {
-	sCounter pSubInstGroupCounters;
+	sCounter pRenderComputeCounter[ pRenderComputeCounterCount ];
 };
 
 UBOLAYOUT_BIND(1) buffer SubInstGroup {
@@ -26,6 +22,7 @@ layout( local_size_x=64 ) in;
 
 
 const uint cMaxLaneSize = uint( 128 );
+#define cStepCount pRenderComputeCounter[ erccRenderTaskSubInstanceGroups ].counter
 
 shared uint vGroups[ cMaxLaneSize ];
 
@@ -93,7 +90,7 @@ void setSubInstGroup( in uint index, in uint value ){
 }
 
 void globalCompareAndSwap( in uvec2 i ){
-	if( any( greaterThanEqual( i, uvec2( pSubInstGroupCounters.counter ) ) ) ){
+	if( any( greaterThanEqual( i, uvec2( cStepCount ) ) ) ){
 		return;
 	}
 	if( getSubInstGroup( i.x ) <= getSubInstGroup( i.y ) ){
@@ -140,17 +137,17 @@ void main( void ){
 	uvec4 i;
 	
 	if( pStage <= esLocalDisperse ){
-		if( offset >= pSubInstGroupCounters.counter ){
+		if( offset >= cStepCount ){
 			return;
 		}
 		
-		limit = pSubInstGroupCounters.counter - offset;
+		limit = cStepCount - offset;
 		
 		i = uvec4( t * uint( 2 ) );
 		i.zw += uvec2( offset );
 		i.yw += uvec2( 1 );
 		
-		valid = lessThan( i.zw, uvec2( pSubInstGroupCounters.counter ) );
+		valid = lessThan( i.zw, uvec2( cStepCount ) );
 		
 		if( valid.x ){
 			vGroups[ i.x ] = getSubInstGroup( i.z );

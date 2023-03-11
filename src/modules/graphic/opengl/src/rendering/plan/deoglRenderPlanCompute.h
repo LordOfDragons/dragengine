@@ -77,17 +77,11 @@ public:
 	
 	
 private:
-	/** Counters struct. */
-	struct sCounters{
-		uint32_t workGroupSize[ 3 ];
-		uint32_t counter;
-	};
-	
-	
 	deoglRenderPlan &pPlan;
 	
 	deoglSPBlockUBO::Ref pUBOFindConfig;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
+	deoglSPBlockSSBO::Ref pSSBOCounters2;
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements2;
 	
@@ -120,9 +114,6 @@ public:
 	/** Read visible elements. */
 	void ReadVisibleElements();
 	
-	/** Clear visible geometries counter. */
-	void ClearVisibleGeometryCounter();
-	
 	/** Update element geometries. */
 	void UpdateElementGeometries();
 	
@@ -134,7 +125,11 @@ public:
 	
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters2() const{ return pSSBOCounters2; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{ return pSSBOVisibleElements2; }
+	
+	void SwapVisibleElements();
 	
 	inline const deoglComputeRenderTask::Ref &GetRTOcclusion() const{ return pRTOcclusion; }
 	/*@}*/
@@ -144,7 +139,6 @@ public:
 protected:
 	void pPrepareFindConfig();
 	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
-	void pClearCounters();
 	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );
 	void pCalculateFrustumBoundaryBox( decDVector &frustumMinExtend, decDVector &frustumMaxExtend );
 	float pCalculateErrorScaling();

@@ -56,7 +56,7 @@ pAllocateBuffer( true ),
 pWriteBuffer( nullptr ),
 pWriteBufferCapacity( 0 ),
 pPersistentMapped( nullptr ),
-pFenceTransfer( 0 ),
+pFenceTransfer( nullptr ),
 pMemoryGPUSSBO( 0 ){
 }
 
@@ -73,7 +73,24 @@ pAllocateBuffer( true ),
 pWriteBuffer( nullptr ),
 pWriteBufferCapacity( 0 ),
 pPersistentMapped( nullptr ),
-pFenceTransfer( 0 ),
+pFenceTransfer( nullptr ),
+pMemoryGPUSSBO( paramBlock.pMemoryGPUSSBO ){
+}
+
+deoglSPBlockSSBO::deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock, eType type ) :
+deoglShaderParameterBlock( paramBlock ),
+pType( type ),
+pSSBO( 0 ),
+pSSBOLocal( 0 ),
+pBindingPoint( paramBlock.pBindingPoint ),
+pBindingPointUBO( paramBlock.pBindingPointUBO ),
+pBindingPointAtomic( paramBlock.pBindingPointAtomic ),
+pCompact( paramBlock.pCompact ),
+pAllocateBuffer( true ),
+pWriteBuffer( nullptr ),
+pWriteBufferCapacity( 0 ),
+pPersistentMapped( nullptr ),
+pFenceTransfer( nullptr ),
 pMemoryGPUSSBO( paramBlock.pMemoryGPUSSBO ){
 }
 
@@ -86,6 +103,9 @@ deoglSPBlockSSBO::~deoglSPBlockSSBO(){
 	}
 	if( pPersistentMapped ){
 		OGL_CHECK( GetRenderThread(), pglUnmapNamedBuffer( pSSBOLocal ) );
+	}
+	if( pFenceTransfer ){
+		pglDeleteSync( pFenceTransfer );
 	}
 	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBOLocal );
 	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
@@ -305,6 +325,10 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 	pAllocateBuffer = false;
 }
 
+void deoglSPBlockSSBO::ClearDataUInt( uint32_t r, uint32_t g, uint32_t b, uint32_t a ){
+	ClearDataUInt( 0, GetElementCount(), r, g, b, a );
+}
+
 void deoglSPBlockSSBO::ClearDataUInt( int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a ){
 	DEASSERT_TRUE( offset >= 0 )
 	DEASSERT_TRUE( offset * 16 <= GetBufferSize() )
@@ -326,6 +350,10 @@ void deoglSPBlockSSBO::ClearDataUInt( int offset, int count, uint32_t r, uint32_
 			GL_RGBA32UI, offset * 16, count * 16, GL_RGBA_INTEGER, GL_UNSIGNED_INT, &v[ 0 ] ) );
 		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0 ) );
 	}
+}
+
+void deoglSPBlockSSBO::ClearDataFloat( float r, float g, float b, float a ){
+	ClearDataFloat( 0, GetElementCount(), r, g, b, a );
 }
 
 void deoglSPBlockSSBO::ClearDataFloat( int offset, int count, float r, float g, float b, float a ){
@@ -354,6 +382,11 @@ void deoglSPBlockSSBO::ClearDataFloat( int offset, int count, float r, float g, 
 void deoglSPBlockSSBO::GPUFinishedWriting(){
 	DEASSERT_TRUE( pType == etRead )
 	
+	if( GetRenderThread().GetChoices().GetUseDirectStateAccess() && pFenceTransfer ){
+		pglDeleteSync( pFenceTransfer );
+		pFenceTransfer = nullptr;
+	}
+	
 	// required to sync call to glCopy*BufferSubData after compute shader finished
 	OGL_CHECK( GetRenderThread(), pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
 }
@@ -373,6 +406,11 @@ void deoglSPBlockSSBO::GPUReadToCPU( int elementCount ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	
 	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+		if( pFenceTransfer ){
+			pglDeleteSync( pFenceTransfer );
+			pFenceTransfer = nullptr;
+		}
+		
 		OGL_CHECK( renderThread, pglCopyNamedBufferSubData(
 			pSSBO, pSSBOLocal, 0, 0, GetElementStride() * elementCount ) );
 		

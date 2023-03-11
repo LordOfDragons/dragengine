@@ -86,10 +86,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader storage buffer object. */
-	deoglSPBlockSSBO( deoglRenderThread &renderThread, eType );
+	deoglSPBlockSSBO( deoglRenderThread &renderThread, eType type );
 	
 	/** Create copy of shader storage buffer object. */
 	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock );
+	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock, eType eype );
 	
 protected:
 	/** Clean up shader storage buffer object. */
@@ -193,7 +194,10 @@ public:
 	virtual void EnsureBuffer();
 	
 	/** Clear buffer. */
+	void ClearDataUInt( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
 	void ClearDataUInt( int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a );
+	
+	void ClearDataFloat( float r, float g, float b, float a );
 	void ClearDataFloat( int offset, int count, float r, float g, float b, float a );
 	
 	/** GPU finished writing data to SSBO. */
