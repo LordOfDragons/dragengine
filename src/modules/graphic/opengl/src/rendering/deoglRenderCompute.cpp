@@ -95,7 +95,7 @@ deoglRenderBase( renderThread )
 	pSSBOCounters->SetParameterCount( 2 );
 	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
 	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pSSBOCounters->SetElementCount( 2 );
+	pSSBOCounters->SetElementCount( 3 );
 	pSSBOCounters->MapToStd140();
 	
 	pSSBOUpdateElements.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );

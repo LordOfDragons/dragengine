@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglRenderWorld.h"
+#include "deoglRenderCompute.h"
 #include "deoglRenderGeometry.h"
 #include "deoglRenderOcclusion.h"
 #include "debug/deoglRenderDebug.h"
@@ -150,7 +151,8 @@ enum eSPTestTFB{
 	spttfbFrustumTestAdd,
 	spttfbFrustumTestMul,
 	spttfbMatrixStereo,
-	spttfbMatrix2Stereo
+	spttfbMatrix2Stereo,
+	spttfbCullFilter
 };
 
 
@@ -281,7 +283,7 @@ pAddToRenderTask( NULL )
 		pPipelineOccMapDownSampleStereo = pipelineManager.GetWith( pipconf );
 		
 		
-		// occlusion test transform feedback
+		// occlusion test
 		pipconf.Reset();
 		pipconf.SetType( deoglPipelineConfiguration::etCompute );
 		
@@ -290,6 +292,10 @@ pAddToRenderTask( NULL )
 		defines.SetDefines( "ENSURE_MIN_SIZE" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineOccTest = pipelineManager.GetWith( pipconf );
+		
+		defines.SetDefines( "WITH_COMPUTE_RENDER_TASK" );
+		pipconf.SetShader( renderThread, "DefRen Occlusion Test Compute RT", defines );
+		pPipelineOccTestComputeRT = pipelineManager.GetWith( pipconf );
 		
 		// occlusion test transform feedback dual
 		defines.SetDefine( "DUAL_OCCMAP", true );
@@ -523,14 +529,29 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 	// 
 	// for this reason the last line looks different than above because m34 is 0:
 	//   m34' = offset
+	// 
+	// for compute render task the offset has to be kept since the world element data is
+	// relative to the world reference position not the camera position
 	
-	decDMatrix testMatrix( matrixCamera.GetRotationMatrix() * matrixProjection );
+	decDMatrix testMatrix, testMatrixStereo;
+	
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		testMatrix = matrixCamera * matrixProjection;
+		testMatrix.a34 = matrixCamera.a34 * zscale + zoffset; // no bias while sampling
+		
+		testMatrixStereo = matrixCameraStereo * matrixProjection;
+		
+	}else{
+		testMatrix = matrixCamera.GetRotationMatrix() * matrixProjection;
+		testMatrix.a34 = zoffset; // no bias while sampling
+		
+		testMatrixStereo = matrixCameraStereo.GetRotationMatrix() * matrixProjection;
+	}
+	
 	testMatrix.a31 = matrixCamera.a31 * zscale;
 	testMatrix.a32 = matrixCamera.a32 * zscale;
 	testMatrix.a33 = matrixCamera.a33 * zscale;
-	testMatrix.a34 = zoffset; // no bias while sampling
 	
-	decDMatrix testMatrixStereo( matrixCameraStereo.GetRotationMatrix() * matrixProjection );
 	testMatrixStereo.a31 = matrixCameraStereo.a31 * zscale;
 	testMatrixStereo.a32 = matrixCameraStereo.a32 * zscale;
 	testMatrixStereo.a33 = matrixCameraStereo.a33 * zscale;
@@ -861,43 +882,91 @@ const deoglRenderPlanMasked *mask, bool perspective ){
 void deoglRenderOcclusion::RenderOcclusionTests( deoglRenderPlan &plan,
 deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap, int baselevel,
 float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraStereo ){
-	if( occlusionTest.GetInputDataCount() == 0 ){
-		return;
-	}
-	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "Occlusion.RenderOcclusionTests" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int inputDataCount = occlusionTest.GetInputDataCount();
 	
-	pPipelineOccTest->Activate();
-	deoglShaderCompiled &shader = pPipelineOccTest->GetGlShader();
-	
-	shader.SetParameterUInt( spttfInputDataCount, inputDataCount );
-	shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
-	shader.SetParameterFloat( spttfbScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
-	shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
-	shader.SetParameterFloat( spttfbClipNear, clipNear );
-	if( plan.GetRenderStereo() ){
-		shader.SetParameterMatrix4x4( spttfbMatrixStereo, matrixCameraStereo );
+	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+		const deoglDebugTraceGroup debugTrace( GetRenderThread(), "Occlusion.RenderOcclusionTests" );
+		deoglRenderCompute &renderCompute = renderThread.GetRenderers().GetCompute();
+		const deoglWorldCompute &worldCompute = plan.GetWorld()->GetCompute();
+		deoglRenderPlanCompute &planCompute = plan.GetCompute();
+		
+		int cullFilter = ~0;
+		if( plan.GetUpdateGIState() ){
+			// we can not cull lights outside frustum if inside GI cascade detection box.
+			// light renderers will take care of not rendering lights if light is culled
+			cullFilter &= ~deoglWorldCompute::eefLight;
+		}
+		
+		renderCompute.GetSSBOCounters()->CopyData( planCompute.GetSSBOCounters(),
+			deoglRenderCompute::ecTempCounter, 1, 0 );
+		planCompute.GetSSBOCounters()->ClearDataUInt( 0, 1, 0, 1, 1, 0 );
+		
+		pPipelineOccTestComputeRT->Activate();
+		deoglShaderCompiled &shader = pPipelineOccTestComputeRT->GetGlShader();
+		
+		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
+		shader.SetParameterFloat( spttfbScaleSize,
+			( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
+		shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
+		shader.SetParameterFloat( spttfbClipNear, clipNear );
+		if( plan.GetRenderStereo() ){
+			shader.SetParameterMatrix4x4( spttfbMatrixStereo, matrixCameraStereo );
+		}
+		shader.SetParameterUInt( spttfbCullFilter, cullFilter );
+		
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		
+		worldCompute.GetSSBOElements()->Activate( 0 );
+		planCompute.GetSSBOVisibleElements()->Activate( 1 );
+		renderCompute.GetSSBOCounters()->Activate( 2 );
+		planCompute.GetSSBOVisibleElements2()->Activate( 3 );
+		planCompute.GetSSBOCounters()->ActivateAtomic( 0 );
+		
+		renderCompute.GetSSBOCounters()->ActivateDispatchIndirect();
+		OGL_CHECK( renderThread, pglDispatchComputeIndirect(
+			renderCompute.CounterDispatchOffset( deoglRenderCompute::ecTempCounter ) ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+			| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+		renderCompute.GetSSBOCounters()->DeactivateDispatchIndirect();
+		
+		planCompute.GetSSBOVisibleElements2()->GPUFinishedWriting();
+		planCompute.GetSSBOCounters()->GPUFinishedWriting();
+		planCompute.GetSSBOCounters()->GPUReadToCPU( 1 );
+		
+		planCompute.SwapVisibleElements();
+		
+	}else{
+		if( occlusionTest.GetInputDataCount() == 0 ){
+			return;
+		}
+		
+		const deoglDebugTraceGroup debugTrace( GetRenderThread(), "Occlusion.RenderOcclusionTests" );
+		const int inputDataCount = occlusionTest.GetInputDataCount();
+		
+		pPipelineOccTest->Activate();
+		deoglShaderCompiled &shader = pPipelineOccTest->GetGlShader();
+		
+		shader.SetParameterUInt( spttfInputDataCount, inputDataCount );
+		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
+		shader.SetParameterFloat( spttfbScaleSize,
+			( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
+		shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
+		shader.SetParameterFloat( spttfbClipNear, clipNear );
+		if( plan.GetRenderStereo() ){
+			shader.SetParameterMatrix4x4( spttfbMatrixStereo, matrixCameraStereo );
+		}
+		
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		
+		occlusionTest.GetSSBOInput()->Activate();
+		occlusionTest.GetSSBOResult()->Activate();
+		
+		OGL_CHECK( renderThread, pglDispatchCompute( ( inputDataCount - 1 ) / 64 + 1, 1, 1 ) );
+		
+		occlusionTest.GetSSBOResult()->GPUFinishedWriting();
+		occlusionTest.GetSSBOResult()->GPUReadToCPU( ( inputDataCount - 1 ) / 4 + 1 );
 	}
-	
-	tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
-	
-	occlusionTest.GetSSBOInput()->Activate();
-	occlusionTest.GetSSBOResult()->Activate();
-	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( inputDataCount - 1 ) / 64 + 1, 1, 1 ) );
-	
-	occlusionTest.GetSSBOResult()->GPUFinishedWriting();
-	occlusionTest.GetSSBOResult()->GPUReadToCPU( ( inputDataCount - 1 ) / 4 + 1 );
-	
-	// TODO replace with
-	// - in plan.GetCompute()->GetSSBOCounters(), plan.GetCompute()->GetSSBOVisibleElements()
-	// - out plan.GetCompute()->GetSSBOCounters(), plan.GetCompute()->GetSSBOVisibleElements2()
-	// which copies from in-visel to out-visel using testing to filter out all invisible elements.
-	// uses counter[1] as input and counter[2] as output. once done counter[2] has to be
-	// copied to counter[1] and plan.GetCompute()->SwapSSBOCounters() called
 	DEBUG_PRINT_TIMER( "RenderOcclusionTests Compute" );
 }
 

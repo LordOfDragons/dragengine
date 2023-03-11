@@ -36,7 +36,8 @@ public:
 	/** Counters. */
 	enum eCounters{
 		ecVisibleGeometries,
-		ecRenderTaskSubInstanceGroups
+		ecRenderTaskSubInstanceGroups,
+		ecTempCounter
 	};
 	
 	/** Counters struct. */

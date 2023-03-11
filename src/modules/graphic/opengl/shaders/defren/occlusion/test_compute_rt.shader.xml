@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<name>DefRen Occlusion Test</name>
+	<name>DefRen Occlusion Test Compute RT</name>
 	
 	<texture name='texOccMap' target='0'/>
 	<texture name='texOccMap2' target='1'/>
@@ -24,8 +24,10 @@
 	<parameter name='pMatrix2Stereo'/>
 	<parameter name='pCullFilter'/>
 	
-	<shaderStorageBlock name='InputData' target='0'/>
-	<shaderStorageBlock name='ResultData' target='1'/>
+	<shaderStorageBlock name='Element' target='0'/>
+	<shaderStorageBlock name='VisibleElement' target='1'/>
+	<shaderStorageBlock name='Counters' target='2'/>
+	<shaderStorageBlock name='VisibleElementOut' target='3'/>
 	
 	<sourceCode unit='compute'>v130/compute/defren/occlusion/test.glsl</sourceCode>
 </shader>

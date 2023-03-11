@@ -96,8 +96,6 @@ pPlan( plan )
 		GetCompute().GetSSBOCounters(), deoglSPBlockSSBO::etRead ) );
 	pSSBOCounters->SetElementCount( 1 );
 	
-	pSSBOCounters2.TakeOver( new deoglSPBlockSSBO( pSSBOCounters ) );
-	
 	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread(), deoglSPBlockSSBO::etRead ) );
 	pSSBOVisibleElements->SetRowMajor( rowMajor );
 	pSSBOVisibleElements->SetParameterCount( 1 );
@@ -139,7 +137,6 @@ void deoglRenderPlanCompute::PrepareBuffers(){
 	pPrepareBuffer( pSSBOVisibleElements2, visElCount );
 	
 	pSSBOCounters->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
-	pSSBOCounters2->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
 	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareBuffers: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 }
 
@@ -160,9 +157,6 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 	}
 	
 	// read written visible element indices
-	deoglOcclusionTest &occlusionTest = *pPlan.GetOcclusionTest();
-	const decDVector &cameraPosition = pPlan.GetCameraPosition();
-	deoglComponentList &componentsOccMap = pPlan.GetComponentsOccMap();
 	deoglCollideList &collideList = pPlan.GetCollideList();
 	deoglParticleEmitterInstanceList &clistParticleEmitterInstanceList = collideList.GetParticleEmitterList();
 	deoglHTView * const htview = pPlan.GetHeightTerrainView();
@@ -180,13 +174,9 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 		// continue;
 		
 		switch( element.GetType() ){
-		case deoglWorldComputeElement::eetComponent:{
-			deoglRComponent * const component = ( deoglRComponent* )element.GetOwner();
-			collideList.AddComponent( component )->StartOcclusionTest( occlusionTest, cameraPosition );
-			if( component->GetOcclusionMesh() ){
-				componentsOccMap.Add( component );
-			}
-			}break;
+		case deoglWorldComputeElement::eetComponent:
+			collideList.AddComponent( ( deoglRComponent* )element.GetOwner() );
+			break;
 			
 		case deoglWorldComputeElement::eetBillboard:
 			collideList.AddBillboard( ( deoglRBillboard* )element.GetOwner() );
@@ -198,8 +188,6 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 			
 		case deoglWorldComputeElement::eetLight:{
 			deoglCollideListLight &cllight = *collideList.AddLight( ( deoglRLight* )element.GetOwner() );
-			cllight.StartOcclusionTest( occlusionTest, cameraPosition );  // if not culled by frustum
-			//cllight.SetCulled( true );  // if culled by frustum but not by GI cascade box
 			cllight.TestInside( pPlan );
 			}break;
 			
@@ -325,10 +313,6 @@ void deoglRenderPlanCompute::SwapVisibleElements(){
 	deoglSPBlockSSBO::Ref swap = pSSBOVisibleElements;
 	pSSBOVisibleElements = pSSBOVisibleElements2;
 	pSSBOVisibleElements2 = swap;
-	
-	swap = pSSBOCounters;
-	pSSBOCounters = pSSBOCounters2;
-	pSSBOCounters2 = swap;
 }
 
 

@@ -57,6 +57,7 @@ private:
 	const deoglPipeline *pPipelineOccMapDownSample;
 	const deoglPipeline *pPipelineOccMapDownSampleStereo;
 	const deoglPipeline *pPipelineOccTest;
+	const deoglPipeline *pPipelineOccTestComputeRT;
 	const deoglPipeline *pPipelineOccTestDual;
 	const deoglPipeline *pPipelineOccTestSun;
 	const deoglPipeline *pPipelineOccMapCube;

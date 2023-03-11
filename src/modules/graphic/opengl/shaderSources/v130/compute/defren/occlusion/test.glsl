@@ -31,21 +31,55 @@ uniform vec4 pFrustumTestMul;
 uniform mat4 pMatrixStereo;
 uniform mat4 pMatrix2Stereo;
 #endif
+uniform uint pCullFilter;
+
 
 #include "v130/shared/ubo_defines.glsl"
 
-struct sInputData{
-	vec3 minExtend;
-	vec3 maxExtend;
-};
-
-UBOLAYOUT_BIND(0) readonly buffer InputData {
-	sInputData pInputData[];
-};
-
-UBOLAYOUT_BIND(1) writeonly buffer ResultData {
-	bvec4 pResultData[];
-};
+#ifdef WITH_COMPUTE_RENDER_TASK
+	#include "v130/shared/defren/plan/world_element.glsl"
+	#include "v130/shared/defren/plan/counter.glsl"
+	
+	UBOLAYOUT_BIND(0) readonly buffer Element {
+		sElement pElement[];
+	};
+	
+	UBOLAYOUT_BIND(1) readonly buffer VisibleElement {
+		uvec4 pVisibleElement[];
+	};
+	
+	UBOLAYOUT_BIND(2) readonly buffer Counters {
+		sCounter pRenderComputeCounter[ pRenderComputeCounterCount ];
+	};
+	
+	UBOLAYOUT_BIND(3) writeonly buffer VisibleElementOut {
+		uvec4 pVisibleElementOut[];
+	};
+	
+	// buffer stores in the first uvec4 the output of the node search pass. the output
+	// of the element search pass is stored in the next uvec4. for this reason the
+	// offset 16 is added so we can reuse the same binding (binding point 3) for input
+	// and output through different variables. we store the work group size too so
+	// we can dispatch over the results in later passes
+	layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
+	layout( binding=0, offset=12 ) uniform atomic_uint pNextVisibleIndex;
+	
+	const uint dispatchWorkGroupSize = uint( 64 );
+	
+#else
+	struct sInputData{
+		vec3 minExtend;
+		vec3 maxExtend;
+	};
+	
+	UBOLAYOUT_BIND(0) readonly buffer InputData {
+		sInputData pInputData[];
+	};
+	
+	UBOLAYOUT_BIND(1) writeonly buffer ResultData {
+		bvec4 pResultData[];
+	};
+#endif
 
 layout( local_size_x=64 ) in;
 
@@ -196,17 +230,20 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap,
 const vec2 vScale = vec2( 0.5 );
 const vec2 vOffset = vec2( 0.5 );
 
-void main( void ){
-	// skip outside of parameter space
-	if( gl_GlobalInvocationID.x >= pInputDataCount ){
-		return;
-	}
+bool occlusionTest( in uint index ){
+	vec3 inMinExtend, inMaxExtend;
 	
-	vec3 inMinExtend = pInputData[ gl_GlobalInvocationID.x ].minExtend;
-	vec3 inMaxExtend = pInputData[ gl_GlobalInvocationID.x ].maxExtend;
-	
-	#define outResultData pResultData[ gl_GlobalInvocationID.x / uint(4) ][ gl_GlobalInvocationID.x % uint(4) ]
-	outResultData = true;
+	#ifdef WITH_COMPUTE_RENDER_TASK
+		if( ( pElement[ index ].flags & pCullFilter ) == 0 ){
+			return true;
+		}
+		
+		inMinExtend = pElement[ index ].minExtend;
+		inMaxExtend = pElement[ index ].maxExtend;
+	#else
+		inMinExtend = pInputData[ index ].minExtend;
+		inMaxExtend = pInputData[ index ].maxExtend;
+	#endif
 	
 	#ifdef ENSURE_MIN_SIZE
 		//vec3 adjustExtends = step( ( inMaxExtend - inMinExtend ), epsilonSize ) * epsilonSize;
@@ -232,7 +269,7 @@ void main( void ){
 		result = result | resultStereo;
 	#endif
 	if( ! result ){
-		return;
+		return true;
 	}
 	
 	#ifdef FRUSTUM_TEST
@@ -259,7 +296,7 @@ void main( void ){
 		
 		result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, testMinExtend, testMaxExtend );
 		if( ! result ){
-			return;
+			return true;
 		}
 		
 		float occmapMaxDepth;
@@ -277,8 +314,7 @@ void main( void ){
 		#endif
 		
 		if( ! result ){
-			outResultData = false;
-			return;
+			return false;
 		}
 		
 	#else
@@ -304,15 +340,14 @@ void main( void ){
 		#endif
 		
 		if( ! result ){
-			outResultData = false;
-			return;
+			return false;
 		}
 		
 		#ifdef DUAL_OCCMAP
 			testMaxExtend.z = max( testMaxExtend.z, occmapMaxDepth );
 			result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, testMinExtend, testMaxExtend );
 			if( ! result ){
-				return;
+				return true;
 			}
 			
 			occmapMinExtend = testMinExtend.xy * vScale + vOffset;
@@ -320,9 +355,46 @@ void main( void ){
 			result = testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
 				testMinExtend.z, pScaleSize2, pBaseLevel2, texOccMap2, 0 );
 			if( ! result ){
-				outResultData = false;
-				return;
+				return false;
 			}
 		#endif
+	#endif
+	
+	return true;
+}
+
+void main( void ){
+	uint index = gl_GlobalInvocationID.x;
+	
+	#ifdef WITH_COMPUTE_RENDER_TASK
+		if( index >= pRenderComputeCounter[ erccTempCounter ].counter ){
+			return;
+		}
+		
+		uint visibleElement = pVisibleElement[ index / uint( 4 ) ][ index % uint( 4 ) ];
+		
+		if( ! occlusionTest( visibleElement & uint( 0xffffff ) ) ){
+			return;
+		}
+		
+		// add element to found visible elements list
+		uint outIndex = atomicCounterIncrement( pNextVisibleIndex );
+		
+		pVisibleElementOut[ outIndex / uint( 4 ) ][ outIndex % uint( 4 ) ] = visibleElement;
+		
+		// if the count of visible elements increases by the dispatch workgroup size
+		// increment also the work group count. this way the upcoming dispatch
+		// indirect calls know the count of workgroups to run
+		if( outIndex % dispatchWorkGroupSize == uint( 0 ) ){
+			atomicCounterIncrement( pDispatchWorkGroupCount );
+		}
+		
+	#else
+		if( index >= pInputDataCount ){
+			return;
+		}
+		
+		bool result = occlusionTest( index );
+		pResultData[ index / uint(4) ][ index % uint(4) ] = result;
 	#endif
 }

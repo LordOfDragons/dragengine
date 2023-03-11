@@ -1252,22 +1252,12 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 	// pFinishOcclusionTests to avoid stalling
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
 		pCompute->ReadyRTOcclusion( mask );
-		
-		// TEMP
-		pCompute->ReadVisibleElements();
-		if( pOcclusionTest->GetInputDataCount() > 0 ){
-			pOcclusionTest->UpdateSSBO();
-			if( pDebug ){
-				pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
-			}
-			SPECIAL_TIMER_PRINT("> UpdateVBO")
-		}
-		// TEMP
+		SPECIAL_TIMER_PRINT("> ReadyRTOcclusion")
 		
 		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
 		SPECIAL_TIMER_PRINT("> Render")
 		
-		// pCompute->ReadVisibleElements();
+		pCompute->ReadVisibleElements();
 		SPECIAL_TIMER_PRINT("> ReadVisibleElements")
 		
 		pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionQueries( *this, mask, true );
@@ -1296,6 +1286,7 @@ void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask )
 	INIT_SPECIAL_TIMING
 	
 	// occlusion tests have been rendered in pRenderOcclusionTests to avoid stalling
+	// NOTE if compute render tasks are used this will be always 0 and skipped
 	if( pOcclusionTest->GetInputDataCount() > 0 ){
 		pOcclusionTest->UpdateResults();
 		SPECIAL_TIMER_PRINT("> UpdateResults")

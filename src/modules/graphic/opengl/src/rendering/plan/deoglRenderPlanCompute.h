@@ -81,7 +81,6 @@ private:
 	
 	deoglSPBlockUBO::Ref pUBOFindConfig;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
-	deoglSPBlockSSBO::Ref pSSBOCounters2;
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements2;
 	
@@ -125,7 +124,6 @@ public:
 	
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
-	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters2() const{ return pSSBOCounters2; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{ return pSSBOVisibleElements2; }
 	

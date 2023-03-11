@@ -379,6 +379,36 @@ void deoglSPBlockSSBO::ClearDataFloat( int offset, int count, float r, float g, 
 	}
 }
 
+void deoglSPBlockSSBO::CopyData( const deoglSPBlockSSBO &ssbo, int offset, int count, int ssboOffset ){
+	DEASSERT_TRUE( GetElementStride() == ssbo.GetElementStride() )
+	DEASSERT_TRUE( offset >= 0 )
+	DEASSERT_TRUE( count >= 0 )
+	DEASSERT_TRUE( offset + count <= GetElementCount() )
+	DEASSERT_TRUE( ssboOffset >= 0 )
+	DEASSERT_TRUE( ssboOffset + count <= ssbo.GetElementCount() )
+	DEASSERT_NOTNULL( ssbo.pSSBO )
+	
+	EnsureBuffer();
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const int stride = GetElementStride();
+	
+	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+		OGL_CHECK( renderThread, pglCopyNamedBufferSubData( ssbo.pSSBO, pSSBO,
+			stride * ssboOffset, stride * offset, stride * count ) );
+		
+	}else{
+		OGL_CHECK( renderThread, pglBindBuffer( GL_COPY_READ_BUFFER, ssbo.pSSBO ) );
+		OGL_CHECK( renderThread, pglBindBuffer( GL_COPY_WRITE_BUFFER, pSSBO ) );
+		
+		OGL_CHECK( renderThread, pglCopyBufferSubData( GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER,
+			stride * ssboOffset, stride * offset, stride * count ) );
+		
+		OGL_CHECK( renderThread, pglBindBuffer( GL_COPY_WRITE_BUFFER, 0 ) );
+		OGL_CHECK( renderThread, pglBindBuffer( GL_COPY_READ_BUFFER, 0 ) );
+	}
+}
+
 void deoglSPBlockSSBO::GPUFinishedWriting(){
 	DEASSERT_TRUE( pType == etRead )
 	
