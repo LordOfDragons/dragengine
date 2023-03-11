@@ -10,7 +10,7 @@ struct sCounter {
 };
 
 UBOLAYOUT_BIND(0) readonly buffer Counters {
-	sCounter pSubInstGroupCounters[ 1 ];
+	sCounter pSubInstGroupCounters;
 };
 
 UBOLAYOUT_BIND(1) buffer SubInstGroup {
@@ -93,7 +93,7 @@ void setSubInstGroup( in uint index, in uint value ){
 }
 
 void globalCompareAndSwap( in uvec2 i ){
-	if( any( greaterThanEqual( i, uvec2( pSubInstGroupCounters[ 0 ].counter ) ) ) ){
+	if( any( greaterThanEqual( i, uvec2( pSubInstGroupCounters.counter ) ) ) ){
 		return;
 	}
 	if( getSubInstGroup( i.x ) <= getSubInstGroup( i.y ) ){
@@ -140,17 +140,17 @@ void main( void ){
 	uvec4 i;
 	
 	if( pStage <= esLocalDisperse ){
-		if( offset >= pSubInstGroupCounters[ 0 ].counter ){
+		if( offset >= pSubInstGroupCounters.counter ){
 			return;
 		}
 		
-		limit = pSubInstGroupCounters[ 0 ].counter - offset;
+		limit = pSubInstGroupCounters.counter - offset;
 		
 		i = uvec4( t * uint( 2 ) );
 		i.zw += uvec2( offset );
 		i.yw += uvec2( 1 );
 		
-		valid = lessThan( i.zw, uvec2( pSubInstGroupCounters[ 0 ].counter ) );
+		valid = lessThan( i.zw, uvec2( pSubInstGroupCounters.counter ) );
 		
 		if( valid.x ){
 			vGroups[ i.x ] = getSubInstGroup( i.z );

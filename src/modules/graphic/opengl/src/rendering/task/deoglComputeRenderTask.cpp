@@ -76,7 +76,6 @@ pUseSPBInstanceFlags( false ),
 pRenderVSStereo( false ),
 pPipelineDoubleSided( nullptr ),
 pPipelineSingleSided( nullptr ),
-pCounterSteps( 0 ),
 pSteps( nullptr ),
 pStepCount( 0 ),
 pStepSize( 0 ),
@@ -134,6 +133,7 @@ deoglComputeRenderTask::~deoglComputeRenderTask(){
 ///////////////
 
 #define DO_READ_BACK_TIMINGS
+// #define DO_STATE_DEBUG
 
 void deoglComputeRenderTask::BeginPrepare( int passCount ){
 	DEASSERT_TRUE( pPass == -1 )
@@ -141,8 +141,10 @@ void deoglComputeRenderTask::BeginPrepare( int passCount ){
 	DEASSERT_TRUE( passCount < 8 )  // hard limit in shader
 	
 	pState = esPreparing;
+	#ifdef DO_STATE_DEBUG
+		pRenderThread.GetLogger().LogInfoFormat( "ComputeRenderTask.BeginPrepare: this=%p state=%d", this, pState );
+	#endif
 	pStepCount = 0;
-	pCounterSteps = 0;
 	
 	if( passCount > pUBOConfig->GetElementCount() ){
 		pUBOConfig->SetElementCount( passCount );
@@ -224,89 +226,72 @@ void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute )
 	
 	pPass = -1;
 	pState = esBuilding;
+	#ifdef DO_STATE_DEBUG
+		pRenderThread.GetLogger().LogInfoFormat( "ComputeRenderTask.EndPrepare: this=%p state=%d", this, pState );
+	#endif
 	
 	pUBOConfig->UnmapBuffer();
 	pClearCounters();
 }
 
-void deoglComputeRenderTask::MarkBuilt(){
-	DEASSERT_TRUE( pState == esBuilding )
-	pState = esBuilt;
-}
-
-bool deoglComputeRenderTask::SortSteps(){
+bool deoglComputeRenderTask::ReadBackSteps(){
 	DEASSERT_TRUE( pPass == -1 )
-	DEASSERT_TRUE( pState == esBuilt )
+	DEASSERT_TRUE( pState == esBuilding )
 	
-		decTimer timer;
+	int counterSteps;
 	{ // scoping required to make sure buffer is not mapped if pClearCounters() is called
 	const deoglSPBMapBufferRead mapped( pSSBOCounters, 0, 1 );
 	const sCounters &counters = *( sCounters* )pSSBOCounters->GetMappedBuffer();
-	pCounterSteps = counters.counter;
+	counterSteps = counters.counter;
 	}
 	
-	if( pCounterSteps == 0 ){
-		pState = esSorted;
+	pStepCount = 0;
+	
+	if( counterSteps == 0 ){
+		pState = esReady;
+		#ifdef DO_STATE_DEBUG
+			pRenderThread.GetLogger().LogInfoFormat( "ComputeRenderTask.ReadBackSteps(empty): this=%p state=%d", this, pState );
+		#endif
 		return true;
 	}
 	
-	if( pCounterSteps > pSSBOSteps->GetElementCount() ){
-		// SSBO has not been large enough so build shader stopped writing steps to it.
+	if( counterSteps > pSSBOSteps->GetElementCount() ){
+		// SSBO has not been large enough so build and sort shader stopped writing steps to it.
 		// enlarge the SSBO to be large enough then return false to request a rebuild
 		pRenderThread.GetLogger().LogInfoFormat(
-			"ComputeRenderTask.SortSteps: ssbo not large enough, resized from %d to %d",
-			pSSBOSteps->GetElementCount(), pCounterSteps );
+			"ComputeRenderTask.ReadBackSteps: ssbo not large enough, resized from %d to %d",
+			pSSBOSteps->GetElementCount(), counterSteps );
 		
-		pSSBOSteps->SetElementCount( pCounterSteps + 10 );
+		pSSBOSteps->SetElementCount( counterSteps + 10 );
 		pSSBOSteps->EnsureBuffer();
-		
-		pCounterSteps = 0;
 		pClearCounters();
-		
 		pState = esBuilding;
+		#ifdef DO_STATE_DEBUG
+			pRenderThread.GetLogger().LogInfoFormat( "ComputeRenderTask.ReadBackSteps(rebuild): this=%p state=%d", this, pState );
+		#endif
 		return false;
 	}
 	
-	pRenderThread.GetRenderers().GetCompute().SortRenderTask( *this );
-#ifdef DO_READ_BACK_TIMINGS
-	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.SortSteps: sort %dys. %d steps",
-		(int)(timer.GetElapsedTime()*1e6f), pCounterSteps);
-#endif
-	
-	if( pCounterSteps > pStepSize ){
-		if( pSteps ){
-			delete [] pSteps;
-			pSteps = nullptr;
-		}
-		pSteps = new sStep[ pCounterSteps ];
-		pStepSize = pCounterSteps;
-	}
-	
-	pState = esSorted;
-	return true;
-}
-
-void deoglComputeRenderTask::ReadBackSteps(){
-	DEASSERT_TRUE( pPass == -1 )
-	DEASSERT_TRUE( pState == esSorted )
-	
-	if( pCounterSteps == 0 ){
-		pState = esReady;
-		return;
-	}
-	
 		decTimer timer;
-	const deoglSPBMapBufferRead mapped( pSSBOSteps, 0, pCounterSteps );
+	const deoglSPBMapBufferRead mapped( pSSBOSteps, 0, counterSteps );
 	const sStep * const steps = ( const sStep* )pSSBOSteps->GetMappedBuffer();
 	int i;
 	
 #ifdef DO_READ_BACK_TIMINGS
 	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: read %d in %dys",
-		pCounterSteps, (int)(timer.GetElapsedTime()*1e6f));
+		counterSteps, (int)(timer.GetElapsedTime()*1e6f));
 #endif
 	
-	pStepCount = 0;
-	for( i=0; i<pCounterSteps; i++ ){
+	if( counterSteps > pStepSize ){
+		if( pSteps ){
+			delete [] pSteps;
+			pSteps = nullptr;
+		}
+		pSteps = new sStep[ counterSteps ];
+		pStepSize = counterSteps;
+	}
+	
+	for( i=0; i<counterSteps; i++ ){
 		pSteps[ pStepCount++ ] = steps[ i ];
 		i += decMath::max( steps[ i ].subInstanceCount - 1, 0 );
 	}
@@ -318,11 +303,15 @@ void deoglComputeRenderTask::ReadBackSteps(){
 	pSkipSubInstanceGroups = false;
 	
 	pState = esReady;
+	#ifdef DO_STATE_DEBUG
+		pRenderThread.GetLogger().LogInfoFormat( "ComputeRenderTask.ReadBackSteps: this=%p state=%d", this, pState );
+	#endif
 	
 #ifdef DO_READ_BACK_TIMINGS
 	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: copied %d in %dys",
 		pStepCount, (int)(timer.GetElapsedTime()*1e6f));
 #endif
+	return true;
 }
 
 void deoglComputeRenderTask::Render(){

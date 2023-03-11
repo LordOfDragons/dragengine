@@ -116,14 +116,12 @@ public:
 		deoglComputeRenderTask &renderTask, int dispatchOffset );
 	
 	void BuildRenderTaskOcclusion( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
-	
-	/** Sort render task. */
-	void SortRenderTask( deoglComputeRenderTask &renderTask );
 	/*@}*/
 	
 	
 	
 protected:
+	void SortRenderTask( deoglComputeRenderTask &renderTask );
 };
 
 #endif

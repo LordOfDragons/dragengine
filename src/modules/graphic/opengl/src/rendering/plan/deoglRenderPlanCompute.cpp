@@ -97,7 +97,7 @@ pPlan( plan )
 	pSSBOCounters->SetParameterCount( 2 );
 	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
 	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pSSBOCounters->SetElementCount( 2 );
+	pSSBOCounters->SetElementCount( 3 );
 	pSSBOCounters->MapToStd140();
 	
 	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread(), deoglSPBlockSSBO::etRead ) );
@@ -106,6 +106,8 @@ pPlan( plan )
 	pSSBOVisibleElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 	pSSBOVisibleElements->MapToStd140();
 	pSSBOVisibleElements->EnsureBuffer();
+	
+	pSSBOVisibleElements2.TakeOver( new deoglSPBlockSSBO( pSSBOVisibleElements ) );
 	
 	pRTOcclusion.TakeOver( new deoglComputeRenderTask( plan.GetRenderThread() ) );
 	pRTOcclusion->SetFilterSolid( false );
@@ -136,6 +138,7 @@ void deoglRenderPlanCompute::PrepareBuffers(){
 	
 	const int visElCount = ( ( pPlan.GetWorld()->GetCompute().GetElementCount() - 1 ) / 4 ) + 1;
 	pPrepareBuffer( pSSBOVisibleElements, visElCount );
+	pPrepareBuffer( pSSBOVisibleElements2, visElCount );
 	
 	pClearCounters();
 	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareBuffers: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
@@ -315,12 +318,12 @@ void deoglRenderPlanCompute::BuildRTOcclusion( const deoglRenderPlanMasked *mask
 }
 
 void deoglRenderPlanCompute::ReadyRTOcclusion( const deoglRenderPlanMasked *mask ){
-	if( pRTOcclusion->SortSteps() ){
+	if( pRTOcclusion->ReadBackSteps() ){
 		return;
 	}
 	
 	BuildRTOcclusion( mask );
-	DEASSERT_TRUE( pRTOcclusion->SortSteps() )
+	DEASSERT_TRUE( pRTOcclusion->ReadBackSteps() )
 }
 
 

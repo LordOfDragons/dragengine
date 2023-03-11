@@ -5,16 +5,22 @@ precision highp int;
 #include "v130/shared/defren/plan/render_task_sortable.glsl"
 
 
-UBOLAYOUT_BIND(0) readonly buffer RenderTask {
+struct sCounter {
+	uvec3 workGroupSize;
+	uint counter;
+};
+
+UBOLAYOUT_BIND(0) readonly buffer Counters {
+	sCounter pRenderTaskCounters;
+};
+
+UBOLAYOUT_BIND(1) readonly buffer RenderTask {
 	sRenderTaskSortable pRenderTask[];
 };
 
-UBOLAYOUT_BIND(1) writeonly buffer SubInstGroup {
+UBOLAYOUT_BIND(2) writeonly buffer SubInstGroup {
 	uvec4 pSubInstGroup[];
 };
-
-
-uniform uint pStepCount;
 
 
 layout( local_size_x=64 ) in;
@@ -27,8 +33,9 @@ const uint dispatchWorkGroupSize = uint( 64 );
 
 
 void main( void ){
+	uint stepCount = min( pRenderTaskCounters.counter, pRenderTask.length() );
 	uint index = gl_GlobalInvocationID.x;
-	if( index >= pStepCount ){
+	if( index >= stepCount ){
 		return;
 	}
 	

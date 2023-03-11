@@ -149,7 +149,7 @@ deoglRenderPlanTasks::~deoglRenderPlanTasks(){
 // Management
 ///////////////
 
-void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked *mask ){
+void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked *mask, bool rebuild ){
 	deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
 	const deoglDebugTraceGroup dt( pPlan.GetRenderThread(), "PlanTasks.BuildRenderTasks" );
 	const deoglRenderPlanCompute &compute = pPlan.GetCompute();
@@ -165,59 +165,61 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	
 	// we check state here since this could be a rebuild due to too small SSBO size.
 	// rebuilding is not required for all render tasks so check first
-	if( pCRTSolidDepth->GetState() != deoglComputeRenderTask::esSorted ){
+	if( ! ( rebuild && pCRTSolidDepth->GetState() == deoglComputeRenderTask::esReady ) ){
 		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
 		pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
 		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepth, dispatchOffset );
 	}
-	if( pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esSorted ){
+	
+	if( ! ( rebuild && pCRTSolidGeometry->GetState() == deoglComputeRenderTask::esReady ) ){
 		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidGeometry" );
-		pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
+		if( pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esBuilding ){
+			pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
+		}
 		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometry, dispatchOffset );
 	}
-	if( pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esSorted ){
+	
+	if( ! ( rebuild && pCRTSolidDepthXRay->GetState() == deoglComputeRenderTask::esReady ) ){
 		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidDepth" );
-		pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
+		if( pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esBuilding ){
+			pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
+		}
 		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidDepthXRay, dispatchOffset );
 	}
-	if( pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esSorted ){
+	
+	if( ! ( rebuild && pCRTSolidGeometryXRay->GetState() == deoglComputeRenderTask::esReady ) ){
 		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidGeometry" );
-		pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
+		if( pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esBuilding ){
+			pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
+		}
 		renderCompute.BuildRenderTask( pPlan, counters, pCRTSolidGeometryXRay, dispatchOffset );
 	}
 }
 
-void deoglRenderPlanTasks::SortComputeRenderTasks( const deoglRenderPlanMasked *mask ){
+void deoglRenderPlanTasks::FinishReadBackComputeRenderTasks( const deoglRenderPlanMasked *mask ){
 	bool ssbosLargeEnough = true;
-	ssbosLargeEnough &= pCRTSolidDepth->SortSteps();
-	ssbosLargeEnough &= pCRTSolidGeometry->SortSteps();
-	ssbosLargeEnough &= pCRTSolidDepthXRay->SortSteps();
-	ssbosLargeEnough &= pCRTSolidGeometryXRay->SortSteps();
+	ssbosLargeEnough &= pCRTSolidDepth->ReadBackSteps();
+	ssbosLargeEnough &= pCRTSolidGeometry->ReadBackSteps();
+	ssbosLargeEnough &= pCRTSolidDepthXRay->ReadBackSteps();
+	ssbosLargeEnough &= pCRTSolidGeometryXRay->ReadBackSteps();
 	if( ssbosLargeEnough ){
 		return;
 	}
 	
-	BuildComputeRenderTasks( mask );
+	BuildComputeRenderTasks( mask, true );
 	
-	if( pCRTSolidDepth->GetState() == deoglComputeRenderTask::esBuilt ){
-		DEASSERT_TRUE( pCRTSolidDepth->SortSteps() )
+	if( pCRTSolidDepth->GetState() != deoglComputeRenderTask::esReady ){
+		DEASSERT_TRUE( pCRTSolidDepth->ReadBackSteps() )
 	}
-	if( pCRTSolidGeometry->GetState() == deoglComputeRenderTask::esBuilt ){
-		DEASSERT_TRUE( pCRTSolidGeometry->SortSteps() )
+	if( pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esReady ){
+		DEASSERT_TRUE( pCRTSolidGeometry->ReadBackSteps() )
 	}
-	if( pCRTSolidDepthXRay->GetState() == deoglComputeRenderTask::esBuilt ){
-		DEASSERT_TRUE( pCRTSolidDepthXRay->SortSteps() )
+	if( pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esReady ){
+		DEASSERT_TRUE( pCRTSolidDepthXRay->ReadBackSteps() )
 	}
-	if( pCRTSolidGeometryXRay->GetState() == deoglComputeRenderTask::esBuilt ){
-		DEASSERT_TRUE( pCRTSolidGeometryXRay->SortSteps() )
+	if( pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esReady ){
+		DEASSERT_TRUE( pCRTSolidGeometryXRay->ReadBackSteps() )
 	}
-}
-
-void deoglRenderPlanTasks::FinishReadBackComputeRenderTasks(){
-	pCRTSolidDepth->ReadBackSteps();
-	pCRTSolidGeometry->ReadBackSteps();
-	pCRTSolidDepthXRay->ReadBackSteps();
-	pCRTSolidGeometryXRay->ReadBackSteps();
 }
 
 void deoglRenderPlanTasks::StartBuildTasks( const deoglRenderPlanMasked *mask ){
@@ -291,7 +293,6 @@ static void LogRT(deoglRTLogger &l, const char *name, int pass, const deoglRende
 		}
 	}
 }
-
 #endif
 // DEBUG
 

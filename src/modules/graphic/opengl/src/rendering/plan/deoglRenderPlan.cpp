@@ -458,10 +458,6 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	for( i=0; i<pSkyLightCount; i++ ){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->FinishPrepare();
 	}
-	
-	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pTasks->SortComputeRenderTasks( mask );
-	}
 	renderCanvas.SampleDebugInfoPlanPrepareFinish( *this );
 	SPECIAL_TIMER_PRINT("Finish")
 	
@@ -820,8 +816,6 @@ void deoglRenderPlan::pStartFindContent( const deoglRenderPlanMasked *mask ){
 
 void deoglRenderPlan::pWaitFinishedFindContent( const deoglRenderPlanMasked *mask ){
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pCompute->ReadyRTOcclusion( mask );
-		pCompute->ReadVisibleElements();
 		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent( *this );
 		return;
 	}
@@ -1257,6 +1251,9 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 	// render occlusion tests if there is input data. results are read back in
 	// pFinishOcclusionTests to avoid stalling
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pCompute->ReadyRTOcclusion( mask );
+		pCompute->ReadVisibleElements();
+		
 		if( pOcclusionTest->GetInputDataCount() > 0 && pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
 			pOcclusionTest->UpdateSSBO();
 			if( pDebug ){

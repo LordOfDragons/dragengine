@@ -2,10 +2,9 @@
 <shader>
 	<name>DefRen Plan Render Task SubInstGroup Pass 1</name>
 	
-	<parameter name='pStepCount'/>
-	
-	<shaderStorageBlock name='RenderTask' target='0'/>
-	<shaderStorageBlock name='SubInstGroup' target='1'/>
+	<shaderStorageBlock name='Counters' target='0'/>
+	<shaderStorageBlock name='RenderTask' target='1'/>
+	<shaderStorageBlock name='SubInstGroup' target='2'/>
 	
 	<sourceCode unit='compute'>v130/compute/defren/plan/render_task_subinstgroup_pass1.glsl</sourceCode>
 </shader>

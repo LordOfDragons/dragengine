@@ -59,21 +59,12 @@ enum eSortStages{
 
 enum eSortShaderParameters{
 	esspStage,
-	esspLaneSize,
-	esspStepCount
-};
-
-enum eRenderTaskSubInstGroup1Parameters{
-	ertsig1pStepCount
+	esspLaneSize
 };
 
 enum eRenderTaskSubInstGroup2Parameters{
 	ertsig2pStage,
 	ertsig2pLaneSize
-};
-
-enum eRenderTaskSubInstGroup3Parameters{
-	ertsig3pStepCount
 };
 
 
@@ -160,7 +151,6 @@ deoglRenderBase( renderThread )
 	pSSBORenderTaskSubInstGroupCounter->SetParameterCount( 2 );
 	pSSBORenderTaskSubInstGroupCounter->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
 	pSSBORenderTaskSubInstGroupCounter->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pSSBORenderTaskSubInstGroupCounter->SetElementCount( 1 );
 	pSSBORenderTaskSubInstGroupCounter->MapToStd140();
 	
 	
@@ -492,9 +482,10 @@ const deoglSPBlockSSBO &counters, deoglComputeRenderTask &renderTask, int dispat
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 	counters.DeactivateDispatchIndirect();
 	
+	SortRenderTask( renderTask );
+	
 	renderTask.GetSSBOCounters()->GPUFinishedWriting();
 	renderTask.GetSSBOCounters()->GPUReadToCPU( 1 );
-	renderTask.MarkBuilt();
 }
 
 void deoglRenderCompute::BuildRenderTaskOcclusion( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask ){
@@ -519,14 +510,20 @@ void deoglRenderCompute::BuildRenderTaskOcclusion( const deoglRenderPlan &plan, 
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
 		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 	
+	SortRenderTask( renderTask );
+	
 	renderTask.GetSSBOCounters()->GPUFinishedWriting();
 	renderTask.GetSSBOCounters()->GPUReadToCPU( 1 );
-	renderTask.MarkBuilt();
 }
 
+
+
+// Protected Functions
+////////////////////////
+
 void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
-	const int stepCount = renderTask.GetCounterSteps();
-	if( stepCount == 0 ){
+	const int maxCount = renderTask.GetSSBOSteps()->GetElementCount();
+	if( maxCount == 0 ){
 		return;
 	}
 	
@@ -535,9 +532,9 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	
 	
 	// prepare
-	const int maxSubInstGroupECount = ( ( stepCount - 1 ) / 4 ) + 1;
-	if( maxSubInstGroupECount > pSSBORenderTaskSubInstGroups->GetElementCount() ){
-		pSSBORenderTaskSubInstGroups->SetElementCount( maxSubInstGroupECount );
+	const int maxECount = ( ( maxCount - 1 ) / 4 ) + 1;
+	if( maxECount > pSSBORenderTaskSubInstGroups->GetElementCount() ){
+		pSSBORenderTaskSubInstGroups->SetElementCount( maxECount );
 		pSSBORenderTaskSubInstGroups->EnsureBuffer();
 	}
 	
@@ -547,16 +544,15 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	// sort render task
 	pPipelineSortRenderTask->Activate();
 	
-	renderTask.GetSSBOSteps()->Activate( 0 );
+	renderTask.GetSSBOCounters()->Activate( 0 );
+	renderTask.GetSSBOSteps()->Activate( 1 );
 	
 	const int maxLanSize = 128; // 64 work group size * 2
-	const int potStepCount = oglPotOf( stepCount );
+	const int potStepCount = oglPotOf( maxCount );
 	const int workGroupCount = ( ( potStepCount - 1 ) / maxLanSize ) + 1;
 	
-	deoglShaderCompiled &shaderSort = pPipelineSortRenderTask->GetGlShader();
-	shaderSort.SetParameterUInt( esspStepCount, stepCount );
-	
 	// local sorting
+	deoglShaderCompiled &shaderSort = pPipelineSortRenderTask->GetGlShader();
 	shaderSort.SetParameterInt( esspStage, essLocalSort );
 	shaderSort.SetParameterUInt( esspLaneSize, maxLanSize );
 	OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
@@ -592,13 +588,12 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	// pass 1
 	pPipelineRenderTaskSubInstGroup[ 0 ]->Activate();
 	
-	renderTask.GetSSBOSteps()->Activate( 0 );
-	pSSBORenderTaskSubInstGroups->Activate( 1 );
+	renderTask.GetSSBOCounters()->Activate( 0 );
+	renderTask.GetSSBOSteps()->Activate( 1 );
+	pSSBORenderTaskSubInstGroups->Activate( 2 );
 	pSSBORenderTaskSubInstGroupCounter->ActivateAtomic( 0 );
 	
-	pPipelineRenderTaskSubInstGroup[ 0 ]->GetGlShader().SetParameterUInt( ertsig1pStepCount, stepCount );
-	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( ( stepCount - 1 ) / 64 ) + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( ( ( maxCount - 1 ) / 64 ) + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT ) );
 	
 	// pass 2
@@ -641,9 +636,8 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	
 	pSSBORenderTaskSubInstGroups->Activate( 0 );
 	pSSBORenderTaskSubInstGroupCounter->Activate( 1 );
-	renderTask.GetSSBOSteps()->Activate( 2 );
-	
-	pPipelineRenderTaskSubInstGroup[ 2 ]->GetGlShader().SetParameterUInt( ertsig3pStepCount, stepCount );
+	renderTask.GetSSBOCounters()->Activate( 2 );
+	renderTask.GetSSBOSteps()->Activate( 3 );
 	
 	pSSBORenderTaskSubInstGroupCounter->ActivateDispatchIndirect();
 	OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
@@ -651,7 +645,7 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	pSSBORenderTaskSubInstGroupCounter->DeactivateDispatchIndirect();
 	
 	renderTask.GetSSBOSteps()->GPUFinishedWriting();
-	renderTask.GetSSBOSteps()->GPUReadToCPU( stepCount );
+	renderTask.GetSSBOSteps()->GPUReadToCPU();
 }
 
 

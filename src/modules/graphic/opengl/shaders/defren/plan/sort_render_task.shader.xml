@@ -4,9 +4,9 @@
 	
 	<parameter name='pStage'/>
 	<parameter name='pLaneSize'/>
-	<parameter name='pStepCount'/>
 	
-	<shaderStorageBlock name='RenderTask' target='0'/>
+	<shaderStorageBlock name='Counters' target='0'/>
+	<shaderStorageBlock name='RenderTask' target='1'/>
 	
 	<sourceCode unit='compute'>v130/compute/defren/plan/sort_render_task.glsl</sourceCode>
 </shader>

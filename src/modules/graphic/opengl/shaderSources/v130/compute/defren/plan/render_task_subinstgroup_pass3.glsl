@@ -18,12 +18,13 @@ UBOLAYOUT_BIND(1) readonly buffer Counters {
 	sCounter pSubInstGroupCounters[ 1 ];
 };
 
-UBOLAYOUT_BIND(2) buffer RenderTask {
-	sRenderTask pRenderTask[];
+UBOLAYOUT_BIND(2) readonly buffer CountersRenderTask {
+	sCounter pRenderTaskCounters;
 };
 
-
-uniform uint pStepCount;
+UBOLAYOUT_BIND(3) buffer RenderTask {
+	sRenderTask pRenderTask[];
+};
 
 
 layout( local_size_x=64 ) in;
@@ -51,6 +52,9 @@ void main( void ){
 		return;
 	}
 	
-	uint last = index < count - uint( 1 ) ? getSubInstGroup( index + uint( 1 ) ) : pStepCount;
+	uint last = index < count - uint( 1 )
+		? getSubInstGroup( index + uint( 1 ) )
+		: pRenderTaskCounters.counter;
+	
 	pRenderTask[ first ].subInstanceCount = last - first;
 }

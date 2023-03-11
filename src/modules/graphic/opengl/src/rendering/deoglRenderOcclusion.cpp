@@ -631,7 +631,6 @@ const deoglRenderPlanMasked *mask, bool perspective, bool singleSided ) const{
 
 void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	if( GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
-		plan.GetCompute()->GetRTOcclusion()->ReadBackSteps();
 		RenderOcclusionMap( plan, nullptr, plan.GetCompute()->GetRTOcclusion() );
 		return;
 	}

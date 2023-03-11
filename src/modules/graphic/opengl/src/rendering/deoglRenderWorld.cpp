@@ -400,7 +400,7 @@ DEBUG_RESET_TIMER
 	QUICK_DEBUG_START( 15, 19 )
 	//if( ! plan->GetFBOTarget() )
 	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
-		plan.GetTasks()->FinishReadBackComputeRenderTasks();
+		plan.GetTasks()->FinishReadBackComputeRenderTasks( mask );
 	}
 	renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask, false );
 	if( debugMainPass ){

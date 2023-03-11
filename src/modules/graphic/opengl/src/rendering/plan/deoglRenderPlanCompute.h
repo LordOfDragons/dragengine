@@ -89,6 +89,7 @@ private:
 	deoglSPBlockUBO::Ref pUBOFindConfig;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
+	deoglSPBlockSSBO::Ref pSSBOVisibleElements2;
 	
 	deoglComputeRenderTask::Ref pRTOcclusion;
 	

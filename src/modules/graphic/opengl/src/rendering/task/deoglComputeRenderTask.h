@@ -93,8 +93,6 @@ public:
 		esInitial,
 		esPreparing,
 		esBuilding,
-		esBuilt,
-		esSorted,
 		esReady
 	};
 	
@@ -160,8 +158,6 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
-	int pCounterSteps;
-	
 	sStep *pSteps;
 	int pStepCount;
 	int pStepSize;
@@ -212,26 +208,20 @@ public:
 	/** Finish preparing render task. */
 	void EndPrepare( const deoglWorldCompute &worldCompute );
 	
-	/** Render task is now built. */
-	void MarkBuilt();
-	
 	/**
-	 * Sort render steps and begin reading back steps.
+	 * Read back render task steps.
 	 * 
 	 * Checks first if the counters are less than or equal to the steps SSBO element count.
 	 * 
 	 * If the SSBO has not been large enough the SSBO is enlarged, the counter is reset,
 	 * the stage set to esBuilding and false is returned. In this case the caller has to
-	 * rebuild the render task and call SortSteps() again.
+	 * rebuild the render task and call ReadBackSteps() again.
 	 * 
-	 * If the SSBO is large enough sorting is done and true is returned. This prevents the
-	 * steps SSBO from growing very large compared to the size required consuming lots of
-	 * GPU memory for nothing
+	 * If the SSBO is large enough reading back is done and true is returned. This prevents
+	 * the steps SSBO from growing very large compared to the size required consuming lots
+	 * of GPU memory for nothing
 	 */
-	bool SortSteps();
-	
-	/** Read back render task steps. */
-	void ReadBackSteps();
+	bool ReadBackSteps();
 	
 	/** Render task. */
 	void Render();
@@ -412,9 +402,6 @@ public:
 	void SetUseSpecialParamBlock( bool use );
 	
 	
-	
-	/** Steps counter. */
-	inline int GetCounterSteps() const{ return pCounterSteps; }
 	
 	/** Count of steps. */
 	inline int GetStepCount() const{ return pStepCount; }

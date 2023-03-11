@@ -5,14 +5,22 @@ precision highp int;
 #include "v130/shared/defren/plan/render_task_sortable.glsl"
 
 
-UBOLAYOUT_BIND(0) buffer RenderTask {
+struct sCounter {
+	uvec3 workGroupSize;
+	uint counter;
+};
+
+UBOLAYOUT_BIND(0) readonly buffer Counters {
+	sCounter pRenderTaskCounters;
+};
+
+UBOLAYOUT_BIND(1) buffer RenderTask {
 	sRenderTaskSortable pRenderTask[];
 };
 
 
 uniform int pStage;
 uniform uint pLaneSize;
-uniform uint pStepCount;
 
 
 layout( local_size_x=64 ) in;
@@ -182,10 +190,10 @@ bool globalStepLessThanEqual( in uvec2 i ){
 }
 
 // global compare and swap on shared memory
-void globalCompareAndSwap( in uvec2 i ){
+void globalCompareAndSwap( in uint stepCount, in uvec2 i ){
 	// if flip would touch values outside the step count return false
 	// to never sort otherwise wrong values end up in the sorted result
-	if( any( greaterThanEqual( i, uvec2( pStepCount ) ) ) ){
+	if( any( greaterThanEqual( i, uvec2( stepCount ) ) ) ){
 		return;
 	}
 	
@@ -206,24 +214,24 @@ void globalCompareAndSwap( in uvec2 i ){
 
 // global flip on ssbo memory. local memory is not helping here since each used
 // value is touched exactly one.
-void globalFlip( in uint h ){
+void globalFlip( in uint stepCount, in uint h ){
 	uint t = gl_GlobalInvocationID.x;
 	uint hh = h / uint( 2 );
 	uint thh = t % hh;
 	
-	globalCompareAndSwap(
+	globalCompareAndSwap( stepCount,
 		  uvec2( ( ( t * uint( 2 ) ) / h ) * h )
 		+ uvec2( thh, h - thh - uint( 1 ) ) );
 }
 
 // global disperse on ssbo memory. local memory is not helping here since each used
 // value is touched exactly one.
-void globalDisperse( in uint h ){
+void globalDisperse( in uint stepCount, in uint h ){
 	uint t = gl_GlobalInvocationID.x;
 	uint hh = h / uint( 2 );
 	uint thh = t % hh;
 	
-	globalCompareAndSwap(
+	globalCompareAndSwap( stepCount,
 		  uvec2( ( ( t * uint( 2 ) ) / h ) * h )
 		+ uvec2( thh, thh + hh ) );
 }
@@ -237,6 +245,7 @@ const int esGlobalDisperse = 3;
 
 
 void main( void ){
+	uint stepCount = min( pRenderTaskCounters.counter, pRenderTask.length() );
 	uint t = gl_LocalInvocationID.x;
 	uint offset = pLaneSize * gl_WorkGroupID.x;
 	uint limit = cMaxLaneSize;
@@ -246,18 +255,18 @@ void main( void ){
 	// cooperative copying steps from ssbo into shared memory
 	if( pStage <= esLocalDisperse ){
 		// entire block is outside range
-		if( offset >= pStepCount ){
+		if( offset >= stepCount ){
 			return;
 		}
 		
-		limit = pStepCount - offset;
+		limit = stepCount - offset;
 		
 		// t*2 => offset+t*2 and t*2+1 => offset+t*2+1
 		i = uvec4( t * uint( 2 ) );
 		i.zw += uvec2( offset );
 		i.yw += uvec2( 1 );
 		
-		valid = lessThan( i.zw, uvec2( pStepCount ) );
+		valid = lessThan( i.zw, uvec2( stepCount ) );
 		
 		if( valid.x ){
 			vSteps[ i.x ].params1 = pRenderTask[ i.z ].params1;
@@ -277,10 +286,10 @@ void main( void ){
 		localDisperse( limit, pLaneSize );
 		
 	}else if( pStage == esGlobalFlip ){
-		globalFlip( pLaneSize );
+		globalFlip( stepCount, pLaneSize );
 		
 	}else{ // pStage == esGlobalFlip
-		globalDisperse( pLaneSize );
+		globalDisperse( stepCount, pLaneSize );
 	}
 	
 	// cooperative copying steps from shared memory into ssbo
