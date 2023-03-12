@@ -43,6 +43,7 @@
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/face/deoglModelFace.h"
+#include "../model/texture/deoglModelTexture.h"
 #include "../occlusiontest/mesh/deoglDynamicOcclusionMesh.h"
 #include "../occlusiontest/mesh/deoglROcclusionMesh.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
@@ -158,16 +159,23 @@ void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeo
 	
 	for( i=0; i<lodCount; i++ ){
 		const deoglRComponentLOD &lod = pComponent.GetLODAt( i );
-		const deoglVAO * const vao = lod.GetUseVAO();
+		const deoglModelLOD &modelLod = lod.GetModelLODRef();
+		if( modelLod.GetFaceCount() == 0 ){
+			continue;
+		}
 		
-		if( ! vao || ! vao->GetRTSVAO() || lod.GetModelLODRef().GetFaceCount() == 0 ){
+		const deoglVAO * const vao = lod.GetUseVAO();
+		if( ! vao || ! vao->GetRTSVAO() ){
 			continue;
 		}
 		
 		for( j=0; j<textureCount; j++ ){
+			if( modelLod.GetTextureAt( j ).GetFaceCount() == 0 ){
+				continue;
+			}
+			
 			const deoglRComponentTexture &texture = pComponent.GetTextureAt( j );
 			deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
-			
 			if( ! skinTexture ){
 				continue;
 			}

@@ -302,7 +302,6 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContent" );
 	const deoglRenderPlanCompute &planCompute = plan.GetCompute();
 	
-	// find content
 	pPipelineFindContentElement->Activate();
 	
 	planCompute.GetUBOFindConfig()->Activate( 0 );
@@ -539,6 +538,7 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	
 	
 	// sort render task
+	deoglDebugTraceGroup dtSort( renderThread, "SortSteps" );
 	pPipelineSortRenderTask->Activate();
 	
 	renderTask.GetSSBOCounters()->Activate( 0 );
@@ -578,9 +578,12 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 			OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
 		}
 	}
+	dtSort.Close();
+	
 	
 	
 	// subinstance grouping
+	deoglDebugTraceGroup dtSubInst( renderThread, "SubInstGrouping" );
 	const int maxECount = ( ( maxCount - 1 ) / 4 ) + 1;
 	if( maxECount > pSSBORenderTaskSubInstGroups->GetElementCount() ){
 		pSSBORenderTaskSubInstGroups->SetElementCount( maxECount );
@@ -600,6 +603,7 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT ) );
 	
 	// pass 2
+	deoglDebugTraceGroup dtSubInst2( renderThread, "Pass2" );
 	pPipelineRenderTaskSubInstGroup[ 1 ]->Activate();
 	
 	pSSBOCounters->Activate( 0 );
@@ -633,6 +637,7 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 			OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
 		}
 	}
+	dtSubInst2.Close();
 	
 	// pass 3
 	pPipelineRenderTaskSubInstGroup[ 2 ]->Activate();

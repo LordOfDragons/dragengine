@@ -38,6 +38,7 @@
 #include "../../component/deoglRComponent.h"
 #include "../../debug/debugSnapshot.h"
 #include "../../debug/deoglDebugInformation.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../gi/deoglGIState.h"
 #include "../../gi/deoglGICascade.h"
@@ -384,17 +385,21 @@ void deoglRenderPlanSkyLight::PrepareBuffers(){
 }
 
 void deoglRenderPlanSkyLight::ReadVisibleElements(){
+	const deoglDebugTraceGroup debugTrace( pPlan.GetRenderThread(), "PlanSkyLight.ReadVisibleElements" );
 	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
 	if( wcompute.GetElementCount() == 0 ){
 		return;
 	}
 	
-		// decTimer timer;
+		decTimer timer;
+	int indexCount;
+	{
 	const deoglSPBMapBufferRead mappedCounters( pSSBOCounters, 0, 1 );
 	const deoglRenderCompute::sCounters * const counters =
 		( deoglRenderCompute::sCounters* )pSSBOCounters->GetMappedBuffer();
-		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
-	const int indexCount = counters[ 0 ].counter;
+	indexCount = counters[ 0 ].counter;
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: counter %d in %dys", indexCount, (int)(timer.GetElapsedTime()*1e6f));
+	}
 	if( indexCount == 0 ){
 		return;
 	}
@@ -450,17 +455,21 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 }
 
 void deoglRenderPlanSkyLight::ReadVisibleElementsGI(){
+	const deoglDebugTraceGroup debugTrace( pPlan.GetRenderThread(), "PlanSkyLight.ReadVisibleElementsGI" );
 	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
 	if( wcompute.GetElementCount() == 0 ){
 		return;
 	}
 	
 		// decTimer timer;
+	int indexCount;
+	{
 	const deoglSPBMapBufferRead mappedCounters( pSSBOCountersGI, 0, 1 );
 	const deoglRenderCompute::sCounters * const counters =
 		( deoglRenderCompute::sCounters* )pSSBOCountersGI->GetMappedBuffer();
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
-	const int indexCount = counters[ 0 ].counter;
+	indexCount = counters[ 0 ].counter;
+	}
 	if( indexCount == 0 ){
 		return;
 	}

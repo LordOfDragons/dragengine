@@ -5,7 +5,11 @@ precision highp int;
 #include "v130/shared/defren/plan/find_config.glsl"
 #include "v130/shared/defren/plan/world_element.glsl"
 #include "v130/shared/defren/plan/world_element_constants.glsl"
-#include "v130/shared/defren/plan/intersect_frustum.glsl"
+
+#ifdef CULL_VIEW_FRUSTUM
+	#include "v130/shared/defren/plan/intersect_frustum.glsl"
+#endif
+
 #include "v130/shared/defren/plan/intersect_gi.glsl"
 
 #ifdef CULL_SKY_LIGHT_FRUSTUM

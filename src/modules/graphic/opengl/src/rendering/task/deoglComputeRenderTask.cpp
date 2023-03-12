@@ -473,8 +473,8 @@ void deoglComputeRenderTask::DebugSimple( deoglRTLogger &logger, bool sorted ){
 		const sStep &s = ss ? ss[ i ] : pSteps[ i ];
 		const deoglRenderTaskSharedInstance &rtsi = rtsPool.GetInstanceAt(s.instance);
 		
-		logger.LogInfoFormat( "- %d: p=%d t=%d v=%d i=%d [pc=%d fp=%d ic=%d fi=%d] si[c=%d i=%d f=%x]", i,
-			s.pipeline, s.tuc, s.vao, s.instance, rtsi.GetPointCount(), rtsi.GetFirstPoint(),
+		logger.LogInfoFormat( "- %d: P=%d p=%d t=%d v=%d i=%d [pc=%d fp=%d ic=%d fi=%d] si[c=%d i=%d f=%x]",
+			i, s.pass, s.pipeline, s.tuc, s.vao, s.instance, rtsi.GetPointCount(), rtsi.GetFirstPoint(),
 			rtsi.GetIndexCount(), rtsi.GetFirstIndex(), s.subInstanceCount, s.spbInstance, s.specialFlags );
 	}
 	

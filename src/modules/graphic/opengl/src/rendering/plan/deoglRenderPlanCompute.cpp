@@ -141,6 +141,7 @@ void deoglRenderPlanCompute::PrepareBuffers(){
 }
 
 void deoglRenderPlanCompute::ReadVisibleElements(){
+	const deoglDebugTraceGroup debugTrace( pPlan.GetRenderThread(), "PlanCompute.ReadVisibleElements" );
 	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
 	if( wcompute.GetElementCount() == 0 ){
 		return;

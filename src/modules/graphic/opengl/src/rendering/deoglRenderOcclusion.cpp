@@ -293,12 +293,14 @@ pAddToRenderTask( NULL )
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineOccTest = pipelineManager.GetWith( pipconf );
 		
-		defines.SetDefines( "WITH_COMPUTE_RENDER_TASK" );
+		defines = commonDefines;
+		defines.SetDefines( "ENSURE_MIN_SIZE", "WITH_COMPUTE_RENDER_TASK" );
 		pipconf.SetShader( renderThread, "DefRen Occlusion Test Compute RT", defines );
 		pPipelineOccTestComputeRT = pipelineManager.GetWith( pipconf );
 		
 		// occlusion test transform feedback dual
-		defines.SetDefine( "DUAL_OCCMAP", true );
+		defines = commonDefines;
+		defines.SetDefines( "ENSURE_MIN_SIZE", "DUAL_OCCMAP" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineOccTestDual = pipelineManager.GetWith( pipconf );
 		
@@ -529,13 +531,13 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 	// 
 	// for this reason the last line looks different than above because m34 is 0:
 	//   m34' = offset
-	// 
-	// for compute render task the offset has to be kept since the world element data is
-	// relative to the world reference position not the camera position
 	
 	decDMatrix testMatrix, testMatrixStereo;
 	
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		// for compute render task the offset has to be kept since the world element data is
+		// relative to the world reference position not the camera position
+		
 		testMatrix = matrixCamera * matrixProjection;
 		testMatrix.a34 = matrixCamera.a34 * zscale + zoffset; // no bias while sampling
 		
@@ -604,8 +606,12 @@ deoglRenderPlanSkyLight &planSkyLight ){
 	// be transformed into world space relative to camera position. now the position is
 	// in the same space as the camera tests used. then the occlusion matrix is applied
 	// the same way as camera tests did
-	const decMatrix matrixLightToCamera( matrixCamera.Invert()
-		* decDMatrix::CreateTranslation( referencePosition - camPos ) );
+	decMatrix matrixLightToCamera( matrixCamera.Invert() );
+	
+	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		// with compute render task test matrix includes camera position otherwise not
+		matrixLightToCamera *= decDMatrix::CreateTranslation( referencePosition - camPos );
+	}
 	
 	const decMatrix matrixCamera2( matrixLightToCamera * plan.GetOcclusionTestMatrix() );
 	const decMatrix matrixCamera2Stereo( matrixLightToCamera * plan.GetOcclusionTestMatrixStereo() );
@@ -1009,7 +1015,8 @@ const decMatrix &matrixCamera2Stereo ){
 	frustumMatrix.Transform( fpts[ 4 ], -xfar, -yfar, zfar ); // bottom-left
 	
 	for( i=0; i<4; i++ ){
-		frustumPlaneNormal[ i ] = ( ( fpts[ 1 + i ] - fpts[ 0 ] ) % ( fpts[ 1 + ( ( 3 + i ) % 4 ) ] - fpts[ 0 ] ) ).Normalized();
+		frustumPlaneNormal[ i ] = ( ( fpts[ 1 + i ] - fpts[ 0 ] )
+			% ( fpts[ 1 + ( ( 3 + i ) % 4 ) ] - fpts[ 0 ] ) ).Normalized();
 		
 		if( plan.GetFlipCulling() ){
 			// mirroring causes normals to point outside instead of inside
@@ -1036,7 +1043,8 @@ const decMatrix &matrixCamera2Stereo ){
 	
 	shader.SetParameterUInt( spttfInputDataCount, inputDataCount );
 	shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
-	shader.SetParameterFloat( spttfbScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
+	shader.SetParameterFloat( spttfbScaleSize,
+		( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 	shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
 	shader.SetParameterFloat( spttfbClipNear, clipNear );
 	shader.SetParameterMatrix4x4( spttfbMatrix2, matrixCamera2 );

@@ -372,13 +372,14 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 		ssboIndex.SetElementCount( countIndex );
 	}
 	
-	const deoglSPBMapBuffer mappedData( ssboData ), mappedIndex( ssboIndex );
+	const deoglSPBMapBuffer mappedData( ssboData, 0, pUpdateElementGeometryCount );
+	const deoglSPBMapBuffer mappedIndex( ssboIndex, 0, countIndex );
 	deoglWorldComputeElement::sDataElementGeometry * const dataData =
 		( deoglWorldComputeElement::sDataElementGeometry* )ssboData.GetMappedBuffer();
 	uint32_t * const dataIndex = ( uint32_t* )ssboIndex.GetMappedBuffer();
 	
-	memset( dataData, 0, ssboData.GetElementStride() * pUpdateElementGeometryCount );
-	memset( dataIndex, 0, ssboIndex.GetElementStride() * countIndex );
+	ssboData.Clear();
+	ssboIndex.Clear();
 	
 	int j, nextIndex = 0;
 	
