@@ -232,7 +232,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglComputeRenderTask *computeRenderTask = nullptr;
 	
 	// height terrain has to come first since it has to be handled differently
-	deoglDebugTraceGroup debugTraceHT( renderThread, "GeometryPass.RenderSolidGeometryPass.HeightTerrain" );
+	deoglDebugTraceGroup debugTraceHT( renderThread, "HeightTerrain" );
 	renderTask = xray ? &tasks.GetSolidGeometryHeight1XRayTask() : &tasks.GetSolidGeometryHeight1Task();
 	if( renderTask->GetPipelineCount() > 0 ){
 		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
@@ -246,7 +246,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	}
 	
 	// other content
-	deoglDebugTraceGroup debugTraceOther( debugTraceHT, "GeometryPass.RenderSolidGeometryPass.Geometry" );
+	deoglDebugTraceGroup debugTraceOther( debugTraceHT, "Geometry" );
 	if( useComputeRenderTask ){
 		computeRenderTask = xray ? tasks.GetCRTSolidGeometryXRay() : tasks.GetCRTSolidGeometry();
 		// computeRenderTask->DebugSimple(renderThread.GetLogger(), false);
@@ -265,7 +265,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	// outline
 	if( ! useComputeRenderTask ){
-		deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "GeometryPass.RenderSolidGeometryPass.Outline" );
+		deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "Outline" );
 		renderTask = xray ? &tasks.GetSolidGeometryOutlineXRayTask() : &tasks.GetSolidGeometryOutlineTask();
 		if( renderTask->GetPipelineCount() > 0 ){
 			renderTask->SetRenderParamBlock( renworld.GetRenderPB() );

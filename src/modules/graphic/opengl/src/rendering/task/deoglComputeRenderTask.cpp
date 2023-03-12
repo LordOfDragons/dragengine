@@ -129,7 +129,7 @@ deoglComputeRenderTask::~deoglComputeRenderTask(){
 // Management
 ///////////////
 
-#define DO_READ_BACK_TIMINGS
+// #define DO_READ_BACK_TIMINGS
 // #define DO_STATE_DEBUG
 
 void deoglComputeRenderTask::BeginPrepare( int passCount ){

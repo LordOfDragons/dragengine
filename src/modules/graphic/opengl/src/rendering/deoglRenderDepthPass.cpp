@@ -383,6 +383,14 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 			addToRenderTask.AddParticles( collideList );
 		}
 		
+		// outline
+		addToRenderTask.SetOutline( true );
+		addToRenderTask.SetFilterDecal( true );
+		addToRenderTask.SetDecal( false );
+		
+		addToRenderTask.AddComponents( collideList );
+		
+		// prepare render task
 		renderTask->PrepareForRender();
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthTask, true );
 	}
@@ -437,49 +445,22 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	
 	
 	// outline
-	const deoglDebugTraceGroup debugTraceOutline( renderThread, "DepthPass.RenderDepth.Outline" );
-	if( solid ){
+	if( ! renderThread.GetChoices().GetUseComputeRenderTask() && solid ){
+		const deoglDebugTraceGroup debugTraceOutline( renderThread, "DepthPass.RenderDepth.Outline" );
+		
 		deoglRenderPlanTasks &tasks = plan.GetTasks();
 		renderTask = xray ? &tasks.GetSolidDepthOutlineXRayTask() : &tasks.GetSolidDepthOutlineTask();
 		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
 		
-	}else{
-		DebugTimer1Reset( plan, true );
-		renderTask = renworld.GetRenderTask();
-		deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
-		
-		renderTask->Clear();
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		renderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
-		
-		addToRenderTask.Reset();
-		addToRenderTask.SetOutline( true );
-		addToRenderTask.SetFilterDecal( true );
-		addToRenderTask.SetDecal( false );
-		addToRenderTask.SetSolid( solid );
-		addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
-		addToRenderTask.SetNoRendered( mask );
-		if( xray ){
-			addToRenderTask.SetFilterXRay( true );
-			addToRenderTask.SetXRay( xray );
-		}
-		addToRenderTask.SetSkinPipelineType( pipelineType );
-		addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
-		
-		addToRenderTask.AddComponents( collideList );
-		
-		renderTask->PrepareForRender();
-		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthTask, true );
-	}
-	
-	if( renderTask->GetPipelineCount() > 0 ){
-		rengeom.RenderTask( *renderTask );
-		
-		if( solid ){
-			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDepthRender, true );
+		if( renderTask->GetPipelineCount() > 0 ){
+			rengeom.RenderTask( *renderTask );
 			
-		}else{
-			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthRender, true );
+			if( solid ){
+				DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDepthRender, true );
+				
+			}else{
+				DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthRender, true );
+			}
 		}
 	}
 	

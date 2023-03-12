@@ -66,19 +66,20 @@ void deoglRPTBuildRTsGeometry::Run(){
 		return;
 	}
 	
+	const bool useComputeRenderTask = pPlan.GetPlan().GetRenderThread().GetChoices().GetUseComputeRenderTask(); // TEMP! removed once properly working in compute render task
 	decTimer timer;
 	try{
 		pInitPipelineModifier();
 		
-		pSolid( false );
+		if(!useComputeRenderTask) pSolid( false );
 		pSolidTerrain( false );
-		pSolidOutline( false );
-		pSolidDecals( false );
+		if(!useComputeRenderTask) pSolidOutline( false );
+		if(!useComputeRenderTask) pSolidDecals( false );
 		
-		pSolid( true );
+		if(!useComputeRenderTask) pSolid( true );
 		pSolidTerrain( true );
-		pSolidOutline( true );
-		pSolidDecals( true );
+		if(!useComputeRenderTask) pSolidOutline( true );
+		if(!useComputeRenderTask) pSolidDecals( true );
 		
 	}catch( const deException &e ){
 		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
