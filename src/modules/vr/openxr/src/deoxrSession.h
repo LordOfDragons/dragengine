@@ -49,6 +49,17 @@ public:
 		egaOpenGL
 	};
 	
+	/** Swap chain formats. */
+	enum eSwapchainFormats{
+		escfGlRgba16Ext = 0x805b, //<! GL_RGBA16_EXT
+		escfGlRgba16f = 0x881a, //<! GL_RGBA16F
+		escfGlRgb16f = 0x881b, //<! GL_RGB16F
+		escfGlSrgb8Ext = 0x8c41, //<! GL_SRGB8_EXT
+		escfGlSrgb8Alpha8Ext = 0x8c43, //<! GL_SRGB8_ALPHA8_EXT
+		escfGlRgba8Ext = 0x8058, //<! GL_RGBA8_EXT
+		escfGlR11fG11fB10f = 0x8c3a, //<! GL_R11F_G11F_B10F
+	};
+	
 	
 	
 private:
@@ -223,6 +234,9 @@ public:
 	
 	/** Restore OpenGL current. */
 	void RestoreOpenGLCurrent();
+	
+	/** Swapchain format is supported. */
+	bool HasSwapchainFormat( eSwapchainFormats format ) const;
 	/*@}*/
 	
 	

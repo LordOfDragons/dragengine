@@ -528,6 +528,16 @@ void deoxrSession::RestoreOpenGLCurrent(){
 	#endif
 }
 
+bool deoxrSession::HasSwapchainFormat( deoxrSession::eSwapchainFormats format ) const{
+	int i;
+	for( i=0; i<pSwapchainFormatCount; i++ ){
+		if( pSwapchainFormats[ i ] == format ){
+			return true;
+		}
+	}
+	return false;
+}
+
 
 
 // Private Functions
@@ -589,16 +599,4 @@ void deoxrSession::pEnumSwapchainFormats(){
 		const int format = ( int )pSwapchainFormats[ i ];
 		instance.GetOxr().LogInfoFormat( "- %d (0x%x)", format, format );
 	}
-	
-	/*
-	Enumerate Swapchain Formats:
-	- 32859 (0x805b) => GL_RGBA16_EXT
-	- 34842 (0x881a) => GL_RGBA16F
-	- 34843 (0x881b) => GL_RGB16F
-	- 35905 (0x8c41) => GL_SRGB8_EXT
-	- 35907 (0x8c43) => GL_SRGB8_ALPHA8_EXT
-	- 33189 (0x81a5) => GL_DEPTH_COMPONENT16_SGIX
-	- 33190 (0x81a6) => GL_DEPTH_COMPONENT24_SGIX
-	- 33191 (0x81a7) => GL_DEPTH_COMPONENT32_SGIX
-	*/
 }
