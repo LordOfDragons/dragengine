@@ -774,6 +774,80 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	renderTask.GetSSBOSteps()->GPUReadToCPU();
 }
 
+/*
+
+// set initial value for each data point. if a data point is valid a value of 1
+// is written to indicate incrementing the final output index by 1. if the data
+// point is invalid (has to be skipped) a value of 0 is written. this does not
+// increment the final output index and thus skips the data point later on
+// 
+// note: this pass does not require clearing since it writes each value
+
+uint index = gl_GlobalInvocationID.x;
+if(index >= pDataPointCount) return;
+
+finalIndices[index] = isValid(input[index]) ? uint(1) : uint(0)
+
+
+
+// downsample data points using sum operator. this requires a second ssbo with
+// the same size as the data points ssbo. the downsampled data values are packed
+// into this ssbo. this leaves the last data point unused since we need the
+// downsampling only down to a size of 2 not 1.
+// 
+// the most simple solution is using a multipass algorithm with glMemoryBarrier()
+// between each call. the data point count is halved each round (including round 0).
+// furthermore two offsets are set in a shader uniform to offset reading and writing
+// 
+// note: for round 0 the input ssbo is the data point ssbo and the output ssbo
+//       is the downsample ssbo. for all other rounds both are the downsample ssbo
+// 
+// note: for 100k data points this requires 16 rounds, for 200k 17 rounds
+
+uint index = gl_GlobalInvocationID.x;
+if(index >= pDataPointCount) return;
+
+output[pWriteOffset + index] = input[pReadOffset + index]) + input[pReadOffset + index + uint(1)];
+
+
+
+// update data points adding downsampled values. this can be done using a single
+// shader run since we only read multiple values and sum them up
+// 
+// note: for 100k data points this requires 16 loops, for 200k 17 loops
+
+uint index = gl_GlobalInvocationID.x;
+if(index >= pDataPointCount) return;
+
+// pDownsampleSize; // size of first down sample area
+uint value = finalIndices[index];
+uint blockOffset = uint(0);
+uint offset = index;
+uint n;
+
+for(n=pDownsampleSize; n>1; n/=2){
+	offset /= uint(2);
+	value += downsample[blockOffset + offset];
+	blockOffset += n;
+}
+finalIndices[index] = value;
+
+
+
+// now the data points can be written in the compacted form to the final ssbo.
+// this has to be a different ssbo since the processing order is unknown
+// 
+// note: if isValid() is more complex an alternate solution would be to use:
+//       isValid = index == 0 || finalIndices[index] > finalIndices[index-1]
+
+uint index = gl_GlobalInvocationID.x;
+if(index >= pDataPointCount) return;
+
+if(isValid(input[index])){
+	result[finalIndices[index]] = input[index];
+}
+
+*/
 
 
 // Protected Functions
