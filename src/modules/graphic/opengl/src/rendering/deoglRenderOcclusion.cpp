@@ -310,6 +310,11 @@ pAddToRenderTask( NULL )
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineOccTestSun = pipelineManager.GetWith( pipconf );
 		
+		defines = commonDefines;
+		defines.SetDefines( "ENSURE_MIN_SIZE", "FRUSTUM_TEST", "WITH_COMPUTE_RENDER_TASK" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineOccTestSunComputeRT = pipelineManager.GetWith( pipconf );
+		
 		
 		
 		
@@ -569,12 +574,12 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 }
 
 
-void deoglRenderOcclusion::RenderTestsSkyLayer( deoglRenderPlan &plan,
-deoglRenderPlanSkyLight &planSkyLight ){
+void deoglRenderOcclusion::RenderTestsSkyLayer( deoglRenderPlanSkyLight &planSkyLight ){
 	DEBUG_RESET_TIMERS;
 	// calculate the camera matrix fitting around all splits. the camera matrix transform
 	// the points into the range [-1..1] for all axes
 	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "Occlusion.RenderTestsSkyLayer" );
+	const deoglRenderPlan &plan = planSkyLight.GetPlan();
 	const decDVector &referencePosition = plan.GetWorld()->GetReferencePosition();
 	const decVector &minExtend = planSkyLight.GetFrustumBoxMinExtend();
 	const decVector &maxExtend = planSkyLight.GetFrustumBoxMaxExtend();
@@ -617,7 +622,7 @@ deoglRenderPlanSkyLight &planSkyLight ){
 	const decMatrix matrixCamera2Stereo( matrixLightToCamera * plan.GetOcclusionTestMatrixStereo() );
 	DEBUG_PRINT_TIMER( "Prepare" );
 	
-	RenderOcclusionTestsSun( plan, *planSkyLight.GetOcclusionTest(), *plan.GetOcclusionMap(),
+	RenderOcclusionTestsSun( planSkyLight, *planSkyLight.GetOcclusionTest(), *plan.GetOcclusionMap(),
 		plan.GetOcclusionMapBaseLevel(), -100.0f, matrixCamera, -1.0f, matrixCamera2, matrixCamera2Stereo );
 	DEBUG_PRINT_TIMER( "Render" );
 }
@@ -976,18 +981,12 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 	DEBUG_PRINT_TIMER( "RenderOcclusionTests Compute" );
 }
 
-void deoglRenderOcclusion::RenderOcclusionTestsSun( deoglRenderPlan &plan,
+void deoglRenderOcclusion::RenderOcclusionTestsSun( deoglRenderPlanSkyLight &planSkyLight,
 deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
 const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2,
 const decMatrix &matrixCamera2Stereo ){
-	if( occlusionTest.GetInputDataCount() == 0 ){
-		return;
-	}
-	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderOcclusionTestsSun" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int inputDataCount = occlusionTest.GetInputDataCount();
 	
 	decVector frustumPlaneNormal[ 4 ]; // left, top, right, bottom
 	float frustumFactorAdd[ 4 ]; // left, top, right, bottom
@@ -997,6 +996,7 @@ const decMatrix &matrixCamera2Stereo ){
 	// TODO it is also possible to cull the other end of the shadow shaft. this could potentially help in cases
 	//      where the sun is behind the player and the object is between the frustum and the sun. this culling
 	//      would have to be done with the other planes (those facing away from the sun).
+	const deoglRenderPlan &plan = planSkyLight.GetPlan();
 	const float fov = plan.GetCameraFov();
 	const float fovRatio = plan.GetCameraFovRatio();
 	const float zfar = plan.GetCameraViewDistance();
@@ -1037,41 +1037,99 @@ const decMatrix &matrixCamera2Stereo ){
 	
 	DEBUG_PRINT_TIMER( "RenderOcclusionTestsSun Entering" );
 	
-	pPipelineOccTestSun->Activate();
-	deoglShaderCompiled &shader = pPipelineOccTestSun->GetGlShader();
-	DEBUG_PRINT_TIMER( "Activate FBO" );
-	
-	shader.SetParameterUInt( spttfInputDataCount, inputDataCount );
-	shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
-	shader.SetParameterFloat( spttfbScaleSize,
-		( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
-	shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
-	shader.SetParameterFloat( spttfbClipNear, clipNear );
-	shader.SetParameterMatrix4x4( spttfbMatrix2, matrixCamera2 );
-	shader.SetParameterFloat( spttfbClipNear2, clipNear2 );
-	shader.SetParameterVector3( spttfbFrustumNormal1, frustumPlaneNormal[ 0 ] );
-	shader.SetParameterVector3( spttfbFrustumNormal2, frustumPlaneNormal[ 1 ] );
-	shader.SetParameterVector3( spttfbFrustumNormal3, frustumPlaneNormal[ 2 ] );
-	shader.SetParameterVector3( spttfbFrustumNormal4, frustumPlaneNormal[ 3 ] );
-	shader.SetParameterFloat( spttfbFrustumTestAdd, frustumFactorAdd[ 0 ],
-		frustumFactorAdd[ 1 ], frustumFactorAdd[ 2 ], frustumFactorAdd[ 3 ] );
-	shader.SetParameterFloat( spttfbFrustumTestMul, frustumFactorMul[ 0 ],
-		frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
-	if( plan.GetRenderStereo() ){
-		shader.SetParameterMatrix4x4( spttfbMatrix2Stereo, matrixCamera2Stereo );
+	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+		const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderOcclusionTestsSun" );
+		deoglRenderCompute &renderCompute = renderThread.GetRenderers().GetCompute();
+		const deoglWorldCompute &worldCompute = plan.GetWorld()->GetCompute();
+		
+		renderCompute.GetSSBOCounters()->CopyData( planSkyLight.GetSSBOCounters(),
+			deoglRenderCompute::ecTempCounter, 1, 0 );
+		planSkyLight.GetSSBOCounters()->ClearDataUInt( 0, 1, 0, 1, 1, 0 );
+		
+		pPipelineOccTestSunComputeRT->Activate();
+		deoglShaderCompiled &shader = pPipelineOccTestSunComputeRT->GetGlShader();
+		
+		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
+		shader.SetParameterFloat( spttfbScaleSize,
+			( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
+		shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
+		shader.SetParameterFloat( spttfbClipNear, clipNear );
+		shader.SetParameterMatrix4x4( spttfbMatrix2, matrixCamera2 );
+		shader.SetParameterFloat( spttfbClipNear2, clipNear2 );
+		shader.SetParameterVector3( spttfbFrustumNormal1, frustumPlaneNormal[ 0 ] );
+		shader.SetParameterVector3( spttfbFrustumNormal2, frustumPlaneNormal[ 1 ] );
+		shader.SetParameterVector3( spttfbFrustumNormal3, frustumPlaneNormal[ 2 ] );
+		shader.SetParameterVector3( spttfbFrustumNormal4, frustumPlaneNormal[ 3 ] );
+		shader.SetParameterFloat( spttfbFrustumTestAdd, frustumFactorAdd[ 0 ],
+			frustumFactorAdd[ 1 ], frustumFactorAdd[ 2 ], frustumFactorAdd[ 3 ] );
+		shader.SetParameterFloat( spttfbFrustumTestMul, frustumFactorMul[ 0 ],
+			frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
+		if( plan.GetRenderStereo() ){
+			shader.SetParameterMatrix4x4( spttfbMatrix2Stereo, matrixCamera2Stereo );
+		}
+		shader.SetParameterUInt( spttfbCullFilter, ~0 );
+		
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		
+		worldCompute.GetSSBOElements()->Activate( 0 );
+		planSkyLight.GetSSBOVisibleElements()->Activate( 1 );
+		renderCompute.GetSSBOCounters()->Activate( 2 );
+		planSkyLight.GetSSBOVisibleElements2()->Activate( 3 );
+		planSkyLight.GetSSBOCounters()->ActivateAtomic( 0 );
+		
+		renderCompute.GetSSBOCounters()->ActivateDispatchIndirect();
+		OGL_CHECK( renderThread, pglDispatchComputeIndirect(
+			renderCompute.CounterDispatchOffset( deoglRenderCompute::ecTempCounter ) ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+			| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+		renderCompute.GetSSBOCounters()->DeactivateDispatchIndirect();
+		
+		planSkyLight.SwapVisibleElements();
+		
+	}else{
+		if( occlusionTest.GetInputDataCount() == 0 ){
+			return;
+		}
+		
+		const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderOcclusionTestsSun" );
+		const int inputDataCount = occlusionTest.GetInputDataCount();
+		
+		pPipelineOccTestSun->Activate();
+		deoglShaderCompiled &shader = pPipelineOccTestSun->GetGlShader();
+		DEBUG_PRINT_TIMER( "Activate FBO" );
+		
+		shader.SetParameterUInt( spttfInputDataCount, inputDataCount );
+		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
+		shader.SetParameterFloat( spttfbScaleSize,
+			( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
+		shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
+		shader.SetParameterFloat( spttfbClipNear, clipNear );
+		shader.SetParameterMatrix4x4( spttfbMatrix2, matrixCamera2 );
+		shader.SetParameterFloat( spttfbClipNear2, clipNear2 );
+		shader.SetParameterVector3( spttfbFrustumNormal1, frustumPlaneNormal[ 0 ] );
+		shader.SetParameterVector3( spttfbFrustumNormal2, frustumPlaneNormal[ 1 ] );
+		shader.SetParameterVector3( spttfbFrustumNormal3, frustumPlaneNormal[ 2 ] );
+		shader.SetParameterVector3( spttfbFrustumNormal4, frustumPlaneNormal[ 3 ] );
+		shader.SetParameterFloat( spttfbFrustumTestAdd, frustumFactorAdd[ 0 ],
+			frustumFactorAdd[ 1 ], frustumFactorAdd[ 2 ], frustumFactorAdd[ 3 ] );
+		shader.SetParameterFloat( spttfbFrustumTestMul, frustumFactorMul[ 0 ],
+			frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
+		if( plan.GetRenderStereo() ){
+			shader.SetParameterMatrix4x4( spttfbMatrix2Stereo, matrixCamera2Stereo );
+		}
+		DEBUG_PRINT_TIMER( "Set Uniforms" );
+		
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		DEBUG_PRINT_TIMER( "Set Texture" );
+		
+		occlusionTest.GetSSBOInput()->Activate();
+		occlusionTest.GetSSBOResult()->Activate();
+		
+		OGL_CHECK( renderThread, pglDispatchCompute( ( inputDataCount - 1 ) / 64 + 1, 1, 1 ) );
+		
+		occlusionTest.GetSSBOResult()->GPUFinishedWriting();
+		occlusionTest.GetSSBOResult()->GPUReadToCPU( ( inputDataCount - 1 ) / 4 + 1 );
 	}
-	DEBUG_PRINT_TIMER( "Set Uniforms" );
-	
-	tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
-	DEBUG_PRINT_TIMER( "Set Texture" );
-	
-	occlusionTest.GetSSBOInput()->Activate();
-	occlusionTest.GetSSBOResult()->Activate();
-	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( inputDataCount - 1 ) / 64 + 1, 1, 1 ) );
-	
-	occlusionTest.GetSSBOResult()->GPUFinishedWriting();
-	occlusionTest.GetSSBOResult()->GPUReadToCPU( ( inputDataCount - 1 ) / 4 + 1 );
 	DEBUG_PRINT_TIMER( "Compute" );
 }
 

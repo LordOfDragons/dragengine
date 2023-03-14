@@ -132,6 +132,9 @@ private:
 	bool pForceDoubleSided;
 	bool pOcclusion;
 	
+	bool pFilterDoubleSided;
+	bool pDoubleSided;
+	
 	bool pFilterXRay;
 	bool pXRay;
 	
@@ -322,6 +325,20 @@ public:
 	
 	/** Set occlusion. */
 	void SetOcclusion( bool occlusion );
+	
+	
+	
+	/** Filtering for double sided is enabled. */
+	inline bool GetFilterDoubleSided() const{ return pFilterDoubleSided; }
+	
+	/** Set if filtering for double sided is enabled. */
+	void SetFilterDoubleSided( bool filterDoubleSided );
+	
+	/** Double sided textures are added. */
+	inline bool GetDoubleSided() const{ return pDoubleSided; }
+	
+	/** Set if double sided texture are added. */
+	void SetDoubleSided( bool doubleSided );
 	
 	
 	

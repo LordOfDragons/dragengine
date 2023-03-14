@@ -48,6 +48,7 @@
 #include "../../rendering/deoglRenderCanvas.h"
 #include "../../rendering/deoglRenderCompute.h"
 #include "../../rendering/deoglRenderOcclusion.h"
+#include "../../rendering/light/deoglRenderLightSky.h"
 #include "../../rendering/task/persistent/deoglPersistentRenderTaskOwner.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
@@ -100,24 +101,33 @@ pTaskBuildRT2( NULL ),
 pTaskGIFindContent( NULL ),
 pTaskGIUpdateRT( NULL )
 {
+	deoglRenderThread &renderThread = plan.GetRenderThread();
+	
 	memset( &pShadowLayers, 0, sizeof( sShadowLayer ) * 4 );
 	
 	int i;
 	for( i=0; i<4; i++ ){
-		pShadowLayers[ i ].renderTask = new deoglRenderTask( plan.GetRenderThread() );
-		pShadowLayers[ i ].addToRenderTask = new deoglAddToRenderTask( 
-			plan.GetRenderThread(), *pShadowLayers[ i ].renderTask );
+		pShadowLayers[ i ].renderTask = new deoglRenderTask( renderThread );
+		pShadowLayers[ i ].addToRenderTask = new deoglAddToRenderTask( renderThread, *pShadowLayers[ i ].renderTask );
+		pShadowLayers[ i ].computeRenderTask.TakeOver( new deoglComputeRenderTask( renderThread ) );
 	}
 	
 	const deoglRenderPlanCompute &compute = plan.GetCompute();
 	
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
-	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
-	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements() ) );
+	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters(), deoglSPBlockSSBO::etGpu ) );
+	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements(), deoglSPBlockSSBO::etGpu ) );
+	pSSBOVisibleElements2.TakeOver( new deoglSPBlockSSBO( pSSBOVisibleElements, deoglSPBlockSSBO::etGpu ) );
 	
-	pUBOFindConfigGI.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
-	pSSBOCountersGI.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
-	pSSBOVisibleElementsGI.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements() ) );
+	pUBOFindConfigGIStatic.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
+	pSSBOCountersGIStatic.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
+	pSSBOVisibleElementsGIStatic.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements() ) );
+	pCRTShadowGIStatic.TakeOver( new deoglComputeRenderTask( renderThread ) );
+	
+	pUBOFindConfigGIDynamic.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
+	pSSBOCountersGIDynamic.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
+	pSSBOVisibleElementsGIDynamic.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements() ) );
+	pCRTShadowGIDynamic.TakeOver( new deoglComputeRenderTask( renderThread ) );
 }
 
 deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
@@ -175,6 +185,12 @@ const deoglRenderPlanSkyLight::sShadowLayer &deoglRenderPlanSkyLight::GetShadowL
 }
 
 
+
+void deoglRenderPlanSkyLight::SwapVisibleElements(){
+	deoglSPBlockSSBO::Ref swap = pSSBOVisibleElements;
+	pSSBOVisibleElements = pSSBOVisibleElements2;
+	pSSBOVisibleElements2 = swap;
+}
 
 void deoglRenderPlanSkyLight::Clear(){
 	pGIShadowUpdateStatic = false;
@@ -234,7 +250,6 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 	}
 	
 	SetOcclusionTest( pPlan.GetRenderThread().GetOcclusionTestPool().Get() );
-	
 	pOcclusionTest->RemoveAllInputData();
 	
 	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
@@ -242,7 +257,10 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 		PrepareBuffers();
 		renderCompute.FindContentSkyLight( *this );
 		if( pPlan.GetUpdateGIState() ){
-			renderCompute.FindContentSkyLightGI( *this );
+			if( pGIShadowUpdateStatic ){
+				renderCompute.FindContentSkyLightGIStatic( *this );
+			}
+			renderCompute.FindContentSkyLightGIDynamic( *this );
 		}
 		
 	}else{
@@ -274,9 +292,12 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 	
 	// if occlusion test input data are present render the tests. reading back the result
 	// is delayed until used in the sky light renderer. this avoids stalling
-	if( pOcclusionTest->GetInputDataCount() > 0 ){
+	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( *this );
+		
+	}else if( pOcclusionTest->GetInputDataCount() > 0 ){
 		pOcclusionTest->UpdateSSBO();
-		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( pPlan, *this );
+		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( *this );
 	}
 }
 
@@ -375,11 +396,18 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT2(){
 
 void deoglRenderPlanSkyLight::PrepareBuffers(){
 	pPrepareFindConfig();
-	pPrepareFindConfigGI();
+	if( pGIShadowUpdateStatic ){
+		pPrepareFindConfigGIStatic();
+	}
+	pPrepareFindConfigGIDynamic();
 	
 	const int visElCount = ( ( pPlan.GetWorld()->GetCompute().GetElementCount() - 1 ) / 4 ) + 1;
 	pPrepareBuffer( pSSBOVisibleElements, visElCount );
-	pPrepareBuffer( pSSBOVisibleElementsGI, visElCount );
+	pPrepareBuffer( pSSBOVisibleElements2, visElCount );
+	if( pGIShadowUpdateStatic ){
+		pPrepareBuffer( pSSBOVisibleElementsGIStatic, visElCount );
+	}
+	pPrepareBuffer( pSSBOVisibleElementsGIDynamic, visElCount );
 	
 	pClearCounters();
 }
@@ -454,53 +482,117 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: list %dys", (int)(timer.GetElapsedTime()*1e6f));
 }
 
-void deoglRenderPlanSkyLight::ReadVisibleElementsGI(){
-	const deoglDebugTraceGroup debugTrace( pPlan.GetRenderThread(), "PlanSkyLight.ReadVisibleElementsGI" );
-	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
-	if( wcompute.GetElementCount() == 0 ){
+void deoglRenderPlanSkyLight::BuildComputeRenderTasks( bool rebuild ){
+	if( ! pLayer || ! pUseShadow ){
 		return;
 	}
 	
-		// decTimer timer;
-	int indexCount;
-	{
-	const deoglSPBMapBufferRead mappedCounters( pSSBOCountersGI, 0, 1 );
-	const deoglRenderCompute::sCounters * const counters =
-		( deoglRenderCompute::sCounters* )pSSBOCountersGI->GetMappedBuffer();
-		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
-	indexCount = counters[ 0 ].counter;
-	}
-	if( indexCount == 0 ){
-		return;
-	}
+	deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
+	const deoglDebugTraceGroup dt( pPlan.GetRenderThread(), "PlanSkyLight.BuildComputeRenderTask" );
 	
-	// read written visible element indices
-	const int ecount = ( ( indexCount - 1 ) / 4 ) + 1;
-	pSSBOVisibleElementsGI->GPUReadToCPU( ecount );
-	const deoglSPBMapBufferRead mappedIndices( pSSBOVisibleElementsGI, 0, ecount );
-	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElementsGI->GetMappedBuffer();
+	// sky light shadow
+	bool requiresBuilding = false;
 	int i;
-		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: read %dys", (int)(timer.GetElapsedTime()*1e6f));
+	for( i=0; i<pShadowLayerCount; i++ ){
+		requiresBuilding |= ! ( rebuild && pShadowLayers[ i ].
+			computeRenderTask->GetState() == deoglComputeRenderTask::esReady );
+	}
 	
-	for( i=0; i<indexCount; i++ ){
-		// NOTE indices are composed of 24-bit index and 8-bit flags. the shader does not write
-		//      flags so we can use the index value directly without "& 0xffffff"
-		const deoglWorldComputeElement &element = wcompute.GetElementAt( indices[ i ] );
+	if( requiresBuilding ){
+		renderCompute.ClearCullResult( pPlan );
 		
-		switch( element.GetType() ){
-		case deoglWorldComputeElement::eetComponent:
-			pGICollideList.AddComponent( ( deoglRComponent* )element.GetOwner() );
-			break;
+		// we check state here since this could be a rebuild due to too small SSBO size.
+		// rebuilding is not required for all render tasks so check first
+		char dtlabel[] = "Shadow #XXX";
+		
+		for( i=0; i<pShadowLayerCount; i++ ){
+			if( rebuild && pShadowLayers[ i ].computeRenderTask->GetState() == deoglComputeRenderTask::esReady ){
+				continue;
+			}
 			
-		case deoglWorldComputeElement::eetBillboard:
-			pGICollideList.AddBillboard( ( deoglRBillboard* )element.GetOwner() );
-			break;
+			snprintf( dtlabel, sizeof( dtlabel ), "Shadow #%hhd", ( char )( i + 1 ) );
+			const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), dtlabel );
 			
-		default:
-			break;
+			renderCompute.UpdateCullResult( pPlan, pUBOFindConfig, pSSBOVisibleElements, pSSBOCounters, i );
+			renderCompute.FindGeometriesSkyShadow( pPlan );
+			
+			pBuildCRTShadow( i );
+			renderCompute.BuildRenderTaskSkyShadow( *this, i );
 		}
 	}
-		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: list %dys", (int)(timer.GetElapsedTime()*1e6f));
+	
+	// gi shadow
+	const deoglGIState * const giState = pPlan.GetUpdateGIState();
+	if( giState ){
+		requiresBuilding = false;
+		requiresBuilding |= pGIShadowUpdateStatic && ! ( rebuild
+			&& pCRTShadowGIStatic->GetState() == deoglComputeRenderTask::esReady );
+		requiresBuilding |= ! ( rebuild && pCRTShadowGIDynamic->GetState() == deoglComputeRenderTask::esReady );
+		
+		if( requiresBuilding ){
+			const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "ShadowGI" );
+			
+			if( pGIShadowUpdateStatic && ! ( rebuild
+			&& pCRTShadowGIStatic->GetState() == deoglComputeRenderTask::esReady ) ){
+				const deoglDebugTraceGroup dt3( pPlan.GetRenderThread(), "Static" );
+				renderCompute.ClearCullResult( pPlan );
+				renderCompute.UpdateCullResult( pPlan, pUBOFindConfigGIStatic,
+					pSSBOVisibleElementsGIStatic, pSSBOCountersGIStatic, i );
+				renderCompute.FindGeometries( pPlan );
+				pBuildCRTShadowGI( pCRTShadowGIStatic );
+				renderCompute.BuildRenderTask( pPlan, pCRTShadowGIStatic );
+			}
+			
+			if( ! ( rebuild && pCRTShadowGIDynamic->GetState() == deoglComputeRenderTask::esReady ) ){
+				const deoglDebugTraceGroup dt3( pPlan.GetRenderThread(), "Dynamic" );
+				renderCompute.ClearCullResult( pPlan );
+				renderCompute.UpdateCullResult( pPlan, pUBOFindConfigGIDynamic,
+					pSSBOVisibleElementsGIDynamic, pSSBOCountersGIDynamic, i );
+				renderCompute.FindGeometries( pPlan );
+				pBuildCRTShadowGI( pCRTShadowGIDynamic );
+				renderCompute.BuildRenderTask( pPlan, pCRTShadowGIDynamic );
+			}
+		}
+	}
+}
+
+void deoglRenderPlanSkyLight::FinishReadBackComputeRenderTasks(){
+	if( ! pLayer || ! pUseShadow ){
+		return;
+	}
+	
+	const deoglGIState * const giState = pPlan.GetUpdateGIState();
+	bool ssbosLargeEnough = true;
+	int i;
+	
+	for( i=0; i<pShadowLayerCount; i++ ){
+		ssbosLargeEnough &= pShadowLayers[ i ].computeRenderTask->ReadBackSteps();
+	}
+	if( giState ){
+		if( pGIShadowUpdateStatic ){
+			ssbosLargeEnough &= pCRTShadowGIStatic->ReadBackSteps();
+		}
+		ssbosLargeEnough &= pCRTShadowGIDynamic->ReadBackSteps();
+	}
+	if( ssbosLargeEnough ){
+		return;
+	}
+	
+	BuildComputeRenderTasks( true );
+	
+	for( i=0; i<pShadowLayerCount; i++ ){
+		if( pShadowLayers[ i ].computeRenderTask->GetState() != deoglComputeRenderTask::esReady ){
+			DEASSERT_TRUE( pShadowLayers[ i ].computeRenderTask->ReadBackSteps() )
+		}
+	}
+	if( giState ){
+		if( pGIShadowUpdateStatic && pCRTShadowGIStatic->GetState() != deoglComputeRenderTask::esReady ){
+			DEASSERT_TRUE( pCRTShadowGIStatic->ReadBackSteps() )
+		}
+		if( pCRTShadowGIDynamic->GetState() != deoglComputeRenderTask::esReady ){
+			DEASSERT_TRUE( pCRTShadowGIDynamic->ReadBackSteps() )
+		}
+	}
 }
 
 void deoglRenderPlanSkyLight::CleanUp(){
@@ -582,22 +674,74 @@ void deoglRenderPlanSkyLight::pPrepareFindConfig(){
 	pFrustumHull( ubo, frustumPoints );
 	pCullLayerMask( ubo );
 	
-	// cull by flags. component, billboards, prop fields and height terrains yes, the rest no
-	uint32_t cullFlags = ~( deoglWorldCompute::eefComponent | deoglWorldCompute::eefComponentDynamic
-		| deoglWorldCompute::eefBillboard | deoglWorldCompute::eefPropFieldCluster
-		| deoglWorldCompute::eefHeightTerrainSectorCluster );
+	// cull by flags. components, billboards, prop fields and height terrains yes, the rest no
+	int cullFlags = deoglWorldCompute::ElementFlagsAllTypes & ~(
+		  deoglWorldCompute::eefComponent | deoglWorldCompute::eefBillboard
+		| deoglWorldCompute::eefPropFieldCluster | deoglWorldCompute::eefHeightTerrainSectorCluster );
 	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpCullFlags, cullFlags );
 	
 	pSetSplits( ubo, backtrack );
 	
 	// lod calculation
-	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodFactor, 0.0f );
-	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodMaxPixelError, ( float )pPlan.GetLodMaxPixelError() );
-	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodOffset, pPlan.GetLodLevelOffset() );
+	const float maxPixelError = 2.0f;
+	const float scalePixelError = maxPixelError / ( float )pPlan.GetShadowSkySize();
+	float lodFactor[ 4 ];
+	int i;
+	
+	for( i=0; i<4; i++ ){
+		const float boxWidth = pShadowLayers[ i ].maxExtend.x - pShadowLayers[ i ].minExtend.x;
+		const float boxHeight = pShadowLayers[ i ].maxExtend.y - pShadowLayers[ i ].minExtend.y;
+		lodFactor[ i ] = decMath::min( boxWidth * scalePixelError, boxHeight * scalePixelError );
+	}
+	
+	ubo.SetParameterDataVec4( deoglRenderPlanCompute::efcpLodFactor,
+		lodFactor[ 0 ], lodFactor[ 1 ], lodFactor[ 2 ], lodFactor[ 3 ] );
 	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodMethod, deoglRenderPlanCompute::elmOrthogonal );
 }
 
-void deoglRenderPlanSkyLight::pPrepareFindConfigGI(){
+void deoglRenderPlanSkyLight::pPrepareFindConfigGIStatic(){
+	const deoglGIState * const giState = pPlan.GetUpdateGIState();
+	if( ! pLayer || ! giState ){
+		return;
+	}
+	
+	const deoglSPBMapBuffer mapped( pUBOFindConfigGIStatic );
+	pPrepareFindConfigGI( pUBOFindConfigGIStatic );
+	
+	// cull by flags. gi static components and height terrain yes, the rest no.
+	int cullFlags = deoglWorldCompute::ElementFlagsAllTypes & ~(
+		deoglWorldCompute::eefComponent | deoglWorldCompute::eefHeightTerrainSectorCluster );
+	
+	// GetRenderStatic() is not working well since this can change frequently also for dynmic
+	// objects when resting for a couple of seconds. we want though to avoid updating static sky
+	// shadow maps as little as possible. for this reason we use here only the render mode
+	cullFlags |= deoglWorldCompute::eefGIDynamic;
+	
+	pUBOFindConfigGIStatic->SetParameterDataUInt( deoglRenderPlanCompute::efcpCullFlags, cullFlags );
+}
+
+void deoglRenderPlanSkyLight::pPrepareFindConfigGIDynamic(){
+	const deoglGIState * const giState = pPlan.GetUpdateGIState();
+	if( ! pLayer || ! giState ){
+		return;
+	}
+	
+	const deoglSPBMapBuffer mapped( pUBOFindConfigGIDynamic );
+	pPrepareFindConfigGI( pUBOFindConfigGIDynamic );
+	
+	// cull by flags. gi static components and prop fields yes, the rest no.
+	int cullFlags = deoglWorldCompute::ElementFlagsAllTypes & ~(
+		deoglWorldCompute::eefComponent | deoglWorldCompute::eefPropFieldCluster );
+	
+	// GetRenderStatic() is not working well since this can change frequently also for dynmic
+	// objects when resting for a couple of seconds. we want though to avoid updating static sky
+	// shadow maps as little as possible. for this reason we use here only the render mode
+	cullFlags |= deoglWorldCompute::eefGIStatic;
+	
+	pUBOFindConfigGIDynamic->SetParameterDataUInt( deoglRenderPlanCompute::efcpCullFlags, cullFlags );
+}
+
+void deoglRenderPlanSkyLight::pPrepareFindConfigGI( deoglSPBlockUBO &ubo ){
 	const deoglGIState * const giState = pPlan.GetUpdateGIState();
 	if( ! pLayer || ! giState ){
 		return;
@@ -610,8 +754,6 @@ void deoglRenderPlanSkyLight::pPrepareFindConfigGI(){
 	const deoglSkyLayerGICascade * const slgc = pLayer->GetGICascade( cascade );
 	DEASSERT_NOTNULL( slgc )
 	
-	deoglSPBlockUBO &ubo = pUBOFindConfigGI;
-	const deoglSPBMapBuffer mapped( ubo );
 	ubo.Clear();
 	
 	pSetWorldComputeParams( ubo );
@@ -661,19 +803,11 @@ void deoglRenderPlanSkyLight::pPrepareFindConfigGI(){
 	
 	pCullLayerMask( ubo );
 	
-	// cull by flags. component and billboards yes, the rest no
-	uint32_t cullFlags = ~( deoglWorldCompute::eefComponent
-		| deoglWorldCompute::eefComponentDynamic | deoglWorldCompute::eefBillboard );
-	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpCullFlags, cullFlags );
-	
 	// splits are not used for GI shadows but the minimum size restriction is.
 	// to avoid creating another method the AddSplit method is used for this
 	pSetGISplits( ubo );
 	
 	// lod calculation
-	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodFactor, 0.0f );
-	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLodMaxPixelError, 1.0f );
-	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodOffset, 0 );
 	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpLodMethod, deoglRenderPlanCompute::elmHighest );
 }
 
@@ -686,7 +820,10 @@ void deoglRenderPlanSkyLight::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count 
 
 void deoglRenderPlanSkyLight::pClearCounters(){
 	pSSBOCounters->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
-	pSSBOCountersGI->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	if( pGIShadowUpdateStatic ){
+		pSSBOCountersGIStatic->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	}
+	pSSBOCountersGIDynamic->ClearDataUInt( 0, 1, 1, 0 ); // workGroupSize.xyz, count
 }
 
 void deoglRenderPlanSkyLight::pSetWorldComputeParams( deoglSPBlockUBO &ubo ){
@@ -934,22 +1071,6 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 		}
 	}
 	
-	/*
-	float / * lambda = 0.5f, * / N = ( float )layerCount;
-	ogl.LogInfoFormat( "RenderSkyLight: znear=%f zfar=%f", znear, zfar );
-	for( p=0; p<layerCount; p++ ){
-		ogl.LogInfoFormat( "layer %i: near=%f far=%f new=%f", p, pShadowLayers[ p ].frustumNear, pShadowLayers[ p ].frustumFar,
-			lambda * znear * powf( zfar / znear, ( float )p / N ) + ( 1.0f - lambda ) * ( znear + ( ( float )p / N ) * ( zfar - znear ) ) );
-	}
-	*/
-	
-	/*
-	ogl.LogInfoFormat( "RenderSkyLight: factor=%f", factor );
-	for( p=0; p<layerCount; p++ ){
-		ogl.LogInfoFormat( "pass %i: znear=%f zfar=%f", p+1, pShadowLayers[ p ].frustumNear, pShadowLayers[ p ].frustumFar );
-	}
-	*/
-	
 	// calculate layer parameters
 	// const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
 	const float smDepthScaleFactor = 1.2f; // TODO add config option
@@ -991,50 +1112,6 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 		
 		sl.zscale = smOffsetScale * smDepthScaleFactor * smDepthScale;
 		sl.zoffset = smOffsetBias * smDepthScaleFactor * smDepthScale;
-		
-		if( pPlan.GetRenderThread().GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
-			const float zf = sl.frustumFar;
-			const float zn = sl.frustumNear;
-			const float xn = xnear * zn;
-			const float yn = ynear * zn;
-			const float xf = xnear * zf;
-			const float yf = ynear * zf;
-			const decDVector &pos = pPlan.GetCameraPosition();
-			const decQuaternion &rot = pPlan.GetInverseCameraMatrix().ToQuaternion();
-			
-			printf( "\n# frustm for split %i\n", p );
-			printf( "scale = 0.01\n" );
-			printf( "meshFrustum = bpy.data.meshes.new( 'frustum%i' )\n", p );
-			printf( "objFrustum = bpy.data.objects.new( 'frustum%i', meshFrustum )\n", p );
-			printf( "bpy.context.scene.objects.link( objFrustum )\n" );
-			printf( "bpy.context.scene.objects.active = objFrustum\n" );
-			printf( "objFrustum.select = True\n" );
-			printf( "vertices = []\n" );
-			printf( "vertices.append( [%g,%g,%g] )\n", -xn, yn, zn );
-			printf( "vertices.append( [%g,%g,%g] )\n", xn, yn, zn );
-			printf( "vertices.append( [%g,%g,%g] )\n", xn, -yn, zn );
-			printf( "vertices.append( [%g,%g,%g] )\n", -xn, -yn, zn );
-			printf( "vertices.append( [%g,%g,%g] )\n", -xf, yf, zf );
-			printf( "vertices.append( [%g,%g,%g] )\n", xf, yf, zf );
-			printf( "vertices.append( [%g,%g,%g] )\n", xf, -yf, zf );
-			printf( "vertices.append( [%g,%g,%g] )\n", -xf, -yf, zf );
-			printf( "vertices = [ cposs( v, scale ) for v in vertices ]\n" );
-			printf( "faces = []\n" );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 1, 5, 6, 2 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 4, 0, 3, 7 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 4, 5, 1, 0 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 3, 2, 6, 7 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 5, 4, 7, 6 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 0, 1, 2, 3 );
-			printf( "faces = [ f[::-1] for f in faces ]\n" );
-			printf( "meshFrustum.from_pydata( vertices, [], faces )\n" );
-			printf( "meshFrustum.update()\n" );
-			printf( "objFrustum.location = cposs( [%g,%g,%g], scale )\n", pos.x, pos.y, pos.z );
-			printf( "objFrustum.rotation_mode = 'QUATERNION'\n" );
-			printf( "objFrustum.rotation_quaternion = cquat( [%g,%g,%g,%g] )\n", rot.x, rot.y, rot.z, rot.w );
-		}
-		//ogl.LogInfoFormat( "RenderSkyLight: box min=(%f,%f,%f) max=(%f,%f,%f)", minExtend.x, minExtend.y, minExtend.z,
-		//	maxExtend.x, maxExtend.y, maxExtend.z );
 	}
 	
 	// adjust shadow depth offsets
@@ -1052,48 +1129,32 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
-	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
-		ReadVisibleElements();
-		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent( pPlan );
-		
-	}else{
-		if( ! pTaskFindContent ){
-			return;
-		}
-		
-	// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) WaitFinishedFindContent(%p)", this, &pPlan, pTaskFindContent );
-		pTaskFindContent->GetSemaphore().Wait();
-		
-		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
-			pPlan, pTaskFindContent->GetElapsedTime() );
-		
-		pTaskFindContent->FreeReference();
-		pTaskFindContent = NULL;
+	if( ! pTaskFindContent ){
+		return;
 	}
+	
+// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) WaitFinishedFindContent(%p)", this, &pPlan, pTaskFindContent );
+	pTaskFindContent->GetSemaphore().Wait();
+	
+	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
+		pPlan, pTaskFindContent->GetElapsedTime() );
+	
+	pTaskFindContent->FreeReference();
+	pTaskFindContent = NULL;
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
-	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
-		if( ! pPlan.GetUpdateGIState() ){
-			return;
-		}
-		
-		ReadVisibleElementsGI();
-		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan );
-		
-	}else{
-		if( ! pTaskGIFindContent ){
-			return;
-		}
-		
-		pTaskGIFindContent->GetSemaphore().Wait();
-		
-		deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
-		rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan, pTaskGIFindContent->GetElapsedTime() );
-		
-		pTaskGIFindContent->FreeReference();
-		pTaskGIFindContent = NULL;
+	if( ! pTaskGIFindContent ){
+		return;
 	}
+	
+	pTaskGIFindContent->GetSemaphore().Wait();
+	
+	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
+	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan, pTaskGIFindContent->GetElapsedTime() );
+	
+	pTaskGIFindContent->FreeReference();
+	pTaskGIFindContent = NULL;
 }
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
@@ -1149,4 +1210,63 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	}else{
 		pGIShadowUpdateStatic = true;
 	}
+}
+
+void deoglRenderPlanSkyLight::pBuildCRTShadow( int layer ){
+	const deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
+	const sShadowLayer &sl = pShadowLayers[ layer ];
+	deoglComputeRenderTask &renderTask = sl.computeRenderTask;
+	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 2 );
+	
+	renderTask.Clear();
+	renderTask.SetNoShadowNone( true );
+	renderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowOrthogonal );
+	renderTask.SetFilterCubeFace( 1 << layer ); // works up to 8 layers but only 4 required
+	
+	// we render only double sided occlusion meshes here since for single sided
+	// we can not be sure from what side the camera sees them in the shadow map.
+	// only double sided occlusion meshes are guaranteed to work correctly.
+	// this allows to speed up rendering in the majority of situations
+	renderTask.SetFilterSolid( false );
+	renderTask.SetOcclusion( true );
+	renderTask.SetFilterDoubleSided( true );
+	renderTask.SetDoubleSided( true );
+	renderTask.SetPipelineDoubleSided( pPlan.GetRenderThread().GetRenderers().
+		GetLight().GetRenderLightSky().GetPipelineOccMesh() );
+	
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	
+	renderTask.EndPass( worldCompute );
+	
+	// pass 2: all other geometry
+	renderTask.SetFilterSolid( true );
+	renderTask.SetOcclusion( false );
+	renderTask.SetFilterDoubleSided( false );
+	renderTask.SetPipelineDoubleSided( nullptr );
+	
+	renderTask.SetSolid( true );
+	renderTask.SetForceDoubleSided( true );
+	
+	renderTask.SetSkinPipelineLists( 0 );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropField );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap1 );
+	
+	renderTask.EndPass( worldCompute );
+}
+
+void deoglRenderPlanSkyLight::pBuildCRTShadowGI( deoglComputeRenderTask &renderTask ){
+	const deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
+	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 1 );
+	
+	renderTask.Clear();
+	renderTask.SetSolid( true );
+	renderTask.SetNoShadowNone( true );
+	renderTask.SetForceDoubleSided( true );
+	renderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowOrthogonal );
+	
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap1 );
+	
+	renderTask.EndPass( worldCompute );
 }

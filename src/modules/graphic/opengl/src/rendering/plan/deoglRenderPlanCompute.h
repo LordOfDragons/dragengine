@@ -61,7 +61,6 @@ public:
 		efcpSplitSizeThreshold,
 		efcpSplitCount,
 		efcpLodFactor,
-		efcpLodMaxPixelError,
 		efcpLodOffset,
 		efcpLodMethod
 	};

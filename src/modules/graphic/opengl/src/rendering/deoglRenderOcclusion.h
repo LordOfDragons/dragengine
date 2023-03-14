@@ -60,6 +60,7 @@ private:
 	const deoglPipeline *pPipelineOccTestComputeRT;
 	const deoglPipeline *pPipelineOccTestDual;
 	const deoglPipeline *pPipelineOccTestSun;
+	const deoglPipeline *pPipelineOccTestSunComputeRT;
 	const deoglPipeline *pPipelineOccMapCube;
 	
 	deoglSPBSingleUse::Ref pRenderParamBlockSingleUse;
@@ -87,7 +88,7 @@ public:
 	void RenderTestsCamera( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Render occlusion tests. */
-	void RenderTestsSkyLayer( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLigh );
+	void RenderTestsSkyLayer( deoglRenderPlanSkyLight &planSkyLigh );
 	
 	/** Shader to use for occlusion map rendering. */
 	const deoglPipeline *GetRenderOcclusionMapRTS( const deoglRenderPlan &plan,
@@ -107,7 +108,7 @@ public:
 		const decMatrix &matrixCamera, const decMatrix &matrixCameraStereo );
 	
 	/** Render occlusion tests with frustum check. */
-	void RenderOcclusionTestsSun( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,
+	void RenderOcclusionTestsSun( deoglRenderPlanSkyLight &planSkyLight, deoglOcclusionTest &occlusionTest,
 		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
 		const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2,
 		const decMatrix &matrixCamera2Stereo );

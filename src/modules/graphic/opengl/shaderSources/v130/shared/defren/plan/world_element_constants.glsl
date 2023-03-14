@@ -1,12 +1,15 @@
 // element flags
 const uint efComponent = uint( 0x1 );
-const uint efComponentDynamic = uint( 0x2 );
-const uint efBillboard = uint( 0x4 );
-const uint efParticleEmitter = uint( 0x8 );
-const uint efLight = uint( 0x10 );
-const uint efPropFieldCluster = uint( 0x20 );
-const uint efHeightTerrainSectorCluster = uint( 0x40 );
-const uint efDecal = uint( 0x80 );
+const uint efBillboard = uint( 0x2 );
+const uint efParticleEmitter = uint( 0x4 );
+const uint efLight = uint( 0x8 );
+const uint efPropFieldCluster = uint( 0x10 );
+const uint efHeightTerrainSectorCluster = uint( 0x20 );
+const uint efDecal = uint( 0x40 );
+const uint efStatic = uint( 0x80 );
+const uint efDynamic = uint( 0x100 );
+const uint efGIStatic = uint( 0x200 );
+const uint efGIDynamic = uint( 0x400 );
 
 
 // element render filters

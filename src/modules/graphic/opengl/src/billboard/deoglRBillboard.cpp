@@ -82,7 +82,8 @@ void deoglRBillboard::WorldComputeElement::UpdateData( sDataElement &data ) cons
 	const decDVector &refpos = GetReferencePosition();
 	data.SetExtends( pBillboard.GetMinimumExtend() - refpos, pBillboard.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pBillboard.GetLayerMask() );
-	data.flags = ( uint32_t )deoglWorldCompute::eefBillboard;
+	data.flags = ( uint32_t )( deoglWorldCompute::eefBillboard
+		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic );
 	data.geometryCount = 1;
 	data.highestLod = 0;
 }

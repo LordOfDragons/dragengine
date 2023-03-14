@@ -168,6 +168,9 @@ void deoglComputeRenderTask::Clear(){
 	pForceDoubleSided = false;
 	pOcclusion = false;
 	
+	pFilterDoubleSided = false;
+	pDoubleSided = false;
+	
 	pFilterXRay = false;
 	pXRay = false;
 	
@@ -385,6 +388,14 @@ void deoglComputeRenderTask::SetOcclusion( bool occlusion ){
 	pOcclusion = occlusion;
 }
 
+void deoglComputeRenderTask::SetFilterDoubleSided( bool filterDoubleSided ){
+	pFilterDoubleSided = filterDoubleSided;
+}
+
+void deoglComputeRenderTask::SetDoubleSided( bool doubleSided ){
+	pDoubleSided = doubleSided;
+}
+
 void deoglComputeRenderTask::SetFilterXRay( bool filterXRay ){
 	pFilterXRay = filterXRay;
 }
@@ -507,6 +518,13 @@ void deoglComputeRenderTask::pRenderFilter( int &filter, int &mask ) const{
 			if( pSolid ){
 				filter |= ertfSolid;
 			}
+		}
+	}
+	
+	if( pFilterDoubleSided ){
+		mask |= ertfDoubleSided;
+		if( pDoubleSided ){
+			filter |= ertfDoubleSided;
 		}
 	}
 	

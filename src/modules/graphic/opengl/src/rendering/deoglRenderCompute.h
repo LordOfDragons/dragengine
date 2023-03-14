@@ -56,6 +56,7 @@ private:
 	const deoglPipeline *pPipelineFindContentSkyLight;
 	const deoglPipeline *pPipelineFindContentSkyLightGI;
 	const deoglPipeline *pPipelineFindGeometries;
+	const deoglPipeline *pPipelineFindGeometriesSkyShadow;
 	const deoglPipeline *pPipelineUpdateCullResultSet;
 	const deoglPipeline *pPipelineUpdateCullResultSetOcclusion;
 	const deoglPipeline *pPipelineUpdateCullResultClear;
@@ -118,24 +119,27 @@ public:
 	/** Find content. */
 	void FindContent( const deoglRenderPlan &plan );
 	void FindContentSkyLight( const deoglRenderPlanSkyLight &planLight );
-	void FindContentSkyLightGI( const deoglRenderPlanSkyLight &planLight );
+	void FindContentSkyLightGIStatic( const deoglRenderPlanSkyLight &planLight );
+	void FindContentSkyLightGIDynamic( const deoglRenderPlanSkyLight &planLight );
 	
 	/** Clear cull result. */
 	void ClearCullResult( const deoglRenderPlan &plan );
 	
 	/** Update cull result. */
 	void UpdateCullResult( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
-		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, bool clear );
+		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, int lodLayer );
 	
 	void UpdateCullResultOcclusion( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
 		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters );
 	
 	/** Find geometries. */
 	void FindGeometries( const deoglRenderPlan &plan );
+	void FindGeometriesSkyShadow( const deoglRenderPlan &plan );
 	
 	/** Build render task. */
 	void BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
 	void BuildRenderTaskOcclusion( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
+	void BuildRenderTaskSkyShadow( const deoglRenderPlanSkyLight &planLight, int layer );
 	/*@}*/
 	
 	

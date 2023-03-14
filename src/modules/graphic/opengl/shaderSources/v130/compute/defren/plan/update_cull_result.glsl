@@ -25,6 +25,9 @@ UBOLAYOUT_BIND(3) writeonly buffer ElementCullResult {
 };
 
 
+uniform uint pLodLayer;
+
+
 #ifndef CLEAR_CULL_RESULT
 	#include "v130/shared/defren/plan/find_config.glsl"
 	

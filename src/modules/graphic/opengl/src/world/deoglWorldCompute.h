@@ -46,14 +46,24 @@ public:
 	/** Element flags. */
 	enum eElementFlags{
 		eefComponent = 0x1,
-		eefComponentDynamic = 0x2,
-		eefBillboard = 0x4,
-		eefParticleEmitter = 0x8,
-		eefLight = 0x10,
-		eefPropFieldCluster = 0x20,
-		eefHeightTerrainSectorCluster = 0x40,
-		eefDecal = 0x80
+		eefBillboard = 0x2,
+		eefParticleEmitter = 0x4,
+		eefLight = 0x8,
+		eefPropFieldCluster = 0x10,
+		eefHeightTerrainSectorCluster = 0x20,
+		eefDecal = 0x40,
+		eefStatic = 0x80,
+		eefDynamic = 0x100,
+		eefGIStatic = 0x200,
+		eefGIDynamic = 0x400
 	};
+	
+	static const int ElementFlagsAllTypes = eefComponent | eefBillboard | eefParticleEmitter
+		| eefLight | eefPropFieldCluster | eefHeightTerrainSectorCluster | eefDecal;
+	
+	static const int ElementFlagsAllDynamics = eefStatic | eefDynamic | eefGIStatic | eefGIDynamic;
+	
+	static const int ElementFlagsAll = ElementFlagsAllTypes | ElementFlagsAllDynamics;
 	
 	/** Shader element parameters. */
 	enum eShaderParamsElement{

@@ -62,7 +62,8 @@ void deoglHTSCluster::WorldComputeElement::UpdateData( sDataElement &data ) cons
 	
 	data.SetExtends( center - halfSize, center + halfSize );
 	data.SetEmptyLayerMask();
-	data.flags = ( uint32_t )deoglWorldCompute::eefHeightTerrainSectorCluster;
+	data.flags = ( uint32_t )( deoglWorldCompute::eefHeightTerrainSectorCluster
+		| deoglWorldCompute::eefStatic | deoglWorldCompute::eefGIStatic );
 	data.geometryCount = 0; //( uint32_t )pCluster.GetHTSector()->GetTextureCount() * 2;
 	data.highestLod = 0;
 }

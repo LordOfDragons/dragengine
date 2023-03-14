@@ -69,8 +69,9 @@ void main( void ){
 	uint pipelineModifier = pipelineBase >> uint( 8 );
 	
 	// filter by pipeline list
-	bvec3 cond;
-	cond.x = ( config.filterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
+	if( ( config.filterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 ) ){
+		return;
+	}
 	
 	// filter cube face. we are using here the fact that if element is visible the bit 8
 	// in the cull mask is set. the same bit is used to indicate if filter cube face has
@@ -80,12 +81,12 @@ void main( void ){
 	//   ((filter & 0x100) == 0x100) && ((cullResult & 0x3f) & (filter & 0x3f)) == 0
 	//
 	uint cullFlags = visibleGeometry >> uint( 24 );
-	cond.y = ( ( cullFlags | ecrVisible ) & config.filterCubeFace ) == ecrVisible;
+	if( ( ( cullFlags | ecrVisible ) & config.filterCubeFace ) == ecrVisible ){
+		return;
+	}
 	
 	// filter by render task filters. config.renderTaskFilters contains config.renderTaskFilterMask
-	cond.z = ( pElementGeometries[ geometryIndex ].renderFilter & config.renderTaskFilterMask ) != config.renderTaskFilter;
-	
-	if( any( cond ) ){
+	if( ( pElementGeometries[ geometryIndex ].renderFilter & config.renderTaskFilterMask ) != config.renderTaskFilter ){
 		return;
 	}
 	

@@ -39,8 +39,7 @@ UBOLAYOUT uniform FindConfig{
 	int pSplitCount;
 	
 	// lod calculation
-	float pLodFactor;
-	float pLodMaxPixelError;
+	vec4 pLodFactor; // lod factors per layer
 	uint pLodOffset;
 	uint pLodMethod; // values from log method (lm*)
 };

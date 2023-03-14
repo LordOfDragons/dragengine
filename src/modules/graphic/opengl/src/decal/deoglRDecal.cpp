@@ -96,9 +96,10 @@ void deoglRDecal::WorldComputeElement::UpdateData( sDataElement &data ) const{
 	data.geometryCount = 1;
 	
 	data.flags = ( uint32_t )deoglWorldCompute::eefDecal;
-	if( ! component.GetRenderStatic() ){
-		data.flags |= deoglWorldCompute::eefComponentDynamic;
-	}
+	data.flags |= ( uint32_t )( component.GetRenderStatic()
+		? deoglWorldCompute::eefStatic : deoglWorldCompute::eefDynamic );
+	data.flags |= ( uint32_t )( component.IsGIStatic()
+		? deoglWorldCompute::eefGIStatic : deoglWorldCompute::eefGIDynamic );
 }
 
 void deoglRDecal::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{

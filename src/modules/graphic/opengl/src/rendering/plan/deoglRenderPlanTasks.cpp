@@ -156,7 +156,7 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked 
 	
 	renderCompute.ClearCullResult( pPlan );
 	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
-		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), false );
+		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), 0 );
 	renderCompute.FindGeometries( pPlan );
 	
 	// we check state here since this could be a rebuild due to too small SSBO size.

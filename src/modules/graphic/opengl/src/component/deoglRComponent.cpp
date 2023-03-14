@@ -120,9 +120,10 @@ void deoglRComponent::WorldComputeElement::UpdateData( sDataElement &data ) cons
 	data.highestLod = decMath::min( pComponent.GetLODCount() - 1, 15 );
 	
 	data.flags = ( uint32_t )deoglWorldCompute::eefComponent;
-	if( ! pComponent.GetRenderStatic() ){
-		data.flags |= deoglWorldCompute::eefComponentDynamic;
-	}
+	data.flags |= ( uint32_t )( pComponent.GetRenderStatic()
+		? deoglWorldCompute::eefStatic : deoglWorldCompute::eefDynamic );
+	data.flags |= ( uint32_t )( pComponent.IsGIStatic()
+		? deoglWorldCompute::eefGIStatic : deoglWorldCompute::eefGIDynamic );
 	
 	if( pComponent.GetModel() ){
 		const deoglRModel &model = *pComponent.GetModel();
@@ -1170,6 +1171,10 @@ void deoglRComponent::SetRenderStatic( bool isStatic ){
 void deoglRComponent::ResetRenderStatic(){
 	pStaticSince = 0.0f;
 	SetRenderStatic( false );
+}
+
+bool deoglRComponent::IsGIStatic() const{
+	return pMovementHint == deComponent::emhStationary && pRenderMode == deoglRComponent::ermStatic;
 }
 
 

@@ -462,6 +462,9 @@ public:
 	/** Reset render static. */
 	void ResetRenderStatic();
 	
+	/** GI static. */
+	bool IsGIStatic() const;
+	
 	/** Light list. */
 	inline deoglLightList &GetLightList(){ return pLightList; }
 	inline const deoglLightList &GetLightList() const{ return pLightList; }

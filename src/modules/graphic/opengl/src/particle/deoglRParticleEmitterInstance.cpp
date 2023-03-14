@@ -66,7 +66,8 @@ void deoglRParticleEmitterInstance::WorldComputeElement::UpdateData( sDataElemen
 	const decDVector &refpos = GetReferencePosition();
 	data.SetExtends( pEmitter.GetMinExtend() - refpos, pEmitter.GetMaxExtend() - refpos );
 	data.SetLayerMask( pEmitter.GetLayerMask() );
-	data.flags = ( uint32_t )deoglWorldCompute::eefParticleEmitter;
+	data.flags = ( uint32_t )( deoglWorldCompute::eefParticleEmitter
+		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic );
 	data.geometryCount = 0; //1;
 	data.highestLod = 0;
 }

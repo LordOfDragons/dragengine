@@ -196,6 +196,10 @@ deoglRenderBase( renderThread )
 	pipconf.SetShader( renderThread, "DefRen Plan Find Geometries", defines );
 	pPipelineFindGeometries = pipelineManager.GetWith( pipconf );
 	
+	defines.SetDefines( "WITH_OCCLUSION" );
+	pipconf.SetShader( renderThread, "DefRen Plan Find Geometries", defines );
+	pPipelineFindGeometriesSkyShadow = pipelineManager.GetWith( pipconf );
+	
 	
 	// update cull result
 	defines = commonDefines;
@@ -338,13 +342,9 @@ void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &pla
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
 		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
-	
-	planLight.GetSSBOVisibleElements()->GPUFinishedWriting();
-	planLight.GetSSBOCounters()->GPUFinishedWriting();
-	planLight.GetSSBOCounters()->GPUReadToCPU( 1 );
 }
 
-void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &planLight ){
+void deoglRenderCompute::FindContentSkyLightGIStatic( const deoglRenderPlanSkyLight &planLight ){
 	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
 	const int count = wcompute.GetElementCount();
 	if( count == 0 ){
@@ -352,22 +352,48 @@ void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &p
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLightGI" );
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLightGIStatic" );
 	
 	pPipelineFindContentSkyLightGI->Activate();
 	
-	planLight.GetUBOFindConfigGI()->Activate( 0 );
+	planLight.GetUBOFindConfigGIStatic()->Activate( 0 );
 	wcompute.GetSSBOElements()->Activate( 0 );
-	planLight.GetSSBOVisibleElementsGI()->Activate( 1 );
-	planLight.GetSSBOCountersGI()->ActivateAtomic( 0 );
+	planLight.GetSSBOVisibleElementsGIStatic()->Activate( 1 );
+	planLight.GetSSBOCountersGIStatic()->ActivateAtomic( 0 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
 		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 	
-	planLight.GetSSBOVisibleElementsGI()->GPUFinishedWriting();
-	planLight.GetSSBOCountersGI()->GPUFinishedWriting();
-	planLight.GetSSBOCountersGI()->GPUReadToCPU( 1 );
+	planLight.GetSSBOVisibleElementsGIStatic()->GPUFinishedWriting();
+	planLight.GetSSBOCountersGIStatic()->GPUFinishedWriting();
+	planLight.GetSSBOCountersGIStatic()->GPUReadToCPU( 1 );
+}
+
+void deoglRenderCompute::FindContentSkyLightGIDynamic( const deoglRenderPlanSkyLight &planLight ){
+	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
+	const int count = wcompute.GetElementCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLightGIDynamic" );
+	
+	pPipelineFindContentSkyLightGI->Activate();
+	
+	planLight.GetUBOFindConfigGIDynamic()->Activate( 0 );
+	wcompute.GetSSBOElements()->Activate( 0 );
+	planLight.GetSSBOVisibleElementsGIDynamic()->Activate( 1 );
+	planLight.GetSSBOCountersGIDynamic()->ActivateAtomic( 0 );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+	
+	planLight.GetSSBOVisibleElementsGIDynamic()->GPUFinishedWriting();
+	planLight.GetSSBOCountersGIDynamic()->GPUFinishedWriting();
+	planLight.GetSSBOCountersGIDynamic()->GPUReadToCPU( 1 );
 }
 
 void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
@@ -387,11 +413,13 @@ void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
 }
 
 void deoglRenderCompute::UpdateCullResult( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
-const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, bool clear ){
+const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, int lodLayer ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.UpdateCullResult" );
 	
-	( clear ? pPipelineUpdateCullResultClear : pPipelineUpdateCullResultSet )->Activate();
+	pPipelineUpdateCullResultSet->Activate();
+	
+	pPipelineUpdateCullResultSet->GetGlShader().SetParameterUInt( 0, lodLayer );
 	
 	findConfig.Activate( 0 );
 	plan.GetWorld()->GetCompute().GetSSBOElements()->Activate( 0 );
@@ -442,6 +470,37 @@ void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan ){
 	pSSBOCounters->ClearDataUInt( ecVisibleGeometries, 1, 0, 1, 1, 0 ); // workGroupSize.xyz, count
 	
 	pPipelineFindGeometries->Activate();
+	
+	wcompute.GetSSBOElementGeometries()->Activate( 0 );
+	pSSBOElementCullResult->Activate( 1 );
+	pSSBOVisibleGeometries->Activate( 2 );
+	pSSBOCounters->ActivateAtomic( 0 );
+	
+	pPipelineFindGeometries->GetGlShader().SetParameterUInt( 0, count );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+}
+
+void deoglRenderCompute::FindGeometriesSkyShadow( const deoglRenderPlan &plan ){
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	const int count = wcompute.GetElementGeometryCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindGeometriesSkyShadow" );
+	
+	if( count > pSSBOVisibleGeometries->GetElementCount() ){
+		pSSBOVisibleGeometries->SetElementCount( count );
+		pSSBOVisibleGeometries->EnsureBuffer();
+	}
+	
+	pSSBOCounters->ClearDataUInt( ecVisibleGeometries, 1, 0, 1, 1, 0 ); // workGroupSize.xyz, count
+	
+	pPipelineFindGeometriesSkyShadow->Activate();
 	
 	wcompute.GetSSBOElementGeometries()->Activate( 0 );
 	pSSBOElementCullResult->Activate( 1 );
@@ -517,6 +576,65 @@ void deoglRenderCompute::BuildRenderTaskOcclusion( const deoglRenderPlan &plan, 
 		| GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
 	
 	SortRenderTask( renderTask );
+	
+	renderTask.GetSSBOCounters()->GPUFinishedWriting();
+	renderTask.GetSSBOCounters()->GPUReadToCPU( 1 );
+}
+
+void deoglRenderCompute::BuildRenderTaskSkyShadow( const deoglRenderPlanSkyLight &planLight, int layer ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.BuildRenderTaskSkyShadow" );
+	
+	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
+	const int count = wcompute.GetElementGeometryCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	const deoglRenderPlanSkyLight::sShadowLayer &sl = planLight.GetShadowLayerAt( layer );
+	deoglComputeRenderTask &renderTask = sl.computeRenderTask;
+	
+	// pass 1, occlusion meshes
+	pPipelineBuildRenderTaskOcclusion->Activate();
+	
+	renderTask.GetUBOConfig()->Activate( 0 );
+	wcompute.GetSSBOElementGeometries()->Activate( 0 );
+	pSSBOElementCullResult->Activate( 1 );
+	renderTask.GetSSBOSteps()->Activate( 2 );
+	renderTask.GetSSBOCounters()->ActivateAtomic( 0 );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
+	
+	// pass 2+, other geometry
+	pPipelineBuildRenderTask->Activate();
+	
+	renderTask.GetUBOConfig()->Activate( 0 );
+	wcompute.GetSSBOElementGeometries()->Activate( 0 );
+	renderThread.GetShader().GetSSBOSkinTextures()->Activate( 1 );
+	pSSBOVisibleGeometries->Activate( 2 );
+	pSSBOCounters->Activate( 3 );
+	renderTask.GetSSBOSteps()->Activate( 4 );
+	renderTask.GetSSBOCounters()->ActivateAtomic( 0 );
+	
+	pSSBOCounters->ActivateDispatchIndirect();
+	
+	deoglShaderCompiled &shaderBuild = pPipelineBuildRenderTask->GetGlShader();
+	const int dispatchOffset = CounterDispatchOffset( ecVisibleGeometries );
+	const int passCount = renderTask.GetPassCount();
+	int i;
+	
+	for( i=1; i<passCount; i++ ){
+		shaderBuild.SetParameterUInt( 0, i );
+		OGL_CHECK( renderThread, pglDispatchComputeIndirect( dispatchOffset ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
+	}
+	
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+	pSSBOCounters->DeactivateDispatchIndirect();
+	
+	// sort and finish
+	SortRenderTask( sl.computeRenderTask );
 	
 	renderTask.GetSSBOCounters()->GPUFinishedWriting();
 	renderTask.GetSSBOCounters()->GPUReadToCPU( 1 );

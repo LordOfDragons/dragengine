@@ -63,7 +63,7 @@ pPlan( plan )
 	
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( plan.GetRenderThread() ) );
 	pUBOFindConfig->SetRowMajor( rowMajor );
-	pUBOFindConfig->SetParameterCount( 26 );
+	pUBOFindConfig->SetParameterCount( 25 );
 	pUBOFindConfig->GetParameterAt( efcpNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4[6]
@@ -86,8 +86,7 @@ pPlan( plan )
 	pUBOFindConfig->GetParameterAt( efcpSplitMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 4 ); // vec3[4]
 	pUBOFindConfig->GetParameterAt( efcpSplitSizeThreshold ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 4 ); // vec2[4]
 	pUBOFindConfig->GetParameterAt( efcpSplitCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-	pUBOFindConfig->GetParameterAt( efcpLodFactor ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-	pUBOFindConfig->GetParameterAt( efcpLodMaxPixelError ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	pUBOFindConfig->GetParameterAt( efcpLodFactor ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	pUBOFindConfig->GetParameterAt( efcpLodOffset ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpLodMethod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->MapToStd140();
@@ -226,62 +225,6 @@ void deoglRenderPlanCompute::UpdateElementGeometries(){
 	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Compute %dys", (int)(timer.GetElapsedTime()*1e6f));
 }
 
-/*
-	deoglRPTBuildRTsGeometry.pSolid:
-	// same for with-xray but then "renderFilters |= ertfXRay"
-	
-	int pipelineLists = 1 << deoglSkinTexturePipelinesList::eptComponent
-		| 1 << deoglSkinTexturePipelinesList::eptBillboard
-		| 1 << deoglSkinTexturePipelinesList::eptPropField;
-		// | 1 << deoglSkinTexturePipelinesList::eptPropFieldImposter
-		// if realTransparentParticles:
-		//    | 1 << deoglSkinTexturePipelinesList::eptParticle
-		//    | 1 << deoglSkinTexturePipelinesList::eptParticleBeam
-		//    | 1 << deoglSkinTexturePipelinesList::eptParticleRibbon
-	
-	int pipelineType = deoglSkinTexturePipelines::etGeometry;
-	
-	int pipelineModifier = 0;
-	if( pPlan.GetFlipCulling() ){
-		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
-	}
-	if( pPlan.GetRenderStereo() ){
-		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
-	}
-	
-	int renderFilters = ertfRender | ertfSolid;
-	int renderFilterMask = ertfRender | ertfSolid | ertfRendered | ertfXRay | ertfDecal;
-	
-	if( pPlan.GetNoReflections() ){
-		renderFilters |= ertfReflected;
-		renderFilterMask |= ertfReflected;
-	}
-	
-	
-	deoglRPTBuildRTsGeometry.pSolidTerrain:
-	// same for with-xray but then "renderFilters |= ertfXRay"
-	
-	// pass 1. same as pSolid except...
-	int pipelineLists = 1 << deoglSkinTexturePipelinesList::eptHeightMap1
-	
-	// pass 2. same as pSolid except...
-	int pipelineLists = 1 << deoglSkinTexturePipelinesList::eptHeightMap2
-	
-	
-	deoglRPTBuildRTsGeometry.pSolidOutline:
-	// same for with-xray but then "renderFilters |= ertfXRay"
-	
-	// same as pSolid except...
-	renderFilters &= ~ertfSolid;
-	renderFilterMask &= ~ertfSolid;
-	
-	renderFilters |= ertfOutline;
-	renderFilterMask |= ertfOutline | ertfOutlineSolid;
-	
-	int pipelineLists = 1 << deoglSkinTexturePipelinesList::eptComponent
-	
-*/
-
 void deoglRenderPlanCompute::BuildRTOcclusion( const deoglRenderPlanMasked *mask ){
 	deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
 	deoglRenderOcclusion &renderOcclusion = pPlan.GetRenderThread().GetRenderers().GetOcclusion();
@@ -368,7 +311,7 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 	// cull by flags
 	uint32_t cullFlags = 0;
 	if( pPlan.GetIgnoreDynamicComponents() ){
-		cullFlags |= deoglWorldCompute::eefComponentDynamic;
+		cullFlags |= deoglWorldCompute::eefDynamic;
 	}
 	ubo.SetParameterDataUInt( efcpCullFlags, cullFlags );
 	
@@ -378,9 +321,9 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 	const float maxPixelError = ( float )pPlan.GetLodMaxPixelError();
 	const float lodFactorX = tanf( fovX * 0.5f ) * maxPixelError / pPlan.GetViewportWidth();
 	const float lodFactorY = tanf( fovY * 0.5f ) * maxPixelError / pPlan.GetViewportHeight();
+	const float lodFactor = decMath::min( lodFactorX, lodFactorY );
 	
-	ubo.SetParameterDataFloat( efcpLodFactor, decMath::min( lodFactorX, lodFactorY ) );
-	ubo.SetParameterDataFloat( efcpLodMaxPixelError, ( float )pPlan.GetLodMaxPixelError() );
+	ubo.SetParameterDataVec4( efcpLodFactor, lodFactor, 0.0f, 0.0f, 0.0f );
 	ubo.SetParameterDataUInt( efcpLodOffset, pPlan.GetLodLevelOffset() );
 	ubo.SetParameterDataUInt( efcpLodMethod, elmProjection );
 }

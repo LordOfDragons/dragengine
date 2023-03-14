@@ -44,22 +44,28 @@ void main( void ){
 	uint index = gl_GlobalInvocationID.x;
 	uint elementIndex = pElementGeometries[ index ].element;
 	
-	
-	bvec2 cond;
 	uint cullResult = getElementCullResult( elementIndex );
 	
 	// check if element is visible. cullResult is actually composed of the visibility (bit 8),
 	// the cull result flags (bit 0-7) and the lod index (bit 12-15). since though the cull
 	// result flags and lod index are not written unless the element is visible the value of
 	// cullResult is always 0 if the element is invisible and not 0 if visible
-	cond.x = cullResult == uint( 0 );
-	
-	// check geometry matches the lod level selected for the element
-	cond.y = pElementGeometries[ index ].lod != elementCullResultGetLodIndex( cullResult );
-	
-	if( any( cond.xy ) ){
+	if( cullResult == uint( 0 ) ){
 		return;
 	}
+	
+	// check geometry matches the lod level selected for the element
+	#ifdef WITH_OCCLUSION
+		uint rfgeometry = pElementGeometries[ index ].renderFilter;
+		if( ( rfgeometry & erfOcclusion ) != erfOcclusion
+		&& pElementGeometries[ index ].lod != elementCullResultGetLodIndex( cullResult ) ){
+			return;
+		}
+	#else
+		if( pElementGeometries[ index ].lod != elementCullResultGetLodIndex( cullResult ) ){
+			return;
+		}
+	#endif
 	
 	// add geometry to list of visible geometries
 	uint visibleIndex = atomicCounterIncrement( pNextVisibleIndex );

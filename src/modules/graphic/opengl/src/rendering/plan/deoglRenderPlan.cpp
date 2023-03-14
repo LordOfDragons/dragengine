@@ -1255,7 +1255,18 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 		SPECIAL_TIMER_PRINT("> ReadyRTOcclusion")
 		
 		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
-		SPECIAL_TIMER_PRINT("> Render")
+		SPECIAL_TIMER_PRINT("> RenderTestsCamera")
+		
+		int i;
+		for( i=0; i<pSkyLightCount; i++ ){
+			( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->RenderOcclusionTests();
+		}
+		SPECIAL_TIMER_PRINT("> SkyLightsRenderTests")
+		
+		for( i=0; i<pSkyLightCount; i++ ){
+			( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->BuildComputeRenderTasks();
+		}
+		SPECIAL_TIMER_PRINT("> SkyLightsBuildComputeRenderTasks")
 		
 		pCompute->ReadVisibleElements();
 		SPECIAL_TIMER_PRINT("> ReadVisibleElements")
@@ -1988,6 +1999,10 @@ void deoglRenderPlan::RemoveAllSkyLights(){
 }
 
 void deoglRenderPlan::SkyLightsStartBuildRT(){
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		return;
+	}
+	
 	int i;
 	for( i=0; i<pSkyLightCount; i++ ){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartBuildRT();

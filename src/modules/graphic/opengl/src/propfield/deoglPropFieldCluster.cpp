@@ -78,7 +78,8 @@ void deoglPropFieldCluster::WorldComputeElement::UpdateData( sDataElement &data 
 	
 	data.SetExtends( position + pCluster.GetMinimumExtend(), position + pCluster.GetMaximumExtend() );
 	data.SetEmptyLayerMask();
-	data.flags = ( uint32_t )deoglWorldCompute::eefPropFieldCluster;
+	data.flags = ( uint32_t )( deoglWorldCompute::eefPropFieldCluster
+		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic );
 	data.geometryCount = 1;
 	data.highestLod = 0;
 }
