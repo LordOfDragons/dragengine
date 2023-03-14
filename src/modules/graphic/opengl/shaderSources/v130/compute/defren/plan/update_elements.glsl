@@ -9,7 +9,7 @@ UBOLAYOUT_BIND(0) readonly buffer UpdateElement {
 	sElement pUpdateElement[];
 };
 
-UBOLAYOUT_BIND(1) writeonly buffer Element {
+UBOLAYOUT_BIND(1) writeonly restrict buffer Element {
 	sElement pElement[];
 };
 

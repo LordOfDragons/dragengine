@@ -11,7 +11,7 @@ layout(binding=0, rgba16f) uniform readonly image2D texPosition;
 layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
 
 
-UBOLAYOUT_BIND(0) writeonly buffer ProbeDynamicStates {
+UBOLAYOUT_BIND(0) writeonly restrict buffer ProbeDynamicStates {
 	uint pProbeDynamicStates[];
 };
 

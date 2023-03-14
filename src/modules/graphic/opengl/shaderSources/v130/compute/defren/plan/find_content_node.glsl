@@ -17,7 +17,7 @@ UBOLAYOUT_BIND(1) readonly buffer WorldOctreeNode {
 	sWorldOctreeNode pWorldOctreeNode[];
 };
 
-UBOLAYOUT_BIND(2) writeonly buffer SearchNodes {
+UBOLAYOUT_BIND(2) writeonly restrict buffer SearchNodes {
 	uvec4 pSearchNodes[];
 };
 

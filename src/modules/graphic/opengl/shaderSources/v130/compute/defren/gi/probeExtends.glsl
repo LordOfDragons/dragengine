@@ -22,7 +22,7 @@ struct sProbeExtends {
 	vec3 maxExtend;
 };
 
-UBOLAYOUT_BIND(0) writeonly buffer ProbeExtends {
+UBOLAYOUT_BIND(0) writeonly restrict buffer ProbeExtends {
 	sProbeExtends pProbeExtends[];
 };
 

@@ -17,7 +17,7 @@ UBOLAYOUT_BIND(1) readonly buffer ElementCullResult {
 	uvec4 pElementCullResult[];
 };
 
-UBOLAYOUT_BIND(2) writeonly buffer RenderTask {
+UBOLAYOUT_BIND(2) writeonly restrict buffer RenderTask {
 	sRenderTask pRenderTask[];
 };
 
@@ -74,16 +74,16 @@ void main( void ){
 	// if SSBO is not large enough do not write step. this avoids creating very large SSBOs
 	// for storing render steps. before sorting it is checked if the SSBO has been large
 	// enough and if not it is enlarged and the task rebuild
-	if( nextIndex >= pRenderTask.length() ){
+	if( nextIndex >= uint( pRenderTask.length() ) ){
 		return;
 	}
 	
 	bool doubleSided = ( rfgeometry & erfDoubleSided ) == erfDoubleSided;
-	setRenderTaskStep( nextIndex, 0,
+	setRenderTaskStep( nextIndex, uint( 0 ),
 		doubleSided ? config.pipelineDoubleSided : config.pipelineSingleSided,
-		0, // empty tuc
+		uint( 0 ), // empty tuc
 		pElementGeometries[ index ].vao,
 		pElementGeometries[ index ].instance,
 		pElementGeometries[ index ].spbInstance,
-		0 ); // flags
+		uint( 0 ) ); // flags
 }

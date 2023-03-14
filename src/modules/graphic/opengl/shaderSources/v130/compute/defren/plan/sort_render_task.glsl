@@ -14,7 +14,7 @@ UBOLAYOUT_BIND(0) readonly buffer Counters {
 	sCounter pRenderTaskCounters;
 };
 
-UBOLAYOUT_BIND(1) buffer RenderTask {
+UBOLAYOUT_BIND(1) restrict buffer RenderTask {
 	sRenderTaskSortable pRenderTask[];
 };
 
@@ -245,7 +245,7 @@ const int esGlobalDisperse = 3;
 
 
 void main( void ){
-	uint stepCount = min( pRenderTaskCounters.counter, pRenderTask.length() );
+	uint stepCount = min( pRenderTaskCounters.counter, uint( pRenderTask.length() ) );
 	uint t = gl_LocalInvocationID.x;
 	uint offset = pLaneSize * gl_WorkGroupID.x;
 	uint limit = cMaxLaneSize;

@@ -13,7 +13,7 @@ UBOLAYOUT_BIND(1) readonly buffer UpdateIndex {
 	uvec4 pUpdateIndex[];
 };
 
-UBOLAYOUT_BIND(2) writeonly buffer ElementGeometry {
+UBOLAYOUT_BIND(2) writeonly restrict buffer ElementGeometry {
 	sElementGeometry pElementGeometries[];
 };
 

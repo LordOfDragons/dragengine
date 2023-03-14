@@ -19,7 +19,7 @@ precision highp int;
 	layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
 #endif
 
-layout(binding=4, rgba16f) uniform writeonly image2DArray texProbeOffsets;
+layout(binding=4, rgba16f) uniform writeonly restrict image2DArray texProbeOffsets;
 
 
 struct sProbeOffset {
@@ -27,7 +27,7 @@ struct sProbeOffset {
 	uint flags;
 };
 
-UBOLAYOUT_BIND(0) writeonly buffer ProbeOffset {
+UBOLAYOUT_BIND(0) writeonly restrict buffer ProbeOffset {
 	sProbeOffset pProbeOffset[];
 };
 

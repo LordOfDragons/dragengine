@@ -12,11 +12,11 @@ uniform lowp sampler2DArray texCacheDiffuse;
 uniform lowp sampler2DArray texCacheReflectivity;
 uniform mediump sampler2DArray texCacheLight;
 
-layout( binding=0, rgba16f ) uniform writeonly image2D texPosition;
-layout( binding=1, rgba8_snorm ) uniform writeonly image2D texNormal;
-layout( binding=2, rgba8 ) uniform writeonly image2D texDiffuse;
-layout( binding=3, rgba8 ) uniform writeonly image2D texReflectivity;
-layout( binding=4, rgba16f ) uniform writeonly image2D texLight;
+layout( binding=0, rgba16f ) uniform writeonly restrict image2D texPosition;
+layout( binding=1, rgba8_snorm ) uniform writeonly restrict image2D texNormal;
+layout( binding=2, rgba8 ) uniform writeonly restrict image2D texDiffuse;
+layout( binding=3, rgba8 ) uniform writeonly restrict image2D texReflectivity;
+layout( binding=4, rgba16f ) uniform writeonly restrict image2D texLight;
 
 layout( local_size_x=64 ) in;
 

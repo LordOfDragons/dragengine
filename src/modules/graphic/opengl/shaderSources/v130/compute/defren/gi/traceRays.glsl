@@ -18,14 +18,14 @@ precision highp int;
 
 
 #ifdef GI_RAYCAST_DISTANCE_ONLY
-	layout(binding=0, r16f) uniform writeonly image2D texDistance;
+	layout(binding=0, r16f) uniform writeonly restrict image2D texDistance;
 	
 #else
-	layout(binding=0, rgba16f) uniform writeonly image2D texPosition;
-	layout(binding=1, rgba8_snorm) uniform writeonly image2D texNormal;
-	layout(binding=2, rgba8) uniform writeonly image2D texDiffuse;
-	layout(binding=3, rgba8) uniform writeonly image2D texReflectivity;
-	layout(binding=4, rgba16f) uniform writeonly image2D texLight;
+	layout(binding=0, rgba16f) uniform writeonly restrict image2D texPosition;
+	layout(binding=1, rgba8_snorm) uniform writeonly restrict image2D texNormal;
+	layout(binding=2, rgba8) uniform writeonly restrict image2D texDiffuse;
+	layout(binding=3, rgba8) uniform writeonly restrict image2D texReflectivity;
+	layout(binding=4, rgba16f) uniform writeonly restrict image2D texLight;
 #endif
 
 

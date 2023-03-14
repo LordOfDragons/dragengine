@@ -20,7 +20,7 @@ UBOLAYOUT_BIND(2) readonly buffer Counters {
 	sCounter pVisibleElementCounter;
 };
 
-UBOLAYOUT_BIND(3) writeonly buffer ElementCullResult {
+UBOLAYOUT_BIND(3) writeonly restrict buffer ElementCullResult {
 	uvec4 pElementCullResult[];
 };
 

@@ -27,7 +27,7 @@ UBOLAYOUT_BIND(3) readonly buffer Counters {
 	sCounter pRenderComputeCounter[ pRenderComputeCounterCount ];
 };
 
-UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
+UBOLAYOUT_BIND(4) writeonly restrict buffer RenderTask {
 	sRenderTask pRenderTask[];
 };
 
@@ -104,7 +104,7 @@ void main( void ){
 	// if SSBO is not large enough do not write step. this avoids creating very large SSBOs
 	// for storing render steps. before sorting it is checked if the SSBO has been large
 	// enough and if not it is enlarged and the task rebuild
-	if( nextIndex >= pRenderTask.length() ){
+	if( nextIndex >= uint( pRenderTask.length() ) ){
 		return;
 	}
 	

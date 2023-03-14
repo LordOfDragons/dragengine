@@ -9,7 +9,7 @@ UBOLAYOUT_BIND(0) readonly buffer Counters {
 	sCounter pRenderComputeCounter[ pRenderComputeCounterCount ];
 };
 
-UBOLAYOUT_BIND(1) buffer SubInstGroup {
+UBOLAYOUT_BIND(1) restrict buffer SubInstGroup {
 	uvec4 pSubInstGroup[];
 };
 

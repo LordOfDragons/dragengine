@@ -15,7 +15,7 @@ UBOLAYOUT_BIND(1) readonly buffer ElementCullResult {
 	uvec4 pElementCullResult[];
 };
 
-UBOLAYOUT_BIND(2) writeonly buffer VisibleGeometry {
+UBOLAYOUT_BIND(2) writeonly restrict buffer VisibleGeometry {
 	uvec4 pVisibleGeometry[];
 };
 

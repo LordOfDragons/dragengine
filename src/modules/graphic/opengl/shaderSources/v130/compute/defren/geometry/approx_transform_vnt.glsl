@@ -23,7 +23,7 @@ UBOLAYOUT_BIND(0) readonly buffer ModelData {
 	sModelData pModelData[];
 };
 
-UBOLAYOUT_BIND(1) writeonly buffer TransformedData {
+UBOLAYOUT_BIND(1) writeonly restrict buffer TransformedData {
 	sTransformedData pTransformedData[];
 };
 

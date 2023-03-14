@@ -18,7 +18,7 @@ UBOLAYOUT_BIND(2) readonly buffer CountersRenderTask {
 	sCounter pRenderTaskCounters;
 };
 
-UBOLAYOUT_BIND(3) buffer RenderTask {
+UBOLAYOUT_BIND(3) restrict buffer RenderTask {
 	sRenderTask pRenderTask[];
 };
 

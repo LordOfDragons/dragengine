@@ -22,12 +22,12 @@ UBOLAYOUT_BIND(0) readonly buffer Element {
 	sElement pElement[];
 };
 
-UBOLAYOUT_BIND(1) writeonly buffer VisibleElement {
+UBOLAYOUT_BIND(1) writeonly restrict buffer VisibleElement {
 	uvec4 pVisibleElement[];
 };
 
 #ifdef WRITE_CULL_RESULT
-UBOLAYOUT_BIND(2) writeonly buffer ElementCullResult {
+UBOLAYOUT_BIND(2) writeonly restrict buffer ElementCullResult {
 	uvec4 pElementCullResult[];
 };
 #endif

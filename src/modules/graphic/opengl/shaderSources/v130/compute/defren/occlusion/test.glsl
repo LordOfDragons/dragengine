@@ -52,7 +52,7 @@ uniform uint pCullFilter;
 		sCounter pRenderComputeCounter[ pRenderComputeCounterCount ];
 	};
 	
-	UBOLAYOUT_BIND(3) writeonly buffer VisibleElementOut {
+	UBOLAYOUT_BIND(3) writeonly restrict buffer VisibleElementOut {
 		uvec4 pVisibleElementOut[];
 	};
 	
@@ -76,7 +76,7 @@ uniform uint pCullFilter;
 		sInputData pInputData[];
 	};
 	
-	UBOLAYOUT_BIND(1) writeonly buffer ResultData {
+	UBOLAYOUT_BIND(1) writeonly restrict buffer ResultData {
 		bvec4 pResultData[];
 	};
 #endif
@@ -234,7 +234,7 @@ bool occlusionTest( in uint index ){
 	vec3 inMinExtend, inMaxExtend;
 	
 	#ifdef WITH_COMPUTE_RENDER_TASK
-		if( ( pElement[ index ].flags & pCullFilter ) == 0 ){
+		if( ( pElement[ index ].flags & pCullFilter ) == uint( 0 ) ){
 			return true;
 		}
 		

@@ -14,7 +14,7 @@ UBOLAYOUT_BIND(1) readonly buffer Counters {
 	sCounter pRenderTaskCounter;
 };
 
-UBOLAYOUT_BIND(2) writeonly buffer SubInstGroup {
+UBOLAYOUT_BIND(2) writeonly restrict buffer SubInstGroup {
 	uvec4 pSubInstGroup[];
 };
 
@@ -30,7 +30,7 @@ const uint dispatchWorkGroupSize = uint( 64 );
 
 
 void main( void ){
-	uint stepCount = min( pRenderTaskCounter.counter, pRenderTask.length() );
+	uint stepCount = min( pRenderTaskCounter.counter, uint( pRenderTask.length() ) );
 	uint index = gl_GlobalInvocationID.x;
 	if( index >= stepCount ){
 		return;
