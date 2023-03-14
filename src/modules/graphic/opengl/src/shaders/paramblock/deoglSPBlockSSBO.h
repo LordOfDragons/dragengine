@@ -64,6 +64,7 @@ public:
 	
 private:
 	const eType pType;
+	const bool pUseDSA;
 	GLuint pSSBO;
 	GLuint pSSBOLocal;
 	int pBindingPoint;
@@ -194,9 +195,13 @@ public:
 	virtual void EnsureBuffer();
 	
 	/** Clear buffer. */
+	void ClearDataUInt( uint32_t value );
+	void ClearDataUInt( int offset, int count, uint32_t value );
 	void ClearDataUInt( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
 	void ClearDataUInt( int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a );
 	
+	void ClearDataFloat( float value );
+	void ClearDataFloat( int offset, int count, float value );
 	void ClearDataFloat( float r, float g, float b, float a );
 	void ClearDataFloat( int offset, int count, float r, float g, float b, float a );
 	

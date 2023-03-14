@@ -46,6 +46,7 @@
 deoglSPBlockSSBO::deoglSPBlockSSBO( deoglRenderThread &renderThread, eType type ) :
 deoglShaderParameterBlock( renderThread ),
 pType( type ),
+pUseDSA( renderThread.HasChoices() && renderThread.GetChoices().GetUseDirectStateAccess() ),
 pSSBO( 0 ),
 pSSBOLocal( 0 ),
 pBindingPoint( 0 ),
@@ -63,6 +64,7 @@ pMemoryGPUSSBO( 0 ){
 deoglSPBlockSSBO::deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock ) :
 deoglShaderParameterBlock( paramBlock ),
 pType( paramBlock.pType ),
+pUseDSA( paramBlock.pUseDSA ),
 pSSBO( 0 ),
 pSSBOLocal( 0 ),
 pBindingPoint( paramBlock.pBindingPoint ),
@@ -80,6 +82,7 @@ pMemoryGPUSSBO( paramBlock.pMemoryGPUSSBO ){
 deoglSPBlockSSBO::deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock, eType type ) :
 deoglShaderParameterBlock( paramBlock ),
 pType( type ),
+pUseDSA( paramBlock.pUseDSA ),
 pSSBO( 0 ),
 pSSBOLocal( 0 ),
 pBindingPoint( paramBlock.pBindingPoint ),
@@ -140,7 +143,7 @@ void deoglSPBlockSSBO::Activate() const{
 
 void deoglSPBlockSSBO::Activate( int bindingPoint ) const{
 	DEASSERT_NOTNULL( pSSBO )
-	if( ! GetRenderThread().GetChoices().GetUseDirectStateAccess() ){
+	if( ! pUseDSA ){
 		DEASSERT_FALSE( IsBufferMapped() )
 	}
 	
@@ -157,7 +160,7 @@ void deoglSPBlockSSBO::Deactivate( int bindingPoint ) const{
 
 void deoglSPBlockSSBO::ActivateUBO() const{
 	DEASSERT_NOTNULL( pSSBO )
-	if( ! GetRenderThread().GetChoices().GetUseDirectStateAccess() ){
+	if( ! pUseDSA ){
 		DEASSERT_FALSE( IsBufferMapped() )
 	}
 	
@@ -174,7 +177,7 @@ void deoglSPBlockSSBO::ActivateAtomic() const{
 
 void deoglSPBlockSSBO::ActivateAtomic( int bindingPoint ) const{
 	DEASSERT_NOTNULL( pSSBO )
-	if( ! GetRenderThread().GetChoices().GetUseDirectStateAccess() ){
+	if( ! pUseDSA ){
 		DEASSERT_FALSE( IsBufferMapped() )
 	}
 	
@@ -191,7 +194,7 @@ void deoglSPBlockSSBO::DeactivateAtomic( int bindingPoint ) const{
 
 void deoglSPBlockSSBO::ActivateDispatchIndirect() const{
 	DEASSERT_NOTNULL( pSSBO )
-	if( ! GetRenderThread().GetChoices().GetUseDirectStateAccess() ){
+	if( ! pUseDSA ){
 		DEASSERT_FALSE( IsBufferMapped() )
 	}
 	
@@ -244,7 +247,7 @@ void deoglSPBlockSSBO::UnmapBuffer(){
 	const int offset = stride * lower;
 	const int size = stride * ( upper - lower + 1 );
 	
-	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+	if( pUseDSA ){
 		if( pType == etStatic ){
 			// EnsureBuffer does not create a buffer since we need to upload the data
 			// while creating the buffer. writing it afterwards is an error
@@ -275,7 +278,7 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const int size = GetBufferSize();
 	
-	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+	if( pUseDSA ){
 		switch( pType ){
 		case etStatic:
 			// this is empty on purpose. data in static buffers can be only written during
@@ -325,8 +328,35 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 	pAllocateBuffer = false;
 }
 
+void deoglSPBlockSSBO::ClearDataUInt( uint32_t value ){
+	ClearDataUInt( 0, GetBufferSize() / 4, value );
+}
+
+void deoglSPBlockSSBO::ClearDataUInt( int offset, int count, uint32_t value ){
+	DEASSERT_TRUE( offset >= 0 )
+	DEASSERT_TRUE( offset * 4 <= GetBufferSize() )
+	DEASSERT_TRUE( count >= 0 )
+	DEASSERT_TRUE( ( offset + count ) * 4 <= GetBufferSize() )
+	
+	EnsureBuffer();
+	
+	const GLuint v = ( GLuint )value;
+	deoglRenderThread &renderThread = GetRenderThread();
+	
+	if( pUseDSA ){
+		OGL_CHECK( renderThread, pglClearNamedBufferSubData( pSSBO, GL_RGBA32UI,
+			offset * 4, count * 4, GL_RED_INTEGER, GL_UNSIGNED_INT, &v ) );
+		
+	}else{
+		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, pSSBO ) );
+		OGL_CHECK( renderThread, pglClearBufferSubData( GL_SHADER_STORAGE_BUFFER,
+			GL_R32UI, offset * 4, count * 4, GL_RED_INTEGER, GL_UNSIGNED_INT, &v ) );
+		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0 ) );
+	}
+}
+
 void deoglSPBlockSSBO::ClearDataUInt( uint32_t r, uint32_t g, uint32_t b, uint32_t a ){
-	ClearDataUInt( 0, GetElementCount(), r, g, b, a );
+	ClearDataUInt( 0, GetBufferSize() / 16, r, g, b, a );
 }
 
 void deoglSPBlockSSBO::ClearDataUInt( int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a ){
@@ -340,7 +370,7 @@ void deoglSPBlockSSBO::ClearDataUInt( int offset, int count, uint32_t r, uint32_
 	const GLuint v[ 4 ] = { ( GLuint )r, ( GLuint )g, ( GLuint )b, ( GLuint )a };
 	deoglRenderThread &renderThread = GetRenderThread();
 	
-	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+	if( pUseDSA ){
 		OGL_CHECK( renderThread, pglClearNamedBufferSubData( pSSBO, GL_RGBA32UI,
 			offset * 16, count * 16, GL_RGBA_INTEGER, GL_UNSIGNED_INT, v ) );
 		
@@ -352,8 +382,35 @@ void deoglSPBlockSSBO::ClearDataUInt( int offset, int count, uint32_t r, uint32_
 	}
 }
 
+void deoglSPBlockSSBO::ClearDataFloat( float value ){
+	ClearDataFloat( 0, GetBufferSize() / 4, value );
+}
+
+void deoglSPBlockSSBO::ClearDataFloat( int offset, int count, float value ){
+	DEASSERT_TRUE( offset >= 0 )
+	DEASSERT_TRUE( offset * 4 <= GetBufferSize() )
+	DEASSERT_TRUE( count >= 0 )
+	DEASSERT_TRUE( ( offset + count ) * 4 <= GetBufferSize() )
+	
+	EnsureBuffer();
+	
+	const GLfloat v = ( GLfloat )value;
+	deoglRenderThread &renderThread = GetRenderThread();
+	
+	if( pUseDSA ){
+		OGL_CHECK( renderThread, pglClearNamedBufferSubData( pSSBO, GL_RGBA32F,
+			offset * 4, count * 4, GL_RED, GL_FLOAT, &v ) );
+		
+	}else{
+		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, pSSBO ) );
+		OGL_CHECK( renderThread, pglClearBufferSubData( GL_SHADER_STORAGE_BUFFER,
+			GL_R32F, offset * 4, count * 4, GL_RED, GL_FLOAT, &v ) );
+		OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0 ) );
+	}
+}
+
 void deoglSPBlockSSBO::ClearDataFloat( float r, float g, float b, float a ){
-	ClearDataFloat( 0, GetElementCount(), r, g, b, a );
+	ClearDataFloat( 0, GetBufferSize() / 16, r, g, b, a );
 }
 
 void deoglSPBlockSSBO::ClearDataFloat( int offset, int count, float r, float g, float b, float a ){
@@ -367,7 +424,7 @@ void deoglSPBlockSSBO::ClearDataFloat( int offset, int count, float r, float g, 
 	const GLfloat v[ 4 ] = { ( GLfloat )r, ( GLfloat )g, ( GLfloat )b, ( GLfloat )a };
 	deoglRenderThread &renderThread = GetRenderThread();
 	
-	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+	if( pUseDSA ){
 		OGL_CHECK( renderThread, pglClearNamedBufferSubData( pSSBO, GL_RGBA32F,
 			offset * 16, count * 16, GL_RGBA, GL_FLOAT, v ) );
 		
@@ -393,7 +450,7 @@ void deoglSPBlockSSBO::CopyData( const deoglSPBlockSSBO &ssbo, int offset, int c
 	deoglRenderThread &renderThread = GetRenderThread();
 	const int stride = GetElementStride();
 	
-	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+	if( pUseDSA ){
 		OGL_CHECK( renderThread, pglCopyNamedBufferSubData( ssbo.pSSBO, pSSBO,
 			stride * ssboOffset, stride * offset, stride * count ) );
 		
@@ -412,7 +469,7 @@ void deoglSPBlockSSBO::CopyData( const deoglSPBlockSSBO &ssbo, int offset, int c
 void deoglSPBlockSSBO::GPUFinishedWriting(){
 	DEASSERT_TRUE( pType == etRead )
 	
-	if( GetRenderThread().GetChoices().GetUseDirectStateAccess() && pFenceTransfer ){
+	if( pUseDSA && pFenceTransfer ){
 		pglDeleteSync( pFenceTransfer );
 		pFenceTransfer = nullptr;
 	}
@@ -435,7 +492,7 @@ void deoglSPBlockSSBO::GPUReadToCPU( int elementCount ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	
-	if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+	if( pUseDSA ){
 		if( pFenceTransfer ){
 			pglDeleteSync( pFenceTransfer );
 			pFenceTransfer = nullptr;
@@ -485,7 +542,7 @@ void deoglSPBlockSSBO::MapBufferRead( int element, int count ){
 	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
 	
 	if( pPersistentMapped ){
-		if( renderThread.GetChoices().GetUseDirectStateAccess() ){
+		if( pUseDSA ){
 			OGL_FENCE_WAIT( renderThread, pFenceTransfer );
 		}
 		
@@ -528,8 +585,63 @@ deoglShaderParameterBlock *deoglSPBlockSSBO::Copy() const{
 }
 
 void deoglSPBlockSSBO::MapToStd430(){
-	DETHROW( deeInvalidParam );
-	// TODO same as std130 but arrays of continuous floats are better packed
+	DEASSERT_FALSE( GetMappedBuffer() )
+	
+	const int parameterCount = GetParameterCount();
+	const bool rowMajor = GetRowMajor();
+	
+	int i, alignment, stride, adjust, chunkOffset = 0;
+	int componentCount, vectorCount, elementStride = 0;
+	
+	for( i=0; i<parameterCount; i++ ){
+		deoglSPBParameter &parameter = GetParameterAt( i );
+		
+		if( parameter.GetVectorCount() == 1 || rowMajor ){
+			componentCount = parameter.GetComponentCount();
+			vectorCount = parameter.GetVectorCount();
+			
+		}else{
+			componentCount = parameter.GetVectorCount();
+			vectorCount = parameter.GetComponentCount();
+		}
+		
+		stride = componentCount;
+		alignment = stride;
+		if( stride == 3 ){ // 3-component requires 4-component alignment
+			alignment = 4;
+		}
+		if( vectorCount > 1 ){ // matrices require 4-component alignment
+			alignment = 4;
+			stride = 4;
+		}
+		if( parameter.GetArrayCount() > 1 ){
+			// in std140 arrays require 4-component alignment. in std430 this has been removed.
+			// not sure about the details though. for float[4] this means the same as vec4.
+			// for vec2[2] most probably also vec4 but I'm not sure about this
+		}
+		
+		adjust = ( alignment - ( chunkOffset % alignment ) ) % alignment;
+		elementStride += adjust * 4;
+		chunkOffset += adjust;
+		
+		if( chunkOffset + stride > 4 ){
+			elementStride += ( 4 - chunkOffset ) * 4;
+			chunkOffset = 0;
+		}
+		
+		parameter.SetOffset( elementStride );
+		parameter.SetStride( stride * 4 );
+		parameter.SetArrayStride( parameter.GetStride() * vectorCount );
+		parameter.SetDataSize( parameter.GetArrayStride() * parameter.GetArrayCount() );
+		
+		chunkOffset += stride;
+		elementStride += parameter.GetDataSize();
+	}
+	
+	// element stride is aligned like arrays to 16-byte boundary on std140, 4-byte on std430
+	alignment = decMath::max( 4, GetAlignmentRequirements() );
+	pSetOffsetPadding( ( alignment - ( elementStride % alignment ) ) % alignment );
+	pSetElementStride( elementStride + GetOffsetPadding() );
 }
 
 
@@ -588,9 +700,8 @@ void deoglSPBlockSSBO::pGrowWriteBuffer( int size ){
 
 void deoglSPBlockSSBO::pEnsureSSBO(){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const bool dsa = renderThread.GetChoices().GetUseDirectStateAccess();
 	
-	if( dsa && pAllocateBuffer ){
+	if( pUseDSA && pAllocateBuffer ){
 		if( pSSBOLocal ){
 			if( pPersistentMapped ){
 				OGL_CHECK( renderThread, pglUnmapNamedBuffer( pSSBOLocal ) );
@@ -607,7 +718,7 @@ void deoglSPBlockSSBO::pEnsureSSBO(){
 	}
 	
 	if( ! pSSBO ){
-		if( dsa ){
+		if( pUseDSA ){
 			OGL_CHECK( renderThread, pglCreateBuffers( 1, &pSSBO ) );
 			
 		}else{
@@ -617,7 +728,7 @@ void deoglSPBlockSSBO::pEnsureSSBO(){
 	}
 	
 	if( pType == etRead && ! pSSBOLocal ){
-		if( dsa ){
+		if( pUseDSA ){
 			OGL_CHECK( renderThread, pglCreateBuffers( 1, &pSSBOLocal ) );
 			
 		}else{

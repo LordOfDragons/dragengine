@@ -489,6 +489,7 @@ protected:
 	void pSetMapped( char *data, int element );
 	void pSetMapped( char *data, int element, int count );
 	void pClearMapped();
+	void pSetOffsetPadding( int padding );
 	void pSetElementStride( int stride );
 	
 	virtual void pUpdateBufferSize();

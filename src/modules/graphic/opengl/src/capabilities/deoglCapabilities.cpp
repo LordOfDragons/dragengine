@@ -71,7 +71,8 @@ pClearEntireCubeMap( *this ),
 pClearEntireArrayTexture( *this ),
 pGeometryShaderLayer( *this ),
 pUBODirectLinkDeadloop( *this ),
-pFramebufferTextureSingle( *this )
+pFramebufferTextureSingle( *this ),
+pStd430( *this )
 {
 	const GLfloat fsquad[ 12 ] = {
 		0.0f, 1.0f,
@@ -252,6 +253,8 @@ void deoglCapabilities::DetectCapabilities(){
 		pClearEntireArrayTexture.Check( fbo );
 // 		pGeometryShaderLayer.Check( fbo ); // nVidia fails this although working
 		pUBODirectLinkDeadloop.Check( fbo );
+		
+		pStd430.Check();
 		
 		#ifdef OS_ANDROID
 		framebuffer = new deoglFramebuffer( pRenderThread, false );

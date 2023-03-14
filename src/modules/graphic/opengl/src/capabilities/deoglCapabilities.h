@@ -32,6 +32,7 @@
 #include "checks/deoglCapCheckGeometryShaderLayer.h"
 #include "checks/deoglCapCheckUBODirectLinkDeadloop.h"
 #include "checks/deoglCapCheckFramebufferTextureSingle.h"
+#include "checks/deoglCapCheckStd430.h"
 #include "../deoglBasics.h"
 
 class deoglRenderThread;
@@ -80,6 +81,7 @@ private:
 	deoglCapCheckGeometryShaderLayer pGeometryShaderLayer;
 	deoglCapCheckUBODirectLinkDeadloop pUBODirectLinkDeadloop;
 	deoglCapCheckFramebufferTextureSingle pFramebufferTextureSingle;
+	deoglCapCheckStd430 pStd430;
 	
 	
 	
@@ -192,6 +194,9 @@ public:
 	/** Framebuffer texture single. */
 	inline const deoglCapCheckFramebufferTextureSingle &GetFramebufferTextureSingle() const{
 		return pFramebufferTextureSingle; }
+	
+	/** Std430 support. */
+	inline const deoglCapCheckStd430 &GetStd430() const{ return pStd430; }
 	
 	/** Tests the hardware for its capabilities. */
 	void DetectCapabilities();

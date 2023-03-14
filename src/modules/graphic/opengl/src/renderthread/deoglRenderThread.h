@@ -272,6 +272,7 @@ public:
 	
 	/** Choices. */
 	inline const deoglRTChoices &GetChoices() const{ return *pChoices; }
+	inline bool HasChoices() const{ return pChoices != nullptr; }
 	
 	/** Buffer objects. */
 	inline deoglRTBufferObject &GetBufferObject() const{ return *pBufferObject; }
