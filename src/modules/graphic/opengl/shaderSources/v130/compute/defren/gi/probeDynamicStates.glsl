@@ -59,7 +59,7 @@ void main( void ){
 				&& dot( imageLoad( texNormal, rayTC ).xyz, rayPosition.xyz - probePosition ) < 0
 				? 1 : 0;
 		}
-		barrier(); memoryBarrier();
+		barrier();
 		
 		// per invocation processing. combine all results by adding them
 		ivec3 offset1 = ivec3( gl_LocalInvocationIndex ) * ivec3( 2, 4, 8 );
@@ -69,19 +69,19 @@ void main( void ){
 		if( gl_LocalInvocationIndex < uint( 8 ) ){
 			vFrontFaceCount[ offset1.x ] += vFrontFaceCount[ offset2.x ];
 		}
-		barrier(); memoryBarrier();
+		barrier();
 		
 		// [0]+=[2], [4]+=[6], [8]+=[10], [12]+=[14]
 		if( gl_LocalInvocationIndex < uint( 4 ) ){
 			vFrontFaceCount[ offset1.y ] += vFrontFaceCount[ offset2.y ];
 		}
-		barrier(); memoryBarrier();
+		barrier();
 		
 		// [0]+=[4], [8]+=[12]
 		if( gl_LocalInvocationIndex < uint( 2 ) ){
 			vFrontFaceCount[ offset1.z ] += vFrontFaceCount[ offset2.z ];
 		}
-		barrier(); memoryBarrier();
+		barrier();
 		
 		// [0]+=[8] and update frontFaceCount. we have to make sure all invocations exit
 		// the shader but only 1 updates the buffer

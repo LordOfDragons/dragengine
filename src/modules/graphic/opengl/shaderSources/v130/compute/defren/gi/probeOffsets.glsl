@@ -212,16 +212,16 @@ void main( void ){
 				}
 			}
 		}
-		barrier(); memoryBarrier();
+		barrier();
 		
 		
 		// per invocation processing. combine all results
 		for( i=0; i<combineParams64Count; i++ ){
 			combineRays( combineParams64Mul[ i ] * uvec3( gl_LocalInvocationIndex ) + combineParams64Add[ i ] );
-			barrier(); memoryBarrier();
+			barrier();
 		}
 		combineRays( combineParams64Last );
-		barrier(); memoryBarrier();
+		barrier();
 		
 		// apply. this does not require invocation masking since we use only invoc[0] in the end
 		counts += vRayData[ 0 ].counts;

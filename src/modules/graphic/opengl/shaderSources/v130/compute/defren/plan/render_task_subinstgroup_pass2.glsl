@@ -42,7 +42,7 @@ void localCompareAndSwap( in uint limit, in uvec2 i ){
 
 void localFlip( in uint limit, in uint h ){
 	uint t = gl_LocalInvocationID.x;
-	barrier(); memoryBarrier();
+	barrier();
 	
 	uint hh = h / uint( 2 );
 	uint thh = t % hh;
@@ -55,7 +55,7 @@ void localFlip( in uint limit, in uint h ){
 void localDisperse( in uint limit, in uint h ){
 	uint t = gl_LocalInvocationID.x;
 	while( h > uint( 1 ) ){
-		barrier(); memoryBarrier();
+		barrier();
 		
 		uint hh = h / uint( 2 );
 		uint thh = t % hh;
@@ -171,7 +171,7 @@ void main( void ){
 	}
 	
 	if( pStage <= esLocalDisperse ){
-		barrier(); memoryBarrier();
+		barrier();
 		
 		if( valid.x ){
 			setSubInstGroup( i.z, vGroups[ i.x ] );

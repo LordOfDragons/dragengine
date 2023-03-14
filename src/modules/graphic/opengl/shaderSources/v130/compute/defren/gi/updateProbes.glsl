@@ -180,7 +180,7 @@ void main( void ){
 					vRayData[ gl_LocalInvocationIndex ].position.w, pGIMaxProbeDistance );
 			#endif
 		}
-		barrier(); memoryBarrier();
+		barrier();
 		
 		
 		// per invocation processing
