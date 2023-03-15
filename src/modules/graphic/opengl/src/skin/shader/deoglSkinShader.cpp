@@ -1521,7 +1521,7 @@ deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap
 
 void deoglSkinShader::GenerateShader(){
 	//deoglSkinShaderManager &ssmgr = pRenderThread.GetShader().GetSkinShaderManager();
-	deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
+	const deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
 	
 	pShader = nullptr;

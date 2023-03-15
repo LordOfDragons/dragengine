@@ -155,7 +155,7 @@ bool deoglShaderManager::HasUnitSourceCodeWithPath( const char *filePath ) const
 	return pUnitSourceCodes.Has( filePath );
 }
 
-deoglShaderUnitSourceCode *deoglShaderManager::GetUnitSourceCodeWithPath( const char *filePath ){
+deoglShaderUnitSourceCode *deoglShaderManager::GetUnitSourceCodeWithPath( const char *filePath ) const{
 	deObject *o;
 	return pUnitSourceCodes.GetAt( filePath, &o ) ? ( deoglShaderUnitSourceCode* )o : nullptr;
 }

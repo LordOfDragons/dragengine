@@ -1149,6 +1149,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2932,6 +2935,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.cpp">
