@@ -115,7 +115,8 @@ pOSUnix( renderThread.GetOgl().GetOS()->CastToOSUnix() ),
 pDisplay( NULL ),
 pScreen( 0 ),
 
-pContext( NULL ),
+pContext( nullptr ),
+pLoaderContext( nullptr ),
 
 pColMap( 0 ),
 pVisInfo( NULL ),
@@ -127,6 +128,7 @@ pOSAndroid( renderThread.GetOgl().GetOS()->CastToOSAndroid() ),
 pDisplay( EGL_NO_DISPLAY ),
 pSurface( EGL_NO_SURFACE ),
 pContext( EGL_NO_CONTEXT ),
+pLoaderContext( EGL_NO_CONTEXT ),
 
 pScreenWidth( 0 ),
 pScreenHeight( 0 ),
@@ -141,13 +143,15 @@ pOSBeOS( renderThread.GetOgl().GetOS()->CastToOSBeOS() ),
 #ifdef OS_MACOS
 pOSMacOS( renderThread.GetOgl().GetOS()->CastToOSMacOS() ),
 pPixelFormat( NULL ),
-pContext( NULL ),
+pContext( nullptr ),
+pLoaderContext( nullptr ),
 #endif
 
 #ifdef OS_W32
 pWindowClassname( "DEOpenGLWindow" ),
 pOSWindows( renderThread.GetOgl().GetOS()->CastToOSWindows() ),
 pContext( NULL ),
+pLoaderContext( NULL ),
 #endif
 
 pActiveRRenderWindow( NULL ),
@@ -870,6 +874,7 @@ void deoglRTContext::pCreateGLContext(){
 			if( pContext ){
 				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
 					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
+				pLoaderContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, pContext, True, contextAttribs );
 				break;
 			}
 			
@@ -881,16 +886,17 @@ void deoglRTContext::pCreateGLContext(){
 			logger.LogWarn( "No supported OpenGL Context could be created with new method. "
 				"Creating OpenGL Context using old method" );
 			pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
+			pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
 		}
 		
 	}else{
 		logger.LogInfo( "Creating OpenGL Context using old method" );
 		pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
+		pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
 	}
 	
-	if( ! pContext ){
-		DETHROW( deeInvalidAction );
-	}
+	DEASSERT_NOTNULL( pContext )
+	DEASSERT_NOTNULL( pLoaderContext )
 	
 	if( ! glXIsDirect( pDisplay, pContext ) ){
 		logger.LogError( "No matching direct rendering context found!" );
@@ -899,10 +905,18 @@ void deoglRTContext::pCreateGLContext(){
 }
 
 void deoglRTContext::pFreeContext(){
-	if( pDisplay && pContext ){
+	if( ! pDisplay ){
+		return;
+	}
+	
+	if( pLoaderContext ){
+		glXDestroyContext( pDisplay, pLoaderContext );
+		pLoaderContext = nullptr;
+	}
+	if( pContext ){
 		pRenderThread.GetLogger().LogInfo( "Free Context" );
 		glXDestroyContext( pDisplay, pContext );
-		pContext = 0;
+		pContext = nullptr;
 	}
 }
 
@@ -975,9 +989,9 @@ void deoglRTContext::pInitDisplay(){
 			EGL_NONE
 		};
 		pContext = eglCreateContext( pDisplay, pConfig, NULL, eglAttribList );
-		if( pContext == EGL_NO_CONTEXT ){
-			DETHROW( deeInvalidParam );
-		}
+		DEASSERT_FALSE( pContext == EGL_NO_CONTEXT )
+		pLoaderContext = eglCreateContext( pDisplay, pConfig, pContext, eglAttribList );
+		DEASSERT_FALSE( pLoaderContext == EGL_NO_CONTEXT )
 	}
 	
 	// make surface current. we have to make it current each render loop
@@ -998,6 +1012,10 @@ void deoglRTContext::pCloseDisplay(){
 	
 	TerminateAppWindow();
 	
+	if( pLoaderContext != EGL_NO_CONTEXT ){
+		eglDestroyContext( pDisplay, pLoaderContext );
+		pLoaderContext = EGL_NO_CONTEXT;
+	}
 	if( pContext != EGL_NO_CONTEXT ){
 		eglDestroyContext( pDisplay, pContext );
 		pContext = EGL_NO_CONTEXT;
@@ -1120,6 +1138,7 @@ void deoglRTContext::pCreateGLContext(){
 			if( pContext ){
 				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
 					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
+				pLoaderContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs );
 				break;
 			}
 			
@@ -1131,6 +1150,8 @@ void deoglRTContext::pCreateGLContext(){
 			logger.LogWarn( "No supported OpenGL Context could be created with new method. "
 				"Creating OpenGL Context using old method" );
 			pContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
+			pLoaderContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
+			DEASSERT_TRUE( wglShareLists( pLoaderContext, pContext ) )
 		}
 		
 	}else{
@@ -1141,6 +1162,7 @@ void deoglRTContext::pCreateGLContext(){
 		logger.LogErrorFormat( "wglCreateContext with code %i", ( int )GetLastError() );
 		DETHROW( deeOutOfMemory );
 	}
+	DEASSERT_NOTNULL( pLoaderContext )
 	
 	// show the new render window
 	//pOSWindows->SetWindow( pActiveRRenderWindow->GetWindow() ); // problem, hangs if called from render-thread
@@ -1160,6 +1182,10 @@ void deoglRTContext::pFreeContext(){
 	// destroy render window
 	//pDestroyRenderWindow();
 	
+	if( pLoaderContext ){
+		wglDeleteContext( pLoaderContext );
+		pLoaderContext = NULL;
+	}
 	if( pContext ){
 		pRenderThread.GetLogger().LogInfo( "Free Context" );
 		wglDeleteContext( pContext );

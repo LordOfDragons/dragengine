@@ -104,6 +104,7 @@ private:
 	int pScreen;
 	
 	GLXContext pContext;
+	GLXContext pLoaderContext;
 	
 	Colormap pColMap;
 	XVisualInfo *pVisInfo;
@@ -119,6 +120,7 @@ private:
 	EGLDisplay pDisplay;
 	EGLSurface pSurface;
 	EGLContext pContext;
+	EGLContext pLoaderContext;
 	EGLConfig pConfig;
 	
 	int pScreenWidth;
@@ -135,12 +137,14 @@ private:
 	deOSMacOS *pOSMacOS;
 	NSOpenGLPixelFormat *pPixelFormat;
 	NSOpenGLContext *pContext;
+	NSOpenGLContext *pLoaderContext;
 #endif
 
 #ifdef OS_W32
 	decString pWindowClassname;
 	deOSWindows *pOSWindows;
 	HGLRC pContext;
+	HGLRC pLoaderContext;
 #endif
 	
 	deoglRRenderWindow *pActiveRRenderWindow;
@@ -219,6 +223,9 @@ public:
 	/** Context. */
 	inline GLXContext GetContext() const{ return pContext; }
 	
+	/** Loader context. */
+	inline GLXContext GetLoaderContext() const{ return pLoaderContext; }
+	
 	/** Atoms. */
 	inline Atom GetAtomProtocols() const{ return pAtomProtocols; }
 	inline Atom GetAtomDeleteWindow() const{ return pAtomDeleteWindow; }
@@ -239,6 +246,9 @@ public:
 	
 	/** Context. */
 	inline EGLContext GetContext() const{ return pContext; }
+	
+	/** Loader context. */
+	inline EGLContext GetLoaderContext() const{ return pLoaderContext; }
 	
 	/** Configuration. */
 	inline const EGLConfig& GetConfig() const{ return pConfig; }
@@ -282,6 +292,9 @@ public:
 	
 	/** Context. */
 	inline NSOpenGLContext *GetContext() const{ return pContext; }
+	
+	/** Loader context. */
+	inline NSOpenGLContext *GetLoaderContext() const{ return pLoaderContext; }
 #endif
 
 #ifdef OS_W32
@@ -293,6 +306,9 @@ public:
 	
 	/** Context. */
 	inline HGLRC GetContext() const{ return pContext; }
+	
+	/** Loader context. */
+	inline HGLRC GetLoaderContext() const{ return pLoaderContext; }
 	
 	LRESULT ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam );
 #endif
