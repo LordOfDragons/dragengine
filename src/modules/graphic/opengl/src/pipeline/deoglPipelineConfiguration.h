@@ -37,7 +37,6 @@ class deoglShaderDefines;
  * 
  * Default values:
  * - EnableStencilTest: false
- * - EnableRasterizerDiscard: false
  * - PolygonMode: GL_FILL
  * - EnableCullFace: false
  * - CullFace: GL_BACK
@@ -86,8 +85,6 @@ private:
 	bool pColorMask[ 4 ];
 	
 	bool pEnableScissorTest;
-	
-	bool pEnableRasterizerDiscard;
 	
 	GLenum pPolygonMode;
 	bool pEnableCullFace;
@@ -180,15 +177,6 @@ public:
 	/** Enable scissor test. */
 	inline bool GetEnableScissorTest() const{ return pEnableScissorTest; }
 	void SetEnableScissorTest( bool enable );
-	
-	
-	
-	/** Enable rasterizer discard. */
-	inline bool GetEnableRasterizerDiscard() const{ return pEnableRasterizerDiscard; }
-	void SetEnableRasterizerDiscard( bool enable );
-	
-	/** Enable rasterizer discard and set color and depth masks to false. */
-	void EnableRasterizerDiscard();
 	
 	
 	

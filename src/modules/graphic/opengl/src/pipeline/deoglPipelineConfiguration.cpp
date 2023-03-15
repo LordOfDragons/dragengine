@@ -42,7 +42,6 @@ deoglPipelineConfiguration::deoglPipelineConfiguration() :
 pType( etGraphic ),
 pShader( nullptr ),
 pEnableScissorTest( false ),
-pEnableRasterizerDiscard( false ),
 pPolygonMode( GL_FILL ),
 pEnableCullFace( false ),
 pCullFace( GL_BACK ),
@@ -86,7 +85,6 @@ deoglPipelineConfiguration::deoglPipelineConfiguration( const deoglPipelineConfi
 pType( etGraphic ),
 pShader( nullptr ),
 pEnableScissorTest( false ),
-pEnableRasterizerDiscard( false ),
 pPolygonMode( GL_FILL ),
 pEnableCullFace( false ),
 pCullFace( GL_BACK ),
@@ -182,18 +180,6 @@ void deoglPipelineConfiguration::DisableMasks(){
 
 void deoglPipelineConfiguration::SetEnableScissorTest( bool enable ){
 	pEnableScissorTest = enable;
-}
-
-
-
-void deoglPipelineConfiguration::SetEnableRasterizerDiscard( bool enable ){
-	pEnableRasterizerDiscard = enable;
-}
-
-void deoglPipelineConfiguration::EnableRasterizerDiscard(){
-	SetColorMask( false, false, false, false );
-	SetDepthMask( false );
-	SetEnableRasterizerDiscard( true );
 }
 
 
@@ -451,8 +437,6 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) con
 		
 		state.EnableScissorTest( pEnableScissorTest );
 		
-		state.EnableRasterizerDiscard( pEnableRasterizerDiscard );
-		
 		state.PolygonMode( pPolygonMode );
 		
 		state.EnableCullFace( pEnableCullFace );
@@ -514,7 +498,6 @@ deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPi
 	pColorMask[ 2 ] = config.pColorMask[ 2 ];
 	pColorMask[ 3 ] = config.pColorMask[ 3 ];
 	pEnableScissorTest = config.pEnableScissorTest;
-	pEnableRasterizerDiscard = config.pEnableRasterizerDiscard;
 	pPolygonMode = config.pPolygonMode;
 	pEnableCullFace = config.pEnableCullFace;
 	pCullFace = config.pCullFace;
@@ -557,7 +540,6 @@ bool deoglPipelineConfiguration::operator==( const deoglPipelineConfiguration &c
 		&& pColorMask[ 2 ] == config.pColorMask[ 2 ]
 		&& pColorMask[ 3 ] == config.pColorMask[ 3 ]
 		&& pEnableScissorTest == config.pEnableScissorTest
-		&& pEnableRasterizerDiscard == config.pEnableRasterizerDiscard
 		&& pPolygonMode == config.pPolygonMode
 		&& pEnableCullFace == config.pEnableCullFace
 		&& pCullFace == config.pCullFace

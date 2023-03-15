@@ -37,7 +37,6 @@ private:
 	bool pColorMask[ 4 ];
 	bool pDepthMask;
 	bool pEnableScissorTest;
-	bool pEnableRasterizerDiscard;
 	GLenum pPolygonMode;
 	bool pEnableCullFace;
 	GLenum pCullFace;
@@ -82,7 +81,6 @@ public:
 	void ColorMask( bool red, bool green, bool blue, bool alpha );
 	void DepthMask( bool mask );
 	void EnableScissorTest( bool enable );
-	void EnableRasterizerDiscard( bool enable );
 	void PolygonMode( GLenum mode );
 	void EnableCullFace( bool enable );
 	void CullFace( GLenum cullFace );

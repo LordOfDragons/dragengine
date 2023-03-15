@@ -109,7 +109,6 @@ pStatesKeyWidth( 35 )
 	pEnabledCullFace = glIsEnabled( GL_CULL_FACE );
 	pEnabledDepthTest = glIsEnabled( GL_DEPTH_TEST );
 	pEnabledPolygonOffsetFill = glIsEnabled( GL_POLYGON_OFFSET_FILL );
-	pEnabledRasterizerDiscard = glIsEnabled( GL_RASTERIZER_DISCARD );
 	pEnabledScissorTest = glIsEnabled( GL_SCISSOR_TEST );
 	pEnabledStencilTest = glIsEnabled( GL_STENCIL_TEST );
 	
@@ -168,7 +167,6 @@ void deoglDebugStateSnapshot::LogState() const{
 	logger.LogInfo( pLogState( "    GL_CULL_FACE", pEnabledCullFace ? "true": "false" ) );
 	logger.LogInfo( pLogState( "    GL_DEPTH_TEST", pEnabledDepthTest ? "true": "false" ) );
 	logger.LogInfo( pLogState( "    GL_POLYGON_OFFSET_FILL", pEnabledPolygonOffsetFill ? "true": "false" ) );
-	logger.LogInfo( pLogState( "    GL_RASTERIZER_DISCARD", pEnabledRasterizerDiscard ? "true": "false" ) );
 	logger.LogInfo( pLogState( "    GL_SCISSOR_TEST", pEnabledScissorTest ? "true": "false" ) );
 	logger.LogInfo( pLogState( "    GL_STENCIL_TEST", pEnabledStencilTest ? "true": "false" ) );
 	

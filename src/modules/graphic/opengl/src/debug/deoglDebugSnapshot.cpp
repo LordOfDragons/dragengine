@@ -303,7 +303,6 @@ void deoglDebugSnapshot::pTakeSnapshotStates() const{
 		pWriteState( *writer, "GL_CULL_FACE", glIsEnabled( GL_CULL_FACE ) ? "true": "false");
 		pWriteState( *writer, "GL_DEPTH_TEST", glIsEnabled( GL_DEPTH_TEST ) ? "true": "false");
 		pWriteState( *writer, "GL_POLYGON_OFFSET_FILL", glIsEnabled( GL_POLYGON_OFFSET_FILL ) ? "true": "false");
-		pWriteState( *writer, "GL_RASTERIZER_DISCARD", glIsEnabled( GL_RASTERIZER_DISCARD ) ? "true": "false");
 		pWriteState( *writer, "GL_SCISSOR_TEST", glIsEnabled( GL_SCISSOR_TEST ) ? "true": "false");
 		pWriteState( *writer, "GL_STENCIL_TEST", glIsEnabled( GL_STENCIL_TEST ) ? "true": "false");
 		pWriteLine( *writer, "");
