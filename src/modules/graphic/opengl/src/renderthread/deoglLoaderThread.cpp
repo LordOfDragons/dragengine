@@ -149,14 +149,12 @@ void deoglLoaderThread::pInit(){
 }
 
 void deoglLoaderThread::pCleanUp(){
-	deoglRTContext &context = pRenderThread.GetContext();
-	
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-		OGLX_CHECK( pRenderThread, glXMakeCurrent( context.GetDisplay(), None, nullptr ) );
+		OGLX_CHECK( pRenderThread, glXMakeCurrent( pRenderThread.GetContext().GetDisplay(), None, nullptr ) );
 	#endif
 	
 	#ifdef ANDROID
-		eglMakeCurrent( context.GetDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+		eglMakeCurrent( pRenderThread.GetContext().GetDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
 	#endif
 	
 	#ifdef OS_MACOS
