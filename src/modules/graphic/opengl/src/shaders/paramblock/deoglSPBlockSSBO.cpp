@@ -475,7 +475,19 @@ void deoglSPBlockSSBO::GPUFinishedWriting(){
 	}
 	
 	// required to sync call to glCopy*BufferSubData after compute shader finished
-	OGL_CHECK( GetRenderThread(), pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	if( pUseDSA ){
+		OGL_CHECK( GetRenderThread(), pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
+		
+	}else{
+		// old opengl drivers are buggy in this regard. we do a glCopyBufferSubData after
+		// this call any time later. according to specification this requires the use of
+		// GL_BUFFER_UPDATE_BARRIER_BIT with glMemoryBarrier to work properly. nevertheless
+		// the copies are ignored and old data is read back unless GL_ALL_BARRIER_BITS is
+		// used. this behavior violates the specification but seems to be the only solution
+		// working across different driver versions. all newer opengl though support DSA
+		// which does not suffer from this problem
+		OGL_CHECK( GetRenderThread(), pglMemoryBarrier( GL_ALL_BARRIER_BITS ) );
+	}
 }
 
 void deoglSPBlockSSBO::GPUReadToCPU(){

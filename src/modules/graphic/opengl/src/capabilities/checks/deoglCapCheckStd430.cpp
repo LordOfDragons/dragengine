@@ -82,65 +82,19 @@ void deoglCapCheckStd430::Check(){
 		return;
 	}
 	
-	// for some strange reason this test is not working correctly
-	pWorking = true;
-	
-#if 0
 	try{
 		deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-		int i;
 		
-		// load shader
 		const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Test std430 Support" );
 		DEASSERT_NOTNULL( sources )
 		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		DEASSERT_NOTNULL( shader )
 		
-		// generate shader parameter blocks
-		const deoglSPBlockSSBO::Ref ssboInput( deoglSPBlockSSBO::Ref::New(
-			new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) ) );
-		ssboInput->SetRowMajor( true );
-		ssboInput->SetParameterCount( 1 );
-		ssboInput->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-		ssboInput->SetElementCount( 64 );
-		ssboInput->SetCompact( true );
-		ssboInput->MapToStd430();
-		
-		{
-		const deoglSPBMapBuffer mapped( ssboInput );
-		uint32_t * const data = ( uint32_t* )ssboInput->GetMappedBuffer();
-		for( i=0; i<64; i++ ){
-			data[ i ] = ( uint32_t )( 100 + i );
-		}
-		}
-		
-		const deoglSPBlockSSBO::Ref ssboOutput( deoglSPBlockSSBO::Ref::New(
-			new deoglSPBlockSSBO( ssboInput, deoglSPBlockSSBO::etRead ) ) );
-		ssboOutput->ClearDataUInt( 222 );
-		
-		// run test
-		renderThread.GetShader().ActivateShader( shader );
-		ssboInput->Activate( 0 );
-		ssboOutput->Activate( 1 );
-		
-		OGL_CHECK( renderThread, pglDispatchCompute( 1, 1, 1 ) );
-		ssboOutput->GPUFinishedWriting();
-		ssboOutput->GPUReadToCPU();
-		
-		// evaluate results
-		{
-		const deoglSPBMapBufferRead mapped( ssboOutput );
-		const uint32_t * const data = ( const uint32_t* )ssboOutput->GetMappedBuffer();
 		pWorking = true;
-		for( i=0; i<64; i++ ){
-			renderThread.GetLogger().LogInfoFormat("- %d: %d", i, data[ i ]);
-			pWorking &= data[ i ] == ( uint32_t )( 900 + i );
-		}
-		}
 		
 	}catch( const deException & ){
 		pWorking = false;
 	}
-#endif
 	
 	if( pWorking ){
 		renderThread.GetLogger().LogInfo( "Capabilities: std430 Layout: Supported" );

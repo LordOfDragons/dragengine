@@ -204,6 +204,8 @@ public:
 	/** Full-Screen Quad VAO for internal testing only. */
 	inline GLuint GetFSQuadVAO() const{ return pFSQuadVAO; }
 	
+	/** Verify capabilities. */
+	bool Verify() const;
 	/*@}*/
 	
 private:

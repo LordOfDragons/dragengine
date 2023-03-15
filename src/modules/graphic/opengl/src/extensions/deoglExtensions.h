@@ -423,8 +423,9 @@ public:
 	void Initialize();
 	/** Prints a summary of the findings. */
 	void PrintSummary();
+	
 	/** Returns true if all required extensions are present. */
-	bool VerifyPresence();
+	bool VerifyPresence() const;
 	
 	/** Retrieves the vendor string. */
 	inline const decString &GetStringVendor() const{ return pStrVendor; }

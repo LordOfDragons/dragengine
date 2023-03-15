@@ -321,6 +321,15 @@ void deoglCapabilities::DetectCapabilities(){
 	}
 }
 
+bool deoglCapabilities::Verify() const{
+	if( pStd430.Broken() ){
+		pRenderThread.GetLogger().LogError( "Std430 Layout Not Supported" );
+		return false;
+	}
+	
+	return true;
+}
+
 
 
 // Private Functions

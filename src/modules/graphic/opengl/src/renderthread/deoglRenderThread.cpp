@@ -950,9 +950,12 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	pInitCapabilities();
 	
-	if( ! pExtensions->VerifyPresence() ){ // capabilities possibly disabled extensions
-		DETHROW_INFO( deeInvalidAction,
-			"Required extensions or functions could not be found. Please see logs" );
+	// verify hardware support
+	bool verified = true;
+	verified &= pCapabilities->Verify();
+	verified &= pExtensions->VerifyPresence(); // capabilities possibly disabled extensions
+	if( ! verified ){
+		DETHROW_INFO( deeInvalidAction, "Required hardware support missing. Please see logs" );
 	}
 	
 	// debug information

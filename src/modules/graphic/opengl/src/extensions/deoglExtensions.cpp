@@ -287,7 +287,7 @@ void deoglExtensions::PrintSummary(){
 	pRenderThread.GetLogger().LogInfoFormat( "- Supports Vertex Shader Layer: %s", pSupportsVSLayer ? "Yes" : "No" );
 }
 
-bool deoglExtensions::VerifyPresence(){
+bool deoglExtensions::VerifyPresence() const{
 	bool allPresent = pHasRequiredFunctions;
 	
 	allPresent &= pVerifyExtensionPresent( ext_ARB_depth_clamp );
