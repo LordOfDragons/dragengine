@@ -67,10 +67,8 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasView.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckATLUnbind.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireArrayTexture.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireCubeMap.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckFramebufferTextureSingle.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckGeometryShaderLayer.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckRasterizerDiscard.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckStd430.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBODirectLinkDeadloop.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBOIndirectMatrixAccess.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapabilities.h" />
@@ -387,6 +385,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedPool.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThread.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRenderThread.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTBufferObject.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTChoices.h" />

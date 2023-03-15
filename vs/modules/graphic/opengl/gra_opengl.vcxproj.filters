@@ -144,16 +144,10 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireArrayTexture.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireCubeMap.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckFramebufferTextureSingle.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckGeometryShaderLayer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckRasterizerDiscard.h">
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckStd430.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBODirectLinkDeadloop.h">
@@ -1099,6 +1093,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThread.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRenderThread.h">
