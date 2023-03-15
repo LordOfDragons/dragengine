@@ -205,7 +205,7 @@ public:
 	void ClearDataFloat( float r, float g, float b, float a );
 	void ClearDataFloat( int offset, int count, float r, float g, float b, float a );
 	
-	/** Copy buffer data. */
+	/** Copy buffer data from SSBO into this SSBO. */
 	void CopyData( const deoglSPBlockSSBO &ssbo, int offset, int count, int ssboOffset );
 	
 	/** GPU finished writing data to SSBO. */

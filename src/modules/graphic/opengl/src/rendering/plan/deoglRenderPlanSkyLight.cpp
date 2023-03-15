@@ -281,32 +281,36 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 		return;
 	}
 	
+	// if occlusion test input data are present render the tests. reading back the result
+	// is delayed until used in the sky light renderer. this avoids stalling
+	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( *this );
+		return;
+	}
+	
+	// start the GI update render task parallel task. this will be waited on before rendering
 	pWaitFinishedFindContent();
 	pWaitFinishedGIFindContent();
 	
-	// start the GI update render task parallel task. this will be waited on before rendering
 	if( pPlan.GetUpdateGIState() ){
 		pTaskGIUpdateRT = new deoglRPTSkyLightGIUpdateRT( *this );
 		pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskGIUpdateRT );
 	}
 	
-	// if occlusion test input data are present render the tests. reading back the result
-	// is delayed until used in the sky light renderer. this avoids stalling
-	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
-		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( *this );
-		
-	}else if( pOcclusionTest->GetInputDataCount() > 0 ){
+	if( pOcclusionTest->GetInputDataCount() > 0 ){
 		pOcclusionTest->UpdateSSBO();
 		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( *this );
 	}
 }
 
 void deoglRenderPlanSkyLight::FinishPrepare(){
-	RenderOcclusionTests();
+	if( ! pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		RenderOcclusionTests();
+	}
 }
 
 void deoglRenderPlanSkyLight::StartBuildRT(){
-	if( ! pLayer || ! pUseShadow ){
+	if( ! pLayer || ! pUseShadow || pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
 		return;
 	}
 	

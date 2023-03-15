@@ -1999,10 +1999,6 @@ void deoglRenderPlan::RemoveAllSkyLights(){
 }
 
 void deoglRenderPlan::SkyLightsStartBuildRT(){
-	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		return;
-	}
-	
 	int i;
 	for( i=0; i<pSkyLightCount; i++ ){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartBuildRT();
