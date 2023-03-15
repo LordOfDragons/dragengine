@@ -23,6 +23,7 @@
 #include "deoglRenderThread.h"
 #include "deoglRTContext.h"
 #include "deoglRTLogger.h"
+#include "../window/deoglRRenderWindow.h"
 
 #include <dragengine/threading/deMutexGuard.h>
 
@@ -35,7 +36,12 @@
 
 deoglLoaderThread::deoglLoaderThread( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pShutdown( false ){
+pShutdown( true ),
+pContextEnabled( false )
+{
+	#ifdef OS_BEOS
+	SetName( "OpenGL-LoaderThread" );
+	#endif
 }
 
 deoglLoaderThread::~deoglLoaderThread(){
@@ -48,16 +54,15 @@ deoglLoaderThread::~deoglLoaderThread(){
 
 void deoglLoaderThread::Run(){
 	pRenderThread.GetLogger().LogInfo( "LoaderThread: Starting" );
-	pInit();
-	
-	while( true ){
-		{
-		const deMutexGuard guard( pMutex );
-		if( pShutdown ){
-			break;
-		}
-		}
+	try{
+		pInit();
 		
+	}catch( const deException & ){
+		pShutdown = true;
+		throw;
+	}
+	
+	while( ! pShutdown ){
 		try{
 			pSemaphore.Wait();
 			
@@ -68,19 +73,46 @@ void deoglLoaderThread::Run(){
 		}
 	}
 	
-	pCleanUp();
+	try{
+		pCleanUp();
+		
+	}catch( const deException &e ){
+		pRenderThread.GetLogger().LogException( e );
+	}
 	pRenderThread.GetLogger().LogInfo( "LoaderThread: Exiting" );
 }
 
-void deoglLoaderThread::Shutdown(){
-	if( ! IsRunning() ){
+void deoglLoaderThread::EnableContext( bool enable ){
+	#ifdef OS_BEOS
+	return; // no context so far
+	#endif
+	
+	if( enable == pContextEnabled ){
 		return;
 	}
 	
-	pShutdown = true;
-	pSemaphore.Signal();
+	if( enable ){
+		pContextEnabled = true;
+		pShutdown = false;
+		Start();
+		
+	}else{
+		if( IsRunning() ){
+			pShutdown = true;
+			pSemaphore.Signal();
+		}
+		WaitForExit();
+		pContextEnabled = false;
+		pShutdown = true;
+	}
+}
+
+void deoglLoaderThread::RenderThreadUpdate(){
+	if( ! pShutdown ){
+		return;
+	}
 	
-	WaitForExit();
+	// TODO run tasks directly
 }
 
 
@@ -93,25 +125,22 @@ void deoglLoaderThread::pInit(){
 	
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( context.GetDisplay(),
-			/*rrenderWindow->GetWindow()*/ None, context.GetLoaderContext() ) );
+			context.GetActiveRRenderWindow()->GetWindow(), context.GetLoaderContext() ) );
 	#endif
 	
 	#ifdef ANDROID
-	if( eglMakeCurrent( context.GetDisplay(), pSurface, pSurface, context.GetLoaderContext() ) == EGL_FALSE ){
+	if( eglMakeCurrent( context.GetDisplay(), context.GetSurface(),
+	context.GetSurface(), context.GetLoaderContext() ) == EGL_FALSE ){
 		DETHROW( deeInvalidParam );
 	}
 	#endif
 	
-	#ifdef OS_BEOS
-	rrenderWindow->GetGLView()->LockGL();
-	#endif
-	
 	#ifdef OS_MACOS
-	pGLContextMakeCurrent( rrenderWindow->GetView() );
+	pGLContextMakeCurrent( context.GetActiveRRenderWindow()->GetView() );
 	#endif
 	
 	#ifdef OS_W32
-	if( ! wglMakeCurrent( rrenderWindow->GetWindowDC(), context.GetLoaderContext() ) ){
+	if( ! wglMakeCurrent( context.GetActiveRRenderWindow()->GetWindowDC(), context.GetLoaderContext() ) ){
 		pRenderThread.GetLogger().LogErrorFormat( "wglMakeCurrent failed (%s:%i): error=0x%lx\n",
 			__FILE__, __LINE__, GetLastError() );
 		DETHROW_INFO( deeInvalidAction, "wglMakeCurrent failed" );

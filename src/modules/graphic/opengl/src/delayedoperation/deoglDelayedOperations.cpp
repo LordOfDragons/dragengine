@@ -188,7 +188,7 @@ void deoglDelayedOperations::ProcessInitOperations( float timeout ){
 		return;
 	}
 	
-	deoglShaderLoadingTimeout sltimeout( timeout );
+	deoglShaderLoadingTimeout sltimeout( /*timeout*/ 1000.0f );
 	int i, count;
 	
 	// initialize images

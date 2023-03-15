@@ -70,6 +70,7 @@ class deoglRTRenderers;
 class deoglRTShader;
 class deoglRTTexture;
 class deoglRTChoices;
+class deoglLoaderThread;
 
 class deRenderWindow;
 
@@ -117,6 +118,7 @@ private:
 	deoglRTChoices *pChoices;
 	deoglRTBufferObject *pBufferObject;
 	deoglRTContext *pContext;
+	deoglLoaderThread *pLoaderThread;
 	deoglRTDebug *pDebug;
 	deoglRTDefaultTextures *pDefaultTextures;
 	deoglRTFramebuffer *pFramebuffer;
@@ -282,6 +284,9 @@ public:
 	
 	/** Context. */
 	inline deoglRTContext &GetContext() const{ return *pContext; }
+	
+	/** Loader thread. */
+	inline deoglLoaderThread &GetLoaderThread() const{ return *pLoaderThread; }
 	
 	/** Debug. */
 	inline deoglRTDebug &GetDebug() const{ return *pDebug; }

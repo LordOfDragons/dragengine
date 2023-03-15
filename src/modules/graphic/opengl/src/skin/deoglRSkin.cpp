@@ -240,6 +240,7 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 			// wait for all pipelines to becomes ready for use. we block in the resource loading
 			// thread here to allow shaders to load and compile across multiple frames if required
 			// without stalling the render thread
+			/*
 			try{
 				deSemaphore semaphore;
 				pSemaphoreReady = &semaphore;
@@ -250,6 +251,7 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 				pSemaphoreReady = nullptr;
 				throw;
 			}
+			*/
 			
 		}else{
 			FinalizeAsyncResLoading();

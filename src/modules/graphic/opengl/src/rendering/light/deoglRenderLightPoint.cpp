@@ -1479,6 +1479,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglSPBlockUBO *renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
 	
 	// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this
+	{
 	const deoglSPBMapBuffer mapped( *renderParamBlock );
 	
 	renderParamBlock->SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
@@ -1505,6 +1506,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	}
 	
 	renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+	}
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( true );
@@ -1654,6 +1656,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglSPBlockUBO *renderParamBlock = renderThread.GetRenderers().GetLight().NextOccMapPB();
 	
 	// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this
+	{
 	const deoglSPBMapBuffer mapped( *renderParamBlock );
 	
 	for( cmf=0; cmf<6; cmf++ ){
@@ -1665,6 +1668,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	
 	renderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );
 		renderParamBlock->SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * shadowParams.matrixProjection );
+	}
 	}
 	
 	// object render cube face special parameter have been already updated by RenderShadowMaps

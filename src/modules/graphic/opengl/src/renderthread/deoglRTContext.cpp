@@ -25,6 +25,7 @@
 
 #include "deoglRTContext.h"
 #include "deoglRenderThread.h"
+#include "deoglLoaderThread.h"
 #include "deoglRTLogger.h"
 #include "../deGraphicOpenGl.h"
 #include "../configuration/deoglConfiguration.h"
@@ -403,7 +404,11 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		}
 		#endif
 		
+		pRenderThread.GetLoaderThread().EnableContext( true );
+		
 	}else{
+		pRenderThread.GetLoaderThread().EnableContext( false );
+		
 		#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 // 		printf( "glXMakeCurrent(clear) previous(%lu,%p)\n", glXGetCurrentDrawable(), glXGetCurrentContext() );
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, None, NULL ) );

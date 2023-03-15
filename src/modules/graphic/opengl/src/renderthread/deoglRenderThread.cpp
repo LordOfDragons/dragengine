@@ -26,6 +26,7 @@
 #include <errno.h>
 
 #include "deoglRenderThread.h"
+#include "deoglLoaderThread.h"
 #include "deoglRTBufferObject.h"
 #include "deoglRTChoices.h"
 #include "deoglRTContext.h"
@@ -106,6 +107,7 @@ pCanvasDebugOverlay( nullptr ),
 pChoices( nullptr ),
 pBufferObject( nullptr ),
 pContext( nullptr ),
+pLoaderThread( nullptr ),
 pDebug( nullptr ),
 pDefaultTextures( nullptr ),
 pFramebuffer( nullptr ),
@@ -217,7 +219,7 @@ deoglLightBoundaryMap &deoglRenderThread::GetLightBoundaryMap( int size ){
 
 
 bool deoglRenderThread::HasContext() const{
-	return pContext != NULL;
+	return pContext != nullptr;
 }
 
 
@@ -887,6 +889,7 @@ void deoglRenderThread::pCleanUp(){
 
 
 void deoglRenderThread::pInitThreadPhase1(){
+	pLoaderThread = new deoglLoaderThread( *this );
 	pContext = new deoglRTContext( *this );
 	pContext->InitPhase1( pInitialRenderWindow );
 }
@@ -2138,6 +2141,8 @@ void deoglRenderThread::pBeginFrame(){
 	// new ones are created uses GPU memory better
 	pDelayedOperations->ProcessFreeOperations();
 	
+	pLoaderThread->RenderThreadUpdate();
+	
 	pDelayedOperations->ProcessInitOperations( 1.0f / 30.0f ); // for VR this can be set lower
 	
 	pOptimizerManager->Run( 2000 ); // 4000 // DEPRECATED do this using parallel tasks if required
@@ -2592,7 +2597,11 @@ void deoglRenderThread::pCleanUpThread(){
 			pContext->CleanUp();
 			
 			delete pContext;
-			pContext = NULL;
+			pContext = nullptr;
+		}
+		if( pLoaderThread ){
+			delete pLoaderThread;
+			pLoaderThread = nullptr;
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy context (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );

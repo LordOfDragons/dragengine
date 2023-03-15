@@ -40,6 +40,7 @@ private:
 	deSemaphore pSemaphore;
 	deMutex pMutex;
 	bool pShutdown;
+	bool pContextEnabled;
 	
 	
 	
@@ -60,8 +61,11 @@ public:
 	/** Run render thread. */
 	virtual void Run();
 	
-	/** Shutdown loader thread. */
-	void Shutdown();
+	/** Enable context. */
+	void EnableContext( bool enable );
+	
+	/** Render thread update. */
+	void RenderThreadUpdate();
 	/*@}*/
 	
 	
