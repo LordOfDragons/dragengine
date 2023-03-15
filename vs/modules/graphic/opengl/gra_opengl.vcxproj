@@ -386,6 +386,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThread.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThreadTask.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRenderThread.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTBufferObject.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTChoices.h" />
@@ -987,6 +988,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThread.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThreadTask.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRenderThread.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTBufferObject.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTChoices.cpp" />

@@ -23,11 +23,14 @@
 #define _DEOGLRLOADERTHREAD_H_
 
 #include "../deoglBasics.h"
+
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deSemaphore.h>
 #include <dragengine/threading/deThread.h>
 
 class deoglRenderThread;
+class deoglLoaderThreadTask;
 
 
 /**
@@ -41,6 +44,8 @@ private:
 	deMutex pMutex;
 	bool pShutdown;
 	bool pContextEnabled;
+	
+	decPointerList pTasks;
 	
 	
 	
@@ -67,8 +72,14 @@ public:
 	/** Enable context. */
 	void EnableContext( bool enable );
 	
-	/** Render thread update. */
-	void RenderThreadUpdate();
+	/** Add task to process. Returns true if added or false if loader is disabled. */
+	bool AddTask( deoglLoaderThreadTask *task );
+	
+	/**
+	 * Add task and wait for it to be processed then returns.
+	 * Returns true if process or false if loader is disabled.
+	 */
+	bool AwaitTask( deoglLoaderThreadTask *task );
 	/*@}*/
 	
 	

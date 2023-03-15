@@ -18,10 +18,17 @@
 
 #ifdef OS_UNIX
 static pthread_t pRenderThreadPid = 0;
+static pthread_t pLoaderThreadPid = 0;
 static pthread_t pMainThreadPid = 0;
 
 void dbgInitThreadCheck(){
 	pRenderThreadPid = pthread_self();
+}
+void dbgInitLoaderThreadCheck(){
+	pLoaderThreadPid = pthread_self();
+}
+void dbgExitLoaderThreadCheck(){
+	pLoaderThreadPid = 0;
 }
 void dbgInitMainThreadCheck(){
 	pMainThreadPid = pthread_self();
@@ -30,10 +37,17 @@ void dbgInitMainThreadCheck(){
 
 #ifdef OS_W32
 static DWORD pRenderThreadPid = 0;
+static DWORD pLoaderThreadPid = 0;
 static DWORD pMainThreadPid = 0;
 
 void dbgInitThreadCheck(){
 	pRenderThreadPid = GetCurrentThreadId();
+}
+void dbgInitLoaderThreadCheck(){
+	pLoaderThreadPid = GetCurrentThreadId();
+}
+void dbgExitLoaderThreadCheck(){
+	pLoaderThreadPid = 0;
 }
 void dbgInitMainThreadCheck(){
 	pMainThreadPid = GetCurrentThreadId();
@@ -56,13 +70,15 @@ void dbgOnMainThreadCheck(){
 
 void dbgOnRenderThreadCheck(){
 	#ifdef OS_UNIX
-	if( pthread_self() != pRenderThreadPid ){
+	const pthread_t t = pthread_self();
+	if( t != pRenderThreadPid && t != pLoaderThreadPid ){
 		DETHROW( deeInvalidAction );
 	}
 	#endif
 	
 	#ifdef OS_W32
-	if( GetCurrentThreadId() != pRenderThreadPid ){
+	const DWORD t = GetCurrentThreadId();
+	if( t != pRenderThreadPid && t != pLoaderThreadPid ){
 		DETHROW( deeInvalidAction );
 	}
 	#endif
@@ -71,14 +87,14 @@ void dbgOnRenderThreadCheck(){
 void dbgOnMainOrRenderThreadCheck(){
 	#ifdef OS_UNIX
 	const pthread_t t = pthread_self();
-	if( t != pMainThreadPid && t != pRenderThreadPid ){
+	if( t != pMainThreadPid && t != pRenderThreadPid &&  t != pLoaderThreadPid ){
 		DETHROW( deeInvalidAction );
 	}
 	#endif
 	
 	#ifdef OS_W32
 	const DWORD t = GetCurrentThreadId();
-	if( t != pMainThreadPid && t != pRenderThreadPid ){
+	if( t != pMainThreadPid && t != pRenderThreadPid && t != pLoaderThreadPid ){
 		DETHROW( deeInvalidAction );
 	}
 	#endif

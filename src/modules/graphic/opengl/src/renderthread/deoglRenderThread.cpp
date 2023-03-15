@@ -2141,9 +2141,7 @@ void deoglRenderThread::pBeginFrame(){
 	// new ones are created uses GPU memory better
 	pDelayedOperations->ProcessFreeOperations();
 	
-	pLoaderThread->RenderThreadUpdate();
-	
-	pDelayedOperations->ProcessInitOperations( 1.0f / 30.0f ); // for VR this can be set lower
+	pDelayedOperations->ProcessInitOperations();
 	
 	pOptimizerManager->Run( 2000 ); // 4000 // DEPRECATED do this using parallel tasks if required
 	
