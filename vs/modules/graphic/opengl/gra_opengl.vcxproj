@@ -676,10 +676,8 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasView.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckATLUnbind.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireArrayTexture.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireCubeMap.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckFramebufferTextureSingle.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckGeometryShaderLayer.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckRasterizerDiscard.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckStd430.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBODirectLinkDeadloop.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBOIndirectMatrixAccess.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapabilities.cpp" />
@@ -987,6 +985,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedPool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThread.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRenderThread.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTBufferObject.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTChoices.cpp" />
