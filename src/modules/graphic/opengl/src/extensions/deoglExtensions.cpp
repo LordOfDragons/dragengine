@@ -454,7 +454,7 @@ void deoglExtensions::pScanVersion(){
 		pGLVersion = evgl1p1; // broken implementation
 		
 	}else{
-		pGLVersion = evglUnknown; // anything higher than what we care for
+		pGLVersion = evgl4p6; // anything higher than what we care for
 	}
 	#endif
 	

@@ -27,7 +27,6 @@
 #include "checks/deoglCapCheckATLUnbind.h"
 #include "checks/deoglCapCheckUBOIndirectMatrixAccess.h"
 #include "checks/deoglCapCheckClearEntireArrayTexture.h"
-#include "checks/deoglCapCheckGeometryShaderLayer.h"
 #include "checks/deoglCapCheckUBODirectLinkDeadloop.h"
 #include "checks/deoglCapCheckFramebufferTextureSingle.h"
 #include "checks/deoglCapCheckStd430.h"
@@ -74,7 +73,6 @@ private:
 	deoglCapCheckATLUnbind pATLUnbind;
 	deoglCapCheckUBOIndirectMatrixAccess pUBOIndirectMatrixAccess;
 	deoglCapCheckClearEntireArrayTexture pClearEntireArrayTexture;
-	deoglCapCheckGeometryShaderLayer pGeometryShaderLayer;
 	deoglCapCheckUBODirectLinkDeadloop pUBODirectLinkDeadloop;
 	deoglCapCheckFramebufferTextureSingle pFramebufferTextureSingle;
 	deoglCapCheckStd430 pStd430;
@@ -170,10 +168,6 @@ public:
 	/** Cleare all layers in an array texture. */
 	inline const deoglCapCheckClearEntireArrayTexture &GetClearEntireArrayTexture() const{
 		return pClearEntireArrayTexture; }
-	
-	/** glLayer geometry shaders handling. */
-	inline const deoglCapCheckGeometryShaderLayer &GetGeometryShaderLayer() const{
-		return pGeometryShaderLayer; }
 	
 	/** UBO direct linking dead-loop. */
 	inline const deoglCapCheckUBODirectLinkDeadloop &GetUBODirectLinkDeadloop() const{
