@@ -57,20 +57,21 @@ const char *deoglSTPipelinesParticle::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesParticle::pPreparePipelines( const ChannelInfo &cinfo ){
+void deoglSTPipelinesParticle::pPreparePipelines( const ChannelInfo &cinfo,
+deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig baseShaderConfig;
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmParticle );
 	baseShaderConfig.SetParticleMode( deoglSkinShaderConfig::epmParticle );
 	
-	pPrepareGeometry( baseShaderConfig, cinfo );
-	pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
-	pPrepareAllDepth( baseShaderConfig, cinfo );
-	pPrepareAllCounter( baseShaderConfig, cinfo );
-	pPrepareMask( baseShaderConfig, cinfo );
-	pPrepareAllShadow( baseShaderConfig, cinfo );
-	// pPrepareEnvMap( baseShaderConfig, cinfo );
-	// pPrepareLuminance( baseShaderConfig, cinfo );
-	// pPrepareGIMaterial( baseShaderConfig, cinfo );
+	pPrepareGeometry( baseShaderConfig, cinfo, timeout );
+	pPrepareGeometryDepthTest( baseShaderConfig, cinfo, timeout );
+	pPrepareAllDepth( baseShaderConfig, cinfo, timeout );
+	pPrepareAllCounter( baseShaderConfig, cinfo, timeout );
+	pPrepareMask( baseShaderConfig, cinfo, timeout );
+	pPrepareAllShadow( baseShaderConfig, cinfo, timeout );
+	// pPrepareEnvMap( baseShaderConfig, cinfo, timeout );
+	// pPrepareLuminance( baseShaderConfig, cinfo, timeout );
+	// pPrepareGIMaterial( baseShaderConfig, cinfo, timeout );
 }
 
 
@@ -129,12 +130,12 @@ void deoglSTPipelinesParticle::pPipelineConfigShadowDistance( deoglPipelineConfi
 
 
 void deoglSTPipelinesParticle::pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &,
-deoglSkinShaderConfig &, const ChannelInfo & ){
+deoglSkinShaderConfig &, const ChannelInfo &, deoglShaderLoadingTimeout & ){
 	// not supported
 }
 
 void deoglSTPipelinesParticle::pPrepareShadowDistanceCube( deoglPipelineConfiguration &,
-deoglSkinShaderConfig &, const ChannelInfo & ){
+deoglSkinShaderConfig &, const ChannelInfo &, deoglShaderLoadingTimeout & ){
 	// not supported
 }
 

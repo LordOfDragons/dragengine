@@ -38,6 +38,7 @@ class deoglSkinTexture;
 class deoglDelayedFileWrite;
 class deoglDelayedSaveImage;
 class deoglShaderProgram;
+class deoglShaderLoadingTimeout;
 
 
 
@@ -89,6 +90,7 @@ private:
 	decPointerOrderedSet pInitImageList;
 	decPointerOrderedSet pInitSkinList;
 	decPointerOrderedSet pInitModelList;
+	bool pShaderLoadingPending;
 	
 	deMutex pMutexOGLObjects;
 	sOpenGLObject *pOGLObjects;
@@ -187,7 +189,10 @@ public:
 	 *          - Render Models (deoglRModel)
 	 *          - Render Skins (deoglRSkin)
 	 */
-	void ProcessInitOperations();
+	void ProcessInitOperations( float timeout );
+	
+	/** Some shader loadings are pending. */
+	inline bool GetShaderLoadingPending() const{ return pShaderLoadingPending; }
 	
 	
 	
@@ -295,7 +300,7 @@ private:
 	void pCleanUp();
 	
 	void pProcessImage( deoglRImage &image );
-	void pProcessSkin( deoglRSkin &skin );
+	void pProcessSkin( deoglRSkin &skin, deoglShaderLoadingTimeout &timeout );
 	void pProcessModel( deoglRModel &model );
 	void pGenerateConeMap( deoglRSkin &skin, const deoglSkinTexture &texture );
 	void pDeleteOpenGLObjects();

@@ -57,18 +57,19 @@ const char *deoglSTPipelinesParticleRibbon::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesParticleRibbon::pPreparePipelines( const ChannelInfo &cinfo ){
+void deoglSTPipelinesParticleRibbon::pPreparePipelines( const ChannelInfo &cinfo,
+deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig baseShaderConfig;
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmParticle );
 	baseShaderConfig.SetParticleMode( deoglSkinShaderConfig::epmRibbon );
 	
-	pPrepareGeometry( baseShaderConfig, cinfo );
-	pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
-	pPrepareAllDepth( baseShaderConfig, cinfo );
-	pPrepareAllCounter( baseShaderConfig, cinfo );
-	// pPrepareMask( baseShaderConfig, cinfo );
-	// pPrepareAllShadow( baseShaderConfig, cinfo );
-	// pPrepareEnvMap( baseShaderConfig, cinfo );
-	// pPrepareLuminance( baseShaderConfig, cinfo );
-	// pPrepareGIMaterial( baseShaderConfig, cinfo );
+	pPrepareGeometry( baseShaderConfig, cinfo, timeout );
+	pPrepareGeometryDepthTest( baseShaderConfig, cinfo, timeout );
+	pPrepareAllDepth( baseShaderConfig, cinfo, timeout );
+	pPrepareAllCounter( baseShaderConfig, cinfo, timeout );
+	// pPrepareMask( baseShaderConfig, cinfo, timeout );
+	// pPrepareAllShadow( baseShaderConfig, cinfo, timeout );
+	// pPrepareEnvMap( baseShaderConfig, cinfo, timeout );
+	// pPrepareLuminance( baseShaderConfig, cinfo, timeout );
+	// pPrepareGIMaterial( baseShaderConfig, cinfo, timeout );
 }

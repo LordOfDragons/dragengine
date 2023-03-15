@@ -44,6 +44,7 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../shaders/deoglShaderLoadingTimeout.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/combinedTexture/deoglCombinedTexture.h"
 #include "../skin/combinedTexture/deoglCombinedTextureList.h"
@@ -91,6 +92,7 @@ pRenderThread( renderThread ),
 
 pHasAsyncResInitOperations( false ),
 pHasInitOperations( false ),
+pShaderLoadingPending( false ),
 
 pOGLObjects( nullptr ),
 pOGLObjectCount( 0 ),
@@ -179,13 +181,14 @@ void deoglDelayedOperations::RemoveAsyncResInitFont( deoglRFont *font ){
 // Delayed render thread OpengGL initialization
 /////////////////////////////////////////////////
 
-void deoglDelayedOperations::ProcessInitOperations(){
+void deoglDelayedOperations::ProcessInitOperations( float timeout ){
 	const deMutexGuard guard( pMutexInit );
 	
 	if( ! pHasInitOperations ){
 		return;
 	}
 	
+	deoglShaderLoadingTimeout sltimeout( timeout );
 	int i, count;
 	
 	// initialize images
@@ -195,19 +198,23 @@ void deoglDelayedOperations::ProcessInitOperations(){
 	}
 	pInitImageList.RemoveAll();
 	
-	// initialize skins
-	count = pInitSkinList.GetCount();
-	for( i=0; i<count; i++ ){
-		pProcessSkin( *( ( deoglRSkin* )pInitSkinList.GetAt( i ) ) );
-	}
-	pInitSkinList.RemoveAll();
-	
 	// initialize models
 	count = pInitModelList.GetCount();
 	for( i=0; i<count; i++ ){
 		pProcessModel( *( ( deoglRModel* )pInitModelList.GetAt( i ) ) );
 	}
 	pInitModelList.RemoveAll();
+	
+	// initialize skins
+	while( pInitSkinList.GetCount() > 0 ){
+		pProcessSkin( *( ( deoglRSkin* )pInitSkinList.GetAt( 0 ) ), sltimeout );
+		if( sltimeout.TimedOut() ){
+			pShaderLoadingPending = true;
+			return;
+		}
+		pInitSkinList.RemoveFrom( 0 );
+	}
+	pShaderLoadingPending = false;
 	
 	// finished
 	pHasInitOperations = false;
@@ -448,7 +455,9 @@ void deoglDelayedOperations::pProcessImage( deoglRImage &image ){
 	image.PrepareForRender();
 }
 
-void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
+void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin, deoglShaderLoadingTimeout &timeout ){
+	// WARNING this method can be called multiple times if the pipeline compilation takes time
+	
 	const int textureCount = skin.GetTextureCount();
 	int t, c;
 	
@@ -644,7 +653,7 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 			}
 			*/
 			
-			skinChannel->SetPixelBufferMipMap( NULL );
+			skinChannel->SetPixelBufferMipMap( nullptr );
 		}
 	}
 	
@@ -656,8 +665,20 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 		skinTexture.AssignRTSIndex();
 		
 		skinTexture.PrepareParamBlock();
-		skinTexture.GetPipelines().Prepare();
 	}
+	
+	// this can take some time if pipelines need to be compiled. it is thus possible only
+	// some pipelines are processed before the timeout. in this case this method is later
+	// on called again to finish the remaining pipelines
+	for( t=0; t<textureCount; t++ ){
+		skin.GetTextureAt( t ).GetPipelines().Prepare( timeout );
+		if( timeout.TimedOut() ){
+			return;
+		}
+	}
+	
+	// skin finished. now it can be unblocked
+	skin.ReadyForUse();
 }
 
 void deoglDelayedOperations::pProcessModel( deoglRModel &model ){

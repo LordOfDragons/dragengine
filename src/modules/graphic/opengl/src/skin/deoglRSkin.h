@@ -77,6 +77,7 @@ private:
 	decObjectList pCalculatedProperties;
 	
 	deoglVSRetainImageData *pVSRetainImageData;
+	deSemaphore *pSemaphoreReady;
 	
 	deoglMemoryConsumptionSkinUse pMemUse;
 	
@@ -109,6 +110,9 @@ public:
 	 * \details Also released retained image data.
 	 */
 	void FinalizeAsyncResLoading();
+	
+	/** Pipelines are prepared and skin is fully usable without causing any further delays. */
+	void ReadyForUse();
 	
 	
 	

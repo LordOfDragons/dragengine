@@ -80,7 +80,8 @@ pCastTranspShadow( false ),
 
 pVideoPlayerCount( 0 ),
 
-pVSRetainImageData( NULL ),
+pVSRetainImageData( nullptr ),
+pSemaphoreReady( nullptr ),
 pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
@@ -236,6 +237,20 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 			// synchronization part. but better safe than sorry
 			pRenderThread.GetDelayedOperations().AddAsyncResInitSkin( this );
 			
+			// wait for all pipelines to becomes ready for use. we block in the resource loading
+			// thread here to allow shaders to load and compile across multiple frames if required
+			// without stalling the render thread
+			try{
+				deSemaphore semaphore;
+				pSemaphoreReady = &semaphore;
+				semaphore.Wait();
+				pSemaphoreReady = nullptr;
+				
+			}catch( const deException & ){
+				pSemaphoreReady = nullptr;
+				throw;
+			}
+			
 		}else{
 			FinalizeAsyncResLoading();
 		}
@@ -278,6 +293,12 @@ void deoglRSkin::FinalizeAsyncResLoading(){
 	
 	// now it is safe to init skin in render thread
 	pRenderThread.GetDelayedOperations().AddInitSkin( this );
+}
+
+void deoglRSkin::ReadyForUse(){
+	if( pSemaphoreReady ){
+		pSemaphoreReady->Signal();
+	}
 }
 
 
@@ -373,7 +394,7 @@ int deoglRSkin::AddCalculatedProperty( deoglSkinCalculatedProperty *calculated )
 void deoglRSkin::pCleanUp(){
 	if( pVSRetainImageData ){
 		delete pVSRetainImageData;
-		pVSRetainImageData = NULL;
+		pVSRetainImageData = nullptr;
 	}
 	
 	pRenderThread.GetDelayedOperations().RemoveInitSkin( this );
