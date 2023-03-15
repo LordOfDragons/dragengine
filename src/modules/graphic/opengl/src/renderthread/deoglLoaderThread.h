@@ -61,6 +61,9 @@ public:
 	/** Run render thread. */
 	virtual void Run();
 	
+	/** Loader is enabled. */
+	bool IsEnabled();
+	
 	/** Enable context. */
 	void EnableContext( bool enable );
 	

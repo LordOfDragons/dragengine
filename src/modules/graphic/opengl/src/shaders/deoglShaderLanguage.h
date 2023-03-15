@@ -26,6 +26,7 @@
 #include "../deoglBasics.h"
 
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/threading/deMutex.h>
 
 class deoglShaderDefines;
 class deoglShaderSources;
@@ -59,6 +60,9 @@ private:
 	int pGLSLVersionNumber;
 	
 	deoglShaderPreprocessor pPreprocessor;
+	deMutex pMutex;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */

@@ -31,13 +31,14 @@
 #include "../../shaders/deoglShaderUnitSourceCode.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
 // Unit Source Code Path
-////////777///////////////
+//////////////////////////
 
-static const char *vUnitSourceCodePath[ deoglSkinShaderManager::EUSCP_COUNT ] = {
+static const char *vUnitSourceCodePath[ deoglSkinShaderManager::UnitSourceCodePathCount ] = {
 	"v130/vertex/defren/skin/geometry.glsl", // euscpVertexGeometry
 	"v130/vertex/defren/skin/depth.glsl", // euscpVertexDepth
 	"v130/vertex/defren/skin/particle.glsl", // euscpVertexParticle
@@ -83,12 +84,11 @@ deoglSkinShaderManager::~deoglSkinShaderManager(){
 		
 		if( shader.GetRefCount() != 1 ){
 			shader.GetConfig().DebugGetConfigString( text );
-			pRenderThread.GetLogger().LogWarnFormat( "ShaderSkinManager CleanUp: Shader with refcount %i. Config=%s",
+			pRenderThread.GetLogger().LogWarnFormat(
+				"ShaderSkinManager CleanUp: Shader with refcount %i. Config=%s",
 				shader.GetRefCount(), text.GetString() );
 		}
 	}
-	
-	RemoveAllShaders();
 }
 
 
@@ -97,57 +97,23 @@ deoglSkinShaderManager::~deoglSkinShaderManager(){
 ///////////////
 
 const char *deoglSkinShaderManager::GetUnitSourceCodePath( eUnitSourceCodePath unitSourceCodePath ) const{
-	if( unitSourceCodePath < 0 || unitSourceCodePath >= EUSCP_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	return vUnitSourceCodePath[ unitSourceCodePath ];
 }
 
 
 
-int deoglSkinShaderManager::GetShaderCount() const{
+int deoglSkinShaderManager::GetShaderCount(){
+	const deMutexGuard guard( pMutex );
 	return pShaderList.GetCount();
 }
 
-const deoglSkinShader &deoglSkinShaderManager::GetShaderAt( int index ) const{
+const deoglSkinShader &deoglSkinShaderManager::GetShaderAt( int index ){
+	const deMutexGuard guard( pMutex );
 	return *( const deoglSkinShader * )pShaderList.GetAt( index );
 }
 
-void deoglSkinShaderManager::AddShader( deoglSkinShader *shader ){
-	if( ! shader ){
-		DETHROW_INFO( deeNullPointer, "shader" );
-	}
-	pShaderList.Add( shader );
-}
-
-void deoglSkinShaderManager::RemoveShader( deoglSkinShader *shader ){
-	pShaderList.Remove( shader );
-}
-
-void deoglSkinShaderManager::RemoveAllShaders(){
-	pShaderList.RemoveAll();
-}
-
-
-
-bool deoglSkinShaderManager::HasShaderWith( deoglSkinShaderConfig &configuration ) const{
-	const int count = pShaderList.GetCount();
-	int i;
-	
-	configuration.UpdateKey();
-	
-	for( i=0; i<count; i++ ){
-		const deoglSkinShader &shader = *( ( deoglSkinShader* )pShaderList.GetAt( i ) );
-		if( shader.GetConfig() == configuration ){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
 deoglSkinShader::Ref deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
+	const deMutexGuard guard( pMutex );
 	const int count = pShaderList.GetCount();
 	int i;
 	
@@ -164,25 +130,4 @@ deoglSkinShader::Ref deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfi
 		new deoglSkinShader( pRenderThread, configuration ) ) );
 	pShaderList.Add( shader );
 	return shader;
-}
-
-
-
-void deoglSkinShaderManager::Maintanance(){
-	// currently no maintanance done... all greedy
-	
-	if( pMaintananceInterval == 0 ){
-		deoglSkinShader *shader = NULL;
-		int i;
-		
-		for( i=pShaderList.GetCount()-1; i>=0; i-- ){
-			shader = ( deoglSkinShader* )pShaderList.GetAt( i );
-			
-			if( shader->GetRefCount() == 1 ){
-				pShaderList.Remove( shader );
-			}
-		}
-		
-		pMaintananceInterval = 10; // maintenance every 10 frames
-	}
 }

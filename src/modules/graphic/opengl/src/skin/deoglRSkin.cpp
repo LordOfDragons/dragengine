@@ -32,6 +32,7 @@
 #include "../deoglBasics.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../memory/deoglMemoryManager.h"
+#include "../renderthread/deoglLoaderThread.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/deoglRImage.h"
@@ -232,18 +233,18 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 		}
 		
 		if( skin.GetAsynchron() ){
-			// register for delayed async res initialize. we do not call AddInitSkin here since
-			// it is possible (albeit highly unlikely) for the render thread to run before the
-			// synchronization part. but better safe than sorry
-			pRenderThread.GetDelayedOperations().AddAsyncResInitSkin( this );
-			
-			// wait for all pipelines to becomes ready for use. we block in the resource loading
-			// thread here to allow shaders to load and compile across multiple frames if required
-			// without stalling the render thread
-			/*
 			try{
 				deSemaphore semaphore;
 				pSemaphoreReady = &semaphore;
+				
+				// register for delayed async res initialize. we do not call AddInitSkin here since
+				// it is possible (albeit highly unlikely) for the render thread to run before the
+				// synchronization part. but better safe than sorry
+				pRenderThread.GetDelayedOperations().AddAsyncResInitSkin( this );
+				
+				// wait for all pipelines to becomes ready for use. we block in the resource loading
+				// thread here to allow shaders to load and compile across multiple frames if required
+				// without stalling the render thread
 				semaphore.Wait();
 				pSemaphoreReady = nullptr;
 				
@@ -251,7 +252,6 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 				pSemaphoreReady = nullptr;
 				throw;
 			}
-			*/
 			
 		}else{
 			FinalizeAsyncResLoading();
@@ -294,7 +294,21 @@ void deoglRSkin::FinalizeAsyncResLoading(){
 	}
 	
 	// now it is safe to init skin in render thread
-	pRenderThread.GetDelayedOperations().AddInitSkin( this );
+	if( pSemaphoreReady ){
+		deoglLoaderThread &loaderThread = pRenderThread.GetLoaderThread();
+		if( loaderThread.IsEnabled() ){
+			// TODO add processor calling pProcessSkin() to loader
+			pRenderThread.GetDelayedOperations().AddInitSkin( this );
+			
+		}else{
+			// loader not enabled. add to delayed operation to process on render thread
+			pRenderThread.GetDelayedOperations().AddInitSkin( this );
+		}
+		
+	}else{
+		// synchronous loading. add to delayed operation to process on render thread
+		pRenderThread.GetDelayedOperations().AddInitSkin( this );
+	}
 }
 
 void deoglRSkin::ReadyForUse(){

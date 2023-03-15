@@ -320,7 +320,7 @@ void deoglDeveloperModeStats::ShaderPrograms( const decUnicodeArgumentList &comm
 }
 
 void deoglDeveloperModeStats::SkinShaders( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	const deoglSkinShaderManager &manager = pRenderThread.GetShader().GetSkinShaderManager();
+	deoglSkinShaderManager &manager = pRenderThread.GetShader().GetSkinShaderManager();
 	const int shaderCount = manager.GetShaderCount();
 	decString text, configString;
 	int i;

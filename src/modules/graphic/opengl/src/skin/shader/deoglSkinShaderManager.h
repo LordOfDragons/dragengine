@@ -25,6 +25,7 @@
 #include "deoglSkinShader.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
 class deoglSkinShaderConfig;
@@ -58,15 +59,20 @@ public:
 		
 		euscpFragmentGeometry,
 		euscpFragmentDepth,
-		euscpFragmentGIMaterialMap,
-		
-		EUSCP_COUNT
+		euscpFragmentGIMaterialMap
 	};
+	
+	const static int UnitSourceCodePathCount = euscpFragmentGIMaterialMap + 1;
+	
+	
 	
 private:
 	deoglRenderThread &pRenderThread;
 	decObjectOrderedSet pShaderList;
 	int pMaintananceInterval;
+	deMutex pMutex;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -85,24 +91,14 @@ public:
 	/** Retrieves a unit source code path. */
 	const char *GetUnitSourceCodePath( eUnitSourceCodePath unitSourceCodePath ) const;
 	
-	/** Determines if a shader with the given configuration exists. */
-	bool HasShaderWith( deoglSkinShaderConfig &configuration ) const;
 	/** Retrieves the shader with the given configuration creating it if not existing. */
 	deoglSkinShader::Ref GetShaderWith( deoglSkinShaderConfig &configuration );
 	
 	/** Retrieves the number of shaders. */
-	int GetShaderCount() const;
-	/** Retrieves shader by index. */
-	const deoglSkinShader &GetShaderAt( int index ) const;
-	/** Adds a shader. */
-	void AddShader( deoglSkinShader *shader );
-	/** Removes a shader. */
-	void RemoveShader( deoglSkinShader *shader );
-	/** Removes all shaders. */
-	void RemoveAllShaders();
+	int GetShaderCount();
 	
-	/** Per-frame maintanance call from the graphic module. */
-	void Maintanance();
+	/** Retrieves shader by index. */
+	const deoglSkinShader &GetShaderAt( int index );
 	/*@}*/
 };
 

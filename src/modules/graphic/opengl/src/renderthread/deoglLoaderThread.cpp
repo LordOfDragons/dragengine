@@ -82,6 +82,11 @@ void deoglLoaderThread::Run(){
 	pRenderThread.GetLogger().LogInfo( "LoaderThread: Exiting" );
 }
 
+bool deoglLoaderThread::IsEnabled(){
+	const deMutexGuard guard( pMutex );
+	return pContextEnabled;
+}
+
 void deoglLoaderThread::EnableContext( bool enable ){
 	#ifdef OS_BEOS
 	return; // no context so far
@@ -92,8 +97,12 @@ void deoglLoaderThread::EnableContext( bool enable ){
 	}
 	
 	if( enable ){
+		{
+		const deMutexGuard guard( pMutex );
 		pContextEnabled = true;
+		}
 		pShutdown = false;
+		
 		Start();
 		
 	}else{
@@ -102,8 +111,10 @@ void deoglLoaderThread::EnableContext( bool enable ){
 			pSemaphore.Signal();
 		}
 		WaitForExit();
-		pContextEnabled = false;
 		pShutdown = true;
+		
+		const deMutexGuard guard( pMutex );
+		pContextEnabled = false;
 	}
 }
 
