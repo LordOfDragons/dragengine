@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen GI Field Trace Rays</name>
 	
-	<version>130</version>
-	
 	<texture name='tboNodeBox' target='0'/>
 	<texture name='tboIndex' target='1'/>
 	<texture name='tboFace' target='2'/>

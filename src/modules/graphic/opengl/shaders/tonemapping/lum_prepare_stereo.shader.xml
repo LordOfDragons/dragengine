@@ -4,8 +4,6 @@
 	
 	<uniformBlock name='RenderParameters' target='0'/>
 	
-	<version>130</version>
-	
 	<texture name='texColor' target='0'/>
 	
 	<attribute name='inPosition' target='0'/>

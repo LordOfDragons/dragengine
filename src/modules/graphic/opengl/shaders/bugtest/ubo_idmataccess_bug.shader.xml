@@ -2,8 +2,6 @@
 <shader>
 	<name>Test UBO Indirect Matrix Access Bug</name>
 	
-	<version>140</version>
-	
 	<uniformBlock name='TestParameters' target='0'/>
 	
 	<attribute name='inPosition' target='0'/>

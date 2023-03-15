@@ -2,8 +2,6 @@
 <shader>
 	<name>Debug Display Texture</name>
 	
-	<version>150</version>
-	
 	<texture name="texTexture" target="0"/>
 	
 	<parameter name="pPosTransform"/> <!-- 0 -->

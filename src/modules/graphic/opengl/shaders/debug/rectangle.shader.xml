@@ -2,8 +2,6 @@
 <shader>
 	<name>Debug Rectangle</name>
 	
-	<version>150</version>
-	
 	<texture name='texData1' target='0'/>
 	<texture name='texData2' target='1'/>
 	

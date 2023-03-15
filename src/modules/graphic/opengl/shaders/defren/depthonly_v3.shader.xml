@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Depth-Only V3</name>
 	
-	<version>130</version>
-	
 	<texture name='texDiffuse' target='0'/>
 	<texture name='texDepth' target='1'/>
 	
@@ -23,5 +21,4 @@
 	
 	<sourceCode unit='vertex'>v130/vertex/defren/geometry/depth.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/geometry/depth.glsl</sourceCode>
-	
 </shader>

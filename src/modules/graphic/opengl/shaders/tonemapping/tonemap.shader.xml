@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Tone Mapping</name>
 	
-	<version>130</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	
 	<texture name='texColor' target='0'/>

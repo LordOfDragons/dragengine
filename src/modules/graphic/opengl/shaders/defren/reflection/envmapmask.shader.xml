@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Reflection EnvMap Mask</name>
 	
-	<version>150</version>
-	
 	<parameter name='pMatrixMV'/> <!-- 0 -->
 	<parameter name='pMatrixP'/> <!-- 1 -->
 	<parameter name='pMatrixReflectionBox'/> <!-- 2 -->

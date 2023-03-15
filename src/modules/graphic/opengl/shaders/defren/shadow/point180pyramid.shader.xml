@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Shadow Point 180 Pyramid</name>
 	
-	<version>130</version>
-	
 	<texture name='texColor' target='0'/>
 	
 	<parameter name='pMatrixMVP'/> <!-- 0 -->
@@ -22,5 +20,4 @@
 	
 	<sourceCode unit='vertex'>v130/vertex/defren/shadow/distance.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/shadow/pyramid.glsl</sourceCode>
-	
 </shader>

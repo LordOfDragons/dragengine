@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Reflection Stereo</name>
 	
-	<version>150</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	<uniformBlock name='EnvMapParameters' target='1'/>
 	

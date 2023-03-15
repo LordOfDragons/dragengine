@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Depth Downsample Stereo</name>
 	
-	<version>150</version>
-	
 	<texture name='texDepth' target='0'/>
 	
 	<parameter name='pTCClamp'/> <!-- 0 -->

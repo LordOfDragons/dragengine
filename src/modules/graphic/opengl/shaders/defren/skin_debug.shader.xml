@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Skin Debug</name>
 	
-	<version>140</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	<uniformBlock name='TextureParameters' target='1'/>
 	<uniformBlock name='InstanceParameters' target='2'/>

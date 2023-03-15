@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen ScreenSpace SubSurface Scattering Stereo</name>
 	
-	<version>150</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	
 	<parameter name='pDropSubSurfaceThreshold'/>

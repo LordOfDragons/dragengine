@@ -2,8 +2,6 @@
 <shader>
 	<name>Sky Sky-Sphere</name>
 	
-	<version>130</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	
 	<texture name='texSky' target='0'/>

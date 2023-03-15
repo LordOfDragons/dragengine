@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Light BoxBoundary</name>
 	
-	<version>130</version>
-	
 	<texture name='texMin' target='0'/>
 	<texture name='texMax' target='1'/>
 	<texture name='texDepth' target='2'/>

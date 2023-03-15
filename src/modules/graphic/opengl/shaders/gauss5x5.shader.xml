@@ -2,8 +2,6 @@
 <shader>
 	<name>Gauss 5x5</name>
 	
-	<version>130</version>
-	
 	<texture name="texSource" target="0"/>
 	<parameter name="pPosTransform"/>
 	<parameter name="pTCTransform"/>

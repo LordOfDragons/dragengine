@@ -2,8 +2,6 @@
 <shader>
 	<name>Test Geometry Shader Layer Bug</name>
 	
-	<version>150</version>
-	
 	<attribute name='inPosition' target='0'/>
 	
 	<output name='outColor' target='0'/>

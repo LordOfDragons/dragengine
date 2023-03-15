@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Occlusion OccMap</name>
 	
-	<version>140</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	<uniformBlock name='OcclusionMeshParameters' target='2'/>
 	<uniformBlock name='InstanceIndex' target='4'/>

@@ -2,8 +2,6 @@
 <shader>
 	<name>Canvas</name>
 	
-	<version>150</version>
-	
 	<texture name='texColor' target='0'/>
 	<texture name='texMask' target='1'/>
 	
@@ -22,5 +20,4 @@
 	
 	<sourceCode unit='vertex'>v130/vertex/canvas/canvas.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/canvas/canvas.glsl</sourceCode>
-	
 </shader>

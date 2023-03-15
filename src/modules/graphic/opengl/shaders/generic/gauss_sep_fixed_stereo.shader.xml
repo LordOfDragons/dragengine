@@ -2,8 +2,6 @@
 <shader>
 	<name>Gauss Separable Fixed Stereo</name>
 	
-	<version>150</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	
 	<texture name='texData' target='0'/>

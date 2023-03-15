@@ -1,7 +1,5 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<version>130</version>
-	
 	<name>DefRen Light GI Stereo</name>
 	
 	<texture name='texDepth' target='0'/>

@@ -2,8 +2,6 @@
 <shader>
 	<name>2D Textured</name>
 	
-	<version>130</version>
-	
 	<texture name='texColor' target='0'/>
 	
 	<parameter name='pColor'/> <!-- 0 -->

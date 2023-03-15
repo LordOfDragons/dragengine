@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen GI Resize Materials</name>
 	
-	<version>130</version>
-	
 	<texture name='texDiffuse' target='0'/>
 	<texture name='texReflectivity' target='1'/>
 	<texture name='texEmissivity' target='2'/>

@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen GI Debug Probe Offset</name>
 	
-	<version>130</version>
-	
 	<texture name='texGIProbeOffset' target='0'/>
 	
 	<uniformBlock name='GIParameters' target='1'/>

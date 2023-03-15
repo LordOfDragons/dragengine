@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Copy Color Stereo</name>
 	
-	<version>130</version>
-	
 	<texture name='texColor' target='0'/>
 	
 	<parameter name='pQuadParams'/> <!-- 0 -->

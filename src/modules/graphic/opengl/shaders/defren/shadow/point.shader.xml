@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Shadow Point</name>
 	
-	<version>130</version>
-	
 	<texture name='texColor' target='0'/>
 	
 	<parameter name='pMatrixMVP'/> <!-- 0 -->

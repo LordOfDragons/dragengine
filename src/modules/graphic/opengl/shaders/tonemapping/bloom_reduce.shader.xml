@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Bloom Reduce</name>
 	
-	<version>130</version>
-	
 	<texture name='texColor' target='0'/>
 	
 	<parameter name='pParam1'/>

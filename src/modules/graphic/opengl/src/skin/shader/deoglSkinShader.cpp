@@ -1530,8 +1530,6 @@ void deoglSkinShader::GenerateShader(){
 	try{
 		pSources.TakeOver( new deoglShaderSources );
 		
-		pSources->SetVersion( "150" );
-		
 		GenerateDefines( defines );
 		GenerateVertexSC();
 		GenerateGeometrySC();
@@ -2150,7 +2148,6 @@ void deoglSkinShader::GenerateTessellationControlSC(){
 	
 	pSources->SetPathTessellationControlSourceCode( pRenderThread.GetShader().
 		GetSkinShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
-	pSources->SetVersion( "400" );
 }
 
 void deoglSkinShader::GenerateTessellationEvaluationSC(){
@@ -2174,7 +2171,6 @@ void deoglSkinShader::GenerateTessellationEvaluationSC(){
 	
 	pSources->SetPathTessellationEvaluationSourceCode( pRenderThread.GetShader().
 		GetSkinShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
-	pSources->SetVersion( "400" );
 }
 
 void deoglSkinShader::UpdateTextureTargets(){

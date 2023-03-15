@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen GI Debug Probe</name>
 	
-	<version>130</version>
-	
 	<texture name='texGIIrradiance' target='0'/>
 	<texture name='texGIDistance' target='1'/>
 	<texture name='texGIProbeOffset' target='2'/>

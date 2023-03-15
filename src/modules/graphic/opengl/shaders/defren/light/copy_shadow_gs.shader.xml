@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Copy Shadow GS</name>
 	
-	<version>130</version>
-	
 	<texture name='texDepth' target='0'/>
 	<texture name='texColor' target='1'/>
 	

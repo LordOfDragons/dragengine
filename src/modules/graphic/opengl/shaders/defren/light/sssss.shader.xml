@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen ScreenSpace SubSurface Scattering</name>
 	
-	<version>150</version>
-	
 	<parameter name='pDropSubSurfaceThreshold'/>
 	<parameter name='pTapCount'/>
 	<parameter name='pAngleConstant'/>

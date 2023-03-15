@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen EnvMap Material Copy</name>
 	
-	<version>150</version>
-	
 	<texture name='texDepth' target='0'/>
 	<texture name='texDiffuse' target='1'/>
 	<texture name='texNormal' target='2'/>

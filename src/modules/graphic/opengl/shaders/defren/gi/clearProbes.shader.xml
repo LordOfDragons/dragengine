@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen GI Clear Probes</name>
 	
-	<version>130</version>
-	
 	<texture name='texProbe' target='0'/>
 	
 	<uniformBlock name='GIClearParameters' target='0'/>

@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Shadow Copy Texture2D</name>
 	
-	<version>130</version>
-	
 	<texture name='texDepth' target='0'/>
 	
 	<attribute name='inPosition' target='0'/>

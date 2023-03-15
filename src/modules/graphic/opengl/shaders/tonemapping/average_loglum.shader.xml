@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Average LogLum</name>
 	
-	<version>130</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	
 	<texture name='texValues' target='0'/>

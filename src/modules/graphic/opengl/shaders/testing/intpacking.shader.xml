@@ -2,8 +2,6 @@
 <shader>
 	<name>Test Integer Packing</name>
 	
-	<version>150</version>
-	
 	<attribute name='inPosition' target='0'/>
 	
 	<output name='outPacked' target='0'/>

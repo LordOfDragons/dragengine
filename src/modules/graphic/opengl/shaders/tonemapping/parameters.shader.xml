@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Parameters</name>
 	
-	<version>130</version>
-	
 	<texture name='texAvgLogLum' target='0'/>
 	<texture name='texLastParams' target='1'/>
 	<texture name='texEnvMap' target='2'/>

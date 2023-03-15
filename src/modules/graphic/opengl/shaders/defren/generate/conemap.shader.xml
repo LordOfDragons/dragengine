@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Generate ConeMap</name>
 	
-	<version>130</version>
-	
 	<texture name='texHeight' target='0'/>
 	
 	<parameter name='pWidth'/>

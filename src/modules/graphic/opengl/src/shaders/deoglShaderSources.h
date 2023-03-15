@@ -48,8 +48,6 @@ private:
 	decString pName;
 	decString pFilename;
 	
-	decString pVersion;
-	
 	decString pPathSCCompute;
 	decString pPathSCTessellationControl;
 	decString pPathSCTessellationEvaluation;
@@ -95,11 +93,6 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	/** Retrieves the filename. */
 	inline const decString &GetFilename() const{ return pFilename; }
-	
-	/** Retrieves the version. */
-	inline const decString &GetVersion() const{ return pVersion; }
-	/** Sets the version. */
-	void SetVersion( const char *version );
 	
 	/** Retrieves the texture binding list. */
 	inline deoglShaderBindingList &GetTextureList(){ return pTextureList; }

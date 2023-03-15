@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Occlusion OccMap Down-Sample</name>
 	
-	<version>130</version>
-	
 	<texture name='texSource' target='0'/>
 	
 	<parameter name='pLevel'/>

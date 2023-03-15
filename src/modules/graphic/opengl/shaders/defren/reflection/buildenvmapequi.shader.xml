@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Reflection Build EnvMap Equi</name>
 	
-	<version>150</version>
-	
 	<texture name='texEnvMap1' target='0'/>
 	<texture name='texEnvMap2' target='1'/>
 	<texture name='texEnvMap3' target='2'/>

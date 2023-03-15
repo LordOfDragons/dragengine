@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen AmbientOcclusion Local Stereo</name>
 	
-	<version>150</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	
 	<texture name='texDepth' target='0'/>

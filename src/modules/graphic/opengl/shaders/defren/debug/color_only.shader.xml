@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Debug Color-Only</name>
 	
-	<version>130</version>
-	
 	<texture name='texDepth' target='0'/>
 	
 	<parameter name='pMatrixMVP'/> <!-- 0 -->

@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen EnvMap Light GI</name>
 	
-	<version>150</version>
-	
 	<uniformBlock name='RenderParameters' target='0'/>
 	<uniformBlock name='GIParameters' target='1'/>
 	

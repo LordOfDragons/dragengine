@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Reflection MinMap MipMap 2</name>
 	
-	<version>150</version>
-	
 	<texture name='texData' target='0'/>
 	
 	<parameter name='pTCClamp'/> <!-- 0 -->

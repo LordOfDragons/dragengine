@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Reflection CubeMap 2 EquiMap</name>
 	
-	<version>150</version>
-	
 	<texture name='texEnvMap' target='0'/>
 	
 	<parameter name='pLevel'/> <!-- 0 -->

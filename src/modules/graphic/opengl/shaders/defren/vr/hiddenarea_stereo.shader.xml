@@ -2,8 +2,6 @@
 <shader>
 	<name>VR Hidden Area Stereo</name>
 	
-	<version>130</version>
-	
 	<attribute name='inPosition' target='0'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/defren/vr/hiddenarea.glsl</sourceCode>
