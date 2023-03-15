@@ -66,7 +66,6 @@ pNumProgramBinaryFormats( 0 ),
 
 pATLUnbind( *this ),
 pUBOIndirectMatrixAccess( *this ),
-pClearEntireCubeMap( *this ),
 pClearEntireArrayTexture( *this ),
 pGeometryShaderLayer( *this ),
 pUBODirectLinkDeadloop( *this ),
@@ -247,7 +246,6 @@ void deoglCapabilities::DetectCapabilities(){
 		pFramebufferTextureSingle.Check( fbo );
 		
 		pUBOIndirectMatrixAccess.Check( fbo );
-// 		pClearEntireCubeMap.Check( fbo ); // nVidia fails this although working
 		pClearEntireArrayTexture.Check( fbo );
 // 		pGeometryShaderLayer.Check( fbo ); // nVidia fails this although working
 		pUBODirectLinkDeadloop.Check( fbo );

@@ -26,7 +26,6 @@
 #include "deoglCapsFmtSupport.h"
 #include "checks/deoglCapCheckATLUnbind.h"
 #include "checks/deoglCapCheckUBOIndirectMatrixAccess.h"
-#include "checks/deoglCapCheckClearEntireCubeMap.h"
 #include "checks/deoglCapCheckClearEntireArrayTexture.h"
 #include "checks/deoglCapCheckGeometryShaderLayer.h"
 #include "checks/deoglCapCheckUBODirectLinkDeadloop.h"
@@ -74,7 +73,6 @@ private:
 	
 	deoglCapCheckATLUnbind pATLUnbind;
 	deoglCapCheckUBOIndirectMatrixAccess pUBOIndirectMatrixAccess;
-	deoglCapCheckClearEntireCubeMap pClearEntireCubeMap;
 	deoglCapCheckClearEntireArrayTexture pClearEntireArrayTexture;
 	deoglCapCheckGeometryShaderLayer pGeometryShaderLayer;
 	deoglCapCheckUBODirectLinkDeadloop pUBODirectLinkDeadloop;
@@ -168,10 +166,6 @@ public:
 	/** Indirect UBO matrix access check. */
 	inline const deoglCapCheckUBOIndirectMatrixAccess &GetUBOIndirectMatrixAccess() const{
 		return pUBOIndirectMatrixAccess; }
-	
-	/** Clear entire cube map. */
-	inline const deoglCapCheckClearEntireCubeMap &GetClearEntireCubeMap() const{
-		return pClearEntireCubeMap; }
 	
 	/** Cleare all layers in an array texture. */
 	inline const deoglCapCheckClearEntireArrayTexture &GetClearEntireArrayTexture() const{

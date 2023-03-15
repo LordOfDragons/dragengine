@@ -248,7 +248,6 @@ pVAOCopyShadow( nullptr )
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
-	const bool renderCubeGS = renderThread.GetChoices().GetRenderCubeGS();
 	const float smOffsetScale = renderThread.GetConfiguration().GetShadowMapOffsetScale();
 	const float smOffsetBias = renderThread.GetConfiguration().GetShadowMapOffsetBias();
 	deoglShaderDefines defines, commonDefines;
@@ -288,23 +287,14 @@ pVAOCopyShadow( nullptr )
 		pipconf.EnableCulling( false );
 		pipconf.EnablePolygonOffset( useInverseDepth ? -smOffsetScale : smOffsetScale, -smOffsetBias );
 		
+		defines = commonDefines;
 		AddSharedSPBDefines( defines );
-		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
+		defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
+		
+		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap Cube", defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );
 		defines.RemoveAllDefines();
-		
-		// occlusion map cube
-		if( renderCubeGS ){
-			defines = commonDefines;
-			AddSharedSPBDefines( defines );
-			defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
-			
-			pipconf.SetShader( renderThread, "DefRen Occlusion OccMap Cube", defines );
-			pipconf.SetSPBInstanceIndexBase( 0 );
-			pPipelineOccMapCube = pipelineManager.GetWith( pipconf, true );
-			defines.RemoveAllDefines();
-		}
 		
 		
 		
@@ -321,12 +311,9 @@ pVAOCopyShadow( nullptr )
 			defines.SetDefines( "VS_LAYER" );
 			sources = shaderManager.GetSourcesNamed( "DefRen Copy Shadow" );
 			
-		}else if( renderCubeGS ){
+		}else{
 			defines.SetDefines( "GS_LAYER" );
 			sources = shaderManager.GetSourcesNamed( "DefRen Copy Shadow GS" );
-			
-		}else{
-			sources = shaderManager.GetSourcesNamed( "DefRen Copy Shadow" );
 		}
 		
 		pipconf.SetShader( renderThread, sources, defines );
@@ -1488,95 +1475,131 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		lodCalculator.SetComponentLODOmniDir( *shadowParams.collideList2, lightPosition, shadowParams.solidShadowMapSize );
 	}
 	
-	// configuration
-	const bool bugClearEntireCubeMap = renderThread.GetCapabilities().GetClearEntireCubeMap().Broken();
-	const bool useGSRenderCube = renderThread.GetChoices().GetRenderCubeGS();
-	
 	// setup render parameters
 	deoglSPBlockUBO *renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
 	
-	if( useGSRenderCube ){
-		// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this
-		const deoglSPBMapBuffer mapped( *renderParamBlock );
-		
-		renderParamBlock->SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
-			shadowParams.shadowScale, shadowParams.shadowOffset );
-		renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-			smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-		
-		decDMatrix matProj( shadowParams.matrixProjection );
-		if( renderThread.GetChoices().GetUseInverseDepth() ){
-			matProj.a34 -= 0.0001f;
-		}
-		
-		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
-		
-		for( cmf=0; cmf<6; cmf++ ){
-			deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, pCubeFaces[ cmf ] );
-			
-			renderParamBlock->SetParameterDataArrayMat4x3(
-				deoglSkinShader::erutMatrixV, cmf, matrixCamera );
-			renderParamBlock->SetParameterDataArrayMat4x4(
-				deoglSkinShader::erutMatrixVP, cmf, matrixCamera * matProj );
-			renderParamBlock->SetParameterDataArrayMat3x3(
-				deoglSkinShader::erutMatrixVn, cmf, matrixCamera.GetRotationMatrix().Invert() );
-		}
-		
-		renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+	// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this
+	const deoglSPBMapBuffer mapped( *renderParamBlock );
+	
+	renderParamBlock->SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
+		shadowParams.shadowScale, shadowParams.shadowOffset );
+	renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+		smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
+	
+	decDMatrix matProj( shadowParams.matrixProjection );
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
+		matProj.a34 -= 0.0001f;
 	}
+	
+	renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
+	
+	for( cmf=0; cmf<6; cmf++ ){
+		deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, pCubeFaces[ cmf ] );
+		
+		renderParamBlock->SetParameterDataArrayMat4x3(
+			deoglSkinShader::erutMatrixV, cmf, matrixCamera );
+		renderParamBlock->SetParameterDataArrayMat4x4(
+			deoglSkinShader::erutMatrixVP, cmf, matrixCamera * matProj );
+		renderParamBlock->SetParameterDataArrayMat3x3(
+			deoglSkinShader::erutMatrixVn, cmf, matrixCamera.GetRotationMatrix().Invert() );
+	}
+	
+	renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
-	
-	if( useGSRenderCube ){
-		addToRenderTask.SetUseSpecialParamBlock( true );
-		// addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistanceCube );
-		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowProjectionCube );
-		
-	}else{
-		// addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistance );
-		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowProjection );
-	}
+	addToRenderTask.SetUseSpecialParamBlock( true );
+	// addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistanceCube );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowProjectionCube );
 	
 	const GLfloat clearColor[ 4 ] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	
 	// render the solid shadow cube map
-	if( ! bugClearEntireCubeMap ){
+	pPipelineClearBuffers->Activate();
+	shadowMapper.ActivateSolidCubeMap( shadowParams.solidShadowMapSize, useInverseDepth );
+	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+	
+	if( shadowParams.solid ){
+		DebugTimer3Sample( plan, *pDebugInfoSolidShadowClear, true );
+		
+	}else{
+		DebugTimer3Sample( plan, *pDebugInfoTransparentShadowClear, true );
+	}
+	
+	// copy shadow map
+	if( shadowParams.copyShadow ){
+		pPipelineCopyDepth->Activate();
+		
+		tsmgr.EnableCubeMap( 0, *shadowParams.copyShadow, GetSamplerRepeatNearest() );
+		tsmgr.DisableStagesAbove( 0 );
+		
+		OGL_CHECK( renderThread, pglBindVertexArray( pVAOCopyShadow->GetVAO() ) );
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 36 ) );
+	}
+	
+	// cube map activate already by clear
+	DebugTimer4Reset( plan, false );
+	
+	renderTask.Clear();
+	renderTask.SetRenderParamBlock( renderParamBlock );
+	renderTask.SetUseSPBInstanceFlags( true );
+	
+	addToRenderTask.SetSolid( true );
+	addToRenderTask.SetForceDoubleSided( true );
+	if( shadowParams.collideList1 ){
+		addToRenderTask.AddComponents( *shadowParams.collideList1 );
+	}
+	if( shadowParams.collideList2 ){
+		addToRenderTask.AddComponents( *shadowParams.collideList2 );
+	}
+	
+	addToRenderTask.SetForceDoubleSided( false );
+	
+	if( shadowParams.solid ){
+		DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTask, true );
+		
+	}else{
+		DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTask, true );
+	}
+	
+	renderTask.PrepareForRender();
+// 			renderThread.GetLogger().LogInfo( "RenderLightPoint: render task" );
+// 			renderTask.DebugPrint( renderThread.GetLogger() );
+	rengeom.RenderTask( renderTask );
+	
+	if( shadowParams.solid ){
+		DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceRender, true );
+		DebugTimer3SampleCount( plan, *pDebugInfoSolidShadowFace, 1, false );
+		
+	}else{
+		DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceRender, true );
+		DebugTimer3SampleCount( plan, *pDebugInfoTransparentShadowFace, 1, false );
+	}
+	
+	// render the transparent shadow cube maps if required
+	if( shadowParams.withTransparent ){
+		addToRenderTask.SetSolid( false );
+		
 		pPipelineClearBuffers->Activate();
-		shadowMapper.ActivateSolidCubeMap( shadowParams.solidShadowMapSize, useInverseDepth );
+		shadowMapper.ActivateTransparentCubeMap( shadowParams.transpShadowMapSize, useInverseDepth );
+		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 		
 		if( shadowParams.solid ){
-			DebugTimer3Sample( plan, *pDebugInfoSolidShadowClear, true );
+			DebugTimer3Sample( plan, *pDebugInfoSolidShadowClearTransp, true );
 			
 		}else{
-			DebugTimer3Sample( plan, *pDebugInfoTransparentShadowClear, true );
+			DebugTimer3Sample( plan, *pDebugInfoTransparentShadowClearTransp, true );
 		}
 		
-		// copy shadow map
-		if( shadowParams.copyShadow ){
-			pPipelineCopyDepth->Activate();
-			
-			tsmgr.EnableCubeMap( 0, *shadowParams.copyShadow, GetSamplerRepeatNearest() );
-			tsmgr.DisableStagesAbove( 0 );
-			
-			OGL_CHECK( renderThread, pglBindVertexArray( pVAOCopyShadow->GetVAO() ) );
-			OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 36 ) );
-		}
-	}
-	
-	if( useGSRenderCube ){
 		// cube map activate already by clear
 		DebugTimer4Reset( plan, false );
 		
 		renderTask.Clear();
 		renderTask.SetRenderParamBlock( renderParamBlock );
-		renderTask.SetUseSPBInstanceFlags( true );
 		
-		addToRenderTask.SetSolid( true );
-		addToRenderTask.SetForceDoubleSided( true );
 		if( shadowParams.collideList1 ){
 			addToRenderTask.AddComponents( *shadowParams.collideList1 );
 		}
@@ -1584,251 +1607,23 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			addToRenderTask.AddComponents( *shadowParams.collideList2 );
 		}
 		
-		addToRenderTask.SetForceDoubleSided( false );
-		
 		if( shadowParams.solid ){
-			DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTask, true );
+			DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTranspTask, true );
 			
 		}else{
-			DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTask, true );
+			DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTranspTask, true );
 		}
 		
 		renderTask.PrepareForRender();
-// 			renderThread.GetLogger().LogInfo( "RenderLightPoint: render task" );
-// 			renderTask.DebugPrint( renderThread.GetLogger() );
 		rengeom.RenderTask( renderTask );
 		
 		if( shadowParams.solid ){
-			DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceRender, true );
-			DebugTimer3SampleCount( plan, *pDebugInfoSolidShadowFace, 1, false );
+			DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTranspRender, true );
+			DebugTimer3Sample( plan, *pDebugInfoSolidShadowFace, false ); // because we added 1 already during solid
 			
 		}else{
-			DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceRender, true );
-			DebugTimer3SampleCount( plan, *pDebugInfoTransparentShadowFace, 1, false );
-		}
-		
-	}else{
-		for( cmf=0; cmf<6; cmf++ ){
-			DebugTimer4Reset( plan, false );
-			deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, cmf );
-			
-			if( cmf > 0 ){
-				renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
-			}
-			{
-				const deoglSPBMapBuffer mapped( *renderParamBlock );
-				
-				renderParamBlock->SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
-					shadowParams.shadowScale, shadowParams.shadowOffset );
-				renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-					smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-				
-				decDMatrix matProj( shadowParams.matrixProjection );
-				if( renderThread.GetChoices().GetUseInverseDepth() ){
-					matProj.a34 -= 0.0001f;
-				}
-				
-				renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
-				
-				renderParamBlock->SetParameterDataMat4x3(
-					deoglSkinShader::erutMatrixV, matrixCamera );
-				renderParamBlock->SetParameterDataMat4x4(
-					deoglSkinShader::erutMatrixVP, matrixCamera * matProj );
-				renderParamBlock->SetParameterDataMat3x3(
-					deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
-				
-				renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
-			}
-			
-			shadowMapper.ActivateSolidCubeMapFace( shadowParams.solidShadowMapSize, useInverseDepth, pCubeFaces[ cmf ] );
-			
-			if( bugClearEntireCubeMap ){
-				pPipelineClearBuffers->Activate();
-				OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
-				OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-				
-				if( shadowParams.solid ){
-					DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceClear, true );
-					
-				}else{
-					DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceClear, true );
-				}
-				
-				// copy shadow map
-				if( shadowParams.copyShadow ){
-					pPipelineCopyDepth->Activate();
-					
-					tsmgr.EnableCubeMapFace( 0, *shadowParams.copyShadow, pCubeFaces[ cmf ], GetSamplerRepeatNearest() );
-					tsmgr.DisableStagesAbove( 0 );
-					
-					OGL_CHECK( renderThread, pglBindVertexArray( pVAOCopyShadow->GetVAO() ) );
-					OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 6 * pCubeFaces[ cmf ], 6 ) );
-				}
-			}
-			
-			renderTask.Clear();
-			renderTask.SetRenderParamBlock( renderParamBlock );
-			
-			addToRenderTask.SetSolid( true );
-			addToRenderTask.SetFilterCubeFace( cmf );
-			addToRenderTask.SetForceDoubleSided( true );
-			
-			if( shadowParams.collideList1 ){
-				addToRenderTask.AddComponents( *shadowParams.collideList1 );
-			}
-			if( shadowParams.collideList2 ){
-				addToRenderTask.AddComponents( *shadowParams.collideList2 );
-			}
-			
-			addToRenderTask.SetForceDoubleSided( false );
-			
-			if( shadowParams.solid ){
-				DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTask, true );
-				
-			}else{
-				DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTask, true );
-			}
-			
-			renderTask.PrepareForRender();
-			rengeom.RenderTask( renderTask );
-			
-			if( shadowParams.solid ){
-				DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceRender, true );
-				DebugTimer3SampleCount( plan, *pDebugInfoSolidShadowFace, 1, false );
-				
-			}else{
-				DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceRender, true );
-				DebugTimer3SampleCount( plan, *pDebugInfoTransparentShadowFace, 1, false );
-			}
-		}
-	}
-	
-	// render the transparent shadow cube maps if required
-	if( shadowParams.withTransparent ){
-		addToRenderTask.SetSolid( false );
-		
-		if( ! bugClearEntireCubeMap ){
-			pPipelineClearBuffers->Activate();
-			shadowMapper.ActivateTransparentCubeMap( shadowParams.transpShadowMapSize, useInverseDepth );
-			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-			OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
-			
-			if( shadowParams.solid ){
-				DebugTimer3Sample( plan, *pDebugInfoSolidShadowClearTransp, true );
-				
-			}else{
-				DebugTimer3Sample( plan, *pDebugInfoTransparentShadowClearTransp, true );
-			}
-		}
-		
-		if( useGSRenderCube ){
-			// cube map activate already by clear
-			DebugTimer4Reset( plan, false );
-			
-			renderTask.Clear();
-			renderTask.SetRenderParamBlock( renderParamBlock );
-			
-			if( shadowParams.collideList1 ){
-				addToRenderTask.AddComponents( *shadowParams.collideList1 );
-			}
-			if( shadowParams.collideList2 ){
-				addToRenderTask.AddComponents( *shadowParams.collideList2 );
-			}
-			
-			if( shadowParams.solid ){
-				DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTranspTask, true );
-				
-			}else{
-				DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTranspTask, true );
-			}
-			
-			renderTask.PrepareForRender();
-			rengeom.RenderTask( renderTask );
-			
-			if( shadowParams.solid ){
-				DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTranspRender, true );
-				DebugTimer3Sample( plan, *pDebugInfoSolidShadowFace, false ); // because we added 1 already during solid
-				
-			}else{
-				DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTranspRender, true );
-				DebugTimer3Sample( plan, *pDebugInfoTransparentShadowFace, false ); // because we added 1 already during solid
-			}
-			
-		}else{
-			smOffsetScale = config.GetDistShadowScale() / shadowParams.transpShadowMapSize;
-			
-			for( cmf=0; cmf<6; cmf++ ){
-				DebugTimer4Reset( plan, false );
-				deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, cmf );
-				
-				renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
-				{
-					const deoglSPBMapBuffer mapped( *renderParamBlock );
-					
-					renderParamBlock->SetParameterDataVec2( deoglSkinShader::erutDepthTransform,
-						shadowParams.shadowScale, shadowParams.shadowOffset );
-					renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-						smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-					
-					decDMatrix matProj( shadowParams.matrixProjection );
-					if( renderThread.GetChoices().GetUseInverseDepth() ){
-						matProj.a34 -= 0.0001f;
-					}
-					
-					renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
-						
-					renderParamBlock->SetParameterDataMat4x3(
-						deoglSkinShader::erutMatrixV, matrixCamera );
-					renderParamBlock->SetParameterDataMat4x4(
-						deoglSkinShader::erutMatrixVP, matrixCamera * matProj );
-					
-					renderParamBlock->SetParameterDataBVec4(
-						deoglSkinShader::erutConditions1, false, false, false, false );
-				}
-				
-				shadowMapper.ActivateTransparentCubeMapFace( shadowParams.transpShadowMapSize, useInverseDepth, pCubeFaces[ cmf ] );
-				if( bugClearEntireCubeMap ){
-					pPipelineClearBuffers->Activate();
-					OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-					OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
-					
-					if( shadowParams.solid ){
-						DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTranspClear, true );
-						
-					}else{
-						DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTranspClear, true );
-					}
-				}
-				
-				renderTask.Clear();
-				renderTask.SetRenderParamBlock( renderParamBlock );
-				
-				if( shadowParams.collideList1 ){
-					addToRenderTask.AddComponents( *shadowParams.collideList1 );
-				}
-				if( shadowParams.collideList2 ){
-					addToRenderTask.AddComponents( *shadowParams.collideList2 );
-				}
-				
-				if( shadowParams.solid ){
-					DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTranspTask, true );
-					
-				}else{
-					DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTranspTask, true );
-				}
-				
-				renderTask.PrepareForRender();
-				rengeom.RenderTask( renderTask );
-				
-				if( shadowParams.solid ){
-					DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTranspRender, true );
-					DebugTimer3Sample( plan, *pDebugInfoSolidShadowFace, false ); // because we added 1 already during solid
-					
-				}else{
-					DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTranspRender, true );
-					DebugTimer3Sample( plan, *pDebugInfoTransparentShadowFace, false ); // because we added 1 already during solid
-				}
-			}
+			DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTranspRender, true );
+			DebugTimer3Sample( plan, *pDebugInfoTransparentShadowFace, false ); // because we added 1 already during solid
 		}
 	}
 }
@@ -1855,111 +1650,60 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	// visibility has been calculated and the special parameter block updated.
 	//UpdateComponentVBO( clist );
 	
-	// configuration
-	const bool bugClearEntireCubeMap = renderThread.GetCapabilities().GetClearEntireCubeMap().Broken();
-	const bool useGSRenderCube = renderThread.GetChoices().GetRenderCubeGS();
-	
 	// setup render parameters
 	deoglSPBlockUBO *renderParamBlock = renderThread.GetRenderers().GetLight().NextOccMapPB();
 	
-	if( useGSRenderCube ){
-		// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this
-		const deoglSPBMapBuffer mapped( *renderParamBlock );
+	// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this
+	const deoglSPBMapBuffer mapped( *renderParamBlock );
+	
+	for( cmf=0; cmf<6; cmf++ ){
+		deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, pCubeFaces[ cmf ] );
 		
-		for( cmf=0; cmf<6; cmf++ ){
-			deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, pCubeFaces[ cmf ] );
-			
-		renderParamBlock->SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
-		//renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-		// 	smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-		
-		renderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );
-			renderParamBlock->SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * shadowParams.matrixProjection );
-		}
-		
-		// object render cube face special parameter have been already updated by RenderShadowMaps
+	renderParamBlock->SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
+	//renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+	// 	smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
+	
+	renderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );
+		renderParamBlock->SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * shadowParams.matrixProjection );
 	}
 	
-	const deoglPipeline * const pipelineDouble = useGSRenderCube ? pPipelineOccMapCube : pPipelineOccMap;
+	// object render cube face special parameter have been already updated by RenderShadowMaps
+	
+	const deoglPipeline * const pipelineDouble = pPipelineOccMap;
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
-	addToRenderTask.SetUseSpecialParamBlock( useGSRenderCube );
+	addToRenderTask.SetUseSpecialParamBlock( true );
 	
 	// clear
 	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	
-	if( ! bugClearEntireCubeMap ){
-		pPipelineClearBuffers->Activate();
-		shadowMapper.ActivateAmbientCubeMap( shadowParams.ambientMapSize, useInverseDepth );
-		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
-	}
+	pPipelineClearBuffers->Activate();
+	shadowMapper.ActivateAmbientCubeMap( shadowParams.ambientMapSize, useInverseDepth );
+	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	
 	// render the solid shadow cube map
-	if( useGSRenderCube ){
-		// cube map activate already by clear
-		renderTask.Clear();
-		renderTask.SetRenderParamBlock( renderParamBlock );
-		renderTask.SetUseSPBInstanceFlags( true );
-		
-		if( shadowParams.collideList1 ){
-			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, nullptr, pipelineDouble );
-		}
-		if( shadowParams.collideList2 ){
-			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, nullptr, pipelineDouble );
-		}
-		
-		renderTask.PrepareForRender();
-		rengeom.RenderTask( renderTask );
-		
-		// PROBLEM: depth, geometry and shadow map rendering uses new shared-spb system.
-		//          in this system special-param-block is no more per-component but
-		//          per-render-task. this code here expects special-param blocks on
-		//          components to be prepared by a previous shadow map call which is no
-		//          more the case. requires updating occlusion-mesh in add-to-render-task
-		//          to be using new shared-spb system too, then this works again
-		
-	}else{
-		// render the solid shadow cube map
-		for( cmf=0; cmf<6; cmf++ ){
-			deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, cmf );
-			
-			if( cmf > 0 ){
-				renderParamBlock = renderThread.GetRenderers().GetLight().NextOccMapPB();
-			}
-			{
-				const deoglSPBMapBuffer mapped( *renderParamBlock );
-				renderParamBlock->SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
-				//renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-				// 	smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-				
-				renderParamBlock->SetParameterDataMat4x4( 0, matrixCamera * shadowParams.matrixProjection );
-				renderParamBlock->SetParameterDataMat4x3( 1, matrixCamera );
-			}
-			
-			shadowMapper.ActivateAmbientCubeMapFace( shadowParams.ambientMapSize, useInverseDepth, pCubeFaces[ cmf ] );
-			
-			if( bugClearEntireCubeMap ){
-				pPipelineClearBuffers->Activate();
-				OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
-			}
-			
-			renderTask.Clear();
-			renderTask.SetRenderParamBlock( renderParamBlock );
-			
-			addToRenderTask.SetFilterCubeFace( cmf );
-			if( shadowParams.collideList2 ){
-				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, nullptr, pipelineDouble );
-			}
-			if( shadowParams.collideList2 ){
-				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, nullptr, pipelineDouble );
-			}
-			
-			renderTask.PrepareForRender();
-			rengeom.RenderTask( renderTask );
-		}
+	renderTask.Clear();
+	renderTask.SetRenderParamBlock( renderParamBlock );
+	renderTask.SetUseSPBInstanceFlags( true );
+	
+	if( shadowParams.collideList1 ){
+		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, nullptr, pipelineDouble );
 	}
+	if( shadowParams.collideList2 ){
+		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, nullptr, pipelineDouble );
+	}
+	
+	renderTask.PrepareForRender();
+	rengeom.RenderTask( renderTask );
+	
+	// PROBLEM: depth, geometry and shadow map rendering uses new shared-spb system.
+	//          in this system special-param-block is no more per-component but
+	//          per-render-task. this code here expects special-param blocks on
+	//          components to be prepared by a previous shadow map call which is no
+	//          more the case. requires updating occlusion-mesh in add-to-render-task
+	//          to be using new shared-spb system too, then this works again
 }
 
 

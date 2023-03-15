@@ -93,9 +93,6 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 		( HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer ) )
 		&& HASEXT( ext_ARB_shader_draw_parameters );
 	
-	// render cube using geometry shader (required)
-	pRenderCubeGS = caps.GetClearEntireCubeMap().Working();
-	
 	// transform component vertices on the GPU
 	#ifdef OS_ANDROID
 		// NOTE android OpenGL ES 3.0 does not support texture buffer objects (TBO). as a replacement
