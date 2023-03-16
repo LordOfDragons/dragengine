@@ -29,6 +29,7 @@
 #include "../debug/deoglDebugTraceGroup.h"
 #include "../rendering/deoglRenderCanvasContext.h"
 #include "../rendering/deoglRenderCanvas.h"
+#include "../rendering/deoglRenderOverlay.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTContext.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -664,6 +665,7 @@ void deoglRRenderWindow::Render(){
 		if( debugOverlayCanvas ){
 			debugOverlayCanvas->Render( context );
 		}
+		pRenderThread.GetRenderers().GetOverlay().RenderOverlays( context );
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsRender();

@@ -33,6 +33,7 @@
 #include "../rendering/deoglRenderGeometry.h"
 #include "../rendering/deoglRenderGeometryPass.h"
 #include "../rendering/deoglRenderOcclusion.h"
+#include "../rendering/deoglRenderOverlay.h"
 #include "../rendering/deoglRenderParticles.h"
 #include "../rendering/deoglRenderReflection.h"
 #include "../rendering/deoglRenderSky.h"
@@ -64,6 +65,7 @@ pGeometry( nullptr ),
 pGeometryPass( nullptr ),
 pLight( nullptr ),
 pOcclusion( nullptr ),
+pOverlay( nullptr ),
 pParticles( nullptr ),
 pReflection( nullptr ),
 pSky( nullptr ),
@@ -85,6 +87,7 @@ pWorld( nullptr )
 		pTransparentPasses = new deoglRenderTransparentPasses( renderThread );
 		pParticles = new deoglRenderParticles( renderThread );
 		pOcclusion = new deoglRenderOcclusion( renderThread );
+		pOverlay = new deoglRenderOverlay( renderThread );
 		pVR = new deoglRenderVR( renderThread );
 		
 		pLight = new deoglRenderLight( renderThread, *this );
@@ -125,6 +128,7 @@ void deoglRTRenderers::DevModeDebugInfoChanged(){
 	pGeometryPass->DevModeDebugInfoChanged();
 	pLight->DevModeDebugInfoChanged();
 	pOcclusion->DevModeDebugInfoChanged();
+	pOverlay->DevModeDebugInfoChanged();
 	pParticles->DevModeDebugInfoChanged();
 	pReflection->DevModeDebugInfoChanged();
 	pSky->DevModeDebugInfoChanged();
@@ -176,6 +180,9 @@ void deoglRTRenderers::pCleanUp(){
 	}
 	if( pOcclusion ){
 		delete pOcclusion;
+	}
+	if( pOverlay ){
+		delete pOverlay;
 	}
 	if( pParticles ){
 		delete pParticles;
