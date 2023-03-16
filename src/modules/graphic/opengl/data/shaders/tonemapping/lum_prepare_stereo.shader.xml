@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>ToneMap Luminance Prepare Stereo</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name='texColor' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outLuminance' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/tonemap/lum_prepare.glsl</sourceCode>
+</shader>

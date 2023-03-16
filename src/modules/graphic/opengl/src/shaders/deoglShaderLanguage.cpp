@@ -121,8 +121,8 @@ public:
 static cSpecialPrintShader vSpecialPrintShader;
 #endif
 
-static const char * const vPsfFragment = "v130/fragment/defren/light/light.glsl";
-static const char * const vPsfVertex = "v130/vertex/defren/light/light.glsl";
+static const char * const vPsfFragment = "fragment/defren/light/light.glsl";
+static const char * const vPsfVertex = "vertex/defren/light/light.glsl";
 static const char * const vPsfDefines[] = {
 	"HIGH_PRECISION",
 	"HIGHP",

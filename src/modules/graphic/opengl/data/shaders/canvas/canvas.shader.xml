@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Canvas</name>
+	
+	<texture name='texColor' target='0'/>
+	<texture name='texMask' target='1'/>
+	
+	<parameter name='pTransform'/> <!-- 0 -->
+	<parameter name='pTCTransform'/> <!-- 1 -->
+	<parameter name='pColorTransform'/> <!-- 2 -->
+	<parameter name='pColorTransform2'/> <!-- 3 -->
+	<parameter name='pGamma'/> <!-- 4 -->
+	<parameter name='pClipRect'/> <!-- 5 -->
+	<parameter name='pTCClamp'/> <!-- 6 -->
+	<parameter name='pTCTransformMask'/> <!-- 7 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/canvas/canvas.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/canvas/canvas.glsl</sourceCode>
+</shader>

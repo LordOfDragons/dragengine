@@ -39,26 +39,26 @@
 //////////////////////////
 
 static const char *vUnitSourceCodePath[ deoglSkinShaderManager::UnitSourceCodePathCount ] = {
-	"v130/vertex/defren/skin/geometry.glsl", // euscpVertexGeometry
-	"v130/vertex/defren/skin/depth.glsl", // euscpVertexDepth
-	"v130/vertex/defren/skin/particle.glsl", // euscpVertexParticle
-	"v130/vertex/defren/skin/passthrough.glsl", // euscpVertexPassThrough
-	"v130/vertex/defren/gi/materialMap.glsl", // euscpGIMaterialMap
+	"vertex/defren/skin/geometry.glsl", // euscpVertexGeometry
+	"vertex/defren/skin/depth.glsl", // euscpVertexDepth
+	"vertex/defren/skin/particle.glsl", // euscpVertexParticle
+	"vertex/defren/skin/passthrough.glsl", // euscpVertexPassThrough
+	"vertex/defren/gi/materialMap.glsl", // euscpGIMaterialMap
 	
-	"v130/geometry/defren/skin/geometry.glsl", // euscpGeometryGeometry
-	"v130/geometry/defren/skin/depth.glsl", // euscpGeometryDepth
-	"v130/geometry/defren/skin/particle.glsl", // euscpGeometryParticle
-	"v130/geometry/defren/skin/particle_ribbon.glsl", // euscpGeometryParticleRibbon
+	"geometry/defren/skin/geometry.glsl", // euscpGeometryGeometry
+	"geometry/defren/skin/depth.glsl", // euscpGeometryDepth
+	"geometry/defren/skin/particle.glsl", // euscpGeometryParticle
+	"geometry/defren/skin/particle_ribbon.glsl", // euscpGeometryParticleRibbon
 	
-	"v130/tessctrl/defren/skin/geometry.glsl", // euscpTessControlGeometry
-	"v130/tessctrl/defren/skin/depth.glsl", // euscpTessControlDepth
+	"tessctrl/defren/skin/geometry.glsl", // euscpTessControlGeometry
+	"tessctrl/defren/skin/depth.glsl", // euscpTessControlDepth
 	
-	"v130/tesseval/defren/skin/geometry.glsl", // euscpTessEvalGeometry
-	"v130/tesseval/defren/skin/depth.glsl", // euscpTessEvalDepth
+	"tesseval/defren/skin/geometry.glsl", // euscpTessEvalGeometry
+	"tesseval/defren/skin/depth.glsl", // euscpTessEvalDepth
 	
-	"v130/fragment/defren/skin/geometry.glsl", // euscpFragmentGeometry
-	"v130/fragment/defren/skin/depth.glsl", // euscpFragmentDepth
-	"v130/fragment/defren/gi/materialMap.glsl" // euscpGIMaterialMap
+	"fragment/defren/skin/geometry.glsl", // euscpFragmentGeometry
+	"fragment/defren/skin/depth.glsl", // euscpFragmentDepth
+	"fragment/defren/gi/materialMap.glsl" // euscpGIMaterialMap
 };
 
 

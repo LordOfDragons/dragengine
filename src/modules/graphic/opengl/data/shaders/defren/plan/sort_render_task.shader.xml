@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Sort Render Task</name>
+	
+	<parameter name='pStage'/>
+	<parameter name='pLaneSize'/>
+	
+	<shaderStorageBlock name='Counters' target='0'/>
+	<shaderStorageBlock name='RenderTask' target='1'/>
+	
+	<sourceCode unit='compute'>compute/defren/plan/sort_render_task.glsl</sourceCode>
+</shader>

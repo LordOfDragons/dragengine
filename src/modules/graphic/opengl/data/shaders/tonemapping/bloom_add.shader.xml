@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>ToneMap Bloom Add</name>
+	
+	<texture name='texColor' target='0'/>
+	
+	<parameter name='pPosToTC'/> <!-- 0 -->
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/fsquad_tex.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/tonemap/bloom_add.glsl</sourceCode>
+</shader>

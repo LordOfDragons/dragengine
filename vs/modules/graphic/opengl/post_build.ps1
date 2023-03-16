@@ -19,14 +19,10 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
     -Library $Library -Version $Version
 
 
-$DataTargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDESharesModules\graphic\opengl\$Version"
+$DataTargetDir = "$OutputDir\$PathDistDESharesModules\graphic\opengl\$Version"
 Write-Host "OpenGL Module: Copy Data to '$DataTargetDir'"
 
-Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\shaders")`
-    -TargetDir (Join-Path -Path $DataTargetDir -ChildPath "shaders") -Pattern "*.shader.xml"
-
-Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\shaderSources")`
-    -TargetDir (Join-Path -Path $DataTargetDir -ChildPath "shaderSources") -Pattern "*.glsl"
+Copy-Files -SourceDir "$SourceDir\..\data" -Pattern "*" -TargetDir $DataTargetDir
 
 
 # debug

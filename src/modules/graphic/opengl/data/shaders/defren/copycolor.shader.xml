@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Copy Color</name>
+	
+	<texture name='texColor' target='0'/>
+	
+	<parameter name='pQuadParams'/> <!-- 0 -->
+	<parameter name='pMipMapLevel'/> <!-- 1 -->
+	<parameter name='pTCClamp'/> <!-- 2 -->
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/fullscreenquad.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/copycolor.glsl</sourceCode>
+</shader>
