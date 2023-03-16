@@ -34,6 +34,7 @@
 class deoglCaches;
 class deoglRenderThread;
 class deoglCamera;
+class deoglResources;
 
 
 
@@ -52,6 +53,7 @@ private:
 	deoglRenderThread *pRenderThread;
 	deoglCaches *pCaches;
 	deoglDebugOverlay pDebugOverlay;
+	deoglResources *pResources;
 	
 	deoglCamera *pVRCamera;
 	
@@ -285,6 +287,9 @@ public:
 	
 	/** Debug overlay manager. */
 	inline deoglDebugOverlay &GetDebugOverlay(){ return pDebugOverlay; }
+	
+	/** Resources. */
+	inline deoglResources &GetResources() const{ return *pResources; }
 	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }

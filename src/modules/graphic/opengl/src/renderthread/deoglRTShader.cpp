@@ -30,6 +30,7 @@
 #include "../light/shader/deoglLightShaderManager.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../shaders/deoglShaderCompiled.h"
+#include "../shaders/deoglShaderCompilingInfo.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/paramblock/deoglSPBMapBuffer.h"
@@ -51,18 +52,17 @@
 
 deoglRTShader::deoglRTShader( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-
-pTexUnitsConfigList( NULL ),
-
-pShaderManager( NULL ),
-pSkinShaderManager( NULL ),
-pLightShaderManager( NULL ),
-pCurShaderProg( NULL ),
+pTexUnitsConfigList( nullptr ),
+pShaderManager( nullptr ),
+pSkinShaderManager( nullptr ),
+pLightShaderManager( nullptr ),
+pShaderCompilingInfo( nullptr ),
+pCurShaderProg( nullptr ),
 pDirtySSBOSkinTextures( true )
 {
 	int i;
 	for( i=0; i<ETSC_COUNT; i++ ){
-		pTexSamplerConfigs[ i ] = NULL;
+		pTexSamplerConfigs[ i ] = nullptr;
 	}
 	
 	try{
@@ -76,6 +76,8 @@ pDirtySSBOSkinTextures( true )
 		
 		pSkinShaderManager = new deoglSkinShaderManager( renderThread );
 		pLightShaderManager = new deoglLightShaderManager( renderThread );
+		
+		pShaderCompilingInfo = new deoglShaderCompilingInfo( renderThread );
 		
 		// NOTE we can not create here SSBOs or alike due to the initialization order
 		
@@ -229,6 +231,9 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 void deoglRTShader::pCleanUp(){
 	int i;
 	
+	if( pShaderCompilingInfo ){
+		delete pShaderCompilingInfo;
+	}
 	if( pLightShaderManager ){
 		delete pLightShaderManager;
 	}

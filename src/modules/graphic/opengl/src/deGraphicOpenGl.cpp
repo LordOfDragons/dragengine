@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "deGraphicOpenGl.h"
+#include "deoglResources.h"
 
 #include "billboard/deoglBillboard.h"
 
@@ -209,6 +210,7 @@ pCaptureCanvasList( *this ),
 pRenderThread( NULL ),
 pCaches( NULL ),
 pDebugOverlay( *this ),
+pResources( nullptr ),
 pVRCamera( nullptr )
 {
 	pCreateParameters();
@@ -242,6 +244,7 @@ bool deGraphicOpenGl::Init( deRenderWindow *renderWindow ){
 	
 	try{
 		pCaches = new deoglCaches( *this );
+		pResources = new deoglResources( *this );
 		
 		pRenderThread = new deoglRenderThread( *this ); // make this a permanently existing object just with Init/CleanUp
 		pRenderThread->Init( renderWindow );
@@ -273,6 +276,10 @@ void deGraphicOpenGl::CleanUp(){
 	if( pCaches ){
 		delete pCaches;
 		pCaches = NULL;
+	}
+	if( pResources ){
+		delete pResources;
+		pResources = nullptr;
 	}
 	
 	LogInfo( "Done CleanUp" );

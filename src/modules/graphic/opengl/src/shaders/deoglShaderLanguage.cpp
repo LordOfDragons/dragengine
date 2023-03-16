@@ -348,13 +348,27 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 	return compiled;
 }
 
+bool deoglShaderLanguage::GetHasLoadingShader(){
+	const deMutexGuard guard( pMutexChecks );
+	const bool result = pHasLoadingShader;
+	pHasLoadingShader = false;
+	return result;
+}
+
+bool deoglShaderLanguage::GetHasCompilingShader(){
+	const deMutexGuard guard( pMutexChecks );
+	const bool result = pHasCompilingShader;
+	pHasCompilingShader = false;
+	return result;
+}
+
 
 
 // Private Functions
 //////////////////////
 
 deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &program ){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutexCompile );
 	
 	const deoglExtensions &ext = pRenderThread.GetExtensions();
 	const deoglShaderSources &sources = *program.GetSources();
@@ -924,6 +938,11 @@ deoglShaderCompiled *deoglShaderLanguage::pCacheLoadShader( deoglShaderProgram &
 		return nullptr;
 	}
 	
+	{
+	const deMutexGuard guard( pMutexChecks );
+	pHasLoadingShader = true;
+	}
+	
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheShaders = caches.GetShaders();
 	
@@ -1006,6 +1025,11 @@ const deoglShaderCompiled &compiled ){
 	|| pRenderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0
 	|| program.GetCacheId().IsEmpty() ){
 		return;
+	}
+	
+	{
+	const deMutexGuard guard( pMutexChecks );
+	pHasCompilingShader = true;
 	}
 	
 	const GLuint handler = compiled.GetHandleShader();

@@ -153,6 +153,7 @@ private:
 	decTimer pTimerRender;
 	decTimer pTimerFrameUpdate;
 	decTimer pTimerVRFrameUpdate;
+	float pLastFrameTime;
 	float pEstimatedRenderTime;
 	float pAccumulatedMainTime;
 	float pFrameTimeLimit;

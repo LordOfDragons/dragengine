@@ -61,6 +61,7 @@
 #include "../rendering/defren/deoglDeferredRendering.h"
 #include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../shaders/deoglShaderCompilingInfo.h"
 #include "../shadow/deoglShadowMapper.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../triangles/deoglTriangleSorter.h"
@@ -490,6 +491,7 @@ void deoglRenderThread::Run(){
 	DEBUG_SYNC_RT_PASS("out")
 	
 	// render loop
+	pLastFrameTime = 0.0f;
 	pTimerFrameUpdate.Reset();
 	pTimerVRFrameUpdate.Reset();
 	while( true ){
@@ -554,13 +556,13 @@ void deoglRenderThread::Run(){
 				DEBUG_SYNC_RT_FAILURE
 			}
 			
-			const float elapsedFrameUpdate = pTimerFrameUpdate.GetElapsedTime();
-			pTimeHistoryFrame.Add( elapsedFrameUpdate );
+			pLastFrameTime = pTimerFrameUpdate.GetElapsedTime();
+			pTimeHistoryFrame.Add( pLastFrameTime );
 			
 			/*
 			pLogger->LogInfoFormat( "RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
-				elapsedRender * 1000.0f, elapsedFrameUpdate * 1000.0f,
-				1.0f / decMath::max( elapsedFrameUpdate, 0.001f ) );
+				elapsedRender * 1000.0f, pLastFrameTime * 1000.0f,
+				1.0f / decMath::max( pLastFrameTime, 0.001f ) );
 			*/
 			
 		#ifdef ANDROID
@@ -2147,6 +2149,8 @@ void deoglRenderThread::pBeginFrame(){
 	
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
 	pEnvMapSlotManager->IncreaseSlotLastUsedCounters();
+	
+	pShader->GetShaderCompilingInfo().Update( pLastFrameTime );
 	
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();

@@ -306,6 +306,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglResources.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedFileWrite.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2119,6 +2122,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglResources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedFileWrite.cpp">
