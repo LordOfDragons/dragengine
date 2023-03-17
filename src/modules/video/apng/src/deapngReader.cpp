@@ -61,9 +61,9 @@ static void deapngWarning( png_structp errorStruct, png_const_charp message ){
 
 deapngReader::deapngReader( deVideoApng &module, decBaseFileReader *reader ) :
 pModule( module ),
-pReader( NULL ),
-pReadStruct( NULL ),
-pInfoStruct( NULL ),
+pReader( nullptr ),
+pReadStruct( nullptr ),
+pInfoStruct( nullptr ),
 pWidth( 0 ),
 pHeight( 0 ),
 pPixelFormat( deVideo::epf444 ),
@@ -74,10 +74,17 @@ pPixelSize( 0 ),
 pRowLength( 0 ),
 pImageSize( 0 ),
 pCurFrame( 0 ),
-pAccumData( NULL ),
-pAccumRows( NULL ),
-pFrameData( NULL ),
-pFrameRows( NULL ),
+pLastFrameX( 0 ),
+pLastFrameY( 0 ),
+pLastFrameWidth( 0 ),
+pLastFrameHeight( 0 ),
+pLastFrameDop( PNG_DISPOSE_OP_NONE ),
+pAccumData( nullptr ),
+pAccumRows( nullptr ),
+pFrameData( nullptr ),
+pFrameRows( nullptr ),
+pLastFrameData( nullptr ),
+pLastFrameRows( nullptr ),
 pErrorState( false )
 {
 	if( ! reader ){
@@ -121,6 +128,18 @@ pErrorState( false )
 			pFrameRows[ i ] = pFrameData + pRowLength * i;
 		}
 		
+		pLastFrameData = new png_byte[ pImageSize ];
+		pLastFrameRows = new png_bytep[ pHeight ];
+		for( i=0; i<pHeight; i++ ){
+			pLastFrameRows[ i ] = pLastFrameData + pRowLength * i;
+		}
+		
+		pLastFrameWidth = pWidth;
+		pLastFrameHeight = pHeight;
+		
+		// clear to transparent black
+		memset( pAccumData, '\0', pImageSize );
+		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -163,8 +182,14 @@ void deapngReader::Rewind(){
 	pReader->SetPosition( 0 );
 	pReadHeader();
 	pCurFrame = 0;
+	pLastFrameX = 0;
+	pLastFrameY = 0;
+	pLastFrameWidth = pWidth;
+	pLastFrameHeight = pHeight;
+	pLastFrameDop = PNG_DISPOSE_OP_NONE;
 	
-	// if dispose mode requires clearing accum data ...
+	// clear to transparent black
+	memset( pAccumData, '\0', pImageSize );
 }
 
 void deapngReader::SeekFrame( int frame ){
@@ -216,6 +241,12 @@ void deapngReader::CopyAccumImage( void *buffer, int size ) const{
 //////////////////////
 
 void deapngReader::pCleanUp(){
+	if( pLastFrameRows ){
+		delete [] pLastFrameRows;
+	}
+	if( pLastFrameData ){
+		delete [] pLastFrameData;
+	}
 	if( pFrameRows ){
 		delete [] pFrameRows;
 	}
@@ -315,15 +346,6 @@ void deapngReader::pReadHeader(){
 		png_set_strip_16( pReadStruct );
 	}
 	
-	// remove transparency for the time being
-	/*
-	if( pPixelFormat == deVideo::epf4444 ){
-		pPixelSize = 3;
-		pPixelFormat = deVideo::epf444;
-		png_set_strip_alpha( pReadStruct );
-	}
-	*/
-	
 	// and now the big update... we are ready to go
 	png_read_update_info( pReadStruct, pInfoStruct );
 	
@@ -348,6 +370,23 @@ void deapngReader::pReadHeader(){
 }
 
 void deapngReader::pReadImage(){
+	if( pLastFrameDop == PNG_DISPOSE_OP_PREVIOUS ){
+		png_uint_32 y;
+		for( y=0; y<pLastFrameHeight; y++ ){
+			const int offsetY = pHeight - 1 - ( pLastFrameY + y );
+			const int offsetX = pPixelSize * pLastFrameX;
+			memcpy( pAccumRows[ offsetY ] + offsetX, pLastFrameRows[ offsetY ] + offsetX, pPixelSize * pLastFrameWidth );
+		}
+		
+	}else if( pLastFrameDop == PNG_DISPOSE_OP_BACKGROUND ){
+		// works for both RGB and RGBA
+		png_uint_32 y;
+		for( y=0; y<pLastFrameHeight; y++ ){
+			memset( pAccumRows[ pHeight - 1 - ( pLastFrameY + y ) ] + pPixelSize * pLastFrameX,
+				'\0', pPixelSize * pLastFrameWidth );
+		}
+	}
+	
 	// get frame information
 	png_uint_32 x0 = 0;
 	png_uint_32 y0 = 0;
@@ -361,24 +400,36 @@ void deapngReader::pReadImage(){
 	
 	if( pCurFrame == pFirstFrame ){
 		bop = PNG_BLEND_OP_SOURCE;
+		
 		if( dop == PNG_DISPOSE_OP_PREVIOUS ){
 			dop = PNG_DISPOSE_OP_BACKGROUND;
 		}
 	}
 	
-	//printf( "ReadImage frame=%i dop=%i bop=%i\n", pCurFrame, dop, bop );
+	if( dop == PNG_DISPOSE_OP_PREVIOUS ){
+		png_uint_32 y;
+		for( y=0; y<h0; y++ ){
+			const int offsetY = pHeight - 1 - ( y0 + y );
+			const int offsetX = pPixelSize * x0;
+			memcpy( pLastFrameRows[ offsetY ] + offsetX, pAccumRows[ offsetY ] + offsetX, pPixelSize * w0 );
+		}
+	}
+	
+	pLastFrameX = x0;
+	pLastFrameY = y0;
+	pLastFrameWidth = w0;
+	pLastFrameHeight = h0;
+	pLastFrameDop = dop;
+	
+	// printf( "ReadImage frame=%i dop=%i bop=%i (%dx%d)(%dx%d)\n", pCurFrame, dop, bop, x0, y0, w0, h0 );
 	// read image into frame rows so we can process it
 	png_read_image( pReadStruct, pFrameRows );
 	
 	// combine the frame rows with the accum rows depending on dispose mode
-	if( dop == PNG_DISPOSE_OP_BACKGROUND ){
-		memset( pAccumData, '\0', pImageSize ); // works for both RGB and RGBA
-	}
-	
 	if( bop == PNG_BLEND_OP_SOURCE || pPixelSize < 4 ){
 		png_uint_32 y;
 		for( y=0; y<h0; y++ ){
-			memcpy( pAccumRows[ y0 + y ] + pPixelSize * x0, pFrameRows[ y ], pPixelSize * w0 );
+			memcpy( pAccumRows[ pHeight - 1 - ( y0 + y ) ] + pPixelSize * x0, pFrameRows[ y ], pPixelSize * w0 );
 		}
 		
 	}else{ // bop == PNG_BLEND_OP_OVER, only works on RGBA images
@@ -386,7 +437,7 @@ void deapngReader::pReadImage(){
 		
 		for( y=0; y<h0; y++ ){
 			unsigned char *sp = pFrameRows[ y ];
-			unsigned char *dp = pAccumRows[ y0 + y ] + x0 * 4;
+			unsigned char *dp = pAccumRows[ pHeight - 1 - ( y0 + y ) ] + x0 * 4;
 			
 			for( x=0; x<w0; x++, sp+=4, dp+=4 ){
 				if( sp[ 3 ] == 255 ){

@@ -57,10 +57,18 @@ private:
 	
 	int pCurFrame;
 	
+	png_uint_32 pLastFrameX;
+	png_uint_32 pLastFrameY;
+	png_uint_32 pLastFrameWidth;
+	png_uint_32 pLastFrameHeight;
+	unsigned char pLastFrameDop;
+	
 	png_bytep pAccumData;
 	png_bytep *pAccumRows;
 	png_bytep pFrameData;
 	png_bytep *pFrameRows;
+	png_bytep pLastFrameData;
+	png_bytep *pLastFrameRows;
 	
 	bool pErrorState;
 	
