@@ -25,6 +25,7 @@
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/resources/video/deVideo.h>
 
 class deVideo;
 class deoglRenderThread;
@@ -53,6 +54,8 @@ private:
 	
 	const int pWidth;
 	const int pHeight;
+	const deVideo::ePixelFormat pPixelFormat;
+	int pComponentCount;
 	
 	deoglTexture **pFrames;
 	int pFrameCount;
@@ -67,7 +70,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render video. */
-	deoglRVideo( deoglRenderThread &renderThread, int width, int height, int frameCount );
+	deoglRVideo( deoglRenderThread &renderThread, int width, int height,
+		deVideo::ePixelFormat pixelFormat, int frameCount );
 	
 	/** Clean up render video. */
 	virtual ~deoglRVideo();

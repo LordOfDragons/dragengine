@@ -41,22 +41,37 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRVideo::deoglRVideo( deoglRenderThread &renderThread, int width, int height, int frameCount ) :
+deoglRVideo::deoglRVideo( deoglRenderThread &renderThread, int width, int height,
+	deVideo::ePixelFormat pixelFormat, int frameCount ) :
 pRenderThread( renderThread ),
 
 pWidth( width ),
 pHeight( height ),
+pPixelFormat( pixelFormat ),
+pComponentCount( 3 ),
 
-pFrames( NULL ),
+pFrames( nullptr ),
 pFrameCount( 0 ),
 pFrameCountToCache( -1 ),
 
 pUpdateFrame( -1 )
 {
+	switch( pixelFormat ){
+	case deVideo::epf420:
+	case deVideo::epf422:
+	case deVideo::epf444:
+		pComponentCount = 3;
+		break;
+		
+	case deVideo::epf4444:
+		pComponentCount = 4;
+		break;
+	}
+	
 	if( frameCount > 0 ){
 		pFrames = new deoglTexture*[ frameCount ];
 		for( pFrameCount=0; pFrameCount<frameCount; pFrameCount++ ){
-			pFrames[ pFrameCount ] = NULL;
+			pFrames[ pFrameCount ] = nullptr;
 		}
 		pFrameCountToCache = pFrameCount;
 	}
@@ -92,12 +107,9 @@ deoglTexture *deoglRVideo::GetTexture( int frame ) const{
 }
 
 deoglPixelBuffer::Ref deoglRVideo::SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer ){
-	if( frame < 0 || frame >= pFrameCount ){
-		DETHROW( deeInvalidParam );
-	}
-	if( pUpdateFrame != -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( frame >= 0 )
+	DEASSERT_TRUE( frame < pFrameCount )
+	DEASSERT_TRUE( pUpdateFrame == -1 )
 	
 	const deoglPixelBuffer::Ref prevPixelBuffer( pPixelBuffer );
 	
@@ -115,7 +127,7 @@ void deoglRVideo::UpdateTexture(){
 	if( ! pFrames[ pUpdateFrame ] ){
 		pFrames[ pUpdateFrame ] = new deoglTexture( pRenderThread );
 		pFrames[ pUpdateFrame ]->SetSize( pWidth, pHeight );
-		pFrames[ pUpdateFrame ]->SetMapingFormat( 3, false, false );
+		pFrames[ pUpdateFrame ]->SetMapingFormat( pComponentCount, false, false );
 		pFrames[ pUpdateFrame ]->SetMipMapped( false ); // true would be nicer but doing it every frame is a waste
 		pFrames[ pUpdateFrame ]->CreateTexture();
 	}

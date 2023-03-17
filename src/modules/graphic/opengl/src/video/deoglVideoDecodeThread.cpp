@@ -316,9 +316,10 @@ void deoglVideoDecodeThread::DecodeFrame(){
 				color.r = ( float )pixelLineDecode[ x ].r * factor;
 				color.g = ( float )pixelLineDecode[ x ].g * factor;
 				color.b = ( float )pixelLineDecode[ x ].b * factor;
-				color.a = ( float )pixelLineDecode[ x ].a * factor;
 				
-				color = colorMatrix * color;
+				color = colorMatrix * color; // sets a=1 so alpha has to be set afterwards
+				
+				color.a = ( float )pixelLineDecode[ x ].a * factor;
 				
 				pixelLineTexture[ x ].r = decMath::clamp( ( int )( color.r * 255.0f ), 0, 255 );
 				pixelLineTexture[ x ].g = decMath::clamp( ( int )( color.g * 255.0f ), 0, 255 );
@@ -326,6 +327,7 @@ void deoglVideoDecodeThread::DecodeFrame(){
 				pixelLineTexture[ x ].a = decMath::clamp( ( int )( color.a * 255.0f ), 0, 255 );
 			}
 		}
+		
 		} break;
 		
 	default:
