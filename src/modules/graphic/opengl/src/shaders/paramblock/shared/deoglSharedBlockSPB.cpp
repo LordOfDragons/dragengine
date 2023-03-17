@@ -97,7 +97,6 @@ deoglSharedBlockSPBElement *deoglSharedBlockSPB::GetElement( int count ){
 	pFreeElementCount -= count;
 	pUsedElementCount += count;
 	
-	element->AddReference();
 	return element;
 }
 

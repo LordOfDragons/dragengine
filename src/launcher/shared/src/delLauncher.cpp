@@ -94,9 +94,7 @@ void delLauncher::AddFileLogger( const char *filetitle ){
 }
 
 void delLauncher::SetEngineInstanceFactory( delEngineInstance::Factory *factory ){
-	if( ! factory ){
-		DETHROW_INFO( deeNullPointer, "factory" );
-	}
+	DEASSERT_NOTNULL( factory )
 	pEngineInstanceFactory = factory;
 }
 

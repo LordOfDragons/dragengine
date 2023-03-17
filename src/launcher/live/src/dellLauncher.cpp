@@ -48,7 +48,8 @@
 dellLauncher::Launcher::Launcher() :
 delLauncher( "LauncherLive", "launcher" ){
 	AddFileLogger( "launcher" );
-	SetEngineInstanceFactory( new delEngineInstanceDirect::Factory );
+	SetEngineInstanceFactory( delEngineInstanceDirect::Factory::Ref::New(
+		new delEngineInstanceDirect::Factory ) );
 }
 
 dellLauncher::Launcher::~Launcher(){

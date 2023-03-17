@@ -1021,6 +1021,10 @@ void deoglCollideList::pCleanUp(){
 		delete [] pHTSectors;
 	}
 	
+	if( pBillboards ){
+		delete [] pBillboards;
+	}
+	
 	if( pLights ){
 		while( pLightSize > 0 ){
 			pLightSize--;
