@@ -324,7 +324,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometry.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometryPass.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderOcclusion.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderOverlay.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderParticles.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderReflection.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderSky.h" />
@@ -930,7 +929,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometry.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometryPass.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderOcclusion.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderOverlay.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderParticles.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderReflection.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderSky.cpp" />

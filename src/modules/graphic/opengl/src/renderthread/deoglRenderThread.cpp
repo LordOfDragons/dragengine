@@ -61,7 +61,6 @@
 #include "../rendering/defren/deoglDeferredRendering.h"
 #include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
-#include "../shaders/deoglShaderCompilingInfo.h"
 #include "../shadow/deoglShadowMapper.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../triangles/deoglTriangleSorter.h"
@@ -104,6 +103,7 @@ pLeakTracker( *this ),
 
 pCanvasInputOverlay( nullptr ),
 pCanvasDebugOverlay( nullptr ),
+pCanvasOverlay( nullptr ),
 
 pChoices( nullptr ),
 pBufferObject( nullptr ),
@@ -255,6 +255,22 @@ void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvasView *canvas ){
 	}
 	
 	pCanvasDebugOverlay = canvas;
+	
+	if( canvas ){
+		canvas->AddReference();
+	}
+}
+
+void deoglRenderThread::SetCanvasOverlay( deoglRCanvasView *canvas ){
+	if( canvas == pCanvasOverlay ){
+		return;
+	}
+	
+	if( pCanvasOverlay ){
+		pCanvasOverlay->FreeReference();
+	}
+	
+	pCanvasOverlay = canvas;
 	
 	if( canvas ){
 		canvas->AddReference();
@@ -2150,8 +2166,6 @@ void deoglRenderThread::pBeginFrame(){
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
 	pEnvMapSlotManager->IncreaseSlotLastUsedCounters();
 	
-	pShader->GetShaderCompilingInfo().Update( pLastFrameTime );
-	
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
@@ -2367,13 +2381,17 @@ void deoglRenderThread::pCleanUpThread(){
 		#endif
 		
 		// remove canvas if present
+		if( pCanvasOverlay ){
+			pCanvasOverlay->FreeReference();
+			pCanvasOverlay = nullptr;
+		}
 		if( pCanvasDebugOverlay ){
 			pCanvasDebugOverlay->FreeReference();
-			pCanvasDebugOverlay = NULL;
+			pCanvasDebugOverlay = nullptr;
 		}
 		if( pCanvasInputOverlay ){
 			pCanvasInputOverlay->FreeReference();
-			pCanvasInputOverlay = NULL;
+			pCanvasInputOverlay = nullptr;
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: canvas overlay (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );

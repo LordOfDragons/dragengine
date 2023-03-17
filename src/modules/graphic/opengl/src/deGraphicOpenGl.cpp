@@ -150,6 +150,7 @@
 #include <dragengine/resources/canvas/deCanvasVisitorIdentify.h>
 #include <dragengine/resources/canvas/deCanvas.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/effect/deEffect.h>
 #include <dragengine/resources/effect/deEffectColorMatrix.h>
 #include <dragengine/resources/effect/deEffectDistortImage.h>
@@ -207,8 +208,8 @@ pCommandExecuter( *this ),
 pRenderWindowList( *this ),
 pCaptureCanvasList( *this ),
 
-pRenderThread( NULL ),
-pCaches( NULL ),
+pRenderThread( nullptr ),
+pCaches( nullptr ),
 pDebugOverlay( *this ),
 pResources( nullptr ),
 pVRCamera( nullptr )
@@ -249,6 +250,9 @@ bool deGraphicOpenGl::Init( deRenderWindow *renderWindow ){
 		pRenderThread = new deoglRenderThread( *this ); // make this a permanently existing object just with Init/CleanUp
 		pRenderThread->Init( renderWindow );
 		
+		pOverlay.TakeOver( GetGameEngine()->GetCanvasManager()->CreateCanvasView() );
+		pShaderCompilingInfo.TakeOver( new deoglShaderCompilingInfo( *this ) );
+		
 	}catch( const deException &e ){
 		e.PrintError();
 		return false;
@@ -273,6 +277,8 @@ void deGraphicOpenGl::CleanUp(){
 	deoglLSConfiguration saveConfig( *this );
 	saveConfig.SaveConfig( pConfiguration );
 	
+	pShaderCompilingInfo = nullptr;
+	pOverlay = nullptr;
 	if( pCaches ){
 		delete pCaches;
 		pCaches = NULL;
@@ -336,6 +342,23 @@ void deGraphicOpenGl::RenderWindows(){
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
 	pRenderThread->FinalizeAsyncResLoading();
 // 		LogInfoFormat( "RenderWindows: FinalizeAsyncResLoading = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+	
+	// update overlay
+	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+	if( renderWindow ){
+		pOverlay->SetSize( decPoint( renderWindow->GetWidth(), renderWindow->GetHeight() ) );
+	}
+	
+	pShaderCompilingInfo->Update( GetGameEngine()->GetElapsedTime() );
+	
+	if( renderWindow ){
+		deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )pOverlay->GetPeerGraphic() );
+		oglCanvas.SyncToRender();
+		pRenderThread->SetCanvasOverlay( oglCanvas.GetRCanvasView() );
+		
+	}else{
+		pRenderThread->SetCanvasOverlay( nullptr );
+	}
 	
 	// synchronize capture canvas. this creates images from pixel buffers for finished
 	// captures and prepares new captures if present

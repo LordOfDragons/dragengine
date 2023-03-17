@@ -30,7 +30,6 @@ class deoglRenderThread;
 class deoglShaderManager;
 class deoglShaderProgram;
 class deoglShaderDefines;
-class deoglShaderCompilingInfo;
 class deoglSkinShaderManager;
 class deoglTexSamplerConfig;
 class deoglTexUnitsConfigList;
@@ -95,7 +94,6 @@ private:
 	deoglShaderManager *pShaderManager;
 	deoglSkinShaderManager *pSkinShaderManager;
 	deoglLightShaderManager *pLightShaderManager;
-	deoglShaderCompilingInfo *pShaderCompilingInfo;
 	const deoglShaderProgram *pCurShaderProg;
 	
 	deoglSPBlockSSBO::Ref pSSBOSkinTextures;
@@ -131,9 +129,6 @@ public:
 	
 	/** Light shader manager. */
 	inline deoglLightShaderManager &GetLightShaderManager() const{ return *pLightShaderManager; }
-	
-	/** Shader compiling information. */
-	inline deoglShaderCompilingInfo &GetShaderCompilingInfo() const{ return *pShaderCompilingInfo; }
 	
 	/** Current shader program or NULL if none is set. */
 	inline const deoglShaderProgram *GetActiveShader() const{ return pCurShaderProg; }

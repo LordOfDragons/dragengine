@@ -22,11 +22,18 @@
 #include "deoglShaderCompilingInfo.h"
 #include "deoglShaderLanguage.h"
 #include "deoglShaderManager.h"
+#include "../deGraphicOpenGl.h"
 #include "../renderthread/deoglRenderThread.h"
-#include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/resources/canvas/deCanvasManager.h>
+#include <dragengine/resources/font/deFontManager.h>
+#include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/resources/loader/tasks/deResourceLoaderTask.h>
+#include <dragengine/resources/video/deVideoManager.h>
+#include <dragengine/resources/video/deVideoPlayerManager.h>
 #include <dragengine/threading/deMutexGuard.h>
 
 
@@ -36,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderCompilingInfo::deoglShaderCompilingInfo( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglShaderCompilingInfo::deoglShaderCompilingInfo( deGraphicOpenGl &ogl ) :
+pOgl( ogl ),
 pState( esInvisible ),
 pDelayFadeIn( 0.25f ),
 pTimeFadeIn( 0.25f ),
@@ -46,10 +53,15 @@ pTimeFadeOut( 0.5f ),
 pElapsed( 0.0f ),
 pTransparency( 0.0f ),
 pHasLoadingShader( false ),
-pHasCompilingShader( false ){
+pHasCompilingShader( false )
+{
+	pCreateCanvas();
 }
 
 deoglShaderCompilingInfo::~deoglShaderCompilingInfo(){
+	if( pCanvasView ){
+		pOgl.GetOverlay()->RemoveCanvas( pCanvasView );
+	}
 }
 
 
@@ -57,11 +69,16 @@ deoglShaderCompilingInfo::~deoglShaderCompilingInfo(){
 // Management
 ///////////////
 
+bool deoglShaderCompilingInfo::IsVisible() const{
+	return pState != esInvisible && pState != esDelayFadeIn;
+}
+
 void deoglShaderCompilingInfo::Update( float elapsed ){
 	pUpdateChecks();
 	pUpdateState( elapsed );
+	pUpdateCanvas( elapsed );
 	
-	// pRenderThread.GetLogger().LogInfoFormat("ShaderCompilingInfo: hls=%d hcs=%d s=%d e=%f",
+	// pOgl.LogInfoFormat("ShaderCompilingInfo: hls=%d hcs=%d s=%d e=%f",
 		// pHasLoadingShader, pHasCompilingShader, pState, pElapsed);
 }
 
@@ -70,8 +87,48 @@ void deoglShaderCompilingInfo::Update( float elapsed ){
 // Private Functions
 //////////////////////
 
+void deoglShaderCompilingInfo::pCreateCanvas(){
+	deEngine &engine = *pOgl.GetGameEngine();
+	deCanvasManager &canvasManager = *engine.GetCanvasManager();
+	deVirtualFileSystem &vfs = pOgl.GetVFS();
+	
+	// the correct and optimal solution would be to use asynchronous loading. for this the
+	// resource loader has to be used place a loading request. the returned task is not held
+	// and has to be put aside to be checked in the upcoming frames for state to be no more
+	// pending. if the state is then esSucceeded then GetResource() can be used with casting
+	// to store the resource into the canvas. something for later for deoglResources
+	/*
+	deResourceLoader &loader = *engine.GetResourceLoader();
+	deTObjectReference<deResourceLoaderTask> task( loader.AddLoadRequest(
+		&vfs, "/share/images/compileShaders.apng", deResourceLoader::ertVideo ) );
+	if( task->GetState() != deResourceLoaderTask::esPending ) ...
+	*/
+	
+	pVideoCompile.TakeOver( engine.GetVideoManager()->LoadVideo(
+		&vfs, "/share/images/compileShaders.apng", "/", false ) );
+	
+	pVideoPlayerCompile.TakeOver( engine.GetVideoPlayerManager()->CreateVideoPlayer() );
+	pVideoPlayerCompile->SetVideo( pVideoCompile );
+	pVideoPlayerCompile->SetLooping( true );
+	
+	pCanvasView.TakeOver( canvasManager.CreateCanvasView() );
+	pCanvasView->SetOrder( 1.0f );
+	pOgl.GetOverlay()->AddCanvas( pCanvasView );
+	
+	pCanvasVideo.TakeOver( canvasManager.CreateCanvasVideoPlayer() );
+	pCanvasVideo->SetOrder( 1.0f );
+	pCanvasVideo->SetVideoPlayer( pVideoPlayerCompile );
+	pCanvasVideo->SetSize( decPoint( pVideoCompile->GetWidth(), pVideoCompile->GetHeight() ) );
+	pCanvasView->AddCanvas( pCanvasVideo );
+	
+	pCanvasText.TakeOver( canvasManager.CreateCanvasText() );
+	pCanvasText->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
+	pCanvasText->SetOrder( 2.0f );
+	pCanvasView->AddCanvas( pCanvasText );
+}
+
 void deoglShaderCompilingInfo::pUpdateChecks(){
-	deoglShaderLanguage &shaderLanguage = *pRenderThread.GetShader().GetShaderManager().GetLanguage();
+	deoglShaderLanguage &shaderLanguage = *pOgl.GetRenderThread().GetShader().GetShaderManager().GetLanguage();
 	pHasLoadingShader = shaderLanguage.GetHasLoadingShader();
 	pHasCompilingShader = shaderLanguage.GetHasCompilingShader();
 }
@@ -172,5 +229,32 @@ void deoglShaderCompilingInfo::pUpdateTransparency(){
 	case esFadeOut:
 		pTransparency = decMath::linearStep( pElapsed, 0.0f, pTimeFadeOut, 1.0f, 0.0f );
 		break;
+	}
+}
+
+void deoglShaderCompilingInfo::pUpdateCanvas( float elapsed ){
+	if( ! IsVisible() ){
+		pCanvasView->SetVisible( false );
+		pVideoPlayerCompile->Stop();
+		pVideoPlayerCompile->SetPlayPosition( 0.0f );
+		return;
+	}
+	
+	const decPoint overlaySize( pOgl.GetOverlay()->GetSize() );
+	
+	const decPoint padding( 40, 20 );
+	const decPoint panelSize( 150, 80 );
+	const decPoint position( overlaySize - padding - panelSize );
+	
+	pCanvasView->SetSize( panelSize );
+	pCanvasView->SetPosition( position );
+	pCanvasView->SetTransparency( pTransparency );
+	pCanvasView->SetVisible( true );
+	
+	if( pVideoPlayerCompile->GetPlaying() ){
+		pVideoPlayerCompile->Update( elapsed );
+		
+	}else{
+		pVideoPlayerCompile->Play();
 	}
 }

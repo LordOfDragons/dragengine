@@ -59,13 +59,13 @@ void deoglDebugOverlay::PrepareOverlay( deCanvasView &canvasView ){
 	deoglRenderThread &renderThread = pOgl.GetRenderThread();
 	
 	if( ! canvasView.GetRootCanvas() ){
-		renderThread.SetCanvasDebugOverlay( NULL );
+		renderThread.SetCanvasDebugOverlay( nullptr );
 		return;
 	}
 	
 	const deRenderWindow * const renderWindow = pOgl.GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
 	if( ! renderWindow ){
-		renderThread.SetCanvasDebugOverlay( NULL );
+		renderThread.SetCanvasDebugOverlay( nullptr );
 		return;
 	}
 	

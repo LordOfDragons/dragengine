@@ -29,7 +29,6 @@
 #include "../debug/deoglDebugTraceGroup.h"
 #include "../rendering/deoglRenderCanvasContext.h"
 #include "../rendering/deoglRenderCanvas.h"
-#include "../rendering/deoglRenderOverlay.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTContext.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -620,6 +619,7 @@ void deoglRRenderWindow::Render(){
 	// prepare canvas
 	deoglRCanvas * const inputOverlayCanvas = pRenderThread.GetCanvasInputOverlay();
 	deoglRCanvas * const debugOverlayCanvas = pRenderThread.GetCanvasDebugOverlay();
+	deoglRCanvas * const overlayCanvas = pRenderThread.GetCanvasOverlay();
 	bool isMainWindow = true; // a problem only if more than one render window exists
 	
 	pRCanvasView->PrepareForRender( nullptr );
@@ -633,22 +633,16 @@ void deoglRRenderWindow::Render(){
 			debugOverlayCanvas->PrepareForRender( nullptr );
 			debugOverlayCanvas->PrepareForRenderRender( nullptr );
 		}
+		if( overlayCanvas ){
+			overlayCanvas->PrepareForRender( nullptr );
+			overlayCanvas->PrepareForRenderRender( nullptr );
+		}
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsPrepare();
 	
 	// create render taget if required
 	const decPoint size( pWidth, pHeight );
-	/*
-	if( ! pRenderTarget ){
-		pRenderTarget.TakeOver( new deoglRenderTarget( pRenderThread, size, 3, 8 ) );
-		
-	}else if ( pRenderTarget->GetSize() != size ){
-		pRenderTarget->SetSize( size );
-	}
-	
-	pRenderTarget->PrepareFramebuffer();
-	*/
 	
 	// render canvas
 	pRenderThread.GetFramebuffer().Activate( nullptr /*pRenderTarget->GetFBO()*/ );
@@ -665,19 +659,14 @@ void deoglRRenderWindow::Render(){
 		if( debugOverlayCanvas ){
 			debugOverlayCanvas->Render( context );
 		}
-		pRenderThread.GetRenderers().GetOverlay().RenderOverlays( context );
+		if( overlayCanvas ){
+			overlayCanvas->Render( context );
+		}
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsRender();
 	
 	debugTrace.Close();
-	
-	// blit to back buffer
-	/*
-	pRenderThread.GetFramebuffer().Activate( nullptr );
-	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO() ) );
-	OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, size.x, size.y, 0, 0, size.x, size.y, GL_COLOR_BUFFER_BIT, GL_NEAREST ) );
-	*/
 	
 	// capture if any capture canvas are pending
 	Capture();

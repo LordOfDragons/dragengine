@@ -22,15 +22,27 @@
 #ifndef _DEOGLSHADERCOMPILINGINFO_H_
 #define _DEOGLSHADERCOMPILINGINFO_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/threading/deMutex.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
+#include <dragengine/resources/canvas/deCanvasVideoPlayer.h>
+#include <dragengine/resources/font/deFont.h>
+#include <dragengine/resources/video/deVideo.h>
+#include <dragengine/resources/video/deVideoPlayer.h>
 
-class deoglRenderThread;
+class deGraphicOpenGl;
 
 
 /**
  * Tracks if shaders are compiling to display information to user.
  */
-class deoglShaderCompilingInfo{
+class deoglShaderCompilingInfo : public deObject{
+public:
+	typedef deTObjectReference<deoglShaderCompilingInfo> Ref;
+	
+	
+	
 private:
 	enum eState{
 		esInvisible,
@@ -43,7 +55,7 @@ private:
 	
 	
 	
-	deoglRenderThread &pRenderThread;
+	deGraphicOpenGl &pOgl;
 	
 	eState pState;
 	float pDelayFadeIn;
@@ -56,6 +68,13 @@ private:
 	bool pHasLoadingShader;
 	bool pHasCompilingShader;
 	
+	deCanvasView::Ref pCanvasView;
+	deCanvasVideoPlayer::Ref pCanvasVideo;
+	deCanvasText::Ref pCanvasText;
+	
+	deVideo::Ref pVideoCompile;
+	deVideoPlayer::Ref pVideoPlayerCompile;
+	
 	deMutex pMutex;
 	
 	
@@ -64,21 +83,23 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader compiling info. */
-	deoglShaderCompilingInfo( deoglRenderThread &renderThread );
+	deoglShaderCompilingInfo( deGraphicOpenGl &ogl );
 	
+protected:
 	/** Clean up shader compiling info. */
-	~deoglShaderCompilingInfo();
+	virtual ~deoglShaderCompilingInfo();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** State. */
 	inline eState GetState() const{ return pState; }
 	
 	/** Visible. */
-	inline bool IsVisible() const{ return pState != esInvisible; }
+	bool IsVisible() const;
 	
 	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
@@ -96,10 +117,12 @@ public:
 	
 	
 private:
+	void pCreateCanvas();
 	void pUpdateChecks();
 	bool pShouldBeVisible() const;
 	void pUpdateState( float elapsed );
 	void pUpdateTransparency();
+	void pUpdateCanvas( float elapsed );
 };
 
 #endif

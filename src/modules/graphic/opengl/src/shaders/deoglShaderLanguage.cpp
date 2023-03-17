@@ -211,6 +211,29 @@ static bool psfMatchesLink( const deoglShaderProgram &program ){
 #define SHADER_CACHE_REVISION 1
 
 
+// Class cHasConditionGuard
+/////////////////////////////
+
+class cHasConditionGuard{
+private:
+	bool &pGuard;
+	deMutex &pMutex;
+	
+public:
+	cHasConditionGuard( bool &has, bool &guardHas, deMutex &mutex ) :
+	pGuard( guardHas ), pMutex( mutex ){
+		const deMutexGuard guard( mutex );
+		has = true;
+		guardHas = true;
+	}
+	
+	~cHasConditionGuard(){
+		const deMutexGuard guard( pMutex );
+		pGuard = false;
+	}
+};
+
+
 // Class deoglShaderLanguage
 //////////////////////////////
 
@@ -219,6 +242,10 @@ static bool psfMatchesLink( const deoglShaderProgram &program ){
 
 deoglShaderLanguage::deoglShaderLanguage( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
+pHasLoadingShader( false ),
+pGuardHasLoadingShader( false ),
+pHasCompilingShader( false ),
+pGuardHasCompilingShader( false ),
 pPreprocessor( renderThread )
 {
 	pErrorLog = NULL;
@@ -351,14 +378,18 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 bool deoglShaderLanguage::GetHasLoadingShader(){
 	const deMutexGuard guard( pMutexChecks );
 	const bool result = pHasLoadingShader;
-	pHasLoadingShader = false;
+	if( ! pGuardHasLoadingShader ){
+		pHasLoadingShader = false;
+	}
 	return result;
 }
 
 bool deoglShaderLanguage::GetHasCompilingShader(){
 	const deMutexGuard guard( pMutexChecks );
 	const bool result = pHasCompilingShader;
-	pHasCompilingShader = false;
+	if( ! pGuardHasCompilingShader ){
+		pHasCompilingShader = false;
+	}
 	return result;
 }
 
@@ -368,6 +399,7 @@ bool deoglShaderLanguage::GetHasCompilingShader(){
 //////////////////////
 
 deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &program ){
+	const cHasConditionGuard guardHas( pHasCompilingShader, pGuardHasCompilingShader, pMutexChecks );
 	const deMutexGuard guard( pMutexCompile );
 	
 	const deoglExtensions &ext = pRenderThread.GetExtensions();
@@ -938,10 +970,7 @@ deoglShaderCompiled *deoglShaderLanguage::pCacheLoadShader( deoglShaderProgram &
 		return nullptr;
 	}
 	
-	{
-	const deMutexGuard guard( pMutexChecks );
-	pHasLoadingShader = true;
-	}
+	const cHasConditionGuard guardHas( pHasLoadingShader, pGuardHasLoadingShader, pMutexChecks );
 	
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheShaders = caches.GetShaders();
@@ -1025,11 +1054,6 @@ const deoglShaderCompiled &compiled ){
 	|| pRenderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0
 	|| program.GetCacheId().IsEmpty() ){
 		return;
-	}
-	
-	{
-	const deMutexGuard guard( pMutexChecks );
-	pHasCompilingShader = true;
 	}
 	
 	const GLuint handler = compiled.GetHandleShader();

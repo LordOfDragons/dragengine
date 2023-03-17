@@ -22,13 +22,15 @@
 #ifndef _DEGRAPHICOPENGL_H_
 #define _DEGRAPHICOPENGL_H_
 
-#include "window/deoglRenderWindowList.h"
 #include "canvas/capture/deoglCaptureCanvasList.h"
 #include "configuration/deoglConfiguration.h"
 #include "commands/deoglCommandExecuter.h"
-#include "parameters/deoglParameterList.h"
 #include "debug/deoglDebugOverlay.h"
+#include "parameters/deoglParameterList.h"
+#include "shaders/deoglShaderCompilingInfo.h"
+#include "window/deoglRenderWindowList.h"
 
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicModule.h>
 
 class deoglCaches;
@@ -54,6 +56,9 @@ private:
 	deoglCaches *pCaches;
 	deoglDebugOverlay pDebugOverlay;
 	deoglResources *pResources;
+	
+	deCanvasView::Ref pOverlay;
+	deoglShaderCompilingInfo::Ref pShaderCompilingInfo;
 	
 	deoglCamera *pVRCamera;
 	
@@ -290,6 +295,9 @@ public:
 	
 	/** Resources. */
 	inline deoglResources &GetResources() const{ return *pResources; }
+	
+	/** Overlay canvas view. */
+	inline const deCanvasView::Ref &GetOverlay() const{ return pOverlay; }
 	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }

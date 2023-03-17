@@ -114,6 +114,7 @@ private:
 	decObjectOrderedSet pRCaptureCanvasList;
 	deoglRCanvasView *pCanvasInputOverlay;
 	deoglRCanvasView *pCanvasDebugOverlay;
+	deoglRCanvasView *pCanvasOverlay;
 	
 	deoglRTChoices *pChoices;
 	deoglRTBufferObject *pBufferObject;
@@ -259,17 +260,23 @@ public:
 	/** Rendr capture canvas list. */
 	inline decObjectOrderedSet &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
 	
-	/** Input overlay canvas view or \em NULL if not present. */
+	/** Input overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
-	/** Set input overlay canvas view or \em NULL if not present. */
+	/** Set input overlay canvas view or nullptr. */
 	void SetCanvasInputOverlay( deoglRCanvasView *canvas );
 	
-	/** Debug overlay canvas view or \em NULL if not present. */
+	/** Debug overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
-	/** Set debug overlay canvas view or \em NULL if not present. */
+	/** Set debug overlay canvas view or nullptr. */
 	void SetCanvasDebugOverlay( deoglRCanvasView *canvas );
+	
+	/** Overlay canvas view or nullptr. */
+	inline deoglRCanvasView *GetCanvasOverlay() const{ return pCanvasOverlay; }
+	
+	/** Set overlay canvas view or nullptr. */
+	void SetCanvasOverlay( deoglRCanvasView *canvas );
 	
 	
 	

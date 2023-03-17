@@ -34,7 +34,6 @@ class deoglRenderGeometry;
 class deoglRenderGeometryPass;
 class deoglRenderLight;
 class deoglRenderOcclusion;
-class deoglRenderOverlay;
 class deoglRenderParticles;
 class deoglRenderReflection;
 class deoglRenderSky;
@@ -61,7 +60,6 @@ private:
 	deoglRenderGeometryPass *pGeometryPass;
 	deoglRenderLight *pLight;
 	deoglRenderOcclusion *pOcclusion;
-	deoglRenderOverlay *pOverlay;
 	deoglRenderParticles *pParticles;
 	deoglRenderReflection *pReflection;
 	deoglRenderSky *pSky;
@@ -113,9 +111,6 @@ public:
 	
 	/** Occlusion renderer. */
 	inline deoglRenderOcclusion &GetOcclusion() const{ return *pOcclusion; }
-	
-	/** Overlay renderer. */
-	inline deoglRenderOverlay &GetOverlay() const{ return *pOverlay; }
 	
 	/** Light renderer. */
 	inline deoglRenderLight &GetLight() const{ return *pLight; }

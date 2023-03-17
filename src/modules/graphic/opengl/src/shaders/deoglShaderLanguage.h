@@ -60,7 +60,9 @@ private:
 	int pGLSLVersionNumber;
 	
 	bool pHasLoadingShader;
+	bool pGuardHasLoadingShader;
 	bool pHasCompilingShader;
+	bool pGuardHasCompilingShader;
 	
 	deoglShaderPreprocessor pPreprocessor;
 	deMutex pMutexCompile;
@@ -82,10 +84,16 @@ public:
 	/** Compieles a shader from the given sources using the specified defines. */
 	deoglShaderCompiled *CompileShader( deoglShaderProgram &program );
 	
-	/** Check if shader is loading or has been loaded since the last call. Resets flag. */
+	/**
+	 * Check if shader is loading or has been loaded since the last call.
+	 * Resets flag if no loading is in progress right now.
+	 */
 	bool GetHasLoadingShader();
 	
-	/** Check if shader is compiling or has been compiled since the last call. Resets flag. */
+	/**
+	 * Check if shader is compiling or has been compiled since the last call.
+	 * Resets flag if no compiling is in progress right now.
+	 */
 	bool GetHasCompilingShader();
 	/*@}*/
 	
