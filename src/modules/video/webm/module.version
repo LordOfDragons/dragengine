@@ -1,0 +1,4 @@
+VIDWEBM {
+  global: WebmCreateModule;
+  local: *;
+};

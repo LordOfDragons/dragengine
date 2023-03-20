@@ -220,6 +220,7 @@ params.Add( TernaryVariable( 'build_script_smalltalk', 'Build Smalltalk Script M
 params.Add( TernaryVariable( 'build_sound_ogg', 'Build OGG Vorbis Sound Module' ) )
 params.Add( TernaryVariable( 'build_video_theora', 'Build Theora Video Module' ) )
 params.Add( TernaryVariable( 'build_video_apng', 'Build Animated PNG Video Module' ) )
+params.Add( TernaryVariable( 'build_video_webm', 'Build WebM Video Module' ) )
 params.Add( TernaryVariable( 'build_guilauncher', 'Build GUI Launcher' ) )
 params.Add( TernaryVariable( 'build_launcher_android', 'Build Android Launcher' ) )
 params.Add( TernaryVariable( 'build_archive_delga', 'Build DELGA Archive Module' ) )
@@ -837,6 +838,7 @@ scdirs.append( 'src/modules/synthesizer/desynthesizer' )
 
 scdirs.append( 'src/modules/video/theora' )
 scdirs.append( 'src/modules/video/apng' )
+scdirs.append( 'src/modules/video/webm' )
 
 scdirs.append( 'src/modules/archive/delga' )
 
