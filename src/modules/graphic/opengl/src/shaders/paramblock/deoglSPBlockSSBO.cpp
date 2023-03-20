@@ -104,14 +104,18 @@ deoglSPBlockSSBO::~deoglSPBlockSSBO(){
 	if( pWriteBuffer ){
 		delete [] pWriteBuffer;
 	}
+	
+	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
+	dops.DeleteOpenGLSync( pFenceTransfer );
+	
 	if( pPersistentMapped ){
-		OGL_CHECK( GetRenderThread(), pglUnmapNamedBuffer( pSSBOLocal ) );
+		dops.DeleteOpenGLBufferPersistUnmap( pSSBOLocal );
+		
+	}else{
+		dops.DeleteOpenGLBuffer( pSSBOLocal );
 	}
-	if( pFenceTransfer ){
-		pglDeleteSync( pFenceTransfer );
-	}
-	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBOLocal );
-	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
+	
+	dops.DeleteOpenGLBuffer( pSSBO );
 }
 
 

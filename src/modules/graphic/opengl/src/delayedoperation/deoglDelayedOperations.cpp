@@ -338,6 +338,27 @@ void deoglDelayedOperations::DeleteOpenGLObject( eOpenGLObjectType type, GLuint 
 	pOGLObjects[ pOGLObjectCount++ ].Set( type, name );
 }
 
+void deoglDelayedOperations::DeleteOpenGLObject( deoglDelayedOperations::eOpenGLObjectType type, GLsync sync ){
+	if( ! sync ){
+		return;
+	}
+	
+	const deMutexGuard lock( pMutexOGLObjects );
+	
+	if( pOGLObjectCount == pOGLObjectSize ){
+		const int newSize = pOGLObjectSize * 3 / 2 + 1;
+		sOpenGLObject * const newArray = new sOpenGLObject[ newSize ];
+		if( pOGLObjects ){
+			memcpy( newArray, pOGLObjects, sizeof( sOpenGLObject ) * pOGLObjectSize );
+			delete [] pOGLObjects;
+		}
+		pOGLObjects = newArray;
+		pOGLObjectSize = newSize;
+	}
+	
+	pOGLObjects[ pOGLObjectCount++ ].Set( type, sync );
+}
+
 
 
 // Delayed main thread synchronization
@@ -869,6 +890,11 @@ void deoglDelayedOperations::pDeleteOpenGLObjects(){
 			pglDeleteBuffers( 1, &entry.name );
 			break;
 			
+		case eoglotBuffererPersistUnmap:
+			pglUnmapNamedBuffer( entry.name );
+			pglDeleteBuffers( 1, &entry.name );
+			break;
+			
 		case eoglotTexture:
 			glDeleteTextures( 1, &entry.name );
 			break;
@@ -895,6 +921,10 @@ void deoglDelayedOperations::pDeleteOpenGLObjects(){
 			
 		case eoglotShader:
 			pglDeleteShader( entry.name );
+			break;
+			
+		case eoglotSync:
+			pglDeleteSync( entry.sync );
 			break;
 		}
 	}
