@@ -123,17 +123,13 @@ void dewmVPXTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &b
 	
 	DEASSERT_TRUE( image->bit_depth == 8 )
 	
-	const bool flipUV = ( image->fmt & VPX_IMG_FMT_UV_FLIP ) == VPX_IMG_FMT_UV_FLIP;
-	const int indexPlaneU = flipUV ? 2 : 1;
-	const int indexPlaneV = flipUV ? 1 : 2;
-	
 	const unsigned char * const ptrY = image->planes[ 0 ];
-	const unsigned char * const ptrU = image->planes[ indexPlaneU ];
-	const unsigned char * const ptrV = image->planes[ indexPlaneV ];
+	const unsigned char * const ptrU = image->planes[ 1 ];
+	const unsigned char * const ptrV = image->planes[ 2 ];
 	
 	const int strideY = image->stride[ 0 ];
-	const int strideU = image->stride[ indexPlaneU ];
-	const int strideV = image->stride[ indexPlaneV ];
+	const int strideU = image->stride[ 1 ];
+	const int strideV = image->stride[ 2 ];
 	
 	sRGB8 *ptrDest = ( sRGB8* )pResBuffer;
 	int x, y, px, py;
@@ -199,6 +195,27 @@ void dewmVPXTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &b
 	default:
 		DETHROW_INFO( deeInvalidParam, "Unsupported video format" );
 	}
+}
+
+void dewmVPXTrackCallback::pProcessAdditional( const std::vector<unsigned char> &data ){
+	// transparency is done using a second stream.
+	// 
+	// the second stream requires a second context to process. the data of the second
+	// stream is contained in additional data.
+	// 
+	// the additional data is processed after the block it belongs to. hence the color
+	// pixels have been written already to the buffer. we can now write the alpha pixel
+	// values into the buffer at the right location to complete it. this works since
+	// stop processing is done when the next frame is encountered which has to be in
+	// the next block.
+	// 
+	// only one frame can be stored in one block if transparency is used. this is due
+	// to the fact that WebM requires blocks to have at most one single additional data.
+	// while it would be possible to store the transparency of multiple frames in one
+	// additional data it would prevent processing the data per-frame. so right now
+	// it is assumed that with transparency each block has only one frame and one
+	// additional
+	GetModule().LogInfoFormat( "ProcessAdditional: length %d", ( int )data.size() );
 }
 
 

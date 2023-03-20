@@ -90,7 +90,25 @@ const webm::SimpleBlock &simple_block, webm::Action *action ){
 }
 
 webm::Status dewmTrackCallback::OnBlockGroupBegin( const webm::ElementMetadata &, webm::Action *action ){
+	pModule.LogInfo("BlockGroupBegin");
 	*action = webm::Action::kRead;
+	return webm::Status( webm::Status::Code::kOkCompleted );
+}
+
+webm::Status dewmTrackCallback::OnBlockGroupEnd( const webm::ElementMetadata &,
+const webm::BlockGroup &block_group ){
+	// WebM requires BlockMore.id to be 1. since BlockMore.id have to be unique
+	// this means there exists at most 1 BlockMore per BlockGroup
+	if( ! block_group.additions.value().block_mores.empty() ){
+		try{
+			pProcessAdditional( block_group.additions.value().block_mores.front().value().data.value() );
+			
+		}catch( const deException &e ){
+			pModule.LogException( e );
+			return webm::Status( 100 );
+		}
+	}
+	
 	return webm::Status( webm::Status::Code::kOkCompleted );
 }
 
@@ -131,6 +149,15 @@ std::uint64_t *bytes_remaining ){
 // Protected Functions
 ////////////////////////
 
+void dewmTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &bytes_remaining ){
+	std::uint64_t skippedBytes;
+	DEASSERT_TRUE( reader.Skip( bytes_remaining, &skippedBytes ).completed_ok() )
+	bytes_remaining = 0;
+}
+
+void dewmTrackCallback::pProcessAdditional( const std::vector<unsigned char> & ){
+}
+
 void dewmTrackCallback::pReadFrameData( webm::Reader &reader, std::uint64_t &bytes_remaining ){
 	if( bytes_remaining > pBufferSize ){
 		if( pBuffer ){
@@ -159,6 +186,7 @@ webm::Status dewmTrackCallback::pProcessBlock( const webm::Block &block, webm::A
 		return webm::Status( 100 );
 	}
 	
+	pModule.LogInfoFormat("Block: tc=%hd nf=%d", block.timecode, block.num_frames);
 	if( block.track_number == pTrackNumber ){
 		*action = webm::Action::kRead;
 		

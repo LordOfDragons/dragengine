@@ -24,7 +24,6 @@
 
 #include "../deBaseModule.h"
 #include "../../../common/math/decMath.h"
-#include "../../../resources/video/deVideo.h"
 
 
 /**
@@ -34,7 +33,8 @@ class DE_DLL_EXPORT deBaseVideoInfo{
 private:
 	int pWidth;
 	int pHeight;
-	deVideo::ePixelFormat pPixelFormat;
+	int pComponentCount;
+	int pBitCount;
 	int pFrameCount;
 	int pFrameRate;
 	decColorMatrix3 pColorConversionMatrix;
@@ -72,11 +72,17 @@ public:
 	/** \brief Set height in pixels. */
 	void SetHeight( int height );
 	
-	/** \brief Pixel format. */
-	inline deVideo::ePixelFormat GetPixelFormat() const{ return pPixelFormat; }
+	/** \brief Component count. */
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Set pixel format. */
-	void SetPixelFormat( deVideo::ePixelFormat pixelFormat );
+	/** \brief Set component count. */
+	void SetComponentCount( int componentCount );
+	
+	/** \brief Bits per pixel. */
+	inline int GetBitCount() const{ return pBitCount; }
+	
+	/** \brief Set bits per pixel. */
+	void SetBitCount( int bitCount );
 	
 	/** \brief Number of frames. */
 	inline int GetFrameCount() const{ return pFrameCount; }

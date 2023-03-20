@@ -49,28 +49,11 @@ public:
 	
 	
 	
-public:
-	/** \brief Pixel format. */
-	enum ePixelFormat{
-		/** \brief Pixels are stored in the 4:4:4 format. */
-		epf444,
-		
-		/** \brief Pixels are stored in the 4:2:2 format. */
-		epf422,
-		
-		/** \brief Pixels are stored in the 4:2:0 format. */
-		epf420,
-		
-		/** \brief Pixels are stored in the 4:4:4:4 format. */
-		epf4444
-	};
-	
-	
-	
 private:
 	int pWidth;
 	int pHeight;
-	ePixelFormat pPixelFormat;
+	int pComponentCount;
+	int pBitCount;
 	int pFrameCount;
 	int pFrameRate;
 	float pPlayTime;
@@ -90,9 +73,10 @@ public:
 	/*@{*/
 	/** \brief Create video. */
 	deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime, int width, int height, ePixelFormat pixelFormat,
-		int frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
-		int bytesPerSample, int sampleCount, int sampleRate, int channelCount );
+		TIME_SYSTEM modificationTime, int width, int height, int componentCount,
+		int bitCount, int frameRate, int frameCount,
+		const decColorMatrix3 &colorConversionMatrix, int bytesPerSample,
+		int sampleCount, int sampleRate, int channelCount );
 	
 	/**
 	 * \brief Create video for internal loading.
@@ -122,14 +106,17 @@ public:
 	/** \brief Height in pixels. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief Pixel format. */
-	inline ePixelFormat GetPixelFormat() const{ return pPixelFormat; }
+	/** \brief Component count. */
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** \brief Number of frames. */
 	inline int GetFrameCount() const{ return pFrameCount; }
 	
 	/** \brief Frame rate. */
 	inline int GetFrameRate() const{ return pFrameRate; }
+	
+	/** \brief Bits per pixel. */
+	inline int GetBitCount() const{ return pBitCount; }
 	
 	/** \brief Play time in seconds. */
 	inline float GetPlayTime() const{ return pPlayTime; }
@@ -169,7 +156,7 @@ public:
 	 * \brief Finalize construction after asynchronous loading.
 	 * \warning For use by deResourceLoader only.
 	 */
-	void FinalizeConstruction( int width, int height, ePixelFormat pixelFormat,
+	void FinalizeConstruction( int width, int height, int componentCount, int bitCount,
 		int frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
 		int bytesPerSample, int sampleCount, int sampleRate, int channelCount );
 	/*@}*/

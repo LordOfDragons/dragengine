@@ -42,13 +42,12 @@
 ////////////////////////////
 
 deoglRVideo::deoglRVideo( deoglRenderThread &renderThread, int width, int height,
-	deVideo::ePixelFormat pixelFormat, int frameCount ) :
+	int componentCount, int frameCount ) :
 pRenderThread( renderThread ),
 
 pWidth( width ),
 pHeight( height ),
-pPixelFormat( pixelFormat ),
-pComponentCount( 3 ),
+pComponentCount( componentCount ),
 
 pFrames( nullptr ),
 pFrameCount( 0 ),
@@ -56,18 +55,6 @@ pFrameCountToCache( -1 ),
 
 pUpdateFrame( -1 )
 {
-	switch( pixelFormat ){
-	case deVideo::epf420:
-	case deVideo::epf422:
-	case deVideo::epf444:
-		pComponentCount = 3;
-		break;
-		
-	case deVideo::epf4444:
-		pComponentCount = 4;
-		break;
-	}
-	
 	if( frameCount > 0 ){
 		pFrames = new deoglTexture*[ frameCount ];
 		for( pFrameCount=0; pFrameCount<frameCount; pFrameCount++ ){

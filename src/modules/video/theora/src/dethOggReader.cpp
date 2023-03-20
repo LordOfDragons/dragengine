@@ -119,22 +119,14 @@ void dethOggReader::ReadStreamHeaders( dethInfos &infos ){
 		
 		switch( tinfo.pixel_fmt ){
 		case TH_PF_420:
-			infos.SetPixelFormat( deVideo::epf420 );
-			break;
-			
 		case TH_PF_422:
-			infos.SetPixelFormat( deVideo::epf422 );
-			break;
-			
 		case TH_PF_444:
-			infos.SetPixelFormat( deVideo::epf444 );
+			infos.SetComponentCount( 3 );
 			break;
 			
 		default:
 			pModule.LogErrorFormat( "Unsupported Pixel Format %i", tinfo.pixel_fmt );
 		}
-		
-		infos.SetPixelFormat( deVideo::epf444 );
 		
 		/*
 		pModule.LogInfo( "header finished." );

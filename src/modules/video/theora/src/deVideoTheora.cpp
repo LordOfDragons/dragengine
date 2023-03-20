@@ -90,7 +90,7 @@ void deVideoTheora::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &i
 	
 	info.SetWidth( oggInfo.GetWidth() );
 	info.SetHeight( oggInfo.GetHeight() );
-	info.SetPixelFormat( oggInfo.GetPixelFormat() );
+	info.SetComponentCount( oggInfo.GetComponentCount() );
 	info.SetFrameCount( oggInfo.GetFrameCount() );
 	info.SetFrameRate( oggInfo.GetFrameRate() );
 	info.SetColorConversionMatrix( oggInfo.GetColorConversionMatrix() );

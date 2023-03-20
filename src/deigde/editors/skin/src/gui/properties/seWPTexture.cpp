@@ -1121,14 +1121,20 @@ void seWPTexture::UpdateProperty(){
 			const char *type = "?";
 			decString text;
 			
-			switch( video.GetPixelFormat() ){
-			case deVideo::epf420:
-			case deVideo::epf422:
-			case deVideo::epf444:
+			switch( video.GetComponentCount() ){
+			case 1:
+				type = "Grayscale";
+				break;
+				
+			case 2:
+				type = "GrayscaleAlpha";
+				break;
+				
+			case 3:
 				type = "RGB";
 				break;
 				
-			case deVideo::epf4444:
+			case 4:
 				type = "RGBA";
 				break;
 			}

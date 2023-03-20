@@ -155,17 +155,7 @@ void deoglVideoPlayer::SyncToRender(){
 		deVideo * const video = pVideoPlayer.GetVideo();
 		
 		if( video ){
-			switch( video->GetPixelFormat() ){
-			case deVideo::epf444:
-			case deVideo::epf422:
-			case deVideo::epf420:
-				pRVideoPlayer->SetVideoSize( video->GetWidth(), video->GetHeight(), 3 );
-				break;
-				
-			case deVideo::epf4444:
-				pRVideoPlayer->SetVideoSize( video->GetWidth(), video->GetHeight(), 4 );
-				break;
-			}
+			pRVideoPlayer->SetVideoSize( video->GetWidth(), video->GetHeight(), video->GetComponentCount() );
 			
 		}else{
 			pRVideoPlayer->SetVideoSize( 1, 1, 3 ); // dummy texture. maybe use a default opengl one?

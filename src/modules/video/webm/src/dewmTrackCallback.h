@@ -70,7 +70,11 @@ public:
 	virtual webm::Status OnSimpleBlockBegin( const webm::ElementMetadata &metadata,
 		const webm::SimpleBlock &simple_block, webm::Action *action );
 	
-	virtual webm::Status OnBlockGroupBegin( const webm::ElementMetadata &metadata, webm::Action *action );
+	virtual webm::Status OnBlockGroupBegin( const webm::ElementMetadata &metadata,
+		webm::Action *action );
+	
+	virtual webm::Status OnBlockGroupEnd( const webm::ElementMetadata &metadata,
+		const webm::BlockGroup &block_group );
 	
 	virtual webm::Status OnBlockBegin( const webm::ElementMetadata &metadata,
 		const webm::Block &block, webm::Action *action );
@@ -84,7 +88,9 @@ public:
 	
 protected:
 	virtual bool pOpenTrack( const webm::TrackEntry &track ) = 0;
-	virtual void pProcessFrame( webm::Reader &reader, std::uint64_t &bytes_remaining ) = 0;
+	
+	virtual void pProcessFrame( webm::Reader &reader, std::uint64_t &bytes_remaining );
+	virtual void pProcessAdditional( const std::vector<unsigned char> &data );
 	
 	inline const std::uint8_t *pGetBuffer() const{ return pBuffer; }
 	

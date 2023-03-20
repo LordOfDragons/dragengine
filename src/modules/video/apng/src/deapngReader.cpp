@@ -66,11 +66,10 @@ pReadStruct( nullptr ),
 pInfoStruct( nullptr ),
 pWidth( 0 ),
 pHeight( 0 ),
-pPixelFormat( deVideo::epf444 ),
+pComponentCount( 0 ),
 pFrameCount( 0 ),
 pFrameRate( 0 ),
 pFirstFrame( 0 ),
-pPixelSize( 0 ),
 pRowLength( 0 ),
 pImageSize( 0 ),
 pCurFrame( 0 ),
@@ -278,25 +277,21 @@ void deapngReader::pReadHeader(){
 	switch( colorType ){
 	case PNG_COLOR_TYPE_GRAY:
 	case PNG_COLOR_TYPE_PALETTE:
-		pPixelFormat = deVideo::epf444;
-		pPixelSize = 3;
+		pComponentCount = 3;
 		png_set_gray_to_rgb( pReadStruct );
 		break;
 		
 	case PNG_COLOR_TYPE_RGB:
-		pPixelFormat = deVideo::epf444;
-		pPixelSize = 3;
+		pComponentCount = 3;
 		break;
 		
 	case PNG_COLOR_TYPE_GRAY_ALPHA:
-		pPixelFormat = deVideo::epf4444;
-		pPixelSize = 4;
+		pComponentCount = 4;
 		png_set_gray_to_rgb( pReadStruct );
 		break;
 		
 	case PNG_COLOR_TYPE_RGB_ALPHA:
-		pPixelFormat = deVideo::epf4444;
-		pPixelSize = 4;
+		pComponentCount = 4;
 		break;
 		
 	default:
@@ -324,13 +319,11 @@ void deapngReader::pReadHeader(){
 		switch( colorType ){
 		case PNG_COLOR_TYPE_PALETTE:
 		case PNG_COLOR_TYPE_RGB:
-			pPixelFormat = deVideo::epf4444;
-			pPixelSize = 4;
+			pComponentCount = 4;
 			break;
 			
 		case PNG_COLOR_TYPE_GRAY:
-			pPixelFormat = deVideo::epf4444;
-			pPixelSize = 4;
+			pComponentCount = 4;
 			png_set_gray_to_rgb( pReadStruct );
 			break;
 			
@@ -349,7 +342,7 @@ void deapngReader::pReadHeader(){
 	// and now the big update... we are ready to go
 	png_read_update_info( pReadStruct, pInfoStruct );
 	
-	pRowLength = pWidth * pPixelSize;
+	pRowLength = pWidth * pComponentCount;
 	pImageSize = pRowLength * pHeight;
 	
 	// check for animated png
@@ -374,16 +367,17 @@ void deapngReader::pReadImage(){
 		png_uint_32 y;
 		for( y=0; y<pLastFrameHeight; y++ ){
 			const int offsetY = pHeight - 1 - ( pLastFrameY + y );
-			const int offsetX = pPixelSize * pLastFrameX;
-			memcpy( pAccumRows[ offsetY ] + offsetX, pLastFrameRows[ offsetY ] + offsetX, pPixelSize * pLastFrameWidth );
+			const int offsetX = pComponentCount * pLastFrameX;
+			memcpy( pAccumRows[ offsetY ] + offsetX, pLastFrameRows[ offsetY ] + offsetX,
+				pComponentCount * pLastFrameWidth );
 		}
 		
 	}else if( pLastFrameDop == PNG_DISPOSE_OP_BACKGROUND ){
 		// works for both RGB and RGBA
 		png_uint_32 y;
 		for( y=0; y<pLastFrameHeight; y++ ){
-			memset( pAccumRows[ pHeight - 1 - ( pLastFrameY + y ) ] + pPixelSize * pLastFrameX,
-				'\0', pPixelSize * pLastFrameWidth );
+			memset( pAccumRows[ pHeight - 1 - ( pLastFrameY + y ) ] + pComponentCount * pLastFrameX,
+				'\0', pComponentCount * pLastFrameWidth );
 		}
 	}
 	
@@ -410,8 +404,9 @@ void deapngReader::pReadImage(){
 		png_uint_32 y;
 		for( y=0; y<h0; y++ ){
 			const int offsetY = pHeight - 1 - ( y0 + y );
-			const int offsetX = pPixelSize * x0;
-			memcpy( pLastFrameRows[ offsetY ] + offsetX, pAccumRows[ offsetY ] + offsetX, pPixelSize * w0 );
+			const int offsetX = pComponentCount * x0;
+			memcpy( pLastFrameRows[ offsetY ] + offsetX, pAccumRows[ offsetY ] + offsetX,
+				pComponentCount * w0 );
 		}
 	}
 	
@@ -426,10 +421,11 @@ void deapngReader::pReadImage(){
 	png_read_image( pReadStruct, pFrameRows );
 	
 	// combine the frame rows with the accum rows depending on dispose mode
-	if( bop == PNG_BLEND_OP_SOURCE || pPixelSize < 4 ){
+	if( bop == PNG_BLEND_OP_SOURCE || pComponentCount < 4 ){
 		png_uint_32 y;
 		for( y=0; y<h0; y++ ){
-			memcpy( pAccumRows[ pHeight - 1 - ( y0 + y ) ] + pPixelSize * x0, pFrameRows[ y ], pPixelSize * w0 );
+			memcpy( pAccumRows[ pHeight - 1 - ( y0 + y ) ] + pComponentCount * x0,
+				pFrameRows[ y ], pComponentCount * w0 );
 		}
 		
 	}else{ // bop == PNG_BLEND_OP_OVER, only works on RGBA images
@@ -475,7 +471,7 @@ void deapngReader::pEnterErrorState(){
 	
 	pErrorState = true;
 	
-	if( pPixelSize == 4 ){
+	if( pComponentCount == 4 ){
 		int x;
 		
 		for( y=0; y<pHeight; y++ ){

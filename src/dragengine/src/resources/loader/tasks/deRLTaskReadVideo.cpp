@@ -98,7 +98,7 @@ void deRLTaskReadVideo::Run(){
 	pVideo->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
 	pVideo->SetAsynchron( true );
 	pVideo->FinalizeConstruction( videoInfo.GetWidth(), videoInfo.GetHeight(),
-		videoInfo.GetPixelFormat(), videoInfo.GetFrameRate(),
+		videoInfo.GetComponentCount(), videoInfo.GetBitCount(), videoInfo.GetFrameRate(),
 		videoInfo.GetFrameCount(), videoInfo.GetColorConversionMatrix(),
 		videoInfo.GetBytesPerSample(), videoInfo.GetSampleCount(),
 		videoInfo.GetSampleRate(), videoInfo.GetChannelCount() );

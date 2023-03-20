@@ -83,7 +83,7 @@ void deVideoWebm::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &inf
 	
 	info.SetWidth( webmInfo.GetWidth() );
 	info.SetHeight( webmInfo.GetHeight() );
-	info.SetPixelFormat( webmInfo.GetPixelFormat() );
+	info.SetComponentCount( webmInfo.GetComponentCount() );
 	info.SetFrameCount( webmInfo.GetFrameCount() );
 	info.SetFrameRate( webmInfo.GetFrameRate() );
 	info.SetColorConversionMatrix( webmInfo.GetColorConversionMatrix() );
@@ -95,9 +95,9 @@ void deVideoWebm::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &inf
 		info.SetChannelCount( webmInfo.GetChannelCount() );
 	}
 	
-	LogInfoFormat( "InitLoadVideo(%s): size=%dx%d format=%d frames=%d frameRate=%d"
+	LogInfoFormat( "InitLoadVideo(%s): size=%dx%d components=%d frames=%d frameRate=%d"
 		" bps=%d channels=%d sampleRate=%d samples=%d", reader.GetFilename(),
-		webmInfo.GetWidth(), webmInfo.GetHeight(), webmInfo.GetPixelFormat(),
+		webmInfo.GetWidth(), webmInfo.GetHeight(), webmInfo.GetComponentCount(),
 		webmInfo.GetFrameCount(), webmInfo.GetFrameRate(), webmInfo.GetBytesPerSample(),
 		webmInfo.GetChannelCount(), webmInfo.GetSampleRate(), webmInfo.GetSampleCount() );
 }

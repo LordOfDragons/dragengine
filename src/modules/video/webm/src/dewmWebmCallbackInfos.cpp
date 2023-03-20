@@ -325,15 +325,9 @@ std::uint64_t &bytes_remaining ){
 		
 		switch( image->fmt ){
 		case VPX_IMG_FMT_I420:
-			pInfos.SetPixelFormat( deVideo::epf420 );
-			break;
-			
 		case VPX_IMG_FMT_I422:
-			pInfos.SetPixelFormat( deVideo::epf422 );
-			break;
-			
 		case VPX_IMG_FMT_I444:
-			pInfos.SetPixelFormat( deVideo::epf444 );
+			pInfos.SetComponentCount( 3 );
 			break;
 			
 		default:

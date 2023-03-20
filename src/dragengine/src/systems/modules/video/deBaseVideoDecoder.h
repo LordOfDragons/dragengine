@@ -67,18 +67,15 @@ public:
 	/**
 	 * \brief Decode next frame into buffer and advances file position.
 	 * 
-	 * Depending on the pixel format one or two buffers are provided. \em buffer1 is
-	 * always used and is of size width/height. \em buffer2 is only provided if one
-	 * of the reduced pixel formats is used. In this case \em buffer1 contains 1
-	 * color plane and \em buffer2 2 color planes with half or quarter size.
-	 * Otherwise \em buffer1 contains all three color planes. In all cases the color
-	 * planes are interleaved.
+	 * Depending on the deVideo::GetComponentCount() \em buffer contains 1 to 4 components
+	 * per color in the order R, G, B and A. The parameter \em size is provided as fail
+	 * check for the decoder to ensure he is expecting the correct buffer size.
 	 * 
 	 * If successful the file position is advanced. Returns true if the frame
 	 * has been decoded successfully. Otherwise \em fals is returned and an error
 	 * is signaled using the engine error signaling.
 	 */
-	virtual bool DecodeFrame( void *buffer1, int size1, void *buffer2, int size2 ) = 0;
+	virtual bool DecodeFrame( void *buffer, int size ) = 0;
 	/*@}*/
 };
 

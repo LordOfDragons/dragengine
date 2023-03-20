@@ -31,7 +31,8 @@
 deBaseVideoInfo::deBaseVideoInfo() :
 pWidth( 1 ),
 pHeight( 1 ),
-pPixelFormat( deVideo::epf444 ),
+pComponentCount( 3 ),
+pBitCount( 8 ),
 pFrameCount( 0 ),
 pFrameRate( 30 ),
 
@@ -59,8 +60,14 @@ void deBaseVideoInfo::SetHeight( int height ){
 	pHeight = height;
 }
 
-void deBaseVideoInfo::SetPixelFormat( deVideo::ePixelFormat pixelFormat ){
-	pPixelFormat = pixelFormat;
+void deBaseVideoInfo::SetComponentCount( int componentCount ){
+	DEASSERT_TRUE( componentCount >= 1 && componentCount <= 4 )
+	pComponentCount = componentCount;
+}
+
+void deBaseVideoInfo::SetBitCount( int bitCount ){
+	DEASSERT_TRUE( bitCount == 8 )
+	pBitCount = bitCount;
 }
 
 void deBaseVideoInfo::SetFrameCount( int frameCount ){
