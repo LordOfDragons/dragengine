@@ -41,12 +41,19 @@ dewmTrackCallback( module ),
 pInterface( nullptr ),
 pWidth( 0 ),
 pHeight( 0 ),
+pHasTransparency( false ),
+pStride( 3 ),
 pContext( nullptr ),
 pIterator( nullptr ),
+pContextTransparency( nullptr ),
+pIteratorTransparency( nullptr ),
 pResBuffer( nullptr ){
 }
 
 dewmVPXTrackCallback::~dewmVPXTrackCallback(){
+	if( pContextTransparency ){
+		vpx_codec_destroy( pContextTransparency );
+	}
 	if( pContext ){
 		vpx_codec_destroy( pContext );
 	}
@@ -87,18 +94,28 @@ bool dewmVPXTrackCallback::pOpenTrack( const webm::TrackEntry &track ){
 	const webm::Video &tvideo = track.video.value();
 	pWidth = ( int )tvideo.pixel_width.value();
 	pHeight = ( int )tvideo.pixel_height.value();
+	pHasTransparency = tvideo.alpha_mode.is_present() && tvideo.alpha_mode.value();
+	pStride = pHasTransparency ? sizeof( sRGBA8 ) : sizeof( sRGB8 );
 	
 	// create context
-	pContext = new vpx_codec_ctx_t;
-	memset( pContext, 0, sizeof( vpx_codec_ctx_t ) );
-	
 	vpx_codec_dec_cfg_t config;
 	config.w = ( unsigned int )pWidth;
 	config.h = ( unsigned int )pHeight;
 	config.threads = 1; //pModule.GetGameEngine()->GetParallelProcessing().GetCoreCount();
 	
+	pContext = new vpx_codec_ctx_t;
+	memset( pContext, 0, sizeof( vpx_codec_ctx_t ) );
+	
 	DEASSERT_TRUE( vpx_codec_dec_init( pContext, pInterface, &config, 0 ) == VPX_CODEC_OK )
 	pIterator = nullptr;
+	
+	if( pHasTransparency ){
+		pContextTransparency = new vpx_codec_ctx_t;
+		memset( pContextTransparency, 0, sizeof( vpx_codec_ctx_t ) );
+		
+		DEASSERT_TRUE( vpx_codec_dec_init( pContextTransparency, pInterface, &config, 0 ) == VPX_CODEC_OK )
+		pIteratorTransparency = nullptr;
+	}
 	
 	return true;
 }
@@ -131,7 +148,7 @@ void dewmVPXTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &b
 	const int strideU = image->stride[ 1 ];
 	const int strideV = image->stride[ 2 ];
 	
-	sRGB8 *ptrDest = ( sRGB8* )pResBuffer;
+	uint8_t *ptrDest = ( uint8_t* )pResBuffer;
 	int x, y, px, py;
 	
 	switch( image->fmt ){
@@ -145,13 +162,15 @@ void dewmVPXTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &b
 			const unsigned char * const ptrLineV = ptrV + py * strideV;
 			
 			for( x=0; x<pWidth; x++ ){
+				sRGB8 &pixel = *( ( sRGB8* )ptrDest );
+				ptrDest += pStride;
+				
 				px = x;
-				ptrDest->red = ptrLineY[ px ];
+				pixel.red = ptrLineY[ px ];
 				
 				px >>= 1;
-				ptrDest->green = ptrLineU[ px ];
-				ptrDest->blue = ptrLineV[ px ];
-				ptrDest++;
+				pixel.green = ptrLineU[ px ];
+				pixel.blue = ptrLineV[ px ];
 			}
 		}
 		break;
@@ -164,13 +183,15 @@ void dewmVPXTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &b
 			const unsigned char * const ptrLineV = ptrV + py * strideV;
 			
 			for( x=0; x<pWidth; x++ ){
+				sRGB8 &pixel = *( ( sRGB8* )ptrDest );
+				ptrDest += pStride;
+				
 				px = x;
-				ptrDest->red = ptrLineY[ px ];
+				pixel.red = ptrLineY[ px ];
 				
 				px >>= 1;
-				ptrDest->green = ptrLineU[ px ];
-				ptrDest->blue = ptrLineV[ px ];
-				ptrDest++;
+				pixel.green = ptrLineU[ px ];
+				pixel.blue = ptrLineV[ px ];
 			}
 		}
 		break;
@@ -183,11 +204,13 @@ void dewmVPXTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &b
 			const unsigned char * const ptrLineV = ptrV + py * strideV;
 			
 			for( x=0; x<pWidth; x++ ){
+				sRGB8 &pixel = *( ( sRGB8* )ptrDest );
+				ptrDest += pStride;
+				
 				px = x;
-				ptrDest->red = ptrLineY[ px ];
-				ptrDest->green = ptrLineU[ px ];
-				ptrDest->blue = ptrLineV[ px ];
-				ptrDest++;
+				pixel.red = ptrLineY[ px ];
+				pixel.green = ptrLineU[ px ];
+				pixel.blue = ptrLineV[ px ];
 			}
 		}
 		break;
@@ -215,7 +238,50 @@ void dewmVPXTrackCallback::pProcessAdditional( const std::vector<unsigned char> 
 	// additional data it would prevent processing the data per-frame. so right now
 	// it is assumed that with transparency each block has only one frame and one
 	// additional
-	GetModule().LogInfoFormat( "ProcessAdditional: length %d", ( int )data.size() );
+	if( ! pHasTransparency ){
+		return;
+	}
+	
+	// decode data. codec requires entire frame to be present
+	DEASSERT_TRUE( vpx_codec_decode( pContextTransparency, data.data(), data.size(), nullptr, 0 ) == VPX_CODEC_OK )
+	
+	if( ! pResBuffer ){
+		// skip frame
+		return;
+	}
+	
+	// get frame image and copy it to resource buffers. we do the checks here
+	// for each frame to be on the safe side in case files are corrupted
+	vpx_image_t * const image = vpx_codec_get_frame( pContextTransparency, &pIteratorTransparency );
+	DEASSERT_NOTNULL( image )
+	
+	DEASSERT_TRUE( image->bit_depth == 8 )
+	
+	const unsigned char * const ptrY = image->planes[ 0 ];
+	
+	const int strideY = image->stride[ 0 ];
+	
+	uint8_t *ptrDest = ( uint8_t* )pResBuffer;
+	int x, y, py;
+	
+	switch( image->fmt ){
+	case VPX_IMG_FMT_I420:
+	case VPX_IMG_FMT_I422:
+	case VPX_IMG_FMT_I444:
+		for( y=0; y<pHeight; y++ ){
+			py = pHeight - 1 - y;
+			const unsigned char * const ptrLineY = ptrY + py * strideY;
+			
+			for( x=0; x<pWidth; x++ ){
+				( ( sRGBA8* )ptrDest )->alpha = ptrLineY[ x ];
+				ptrDest += pStride;
+			}
+		}
+		break;
+		
+	default:
+		DETHROW_INFO( deeInvalidParam, "Unsupported video format" );
+	}
 }
 
 

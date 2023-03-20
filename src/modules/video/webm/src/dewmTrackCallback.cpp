@@ -90,7 +90,6 @@ const webm::SimpleBlock &simple_block, webm::Action *action ){
 }
 
 webm::Status dewmTrackCallback::OnBlockGroupBegin( const webm::ElementMetadata &, webm::Action *action ){
-	pModule.LogInfo("BlockGroupBegin");
 	*action = webm::Action::kRead;
 	return webm::Status( webm::Status::Code::kOkCompleted );
 }
@@ -186,7 +185,6 @@ webm::Status dewmTrackCallback::pProcessBlock( const webm::Block &block, webm::A
 		return webm::Status( 100 );
 	}
 	
-	pModule.LogInfoFormat("Block: tc=%hd nf=%d", block.timecode, block.num_frames);
 	if( block.track_number == pTrackNumber ){
 		*action = webm::Action::kRead;
 		

@@ -72,7 +72,7 @@ webm::Status dewmWebmCallbackInfos::OnSegmentEnd( const webm::ElementMetadata & 
 	}
 	
 	pModule.LogInfoFormat( "SegmentEnd: frames=%u duration=%g rate=%g",
-		( unsigned int )pFrameCount, pInfos.GetDuration(),
+		( std::uint32_t )pFrameCount, pInfos.GetDuration(),
 		( double )pFrameCount / pInfos.GetDuration() );
 	
 	pInfos.SetFrameCount( ( int )pFrameCount );
@@ -119,7 +119,6 @@ const webm::Cluster &, webm::Action *action ){
 
 webm::Status dewmWebmCallbackInfos::OnSimpleBlockBegin( const webm::ElementMetadata &,
 const webm::SimpleBlock &simple_block, webm::Action *action ){
-	// pModule.LogInfoFormat( "SimpleBlock timecode=%d track=%d", ( int )simple_block.timecode, ( int )simple_block.track_number );
 	pProcessBlock( simple_block );
 	*action = webm::Action::kRead;
 	return webm::Status( webm::Status::Code::kOkCompleted );
@@ -127,7 +126,6 @@ const webm::SimpleBlock &simple_block, webm::Action *action ){
 
 webm::Status dewmWebmCallbackInfos::OnBlockBegin( const webm::ElementMetadata &,
 const webm::Block &block, webm::Action *action ){
-	// pModule.LogInfoFormat( "Block timecode=%d track=%d", ( int )block.timecode, ( int )block.track_number );
 	pProcessBlock( block );
 	*action = webm::Action::kRead;
 	return webm::Status( webm::Status::Code::kOkCompleted );
@@ -135,7 +133,6 @@ const webm::Block &block, webm::Action *action ){
 
 webm::Status dewmWebmCallbackInfos::OnFrame( const webm::FrameMetadata &,
 webm::Reader *reader, std::uint64_t *bytes_remaining ){
-	const bool notDone = pFirstVideoFrame || pFirstAudioFrame;
 	std::uint64_t bytesSkipped;
 	webm::Status status;
 	
@@ -166,10 +163,6 @@ webm::Reader *reader, std::uint64_t *bytes_remaining ){
 	
 	if( ! status.completed_ok() ){
 		return status;
-	}
-	
-	if( notDone && ! pFirstVideoFrame && ! pFirstAudioFrame ){
-		pModule.LogInfo( "All required first frames found, continue counting frames" );
 	}
 	
 	if( *bytes_remaining > 0 ){
@@ -217,6 +210,13 @@ webm::Status dewmWebmCallbackInfos::pOnTrackVideo( const webm::TrackEntry &track
 	pInfos.SetVideoTrackNumber( track.track_number.value() );
 	pInfos.SetWidth( ( int )tvideo.pixel_width.value() );
 	pInfos.SetHeight( ( int )tvideo.pixel_height.value() );
+	
+	if( tvideo.alpha_mode.is_present() && tvideo.alpha_mode.value() ){
+		pInfos.SetComponentCount( 4 );
+		
+	}else{
+		pInfos.SetComponentCount( 3 );
+	}
 	
 	pModule.LogInfoFormat( "Using video track %d", ( int )track.track_number.value() );
 	
@@ -279,7 +279,6 @@ void dewmWebmCallbackInfos::pProcessBlock( const webm::Block &block ){
 
 webm::Status dewmWebmCallbackInfos::pProcessFirstFrameVideo( webm::Reader &reader,
 std::uint64_t &bytes_remaining ){
-	pModule.LogInfo( "Process first frame video track" );
 	vpx_codec_ctx_t *context = nullptr;
 	u_int8_t *data = nullptr;
 	
@@ -327,7 +326,6 @@ std::uint64_t &bytes_remaining ){
 		case VPX_IMG_FMT_I420:
 		case VPX_IMG_FMT_I422:
 		case VPX_IMG_FMT_I444:
-			pInfos.SetComponentCount( 3 );
 			break;
 			
 		default:
@@ -362,13 +360,12 @@ std::uint64_t &bytes_remaining ){
 }
 
 webm::Status dewmWebmCallbackInfos::pProcessFirstFrameAudio( webm::Reader &reader, std::uint64_t &bytes_remaining ){
-	pModule.LogInfo( "Process first frame audio track" );
 	return webm::Status( webm::Status::Code::kOkCompleted );
 }
 
 decColorMatrix3 dewmWebmCallbackInfos::pCreateColorConversionMatrix() const{
 	// offsets: 16, 128, 128
-	// exculsions: 219, 224, 224
+	// exclusions: 219, 224, 224
 	// kr = 0.299
 	// kb = 0.114
 	// 

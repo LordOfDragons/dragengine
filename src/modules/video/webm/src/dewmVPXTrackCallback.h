@@ -36,9 +36,14 @@ private:
 	vpx_codec_iface_t *pInterface;
 	int pWidth;
 	int pHeight;
+	bool pHasTransparency;
+	int pStride;
 	
 	vpx_codec_ctx_t *pContext;
 	vpx_codec_iter_t pIterator;
+	
+	vpx_codec_ctx_t *pContextTransparency;
+	vpx_codec_iter_t pIteratorTransparency;
 	
 	void *pResBuffer;
 	
