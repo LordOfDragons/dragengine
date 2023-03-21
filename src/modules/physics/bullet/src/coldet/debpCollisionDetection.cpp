@@ -1137,7 +1137,7 @@ const debpComponent &component, int face, debpCollisionResult &result ){
 		if( displacement * triNormal > 1e-6 ) return false;
 		
 		// test shape for a collision
-		distance = shape.GetCollisionVolume()->VolumeMoveHitsVolume( &collisionTriangle, displacement, &hitNormal );
+		distance = ( float )shape.GetCollisionVolume()->VolumeMoveHitsVolume( &collisionTriangle, displacement, &hitNormal );
 		
 		// distances nearly 1 are considered no collision
 		if( distance >= 0.99999f ) return false;
@@ -1274,7 +1274,7 @@ const debpComponent &component, int face, debpCollisionResult &result ){
 			bpcolvol.UpdateShapes();
 			
 			for( s=0; s<shapeCount; s++ ){
-				distance = shapes.GetShapeAt( s )->GetCollisionVolume()->VolumeMoveHitsVolume( &collisionTriangle, displacement, &hitNormal );
+				distance = ( float )shapes.GetShapeAt( s )->GetCollisionVolume()->VolumeMoveHitsVolume( &collisionTriangle, displacement, &hitNormal );
 				
 				// distances nearly 1 are considered no collision
 				if( distance >= 0.99999f ) continue;

@@ -89,7 +89,7 @@ void debpForceField::Update( float elapsed ){
 		
 		if( pVortexCount < pVortexSize ){
 			float fieldRadius = pForceField.GetRadius();
-			float rfactor = 1.0 / ( float )RAND_MAX;
+			float rfactor = 1.0f / ( float )RAND_MAX;
 			decVector position, view;
 			float size, velocity, timeToLive;
 			float arc1, arc2, dist;

@@ -38,7 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethInfos.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethOggFile.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethOggReader.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethStreamReader.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethVideoAudioDecoder.h" />
@@ -47,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethInfos.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethOggFile.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethOggReader.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethStreamReader.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethVideoAudioDecoder.cpp" />

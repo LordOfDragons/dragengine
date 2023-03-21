@@ -513,8 +513,8 @@ btBoxShape &boxShape, const btTransform &shapeTransform ) const{
 	
 	boxVolume.SetCenter( decDVector( ( double )position.x(), ( double )position.y(), ( double )position.z() ) );
 	boxVolume.SetHalfSize( decDVector( ( double )halfExtends.x(), ( double )halfExtends.y(), ( double )halfExtends.z() ) );
-	boxVolume.SetOrientation( decQuaternion( ( double )orientation.x(), ( double )orientation.y(),
-		( double )orientation.z(), ( double )orientation.w() ) );
+	boxVolume.SetOrientation( decQuaternion( ( float )orientation.x(), ( float )orientation.y(),
+		( float )orientation.z(), ( float )orientation.w() ) );
 #endif
 }
 

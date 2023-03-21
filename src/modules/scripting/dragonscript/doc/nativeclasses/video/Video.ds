@@ -71,8 +71,8 @@ fixed class Video
 	end
 	
 	/** \brief Frame rate. */
-	public func int getFrameRate()
-		return 0
+	public func float getFrameRate()
+		return 0.0
 	end
 	
 	/** \brief Play time in seconds. */
