@@ -283,7 +283,7 @@ void dewmWebmCallbackInfos::pProcessBlock( const webm::Block &block ){
 webm::Status dewmWebmCallbackInfos::pProcessFirstFrameVideo( webm::Reader &reader,
 std::uint64_t &bytes_remaining ){
 	vpx_codec_ctx_t *context = nullptr;
-	u_int8_t *data = nullptr;
+	uint8_t *data = nullptr;
 	
 	vpx_codec_iter_t iter = nullptr;
 	vpx_codec_dec_cfg_t config;
