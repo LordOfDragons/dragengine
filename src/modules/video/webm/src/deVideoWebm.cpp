@@ -95,7 +95,7 @@ void deVideoWebm::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &inf
 		info.SetChannelCount( webmInfo.GetChannelCount() );
 	}
 	
-	LogInfoFormat( "InitLoadVideo(%s): size=%dx%d components=%d frames=%d frameRate=%d"
+	LogInfoFormat( "InitLoadVideo(%s): size=%dx%d components=%d frames=%d frameRate=%g"
 		" bps=%d channels=%d sampleRate=%d samples=%d", reader.GetFilename(),
 		webmInfo.GetWidth(), webmInfo.GetHeight(), webmInfo.GetComponentCount(),
 		webmInfo.GetFrameCount(), webmInfo.GetFrameRate(), webmInfo.GetBytesPerSample(),
@@ -111,15 +111,5 @@ deBaseVideoDecoder *deVideoWebm::CreateDecoder( decBaseFileReader *reader ){
 }
 
 deBaseVideoAudioDecoder *deVideoWebm::CreateAudioDecoder( decBaseFileReader *reader ){
-	DETHROW_INFO(deeInvalidAction, "TODO");
-	/*
-	dewmVideoAudioDecoder * const decoder = new dewmVideoAudioDecoder( *this, *reader );
-	if( decoder->GetSampleCount() > 0 ){
-		return decoder;
-		
-	}else{
-		delete decoder;
-		return NULL;
-	}
-	*/
+	return new dewmVideoAudioDecoder( *this, reader );
 }

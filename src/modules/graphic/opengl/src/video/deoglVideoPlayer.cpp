@@ -137,8 +137,7 @@ void deoglVideoPlayer::UpdateNextFrame(){
 		return;
 	}
 	
-	SetCurrentFrame( ( int )( pVideoPlayer.GetPlayPosition()
-		* ( float )pVideo->GetVideo().GetFrameRate() + 0.5f ) );
+	SetCurrentFrame( ( int )( pVideoPlayer.GetPlayPosition() * pVideo->GetVideo().GetFrameRate() ) );
 }
 
 
@@ -309,7 +308,7 @@ void deoglVideoPlayer::pPredictNextFrame(){
 		return;
 	}
 	
-	const float frameRate = ( float )pVideoPlayer.GetVideo()->GetFrameRate();
+	const float frameRate = pVideoPlayer.GetVideo()->GetFrameRate();
 	
 	if( pVideoPlayer.GetLooping() ){
 		const int playFrom = ( int )( pVideoPlayer.GetPlayFrom() * frameRate + 0.5f );

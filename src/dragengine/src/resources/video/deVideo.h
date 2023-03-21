@@ -55,7 +55,7 @@ private:
 	int pComponentCount;
 	int pBitCount;
 	int pFrameCount;
-	int pFrameRate;
+	float pFrameRate;
 	float pPlayTime;
 	decColorMatrix3 pColorConversionMatrix;
 	
@@ -74,7 +74,7 @@ public:
 	/** \brief Create video. */
 	deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
 		TIME_SYSTEM modificationTime, int width, int height, int componentCount,
-		int bitCount, int frameRate, int frameCount,
+		int bitCount, float frameRate, int frameCount,
 		const decColorMatrix3 &colorConversionMatrix, int bytesPerSample,
 		int sampleCount, int sampleRate, int channelCount );
 	
@@ -113,7 +113,7 @@ public:
 	inline int GetFrameCount() const{ return pFrameCount; }
 	
 	/** \brief Frame rate. */
-	inline int GetFrameRate() const{ return pFrameRate; }
+	inline float GetFrameRate() const{ return pFrameRate; }
 	
 	/** \brief Bits per pixel. */
 	inline int GetBitCount() const{ return pBitCount; }
@@ -157,7 +157,7 @@ public:
 	 * \warning For use by deResourceLoader only.
 	 */
 	void FinalizeConstruction( int width, int height, int componentCount, int bitCount,
-		int frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
+		float frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
 		int bytesPerSample, int sampleCount, int sampleRate, int channelCount );
 	/*@}*/
 };

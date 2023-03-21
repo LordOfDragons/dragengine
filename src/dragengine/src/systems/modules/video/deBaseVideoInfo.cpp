@@ -34,9 +34,9 @@ pHeight( 1 ),
 pComponentCount( 3 ),
 pBitCount( 8 ),
 pFrameCount( 0 ),
-pFrameRate( 30 ),
+pFrameRate( 30.0f ),
 
-pBytesPerSample( 8 ),
+pBytesPerSample( 2 ),
 pSampleCount( 0 ),
 pSampleRate( 44100 ),
 pChannelCount( 1 ){
@@ -75,8 +75,8 @@ void deBaseVideoInfo::SetFrameCount( int frameCount ){
 	pFrameCount = frameCount;
 }
 
-void deBaseVideoInfo::SetFrameRate( int frameRate ){
-	DEASSERT_TRUE( frameRate >= 1 )
+void deBaseVideoInfo::SetFrameRate( float frameRate ){
+	DEASSERT_TRUE( frameRate > 0.0f )
 	pFrameRate = frameRate;
 }
 
@@ -87,7 +87,7 @@ void deBaseVideoInfo::SetColorConversionMatrix( const decColorMatrix3 &matrix ){
 
 
 void deBaseVideoInfo::SetBytesPerSample( int bytesPerSample ){
-	DEASSERT_TRUE( bytesPerSample >= 8 )
+	DEASSERT_TRUE( bytesPerSample == 1 || bytesPerSample == 2 )
 	pBytesPerSample = bytesPerSample;
 }
 

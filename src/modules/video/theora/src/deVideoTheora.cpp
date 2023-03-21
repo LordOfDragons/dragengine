@@ -103,7 +103,7 @@ void deVideoTheora::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &i
 	info.SetChannelCount( audioDecoder.GetChannelCount() );
 	
 	/*
-	LogInfoFormat( "InitLoadVideo(%s): size=%dx%d format=%d frames=%d frameRate=%d"
+	LogInfoFormat( "InitLoadVideo(%s): size=%dx%d format=%d frames=%d frameRate=%g"
 		" bps=%d channels=%d sampleRate=%d samples=%d", reader.GetFilename(),
 		oggInfo.GetWidth(), oggInfo.GetHeight(), oggInfo.GetPixelFormat(), oggInfo.GetFrameCount(),
 		oggInfo.GetFrameRate(), audioDecoder.GetBytesPerSample(), audioDecoder.GetChannelCount(),

@@ -81,7 +81,7 @@ private:
 	int pWidth;
 	int pHeight;
 	int pFrameCount;
-	int pFrameRate;
+	float pFrameRate;
 	decColorMatrix3 pClrConvMat;
 	
 	int pFrameWidth;

@@ -41,7 +41,8 @@ pTrackOpen( false ),
 pTrackNumber( 0 ),
 pBuffer( nullptr ),
 pBufferSize( 0 ),
-pStopParsing( false ){
+pStopParsing( false ),
+pNeedMoreFrames( false ){
 }
 
 dewmTrackCallback::~dewmTrackCallback(){
@@ -56,6 +57,7 @@ dewmTrackCallback::~dewmTrackCallback(){
 ///////////////
 
 webm::Status dewmTrackCallback::OnSegmentEnd( const webm::ElementMetadata & ){
+	pEndSegment();
 	pStopParsing = false;
 	return webm::Status( webm::Status::Code::kOkPartial ); // stop here
 }
@@ -130,16 +132,25 @@ std::uint64_t *bytes_remaining ){
 	
 	try{
 		pProcessFrame( *reader, *bytes_remaining );
-		DEASSERT_TRUE( *bytes_remaining == 0 )
+		if( *bytes_remaining > 0 ){
+			// frame not consumed
+			return webm::Status( webm::Status::Code::kOkPartial );
+		}
 		
 	}catch( const deException &e ){
 		pModule.LogException( e );
 		return webm::Status( 100 );
 	}
 	
-	// stop parsing at the next frame. we can not return kOkPartial here or
-	// we will be parsing the same frame again causing problems
-	pStopParsing = true;
+	if( pNeedMoreFrames ){
+		pNeedMoreFrames = false;
+		
+	}else{
+		// stop parsing at the next frame. we can not return kOkPartial here or
+		// we will be parsing the same frame again causing problems
+		pStopParsing = true;
+	}
+	
 	return webm::Status( webm::Status::Code::kOkCompleted );
 }
 
@@ -171,6 +182,13 @@ void dewmTrackCallback::pReadFrameData( webm::Reader &reader, std::uint64_t &byt
 	std::uint64_t readCount;
 	DEASSERT_TRUE( reader.Read( bytes_remaining, pBuffer, &readCount ).completed_ok() )
 	bytes_remaining = 0;
+}
+
+void dewmTrackCallback::SetNeedMoreFrames( bool needMoreFrames ){
+	pNeedMoreFrames = needMoreFrames;
+}
+
+void dewmTrackCallback::pEndSegment(){
 }
 
 

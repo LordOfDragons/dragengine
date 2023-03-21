@@ -21,9 +21,11 @@
 
 #include <string.h>
 
-#include "dewmInfos.h"
-#include "dewmWebmCallbackInfos.h"
 #include "deVideoWebm.h"
+#include "dewmInfos.h"
+#include "dewmAudioTrackCallback.h"
+#include "dewmWebmCallbackInfos.h"
+#include "dewmVorbisStream.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -76,7 +78,7 @@ webm::Status dewmWebmCallbackInfos::OnSegmentEnd( const webm::ElementMetadata & 
 		( double )pFrameCount / pInfos.GetDuration() );
 	
 	pInfos.SetFrameCount( ( int )pFrameCount );
-	pInfos.SetFrameRate( ( int )( ( ( double )pFrameCount / pInfos.GetDuration() ) + 0.5 ) );
+	pInfos.SetFrameRate( ( float )( ( double )pFrameCount / pInfos.GetDuration() ) );
 	
 	return webm::Status( webm::Status::Code::kOkPartial ); // stop here
 }
@@ -244,23 +246,24 @@ webm::Status dewmWebmCallbackInfos::pOnTrackAudio( const webm::TrackEntry &track
 		return webm::Status( webm::Status::Code::kOkCompleted );
 	}
 	
-	const webm::Audio &taudio = track.audio.value();
+	pModule.LogInfoFormat( "Found audio track '%s': track=%d", codecName, ( int )track.track_number.value() );
 	
-	pModule.LogInfoFormat( "Found audio track '%s': track=%d, rate=%g channels=%d bpp=%d",
-		codecName, ( int )track.track_number.value(), taudio.sampling_frequency.value(),
-		( int )taudio.channels.value(),
-		taudio.bit_depth.is_present() ? ( int )taudio.bit_depth.value() : -1 );
+	try{
+		dewmAudioTrackCallback audioCallback( pModule );
+		DEASSERT_TRUE( audioCallback.OpenTrack( track ) );
+		audioCallback.UpdateInfos( pInfos );
+		
+	}catch( const deException &e ){
+		pModule.LogException( e );
+		return webm::Status( webm::Status::Code::kOkCompleted );
+	}
 	
 	pInfos.SetAudioCodec( codec );
 	pInfos.SetAudioTrackNumber( track.track_number.value() );
-	pInfos.SetSampleRate( ( int )( taudio.sampling_frequency.value() + 0.5 ) );
-	pInfos.SetChannelCount( ( int )taudio.channels.value() );
-	pInfos.SetBytesPerSample( taudio.bit_depth.is_present() ? ( int )taudio.bit_depth.value() / 8 : 16 );
-	pInfos.SetSampleCount( ( int )( pInfos.GetDuration() * taudio.sampling_frequency.value() + 0.5 ) );
+	pInfos.SetSampleCount( ( int )( pInfos.GetDuration() * ( double )pInfos.GetSampleRate() + 0.5 ) );
 	
 	pModule.LogInfoFormat( "Using audio track %d", ( int )track.track_number.value() );
 	
-	pFirstAudioFrame = true; // read one frame to find audio information
 	return webm::Status( webm::Status::Code::kOkCompleted );
 }
 
@@ -343,6 +346,7 @@ std::uint64_t &bytes_remaining ){
 		
 		delete [] data;
 		vpx_codec_destroy( context );
+		delete context;
 		
 	}catch( const deException &e ){
 		pModule.LogException( e );
@@ -359,7 +363,7 @@ std::uint64_t &bytes_remaining ){
 	return webm::Status( webm::Status::Code::kOkCompleted );
 }
 
-webm::Status dewmWebmCallbackInfos::pProcessFirstFrameAudio( webm::Reader &reader, std::uint64_t &bytes_remaining ){
+webm::Status dewmWebmCallbackInfos::pProcessFirstFrameAudio( webm::Reader &, std::uint64_t & ){
 	return webm::Status( webm::Status::Code::kOkCompleted );
 }
 

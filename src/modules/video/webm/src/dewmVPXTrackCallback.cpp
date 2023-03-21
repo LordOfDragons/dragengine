@@ -53,9 +53,11 @@ pResBuffer( nullptr ){
 dewmVPXTrackCallback::~dewmVPXTrackCallback(){
 	if( pContextTransparency ){
 		vpx_codec_destroy( pContextTransparency );
+		delete pContextTransparency;
 	}
 	if( pContext ){
 		vpx_codec_destroy( pContext );
+		delete pContext;
 	}
 }
 
@@ -66,6 +68,9 @@ dewmVPXTrackCallback::~dewmVPXTrackCallback(){
 
 void dewmVPXTrackCallback::SetResBuffer( void *buffer ){
 	pResBuffer = buffer;
+}
+
+void dewmVPXTrackCallback::Rewind(){
 }
 
 
@@ -127,6 +132,7 @@ void dewmVPXTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &b
 	const uint64_t frameSize = bytes_remaining;
 	pReadFrameData( reader, bytes_remaining );
 	DEASSERT_TRUE( vpx_codec_decode( pContext, pGetBuffer(), frameSize, nullptr, 0 ) == VPX_CODEC_OK )
+	pIterator = nullptr;
 	
 	if( ! pResBuffer ){
 		// skip frame

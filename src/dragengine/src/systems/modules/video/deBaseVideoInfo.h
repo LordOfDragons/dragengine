@@ -36,7 +36,7 @@ private:
 	int pComponentCount;
 	int pBitCount;
 	int pFrameCount;
-	int pFrameRate;
+	float pFrameRate;
 	decColorMatrix3 pColorConversionMatrix;
 	
 	int pBytesPerSample;
@@ -91,10 +91,10 @@ public:
 	void SetFrameCount( int frameCount );
 	
 	/** \brief Frame rate. */
-	inline int GetFrameRate() const{ return pFrameRate; }
+	inline float GetFrameRate() const{ return pFrameRate; }
 	
 	/** \brief Set frame rate. */
-	void SetFrameRate( int frameRate );
+	void SetFrameRate( float frameRate );
 	
 	/** \brief Color conversion matrix. */
 	inline const decColorMatrix3 &GetColorConversionMatrix() const{ return pColorConversionMatrix; }

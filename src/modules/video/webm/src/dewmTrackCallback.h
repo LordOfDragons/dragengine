@@ -39,6 +39,7 @@ private:
 	std::uint8_t *pBuffer;
 	std::uint64_t pBufferSize;
 	bool pStopParsing;
+	bool pNeedMoreFrames;
 	
 	
 	
@@ -95,6 +96,10 @@ protected:
 	inline const std::uint8_t *pGetBuffer() const{ return pBuffer; }
 	
 	void pReadFrameData( webm::Reader &reader, std::uint64_t &bytes_remaining );
+	
+	void SetNeedMoreFrames( bool needMoreFrames );
+	
+	virtual void pEndSegment();
 	
 	
 	

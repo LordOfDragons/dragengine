@@ -65,6 +65,9 @@ public:
 	/*@{*/
 	/** Set resource buffers to use for next frame. */
 	void SetResBuffer( void *buffer );
+	
+	/** Rewind. */
+	void Rewind();
 	/*@}*/
 	
 	

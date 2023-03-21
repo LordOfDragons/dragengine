@@ -49,7 +49,7 @@ pReader( NULL )
 	try{
 		pReader = new deapngReader( module, file );
 		
-		module.LogInfoFormat( "width=%d height=%d componentCount=%d frameCount=%d frameRate=%d",
+		module.LogInfoFormat( "width=%d height=%d componentCount=%d frameCount=%d frameRate=%g",
 			pReader->GetWidth(), pReader->GetHeight(), pReader->GetComponentCount(),
 			pReader->GetFrameCount(), pReader->GetFrameRate() );
 		

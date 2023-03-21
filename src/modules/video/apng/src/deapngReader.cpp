@@ -68,7 +68,7 @@ pWidth( 0 ),
 pHeight( 0 ),
 pComponentCount( 0 ),
 pFrameCount( 0 ),
-pFrameRate( 0 ),
+pFrameRate( 0.0f ),
 pFirstFrame( 0 ),
 pRowLength( 0 ),
 pImageSize( 0 ),
@@ -359,7 +359,7 @@ void deapngReader::pReadHeader(){
 	png_read_frame_head( pReadStruct, pInfoStruct );
 	const int delayNum = png_get_next_frame_delay_num( pReadStruct, pInfoStruct );
 	const int delayDenom = png_get_next_frame_delay_den( pReadStruct, pInfoStruct );
-	pFrameRate = delayDenom / delayNum;
+	pFrameRate = ( float )delayDenom / ( float )delayNum;
 }
 
 void deapngReader::pReadImage(){

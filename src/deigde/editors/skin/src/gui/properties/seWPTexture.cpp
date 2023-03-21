@@ -1139,8 +1139,9 @@ void seWPTexture::UpdateProperty(){
 				break;
 			}
 			
-			text.Format( "%dx%d %s, FPS %d, Frames %d, Playtime %.1fs", video.GetWidth(), video.GetHeight(),
-				type, video.GetFrameRate(), video.GetFrameCount(), video.GetPlayTime() );
+			text.Format( "%dx%d %s, FPS %.1f, Frames %d, Playtime %.1fs", video.GetWidth(),
+				video.GetHeight(), type, video.GetFrameRate(), video.GetFrameCount(),
+				video.GetPlayTime() );
 			pLabPvtVideoInfo->SetText( text );
 			
 		}else{

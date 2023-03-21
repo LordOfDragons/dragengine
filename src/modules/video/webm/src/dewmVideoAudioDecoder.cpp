@@ -24,31 +24,31 @@
 #include <string.h>
 
 #include "deVideoWebm.h"
-#include "dewmVideoDecoder.h"
+#include "dewmVideoAudioDecoder.h"
 #include "dewmWebmReader.h"
-#include "dewmVPXTrackCallback.h"
+#include "dewmAudioTrackCallback.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 
 
 
-// Class dewmVideoDecoder
-///////////////////////////
+// Class dewmVideoAudioDecoder
+////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-dewmVideoDecoder::dewmVideoDecoder( deVideoWebm &module, decBaseFileReader *file ) :
-deBaseVideoDecoder( file ),
+dewmVideoAudioDecoder::dewmVideoAudioDecoder( deVideoWebm &module, decBaseFileReader *file ) :
+deBaseVideoAudioDecoder( file ),
 pModule( module ),
 pCallback( nullptr ),
 pReader( nullptr ),
 pParser( nullptr ),
-pCurFrame( 0 )
+pCurSample( 0 )
 {
 	try{
-		pCallback = new dewmVPXTrackCallback( module );
+		pCallback = new dewmAudioTrackCallback( module );
 		pReader = new dewmWebmReader( *file );
 		pParser = new webm::WebmParser;
 		
@@ -59,7 +59,7 @@ pCurFrame( 0 )
 	}
 }
 
-dewmVideoDecoder::~dewmVideoDecoder(){
+dewmVideoAudioDecoder::~dewmVideoAudioDecoder(){
 	pCleanUp();
 }
 
@@ -68,38 +68,38 @@ dewmVideoDecoder::~dewmVideoDecoder(){
 // Management
 ///////////////
 
-int dewmVideoDecoder::GetPosition(){
-	return pCurFrame;
+int dewmVideoAudioDecoder::GetPosition(){
+	return pCurSample;
 }
 
-void dewmVideoDecoder::SetPosition( int position ){
-	if( position == pCurFrame ){
-		return;
-	}
+void dewmVideoAudioDecoder::SetPosition( int position ){
+	pEnsureStreamOpen();
 	
-	pCallback->SetResBuffer( nullptr ); // process frames but do not output frame data
-	
-	if( position < pCurFrame ){
+	if( position < pCurSample ){
 		pReader->SetPosition( 0 );
 		pCallback->Rewind();
 		pParser->DidSeek();
-		pCurFrame = 0;
+		pCurSample = 0;
 	}
 	
-	while( pCurFrame < position ){
-		DEASSERT_TRUE( pParser->Feed( pCallback, pReader ).ok() )
-		pCurFrame++;
+	if( position == pCurSample ){
+		return;
 	}
+	
+	// read audio until the right time is found
+	pCallback->SetResBuffer( nullptr, position - pCurSample );
+	DEASSERT_TRUE( pParser->Feed( pCallback, pReader ).ok() )
+	pCurSample = position;
 }
 
-bool dewmVideoDecoder::DecodeFrame( void *buffer, int ){
-	pCallback->SetResBuffer( buffer );
-	if( ! pParser->Feed( pCallback, pReader ).ok() ){
-		return false;
-	}
+int dewmVideoAudioDecoder::ReadSamples( void *buffer, int size ){
+	pEnsureStreamOpen();
 	
-	pCurFrame++;
-	return true;
+	pCallback->SetResBuffer( buffer, size / pCallback->GetSampleSize() );
+	DEASSERT_TRUE( pParser->Feed( pCallback, pReader ).ok() )
+	
+	pCurSample += pCallback->GetResPosition();
+	return pCallback->GetResPosition() * pCallback->GetSampleSize();
 }
 
 
@@ -107,7 +107,7 @@ bool dewmVideoDecoder::DecodeFrame( void *buffer, int ){
 // Private Functions
 //////////////////////
 
-void dewmVideoDecoder::pCleanUp(){
+void dewmVideoAudioDecoder::pCleanUp(){
 	if( pParser ){
 		delete pParser;
 	}
@@ -117,4 +117,17 @@ void dewmVideoDecoder::pCleanUp(){
 	if( pCallback ){
 		delete pCallback;
 	}
+}
+
+void dewmVideoAudioDecoder::pEnsureStreamOpen(){
+	// this is unfortunately required since we do not know
+	// sample size until the stream is open
+	if( pCallback->IsStreamOpen() ){
+		return;
+	}
+	
+	// open is done by using a 0 read buffer. this will open
+	// the stream and stop at the first sample
+	pCallback->SetResBuffer( nullptr, 0 );
+	DEASSERT_TRUE( pParser->Feed( pCallback, pReader ).ok() )
 }

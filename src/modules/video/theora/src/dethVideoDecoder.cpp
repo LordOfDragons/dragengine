@@ -88,7 +88,7 @@ pReader( NULL )
 		/*
 		const char *pfstrs[] = { "4:4:4", "4:2:2", "4:2:0", "-" };
 		module.LogInfoFormat( "Decoder: width=%i height=%i pixelFormat=%i "
-			"frameCount=%i frameRate=%i frameWidth=%i frameHeight=%i pictureX=%i "
+			"frameCount=%i frameRate=%g frameWidth=%i frameHeight=%i pictureX=%i "
 			"pictureY=%i internalPixelFormat=%s",
 				pWidth, pHeight, pPixelFormat, pFrameCount, pFrameRate, pFrameWidth,
 				pFrameHeight, pPictureX, pPictureY, pfstrs[ pInternalPixelFormat ] );

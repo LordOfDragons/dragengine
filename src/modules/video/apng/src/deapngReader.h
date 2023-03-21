@@ -48,7 +48,7 @@ private:
 	int pHeight;
 	int pComponentCount;
 	int pFrameCount;
-	int pFrameRate;
+	float pFrameRate;
 	int pFirstFrame;
 	int pRowLength;
 	int pImageSize;
@@ -105,7 +105,7 @@ public:
 	inline int GetFrameCount() const{ return pFrameCount; }
 	
 	/** Frame rate. */
-	inline int GetFrameRate() const{ return pFrameRate; }
+	inline float GetFrameRate() const{ return pFrameRate; }
 	
 	/** First frame (depends on first frame hidden). */
 	inline int GetFirstFrame() const{ return pFirstFrame; }
