@@ -60,6 +60,9 @@ def libvpxBuild(target, source, env):
 	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
+	if 'CROSSCOMPILE_HOST' in env and env['OSWindows']:
+		script.append('CROSS={}'.format(env['CROSSCOMPILE_HOST']))
+	
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
 	cmdline.append('--disable-install-docs')
 	cmdline.append('--disable-install-bins')
@@ -83,8 +86,13 @@ def libvpxBuild(target, source, env):
 		cmdline.append('--enable-shared')
 		cmdline.append('--disable-static')
 	
+	if env['OSWindows']:
+		cmdline.append('--disable-multithread')
+	
 	if 'CROSSCOMPILE_HOST' in env:
-		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+		# cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+		if env['OSWindows']:
+			cmdline.append('--target=generic-gnu')
 	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
