@@ -158,14 +158,14 @@ void deoglShaderCompilingInfo::pCreateCanvas(){
 	
 	pCanvasText1.TakeOver( canvasManager.CreateCanvasText() );
 	pCanvasText1->SetFont( pFontText );
-	pCanvasText1->SetFontSize( pFontText->GetLineHeight() );
+	pCanvasText1->SetFontSize( ( float )pFontText->GetLineHeight() );
 	pCanvasText1->SetColor( textColor );
 	pCanvasText1->SetOrder( ( float )pCanvasView->GetCanvasCount() );
 	pCanvasView->AddCanvas( pCanvasText1 );
 	
 	pCanvasText2.TakeOver( canvasManager.CreateCanvasText() );
 	pCanvasText2->SetFont( pFontText );
-	pCanvasText2->SetFontSize( pFontText->GetLineHeight() );
+	pCanvasText2->SetFontSize( ( float )pFontText->GetLineHeight() );
 	pCanvasText2->SetColor( textColor );
 	pCanvasText2->SetOrder( ( float )pCanvasView->GetCanvasCount() );
 	pCanvasView->AddCanvas( pCanvasText2 );

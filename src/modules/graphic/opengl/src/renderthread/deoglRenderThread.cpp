@@ -517,7 +517,7 @@ void deoglRenderThread::Run(){
 		// while loading stuff the main thread can be lagging behind. this ensures loading
 		// displays keep responsive as good as possible from a visual point of view
 		DEBUG_SYNC_RT_WAIT("in")
-		if( pBarrierSyncIn.TryWait( 1.0f / 20.0f ) ){
+		if( pBarrierSyncIn.TryWait( 1000 / 20 ) ){
 			DEBUG_SYNC_RT_PASS("in")
 			
 			// main thread is messing with our state here. proceed to next barrier doing nothing

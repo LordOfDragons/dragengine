@@ -404,7 +404,11 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		}
 		#endif
 		
-		pRenderThread.GetLoaderThread().EnableContext( true );
+		if( pLoaderContext ){
+			// this check is required for windows to work correctly because on windows the window
+			// is activated before the loader context is created which would cause problems
+			pRenderThread.GetLoaderThread().EnableContext( true );
+		}
 		
 	}else{
 		pRenderThread.GetLoaderThread().EnableContext( false );
@@ -1084,7 +1088,7 @@ void deoglRTContext::pCreateGLContext(){
 	logger.LogInfo( "Creating OpenGL Context using old method" );
 	pContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
 	if( ! pContext ){
-		logger.LogErrorFormat( "wglCreateContext failed with code %i", ( int )GetLastError() );
+		logger.LogErrorFormat( "wglCreateContext failed with code %d", ( int )GetLastError() );
 		DETHROW( deeOutOfMemory );
 	}
 	
@@ -1117,7 +1121,7 @@ void deoglRTContext::pCreateGLContext(){
 		// this one here is really the biggest mess of all times. AMD does it right in that
 		// requesting a 3.3 context (as minimum) gives you up to 4.6 context if supported.
 		// this is how it is correctly done. and then we have nVidia which (again) fails to
-		// to it correctly. it gives you exactly a 3.3 context instead of the highest supported
+		// do it correctly. it gives you exactly a 3.3 context instead of the highest supported
 		// context. this causes problems since nVidia (again) fails compiling shaders if the
 		// shader version is not set high enough. this is again wrong in many ways since using
 		// the #extension directive in the shader overrules the #version directive but nVidia
@@ -1174,6 +1178,12 @@ void deoglRTContext::pCreateGLContext(){
 	
 	// attach to context
 	wglMakeCurrent( pActiveRRenderWindow->GetWindowDC(), pContext );
+
+	// for windows we have to delay starting the make sure the loader thread is enabled after the loader
+	// context is ready. before this point AcivateRRenderWindow() is called and then the loader context
+	// is nullptr which causes problems. ActivateRRenderWindow() thus avoids enabling the loader if
+	// no loader context exists. we thus have to do it here to make sure enabling works
+	pRenderThread.GetLoaderThread().EnableContext( true );
 }
 
 void deoglRTContext::pUnregisterWindowClass(){
