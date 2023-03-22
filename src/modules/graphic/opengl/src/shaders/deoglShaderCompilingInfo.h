@@ -53,27 +53,39 @@ private:
 		esFadeOut
 	};
 	
+	enum eMode{
+		emLoading,
+		emCompiling
+	};
+	
 	
 	
 	deGraphicOpenGl &pOgl;
 	
 	eState pState;
+	eMode pMode;
 	float pDelayFadeIn;
 	float pTimeFadeIn;
 	float pDelayFadeOut;
 	float pTimeFadeOut;
 	float pElapsed;
+	int pFrames;
 	float pTransparency;
+	float pMaxTransparency;
 	
 	bool pHasLoadingShader;
 	bool pHasCompilingShader;
 	
 	deCanvasView::Ref pCanvasView;
 	deCanvasVideoPlayer::Ref pCanvasVideo;
-	deCanvasText::Ref pCanvasText;
+	deCanvasText::Ref pCanvasText1;
+	deCanvasText::Ref pCanvasText2;
+	
+	deFont::Ref pFontText;
 	
 	deVideo::Ref pVideoCompile;
 	deVideoPlayer::Ref pVideoPlayerCompile;
+	float pVideoCompilePlayPosition;
 	
 	deMutex pMutex;
 	
@@ -110,8 +122,11 @@ public:
 	/** Shaders are compiling. */
 	inline bool GetHasCompilingShader() const{ return pHasCompilingShader; }
 	
-	/** Update. */
+	/** Update. Called from main thread. */
 	void Update( float elapsed );
+	
+	/** Prepare for render. Called from render thread. */
+	void PrepareForRender( float elapsed );
 	/*@}*/
 	
 	
@@ -123,6 +138,7 @@ private:
 	void pUpdateState( float elapsed );
 	void pUpdateTransparency();
 	void pUpdateCanvas( float elapsed );
+	void pUpdateText();
 };
 
 #endif

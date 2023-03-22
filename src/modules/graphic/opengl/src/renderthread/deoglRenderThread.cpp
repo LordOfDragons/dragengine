@@ -511,9 +511,13 @@ void deoglRenderThread::Run(){
 	pTimerFrameUpdate.Reset();
 	pTimerVRFrameUpdate.Reset();
 	while( true ){
-		// wait for entering synchronize
+		// wait for entering synchronize. we wait only for a small amount of time. if the
+		// main thread does not meet up in this time we do an update with the last frame
+		// data. main threads should be always faster than 20Hz during regular game play.
+		// while loading stuff the main thread can be lagging behind. this ensures loading
+		// displays keep responsive as good as possible from a visual point of view
 		DEBUG_SYNC_RT_WAIT("in")
-		if( pBarrierSyncIn.TryWait( 250 ) ){
+		if( pBarrierSyncIn.TryWait( 1.0f / 20.0f ) ){
 			DEBUG_SYNC_RT_PASS("in")
 			
 			// main thread is messing with our state here. proceed to next barrier doing nothing
@@ -2169,6 +2173,8 @@ void deoglRenderThread::pBeginFrame(){
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
+	
+	pOgl.GetShaderCompilingInfo()->PrepareForRender( pLastFrameTime );
 	
 	pFrameCounter++; // wraps around when hitting maximum
 	pVRBeginFrame();

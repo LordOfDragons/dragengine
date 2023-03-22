@@ -299,6 +299,9 @@ public:
 	/** Overlay canvas view. */
 	inline const deCanvasView::Ref &GetOverlay() const{ return pOverlay; }
 	
+	/** Shader compiling information. */
+	inline const deoglShaderCompilingInfo::Ref &GetShaderCompilingInfo() const{ return pShaderCompilingInfo; }
+	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
 	
