@@ -17,7 +17,7 @@ appendLibrary(envModule, parent_targets['lib_libvpx'], libs)
 appendLibrary(envModule, parent_targets['lib_libwebm'], libs)
 
 # fetch values in expanded form for later use
-versionString = '1.0'
+versionString = '1.17'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

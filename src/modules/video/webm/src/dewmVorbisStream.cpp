@@ -141,15 +141,15 @@ bool dewmVorbisStream::OpenTrack( const webm::TrackEntry &track ){
 	memset( op, 0, sizeof( op ) );
 	
 	op[ 0 ].packet = ( unsigned char* )( codecPrivateData.data() + offset );
-	op[ 0 ].bytes = headerSize[ 0 ];
+	op[ 0 ].bytes = ( long )headerSize[ 0 ];
 	op[ 0 ].b_o_s = 1;
 	
 	op[ 1 ].packet = ( unsigned char* )( codecPrivateData.data() + offset + headerSize[ 0 ] );
-	op[ 1 ].bytes = headerSize[ 1 ];
+	op[ 1 ].bytes = ( long )headerSize[ 1 ];
 	
 	op[ 2 ].packet = ( unsigned char* )( codecPrivateData.data()
 		+ offset + headerSize[ 0 ] + headerSize[ 1 ] );
-	op[ 2 ].bytes = headerSize[ 2 ];
+	op[ 2 ].bytes = ( long )headerSize[ 2 ];
 	
 	vorbis_info_init( &pInfo );
 	pInfoInited = true;
@@ -220,7 +220,7 @@ void dewmVorbisStream::CopySamples(){
 
 void dewmVorbisStream::LoadFrameData( std::uint64_t frameSize ){
 	pPacket.packet = ( unsigned char* )pCallback.GetFrameBuffer();
-	pPacket.bytes = frameSize;
+	pPacket.bytes = ( long )frameSize;
 	
 	if( vorbis_synthesis( &pBlock, &pPacket ) ){
 		return; // corrupt package. ignore it

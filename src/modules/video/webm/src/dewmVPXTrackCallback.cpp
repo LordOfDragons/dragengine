@@ -131,7 +131,8 @@ void dewmVPXTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &b
 	// after this call bytes_remaining is set to 0
 	const uint64_t frameSize = bytes_remaining;
 	pReadFrameData( reader, bytes_remaining );
-	DEASSERT_TRUE( vpx_codec_decode( pContext, pGetBuffer(), frameSize, nullptr, 0 ) == VPX_CODEC_OK )
+	DEASSERT_TRUE( vpx_codec_decode( pContext, pGetBuffer(),
+		( unsigned int )frameSize, nullptr, 0 ) == VPX_CODEC_OK )
 	pIterator = nullptr;
 	
 	if( ! pResBuffer ){
@@ -249,7 +250,8 @@ void dewmVPXTrackCallback::pProcessAdditional( const std::vector<unsigned char> 
 	}
 	
 	// decode data. codec requires entire frame to be present
-	DEASSERT_TRUE( vpx_codec_decode( pContextTransparency, data.data(), data.size(), nullptr, 0 ) == VPX_CODEC_OK )
+	DEASSERT_TRUE( vpx_codec_decode( pContextTransparency, data.data(),
+		( unsigned int )data.size(), nullptr, 0 ) == VPX_CODEC_OK )
 	
 	if( ! pResBuffer ){
 		// skip frame

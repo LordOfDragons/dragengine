@@ -320,7 +320,8 @@ std::uint64_t &bytes_remaining ){
 		DEASSERT_TRUE( reader.Read( bytes_remaining, data, &readCount ).completed_ok() );
 		bytes_remaining -= readCount;
 		
-		DEASSERT_TRUE( vpx_codec_decode( context, data, readCount, nullptr, 0 ) == VPX_CODEC_OK )
+		DEASSERT_TRUE( vpx_codec_decode( context, data,
+			( unsigned int )readCount, nullptr, 0 ) == VPX_CODEC_OK )
 		
 		image = vpx_codec_get_frame( context, &iter );
 		DEASSERT_NOTNULL( image )
