@@ -457,7 +457,7 @@ deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor( deoglSkinTexturePipelines::
 		return NULL;
 	}
 	
-	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt( deoglSkinTexturePipelinesList::eptBillboard ).GetWithRef( type ).GetShader();
 	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
 	deoglRDynamicSkin *dynamicSkin = NULL;
@@ -1041,7 +1041,7 @@ void deoglRBillboard::pPrepareParamBlocks(){
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
-			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+			deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptBillboard ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			

@@ -338,7 +338,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexturePipel
 	deoglTexUnitsConfig *tuc = NULL;
 	int target;
 	
-	deoglSkinShader &skinShader = skinTexture->GetPipelines().
+	deoglSkinShader &skinShader = *skinTexture->GetPipelines().
 		GetAt( deoglSkinTexturePipelinesList::eptPropField ).
 		GetWithRef( type ).GetShader();
 	

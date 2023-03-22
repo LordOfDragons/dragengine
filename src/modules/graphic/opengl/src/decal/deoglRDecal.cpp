@@ -488,7 +488,7 @@ deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexturePipelines::eTyp
 		envmapSky = pParentComponent->GetParentWorld()->GetSkyEnvironmentMap();
 	}
 	
-	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt( deoglSkinTexturePipelinesList::eptDecal ).GetWithRef( type ).GetShader();
 	
 	if( skinShader.GetUsedTextureTargetCount() > 0 ){
@@ -1028,7 +1028,7 @@ void deoglRDecal::pPrepareParamBlocks(){
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
-			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+			deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptDecal ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			

@@ -88,11 +88,11 @@ public:
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** Retrieves a unit source code path. */
+	/** Unit source code path. */
 	const char *GetUnitSourceCodePath( eUnitSourceCodePath unitSourceCodePath ) const;
 	
-	/** Retrieves the shader with the given configuration creating it if not existing. */
-	deoglSkinShader::Ref GetShaderWith( deoglSkinShaderConfig &configuration );
+	/** Shader with configuration creating it if absent. */
+	deoglSkinShader *GetShaderWith( deoglSkinShaderConfig &configuration );
 	
 	/** Retrieves the number of shaders. */
 	int GetShaderCount();

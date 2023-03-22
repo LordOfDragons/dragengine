@@ -29,8 +29,9 @@
 
 #include <dragengine/deObject.h>
 
-class deoglSkinTexture;
 class deoglShaderLoadingTimeout;
+class deoglSkinTexture;
+class deoglSkinShaderConfig;
 
 
 /**

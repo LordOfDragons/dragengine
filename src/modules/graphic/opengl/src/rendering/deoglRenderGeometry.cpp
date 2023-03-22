@@ -382,7 +382,7 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 	
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.RenderTaskCompute" );
 	const deoglRenderTaskSharedPool &rtsPool = renderThread.GetRenderTaskSharedPool();
-	const deoglPipelineManager &pipManager = renderThread.GetPipelineManager();
+	deoglPipelineManager &pipManager = renderThread.GetPipelineManager();
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 // 	const int strideIndirect = sizeof( oglDrawIndirectCommand );

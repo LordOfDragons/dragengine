@@ -75,20 +75,6 @@ pMaintananceInterval( 0 ){
 }
 
 deoglSkinShaderManager::~deoglSkinShaderManager(){
-	const int shaderCount = pShaderList.GetCount();
-	decString text;
-	int i;
-	
-	for( i=0; i<shaderCount; i++ ){
-		const deoglSkinShader &shader = *( ( deoglSkinShader* )pShaderList.GetAt( i ) );
-		
-		if( shader.GetRefCount() != 1 ){
-			shader.GetConfig().DebugGetConfigString( text );
-			pRenderThread.GetLogger().LogWarnFormat(
-				"ShaderSkinManager CleanUp: Shader with refcount %i. Config=%s",
-				shader.GetRefCount(), text.GetString() );
-		}
-	}
 }
 
 
@@ -112,7 +98,7 @@ const deoglSkinShader &deoglSkinShaderManager::GetShaderAt( int index ){
 	return *( const deoglSkinShader * )pShaderList.GetAt( index );
 }
 
-deoglSkinShader::Ref deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
+deoglSkinShader *deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
 	const deMutexGuard guard( pMutex );
 	const int count = pShaderList.GetCount();
 	int i;
@@ -122,12 +108,17 @@ deoglSkinShader::Ref deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfi
 	for( i=0; i<count; i++ ){
 		deoglSkinShader * const shader = ( deoglSkinShader* )pShaderList.GetAt( i );
 		if( shader->GetConfig() == configuration ){
-			return deoglSkinShader::Ref( shader );
+			return shader;
 		}
 	}
 	
 	const deoglSkinShader::Ref shader( deoglSkinShader::Ref::New(
 		new deoglSkinShader( pRenderThread, configuration ) ) );
+	
+	// make GetShader() to be present. this is a potentially lengthy call if the
+	// shader has to be compiled instead of loaded from cache
+	shader->PrepareShader();
+	
 	pShaderList.Add( shader );
 	return shader;
 }

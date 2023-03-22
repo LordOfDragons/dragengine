@@ -27,6 +27,7 @@
 #include "../renderthread/deoglRenderThread.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 // Class deoglPipelineManager
@@ -48,20 +49,14 @@ deoglPipelineManager::~deoglPipelineManager(){
 // Management
 ///////////////
 
-int deoglPipelineManager::GetCount() const{
-	return pPipelines.GetCount();
-}
-
-const deoglPipeline *deoglPipelineManager::GetAt( int index ) const{
-	return ( deoglPipeline* )pPipelines.GetAt( index );
-}
-
-const deoglPipeline *deoglPipelineManager::GetWithRTSIndex( int index ) const{
+const deoglPipeline *deoglPipelineManager::GetWithRTSIndex( int index ){
+	const deMutexGuard guard( pMutex );
 	return ( const deoglPipeline* )pRTSPipelines.GetAt( index );
 }
 
 const deoglPipeline *deoglPipelineManager::GetWith(
 const deoglPipelineConfiguration &configuration, bool assignRTSIndex ){
+	const deMutexGuard guard( pMutex );
 	const int count = pPipelines.GetCount();
 	int i;
 	
@@ -82,21 +77,4 @@ const deoglPipelineConfiguration &configuration, bool assignRTSIndex ){
 	}
 	
 	return pipeline; // caller does not hold reference
-}
-
-bool deoglPipelineManager::HasWith( const deoglPipelineConfiguration &configuration ) const{
-	const int count = pPipelines.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( ( ( deoglPipeline* )pPipelines.GetAt( i ) )->GetGlConfiguration() == configuration ){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-void deoglPipelineManager::Clear(){
-	pPipelines.RemoveAll();
 }

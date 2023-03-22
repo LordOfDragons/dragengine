@@ -976,13 +976,10 @@ deoglShaderLoadingTimeout &timeout ){
 		pipconf.SetEnableCullFace( modifier & emDoubleSided ? false : enableCullFace );
 		
 		// create shader and pipeline
-		const deoglSkinShader::Ref shader(
-			deoglSkinShader::Ref::New( shaderManager.GetShaderWith( shaconf ) ) );
+		deoglSkinShader *shader;
 		
 		try{
-			// make GetShader() to be present. this is a potentially lengthy call
-			// if the shader has to be compiled instead of loaded from cache
-			shader->PrepareShader();
+			shader = shaderManager.GetShaderWith( shaconf );
 			
 		}catch( ... ){
 			pTexture.GetRenderThread().GetLogger().LogErrorFormat(

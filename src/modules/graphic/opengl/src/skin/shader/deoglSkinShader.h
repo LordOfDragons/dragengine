@@ -328,7 +328,7 @@ public:
 	/** Target of draw id offset parameter or -1 if not used. */
 	inline int GetTargetDrawIDOffset() const{ return pTargetDrawIDOffset; }
 	
-	/** Prepare shader. */
+	/** Prepare shader. For use by deoglSkinShaderManager only. */
 	void PrepareShader();
 	
 	/** Shader. */

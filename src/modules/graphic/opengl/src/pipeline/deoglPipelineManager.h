@@ -27,6 +27,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
 class deoglPipeline;
@@ -48,6 +49,7 @@ private:
 	decObjectList pPipelines;
 	
 	decPointerList pRTSPipelines;
+	deMutex pMutex;
 	
 	
 	
@@ -73,24 +75,12 @@ public:
 	/** State. */
 	inline deoglPipelineState &GetState(){ return pState; }
 	
-	/** Count of pipelines. */
-	int GetCount() const;
-	
-	/** Pipeline at index. Caller does not hold reference. */
-	const deoglPipeline *GetAt( int index ) const;
-	
 	/** Pipeline with RTS index or nullptr. Caller does not hold reference. */
-	const deoglPipeline *GetWithRTSIndex( int index ) const;
+	const deoglPipeline *GetWithRTSIndex( int index );
 	
 	/** Pipeline with configuration creating it if absent. Caller does not hold reference. */
 	const deoglPipeline *GetWith( const deoglPipelineConfiguration &configuration,
 		bool assignRTSIndex = false );
-	
-	/** Pipeline with configuration is present. */
-	bool HasWith( const deoglPipelineConfiguration &configuration ) const;
-	
-	/** Remove all pipelines. */
-	void Clear();
 	/*@}*/
 };
 

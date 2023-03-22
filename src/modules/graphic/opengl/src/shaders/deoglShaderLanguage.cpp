@@ -1014,11 +1014,17 @@ deoglShaderCompiled *deoglShaderLanguage::pCacheLoadShader( deoglShaderProgram &
 		// create program using binary data
 		compiled = new deoglShaderCompiled( pRenderThread );
 		
+		{
+		// this has to be mutex protected since this uses opengl call like pCompileShader()
+		const deMutexGuard guard( pMutexCompile );
+		
 		OGL_CHECK( pRenderThread, pglProgramBinary( compiled->GetHandleShader(),
 			format, data.GetString(), length ) );
 		
-		// loading the binary does everything up to the linking step
+		// loading the binary does everything up to the linking step. this also uses
+		// opengl calls and thus has to be mutex protected
 		pAfterLinkShader( program, *compiled );
+		}
 		
 		// done
 		reader = nullptr;

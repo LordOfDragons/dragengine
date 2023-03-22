@@ -197,7 +197,13 @@ void deoglShaderCompilingInfo::pUpdateState( float elapsed ){
 			return;
 		}
 		
-		pState = esDelayFadeIn;
+		if( pHasCompilingShader ){
+			pState = esFadeIn;
+			
+		}else{
+			pState = esDelayFadeIn;
+		}
+		
 		pElapsed = 0.0f;
 		pFrames = 0;
 		

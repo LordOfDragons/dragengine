@@ -676,7 +676,7 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 		pParamBlock = nullptr;
 		
 		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+			const deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptPropField ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
@@ -695,7 +695,7 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 	
 	if( pDirtyParamBlock ){
 		if( pParamBlock ){
-			UpdateInstanceParamBlock( pParamBlock, pUseSkinTexture->GetPipelines().
+			UpdateInstanceParamBlock( pParamBlock, *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptPropField ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader() );
 		}

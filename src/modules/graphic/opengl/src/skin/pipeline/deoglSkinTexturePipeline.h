@@ -22,9 +22,10 @@
 #ifndef _DEOGLSKINTEXTUREPIPELINE_H_
 #define _DEOGLSKINTEXTUREPIPELINE_H_
 
-#include "../shader/deoglSkinShader.h"
+#include <dragengine/deObject.h>
 
 class deoglPipeline;
+class deoglSkinShader;
 
 
 /**
@@ -38,7 +39,7 @@ public:
 	
 private:
 	const deoglPipeline * const pPipeline;
-	const deoglSkinShader::Ref pShader;
+	deoglSkinShader *pShader;
 	
 	
 	
@@ -46,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglSkinTexturePipeline( const deoglPipeline *pipeline, const deoglSkinShader::Ref &shader );
+	deoglSkinTexturePipeline( const deoglPipeline *pipeline, deoglSkinShader *shader );
 	
 protected:
 	/** Clean up light pipeline. */
@@ -62,7 +63,7 @@ public:
 	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Shader. */
-	inline const deoglSkinShader::Ref &GetShader() const{ return pShader; }
+	inline deoglSkinShader *GetShader() const{ return pShader; }
 	/*@}*/
 };
 

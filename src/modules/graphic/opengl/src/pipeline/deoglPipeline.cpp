@@ -38,7 +38,7 @@
 deoglPipeline::deoglPipeline( deoglRenderThread &renderThread,
 	const deoglPipelineConfiguration &configuration ) :
 pRenderThread( renderThread ),
-	pRTSIndex ( -1 ),
+pRTSIndex( -1 ),
 pGlConfiguration( nullptr ),
 pVkPipeline( nullptr )
 {
@@ -54,7 +54,7 @@ pVkPipeline( nullptr )
 deoglPipeline::deoglPipeline( deoglRenderThread &renderThread,
 	const devkPipelineConfiguration &configuration ) :
 pRenderThread( renderThread ),
-	pRTSIndex ( -1 ),
+pRTSIndex( -1 ),
 pGlConfiguration( nullptr ),
 pVkPipeline( nullptr )
 {
