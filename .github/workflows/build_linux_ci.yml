@@ -72,7 +72,7 @@ jobs:
           scons -j 1 lib_openxr
           scons -j 1 lib_openvr
           scons -j 1 lib_libjpeg
-          scons -j 1 lib_webm
+          scons -j 1 lib_libwebm
           scons -j 14 archive installer
       
       - name: Get current date
