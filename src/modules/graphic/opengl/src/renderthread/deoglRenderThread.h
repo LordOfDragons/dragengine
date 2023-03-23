@@ -176,6 +176,7 @@ private:
 	deoglDebugInformation::Ref pDebugInfoThreadRenderCapture;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderEnd;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderSwap;
+	deoglDebugInformation::Ref pDebugInfoVRRender;
 	
 	deoglDebugInformation::Ref pDebugInfoFrameLimiter;
 	deoglDebugInformation::Ref pDebugInfoFLEstimMain;
@@ -201,6 +202,7 @@ private:
 	float pDebugTimeThreadRenderWindowsRender;
 	float pDebugTimeThreadRenderCapture;
 	float pDebugTimeThreadRenderSwap;
+	float pDebugTimeVRRender;
 	int pDebugCountThreadWindows;
 	
 	// deprecated
@@ -467,6 +469,9 @@ public:
 	
 	/** Sample debug timer render thread render windows render. */
 	void SampleDebugTimerRenderThreadRenderWindowsRender();
+	
+	/** Sample debug timer VR render. */
+	void SampleDebugTimerVRRender();
 	
 	
 	

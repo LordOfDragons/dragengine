@@ -150,6 +150,7 @@ pDebugTimeThreadRenderWindowsPrepare( 0.0f ),
 pDebugTimeThreadRenderWindowsRender( 0.0f ),
 pDebugTimeThreadRenderCapture( 0.0f ),
 pDebugTimeThreadRenderSwap( 0.0f ),
+pDebugTimeVRRender( 0.0f ),
 pDebugCountThreadWindows( 0 ),
 
 // deprecated
@@ -867,18 +868,22 @@ void deoglRenderThread::CreateRenderWindow( deoglRRenderWindow *window ){
 //////////////
 
 void deoglRenderThread::SampleDebugTimerRenderThreadRenderWindowsPrepare(){
-	if( ! pDebugInfoModule->GetVisible() ){
-		return;
+	if( pDebugInfoModule->GetVisible() ){
+		pDebugTimeThreadRenderWindowsPrepare = pDebugTimerRenderThread3.GetElapsedTime();
 	}
-	pDebugTimeThreadRenderWindowsPrepare = pDebugTimerRenderThread3.GetElapsedTime();
 }
 
 void deoglRenderThread::SampleDebugTimerRenderThreadRenderWindowsRender(){
-	if( ! pDebugInfoModule->GetVisible() ){
-		return;
+	if( pDebugInfoModule->GetVisible() ){
+		pDebugTimeThreadRenderWindowsRender = pDebugTimerRenderThread3.GetElapsedTime();
+		pDebugCountThreadWindows++;
 	}
-	pDebugTimeThreadRenderWindowsRender = pDebugTimerRenderThread3.GetElapsedTime();
-	pDebugCountThreadWindows++;
+}
+
+void deoglRenderThread::SampleDebugTimerVRRender(){
+	if( pDebugInfoModule->GetVisible() ){
+		pDebugTimeVRRender = pDebugTimerRenderThread3.GetElapsedTime();
+	}
 }
 
 void deoglRenderThread::DevModeDebugInfoChanged(){
@@ -1014,6 +1019,9 @@ void deoglRenderThread::pInitThreadPhase4(){
 		
 		pDebugInfoThreadRenderWindows.TakeOver( new deoglDebugInformation( "Windows", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderWindows );
+			
+			pDebugInfoVRRender.TakeOver( new deoglDebugInformation( "VR Render", colorText, colorBgSub3 ) );
+			pDebugInfoThreadRenderWindows->GetChildren().Add( pDebugInfoVRRender );
 			
 			pDebugInfoThreadRenderWindowsPrepare.TakeOver( new deoglDebugInformation( "Prepare", colorText, colorBgSub3 ) );
 			pDebugInfoThreadRenderWindows->GetChildren().Add( pDebugInfoThreadRenderWindowsPrepare );
@@ -1554,6 +1562,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		pDebugTimeThreadRenderWindowsPrepare = 0.0f;
 		pDebugTimeThreadRenderWindowsRender = 0.0f;
 		pDebugCountThreadWindows = 0;
+		pDebugTimeVRRender = 0.0f;
 		
 		pRenderers->GetCanvas().DebugInfoCanvasReset();
 		
@@ -1672,6 +1681,9 @@ void deoglRenderThread::pRenderSingleFrame(){
 		
 		pDebugInfoThreadRenderBegin->Clear();
 		pDebugInfoThreadRenderBegin->IncrementElapsedTime( pDebugTimeThreadRenderBegin );
+		
+		pDebugInfoVRRender->Clear();
+		pDebugInfoVRRender->IncrementElapsedTime( pDebugTimeVRRender );
 		
 		pDebugInfoThreadRenderWindows->Clear();
 		pDebugInfoThreadRenderWindows->IncrementElapsedTime( pDebugTimeThreadRenderWindows );
@@ -2531,6 +2543,7 @@ void deoglRenderThread::pCleanUpThread(){
 		pDebugInfoThreadRenderCapture = nullptr;
 		pDebugInfoThreadRenderEnd = nullptr;
 		pDebugInfoThreadRenderSwap = nullptr;
+		pDebugInfoVRRender = nullptr;
 		pDebugInfoFrameLimiter = nullptr;
 		pDebugInfoFLEstimMain = nullptr;
 		pDebugInfoFLEstimRender = nullptr;

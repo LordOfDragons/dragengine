@@ -216,6 +216,7 @@ void deoglVR::Render(){
 	plan.SetFBOTarget( nullptr );
 	plan.SetRenderVR( deoglRenderPlan::ervrNone );
 	plan.SetRenderStereo( false );
+	pCamera.GetRenderThread().SampleDebugTimerVRRender();
 }
 
 void deoglVR::Submit(){
