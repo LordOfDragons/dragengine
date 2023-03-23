@@ -593,6 +593,7 @@ void deoxrSession::pEnumSwapchainFormats(){
 	
 	pSwapchainFormats = new int64_t[ count ];
 	OXR_CHECK( instance.xrEnumerateSwapchainFormats( pSession, count, &count, pSwapchainFormats ) );
+	pSwapchainFormatCount = count;
 	
 	uint32_t i;
 	for( i=0; i<count; i++ ){
