@@ -117,16 +117,20 @@ pTaskGIUpdateRT( NULL )
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
 	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters(), deoglSPBlockSSBO::etGpu ) );
 	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements(), deoglSPBlockSSBO::etGpu ) );
+	pSSBOVisibleElements->EnsureBuffer();
 	pSSBOVisibleElements2.TakeOver( new deoglSPBlockSSBO( pSSBOVisibleElements, deoglSPBlockSSBO::etGpu ) );
+	pSSBOVisibleElements2->EnsureBuffer();
 	
 	pUBOFindConfigGIStatic.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
 	pSSBOCountersGIStatic.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
 	pSSBOVisibleElementsGIStatic.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements() ) );
+	pSSBOVisibleElementsGIStatic->EnsureBuffer();
 	pCRTShadowGIStatic.TakeOver( new deoglComputeRenderTask( renderThread ) );
 	
 	pUBOFindConfigGIDynamic.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
 	pSSBOCountersGIDynamic.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
 	pSSBOVisibleElementsGIDynamic.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements() ) );
+	pSSBOVisibleElementsGIDynamic->EnsureBuffer();
 	pCRTShadowGIDynamic.TakeOver( new deoglComputeRenderTask( renderThread ) );
 }
 

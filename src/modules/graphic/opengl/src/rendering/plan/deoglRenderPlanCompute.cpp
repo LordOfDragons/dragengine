@@ -103,6 +103,7 @@ pPlan( plan )
 	pSSBOVisibleElements->EnsureBuffer();
 	
 	pSSBOVisibleElements2.TakeOver( new deoglSPBlockSSBO( pSSBOVisibleElements ) );
+	pSSBOVisibleElements2->EnsureBuffer();
 	
 	pRTOcclusion.TakeOver( new deoglComputeRenderTask( plan.GetRenderThread() ) );
 	pRTOcclusion->SetFilterSolid( false );
@@ -223,6 +224,13 @@ void deoglRenderPlanCompute::UpdateElementGeometries(){
 	
 	pPlan.GetRenderThread().GetRenderers().GetCompute().UpdateElementGeometries( pPlan );
 	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Compute %dys", (int)(timer.GetElapsedTime()*1e6f));
+}
+
+void deoglRenderPlanCompute::ClearGeometries(){
+	const deoglWorldCompute &compute = pPlan.GetWorld()->GetCompute();
+	if( compute.GetClearGeometryCount() > 0 ){
+		pPlan.GetRenderThread().GetRenderers().GetCompute().ClearGeometries( pPlan );
+	}
 }
 
 void deoglRenderPlanCompute::BuildRTOcclusion( const deoglRenderPlanMasked *mask ){

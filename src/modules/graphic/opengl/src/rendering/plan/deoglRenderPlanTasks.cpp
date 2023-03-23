@@ -414,7 +414,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	renderTask.SetDecal( false );
 	
 	renderTask.SetSkinPipelineLists( 0 );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptOutline );
 	
 	renderTask.EndPass( worldCompute );
 }
@@ -474,7 +474,7 @@ const deoglRenderPlanMasked*, bool xray ){
 	renderTask.SetOutline( true );
 	
 	renderTask.SetSkinPipelineLists( 0 );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
+	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptOutline );
 	
 	renderTask.EndPass( worldCompute );
 	

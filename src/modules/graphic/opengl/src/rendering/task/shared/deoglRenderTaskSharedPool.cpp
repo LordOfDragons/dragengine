@@ -122,6 +122,7 @@ int deoglRenderTaskSharedPool::AssignSkinTexture( deoglSkinTexture *skinTexture 
 	if( index > -1 ){
 		slot = pFreeSkinTextures.GetAt( index );
 		pFreeSkinTextures.RemoveFrom( index );
+		pSkinTextures.SetAt( slot, skinTexture );
 		
 	}else{
 		slot = pSkinTextures.GetCount();

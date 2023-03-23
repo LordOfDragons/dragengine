@@ -43,6 +43,8 @@ void main( void ){
 	}
 	
 	// filter by render task filters. config.renderTaskFilters contains config.renderTaskFilterMask
+	// actually renderFilter == uint(0) has to be checked too to ignore disabled geometry.
+	// since though renderTaskFilter/renderTaskFilterMask is never 0 this can be spared
 	uint rfgeometry = pElementGeometries[ index ].renderFilter;
 	if( ( rfgeometry & config.renderTaskFilterMask ) != config.renderTaskFilter ){
 		return;

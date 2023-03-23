@@ -82,20 +82,24 @@ public:
 	
 	/** Shader element geometry parameters. */
 	enum eShaderParamsElementGeometry{
-		espetElement,
-		espetLod,
-		espetRenderFilter,
-		espetSkinTexture,
-		espetPipelineBase,
-		espetVao,
-		espetInstance,
-		espetSPBInstance,
-		espetTUCs
+		espegElement,
+		espegLod,
+		espegRenderFilter,
+		espegSkinTexture,
+		espegPipelineBase,
+		espegVao,
+		espegInstance,
+		espegSPBInstance,
+		espegTUCs
 	};
 	
 	
 	
 private:
+	struct sClearGeometries{
+		int first, count;
+	};
+	
 	deoglRWorld &pWorld;
 	
 	deoglSPBlockSSBO::Ref pSSBOElements;
@@ -110,6 +114,11 @@ private:
 	int pFullUpdateGeometryLimit;
 	float pFullUpdateGeometryFactor;
 	int pUpdateElementGeometryCount;
+	
+	sClearGeometries *pClearGeometries;
+	int pClearGeometriesCount;
+	int pClearGeometriesSize;
+	int pClearGeometryCount;
 	
 	deoglSPBlockSSBO::Ref pSSBOElementGeometries;
 	deoglSharedBlockSPB::Ref pSharedSPBGeometries;
@@ -173,6 +182,9 @@ public:
 	/** Update element geometry count. */
 	inline int GetUpdateElementGeometryCount() const{ return pUpdateElementGeometryCount; }
 	
+	/** Clear element geometry count. */
+	inline int GetClearGeometryCount() const{ return pClearGeometryCount; }
+	
 	
 	
 	/** SSBO element geometries. */
@@ -192,6 +204,8 @@ private:
 	
 	void pUpdateSSBOElementGeometries();
 	void pFullUpdateSSBOElementGeometries();
+	
+	void pUpdateSSBOClearGeometries();
 	
 	void pUpdateFullUpdateLimits();
 	void pUpdateFullUpdateGeometryLimits();

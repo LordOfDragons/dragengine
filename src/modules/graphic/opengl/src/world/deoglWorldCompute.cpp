@@ -49,7 +49,11 @@ pFullUpdateFactor( 0.2f ),
 pUpdateElementCount( 0 ),
 pFullUpdateGeometryLimit( 0 ),
 pFullUpdateGeometryFactor( 0.25f ),
-pUpdateElementGeometryCount( 0 )
+pUpdateElementGeometryCount( 0 ),
+pClearGeometries( nullptr ),
+pClearGeometriesCount( 0 ),
+pClearGeometriesSize( 0 ),
+pClearGeometryCount( 0 )
 {
 	deoglRenderThread &renderThread = world.GetRenderThread();
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
@@ -73,15 +77,15 @@ pUpdateElementGeometryCount( 0 )
 	pSSBOElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOElementGeometries->SetRowMajor( rowMajor );
 	pSSBOElementGeometries->SetParameterCount( 9 );
-	pSSBOElementGeometries->GetParameterAt( espetElement ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetLod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetRenderFilter ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetSkinTexture ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetPipelineBase ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetVao ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetSPBInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegElement ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegLod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegRenderFilter ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegSkinTexture ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegPipelineBase ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegVao ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegSPBInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOElementGeometries->MapToStd140();
 	
 	pSharedSPBGeometries.TakeOver( new deoglSharedBlockSPB( pSSBOElementGeometries ) );
@@ -100,6 +104,10 @@ deoglWorldCompute::~deoglWorldCompute(){
 		element.GetSPBGeometries() = nullptr;
 	}
 	pElements.RemoveAll();
+	
+	if( pClearGeometries ){
+		delete [] pClearGeometries;
+	}
 }
 
 
@@ -120,6 +128,13 @@ void deoglWorldCompute::Prepare(){
 }
 
 void deoglWorldCompute::PrepareGeometries(){
+	if( pClearGeometriesCount < pFullUpdateGeometryLimit ){
+		pUpdateSSBOClearGeometries();
+		
+	}else{
+		pFullUpdateGeometryLimit = 0;
+	}
+	
 	if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit ){
 		pUpdateSSBOElementGeometries();
 		// pFullUpdateSSBOElementGeometries();
@@ -151,9 +166,13 @@ void deoglWorldCompute::AddElement( deoglWorldComputeElement *element ){
 	element->SetWorldCompute( this );
 	element->SetIndex( index );
 	element->SetUpdateRequired( true );
+	element->SetUpdateGeometriesRequired( true );
 	
 	if( pUpdateElements.GetCount() < pFullUpdateLimit ){
 		pUpdateElements.Add( element );
+	}
+	if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit ){
+		pUpdateElementGeometries.Add( element );
 	}
 }
 
@@ -180,13 +199,31 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 	
 	const int last = pElements.GetCount() - 1;
 	
-	element->GetSPBGeometries() = nullptr;
+	if( element->GetSPBGeometries() ){
+		// clear geometries
+		if( pClearGeometriesCount < pFullUpdateGeometryLimit ){
+			sClearGeometries &entry = pClearGeometries[ pClearGeometriesCount++ ];
+			entry.first = element->GetSPBGeometries()->GetIndex();
+			entry.count = element->GetSPBGeometries()->GetCount();
+		}
+		
+		element->GetSPBGeometries() = nullptr;
+	}
+	
 	element->SetIndex( -1 );
 	element->SetWorldCompute( nullptr );
 	element->SetUpdateRequired( false );
 	element->SetUpdateGeometriesRequired( false );
 	
-	const int removeIndex = pUpdateElements.IndexOf( element );
+	// removing from clear geometries is not required since clearing happens
+	// before updating so no wrong results can happen
+	
+	int removeIndex = pUpdateElementGeometries.IndexOf( element );
+	if( removeIndex != -1 ){
+		pUpdateElementGeometries.RemoveFrom( removeIndex );
+	}
+	
+	removeIndex = pUpdateElements.IndexOf( element );
 	if( removeIndex != -1 ){
 		pUpdateElements.RemoveFrom( removeIndex );
 	}
@@ -201,6 +238,13 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 			
 			if( pUpdateElements.GetCount() < pFullUpdateLimit ){
 				pUpdateElements.Add( swap );
+			}
+			
+			if( swap->GetSPBGeometries() ){
+				// updating geometries is required since they contain the element index
+				if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit ){
+					pUpdateElementGeometries.Add( swap );
+				}
 			}
 		}
 	}
@@ -225,6 +269,8 @@ void deoglWorldCompute::UpdateElementGeometries( deoglWorldComputeElement *eleme
 	if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit ){
 		pUpdateElementGeometries.Add( element );
 	}
+	
+	// no clearing geometries here since pCheckElementGeometryCount() will do this if required
 }
 
 
@@ -299,8 +345,11 @@ deoglWorldComputeElement::sDataElement &data ){
 void deoglWorldCompute::pCheckElementGeometryCount( deoglWorldComputeElement &element,
 deoglWorldComputeElement::sDataElement &data ){
 	// check if geometry count changed
+	int oldFirstIndex = 0;
 	int oldGeometryCount = 0;
+	
 	if( element.GetSPBGeometries() ){
+		oldFirstIndex = element.GetSPBGeometries()->GetIndex();
 		oldGeometryCount = element.GetSPBGeometries()->GetCount();
 	}
 	
@@ -310,14 +359,25 @@ deoglWorldComputeElement::sDataElement &data ){
 	}
 	
 	if( geometryCount == 0 ){
+		if( oldGeometryCount > 0 ){
+			// clear old geometries
+			if( pClearGeometriesCount < pFullUpdateGeometryLimit ){
+				sClearGeometries &entry = pClearGeometries[ pClearGeometriesCount++ ];
+				entry.first = oldFirstIndex;
+				entry.count = oldGeometryCount;
+			}
+		}
+		
 		element.GetSPBGeometries() = nullptr;
 		return;
 	}
 	
 	if( geometryCount < oldGeometryCount ){
-		// if the geometry count is less we can keep using the same spb element. this does waste
-		// some slots but chances are the geometry count increses again soon most probably back
-		// to the old count. this is typically the case with outline geometries
+		// if the geometry count is less we can keep using the same spb element. this does
+		// waste some slots but chances are the geometry count increses again soon most
+		// probably back to the old count. this is typically the case with outline geometries.
+		// 
+		// we do not have to clear the geometries since updating element does already
 		return;
 	}
 	
@@ -326,16 +386,27 @@ deoglWorldComputeElement::sDataElement &data ){
 	element.GetSPBGeometries() = nullptr;
 	element.GetSPBGeometries() = pSharedSPBGeometries->GetElement( geometryCount );
 	
-	// if no new element can be obtained we have to grow the spb. this requires a full update
-	// so we can stop trying to do partial updates in the future
+	// if new element can be obtained clear old geometries range. updating element will
+	// write the new geometry range. furthermore UpdateElementGeometries() will be called
+	// too so we do not need to add updating the new geometry range here
 	if( element.GetSPBGeometries() ){
-		return;
+		if( oldGeometryCount > 0 ){
+			// clear old geometries
+			if( pClearGeometriesCount < pFullUpdateGeometryLimit ){
+				sClearGeometries &entry = pClearGeometries[ pClearGeometriesCount++ ];
+				entry.first = oldFirstIndex;
+				entry.count = oldGeometryCount;
+			}
+		}
+		
+	// if no new element can be obtained we have to grow the spb. this requires a full
+	// update so we can stop trying to do partial updates in the future
+	}else{
+		pSSBOElementGeometries->SetElementCount( pSSBOElementGeometries->GetElementCount() + geometryCount + 100 );
+		pFullUpdateGeometryLimit = 0;
+		
+		element.GetSPBGeometries() = pSharedSPBGeometries->GetElement( geometryCount );
 	}
-	
-	pSSBOElementGeometries->SetElementCount( pSSBOElementGeometries->GetElementCount() + geometryCount + 100 );
-	pFullUpdateGeometryLimit = 0;
-	
-	element.GetSPBGeometries() = pSharedSPBGeometries->GetElement( geometryCount );
 }
 
 
@@ -409,6 +480,7 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 }
 
 void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
+	pClearGeometryCount = 0;
 	pUpdateElementGeometryCount = 0;
 	pUpdateElementGeometries.RemoveAll();
 	
@@ -439,6 +511,41 @@ void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 
 
 
+void deoglWorldCompute::pUpdateSSBOClearGeometries(){
+	pClearGeometryCount = 0;
+	
+	int i;
+	for( i=0; i<pClearGeometriesCount; i++ ){
+		pClearGeometryCount += pClearGeometries[ i ].count;
+	}
+	
+	if( pClearGeometryCount == 0 ){
+		pClearGeometriesCount = 0;
+		return;
+	}
+	
+	const deoglRenderCompute &renderCompute = pWorld.GetRenderThread().GetRenderers().GetCompute();
+	deoglSPBlockSSBO &ssbo = renderCompute.GetSSBOClearGeometries();
+	
+	if( pClearGeometryCount > ssbo.GetElementCount() ){
+		ssbo.SetElementCount( pClearGeometryCount );
+	}
+	
+	const deoglSPBMapBuffer mapped( ssbo, 0, pClearGeometryCount );
+	uint32_t * const data = ( uint32_t* )ssbo.GetMappedBuffer();
+	int j, nextIndex = 0;
+	
+	for( i=0; i<pClearGeometriesCount; i++ ){
+		const sClearGeometries &entry = pClearGeometries[ i ];
+		for( j=0; j<entry.count; j++ ){
+			data[ nextIndex++ ] = ( uint32_t )( entry.first + j );
+		}
+	}
+	pClearGeometriesCount = 0;
+}
+
+
+
 void deoglWorldCompute::pUpdateFullUpdateLimits(){
 	pFullUpdateLimit = decMath::max( pFullUpdateLimit,
 		( int )( pFullUpdateFactor * ( float )pElements.GetCount() ) );
@@ -448,4 +555,16 @@ void deoglWorldCompute::pUpdateFullUpdateGeometryLimits(){
 	// this is count of elements not geometries
 	pFullUpdateGeometryLimit = decMath::max( pFullUpdateGeometryLimit,
 		( int )( pFullUpdateGeometryFactor * ( float )pElements.GetCount() ) );
+	
+	// ensure clear geometries array is large enough
+	if( pClearGeometriesSize < pFullUpdateGeometryLimit ){
+		if( pClearGeometries ){
+			delete [] pClearGeometries;
+			pClearGeometries = nullptr;
+		}
+		
+		pClearGeometries = new sClearGeometries[ pFullUpdateGeometryLimit ];
+		pClearGeometriesSize = pFullUpdateGeometryLimit;
+		pClearGeometriesCount = 0; // should be 0 already
+	}
 }

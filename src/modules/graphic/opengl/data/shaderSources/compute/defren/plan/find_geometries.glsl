@@ -37,11 +37,20 @@ const uint dispatchWorkGroupSize = uint( 64 );
 
 
 void main( void ){
-	if( gl_GlobalInvocationID.x >= pGeometryCount ){
+	uint index = gl_GlobalInvocationID.x;
+	if( index >= pGeometryCount ){
 		return;
 	}
 	
-	uint index = gl_GlobalInvocationID.x;
+	// if render filter is 0 the geometry is disabled and has to be ignore. this check is
+	// important since disabled geometry can have invalid element index pointing outside
+	// the range of pElementCullResult
+	uint rfgeometry = pElementGeometries[ index ].renderFilter;
+	if( rfgeometry == uint( 0 ) ){
+		return;
+	}
+	
+	// now it is safe to check the element cull result
 	uint elementIndex = pElementGeometries[ index ].element;
 	
 	uint cullResult = getElementCullResult( elementIndex );
@@ -56,7 +65,6 @@ void main( void ){
 	
 	// check geometry matches the lod level selected for the element
 	#ifdef WITH_OCCLUSION
-		uint rfgeometry = pElementGeometries[ index ].renderFilter;
 		if( ( rfgeometry & erfOcclusion ) != erfOcclusion
 		&& pElementGeometries[ index ].lod != elementCullResultGetLodIndex( cullResult ) ){
 			return;

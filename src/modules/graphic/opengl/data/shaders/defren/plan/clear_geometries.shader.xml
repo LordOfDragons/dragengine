@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Clear Geometries</name>
+	
+	<parameter name='pClearGeometryCount'/>
+	
+	<shaderStorageBlock name='ClearGeometry' target='0'/>
+	<shaderStorageBlock name='ElementGeometry' target='1'/>
+	
+	<sourceCode unit='compute'>compute/defren/plan/clear_geometries.glsl</sourceCode>
+</shader>

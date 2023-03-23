@@ -117,15 +117,15 @@ deoglRenderBase( renderThread )
 	pSSBOUpdateElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOUpdateElementGeometries->SetRowMajor( rowMajor );
 	pSSBOUpdateElementGeometries->SetParameterCount( 9 );
-	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetElement ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetLod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetRenderFilter ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetSkinTexture ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetPipelineBase ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetVao ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetSPBInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espetTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espegElement ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espegLod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espegRenderFilter ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espegSkinTexture ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espegPipelineBase ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espegVao ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espegInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espegSPBInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElementGeometries->GetParameterAt( deoglWorldCompute::espegTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOUpdateElementGeometries->MapToStd140();
 	
 	pSSBOUpdateIndices.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
@@ -133,6 +133,12 @@ deoglRenderBase( renderThread )
 	pSSBOUpdateIndices->SetParameterCount( 1 );
 	pSSBOUpdateIndices->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOUpdateIndices->MapToStd140();
+	
+	pSSBOClearGeometries.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
+	pSSBOClearGeometries->SetRowMajor( rowMajor );
+	pSSBOClearGeometries->SetParameterCount( 1 );
+	pSSBOClearGeometries->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOClearGeometries->MapToStd430();
 	
 	pSSBOElementCullResult.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etGpu ) );
 	pSSBOElementCullResult->SetRowMajor( rowMajor );
@@ -163,6 +169,11 @@ deoglRenderBase( renderThread )
 	// update element geometries
 	pipconf.SetShader( renderThread, "DefRen Plan Update Element Geometries", commonDefines );
 	pPipelineUpdateElementGeometries = pipelineManager.GetWith( pipconf );
+	
+	
+	// cleanup element geometries
+	pipconf.SetShader( renderThread, "DefRen Plan Clear Geometries", commonDefines );
+	pPipelineClearGeometries = pipelineManager.GetWith( pipconf );
 	
 	
 	// find content
@@ -291,6 +302,26 @@ void deoglRenderCompute::UpdateElementGeometries( const deoglRenderPlan &plan ){
 	wcompute.GetSSBOElementGeometries()->Activate( 2 );
 	
 	pPipelineUpdateElementGeometries->GetGlShader().SetParameterUInt( 0, count );
+	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+}
+
+void deoglRenderCompute::ClearGeometries( const deoglRenderPlan &plan ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.ClearGeometries" );
+	
+	deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	const int count = wcompute.GetClearGeometryCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	pPipelineClearGeometries->Activate();
+	
+	pSSBOClearGeometries->Activate( 0 );
+	wcompute.GetSSBOElementGeometries()->Activate( 1 );
+	
+	pPipelineClearGeometries->GetGlShader().SetParameterUInt( 0, count );
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
 }

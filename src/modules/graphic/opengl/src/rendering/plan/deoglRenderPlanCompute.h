@@ -115,6 +115,9 @@ public:
 	/** Update element geometries. */
 	void UpdateElementGeometries();
 	
+	/** Clear element geometries. */
+	void ClearGeometries();
+	
 	/** Build occlusion render task. */
 	void BuildRTOcclusion( const deoglRenderPlanMasked *mask );
 	
