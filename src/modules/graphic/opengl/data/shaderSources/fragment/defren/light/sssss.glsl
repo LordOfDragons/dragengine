@@ -21,6 +21,7 @@ in mediump vec2 vScreenCoord;
 out mediump vec3 outColor;
 
 #include "shared/defren/depth_to_position.glsl"
+#include "shared/defren/depth_to_position_fragment.glsl"
 
 #define pDropSubSurfaceThreshold pSSSSSParams1.x
 #define pTapRadiusFactor pSSSSSParams1.y

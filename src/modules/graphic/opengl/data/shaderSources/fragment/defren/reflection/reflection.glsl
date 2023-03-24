@@ -42,7 +42,7 @@ out vec4 outColor;
 	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
 #endif
 
-#include "shared/normal.glsl"
+#include "shared/normal_texture.glsl"
 #include "shared/defren/depth_to_position.glsl"
 
 

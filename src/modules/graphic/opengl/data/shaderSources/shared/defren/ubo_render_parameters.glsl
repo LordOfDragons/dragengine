@@ -28,6 +28,16 @@ UBOLAYOUT uniform RenderParameters{
 	// (maxX, MinY) = ((renderWidth - 1) / realTextureWidth, (renderHeight - 1) / realTextureHeight)
 	#define pViewportMax (pViewport.zw)
 	
+	// viewport image coordinates
+	// x: minX = 0
+	// y: minY = 0
+	// z: maxX = renderWidth - 1
+	// w: maxY = renderHeight - 1
+	ivec4 pViewportImage;
+	#define pViewportImageMin (pViewportImage.xy)
+	#define pViewportImageMax (pViewportImage.zw)
+	
+	
 	// clip plane if used.
 	// xyz: normal
 	// w: distance
@@ -52,6 +62,9 @@ UBOLAYOUT uniform RenderParameters{
 	// x: width (pixels)
 	// y: height (pixels)
 	vec2 pRenderSize;
+	
+	// render size for use with compute shaders to skip pixels
+	uvec2 pRenderSizeCompute;
 	
 	// mip map parameters.
 	// x: pixelSizeU (size of pixel of mip map level 0 in meters)
@@ -113,6 +126,26 @@ UBOLAYOUT uniform RenderParameters{
 	// y: 2 / pScreenSpaceScale.y
 	// z, w: -1
 	vec4 pFSTexCoordToScreenCoord;
+	
+	// transform fragment coordinates (0..pRenderSize) into texture coordinates (0..pScreenSpaceScale).
+	// 
+	// vec2 texCoord = vec2( gl_FragCoord ) * pFSFragCoordToTexCoord.xy + pFSFragCoordToTexCoord.zw
+	// 
+	// x: pScreenSpaceScale.x / pRenderSize.x
+	// y: pScreenSpaceScale.y / pRenderSize.y
+	// z: 0.5 / pRenderSize.x
+	// w: 0.5 / pRenderSize.y
+	vec4 pFSFragCoordToTexCoord;
+	
+	// transform fragment coordinates (0..pRenderSize) into screen coordinates (-1..1).
+	// 
+	// vec2 texCoord = vec2( gl_FragCoord ) * pFSFragCoordToScreenCoord.xy + pFSFragCoordToScreenCoord.zw
+	// 
+	// x: 2 / pRenderSize.x
+	// y: 2 / pRenderSize.y
+	// z: 1 / pRenderSize.x - 1
+	// w: 1 / pRenderSize.y - 1
+	vec4 pFSFragCoordToScreenCoord;
 	
 	
 	
@@ -214,4 +247,12 @@ vec2 fsquadScreenCoordToTexCoord( in vec2 screenCoord ){
 
 vec2 fsquadTexCoordToScreenCoord( in vec2 texCoord ){
 	return texCoord * pFSTexCoordToScreenCoord.xy + pFSTexCoordToScreenCoord.zw;
+}
+
+vec2 fragCoordToTexCoord( in ivec2 fragCoord ){
+	return vec2( fragCoord ) * pFSFragCoordToTexCoord.xy + pFSFragCoordToTexCoord.zw;
+}
+
+vec2 fragCoordToScreenCoord( in ivec2 fragCoord ){
+	return vec2( fragCoord ) * pFSFragCoordToScreenCoord.xy + pFSFragCoordToScreenCoord.zw;
 }

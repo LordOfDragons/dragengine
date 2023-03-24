@@ -36,7 +36,7 @@ out vec4 outColor;
 
 #ifdef WITH_GI
 	#include "shared/defren/light/gi_illuminate.glsl"
-	#include "shared/normal.glsl"
+	#include "shared/normal_texture.glsl"
 #endif
 
 

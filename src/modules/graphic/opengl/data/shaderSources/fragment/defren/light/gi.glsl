@@ -76,9 +76,10 @@ out vec4 outSubSurface;
 const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 
 
-#include "shared/normal.glsl"
+#include "shared/normal_texture.glsl"
 #ifndef GI_RAY
 	#include "shared/defren/depth_to_position.glsl"
+	#include "shared/defren/depth_to_position_fragment.glsl"
 	#include "shared/defren/light/normal_from_depth.glsl"
 #endif
 

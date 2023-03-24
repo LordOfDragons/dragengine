@@ -515,10 +515,12 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &render
 	spb->GetParameterAt( erutClearDepthValue ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	
 	spb->GetParameterAt( erutViewport ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutViewportImage ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // ivec4
 	spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
 	spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	
 	spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutRenderSizeCompute ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // uvec2
 	
 	spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	
@@ -538,6 +540,8 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &render
 	
 	spb->GetParameterAt( erutFSScreenCoordToTexCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	spb->GetParameterAt( erutFSTexCoordToScreenCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutFSFragCoordToTexCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutFSFragCoordToScreenCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	
 	spb->GetParameterAt( erutSSAOParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	spb->GetParameterAt( erutSSAOParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
@@ -2429,9 +2433,11 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pFlipCulling" ); // erutFlipCulling
 		parameterList.Add( "pClearDepthValue" ); // erutClearDepthValue
 		parameterList.Add( "pViewport" ); // erutViewport
+		parameterList.Add( "pViewportImage" ); // erutViewportImage
 		parameterList.Add( "pClipPlane" ); // erutClipPlane
 		parameterList.Add( "pScreenSpace" ); // erutScreenSpace
 		parameterList.Add( "pRenderSize" ); // erutRenderSize
+		parameterList.Add( "pRenderSizeCompute" ); // erutRenderSizeCompute
 		parameterList.Add( "pMipMapParams" ); // erutMipMapParams
 		parameterList.Add( "pDepthOffset" ); // erutDepthOffset
 		parameterList.Add( "pParticleLightHack" ); // erutParticleLightHack
@@ -2443,6 +2449,8 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pDepthSampleOffset" ); // erutDepthSampleOffset
 		parameterList.Add( "pFSScreenCoordToTexCoord" ); // erutFSScreenCoordToTexCoord
 		parameterList.Add( "pFSTexCoordToScreenCoord" ); // erutFSTexCoordToScreenCoord
+		parameterList.Add( "pFSFragCoordToTexCoord" ); // erutFSFragCoordToTexCoord
+		parameterList.Add( "pFSFragCoordToScreenCoord" ); // erutFSFragCoordToScreenCoord
 		parameterList.Add( "pSSAOParams1" ); // erutSSAOParams1
 		parameterList.Add( "pSSAOParams2" ); // erutSSAOParams2
 		parameterList.Add( "pSSAOParams3" ); // erutSSAOParams3

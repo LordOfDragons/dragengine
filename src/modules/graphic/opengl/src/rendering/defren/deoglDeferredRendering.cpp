@@ -1213,7 +1213,7 @@ void deoglDeferredRendering::pCreateTextures(){
 	
 	// create diffuse texture
 	pTextureDiffuse = new deoglArrayTexture( pRenderThread );
-	pTextureDiffuse->SetFBOFormat( 4, false ); //4, true );
+	pTextureDiffuse->SetFBOFormat( 4, false );
 	pTextureDiffuse->SetDebugObjectLabel( "DefRen.Diffuse" );
 	
 	// create normal texture
@@ -1222,9 +1222,7 @@ void deoglDeferredRendering::pCreateTextures(){
 	// visibile. With RGB16 the jumping artifacts are not visible anymore. RB11B11F has even
 	// worse jumping artifacts.
 	pTextureNormal = new deoglArrayTexture( pRenderThread );
-	//pTextureNormal->SetFBOFormat( 3, false ); //4, true );
 	pTextureNormal->SetFBOFormat( 3, true ); //4, true );
-	//pTextureNormal->SetFormatFromCaps( deoglCapsFmtSupport::eutfRGB10A2 );
 	pTextureNormal->SetDebugObjectLabel( "DefRen.Normal" );
 	
 	// create reflectivity texture

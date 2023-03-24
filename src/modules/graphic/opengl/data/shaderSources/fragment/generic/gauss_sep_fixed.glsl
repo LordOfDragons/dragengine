@@ -117,7 +117,9 @@ in vec2 vTexCoord;
 #endif
 
 #include "shared/defren/depth_to_position.glsl"
-
+#ifdef DEPTH_DIFFERENCE_WEIGHTING
+	#include "shared/defren/depth_to_position_fragment.glsl"
+#endif
 
 
 #ifdef DEPTH_DIFFERENCE_WEIGHTING

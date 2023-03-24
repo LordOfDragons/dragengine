@@ -225,7 +225,8 @@ const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );
 	//const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
 #endif
 
-#include "shared/normal.glsl"
+#include "shared/normal_texture.glsl"
+#include "shared/normal_zero.glsl"
 
 
 // functions required to be define last because they are based on stuff defined above

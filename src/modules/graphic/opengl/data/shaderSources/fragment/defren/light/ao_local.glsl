@@ -5,9 +5,6 @@ precision highp int;
 #include "shared/defren/ubo_render_parameters.glsl"
 
 uniform HIGHP sampler2DArray texDepth;
-#ifdef USE_DEPTH_MIPMAP
-uniform HIGHP sampler2DArray texDepthMinMax;
-#endif
 uniform lowp sampler2DArray texDiffuse;
 uniform lowp sampler2DArray texNormal;
 
@@ -27,8 +24,9 @@ out vec3 outAO; // ao, ssao, solidity
 // Calculate the screen space ambient occlusion
 /////////////////////////////////////////////////
 
-#include "shared/normal.glsl"
+#include "shared/normal_texture.glsl"
 #include "shared/defren/depth_to_position.glsl"
+#include "shared/defren/depth_to_position_fragment.glsl"
 
 #define pSSAOSelfOcclusion pSSAOParams1.x
 #define pSSAOEpsilon pSSAOParams1.y
@@ -57,7 +55,7 @@ float occlusion( in vec2 tc, in float level, in vec3 position, in vec3 normal ){
 
 float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radius, in int tapCount ){
 	vec2 factor1 = vec2( 1, 0.5 ) / vec2( tapCount );
-	ivec2 tcint = ivec2( tc * pRenderSize.xy );
+	ivec2 tcint = ivec2( tc / pScreenSpacePixelSize );
 	float c1 = float( tcint.x ^ tcint.y ) * 20 + float( tcint.x ) * float( tcint.y ) * 10;
 	
 	float occaccum = 0;

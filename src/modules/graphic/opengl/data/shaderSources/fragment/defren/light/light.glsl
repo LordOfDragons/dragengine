@@ -271,8 +271,9 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 	#endif
 #endif
 
-#include "shared/normal.glsl"
+#include "shared/normal_texture.glsl"
 #include "shared/defren/depth_to_position.glsl"
+#include "shared/defren/depth_to_position_fragment.glsl"
 
 
 // Macros to increase readability and extendibility

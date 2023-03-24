@@ -19,7 +19,8 @@ out vec3 outPosition;
 out vec3 outDiffuse;
 out vec3 outNormal;
 
-#include "shared/normal.glsl"
+#include "shared/normal_texture.glsl"
+
 
 void main( void ){
 	// not all pixels in the material buffer are possibly written to. this happens for

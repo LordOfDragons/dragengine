@@ -661,6 +661,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const decMatrix matrixSkyBody( matrixCamera.GetRotationMatrix() * matrixProjection );
+	const int height = defren.GetHeight();
+	const int width = defren.GetWidth();
 	float envMapLodLevel = 1.0f;
 	
 	// sharpness indicates the cone angle from 0 to 90 degrees. at 45 degrees a single cube map face is required
@@ -706,8 +708,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	// mip map params
 	int mipmapMaxLevel = 0;
 	{
-	int mipMapHeight = defren.GetHeight();
-	int mipMapWidth = defren.GetWidth();
+	int mipMapHeight = height;
+	int mipMapWidth = width;
 	while( mipMapWidth > 1 && mipMapHeight > 1 ){
 		mipMapWidth = decMath::max( mipMapWidth >> 1, 1 );
 		mipMapHeight = decMath::max( mipMapHeight >> 1, 1 );
@@ -715,8 +717,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	}
 	}
 	const float mipMapFactor = ( float )plan.GetProjectionMatrix().a11 * 0.5f;
-	const float mipMapPixelSizeU = mipMapFactor * defren.GetWidth();
-	const float mipMapPixelSizeV = mipMapFactor * defren.GetHeight();
+	const float mipMapPixelSizeU = mipMapFactor * width;
+	const float mipMapPixelSizeV = mipMapFactor * height;
 	const float mipMapMaxScale = ( float )( 1 << mipmapMaxLevel );
 	
 	// ssao
@@ -729,7 +731,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const float ssaoInfluenceRadius = config.GetSSAORadius();
 	const float ssaoRadiusLimit = config.GetSSAORadiusLimit();
 	const float ssaoRadiusFactor = ( float )plan.GetProjectionMatrix().a11 * 0.5f;
-	const int ssaoMaxSize = ( defren.GetWidth() > defren.GetHeight() ) ? defren.GetWidth() : defren.GetHeight();
+	const int ssaoMaxSize = ( width > height ) ? width : height;
 	const float ssaoMipMapMaxLevel = floorf( log2f( ( float )ssaoMaxSize ) - 3.0f );
 	const float ssaoMipMapBase = log2f( config.GetSSAOMipMapBase() );
 	
@@ -753,7 +755,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const float ssrRoughnessTapCountScale = ( float )ssrRoughnessTapMax / ssrRoughnessTapRange;
 	const int ssrStepCount = config.GetSSRStepCount();
 	const int ssrMaxRayLength = decMath::max( ssrStepCount, ( int )(
-		config.GetSSRMaxRayLength() * decMath::max( defren.GetWidth(), defren.GetHeight() ) ) );
+		config.GetSSRMaxRayLength() * decMath::max( width, height ) ) );
 	const int ssrSubStepCount = int( floorf( log2f( ( float )ssrMaxRayLength / ( float )ssrStepCount ) ) ) + 1;
 	decVector2 ssrMinMaxTCFactor;
 	
@@ -856,13 +858,15 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, renderThread.GetChoices().GetClearDepthValueRegular() );
 		
 		defren.SetShaderViewport( spb, deoglSkinShader::erutViewport, true );
+		spb.SetParameterDataIVec4( deoglSkinShader::erutViewportImage, 0, 0, width - 1, height - 1 );
 		spb.SetParameterDataArrayVec4( deoglSkinShader::erutClipPlane, 0, clipPlaneNormal, clipPlaneDistance );
 		spb.SetParameterDataArrayVec4( deoglSkinShader::erutClipPlane, 1, clipPlaneNormalStereo, clipPlaneDistanceStereo );
 		spb.SetParameterDataVec4( deoglSkinShader::erutScreenSpace,
 			defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		spb.SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
 		
-		spb.SetParameterDataVec2( deoglSkinShader::erutRenderSize, ( float )defren.GetWidth(), ( float )defren.GetHeight() );
+		spb.SetParameterDataVec2( deoglSkinShader::erutRenderSize, ( float )width, ( float )height );
+		spb.SetParameterDataUVec2( deoglSkinShader::erutRenderSizeCompute, width, height );
 		
 		spb.SetParameterDataVec4( deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV, ( float )mipmapMaxLevel, mipMapMaxScale );
 		
@@ -888,6 +892,12 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataVec4( deoglSkinShader::erutFSTexCoordToScreenCoord,
 			2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
 		defren.SetShaderParamFSQuad( spb, deoglSkinShader::erutFSScreenCoordToTexCoord );
+		spb.SetParameterDataVec4( deoglSkinShader::erutFSFragCoordToTexCoord,
+			defren.GetScalingU() / ( float )width, defren.GetScalingV() / ( float )height,
+			0.5f / ( float )width, 0.5f / ( float )height );
+		spb.SetParameterDataVec4( deoglSkinShader::erutFSFragCoordToScreenCoord,
+			2.0f / ( float )width, 2.0f / ( float )height,
+			1.0f / ( float )width - 1.0f, 1.0f / ( float )height - 1.0f );
 		
 		const float znear = plan.GetCameraImageDistance();
 		const float zfar = plan.GetCameraViewDistance();
@@ -920,8 +930,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
 		
 		spb.SetParameterDataVec2( deoglSkinShader::erutLumFragCoordScale,
-			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
-			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
+			( float )width / ( float )defren.GetTextureLuminance()->GetWidth(),
+			( float )height / ( float )defren.GetTextureLuminance()->GetHeight() );
 		
 		// global illumination
 		spb.SetParameterDataMat4x3( deoglSkinShader::erutGIRayMatrix, giMatrix );

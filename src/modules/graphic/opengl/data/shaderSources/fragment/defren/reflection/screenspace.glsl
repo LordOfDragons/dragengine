@@ -38,7 +38,7 @@ const vec4 distanceBorder = vec4( 0.0 );
 const vec4 roughnessToAngleBase = vec4( 3.14159265, 3.14159265, -1.5707963, -1.5707963 ); // scaleX, scaleY, offsetX, offsetY
 #endif
 
-#include "shared/normal.glsl"
+#include "shared/normal_texture.glsl"
 #include "shared/defren/depth_to_position.glsl"
 
 
