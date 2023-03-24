@@ -131,10 +131,6 @@ pBugNo2ComponentFBOTex( false ),
 
 pDebugNoCulling ( false ),
 
-pQuickDebug( 0 ),
-
-pDebugSnapshot( 0 ),
-
 pDisableCubeMapLinearFiltering( false ),
 
 pMaxSPBIndexCount( 10000 ),
@@ -841,27 +837,11 @@ void deoglConfiguration::SetBugNo2ComponentFBOTex( bool bugNo2ComponentFBOTex ){
 
 
 
-void deoglConfiguration::SetQuickDebug( int value ){
-	if( value == pQuickDebug ){
-		return;
-	}
-	pQuickDebug = value;
-	pDirty = true;
-}
-
 void deoglConfiguration::SetDebugNoCulling( bool noCulling ){
 	if( noCulling == pDebugNoCulling ){
 		return;
 	}
 	pDebugNoCulling = noCulling;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetDebugSnapshot( int snapshot ){
-	if( snapshot == pDebugSnapshot ){
-		return;
-	}
-	pDebugSnapshot = snapshot;
 	pDirty = true;
 }
 

@@ -2211,8 +2211,6 @@ void deoglRenderThread::pSyncConfiguration(){
 	// change then a single-frame debug parameter has been reset. in this case update the
 	// main thread configuration and mark it non-dirty
 	}else if( pConfiguration.GetDirty() ){
-		config.SetQuickDebug( pConfiguration.GetQuickDebug() );
-		config.SetDebugSnapshot( pConfiguration.GetDebugSnapshot() );
 		config.SetDirty( false );
 		pConfiguration.SetDirty( false );
 	}

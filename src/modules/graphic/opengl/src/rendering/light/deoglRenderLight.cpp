@@ -332,10 +332,6 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const bool sssssEnable = config.GetSSSSSEnable();
 	
-	if( config.GetQuickDebug() == 20 ){
-		return;
-	}
-	
 	DebugTimersReset( plan, false );
 	
 	// copy the depth. this is only required if we are not using encoded depth
@@ -477,11 +473,6 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	RenderFullScreenQuad( plan );
 	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
-			*defren.GetTextureAOSolidity(), "ao_local" );
-	}
-	
 	
 	// gaussian blur with 9 taps (17 pixels size): pass 1
 	const float blurOffsets[ 4 ] = { 1.411765f, 3.294118f, 5.176471f, 7.058824f };
@@ -522,11 +513,6 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 		blurOffsets[ 3 ] * pixelSizeU, 0.0f, -blurOffsets[ 3 ] * pixelSizeU, 0.0f );
 	
 	RenderFullScreenQuad( plan );
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
-			*defren.GetTextureTemporary3(), "ao_local_blur1" );
-	}
 	
 	
 	
@@ -582,12 +568,6 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	}
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
-			*defren.GetTextureAOSolidity(), "ao_local_blur2" );
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 }
 
 
@@ -604,16 +584,6 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	SetViewport( plan );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 1122 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureDiffuse(),
-			"sssss_texture1", deoglDebugSaveTexture::ecColorLinear2sRGB );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureSubSurface(),
-			"sssss_subsurface", deoglDebugSaveTexture::ecNoConversion );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureTemporary2(),
-			"sssss_temporary2", deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );

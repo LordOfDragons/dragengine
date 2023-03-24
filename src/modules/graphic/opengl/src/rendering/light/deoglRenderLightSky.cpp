@@ -936,19 +936,6 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	
 	shadowMapper.DropForeignArrayTextures();
 	DebugTimer3SampleCount( plan.GetPlan(), *pDebugInfoSolidShadowSplit, layerCount, true );
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowMap ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTexture(
-			*( pSolidShadowMap->GetArrayTexture() ), "sky_shadow", true );
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 }
 
 void deoglRenderLightSky::RenderGIShadows( deoglRenderPlanSkyLight &plan,

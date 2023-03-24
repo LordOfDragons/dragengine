@@ -168,10 +168,6 @@ private:
 	
 	bool pDebugNoCulling;
 	
-	int pQuickDebug;
-	
-	int pDebugSnapshot;
-	
 	bool pDisableCubeMapLinearFiltering;
 	
 	int pMaxSPBIndexCount;
@@ -498,19 +494,10 @@ public:
 	/** Sets if 2-component fbo textures are disabled to counter an nVidia driver bug. */
 	void SetBugNo2ComponentFBOTex( bool bugNo2ComponentFBOTex );
 	
-	/** Retrieves the quick debug value. */
-	inline int GetQuickDebug() const{ return pQuickDebug; }
-	/** Sets the quick debug value. */
-	void SetQuickDebug( int value );
 	/** Determines if software culling is disabled. */
 	inline bool GetDebugNoCulling() const{ return pDebugNoCulling; }
 	/** Sets if software culling is disabled. */
 	void SetDebugNoCulling( bool noCulling );
-	
-	/** Retrieves the debug snapshot value. */
-	inline int GetDebugSnapshot() const{ return pDebugSnapshot; }
-	/** Sets the debug snapshot value. */
-	void SetDebugSnapshot( int snapshot );
 	
 	/** Determines if linear filtering for cube mapping has to be disabled. */
 	inline bool GetDisableCubeMapLinearFiltering() const{ return pDisableCubeMapLinearFiltering; }

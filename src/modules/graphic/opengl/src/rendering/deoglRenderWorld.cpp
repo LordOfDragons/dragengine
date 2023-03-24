@@ -245,18 +245,6 @@ deoglRenderWorld::~deoglRenderWorld(){
 // Rendering
 //////////////
 
-#define DO_QUICK_DEBUG 1
-
-#ifdef DO_QUICK_DEBUG
-#define QUICK_DEBUG_START( lower, upper )    if( renderThread.GetConfiguration().GetQuickDebug() > upper || renderThread.GetConfiguration().GetQuickDebug() < lower ){
-#define QUICK_DEBUG_END                      }
-#else
-#define QUICK_DEBUG_START( lower, upper )
-#define QUICK_DEBUG_END
-#endif
-
-
-
 //#define ENABLE_DEBUG_ENTER_EXIT 1
 #ifdef OS_ANDROID
 // 	#define ENABLE_DEBUG_ENTER_EXIT 1
@@ -397,7 +385,6 @@ DEBUG_RESET_TIMER
 	}
 	
 	// solid pass
-	QUICK_DEBUG_START( 15, 19 )
 	//if( ! plan->GetFBOTarget() )
 	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
 		plan.GetTasks()->FinishReadBackComputeRenderTasks( mask );
@@ -406,7 +393,6 @@ DEBUG_RESET_TIMER
 	if( debugMainPass ){
 		DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometry, true );
 	}
-	QUICK_DEBUG_END
 	
 	DBG_ENTER("RenderDepthMinMaxMipMap")
 	renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
@@ -428,7 +414,6 @@ DEBUG_RESET_TIMER
 		DebugTimer2Sample( plan, *pDebugInfo.infoReflection, true );
 	}
 	
-	QUICK_DEBUG_START( 13, 19 )
 	// plan transparency. this affects lighting thus it comes earlier than RenderTransparentPasses
 	if( plan.GetHasTransparency() ){
 		#ifdef OS_ANDROID
@@ -442,16 +427,6 @@ DEBUG_RESET_TIMER
 	
 	//if( ! plan->GetFBOTarget() )
 	if( ! plan.GetDisableLights() ){
-		if( ! mask && renderThread.GetConfiguration().GetDebugSnapshot() == 888 ){
-			deoglDebugSnapshot snapshot( renderThread );
-			snapshot.SetEnableDepth( true );
-			snapshot.SetEnableColor( true );
-			snapshot.SetEnableMaterialBuffers( true );
-			snapshot.SetName( "light/" );
-			snapshot.TakeSnapshot();
-			renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-		}
-		
 		if( ! mask ){
 			renderers.GetToneMap().LuminancePrepare( plan );
 // 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
@@ -471,7 +446,6 @@ DEBUG_RESET_TIMER
 			DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
 		}
 	}
-	QUICK_DEBUG_END
 	
 	if( deoglSkinShader::REFLECTION_TEST_MODE != 1 ){
 		DBG_ENTER("RenderGIEnvMaps")
@@ -487,14 +461,12 @@ DEBUG_RESET_TIMER
 	}
 	
 	// transparenc passes
-	QUICK_DEBUG_START( 12, 19 )
 // 	if( ! plan.GetFBOTarget() ){
 		renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask, false );
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoTransparent, true );
 		}
 // 	}
-	QUICK_DEBUG_END
 	
 	// xray pass
 	if( plan.GetTasks()->GetSolidDepthXRayTask().GetPipelineCount() > 0
@@ -609,12 +581,10 @@ DEBUG_RESET_TIMER
 			RenderFullScreenQuadVAO( plan );
 			
 		}else{
-			//QUICK_DEBUG_START( 11, 19 )
 			DBG_ENTER("RenderToneMap")
 			renderers.GetToneMap().ToneMap( plan );
 			DBG_EXIT("RenderToneMap")
 			DebugTimer2Sample( plan, *pDebugInfo.infoToneMapping, true );
-			//QUICK_DEBUG_END
 		}
 		
 		// TODO due to the deferred rendering using transparency the depth buffer itself is
@@ -626,9 +596,7 @@ DEBUG_RESET_TIMER
 		
 		// render shadeless objects
 		/*
-		QUICK_DEBUG_START( 10, 19 )
 		pRenderShadelessPass( plan, mask );
-		QUICK_DEBUG_END
 		*/
 		
 		// post processing

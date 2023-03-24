@@ -243,7 +243,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugNoMessages.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugShowCB.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOcclusionReduction.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPQuickDebug.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPShowLightCB.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPWireframeMode.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPAsyncRenderSkipSyncTimeRatio.h" />
@@ -848,7 +847,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugNoMessages.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugShowCB.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOcclusionReduction.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPQuickDebug.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPShowLightCB.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPWireframeMode.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPAsyncRenderSkipSyncTimeRatio.cpp" />

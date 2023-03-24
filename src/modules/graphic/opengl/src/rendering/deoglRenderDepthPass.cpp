@@ -176,20 +176,6 @@ deoglRenderDepthPass::~deoglRenderDepthPass(){
 // Rendering
 //////////////
 
-#define DO_QUICK_DEBUG 1
-
-#ifdef DO_QUICK_DEBUG
-#define QUICK_DEBUG_START( lower, upper ) \
-	if( renderThread.GetConfiguration().GetQuickDebug() > upper \
-	|| renderThread.GetConfiguration().GetQuickDebug() < lower ){
-#define QUICK_DEBUG_END }
-#else
-#define QUICK_DEBUG_START( lower, upper )
-#define QUICK_DEBUG_END
-#endif
-
-
-
 //#define ENABLE_DEBUG_ENTER_EXIT 1
 #ifdef OS_ANDROID
 // 	#define ENABLE_DEBUG_ENTER_EXIT 1
@@ -241,15 +227,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	}
 	
 	RenderDepth( plan, mask, true, false, false, xray ); // +solid, -maskedOnly, -reverseDepthTest
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapDepthPassBuffers ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableDepth( true );
-		snapshot.SetName( "solid/depthpass-depth" );
-		snapshot.TakeSnapshot();
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 	
-	QUICK_DEBUG_START( 14, 19 )
 	// now is a good time to do occlusion queries for all lights having passed
 	// the quick rejection test as well as all components which are costly
 	// enough to justify wasting an occlusion query on them.
@@ -264,8 +242,6 @@ const deoglRenderPlanMasked *mask, bool xray ){
 		renderThread.GetRenderers().GetTransparencyCounter().CountTransparency( plan, mask );
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryTranspCounter, true );
 	}
-	
-	QUICK_DEBUG_END
 }
 
 
@@ -276,7 +252,6 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "DepthPass.RenderDepth" );
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
-	deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglCollideList &collideList = plan.GetCollideList();
 	deoglRenderPlanDebug * const planDebug = plan.GetDebug();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
@@ -423,11 +398,6 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 			planDebug->IncrementRenderedEnvMaps( envMapList.GetCount() );
 		}
 		
-		if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
-			renderThread.GetLogger().LogInfo( "RenderWorld.pRenderDepthPass: render task" );
-			if( renderTask ) renderTask->DebugPrint( renderThread.GetLogger() );
-		}
-		
 		if( computeRenderTask ){
 			computeRenderTask->Render();
 			
@@ -540,16 +510,6 @@ DBG_ENTER("DownsampleDepth")
 		SetViewport( width, height );
 		
 		RenderFullScreenQuad( plan );
-	}
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		decString text;
-		
-		for( i=0; i<=mipMapLevelCount; i++ ){
-			text.Format( "downsample_depth-pass%i", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
-				*defren.GetDepthTexture1(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
-		}
 	}
 DBG_EXIT("DownsampleDepth")
 }

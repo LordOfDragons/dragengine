@@ -304,15 +304,6 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	//deoglTextureStageManager &tsmgr = *renderThread.GetTexture().GetStages();
 	//deoglShaderCompiled *shader;
 	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableDepthStencil( true );
-		snapshot.SetEnableColor( true );
-		snapshot.SetEnableMaterialBuffers( true );
-		snapshot.SetName( "transparency/enter/" );
-		snapshot.TakeSnapshot();
-	}
-	
 	if( xray ? plan.GetHasXRayTransparency() : plan.GetHasTransparency() ){
 		// limit depth if required. can modify plan transparency layer count
 		RenderTransparentLimitDepth( plan, mask, xray );
@@ -380,16 +371,6 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	RenderVolumetricPass( plan, mask, false );
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentVolumetric, true );
 	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableDepthStencil( true );
-		snapshot.SetEnableColor( true );
-		snapshot.SetEnableMaterialBuffers( true );
-		snapshot.SetName( "transparency/exit/" );
-		snapshot.TakeSnapshot();
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
-	
 	renworld.GetRenderTaskParticles()->RemoveAllSteps();
 DBG_EXIT("RenderTransparentPasses")
 }
@@ -452,18 +433,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	// (status) color, normal, specularity, depth1 and stencil ready for light pass
 	// 
 	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableStates( true );
-		snapshot.SetEnableDepthStencil( true );
-		snapshot.SetEnableColor( true );
-		snapshot.SetEnableMaterialBuffers( true );
-		decString name;
-		name.Format( "transparency/pass%d/enter/", plan.GetCurrentTransparencyLayer() );
-		snapshot.SetName( name );
-		snapshot.TakeSnapshot();
-	}
-	
 	// clear diffuse to 0, depth2 to 0 and stencil to 0. 0 in depth2 and diffuse marks not written pixels
 	// (notes) diffuse clear is not required anymore if stencil mask works properly for lighting
 	pPipelineClearBuffers->Activate();
@@ -478,17 +447,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentClear, true );
 	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableStates( true );
-		snapshot.SetEnableDepthStencil( true );
-		snapshot.SetEnableColor( true );
-		decString name;
-		name.Format( "transparency/pass%d/clear/", plan.GetCurrentTransparencyLayer() );
-		snapshot.SetName( name );
-		snapshot.TakeSnapshot();
-	}
-	
 	
 	// render depth to depth2 using GEQUAL without stencil using depth1 as shader back limit.
 	// depth is written. stencil is written with current layer stencil reference value
@@ -500,15 +458,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	rendepth.RenderDepth( plan, mask, false, false, false, xray ); // -solid, -maskedOnly, -reverseDepthTest
 	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableDepthStencil( true );
-		decString name;
-		name.Format( "transparency/pass%d/depth_pass/", plan.GetCurrentTransparencyLayer() );
-		snapshot.SetName( name );
-		snapshot.TakeSnapshot();
-	}
-	
 	// optionally copy color to temporary without mask if particles require a color copy
 	// NOTE perhaps glCopyTexSubImage works better. activate FBO containing the texture to copy. then use
 	//      glCopyTexSubImage to copy to a different texture. speed test required
@@ -516,15 +465,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	if( requiresColorCopy ){
 		CopyColorToTemporary( plan );
-		
-		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-			deoglDebugSnapshot snapshot( renderThread );
-			snapshot.SetEnableColor( true );
-			decString name;
-			name.Format( "transparency/pass%d/copy_color/", plan.GetCurrentTransparencyLayer() );
-			snapshot.SetName( name );
-			snapshot.TakeSnapshot();
-		}
 	}
 	
 	// render volumetrics to color using depth2 as depth test front limit with GEQUAL and stencil mask, depth1
@@ -532,15 +472,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	// (notes) requires back-test in shader for geometry skin shader (currently only in depth skin shader)
 	RenderVolumetricPass( plan, mask, true );
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentVolumetric, true );
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableColor( true );
-		decString name;
-		name.Format( "transparency/pass%d/volumetric_pass/", plan.GetCurrentTransparencyLayer() );
-		snapshot.SetName( name );
-		snapshot.TakeSnapshot();
-	}
 	
 	// clear depth1 stencil mask if required due to too many layers
 	defren.SwapDepthTextures();
@@ -580,16 +511,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	defren.SetShaderParamFSQuad( shader, spcdQuadParams );
 	RenderFullScreenQuadVAO( plan );
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableDepthStencil( true );
-		snapshot.SetEnableColor( true );
-		decString name;
-		name.Format( "transparency/pass%d/copy_depth_color/", plan.GetCurrentTransparencyLayer() );
-		snapshot.SetName( name );
-		snapshot.TakeSnapshot();
-	}
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentCopyDepth, true );
 	
 	
@@ -690,17 +611,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	//addToRenderTask.SetFilterHoles( false );
 	//rendecal.RenderDecals( renderParams ); // hm... what about transparent decals on transparent objects?
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableDepthStencil( true );
-		snapshot.SetEnableColor( true );
-		snapshot.SetEnableMaterialBuffers( true );
-		decString name;
-		name.Format( "transparency/pass%d/geometry_pass/", plan.GetCurrentTransparencyLayer() );
-		snapshot.SetName( name );
-		snapshot.TakeSnapshot();
-	}
 DBG_EXIT("RenderTransparentGeometryPass")
 }
 
@@ -805,15 +715,6 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		RenderFullScreenQuadVAO( plan );
 		
 		defren.SwapDepthTextures(); // solid depth is now depth1
-		
-		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-			deoglDebugSnapshot snapshot( renderThread );
-			snapshot.SetEnableDepth3( true );
-			decString name;
-			name.Format( "transparency/depthlimit/pass%d-", l );
-			snapshot.SetName( name );
-			snapshot.TakeSnapshot();
-		}
 	}
 	
 	// for the last layer activate the solid depth to update with the last layer
@@ -836,13 +737,6 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	}
 	
 	rendepth.RenderDepth( plan, mask, false, false, true, xray ); // -solid, -maskedOnly, +reverseDepthTest
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
-		deoglDebugSnapshot snapshot( renderThread );
-		snapshot.SetEnableDepth( true );
-		snapshot.SetName( "transparency/depthlimit/result-" );
-		snapshot.TakeSnapshot();
-	}
 DBG_EXIT("RenderTransparentLimitDepth")
 }
 

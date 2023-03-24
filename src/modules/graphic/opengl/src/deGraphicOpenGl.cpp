@@ -65,7 +65,6 @@
 #include "parameters/debug/deoglPDebugNoMessages.h"
 #include "parameters/debug/deoglPDebugNoCulling.h"
 #include "parameters/debug/deoglPDebugShowCB.h"
-#include "parameters/debug/deoglPQuickDebug.h"
 #include "parameters/debug/deoglPShowLightCB.h"
 #include "parameters/debug/deoglPOcclusionReduction.h"
 #include "parameters/debug/deoglPWireframeMode.h"
@@ -720,7 +719,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );
-	pParameters.AddParameter( new deoglPQuickDebug( *this ) );
 	pParameters.AddParameter( new deoglPShowLightCB( *this ) );
 	pParameters.AddParameter( new deoglPWireframeMode( *this ) );
 #endif

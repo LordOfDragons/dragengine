@@ -97,20 +97,6 @@ deoglRenderGeometryPass::~deoglRenderGeometryPass(){
 // Rendering
 //////////////
 
-#define DO_QUICK_DEBUG 1
-
-#ifdef DO_QUICK_DEBUG
-#define QUICK_DEBUG_START( lower, upper ) \
-	if( renderThread.GetConfiguration().GetQuickDebug() > upper \
-	|| renderThread.GetConfiguration().GetQuickDebug() < lower ){
-#define QUICK_DEBUG_END }
-#else
-#define QUICK_DEBUG_START( lower, upper )
-#define QUICK_DEBUG_END
-#endif
-
-
-
 //#define ENABLE_DEBUG_ENTER_EXIT 1
 #ifdef OS_ANDROID
 // 	#define ENABLE_DEBUG_ENTER_EXIT 1
@@ -165,8 +151,6 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	// render pre-pass depth. this includes rendering depth, occlusion testing and transparency counting
 	rendepth.RenderSolidDepthPass( plan, mask, xray );
 	
-	QUICK_DEBUG_START( 14, 19 )
-	
 	DebugTimer1Reset( plan, true );
 	
 	// geometry pass. render first sky which uses FBO Depth+Color.
@@ -179,10 +163,8 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	SetViewport( plan );
 // 	defren.ActivateFBOMaterialColor();
 	if( ! xray ){
-		QUICK_DEBUG_START( 16, 19 )
 		renderThread.GetRenderers().GetSky().RenderSky( plan, mask );
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometrySky, true );
-		QUICK_DEBUG_END
 	}
 	
 	
@@ -281,7 +263,6 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		RenderDecals( plan, xray );
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true );
 	}
-	QUICK_DEBUG_END
 	
 	
 	// downsample depth into mip-map levels if some later feature requires this. this can be done only after the

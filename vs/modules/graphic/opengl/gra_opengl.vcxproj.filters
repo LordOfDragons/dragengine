@@ -669,9 +669,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOcclusionReduction.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPQuickDebug.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPShowLightCB.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2470,9 +2467,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOcclusionReduction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPQuickDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPShowLightCB.cpp">
