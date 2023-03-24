@@ -1222,7 +1222,7 @@ void deoglDeferredRendering::pCreateTextures(){
 	// visibile. With RGB16 the jumping artifacts are not visible anymore. RB11B11F has even
 	// worse jumping artifacts.
 	pTextureNormal = new deoglArrayTexture( pRenderThread );
-	pTextureNormal->SetFBOFormat( 3, true ); //4, true );
+	pTextureNormal->SetFBOFormat( 3, true );
 	pTextureNormal->SetDebugObjectLabel( "DefRen.Normal" );
 	
 	// create reflectivity texture

@@ -63,6 +63,7 @@
 #include "../../skin/shader/deoglSkinShader.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
+#include "../../texture/deoglImageStageManager.h"
 #include "../../vao/deoglVAO.h"
 
 #include <dragengine/common/exceptions.h>
@@ -243,6 +244,20 @@ pAddToRenderTask( NULL )
 	defines.SetDefine( "TEX_DATA_SWIZZLE", "ggg" );
 	pipconf.SetShader( renderThread, sources, defines );
 	pPipelineDebugAO = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// ssao
+	/*
+	pipconf.Reset();
+	pipconf.SetType( deoglPipelineConfiguration::etCompute );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "DefRen SSAO" );
+	defines.SetDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSSAO = pipelineManager.GetWith( pipconf );
+	*/
 	
 	
 	
@@ -446,6 +461,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	// deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 	deoglShaderCompiled *shader;
@@ -454,6 +470,25 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const int height = defren.GetHeight();
 	const float pixelSizeU = defren.GetPixelSizeU();
 	const float pixelSizeV = defren.GetPixelSizeV();
+	
+	
+	// new ssao
+	/*
+	const int workGroupSizeZ = plan.GetRenderStereo() ? 2 : 1;
+	
+	pPipelineSSAO->Activate();
+	
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
+	ismgr.Enable( 0, *defren.GetTextureDiffuse(), 0, deoglImageStageManager::eaRead );
+	ismgr.Enable( 1, *defren.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
+	ismgr.Enable( 2, *defren.GetTextureTemporary3(), 0, deoglImageStageManager::eaWrite );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( width - 1 ) / 64 + 1, height, workGroupSizeZ ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
+	*/
 	
 	
 	// render SSAO into green channel

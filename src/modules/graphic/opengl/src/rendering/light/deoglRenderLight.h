@@ -49,6 +49,8 @@ private:
 	const deoglPipeline *pPipelineAOBlur2Stereo;
 	const deoglPipeline *pPipelineDebugAO;
 	
+	// const deoglPipeline *pPipelineSSAO;
+	
 	const deoglPipeline *pPipelineSSSSS;
 	const deoglPipeline *pPipelineSSSSSStereo;
 	

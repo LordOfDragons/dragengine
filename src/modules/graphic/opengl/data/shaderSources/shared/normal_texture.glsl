@@ -13,11 +13,11 @@ vec3 normalLoadDirect( in sampler2DArray sampler, in ivec3 texCoord ){
 }
 
 vec3 normalLoadDirect( in sampler2D sampler, in vec2 texCoord ){
-	return vec3( texture( sampler, texCoord, 0 ) );
+	return vec3( textureLod( sampler, texCoord, 0 ) );
 }
 
 vec3 normalLoadDirect( in sampler2DArray sampler, in vec3 texCoord ){
-	return vec3( texture( sampler, texCoord, 0 ) );
+	return vec3( textureLod( sampler, texCoord, 0 ) );
 }
 
 
@@ -41,11 +41,11 @@ vec3 normalLoadShiftedFloat( in sampler2DArray sampler, in ivec3 texCoord ){
 }
 
 vec3 normalLoadShiftedFloat( in sampler2D sampler, in vec2 texCoord ){
-	return normalDecodeShiftedFloat( vec3( texture( sampler, texCoord, 0 ) ) );
+	return normalDecodeShiftedFloat( vec3( textureLod( sampler, texCoord, 0 ) ) );
 }
 
 vec3 normalLoadShiftedFloat( in sampler2DArray sampler, in vec3 texCoord ){
-	return normalDecodeShiftedFloat( vec3( texture( sampler, texCoord, 0 ) ) );
+	return normalDecodeShiftedFloat( vec3( textureLod( sampler, texCoord, 0 ) ) );
 }
 
 // encode normal using shifted floating point method.
@@ -74,11 +74,11 @@ vec3 normalLoadShiftedInt( in sampler2DArray sampler, in ivec3 texCoord ){
 }
 
 vec3 normalLoadShiftedInt( in sampler2D sampler, in vec2 texCoord ){
-	return normalDecodeShiftedInt( vec3( texture( sampler, texCoord, 0 ) ) );
+	return normalDecodeShiftedInt( vec3( textureLod( sampler, texCoord, 0 ) ) );
 }
 
 vec3 normalLoadShiftedInt( in sampler2DArray sampler, in vec3 texCoord ){
-	return normalDecodeShiftedInt( vec3( texture( sampler, texCoord, 0 ) ) );
+	return normalDecodeShiftedInt( vec3( textureLod( sampler, texCoord, 0 ) ) );
 }
 
 // encode normal using shifted integer method.
@@ -110,11 +110,11 @@ vec3 normalLoadSphereMap( in sampler2DArray sampler, in ivec3 texCoord ){
 }
 
 vec3 normalLoadSphereMap( in sampler2D sampler, in vec2 texCoord ){
-	return normalDecodeSphereMap( vec2( texture( sampler, texCoord, 0 ) ) );
+	return normalDecodeSphereMap( vec2( textureLod( sampler, texCoord, 0 ) ) );
 }
 
 vec3 normalLoadSphereMap( in sampler2DArray sampler, in vec3 texCoord ){
-	return normalDecodeSphereMap( vec2( texture( sampler, texCoord, 0 ) ) );
+	return normalDecodeSphereMap( vec2( textureLod( sampler, texCoord, 0 ) ) );
 }
 
 // encode normal using sphere map method.
