@@ -23,6 +23,9 @@ precision mediump int;
 #ifndef NO_TCTRANSFORM
 	uniform vec4 pTCTransform; // scaleX, scaleY, offsetX, offsetY
 #endif
+#if defined FULLSCREENQUAD && FULLSCREENQUAD_SCTRANSFORM
+	uniform vec4 pSCTransform; // scaleX, scaleY, offsetX, offsetY
+#endif
 
 #ifndef NO_TEXCOORD
 	#ifdef FULLSCREENQUAD
@@ -48,6 +51,7 @@ in vec2 inPosition;
 			out vec2 vGSScreenCoord;
 			#define vScreenCoord vGSScreenCoord
 		#endif
+		
 	#else
 		out vec2 vTexCoord;
 		
@@ -62,24 +66,44 @@ in vec2 inPosition;
 #endif
 
 void main( void ){
-	#ifdef NO_POSTRANSFORM
-		gl_Position = vec4( inPosition, 0, 1 );
-	#else
-		gl_Position = vec4( inPosition * pPosTransform.xy + pPosTransform.zw, 0, 1 );
+	vec2 position = inPosition;
+	
+	#ifndef NO_POSTRANSFORM
+		position = position * pPosTransform.xy + pPosTransform.zw;
 	#endif
 	
+	gl_Position = vec4( position, 0, 1 );
+	
 	#ifndef NO_TEXCOORD
+		vec2 texCoord;
+		
 		#ifdef NO_TCTRANSFORM
-			vTexCoord = inPosition;
+			texCoord = inPosition;
+			
 		#elif defined FULLSCREENQUAD
-			vTexCoord = fsquadScreenCoordToTexCoord( inPosition );
-			#ifdef TEXCOORD_FLIP_Y
-				vTexCoord.y = 1 - vTexCoord.y;
+			texCoord = fsquadScreenCoordToTexCoord( inPosition );
+			
+			#ifdef FULLSCREENQUAD_TCTRANSFORM
+				texCoord = texCoord * pTCTransform.xy + pTCTransform.zw;
 			#endif
-			vScreenCoord = inPosition;
+			
+			#ifdef TEXCOORD_FLIP_Y
+				texCoord.y = 1 - texCoord.y;
+			#endif
+			
+			vec2 screenCoord = inPosition;
+			
+			#ifdef FULLSCREENQUAD_SCTRANSFORM
+				screenCoord = screenCoord * pSCTransform.xy + pSCTransform.zw;
+			#endif
+			
+			vScreenCoord = screenCoord;
+			
 		#else
-			vTexCoord = inPosition * pTCTransform.xy + pTCTransform.zw;
+			texCoord = inPosition * pTCTransform.xy + pTCTransform.zw;
 		#endif
+		
+		vTexCoord = texCoord;
 	#endif
 	
 	#ifdef VS_RENDER_STEREO

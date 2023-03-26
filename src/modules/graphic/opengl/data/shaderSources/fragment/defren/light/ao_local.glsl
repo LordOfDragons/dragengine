@@ -86,17 +86,17 @@ float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radi
 //////////////////
 
 void main( void ){
-	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
+	vec3 tc = vec3( vTexCoord, vLayer );
 	
-	outAO = vec3( 1.0 );
+	outAO = vec3( 1 );
 	
 	// discard not inizalized fragments (set to 1)
-	if( texelFetch( texDiffuse, tc, 0 ).a == 0.0 ){
+	if( textureLod( texDiffuse, tc, 0 ).a == 0 ){
 		//discard;
 		return;
 	}
 	
-	vec3 position = depthToPosition( texDepth, vScreenCoord, vLayer );
+	vec3 position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
 	
 	// calculate the parameters
 #if 1

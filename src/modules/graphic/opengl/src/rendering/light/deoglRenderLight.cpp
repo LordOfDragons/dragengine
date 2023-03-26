@@ -73,7 +73,14 @@
 // Definitions
 ////////////////
 
+enum eShaderParameterSSAO{
+	espssaoTCTransform,
+	espssaoSCTransform
+};
+
 enum eSPAOBlur{
+	spaobTCTransform,
+	spaobTCTransformAlt,
 	spaobOffsets1,
 	spaobOffsets2,
 	spaobOffsets3,
@@ -173,7 +180,8 @@ pAddToRenderTask( NULL )
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
 	defines.SetDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
-	defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
+	defines.SetDefines( "FULLSCREENQUAD", "FULLSCREENQUAD_TCTRANSFORM",
+		"NO_POSTRANSFORM", "FULLSCREENQUAD_SCTRANSFORM" );
 	pipconf.SetShader( renderThread, sources, defines );
 	pPipelineAOLocal = pipelineManager.GetWith( pipconf );
 	
@@ -197,7 +205,7 @@ pAddToRenderTask( NULL )
 	defines.SetDefine( "TEX_DATA_SIZE", 1 );
 	defines.SetDefine( "TEX_DATA_SWIZZLE", "g" );
 	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
-	defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+	defines.SetDefines( "NO_POSTRANSFORM" );
 	pipconf.SetShader( renderThread, sources, defines );
 	pPipelineAOBlur1 = pipelineManager.GetWith( pipconf );
 	
@@ -220,7 +228,7 @@ pAddToRenderTask( NULL )
 	defines.SetDefine( "OUT_DATA_SWIZZLE", "g" );
 	defines.SetDefine( "TEX_DATA_SIZE", 1 );
 	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
-	defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+	defines.SetDefines( "NO_POSTRANSFORM" );
 	pipconf.SetShader( renderThread, sources, defines );
 	pPipelineAOBlur2 = pipelineManager.GetWith( pipconf );
 	
@@ -471,6 +479,15 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const float pixelSizeU = defren.GetPixelSizeU();
 	const float pixelSizeV = defren.GetPixelSizeV();
 	
+	const int reduction = 2; //plan.GetRenderStereo() ? 3 : 2;
+	const int reducedWidth = width / reduction;
+	const int reducedHeight = height / reduction;
+	const float tcshift = ( ( reduction - 1 ) % 2 ) == 1 ? -0.5f : 0.0f;
+	
+	if( reducedWidth < 2 || reducedHeight < 2 ){
+		return;
+	}
+	
 	
 	// new ssao
 	/*
@@ -491,12 +508,20 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	*/
 	
 	
-	// render SSAO into green channel
+	// render SSAO into green channel. if reduction is even sampling the full size depth
+	// texture ends up right at the middle of 4 pixels. to avoid problems the texture
+	// coordinates are shifted by half a pixels into the negative direction. this way the
+	// sampling ends up in the middle of the lower left pixel of the 2x2 pixel group.
+	// it doesn't matter which of the 4 pixels in the group we choose just that both
+	// texture and screen coordinates are shifted to the same pixel. the TCTransform
+	// and SCTransform shader parameter takes care of this. SCTransform uses the
+	// same scale value as erutFSTexCoordToScreenCoord in deoglRenderWorld to simulate
+	// calling fsquadScreenCoordToTexCoord() as in screenspace.glsl
 	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineAOLocalStereo : pPipelineAOLocal;
 	pipeline->Activate();
 	
 	defren.ActivateFBOAOSolidity( false );
-	SetViewport( plan );
+	SetViewport( reducedWidth, reducedHeight );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -504,21 +529,53 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 	
+	shader = &pipeline->GetGlShader();
+	shader->SetParameterFloat( espssaoTCTransform, 1.0f, 1.0f,
+		pixelSizeU * tcshift, pixelSizeV * tcshift );
+	shader->SetParameterFloat( espssaoSCTransform, 1.0f, 1.0f,
+		( 2.0f / defren.GetScalingU() ) * ( pixelSizeU * tcshift ),
+		( 2.0f / defren.GetScalingV() ) * ( pixelSizeV * tcshift ) );
+	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
 	RenderFullScreenQuad( plan );
 	
 	
+	// gauss coefficients: gauss(i,s) = exp(-i*i/(2*s*s)), gaussNorm(s) = 1/(2*pi*s*s)
+	// py ['{:e}'.format(gauss(x,0.9)/gaussNorm(0.9)) for x in [0,1,2,3,4]]
+	// s typically 1.
+	// 
+	// normalization is not used here since the shader normalizes. this is required
+	// since depth thresholding changes the actual weights used.
+	// 
+	// here used similar to ['{:e}'.format(gauss(x,1.1)*0.1963806) for x in [0,1,2,3,4]]:
+	// [1.963806e-1, 1.299086e-1, 3.760594e-2, 4.763803e-3, 2.640767e-4]
+	// 
+	// alternate version:
+	// s=1.0: [1.0, 6.065307e-1, 1.353353e-1, 1.110900e-2, 3.354626e-4]
+	// s=1.5: [1.0, 8.007374e-1, 4.111123e-1, 1.353353e-1, 2.856550e-2]
+	// s=1.2: [1.0, 7.066483e-1, 2.493522e-1, 4.393693e-2, 3.865920e-3]
+	// s=1.1: [1.0, 6.615147e-1, 1.914952e-1, 2.425801e-2, 1.344719e-3]
+	// 
+	// for reduced version s=1 is used to sharpen the AO a bit since during upscaling
+	// the sharpness will be reduced a bit. furthermore the values are modified to smear
+	// out the ssao a bit to combine better with texture ao
+	// 
 	// gaussian blur with 9 taps (17 pixels size): pass 1
-	const float blurOffsets[ 4 ] = { 1.411765f, 3.294118f, 5.176471f, 7.058824f };
-	const float blurWeights[ 4 ] = { 2.967529e-1f, 9.442139e-2f, 1.037598e-2f, 2.593994e-4f };
+	// const float blurOffsets[ 4 ] = { 1.411765f, 3.294118f, 5.176471f, 7.058824f };
+	const float blurOffsets[ 4 ] = { 1.0f, 2.0f, 3.0f, 4.0f };
+	// const float blurWeights[ 4 ] = { 2.967529e-1f, 9.442139e-2f, 1.037598e-2f, 2.593994e-4f };
+	// const float blurWeight0 = 0.1963806f;
+	const float blurWeights[ 5 ] = { 1.0f, 6.065307e-1f, 1.353353e-1f, 1.110900e-2f, 3.354626e-4f };
+	//const float blurWeightMod[ 5 ] = { 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
+	const float blurWeightMod[ 5 ] = { 0.8f, 0.85f, 0.9f, 0.95f, 1.0f };
 	const float edgeBlurThreshold = config.GetSSAOEdgeBlurThreshold();
 	
 	pipeline = plan.GetRenderStereo() ? pPipelineAOBlur1Stereo : pPipelineAOBlur1;
 	pipeline->Activate();
 	
 	defren.ActivateFBOTemporary3();
-	SetViewport( plan );
+	SetViewport( reducedWidth, reducedHeight );
 	
 	const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
@@ -527,16 +584,22 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampLinear() );
-	tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(),
+		reduction == 1 ? GetSamplerClampLinear() : GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(),
+		reduction == 1 ? GetSamplerClampLinear() : GetSamplerClampNearest() );
 	
-	shader->SetParameterFloat( spaobClamp,
-		pixelSizeU * ( ( float )width - 0.5f ), pixelSizeV * ( ( float )height - 0.5f ) );
+	defren.SetShaderParamFSQuad( *shader, spaobTCTransform, reducedWidth, reducedHeight );
+	shader->SetParameterFloat( spaobTCTransformAlt, ( float )reduction, ( float )reduction,
+		pixelSizeU * tcshift, pixelSizeV * tcshift );
+	shader->SetParameterFloat( spaobClamp, pixelSizeU * ( ( float )reducedWidth - 0.5f ),
+		pixelSizeV * ( ( float )reducedHeight - 0.5f ) );
 	shader->SetParameterFloat( spaobDepthDifferenceThreshold, edgeBlurThreshold );
 	
-	shader->SetParameterFloat( spaobWeights1,
-		0.1963806f, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ] );
-	shader->SetParameterFloat( spaobWeights2, blurWeights[ 3 ], 0.0f, 0.0f, 0.0f );
+	shader->SetParameterFloat( spaobWeights1, blurWeights[ 0 ] * blurWeightMod[ 0 ],
+		blurWeights[ 1 ] * blurWeightMod[ 1 ], blurWeights[ 2 ] * blurWeightMod[ 2 ],
+		blurWeights[ 3 ] * blurWeightMod[ 3 ] );
+	shader->SetParameterFloat( spaobWeights2, blurWeights[ 4 ] * blurWeightMod[ 4 ], 0.0f, 0.0f, 0.0f );
 	
 	shader->SetParameterFloat( spaobOffsets1,
 		blurOffsets[ 0 ] * pixelSizeU, 0.0f, -blurOffsets[ 0 ] * pixelSizeU, 0.0f );
@@ -556,21 +619,27 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	pipeline->Activate();
 	
 	defren.ActivateFBOAOSolidity( false );
-	SetViewport( plan );
+	SetViewport( reducedWidth, reducedHeight );
 	
 	shader = &pipeline->GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary3(),
+		reduction == 1 ? GetSamplerClampLinear() : GetSamplerClampNearest() );
+	
+	defren.SetShaderParamFSQuad( *shader, spaobTCTransform, reducedWidth, reducedHeight );
+	shader->SetParameterFloat( spaobTCTransformAlt, ( float )reduction, ( float )reduction,
+		pixelSizeU * tcshift, pixelSizeV * tcshift );
 	
 	shader->SetParameterFloat( spaobClamp,
-		pixelSizeU * ( ( float )width - 0.5f ), pixelSizeV * ( ( float )height - 0.5f ) );
+		pixelSizeU * ( ( float )reducedWidth - 0.5f ), pixelSizeV * ( ( float )reducedHeight - 0.5f ) );
 	shader->SetParameterFloat( spaobDepthDifferenceThreshold, edgeBlurThreshold );
 	
-	shader->SetParameterFloat( spaobWeights1,
-		0.1963806f, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ] );
-	shader->SetParameterFloat( spaobWeights2, blurWeights[ 3 ], 0.0f, 0.0f, 0.0f );
+	shader->SetParameterFloat( spaobWeights1, blurWeights[ 0 ] * blurWeightMod[ 0 ],
+		blurWeights[ 1 ] * blurWeightMod[ 1 ], blurWeights[ 2 ] * blurWeightMod[ 2 ],
+		blurWeights[ 3 ] * blurWeightMod[ 3 ] );
+	shader->SetParameterFloat( spaobWeights2, blurWeights[ 4 ] * blurWeightMod[ 4 ], 0.0f, 0.0f, 0.0f );
 	
 	shader->SetParameterFloat( spaobOffsets1,
 		0.0f, blurOffsets[ 0 ] * pixelSizeV, 0.0f, -blurOffsets[ 0 ] * pixelSizeV );

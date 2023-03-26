@@ -43,6 +43,10 @@ vec3 depthToPosition( sampler2DArray samplerDepth, in vec3 texCoord, in vec2 scr
 	return depthToPosition( sampleDepth( samplerDepth, texCoord ), screenCoord, layer );
 }
 
+vec3 depthToPositionLod0( sampler2DArray samplerDepth, in vec3 texCoord, in vec2 screenCoord, in int layer ){
+	return depthToPosition( sampleDepth( samplerDepth, texCoord, 0 ), screenCoord, layer );
+}
+
 // depth is z-far. use this test to avoid div-by-zero when calling depthToPosition
 bool depthIsZFar( in float depth, in int layer ){
 	return depth == pDepthToPosition[ layer ].y;

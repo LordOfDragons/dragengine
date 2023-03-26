@@ -4,6 +4,9 @@
 	
 	<uniformBlock name='RenderParameters' target='0'/>
 	
+	<parameter name='pTCTransform'/>
+	<parameter name='pSCTransform'/>
+	
 	<texture name='texDepth' target='0'/>
 	<texture name='texDiffuse' target='1'/>
 	<texture name='texNormal' target='2'/>

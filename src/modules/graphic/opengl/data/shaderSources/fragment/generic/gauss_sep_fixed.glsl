@@ -4,6 +4,10 @@ precision highp int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
+#ifdef DEPTH_DIFFERENCE_WEIGHTING
+uniform vec4 pTCTransformAlt; // xy=scale, zw=offset
+#endif
+
 uniform vec4 pOffsets1; // offset1.st, -offset1.st
 #if TAP_COUNT > 3
 uniform vec4 pOffsets2; // offset2.st, -offset2.st
@@ -35,17 +39,14 @@ uniform float pDepthDifferenceThreshold;
 #endif
 
 #ifdef INPUT_ARRAY_TEXTURES
-	uniform mediump sampler2DArray texData;
+	#define TEX_DATA_SAMPLER sampler2DArray
 #else
-	uniform mediump sampler2D texData;
+	#define TEX_DATA_SAMPLER sampler2D;
 #endif
+uniform mediump TEX_DATA_SAMPLER texData;
 
 #ifdef DEPTH_DIFFERENCE_WEIGHTING
-	#ifdef INPUT_ARRAY_TEXTURES
-		uniform HIGHP sampler2DArray texDepth;
-	#else
-		uniform HIGHP sampler2D texDepth;
-	#endif
+	uniform HIGHP sampler2DArray texDepth;
 #endif
 
 in vec2 vTexCoord;
@@ -111,10 +112,15 @@ in vec2 vTexCoord;
 #endif
 
 #ifdef INPUT_ARRAY_TEXTURES
-	#define TEX_DATA(tc,weights) ( textureLod( texData, vec3( tc, vLayer ), 0 ) . TEX_DATA_SWIZZLE * TEX_DATA_TYPE( weights ) )
+TEX_DATA_TYPE sampleData( vec2 tc ){
+	return textureLod( texData, vec3( tc, vLayer ), 0 ) . TEX_DATA_SWIZZLE;
+}
 #else
-	#define TEX_DATA(tc,weights) ( textureLod( texData, tc, 0 ) . TEX_DATA_SWIZZLE * TEX_DATA_TYPE( weights ) )
+TEX_DATA_TYPE sampleData( vec2 tc ){
+	return textureLod( texData, tc, 0 ) . TEX_DATA_SWIZZLE;
+}
 #endif
+
 
 #include "shared/defren/depth_to_position.glsl"
 #ifdef DEPTH_DIFFERENCE_WEIGHTING
@@ -123,61 +129,69 @@ in vec2 vTexCoord;
 
 
 #ifdef DEPTH_DIFFERENCE_WEIGHTING
-	#define TAP_DEPTH(tc) depth = depthToZ( texDepth, vec3( tc, vLayer ), vLayer )
-	#define DDW_CALC_WEIGHT(w) weight = w * max( 0.0, 1.0 - pDepthDifferenceThreshold * abs( depth - refdepth ) )
-	#define EVAL_PIXEL(tc,w) TAP_DEPTH(tc); DDW_CALC_WEIGHT(w); accum += TEX_DATA(tc,weight); weightSum += weight
+void processPixel( in vec2 tc, in float weight, in float refdepth, inout TEX_DATA_TYPE accum, inout float weightSum ){
+	float depth = depthToZ( texDepth, vec3( tc * pTCTransformAlt.xy + pTCTransformAlt.zw, vLayer ), vLayer );
+	weight *= max( 0, 1 - pDepthDifferenceThreshold * abs( depth - refdepth ) );
+	accum += sampleData( tc ) * TEX_DATA_TYPE( weight );
+	weightSum += weight;
+}
+
 #else
-	#define EVAL_PIXEL(tc,w) accum += TEX_DATA(tc,w)
+void processPixel( in vec2 tc, in float weight, in float refdepth, inout TEX_DATA_TYPE accum, inout float weightSum ){
+	accum += sampleData( tc ) * TEX_DATA_TYPE( weight );
+}
 #endif
 
 
 
 void main( void ){
-	TEX_DATA_TYPE accum = TEX_DATA( vTexCoord, pWeights1.x );
+	TEX_DATA_TYPE accum = sampleData( vTexCoord ) * TEX_DATA_TYPE( pWeights1.x );
+	float refdepth = 0;
+	float weightSum = 1;
+	
 	#ifdef DEPTH_DIFFERENCE_WEIGHTING
-		float refdepth = depthToZ( texDepth, vLayer );
-		float weightSum = pWeights1.x;
-		float weight, depth;
+		refdepth = depthToZ( texDepth, vec3( vTexCoord * pTCTransformAlt.xy + pTCTransformAlt.zw, vLayer ), vLayer );
+		weightSum = pWeights1.x;
 	#endif
 	
 	vec4 tc = min( vTexCoord.stst + pOffsets1, pClamp.stst );
-	EVAL_PIXEL( tc.xy, pWeights1.y );
-	EVAL_PIXEL( tc.zw, pWeights1.y );
+	processPixel( tc.xy, pWeights1.y, refdepth, accum, weightSum );
+	processPixel( tc.zw, pWeights1.y, refdepth, accum, weightSum );
 	
 	#if TAP_COUNT > 3
 		tc = min( vTexCoord.stst + pOffsets2, pClamp.stst );
-		EVAL_PIXEL( tc.xy, pWeights1.z );
-		EVAL_PIXEL( tc.zw, pWeights1.z );
+		processPixel( tc.xy, pWeights1.z, refdepth, accum, weightSum );
+		processPixel( tc.zw, pWeights1.z, refdepth, accum, weightSum );
 	#endif
 	
 	#if TAP_COUNT > 5
 		tc = min( vTexCoord.stst + pOffsets3, pClamp.stst );
-		EVAL_PIXEL( tc.xy, pWeights1.w );
-		EVAL_PIXEL( tc.zw, pWeights1.w );
+		processPixel( tc.xy, pWeights1.w, refdepth, accum, weightSum );
+		processPixel( tc.zw, pWeights1.w, refdepth, accum, weightSum );
 	#endif
 	
 	#if TAP_COUNT > 7
 		tc = min( vTexCoord.stst + pOffsets4, pClamp.stst );
-		EVAL_PIXEL( tc.xy, pWeights2.x );
-		EVAL_PIXEL( tc.zw, pWeights2.x );
+		processPixel( tc.xy, pWeights2.x, refdepth, accum, weightSum );
+		processPixel( tc.zw, pWeights2.x, refdepth, accum, weightSum );
 	#endif
 	
 	#if TAP_COUNT > 9
 		tc = min( vTexCoord.stst + pOffsets5, pClamp.stst );
-		EVAL_PIXEL( tc.xy, pWeights2.y );
-		EVAL_PIXEL( tc.zw, pWeights2.y );
+		processPixel( tc.xy, pWeights2.y, refdepth, accum, weightSum );
+		processPixel( tc.zw, pWeights2.y, refdepth, accum, weightSum );
 	#endif
 	
 	#if TAP_COUNT > 11
 		tc = min( vTexCoord.stst + pOffsets6, pClamp.stst );
-		EVAL_PIXEL( tc.xy, pWeights2.z );
-		EVAL_PIXEL( tc.zw, pWeights2.z );
+		processPixel( tc.xy, pWeights2.z, refdepth, accum, weightSum );
+		processPixel( tc.zw, pWeights2.z, refdepth, accum, weightSum );
 	#endif
 	
 	#if TAP_COUNT > 13
 		tc = min( vTexCoord.stst + pOffsets7, pClamp.stst );
-		EVAL_PIXEL( tc.xy, pWeights2.w );
-		EVAL_PIXEL( tc.zw, pWeights2.w );
+		processPixel( tc.xy, pWeights2.w, refdepth, accum, weightSum );
+		processPixel( tc.zw, pWeights2.w, refdepth, accum, weightSum );
 	#endif
 	
 	#ifdef DEPTH_DIFFERENCE_WEIGHTING
