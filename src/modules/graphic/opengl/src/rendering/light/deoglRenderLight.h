@@ -50,6 +50,8 @@ private:
 	const deoglPipeline *pPipelineDebugAO;
 	
 	// const deoglPipeline *pPipelineSSAO;
+	const deoglPipeline *pPipelineSSAOBlur1;
+	const deoglPipeline *pPipelineSSAOBlur2;
 	
 	const deoglPipeline *pPipelineSSSSS;
 	const deoglPipeline *pPipelineSSSSSStereo;

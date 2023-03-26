@@ -94,6 +94,14 @@ enum eSPAOBlur{
 	spaobDepthDifferenceThreshold
 };
 
+enum eShaderParameterSSAOBlur{
+	espssaobTCDataToDepth,
+	espssaobOffsetRead,
+	espssaobOffsetWrite,
+	espssaobClamp,
+	espssaobDepthDifferenceThreshold
+};
+
 enum pSPDebugAO{
 	spdaoPosTransform,
 	spdaoTCTransform,
@@ -175,7 +183,8 @@ pAddToRenderTask( NULL )
 	
 	// ambient occlusion
 	pipconf.Reset();
-	pipconf.SetMasks( false, true, false, false, false );
+	// pipconf.SetMasks( false, true, false, false, false );
+	pipconf.SetMasks( true, true, true, true, false );
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
@@ -266,6 +275,18 @@ pAddToRenderTask( NULL )
 	pipconf.SetShader( renderThread, sources, defines );
 	pPipelineSSAO = pipelineManager.GetWith( pipconf );
 	*/
+	
+	pipconf.Reset();
+	pipconf.SetType( deoglPipelineConfiguration::etCompute );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "DefRen SSAO Blur" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSSAOBlur1 = pipelineManager.GetWith( pipconf );
+	
+	defines.SetDefines( "BLUR_PASS_2" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSSAOBlur2 = pipelineManager.GetWith( pipconf );
 	
 	
 	
@@ -469,9 +490,9 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	// deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
+	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
+	// deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 	deoglShaderCompiled *shader;
 	
 	const int width = defren.GetWidth();
@@ -483,6 +504,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const int reducedWidth = width / reduction;
 	const int reducedHeight = height / reduction;
 	const float tcshift = ( ( reduction - 1 ) % 2 ) == 1 ? -0.5f : 0.0f;
+	const float inttcshift = ( ( reduction - 1 ) % 2 ) == 1 ? 0.5f : 0.0f;
 	
 	if( reducedWidth < 2 || reducedHeight < 2 ){
 		return;
@@ -520,7 +542,8 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineAOLocalStereo : pPipelineAOLocal;
 	pipeline->Activate();
 	
-	defren.ActivateFBOAOSolidity( false );
+	// defren.ActivateFBOAOSolidity( false );
+	defren.ActivateFBOTemporary3();
 	SetViewport( reducedWidth, reducedHeight );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
@@ -541,6 +564,51 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	RenderFullScreenQuad( plan );
 	
 	
+	// blur passes
+	const int workGroupSizeZ = plan.GetRenderStereo() ? 2 : 1;
+	const float edgeBlurThreshold = config.GetSSAOEdgeBlurThreshold();
+	const float dataToDepthScaleU = defren.GetScalingU() / ( float )reducedWidth;
+	const float dataToDepthScaleV = defren.GetScalingV() / ( float )reducedHeight;
+	const float dataToDepthOffsetU = defren.GetPixelSizeU() * inttcshift;
+	const float dataToDepthOffsetV = defren.GetPixelSizeV() * inttcshift;
+	
+	pPipelineSSAOBlur1->Activate();
+	shader = &pPipelineSSAOBlur1->GetGlShader();
+	
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
+	ismgr.Enable( 0, *defren.GetTextureTemporary3(), 0, deoglImageStageManager::eaReadWrite );
+	
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	shader->SetParameterFloat( espssaobTCDataToDepth,
+		dataToDepthScaleU, dataToDepthScaleV, dataToDepthOffsetU, dataToDepthOffsetV );
+	shader->SetParameterInt( espssaobOffsetRead, 0, 0 );
+	shader->SetParameterInt( espssaobOffsetWrite, reducedWidth, 0 );
+	shader->SetParameterInt( espssaobClamp, reducedWidth - 1 );
+	shader->SetParameterFloat( espssaobDepthDifferenceThreshold, edgeBlurThreshold );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute(
+		( reducedWidth - 1 ) / 64 + 1, reducedHeight, workGroupSizeZ ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT ) );
+	
+	
+	pPipelineSSAOBlur2->Activate();
+	shader = &pPipelineSSAOBlur2->GetGlShader();
+	
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	shader->SetParameterFloat( espssaobTCDataToDepth,
+		dataToDepthScaleU, dataToDepthScaleV, dataToDepthOffsetU, dataToDepthOffsetV );
+	shader->SetParameterInt( espssaobOffsetRead, reducedWidth, 0 );
+	shader->SetParameterInt( espssaobOffsetWrite, 0, 0 );
+	shader->SetParameterInt( espssaobClamp, reducedWidth - 1 );
+	shader->SetParameterFloat( espssaobDepthDifferenceThreshold, edgeBlurThreshold );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute(
+		reducedWidth, ( reducedHeight - 1 ) / 64 + 1, workGroupSizeZ ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
+	
+	
+#if 0
 	// gauss coefficients: gauss(i,s) = exp(-i*i/(2*s*s)), gaussNorm(s) = 1/(2*pi*s*s)
 	// py ['{:e}'.format(gauss(x,0.9)/gaussNorm(0.9)) for x in [0,1,2,3,4]]
 	// s typically 1.
@@ -672,6 +740,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	}
+#endif
 }
 
 
