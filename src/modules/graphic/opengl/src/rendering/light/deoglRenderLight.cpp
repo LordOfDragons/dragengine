@@ -102,6 +102,10 @@ enum eShaderParameterSSAOBlur{
 	espssaobDepthDifferenceThreshold
 };
 
+enum eShaderParameterSSAOUpscale{
+	espssaousTCTransform
+};
+
 enum pSPDebugAO{
 	spdaoPosTransform,
 	spdaoTCTransform,
@@ -287,6 +291,24 @@ pAddToRenderTask( NULL )
 	defines.SetDefines( "BLUR_PASS_2" );
 	pipconf.SetShader( renderThread, sources, defines );
 	pPipelineSSAOBlur2 = pipelineManager.GetWith( pipconf );
+	
+	
+	// ssao upscale
+	pipconf.Reset();
+	pipconf.SetMasks( false, true, false, false, false );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "DefRen SSAO Upscale" );
+	defines.SetDefines( "NO_POSTRANSFORM" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSSAOUpscale = pipelineManager.GetWith( pipconf );
+	
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "DefRen SSAO Upscale Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSSAOUpscaleStereo = pipelineManager.GetWith( pipconf );
 	
 	
 	
@@ -500,7 +522,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const float pixelSizeU = defren.GetPixelSizeU();
 	const float pixelSizeV = defren.GetPixelSizeV();
 	
-	const int reduction = 2; //plan.GetRenderStereo() ? 3 : 2;
+	const int reduction = plan.GetRenderStereo() ? 3 : 2;
 	const int reducedWidth = width / reduction;
 	const int reducedHeight = height / reduction;
 	const float tcshift = ( ( reduction - 1 ) % 2 ) == 1 ? -0.5f : 0.0f;
@@ -509,6 +531,29 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	if( reducedWidth < 2 || reducedHeight < 2 ){
 		return;
 	}
+	
+	
+	// performance:
+	//
+	// SSAO for every pixel with best possible quality:
+	// - monitor 1920x1080: ssao=948 blur1=334 blur2=317: total 1623
+	// - vr hmd 2468x2740: ssao=4560 blur1=2080 blur2=1985: total 8631
+	// 
+	// this is already expensive for monitor and gets very expensive for hmd. SSAO though
+	// is for of a global effect so calculating it at lower scale has slight quality loss
+	// but improves performance considerable.
+	// 
+	// reduction 2:
+	// - monitor 1920x1080: ssao=326 blur1=56 blur2=78 upscale=44: total 480 [~30%, -1.14ms]
+	// 
+	// reduction 3:
+	// - monitor 1920x1080: ssao=244 blur1=33 blur2=40 upscale=44: total 363 [~23%, -1.26ms]
+	// 
+	// for monitor reduction 2 is enough. reduction 3 is not reducing render time that much
+	// but the quality degrades noticeable.
+	// 
+	// for VR reduction of 3 is required to get better performance. due to the higher resolution
+	// the quality loss is acceptable in contrary to monitor.
 	
 	
 	// new ssao
@@ -606,6 +651,22 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 		reducedWidth, ( reducedHeight - 1 ) / 64 + 1, workGroupSizeZ ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
 		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
+	
+	
+	// upscale
+	pipeline = plan.GetRenderStereo() ? pPipelineSSAOUpscaleStereo : pPipelineSSAOUpscale;
+	pipeline->Activate();
+	
+	defren.ActivateFBOAOSolidity( false );
+	SetViewport( plan );
+	
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
+	
+	shader = &pipeline->GetGlShader();
+	defren.SetShaderParamFSQuad( *shader, espssaousTCTransform, reducedWidth, reducedHeight );
+	
+	RenderFullScreenQuad( plan );
+	
 	
 	
 #if 0

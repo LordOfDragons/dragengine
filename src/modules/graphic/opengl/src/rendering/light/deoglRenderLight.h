@@ -52,6 +52,8 @@ private:
 	// const deoglPipeline *pPipelineSSAO;
 	const deoglPipeline *pPipelineSSAOBlur1;
 	const deoglPipeline *pPipelineSSAOBlur2;
+	const deoglPipeline *pPipelineSSAOUpscale;
+	const deoglPipeline *pPipelineSSAOUpscaleStereo;
 	
 	const deoglPipeline *pPipelineSSSSS;
 	const deoglPipeline *pPipelineSSSSSStereo;
