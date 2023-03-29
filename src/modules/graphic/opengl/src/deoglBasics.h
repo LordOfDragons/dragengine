@@ -69,12 +69,9 @@ void oglClearError();
 
 void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line );
 
-void oglWaitFence( deoglRenderThread &renderThread, GLsync &fence, const char *file, int line );
-
 #define OGL_CHECK(renderThread,cmd) oglClearError(); cmd; dbgCheckOglError(renderThread, __FILE__, __LINE__)
 #define OGLX_CHECK(renderThread,cmd) if((cmd) == False) (renderThread).GetLogger().LogErrorFormat("failed at %s:%i\n", __FILE__, __LINE__)
 #define OGL_IF_CHECK(cmd) cmd
-#define OGL_FENCE_WAIT(renderThread,fence) oglWaitFence(renderThread, fence, __FILE__, __LINE__)
 
 
 struct oglRGBA{

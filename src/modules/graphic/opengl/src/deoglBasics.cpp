@@ -222,31 +222,3 @@ void dbgCheckOglError( deoglRenderThread&, const char *file, int line ){
 	
 	OGL_ON_RENDER_THREAD
 }
-
-void oglWaitFence( deoglRenderThread &renderThread, GLsync &fence, const char *file, int line ){
-	if( ! fence ){
-		return;
-	}
-	
-	oglClearError();
-	
-	switch( pglClientWaitSync( fence, 0, 1000000000 ) ){ // 1s timeout
-	case GL_ALREADY_SIGNALED:
-	case GL_CONDITION_SATISFIED:
-		fence = 0;
-		return;
-		
-	case GL_TIMEOUT_EXPIRED:
-		fence = 0;
-		throw deeInvalidAction( file, line, "Timeout while waiting for fence" );
-		
-	case GL_WAIT_FAILED:
-		fence = 0;
-		dbgCheckOglError( renderThread, file, line );
-		return;
-		
-	default:
-		fence = 0;
-		throw deeInvalidAction( file, line, "Unknown return value while waiting for fence" );
-	}
-}

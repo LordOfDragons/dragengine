@@ -57,8 +57,11 @@ pAllocateBuffer( true ),
 pWriteBuffer( nullptr ),
 pWriteBufferCapacity( 0 ),
 pPersistentMapped( nullptr ),
-pFenceTransfer( nullptr ),
-pMemoryGPUSSBO( 0 ){
+pMemoryGPUSSBO( 0 )
+{
+	if( pUseDSA ){
+		pFenceTransfer.TakeOver( new deoglFence( renderThread ) );
+	}
 }
 
 deoglSPBlockSSBO::deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock ) :
@@ -75,8 +78,11 @@ pAllocateBuffer( true ),
 pWriteBuffer( nullptr ),
 pWriteBufferCapacity( 0 ),
 pPersistentMapped( nullptr ),
-pFenceTransfer( nullptr ),
-pMemoryGPUSSBO( paramBlock.pMemoryGPUSSBO ){
+pMemoryGPUSSBO( paramBlock.pMemoryGPUSSBO )
+{
+	if( pUseDSA ){
+		pFenceTransfer.TakeOver( new deoglFence( paramBlock.GetRenderThread() ) );
+	}
 }
 
 deoglSPBlockSSBO::deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock, eType type ) :
@@ -93,8 +99,11 @@ pAllocateBuffer( true ),
 pWriteBuffer( nullptr ),
 pWriteBufferCapacity( 0 ),
 pPersistentMapped( nullptr ),
-pFenceTransfer( nullptr ),
-pMemoryGPUSSBO( paramBlock.pMemoryGPUSSBO ){
+pMemoryGPUSSBO( paramBlock.pMemoryGPUSSBO )
+{
+	if( pUseDSA ){
+		pFenceTransfer.TakeOver( new deoglFence( paramBlock.GetRenderThread() ) );
+	}
 }
 
 deoglSPBlockSSBO::~deoglSPBlockSSBO(){
@@ -106,7 +115,6 @@ deoglSPBlockSSBO::~deoglSPBlockSSBO(){
 	}
 	
 	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
-	dops.DeleteOpenGLSync( pFenceTransfer );
 	
 	if( pPersistentMapped ){
 		dops.DeleteOpenGLBufferPersistUnmap( pSSBOLocal );
@@ -473,13 +481,9 @@ void deoglSPBlockSSBO::CopyData( const deoglSPBlockSSBO &ssbo, int offset, int c
 void deoglSPBlockSSBO::GPUFinishedWriting(){
 	DEASSERT_TRUE( pType == etRead )
 	
-	if( pUseDSA && pFenceTransfer ){
-		pglDeleteSync( pFenceTransfer );
-		pFenceTransfer = nullptr;
-	}
-	
 	// required to sync call to glCopy*BufferSubData after compute shader finished
 	if( pUseDSA ){
+		pFenceTransfer->Reset();
 		OGL_CHECK( GetRenderThread(), pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
 		
 	}else{
@@ -509,18 +513,13 @@ void deoglSPBlockSSBO::GPUReadToCPU( int elementCount ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	
 	if( pUseDSA ){
-		if( pFenceTransfer ){
-			pglDeleteSync( pFenceTransfer );
-			pFenceTransfer = nullptr;
-		}
-		
 		OGL_CHECK( renderThread, pglCopyNamedBufferSubData(
 			pSSBO, pSSBOLocal, 0, 0, GetElementStride() * elementCount ) );
 		
 		// required to make copied data visible in persistently mapped memory.
 		// according to docs fence has to come after memory barrier
 		OGL_CHECK( renderThread, pglMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
-		pFenceTransfer = pglFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+		pFenceTransfer->Arm();
 		
 	}else{
 		// the logic use here would be copy from GL_COPY_READ_BUFFER to GL_COPY_WRITE_BUFFER.
@@ -559,7 +558,7 @@ void deoglSPBlockSSBO::MapBufferRead( int element, int count ){
 	
 	if( pPersistentMapped ){
 		if( pUseDSA ){
-			OGL_FENCE_WAIT( renderThread, pFenceTransfer );
+			pFenceTransfer->Wait();
 		}
 		
 		pSetMapped( pPersistentMapped + GetElementStride() * element, element, count );

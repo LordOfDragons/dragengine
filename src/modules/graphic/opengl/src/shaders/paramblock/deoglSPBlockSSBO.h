@@ -25,6 +25,7 @@
 #include <stdint.h>
 
 #include "deoglShaderParameterBlock.h"
+#include "../../utils/deoglFence.h"
 
 
 /**
@@ -77,7 +78,7 @@ private:
 	int pWriteBufferCapacity;
 	
 	char *pPersistentMapped;
-	GLsync pFenceTransfer;
+	deoglFence::Ref pFenceTransfer;
 	
 	int pMemoryGPUSSBO;
 	
