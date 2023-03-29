@@ -64,10 +64,6 @@ const int cBlurCoord = 0;
 
 
 void main( void ){
-	if( gl_GlobalInvocationID[ cBlurCoord ] > uint( pClamp ) ){
-		return;
-	}
-	
 	ivec3 tcCenter = ivec3( gl_GlobalInvocationID );
 	
 	// cooperative read data
@@ -93,6 +89,12 @@ void main( void ){
 	
 	
 	// per invocation processing
+	if( gl_GlobalInvocationID[ cBlurCoord ] > uint( pClamp ) ){
+		// skipping the invocation has to be done after the cooperative read phase since
+		// otherwise parts of the shared data is not properly read causing errors
+		return;
+	}
+	
 	index = gl_LocalInvocationIndex + uint( 4 );
 	
 	float accum = vData[ index ] * cWeightCenter;

@@ -545,15 +545,17 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	// 
 	// reduction 2:
 	// - monitor 1920x1080: ssao=326 blur1=56 blur2=78 upscale=44: total 480 [~30%, -1.14ms]
+	// - vr hmd 2468x2740: ssao=1418 blur1=268 blur2=330 upscale=237 : total 2254 [~26%, -6.38ms]
 	// 
 	// reduction 3:
 	// - monitor 1920x1080: ssao=244 blur1=33 blur2=40 upscale=44: total 363 [~23%, -1.26ms]
+	// - vr hmd 2468x2740: ssao=865 blur1=154 blur2=212 upscale=230 : total 1463 [~17%, -7.17ms]
 	// 
 	// for monitor reduction 2 is enough. reduction 3 is not reducing render time that much
 	// but the quality degrades noticeable.
 	// 
 	// for VR reduction of 3 is required to get better performance. due to the higher resolution
-	// the quality loss is acceptable in contrary to monitor.
+	// the quality loss is more acceptable in contrary to monitor.
 	
 	
 	// new ssao
@@ -649,8 +651,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	OGL_CHECK( renderThread, pglDispatchCompute(
 		reducedWidth, ( reducedHeight - 1 ) / 64 + 1, workGroupSizeZ ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
-		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT ) );
 	
 	
 	// upscale
