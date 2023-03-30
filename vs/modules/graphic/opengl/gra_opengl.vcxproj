@@ -592,6 +592,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglDebugNamesEnum.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglDebugNamesEnumSet.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglQuickSorter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglFence.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctree.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctreeVisitor.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglOctree.h" />
@@ -1195,6 +1196,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglDebugNamesEnum.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglDebugNamesEnumSet.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglQuickSorter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglFence.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctree.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctreeVisitor.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglOctree.cpp" />

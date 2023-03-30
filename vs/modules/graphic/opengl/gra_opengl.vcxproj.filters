@@ -1716,6 +1716,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglQuickSorter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglFence.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -3511,6 +3514,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglQuickSorter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglFence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctree.cpp">
