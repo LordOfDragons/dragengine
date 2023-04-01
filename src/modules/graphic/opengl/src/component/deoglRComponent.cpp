@@ -119,9 +119,10 @@ void deoglRComponent::WorldComputeElement::UpdateData( sDataElement &data ) cons
 	const decDVector &refpos = GetReferencePosition();
 	data.SetExtends( pComponent.GetMinimumExtend() - refpos, pComponent.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pComponent.GetLayerMask() );
-	data.highestLod = lodCount - 1;
 	
 	if( pComponent.GetModel() ){
+		data.highestLod = lodCount - 1;
+		
 		const int textureCount = pComponent.GetTextureCount();
 		const deoglRModel &model = *pComponent.GetModel();
 		int i, j;
@@ -172,6 +173,18 @@ void deoglRComponent::WorldComputeElement::UpdateData( sDataElement &data ) cons
 				// of component lods have not been updated yet. we can use it only during update of element
 				// geometries. we can only reduce the potential set of geometries by applying similar logic
 				// here as in deoglRComponentTexture::PrepareParamBlocks()
+				// 
+				// rules for combining shadow textures:
+				// - (renderTaskFilters & (ertfRender|ertfShadowNone|ertfDecal)) == ertfRender
+				// - combineCount >= 2
+				//   counts follow up textures all matching:
+				//   special: if modelLod.texture[i].faceCount == 0 this counts for all as fulfilled
+				//   - solid: (renderTaskFilters & ertfSolid) == ertfSolid
+				//   - no holes: (renderTaskFilters & ertfHoles) == 0
+				//   - useSkinTexture != nullptr
+				//   - not part of a previous combine group
+				//   with mask = ertfRender|ertfSolid|ertfShadowNone|ertfHoles|ertfDecal|ertfDoubleSided
+				//   - (texture.renderTaskFilters & mask) == (renderTaskFilters & mask)
 				if( shadowCombineCount == 0 ){
 					shadowCombineFilter = texture->GetRenderTaskFilters() & shadowCombineMask;
 					if( ( shadowCombineFilter & ( ertfRender | ertfShadowNone | ertfDecal | ertfSolid | ertfHoles ) ) == ( ertfRender | ertfSolid ) ){
@@ -312,11 +325,13 @@ void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeo
 		if( occmesh.GetDoubleSidedFaceCount() > 0 ){
 			SetDataGeometry( *data, ertfRender | ertfOcclusion | ertfDoubleSided, vao,
 				pComponent.GetOccMeshSharedSPBRTIGroup( true ).GetRTSInstance(), rtsi );
+			data++;
 		}
 		
 		if( occmesh.GetSingleSidedFaceCount() > 0 ){
 			SetDataGeometry( *data, ertfRender | ertfOcclusion, vao,
 				pComponent.GetOccMeshSharedSPBRTIGroup( false ).GetRTSInstance(), rtsi );
+			data++;
 		}
 	}
 	
