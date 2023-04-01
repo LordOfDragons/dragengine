@@ -31,6 +31,7 @@
 #include "../../../renderthread/deoglRTLogger.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -116,9 +117,10 @@ deoglRenderTaskSharedInstance *deoglRenderTaskSharedPool::GetInstance(){
 }
 
 int deoglRenderTaskSharedPool::AssignSkinTexture( deoglSkinTexture *skinTexture ){
+	const deMutexGuard guard( pMutexSkinTextures );
+	const int index = pFreeSkinTextures.GetCount() - 1;
 	int slot;
 	
-	int index = pFreeSkinTextures.GetCount() - 1;
 	if( index > -1 ){
 		slot = pFreeSkinTextures.GetAt( index );
 		pFreeSkinTextures.RemoveFrom( index );
@@ -183,6 +185,7 @@ void deoglRenderTaskSharedPool::ReturnInstance( deoglRenderTaskSharedInstance *i
 }
 
 void deoglRenderTaskSharedPool::ReturnSkinTexture( int slot ){
+	const deMutexGuard guard( pMutexSkinTextures );
 	pSkinTextures.SetAt( slot, nullptr );
 	pFreeSkinTextures.Add( slot );
 }

@@ -40,6 +40,7 @@
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -174,6 +175,8 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 	}
 	
 	deoglRenderTaskSharedPool &pool = pRenderThread.GetRenderTaskSharedPool();
+	const deMutexGuard guard( pool.GetMutexSkinTextures() );
+	
 	const int pipelinesPerTexture = deoglSkinTexturePipelinesList::PipelineTypesCount
 		* deoglSkinTexturePipelines::TypeCount * deoglSkinTexturePipelines::ModifiersPerType;
 	const int count = pool.GetSkinTextureCount();
