@@ -80,17 +80,6 @@ public:
 	};
 	
 private:
-	/** World compute element. */
-	class WorldComputeElement: public deoglWorldComputeElement{
-		deoglRComponent &pComponent;
-	public:
-		WorldComputeElement( deoglRComponent &component );
-		virtual void UpdateData( sDataElement &data ) const;
-		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
-	};
-	
-	
-	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRWorld *pParentWorld;

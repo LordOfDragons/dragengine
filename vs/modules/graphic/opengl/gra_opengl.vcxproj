@@ -96,6 +96,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglMeshData.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentWCElement.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentLOD.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.h" />
@@ -708,6 +709,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglMeshData.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentWCElement.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentLOD.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.cpp" />
