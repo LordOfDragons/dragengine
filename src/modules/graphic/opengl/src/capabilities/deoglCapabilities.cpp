@@ -69,8 +69,7 @@ pUBOIndirectMatrixAccess( *this ),
 pClearEntireArrayTexture( *this ),
 pUBODirectLinkDeadloop( *this ),
 pFramebufferTextureSingle( *this ),
-pStd430( *this ),
-pPersistCopyData( *this )
+pStd430( *this )
 {
 	const GLfloat fsquad[ 12 ] = {
 		0.0f, 1.0f,
@@ -250,7 +249,6 @@ void deoglCapabilities::DetectCapabilities(){
 		pUBODirectLinkDeadloop.Check( fbo );
 		
 		pStd430.Check();
-		pPersistCopyData.Check();
 		
 		#ifdef OS_ANDROID
 		framebuffer = new deoglFramebuffer( pRenderThread, false );

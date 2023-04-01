@@ -39,13 +39,15 @@ public:
 	enum eVendors{
 		/** ATI / AMD. */
 		evATI,
+
 		/** nVidia. */
 		evNVidia,
+
 		/** Something else. */
-		evUnknown,
-		/** Count of entries. */
-		EV_COUNT
+		evUnknown
 	};
+
+	static const int VendorCount = evUnknown + 1;
 	
 	/** OpenGL Versions. */
 	enum eVersions{
@@ -385,7 +387,7 @@ private:
 	decString pStrGLVersion;
 	decStringList pStrListExtensions;
 	
-	int pVendor;
+	eVendors pVendor;
 	int pGLVersionMajor;
 	int pGLVersionMinor;
 	eVersions pGLVersion;
@@ -430,13 +432,15 @@ public:
 	
 	/** Retrieves the vendor string. */
 	inline const decString &GetStringVendor() const{ return pStrVendor; }
+
 	/** Retrieves the opengl version string. */
 	inline const decString &GetStringGLVersion() const{ return pStrGLVersion; }
+
 	/** Retrieves the list of extension strings supported by the hardware. */
 	inline const decStringList &GetStringListExtensions() const{ return pStrListExtensions; }
 	
 	/** Retrieves the vendor. */
-	inline int GetVendor() const{ return pVendor; }
+	inline eVendors GetVendor() const{ return pVendor; }
 	
 	/** OpenGL major version. */
 	inline int GetGLVersionMajor() const{ return pGLVersionMajor; }

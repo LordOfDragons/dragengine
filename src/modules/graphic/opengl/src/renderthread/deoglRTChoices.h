@@ -59,6 +59,8 @@ private:
 	bool pUseComputeRenderTask;
 	bool pUseDirectStateAccess;
 	
+	bool pNVidiaOnWindows;
+
 	
 	
 public:
@@ -133,6 +135,9 @@ public:
 	
 	/** Use direct state access. */
 	inline bool GetUseDirectStateAccess() const{ return pUseDirectStateAccess; }
+
+	/** nVidia on Windows detected. */
+	inline bool GetNVidiaOnWindows() const{ return pNVidiaOnWindows; }
 	/*@}*/
 };
 

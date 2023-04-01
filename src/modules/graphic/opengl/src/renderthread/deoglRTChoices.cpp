@@ -19,9 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <dragengine/dragengine_configuration.h>
 
 #include "deoglRenderThread.h"
 #include "deoglRTChoices.h"
@@ -139,6 +137,12 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	
 	pUseDirectStateAccess = HASEXT( ext_ARB_direct_state_access );
 	
+	#ifdef OS_W32
+	pNVidiaOnWindows = ext.GetVendor() == deoglExtensions::evNVidia;
+	#else
+	pNVidiaOnWindows = false;
+	#endif
+
 	// temporary until working properly
 	if( /* HASEXT( ext_ARB_shader_atomic_counter_ops ) && */ pUseSSBORender ){
 		pUseComputeRenderTask = true;
@@ -181,6 +185,10 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	l.LogInfoFormat( "- Render Fullscreen Quad Stereo Vertex Shader Layer: %s", pRenderFSQuadStereoVSLayer ? "Yes" : "No" );
 	l.LogInfoFormat( "- Use Inverse Depth: %s", pUseInverseDepth ? "Yes" : "No" );
 	l.LogInfoFormat( "- Use Direct State Access: %s", pUseDirectStateAccess ? "Yes" : "No" );
+
+	if( pNVidiaOnWindows ){
+		l.LogInfo( "- nVidia on Windows: Force disable DSA on SSBO due to driver bug!" );
+	}
 }
 
 deoglRTChoices::~deoglRTChoices(){

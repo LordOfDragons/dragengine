@@ -55,7 +55,7 @@ extern __eglMustCastToProperFunctionPointerType androidGetProcAddress( const cha
 // Definitions
 ////////////////
 
-static const char * const vVendorNames[ deoglExtensions::EV_COUNT ] = {
+static const char * const vVendorNames[ deoglExtensions::VendorCount ] = {
 	"ATI/AMD",
 	"nVidia",
 	"Unknown"
@@ -350,14 +350,14 @@ void deoglExtensions::DisableExtension( eExtensions extension ){
 
 void deoglExtensions::pScanVendor(){
 	pStrVendor = ( const char * )glGetString( GL_VENDOR );
-	
-	if( strncmp( pStrVendor.GetString(), "ATI", 3 ) == 0 ){
+
+	if( pStrVendor.BeginsWithInsensitive( "ati" ) ){
 		pVendor = evATI;
 		
-	}else if( strncmp( pStrVendor.GetString(), "AMD", 3 ) == 0 ){
+	}else if( pStrVendor.BeginsWithInsensitive( "amd" ) ){
 		pVendor = evATI;
 		
-	}else if( strncmp( pStrVendor.GetString(), "nVidia", 6 ) == 0 ){
+	}else if( pStrVendor.BeginsWithInsensitive( "nvidia" ) ){
 		pVendor = evNVidia;
 		
 	}else{
