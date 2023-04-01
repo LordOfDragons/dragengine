@@ -69,6 +69,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireArrayTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckFramebufferTextureSingle.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckStd430.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckPersistCopyData.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBODirectLinkDeadloop.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBOIndirectMatrixAccess.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapabilities.h" />
@@ -683,6 +684,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireArrayTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckFramebufferTextureSingle.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckStd430.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckPersistCopyData.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBODirectLinkDeadloop.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBOIndirectMatrixAccess.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapabilities.cpp" />

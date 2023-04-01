@@ -791,6 +791,13 @@ extern GLAPI PFNGLCLEARBUFFERSUBDATAPROC pglClearBufferSubData;
 
 
 
+// GL_ARB_buffer_storage : opengl version 4.3
+///////////////////////////////////////////////
+
+extern GLAPI PFNGLBUFFERSTORAGEPROC pglBufferStorage;
+
+
+
 // GL_ARB_direct_state_access : opengl version 4.4
 ////////////////////////////////////////////////////
 

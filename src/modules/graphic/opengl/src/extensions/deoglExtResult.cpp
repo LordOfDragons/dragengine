@@ -506,6 +506,13 @@ GLAPI PFNGLCLEARBUFFERSUBDATAPROC pglClearBufferSubData = nullptr;
 
 
 
+// GL_ARB_buffer_storage : opengl version 4.3
+///////////////////////////////////////////////
+
+GLAPI PFNGLBUFFERSTORAGEPROC pglBufferStorage = nullptr;
+
+
+
 // GL_ARB_direct_state_access : opengl version 4.4
 ////////////////////////////////////////////////////
 

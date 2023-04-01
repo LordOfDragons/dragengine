@@ -30,6 +30,7 @@
 #include "checks/deoglCapCheckUBODirectLinkDeadloop.h"
 #include "checks/deoglCapCheckFramebufferTextureSingle.h"
 #include "checks/deoglCapCheckStd430.h"
+#include "checks/deoglCapCheckPersistCopyData.h"
 #include "../deoglBasics.h"
 
 class deoglRenderThread;
@@ -76,6 +77,7 @@ private:
 	deoglCapCheckUBODirectLinkDeadloop pUBODirectLinkDeadloop;
 	deoglCapCheckFramebufferTextureSingle pFramebufferTextureSingle;
 	deoglCapCheckStd430 pStd430;
+	deoglCapCheckPersistCopyData pPersistCopyData;
 	
 	
 	
@@ -179,6 +181,9 @@ public:
 	
 	/** Std430 support. */
 	inline const deoglCapCheckStd430 &GetStd430() const{ return pStd430; }
+	
+	/** Copy sub data on persistent buffer driver bug. */
+	inline const deoglCapCheckPersistCopyData &GetPersistCopyData() const{ return pPersistCopyData; }
 	
 	/** Tests the hardware for its capabilities. */
 	void DetectCapabilities();

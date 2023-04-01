@@ -151,6 +151,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_gpu_shader_fp64",
 	"GL_ARB_direct_state_access",
 	"GL_ARB_clear_buffer_object",
+	"GL_ARB_buffer_storage",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -298,6 +299,7 @@ bool deoglExtensions::VerifyPresence() const{
 	allPresent &= pVerifyExtensionPresent( ext_ARB_shading_language_420pack );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_atomic_counters );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_clear_buffer_object );
+	allPresent &= pVerifyExtensionPresent( ext_ARB_buffer_storage );
 	// allPresent &= pVerifyExtensionPresent( ext_ARB_gpu_shader_fp64 );
 	allPresent &= pSupportsGeometryShader;
 	
@@ -1047,6 +1049,11 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// GL_ARB_clear_buffer_object : opengl version 4.3
 	if( pHasExtension[ ext_ARB_clear_buffer_object ] ){
 		pGetOptionalFunction( (void**)&pglClearBufferSubData, "glClearBufferSubData", ext_ARB_clear_buffer_object );
+	}
+	
+	// GL_ARB_buffer_storage : opengl version 4.3
+	if( pHasExtension[ ext_ARB_buffer_storage ] ){
+		pGetOptionalFunction( (void**)&pglBufferStorage, "glBufferStorage", ext_ARB_buffer_storage );
 	}
 	
 	// GL_ARB_direct_state_access : opengl version 4.4
