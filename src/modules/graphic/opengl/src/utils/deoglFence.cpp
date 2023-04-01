@@ -49,6 +49,12 @@ deoglFence::~deoglFence(){
 void deoglFence::Arm(){
 	Reset();
 	pFence = pglFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+	
+	// ensure the fence is processed by the GPU. AMD goes to work quickly but nVidia delays
+	// processing the queue causing the signal to not be processed causing glClientWaitSync()
+	// to wait forever. we could use GL_SYNC_FLUSH_COMMANDS_BIT for glClientWaitSync() but
+	// according to docs it is safer to do an explicit glFlush() due to driver peculiarities
+	glFlush();
 }
 
 bool deoglFence::HasFired(){
