@@ -113,27 +113,24 @@ pComponent( component ){
 }
 
 void deoglRComponent::WorldComputeElement::UpdateData( sDataElement &data ) const{
+	const int shadowCombineMask = ertfRender | ertfSolid | ertfShadowNone | ertfHoles | ertfDecal | ertfDoubleSided;
+	const int lodCount = decMath::min( pComponent.GetLODCount(), 15 );
+	
 	const decDVector &refpos = GetReferencePosition();
 	data.SetExtends( pComponent.GetMinimumExtend() - refpos, pComponent.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pComponent.GetLayerMask() );
-	data.geometryCount = ( pComponent.GetTextureCount() + pComponent.GetOutlineTextureCount() ) * pComponent.GetLODCount();
-	data.highestLod = decMath::min( pComponent.GetLODCount() - 1, 15 );
-	
-	data.flags = ( uint32_t )deoglWorldCompute::eefComponent;
-	data.flags |= ( uint32_t )( pComponent.GetRenderStatic()
-		? deoglWorldCompute::eefStatic : deoglWorldCompute::eefDynamic );
-	data.flags |= ( uint32_t )( pComponent.IsGIStatic()
-		? deoglWorldCompute::eefGIStatic : deoglWorldCompute::eefGIDynamic );
+	data.highestLod = lodCount - 1;
 	
 	if( pComponent.GetModel() ){
+		const int textureCount = pComponent.GetTextureCount();
 		const deoglRModel &model = *pComponent.GetModel();
-		const int lodCount = model.GetLODCount();
+		int i, j;
 		
-		if( lodCount > 1 ){
+		const int modelLodCount = decMath::min( model.GetLODCount(), 5 );
+		if( modelLodCount > 1 ){
 			const float errorScaling = pComponent.GetLODErrorScaling();
-			int i;
 			
-			for( i=1; i<lodCount; i++ ){
+			for( i=1; i<modelLodCount; i++ ){
 				data.lodFactors[ i - 1 ] = model.GetLODAt( i ).GetMaxError() * errorScaling;
 			}
 			
@@ -141,22 +138,89 @@ void deoglRComponent::WorldComputeElement::UpdateData( sDataElement &data ) cons
 			data.lodFactors[ 2 ] = decMath::max( data.lodFactors[ 2 ], data.lodFactors[ 1 ] + FLOAT_SAFE_EPSILON );
 			data.lodFactors[ 3 ] = decMath::max( data.lodFactors[ 3 ], data.lodFactors[ 2 ] + FLOAT_SAFE_EPSILON );
 		}
+		
+		for( i=0; i<lodCount; i++ ){
+			const deoglModelLOD &modelLod = model.GetLODAt( i );
+			if( modelLod.GetFaceCount() == 0 ){
+				continue;
+			}
+			
+			int shadowCombineFilter = 0;
+			int shadowCombineCount = 0;
+			
+			for( j=0; j<textureCount; j++ ){
+				if( modelLod.GetTextureAt( j ).GetFaceCount() == 0 ){
+					continue;
+				}
+				
+				const deoglSkinTexture * const texture = pComponent.GetTextureAt( j ).GetUseSkinTexture();
+				if( ! texture ){
+					if( shadowCombineCount > 1 ){
+						data.geometryCount++;
+					}
+					shadowCombineCount = 0;
+					continue;
+				}
+				
+				data.geometryCount++;
+				
+				if( texture->GetHasOutline() ){
+					data.geometryCount++;
+				}
+				
+				// this one is a bit annoying. at the time of updating element data the RenderTaskConfig
+				// of component lods have not been updated yet. we can use it only during update of element
+				// geometries. we can only reduce the potential set of geometries by applying similar logic
+				// here as in deoglRComponentTexture::PrepareParamBlocks()
+				if( shadowCombineCount == 0 ){
+					shadowCombineFilter = texture->GetRenderTaskFilters() & shadowCombineMask;
+					if( ( shadowCombineFilter & ( ertfRender | ertfShadowNone | ertfDecal | ertfSolid | ertfHoles ) ) == ( ertfRender | ertfSolid ) ){
+						shadowCombineCount = 1;
+					}
+					
+				}else if( ( texture->GetRenderTaskFilters() & shadowCombineMask ) == shadowCombineFilter ){
+					shadowCombineCount++;
+					
+				}else{
+					if( shadowCombineCount > 1 ){
+						data.geometryCount++;
+					}
+					shadowCombineCount = 0;
+				}
+			}
+			
+			if( shadowCombineCount > 1 ){
+				data.geometryCount++;
+			}
+		}
 	}
 	
-	if( pComponent.GetOcclusionMesh() ){
-		if( pComponent.GetOcclusionMesh()->GetDoubleSidedFaceCount() > 0 ){
+	const deoglROcclusionMesh * const occmesh = pComponent.GetOcclusionMesh();
+	if( occmesh ){
+		if( occmesh->GetDoubleSidedFaceCount() > 0 ){
 			data.geometryCount++;
 		}
-		if( pComponent.GetOcclusionMesh()->GetSingleSidedFaceCount() > 0 ){
+		if( occmesh->GetSingleSidedFaceCount() > 0 ){
 			data.geometryCount++;
 		}
 	}
+	
+	data.flags = ( uint32_t )deoglWorldCompute::eefComponent;
+	data.flags |= ( uint32_t )( pComponent.GetRenderStatic()
+		? deoglWorldCompute::eefStatic : deoglWorldCompute::eefDynamic );
+	data.flags |= ( uint32_t )( pComponent.IsGIStatic()
+		? deoglWorldCompute::eefGIStatic : deoglWorldCompute::eefGIDynamic );
 }
 
 void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+	const int lodCount = decMath::min( pComponent.GetLODCount(), 15 );
 	const int textureCount = pComponent.GetTextureCount();
-	const int lodCount = pComponent.GetLODCount();
 	int i, j;
+	
+	sDataElementGeometry *lastData = data;
+	if( GetSPBGeometries() ){
+		lastData += GetSPBGeometries()->GetCount();
+	}
 	
 	for( i=0; i<lodCount; i++ ){
 		const deoglRComponentLOD &lod = pComponent.GetLODAt( i );
@@ -170,7 +234,13 @@ void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeo
 			continue;
 		}
 		
+		int shadowCombineCount = 0;
+		
 		for( j=0; j<textureCount; j++ ){
+			if( shadowCombineCount > 0 ){
+				shadowCombineCount--;
+			}
+			
 			if( modelLod.GetTextureAt( j ).GetFaceCount() == 0 ){
 				continue;
 			}
@@ -183,9 +253,25 @@ void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeo
 			
 			const deoglRenderTaskSharedInstance * const rtsi = texture.GetSharedSPBRTIGroup( i ).GetRTSInstance();
 			const int spbi = texture.GetSharedSPBElement()->GetIndex();
+			int filter = texture.GetRenderTaskFilters() & ~RenderFilterOutline;
 			
-			SetDataGeometry( *data, i, texture.GetRenderTaskFilters() & ~RenderFilterOutline,
-				texture.GetUseDecal() ? deoglSkinTexturePipelinesList::eptDecal
+			if( shadowCombineCount == 0 ){
+				const deoglSharedSPBRTIGroup * const shadowCombineGroup = texture.GetSharedSPBRTIGroupShadow( i );
+				if( shadowCombineGroup ){
+					SetDataGeometry( *data, i, filter | ertfShadow | ertfCompactShadow,
+						deoglSkinTexturePipelinesList::eptComponent, 0,
+						skinTexture, vao, shadowCombineGroup->GetRTSInstance(), spbi );
+					
+					data++;
+					shadowCombineCount = shadowCombineGroup->GetTextureCount();
+				}
+			}
+			
+			if( shadowCombineCount == 0 ){
+				filter |= ertfShadow;
+			}
+			
+			SetDataGeometry( *data, i, filter, texture.GetUseDecal() ? deoglSkinTexturePipelinesList::eptDecal
 					: deoglSkinTexturePipelinesList::eptComponent,
 				texture.GetUseDoubleSided() ? deoglSkinTexturePipelines::emDoubleSided : 0,
 				skinTexture, vao, rtsi, spbi );
@@ -233,12 +319,14 @@ void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeo
 				pComponent.GetOccMeshSharedSPBRTIGroup( false ).GetRTSInstance(), rtsi );
 		}
 	}
+	
+	DEASSERT_TRUE( data <= lastData )
 }
 
 
 
 // Class deoglRComponent
-/////////////////////////
+//////////////////////////
 
 // Constructor, destructor
 ////////////////////////////

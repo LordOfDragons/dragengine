@@ -173,6 +173,12 @@ void deoglSharedBlockSPB::ReturnElement( deoglSharedBlockSPBElement *element ){
 	pFreeElementCount += count;
 }
 
+int deoglSharedBlockSPB::GetFreeElementCountAtEnd() const{
+	const deoglSharedBlockSPBElement &element =
+		*( ( deoglSharedBlockSPBElement* )pElements.GetAt( pElements.GetCount() - 1 ) );
+	return element.GetEmpty() ? element.GetCount() : 0;
+}
+
 int deoglSharedBlockSPB::pIndexOfEmptyElementWithMinCount( int count ){
 	// check if an empty block with enough space can be reused. this list does not include
 	// the last empty block filling the space up to the available space. this is done like

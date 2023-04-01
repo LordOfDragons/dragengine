@@ -85,15 +85,23 @@ public:
 	/** Parameter block storing the elements. */
 	inline const deoglShaderParameterBlock::Ref &GetParameterBlock() const{ return pParameterBlock; }
 	
-	/**
-	 * Obtain element. Call deoglSharedBlockSPBElement::Return to return element.
-	 */
+	/** Obtain element. Call deoglSharedBlockSPBElement::Return to return element. */
 	deoglSharedBlockSPBElement *GetElement( int count );
 	
-	/**
-	 * Return element.
-	 */
+	/** Return element. */
 	void ReturnElement( deoglSharedBlockSPBElement *element );
+	
+	/** Maximal count of elements the buffer can store. */
+	inline int GetSize() const{ return pSize; }
+	
+	/** Count of used elements. */
+	inline int GetUsedElementCount() const{ return pUsedElementCount; }
+	
+	/** Count of free elements. */
+	inline int GetFreeElementCount() const{ return pFreeElementCount; }
+	
+	/** Count of free elements at the end of the buffer. */
+	int GetFreeElementCountAtEnd() const;
 	/*@}*/
 	
 	

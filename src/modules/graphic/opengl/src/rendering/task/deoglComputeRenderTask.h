@@ -132,6 +132,10 @@ private:
 	bool pForceDoubleSided;
 	bool pOcclusion;
 	
+	bool pShadow;
+	bool pFilterShadow;
+	bool pCompactShadow;
+	
 	bool pFilterDoubleSided;
 	bool pDoubleSided;
 	
@@ -325,6 +329,26 @@ public:
 	
 	/** Set occlusion. */
 	void SetOcclusion( bool occlusion );
+	
+	
+	
+	/** Shadow. */
+	inline bool GetShadow() const{ return pShadow; }
+	
+	/** Set shadow. */
+	void SetShadow( bool shadow );
+	
+	/** Filter shadow. */
+	inline bool GetFilterShadow() const{ return pFilterShadow; }
+	
+	/** Set filter shadow. */
+	void SetFilterShadow( bool filter );
+	
+	/** Compact shadow. */
+	inline bool GetCompactShadow() const{ return pCompactShadow; }
+	
+	/** Set compact shadow. */
+	void SetCompactShadow( bool compactShadow );
 	
 	
 	

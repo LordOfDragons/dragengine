@@ -25,6 +25,8 @@ const uint erfDecal = uint( 0x100 );
 const uint erfDoubleSided = uint( 0x200 );
 const uint erfXRay = uint( 0x400 );
 const uint erfOcclusion = uint( 0x800 );
+const uint erfShadow = uint( 0x1000 );
+const uint erfCompactShadow = uint( 0x2000 );
 
 
 // element pipeline lists

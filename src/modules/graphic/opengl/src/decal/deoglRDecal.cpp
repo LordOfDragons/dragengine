@@ -119,7 +119,7 @@ void deoglRDecal::WorldComputeElement::UpdateDataGeometries( sDataElementGeometr
 	}
 	
 	int filter = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
-	filter |= ertfDecal;
+	filter |= ertfDecal | ertfShadow;
 	
 	int pipelineModifier = deoglSkinTexturePipelines::emDoubleSided;
 	

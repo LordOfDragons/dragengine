@@ -1060,6 +1060,13 @@ void deoglRComponentTexture::pUpdateRenderTaskFilters(){
 
 int deoglRComponentTexture::pShadowCombineCount( int lodLevel ) const{
 	const bool hasHoles = ( pRenderTaskFilters & ( ertfSolid | ertfHoles ) ) == ( ertfSolid | ertfHoles );
+	if( hasHoles || ! pUseSkinTexture ){
+		// this check is only used to allow combined shadows to be added to world element
+		// geometries by components. the reason is that TUCs can not be obtained at the
+		// time element data is written. maybe later on this can be re-added
+		return 1;
+	}
+	
 	if( hasHoles && pUseSkinState && ( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ) ){
 		return 1; // can not combine since variation is used
 	}

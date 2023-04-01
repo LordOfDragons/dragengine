@@ -103,6 +103,7 @@ void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries( sDataElem
 	const deoglModelTexture &modelTex = modelLOD.GetTextureAt( 0 );
 	
 	int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
+	filters |= ertfShadow;
 	if( modelTex.GetDecal() ){
 		filters |= ertfDecal;
 	}

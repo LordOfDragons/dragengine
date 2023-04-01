@@ -243,7 +243,9 @@ enum eRenderTaskFilters{
 	ertfDecal = 0x100,
 	ertfDoubleSided = 0x200,
 	ertfXRay = 0x400,
-	ertfOcclusion = 0x800
+	ertfOcclusion = 0x800,
+	ertfShadow = 0x1000,
+	ertfCompactShadow = 0x2000
 };
 
 

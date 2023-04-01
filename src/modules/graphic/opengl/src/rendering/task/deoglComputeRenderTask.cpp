@@ -168,6 +168,10 @@ void deoglComputeRenderTask::Clear(){
 	pForceDoubleSided = false;
 	pOcclusion = false;
 	
+	pShadow = false;
+	pFilterShadow = false;
+	pCompactShadow = false;
+	
 	pFilterDoubleSided = false;
 	pDoubleSided = false;
 	
@@ -388,6 +392,18 @@ void deoglComputeRenderTask::SetOcclusion( bool occlusion ){
 	pOcclusion = occlusion;
 }
 
+void deoglComputeRenderTask::SetShadow( bool shadow ){
+	pShadow = shadow;
+}
+
+void deoglComputeRenderTask::SetFilterShadow( bool filter ){
+	pFilterShadow = filter;
+}
+
+void deoglComputeRenderTask::SetCompactShadow( bool compactShadow ){
+	pCompactShadow = compactShadow;
+}
+
 void deoglComputeRenderTask::SetFilterDoubleSided( bool filterDoubleSided ){
 	pFilterDoubleSided = filterDoubleSided;
 }
@@ -565,6 +581,18 @@ void deoglComputeRenderTask::pRenderFilter( int &filter, int &mask ) const{
 	mask |= ertfOcclusion;
 	if( pOcclusion ){
 		filter |= ertfOcclusion;
+	}
+	
+	if( pFilterShadow ){
+		mask |= ertfShadow;
+		if( pShadow ){
+			filter |= ertfShadow;
+		}
+	}
+	
+	mask |= ertfCompactShadow;
+	if( pCompactShadow ){
+		filter |= ertfCompactShadow;
 	}
 }
 

@@ -253,7 +253,8 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 }
 
 int deoglWorldCompute::GetElementGeometryCount() const{
-	return GetElementCount() > 0 ? pSSBOElementGeometries->GetElementCount() : 0;
+	return pSharedSPBGeometries->GetSize() - pSharedSPBGeometries->GetFreeElementCountAtEnd();
+	// return GetElementCount() > 0 ? pSSBOElementGeometries->GetElementCount() : 0;
 }
 
 void deoglWorldCompute::UpdateElementGeometries( deoglWorldComputeElement *element ){

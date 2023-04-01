@@ -1224,7 +1224,7 @@ void deoglRenderPlanSkyLight::pBuildCRTShadow( int layer ){
 	const deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
 	const sShadowLayer &sl = pShadowLayers[ layer ];
 	deoglComputeRenderTask &renderTask = sl.computeRenderTask;
-	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 2 );
+	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 3 );
 	
 	renderTask.Clear();
 	renderTask.SetNoShadowNone( true );
@@ -1246,7 +1246,7 @@ void deoglRenderPlanSkyLight::pBuildCRTShadow( int layer ){
 	
 	renderTask.EndPass( worldCompute );
 	
-	// pass 2: all other geometry
+	// pass 2: all other geometry, all compact shadow
 	renderTask.SetFilterSolid( true );
 	renderTask.SetOcclusion( false );
 	renderTask.SetFilterDoubleSided( false );
@@ -1260,12 +1260,20 @@ void deoglRenderPlanSkyLight::pBuildCRTShadow( int layer ){
 	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropField );
 	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap1 );
 	
+	renderTask.SetFilterShadow( true );
+	renderTask.SetShadow( true );
+	
+	renderTask.SetCompactShadow( true );
+	renderTask.EndPass( worldCompute );
+	
+	// pass 3: all other geometry, all non compact shadow
+	renderTask.SetCompactShadow( false );
 	renderTask.EndPass( worldCompute );
 }
 
 void deoglRenderPlanSkyLight::pBuildCRTShadowGI( deoglComputeRenderTask &renderTask ){
 	const deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
-	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 1 );
+	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 2 );
 	
 	renderTask.Clear();
 	renderTask.SetSolid( true );
@@ -1276,5 +1284,12 @@ void deoglRenderPlanSkyLight::pBuildCRTShadowGI( deoglComputeRenderTask &renderT
 	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
 	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap1 );
 	
+	renderTask.SetFilterShadow( true );
+	renderTask.SetShadow( true );
+	
+	renderTask.SetCompactShadow( true );
+	renderTask.EndPass( worldCompute );
+	
+	renderTask.SetCompactShadow( false );
 	renderTask.EndPass( worldCompute );
 }
