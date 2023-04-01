@@ -86,8 +86,6 @@ void deoglCapCheckPersistCopyData::Check(){
 		return;
 	}
 	
-	// const bool hasDsa = renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_direct_state_access );
-	
 	const GLfloat data[ 4 ] = { 1.0f, 2.0f, 3.0f, 4.0f };
 	void * persistentMapped = nullptr;
 	GLuint ssboGpu = 0, ssboCpu = 0;
@@ -148,5 +146,56 @@ void deoglCapCheckPersistCopyData::Check(){
 		
 	}else{
 		renderThread.GetLogger().LogWarn( "Capabilities: Persistent Mapped CopySubData: Driver Bug!" );
+		return;
+	}
+	
+	// to the same test also for the direct state access version
+	const bool hasDsa = renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_direct_state_access );
+	
+	if( hasDsa ){
+		persistentMapped = nullptr;
+		ssboGpu = 0;
+		ssboCpu = 0;
+		
+		try{
+			// create gpu buffer and copy test data into it
+			OGL_CHECK( renderThread, pglCreateBuffers( 1, &ssboGpu ) );
+			OGL_CHECK( renderThread, pglNamedBufferData( ssboGpu, size, data, GL_DYNAMIC_DRAW ) );
+			
+			// create cpu buffer as immutable storage and persistently map it
+			OGL_CHECK( renderThread, pglCreateBuffers( 1, &ssboCpu ) );
+			OGL_CHECK( renderThread, pglNamedBufferStorage( ssboCpu, size, nullptr,
+				GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_CLIENT_STORAGE_BIT ) );
+			OGL_CHECK( renderThread, persistentMapped = pglMapNamedBufferRange( ssboCpu,
+				0, size, GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT ) );
+			
+			// copy data from gpu buffer to cpu buffer
+			OGL_CHECK( renderThread, pglCopyNamedBufferSubData( ssboGpu, ssboCpu, 0, 0, size ) );
+			
+			// clean up
+			pglUnmapNamedBuffer( ssboCpu );
+			pglDeleteBuffers( 1, &ssboCpu );
+			pglDeleteBuffers( 1, &ssboGpu );
+			
+		}catch( const deException & ){
+			pWorking = false;
+			
+			if( persistentMapped ){
+				pglUnmapNamedBuffer( ssboCpu );
+			}
+			if( ssboCpu ){
+				pglDeleteBuffers( 1, &ssboCpu );
+			}
+			if( ssboGpu ){
+				pglDeleteBuffers( 1, &ssboGpu );
+			}
+		}
+		
+		if( pWorking ){
+			renderThread.GetLogger().LogInfo( "Capabilities: Persistent Mapped NamedCopySubData: Working" );
+			
+		}else{
+			renderThread.GetLogger().LogWarn( "Capabilities: Persistent Mapped NamedCopySubData: Driver Bug!" );
+		}
 	}
 }
