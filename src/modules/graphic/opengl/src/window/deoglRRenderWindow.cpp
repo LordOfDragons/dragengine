@@ -27,6 +27,7 @@
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../debug/deoglDebugTraceGroup.h"
+#include "../extensions/deoglExtensions.h"
 #include "../rendering/deoglRenderCanvasContext.h"
 #include "../rendering/deoglRenderCanvas.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -37,6 +38,7 @@
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! OS_MACOS
 #include <dragengine/app/deOSUnix.h>
+#include "../extensions/deoglXExtResult.h"
 #endif
 
 #ifdef ANDROID
@@ -226,7 +228,8 @@ pPaint( true ),
 pRCanvasView( NULL ),
 
 pSwapBuffers( false ),
-pNotifySizeChanged( false )
+pNotifySizeChanged( false ),
+pInitSwapInterval( true )
 {
 	LEAK_CHECK_CREATE( renderThread, RenderWindow );
 }
@@ -562,6 +565,21 @@ void deoglRRenderWindow::SwapBuffers(){
 	const deoglDebugTraceGroup debugTrace( pRenderThread, "Window.SwapBuffers" );
 	
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	if( pInitSwapInterval ){
+		pInitSwapInterval = false;
+		
+		if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control ) ){
+			if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control_tear ) ){
+				pRenderThread.GetLogger().LogInfo( "RenderWindow: Activate Adaptive Swap Control" );
+				OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, -1 ) );
+				
+			}else{
+				pRenderThread.GetLogger().LogInfo( "RenderWindow: Disable VSync" );
+				OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, 0 ) );
+			}
+		}
+	}
+	
 	// [XERR] BadMatch (invalid parameter attributes): request_code(155) minor_code(11)
 	// 155=GLX, 11=glXSwapBuffers
 	// 
@@ -598,6 +616,21 @@ void deoglRRenderWindow::SwapBuffers(){
 #endif
 	
 #ifdef OS_W32
+	if( pInitSwapInterval ){
+		pInitSwapInterval = false;
+		
+		if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control ) ){
+			if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control_tear ) ){
+				pRenderThread.GetLogger().LogInfo( "RenderWindow: Activate Adaptive Swap Control" );
+				DEASSERT_TRUE( pwglSwapInterval( -1 ) )
+				
+			}else{
+				pRenderThread.GetLogger().LogInfo( "RenderWindow: Disable VSync" );
+				DEASSERT_TRUE( pglXSwapInterval( 0 ) )
+			}
+		}
+	}
+	
 	if( ! ::SwapBuffers( pWindowDC ) ){
 		pRenderThread.GetLogger().LogErrorFormat( "SwapBuffers failed (%s:%i): error=0x%lx\n",
 			__FILE__, __LINE__, GetLastError() );

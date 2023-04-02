@@ -163,9 +163,12 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\androidfix.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtensions.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtResult.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglXExtResult.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglWExtResult.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\egl2ext.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\egl32.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\glext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\glxext.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\macosfix.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wglext.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.h" />
@@ -774,6 +777,8 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\androidfix.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtensions.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtResult.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglXExtResult.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglWExtResult.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\macosfix.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFont.cpp" />

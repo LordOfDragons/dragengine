@@ -374,10 +374,16 @@ public:
 		
 		ext_KHR_debug,
 		
+		ext_GLX_EXT_swap_control,
+		ext_GLX_EXT_swap_control_tear,
+		
+		ext_WGL_EXT_swap_control,
+		ext_WGL_EXT_swap_control_tear,
+		
 		/** Dummy entry containing the number of extensions. */
 		EXT_COUNT
 	};
-
+	
 private:
 	deoglRenderThread &pRenderThread;
 	

@@ -32,7 +32,7 @@
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <GL/glx.h>
-#include <GL/glxext.h>
+#include "deoglXExtResult.h"
 #endif
 
 #ifdef OS_BEOS
@@ -185,7 +185,13 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_NV_transform_feedback2",
 	"GL_NV_transform_feedback3",
 	
-	"GL_KHR_debug"
+	"GL_KHR_debug",
+	
+	"GLX_EXT_swap_control",
+	"GLX_EXT_swap_control_tear",
+	
+	"WGL_EXT_swap_control",
+	"WGL_EXT_swap_control_tear"
 };
 
 
@@ -569,6 +575,10 @@ void deoglExtensions::pScanExtensions(){
 			pStrListExtensions = decString( strExtensions ).Split( ' ' );
 		}
 	}
+	
+#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	pStrListExtensions += decString( strXExtensions ).Split( ' ' );
+#endif
 	
 	pStrListExtensions.SortAscending();
 	
@@ -1241,6 +1251,20 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pglVertexAttribL1ui64vARB, "glVertexAttribL1ui64vARB", ext_ARB_bindless_texture );
 		pGetOptionalFunction( (void**)&pglGetVertexAttribLui64vARB, "glGetVertexAttribLui64vARB", ext_ARB_bindless_texture );
 	}
+	
+#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	// GLX_EXT_swap_control
+	if( pHasExtension[ ext_GLX_EXT_swap_control ] ){
+		pGetOptionalFunction( (void**)&pglXSwapInterval, "glXSwapInterval", "glXSwapIntervalEXT", ext_GLX_EXT_swap_control );
+	}
+#endif
+	
+#ifdef OS_W32
+	// WGL_EXT_swap_control
+	if( pHasExtension[ ext_WGL_EXT_swap_control ] ){
+		pGetOptionalFunction( (void**)&pwglSwapInterval, "wglSwapInterval", "wglSwapIntervalEXT", ext_WGL_EXT_swap_control );
+	}
+#endif
 }
 
 void deoglExtensions::pOptionalDisableExtensions(){

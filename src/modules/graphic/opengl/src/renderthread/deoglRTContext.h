@@ -26,7 +26,7 @@
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <GL/glx.h>
-#include <GL/glxext.h>
+#include "../extensions/glxext.h"
 class deOSUnix;
 #endif
 

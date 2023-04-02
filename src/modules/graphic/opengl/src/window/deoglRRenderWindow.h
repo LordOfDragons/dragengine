@@ -133,6 +133,7 @@ private:
 	
 	bool pSwapBuffers;
 	bool pNotifySizeChanged;
+	bool pInitSwapInterval;
 	
 	deoglRenderTarget::Ref pRenderTarget;
 	

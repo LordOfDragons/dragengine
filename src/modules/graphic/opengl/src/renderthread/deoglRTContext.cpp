@@ -44,6 +44,7 @@
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <dragengine/app/deOSUnix.h>
+#include "../extensions/deoglXExtResult.h"
 #endif
 
 #ifdef ANDROID
