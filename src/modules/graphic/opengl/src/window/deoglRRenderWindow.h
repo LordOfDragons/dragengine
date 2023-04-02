@@ -180,6 +180,7 @@ public:
 	inline HWND GetWindow() const{ return pWindow; }
 	inline HDC GetWindowDC() const{ return pWindowDC; }
 	void SetHostWindow( HWND window );
+	decPoint GetInnerSize() const;
 	#endif
 	
 	#ifdef OS_MACOS

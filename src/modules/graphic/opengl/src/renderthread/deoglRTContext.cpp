@@ -555,14 +555,23 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 	case WM_SIZE:{
 		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
 		const int count = windows.GetCount();
-		const int height = HIWORD( lParam );
-		const int width = LOWORD( lParam );
+		//const int height = HIWORD( lParam ); // outer width
+		//const int width = LOWORD( lParam ); // outer height
 		int i;
 		
 		for( i=0; i<count; i++ ){
 			deoglRenderWindow &window = *windows.GetAt( i );
 			if( window.GetRRenderWindow()->GetWindow() == hwnd ){
-				window.GetRenderWindow().SetSize( width, height );
+				// for fullscreen windows the size is incorrect while the window style is changed.
+				// to avoid problems ignore size change if the window is full screen
+				if( window.GetRRenderWindow()->GetFullScreen() ){
+					break;
+				}
+
+				// the size provided in the message are the outer size of the window not the inner size.
+				// for non-fullscreen windows we have to calculate the correct inner size
+				const decPoint innerSize( window.GetRRenderWindow()->GetInnerSize() );
+				window.GetRenderWindow().SetSize( innerSize.x, innerSize.y );
 				break;
 			}
 		}

@@ -73,8 +73,14 @@ deOSWindows::deOSWindows() :
 pInstApp( NULL ),
 pCurWindow( NULL )
 {
-	pScreenWidth = GetSystemMetrics( SM_CXFULLSCREEN );
-	pScreenHeight = GetSystemMetrics( SM_CYFULLSCREEN );
+	// this is unfortunately returning too small values
+	//pScreenWidth = GetSystemMetrics( SM_CXFULLSCREEN );
+	//pScreenHeight = GetSystemMetrics( SM_CYFULLSCREEN );
+
+	RECT rect;
+	DEASSERT_TRUE( SystemParametersInfoA( SPI_GETWORKAREA, 0, &rect, 0 ) )
+	pScreenWidth = rect.right - rect.left;
+	pScreenHeight = rect.bottom - rect.top;
 	
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32

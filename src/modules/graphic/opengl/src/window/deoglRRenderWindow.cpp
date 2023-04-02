@@ -210,6 +210,7 @@ pWindow( NULL ),
 pHostWindow( NULL ),
 pWindow( NULL ),
 pWindowDC( NULL ),
+pWindowIcon( NULL ),
 #endif
 
 #ifdef OS_MACOS
@@ -273,6 +274,14 @@ void deoglRRenderWindow::SetHostWindow( NSWindow *window ){
 void deoglRRenderWindow::SetHostWindow( HWND window ){
 	pHostWindow = window;
 };
+
+decPoint deoglRRenderWindow::GetInnerSize() const{
+	DEASSERT_NOTNULL( pWindow )
+	
+	RECT rect;
+	DEASSERT_TRUE( GetClientRect( pWindow, &rect ) )
+	return decPoint( ( int )( rect.right - rect.left ), ( int )( rect.bottom - rect.top ) );
+}
 #endif
 
 void deoglRRenderWindow::SetSize( int width, int height ){
@@ -996,6 +1005,21 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 	SetWindowPos( pWindow, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE
 		| SWP_NOZORDER | SWP_NOOWNERZORDER );
 	
+	if( pFullScreen ){
+		// if fullscreen force the window position to fill the entire work area. relying on WS_MAXIMIZE
+		// is unfortunately not working reliably so we resize and move the window on our own to be sure
+		RECT rect;
+		DEASSERT_TRUE( SystemParametersInfoA( SPI_GETWORKAREA, 0, &rect, 0 ) )
+		
+		pWidth = rect.right - rect.left;
+		pHeight = rect.bottom - rect.top;
+		pNotifySizeChanged = true;
+		//pRenderThread.GetLogger().LogInfoFormat("Window.FullScreen: %d %d %d %d", rect.left, rect.top, pWidth, pHeight );
+		
+		SetWindowPos( pWindow, NULL, rect.left, rect.top, pWidth, pHeight,
+			SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER );
+	}
+
 	/*
 	if( pWindow ){
 		SetWindowPos( pWindow, NULL, 0, 0, pWidth, pHeight,
