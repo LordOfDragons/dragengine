@@ -271,9 +271,6 @@ void deoglRenderCompute::UpdateElements( const deoglRenderPlan &plan ){
 	
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	const int count = wcompute.GetUpdateElementCount();
-	if( count == 0 ){
-		return;
-	}
 	
 	pPipelineUpdateElements->Activate();
 	
@@ -291,9 +288,6 @@ void deoglRenderCompute::UpdateElementGeometries( const deoglRenderPlan &plan ){
 	
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	const int count = wcompute.GetUpdateElementGeometryCount();
-	if( count == 0 ){
-		return;
-	}
 	
 	pPipelineUpdateElementGeometries->Activate();
 	
@@ -312,9 +306,6 @@ void deoglRenderCompute::ClearGeometries( const deoglRenderPlan &plan ){
 	
 	deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	const int count = wcompute.GetClearGeometryCount();
-	if( count == 0 ){
-		return;
-	}
 	
 	pPipelineClearGeometries->Activate();
 	
@@ -327,15 +318,12 @@ void deoglRenderCompute::ClearGeometries( const deoglRenderPlan &plan ){
 }
 
 void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
-	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
-	const int count = wcompute.GetElementCount();
-	if( count == 0 ){
-		return;
-	}
-	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContent" );
+	
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	const deoglRenderPlanCompute &planCompute = plan.GetCompute();
+	const int count = wcompute.GetElementCount();
 	
 	pPipelineFindContentElement->Activate();
 	
@@ -354,14 +342,11 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 }
 
 void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &planLight ){
-	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
-	const int count = wcompute.GetElementCount();
-	if( count == 0 ){
-		return;
-	}
-	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLight" );
+	
+	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
+	const int count = wcompute.GetElementCount();
 	
 	pPipelineFindContentSkyLight->Activate();
 	
@@ -376,14 +361,11 @@ void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &pla
 }
 
 void deoglRenderCompute::FindContentSkyLightGIStatic( const deoglRenderPlanSkyLight &planLight ){
-	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
-	const int count = wcompute.GetElementCount();
-	if( count == 0 ){
-		return;
-	}
-	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLightGIStatic" );
+	
+	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
+	const int count = wcompute.GetElementCount();
 	
 	pPipelineFindContentSkyLightGI->Activate();
 	
@@ -402,14 +384,11 @@ void deoglRenderCompute::FindContentSkyLightGIStatic( const deoglRenderPlanSkyLi
 }
 
 void deoglRenderCompute::FindContentSkyLightGIDynamic( const deoglRenderPlanSkyLight &planLight ){
-	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
-	const int count = wcompute.GetElementCount();
-	if( count == 0 ){
-		return;
-	}
-	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLightGIDynamic" );
+	
+	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
+	const int count = wcompute.GetElementCount();
 	
 	pPipelineFindContentSkyLightGI->Activate();
 	
@@ -428,18 +407,16 @@ void deoglRenderCompute::FindContentSkyLightGIDynamic( const deoglRenderPlanSkyL
 }
 
 void deoglRenderCompute::ClearCullResult( const deoglRenderPlan &plan ){
+	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "Compute.ClearCullResult" );
+	
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	const int count = wcompute.GetElementCount();
-	if( count == 0 ){
-		return;
-	}
 	
 	if( count > pSSBOElementCullResult->GetElementCount() ){
 		pSSBOElementCullResult->SetElementCount( count );
 		pSSBOElementCullResult->EnsureBuffer();
 	}
 	
-	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "Compute.ClearCullResult" );
 	pSSBOElementCullResult->ClearDataUInt( 0, ( count - 1 ) / 4 + 1, 0, 0, 0, 0 );
 }
 
@@ -484,14 +461,11 @@ const deoglSPBlockUBO &findConfig, const deoglSPBlockSSBO &visibleElements, cons
 }
 
 void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan ){
-	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
-	const int count = wcompute.GetElementGeometryCount();
-	if( count == 0 ){
-		return;
-	}
-	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindGeometries" );
+	
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	const int count = wcompute.GetElementGeometryCount();
 	
 	if( count > pSSBOVisibleGeometries->GetElementCount() ){
 		pSSBOVisibleGeometries->SetElementCount( count );
@@ -515,14 +489,11 @@ void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan ){
 }
 
 void deoglRenderCompute::FindGeometriesSkyShadow( const deoglRenderPlan &plan ){
-	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
-	const int count = wcompute.GetElementGeometryCount();
-	if( count == 0 ){
-		return;
-	}
-	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindGeometriesSkyShadow" );
+	
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	const int count = wcompute.GetElementGeometryCount();
 	
 	if( count > pSSBOVisibleGeometries->GetElementCount() ){
 		pSSBOVisibleGeometries->SetElementCount( count );
@@ -550,7 +521,6 @@ void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan, deoglComp
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.BuildRenderTask" );
 	
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
-	DEASSERT_TRUE( wcompute.GetElementGeometryCount() > 0 )
 	
 	pPipelineBuildRenderTask->Activate();
 	
@@ -590,9 +560,6 @@ void deoglRenderCompute::BuildRenderTaskOcclusion( const deoglRenderPlan &plan, 
 	
 	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
 	const int count = wcompute.GetElementGeometryCount();
-	if( count == 0 ){
-		return;
-	}
 	
 	pPipelineBuildRenderTaskOcclusion->Activate();
 	
@@ -618,9 +585,6 @@ void deoglRenderCompute::BuildRenderTaskSkyShadow( const deoglRenderPlanSkyLight
 	
 	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
 	const int count = wcompute.GetElementGeometryCount();
-	if( count == 0 ){
-		return;
-	}
 	
 	const deoglRenderPlanSkyLight::sShadowLayer &sl = planLight.GetShadowLayerAt( layer );
 	deoglComputeRenderTask &renderTask = sl.computeRenderTask;

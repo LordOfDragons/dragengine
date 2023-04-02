@@ -223,9 +223,7 @@ void deoglComputeRenderTask::EndPass( const deoglWorldCompute &worldCompute ){
 }
 
 void deoglComputeRenderTask::EndPrepare( const deoglWorldCompute &worldCompute ){
-	const int count = worldCompute.GetElementGeometryCount();
 	DEASSERT_TRUE( pPass != -1 )
-	DEASSERT_TRUE( count > 0 )
 	DEASSERT_TRUE( pState == esPreparing )
 	
 	pPass = -1;
