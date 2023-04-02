@@ -48,6 +48,10 @@ extern __eglMustCastToProperFunctionPointerType androidGetProcAddress( const cha
 #include "macosfix.h"
 #endif
 
+#ifdef OS_W32
+#include "deoglWExtResult.h"
+#endif
+
 #include <dragengine/common/exceptions.h>
 
 

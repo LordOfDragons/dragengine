@@ -27,6 +27,7 @@
 
 
 #ifdef OS_W32
+#include <GL/gl.h>
 #include "wglext.h"
 
 // WGL_EXT_swap_control

@@ -60,6 +60,7 @@
 #ifdef  OS_W32
 #include <stdint.h>
 #include <dragengine/app/deOSWindows.h>
+#include "../extensions/deoglWExtResult.h"
 #endif
 
 #ifdef  OS_MACOS
@@ -626,7 +627,7 @@ void deoglRRenderWindow::SwapBuffers(){
 				
 			}else{
 				pRenderThread.GetLogger().LogInfo( "RenderWindow: Disable VSync" );
-				DEASSERT_TRUE( pglXSwapInterval( 0 ) )
+				DEASSERT_TRUE( pwglSwapInterval( 0 ) )
 			}
 		}
 	}
