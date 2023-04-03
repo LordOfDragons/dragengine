@@ -54,7 +54,9 @@ jobs:
           fi
       
       - name: Install required packages
-        run: sudo apt -y install scons
+        run: |
+          sudo apt -y update
+          sudo apt -y install scons
         
       - name: Get Archives
         uses: actions/download-artifact@v3

@@ -59,7 +59,8 @@ jobs:
       
       - name: Build Archive
         run: |
-          sudo apt install zip
+          sudo apt -y update
+          sudo apt -y install zip
           cd build
           zip -r ../dragengine-live-${{ inputs.releaseVersion }}.zip *
         
