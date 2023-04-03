@@ -187,10 +187,9 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 			clistParticleEmitterInstanceList.Add( ( deoglRParticleEmitterInstance* )element.GetOwner() );
 			break;
 			
-		case deoglWorldComputeElement::eetLight:{
-			deoglCollideListLight &cllight = *collideList.AddLight( ( deoglRLight* )element.GetOwner() );
-			cllight.TestInside( pPlan );
-			}break;
+		case deoglWorldComputeElement::eetLight:
+			collideList.AddLight( ( deoglRLight* )element.GetOwner() )->TestInside( pPlan );
+			break;
 			
 		case deoglWorldComputeElement::eetPropFieldCluster:
 			collideList.AddPropFieldCluster( ( deoglPropFieldCluster* )element.GetOwner() );

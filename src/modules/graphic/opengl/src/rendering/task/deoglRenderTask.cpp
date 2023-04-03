@@ -614,6 +614,10 @@ void deoglRenderTask::pAssignSPBInstances(){
 
 void deoglRenderTask::pUpdateSPBInstances(){
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		if( pSPBInstanceIndexCount == 0 ){
+			return;
+		}
+		
 		const deoglSPBMapBuffer mapped( *pSPBInstances.GetAt( 0 ), 0, pSPBInstanceIndexCount );
 		int i, j, k, l;
 		
@@ -697,6 +701,7 @@ void deoglRenderTask::pCreateSPBInstanceParamBlock(){
 		ssbo->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 		ssbo->MapToStd140();
 		ssbo->SetBindingPoint( deoglSkinShader::essboInstanceIndex );
+		ssbo->EnsureBuffer();
 		pSPBInstances.Add( ssbo );
 		
 	}else{

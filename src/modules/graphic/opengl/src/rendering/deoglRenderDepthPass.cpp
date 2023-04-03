@@ -305,6 +305,29 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		tasks.WaitFinishBuildingTasksDepth();
 		
 		if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+			// TEMP HACK
+			if( collideList.GetHTSClusterCount() > 0 ){
+				deoglRenderTask &rt = *renworld.GetRenderTask();
+				deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
+				rt.Clear();
+				rt.SetRenderParamBlock( renworld.GetRenderPB() );
+				rt.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
+				addToRenderTask.Reset();
+				addToRenderTask.SetSolid( true );
+				addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
+				addToRenderTask.SetNoRendered( mask );
+				if( xray ){
+					addToRenderTask.SetFilterXRay( true );
+					addToRenderTask.SetXRay( true );
+				}
+				addToRenderTask.SetSkinPipelineType( pipelineType );
+				addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
+				addToRenderTask.AddHeightTerrainSectorClusters( collideList, true );
+				rt.PrepareForRender();
+				rengeom.RenderTask( rt );
+			}
+			// TEMP HACK
+			
 			computeRenderTask = xray ? tasks.GetCRTSolidDepthXRay() : tasks.GetCRTSolidDepth();
 			computeRenderTask->SetRenderParamBlock( renworld.GetRenderPB() );
 			
