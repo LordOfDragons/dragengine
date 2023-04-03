@@ -27,6 +27,10 @@
 
 
 #ifdef OS_W32
+#ifdef OS_W32_VS
+	#include "include_windows.h"
+#endif
+
 #include <GL/gl.h>
 #include "wglext.h"
 
