@@ -55,6 +55,8 @@ pClearGeometriesCount( 0 ),
 pClearGeometriesSize( 0 ),
 pClearGeometryCount( 0 )
 {
+	// WARNING potentially called from main thread. calling EnsureBuffer() is not allowed here
+	
 	deoglRenderThread &renderThread = world.GetRenderThread();
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
@@ -312,6 +314,7 @@ void deoglWorldCompute::pFullUpdateSSBOElements(){
 	
 	const int count = pElements.GetCount();
 	if( count == 0 ){
+		pSSBOElements->EnsureBuffer(); // since we can not init in constructor
 		return;
 	}
 	
@@ -487,6 +490,7 @@ void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 	
 	const int elementCount = pElements.GetCount();
 	if( elementCount == 0 ){
+		pSSBOElementGeometries->EnsureBuffer(); // since we can not init in constructor
 		return;
 	}
 	

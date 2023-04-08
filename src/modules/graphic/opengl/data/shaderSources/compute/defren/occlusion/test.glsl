@@ -141,8 +141,8 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap,
 	//	largestSample = 1.0;
 	//	
 	//}else{
-		// ensure the minimum size is not below 2 pixels. this avoids a problem with steep geometry causing
-		// false invisibility of elements
+		// ensure the minimum size is not below 2 pixels. this avoids a problem with steep
+		// geometry causing false invisibility of elements
 		vec2 ensureMinSize = vec2( 2.0 ); // 4 for sun and still few problems??
 		vec2 adjustSize = max( vec2( 0.0 ), ensureMinSize - size ) * vec2( 0.5 ) / scaleSize;
 		minExtend -= adjustSize;
