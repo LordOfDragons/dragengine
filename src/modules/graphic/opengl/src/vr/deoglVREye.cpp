@@ -240,6 +240,11 @@ void deoglVREye::Render(){
 }
 
 void deoglVREye::Submit( deBaseVRModule &vrmodule ){
+	if( ! pRenderTarget->GetFBO() || ! pRenderTarget->GetTexture() ){
+		// shutdown protection
+		return;
+	}
+
 	if( pVRViewImageCount > 0 ){
 		const int acquiredImageIndex = vrmodule.AcquireEyeViewImage( pEye );
 		if( acquiredImageIndex == -1 ){

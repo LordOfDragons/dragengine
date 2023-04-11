@@ -120,7 +120,14 @@ pInstance( XR_NULL_HANDLE )
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
 	pSupportsLayer[ layerApiDump ].name = "XR_APILAYER_LUNARG_api_dump";
-	
+	pSupportsLayer[ viveFacialTracking ].name = "XR_APILAYER_VIVE_facial_tracking";
+	pSupportsLayer[ viveHandTracking ].name = "XR_APILAYER_VIVE_hand_tracking";
+	pSupportsLayer[ viveSrWorks ].name = "XR_APILAYER_VIVE_srworks";
+
+	pSupportsLayer[ viveFacialTracking ].enableIfSupported = false;
+	pSupportsLayer[ viveHandTracking ].enableIfSupported = false;
+	pSupportsLayer[ viveSrWorks ].enableIfSupported = false;
+
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION( name ) name = XR_NULL_HANDLE;
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( name, extension ) name = XR_NULL_HANDLE;
 	
@@ -377,9 +384,9 @@ void deoxrInstance::pDetectLayers(){
 			if( pSupportsLayer[ i ].layerVersion ){
 				pOxr.LogInfoFormat( "- %s: %d (%d.%d.%d)",
 					pSupportsLayer[ i ].name, pSupportsLayer[ i ].layerVersion,
-					XR_VERSION_MAJOR( pSupportsLayer[ i ].layerVersion ),
-					XR_VERSION_MINOR( pSupportsLayer[ i ].layerVersion ),
-					XR_VERSION_PATCH( pSupportsLayer[ i ].layerVersion ) );
+					XR_VERSION_MAJOR( pSupportsLayer[ i ].version ),
+					XR_VERSION_MINOR( pSupportsLayer[ i ].version ),
+					XR_VERSION_PATCH( pSupportsLayer[ i ].version ) );
 			}
 		}
 		
@@ -444,8 +451,10 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	const char *layers[ LayerCount ];
 	uint32_t i, layerCount = 0;
 	
+	memset( layers, 0, sizeof( layers ) );
+
 	for( i=0; i<LayerCount; i++ ){
-		if( pSupportsLayer[ i ].version && pSupportsLayer[ i ].enableIfSupported ){
+		if( pSupportsLayer[ i ].layerVersion && pSupportsLayer[ i ].enableIfSupported ){
 			layers[ layerCount++ ] = pSupportsLayer[ i ].name;
 		}
 	}

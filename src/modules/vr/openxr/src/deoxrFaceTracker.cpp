@@ -56,6 +56,7 @@ pMapLipXrToDeCount( 0 )
 		
 		// create eye tracker
 		if( session.GetSystem().GetSupportsFaceEyeTracking() ){
+			instance.GetOxr().LogInfo("FaceTracker: Create Eye Tracker");
 			XrFacialTrackerCreateInfoHTC createInfo;
 			memset( &createInfo, 0, sizeof( createInfo ) );
 			createInfo.type = XR_TYPE_FACIAL_TRACKER_CREATE_INFO_HTC;
@@ -93,10 +94,12 @@ pMapLipXrToDeCount( 0 )
 			pSetEyeMapping( 13, deInputDevice::efeEyeRightOut, XR_EYE_EXPRESSION_RIGHT_OUT_HTC );
 			
 			pMapEyeXrToDeCount = 14;
+			instance.GetOxr().LogInfo("FaceTracker: Eye Tracker Created");
 		}
 		
 		// create lip tracker
 		if( session.GetSystem().GetSupportsFaceLipTracking() ){
+			instance.GetOxr().LogInfo("FaceTracker: Create Lip Tracker");
 			XrFacialTrackerCreateInfoHTC createInfo;
 			memset( &createInfo, 0, sizeof( createInfo ) );
 			createInfo.type = XR_TYPE_FACIAL_TRACKER_CREATE_INFO_HTC;
@@ -155,6 +158,7 @@ pMapLipXrToDeCount( 0 )
 			pSetLipMapping( 32, deInputDevice::efeTongueLongStep2, XR_LIP_EXPRESSION_TONGUE_LONGSTEP2_HTC );
 			
 			pMapLipXrToDeCount = 33;
+			instance.GetOxr().LogInfo("FaceTracker: Lip Tracker Created");
 		}
 		
 	}catch( const deException & ){

@@ -800,10 +800,14 @@ void deVROpenXR::BeginFrame(){
 		try{
 			pSession.TakeOver( new deoxrSession( pSystem ) );
 			
+			// required before CheckAllAttached since this could add devices which in turn
+			// accesses actions. creating actions does access device profiles but this is
+			// a special call that has to always succeed
+			pCreateActionSet();
+
 			pDeviceProfiles.CheckAllAttached();
 			// no CheckNotifyAttachedDetached call here since we potentially outside main thread
 			
-			pCreateActionSet();
 			pSuggestBindings();
 			
 			pSession->AttachActionSet( pActionSet );
