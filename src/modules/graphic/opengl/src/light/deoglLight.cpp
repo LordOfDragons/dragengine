@@ -26,7 +26,6 @@
 
 #include "deoglLight.h"
 #include "deoglLightGatherOcclusionMeshes.h"
-#include "deoglLightTestForTouch.h"
 #include "deoglRLight.h"
 #include "shader/deoglLightShader.h"
 #include "shader/deoglLightShaderManager.h"
