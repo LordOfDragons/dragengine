@@ -110,8 +110,9 @@ See the __debian__ branch for an example of how this is used.
 
 # Build Dependencies
 
+- Git Lfs
 - SCons 2.5.1+
-- Python 2.7+ or 3.5+
+- Python 3.5+
 - GCC 8+
 - CMake (for in-tree building of external software)
 - libtool (for in-tree building of external software)
@@ -150,17 +151,6 @@ The installer is now located inside "installer/windows/build"
 
 It should be possible to build the sources also on a windows machine using Windows
 MinGW-64. VisualStudio compile is not supported officially.
-
-
-# Build problems
-
-Building can fail if GitHub failed to send binary files (LFS) during clone or pull.
-If building fails check if the external archives under "extern/*" are unusally small.
-If this is the case GitHub failed to send binary files. Run this command to fix this:
-
-    git lfs pull
-
-Once pulled the git repository should be fixed and future pulls should work correctly.
 
 
 # Run in "Local Directory Mode"
