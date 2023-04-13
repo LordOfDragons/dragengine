@@ -138,6 +138,8 @@ pMaxSPBIndexCount( 10000 ),
 pGIQuality( egiqHigh ),
 pGIUpdateSpeed( egiusMedium ),
 
+pVSyncMode( evsmAdaptive ),
+
 pVRRenderScale( 1.0f ),
 pVRForceFrameRate( 0 )
 {
@@ -880,6 +882,15 @@ void deoglConfiguration::SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed ){
 	}
 	
 	pGIUpdateSpeed = updateSpeed;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVSyncMode( eVSyncMode mode ){
+	if( mode == pVSyncMode ){
+		return;
+	}
+	
+	pVSyncMode = mode;
 	pDirty = true;
 }
 

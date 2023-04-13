@@ -59,6 +59,7 @@
 #include "parameters/deoglParameter.h"
 #include "parameters/deoglParameterList.h"
 #include "parameters/deoglPLogLevel.h"
+#include "parameters/deoglPVSyncMode.h"
 #include "parameters/ao/deoglPAOSelfShadowEnable.h"
 #include "parameters/ao/deoglPAOSelfShadowSmoothAngle.h"
 #include "parameters/debug/deoglPDebugContext.h"
@@ -709,6 +710,8 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPHDRRMaximumIntensity( *this ) );
 	pParameters.AddParameter( new deoglPDefRenSizeLimit( *this ) );
 	pParameters.AddParameter( new deoglPTranspLayerLimit( *this ) );
+	
+	pParameters.AddParameter( new deoglPVSyncMode( *this ) );
 	
 	pParameters.AddParameter( new deoglPVRRenderScale( *this ) );
 	pParameters.AddParameter( new deoglPVRForceFrameRate( *this ) );

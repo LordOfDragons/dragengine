@@ -230,6 +230,8 @@ pRCanvasView( NULL ),
 
 pSwapBuffers( false ),
 pNotifySizeChanged( false ),
+
+pVSyncMode( deoglConfiguration::evsmAdaptive ),
 pInitSwapInterval( true )
 {
 	LEAK_CHECK_CREATE( renderThread, RenderWindow );
@@ -566,20 +568,7 @@ void deoglRRenderWindow::SwapBuffers(){
 	const deoglDebugTraceGroup debugTrace( pRenderThread, "Window.SwapBuffers" );
 	
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-	if( pInitSwapInterval ){
-		pInitSwapInterval = false;
-		
-		if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control ) ){
-			if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control_tear ) ){
-				pRenderThread.GetLogger().LogInfo( "RenderWindow: Activate Adaptive Swap Control" );
-				OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, -1 ) );
-				
-			}else{
-				pRenderThread.GetLogger().LogInfo( "RenderWindow: Disable VSync" );
-				OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, 0 ) );
-			}
-		}
-	}
+	pUpdateVSync();
 	
 	// [XERR] BadMatch (invalid parameter attributes): request_code(155) minor_code(11)
 	// 155=GLX, 11=glXSwapBuffers
@@ -617,20 +606,7 @@ void deoglRRenderWindow::SwapBuffers(){
 #endif
 	
 #ifdef OS_W32
-	if( pInitSwapInterval ){
-		pInitSwapInterval = false;
-		
-		if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control ) ){
-			if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control_tear ) ){
-				pRenderThread.GetLogger().LogInfo( "RenderWindow: Activate Adaptive Swap Control" );
-				DEASSERT_TRUE( pwglSwapInterval( -1 ) )
-				
-			}else{
-				pRenderThread.GetLogger().LogInfo( "RenderWindow: Disable VSync" );
-				DEASSERT_TRUE( pwglSwapInterval( 0 ) )
-			}
-		}
-	}
+	pUpdateVSync();
 	
 	if( ! ::SwapBuffers( pWindowDC ) ){
 		pRenderThread.GetLogger().LogErrorFormat( "SwapBuffers failed (%s:%i): error=0x%lx\n",
@@ -1361,3 +1337,75 @@ void deoglRRenderWindow::pCreateNullCursor(){
 	XFreeGC( display, gc );
 }
 #endif
+
+void deoglRRenderWindow::pUpdateVSync(){
+	// check if VSync has to be enabled or disabled
+	const deoglConfiguration::eVSyncMode vsyncMode = pRenderThread.GetConfiguration().GetVSyncMode();
+	
+	if( vsyncMode != pVSyncMode ){
+		pVSyncMode = vsyncMode;
+		pInitSwapInterval = true;
+	}
+	
+	// apply changes if required
+	if( ! pInitSwapInterval ){
+		return;
+	}
+	
+	pInitSwapInterval = false;
+	
+	const deoglExtensions &ext = pRenderThread.GetExtensions();
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	
+#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	if( ext.GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control ) ){
+		switch( pVSyncMode ){
+		case deoglConfiguration::evsmAdaptive:
+			if( ext.GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control_tear ) ){
+				logger.LogInfo( "RenderWindow: Enable Adaptive V-Sync" );
+				OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, -1 ) );
+				
+			}else{
+				logger.LogInfo( "RenderWindow: Enable V-Sync" );
+				OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, 1 ) );
+			}
+			break;
+			
+		case deoglConfiguration::evsmOn:
+			logger.LogInfo( "RenderWindow: Enable V-Sync" );
+			OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, 1 ) );
+			break;
+			
+		case deoglConfiguration::evsmOff:
+			logger.LogInfo( "RenderWindow: Disable VSync" );
+			OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, 0 ) );
+		}
+	}
+#endif
+	
+#ifdef OS_W32
+	if( ext.GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control ) ){
+		switch( pVSyncMode ){
+		case deoglConfiguration::evsmAdaptive:
+			if( ext.GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control_tear )) ){
+				logger.LogInfo( "RenderWindow: Enable Adaptive V-Sync" );
+				DEASSERT_TRUE( pwglSwapInterval( -1 ) )
+				
+			}else{
+				logger.LogInfo( "RenderWindow: Enable V-Sync" );
+				DEASSERT_TRUE( pwglSwapInterval( 1 ) )
+			}
+			break;
+			
+		case deoglConfiguration::evsmOn:
+			logger.LogInfo( "RenderWindow: Enable V-Sync" );
+			DEASSERT_TRUE( pwglSwapInterval( 1 ) )
+			break;
+			
+		case deoglConfiguration::evsmOff:
+			logger.LogInfo( "RenderWindow: Disable VSync" );
+			DEASSERT_TRUE( pwglSwapInterval( 0 ) )
+		}
+	}
+#endif
+}

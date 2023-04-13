@@ -74,6 +74,12 @@ public:
 		egiusVeryHigh
 	};
 	
+	enum eVSyncMode{
+		evsmOff,
+		evsmOn,
+		evsmAdaptive
+	};
+	
 	
 	
 private:
@@ -174,6 +180,8 @@ private:
 	
 	eGIQuality pGIQuality;
 	eGIUpdateSpeed pGIUpdateSpeed;
+	
+	eVSyncMode pVSyncMode;
 	
 	decStringSet pDisableExtensions;
 	
@@ -515,6 +523,9 @@ public:
 	
 	inline eGIUpdateSpeed GetGIUpdateSpeed() const{ return pGIUpdateSpeed; }
 	void SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed );
+	
+	inline eVSyncMode GetVSyncMode() const{ return pVSyncMode; }
+	void SetVSyncMode( eVSyncMode mode );
 	
 	/** OpenGL extensions to disable. */
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }

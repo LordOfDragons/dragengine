@@ -428,6 +428,23 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 							tag->GetPositionNumber(), value.GetString() );
 					}
 					
+				}else if( strcmp( name, "vsyncMode" ) == 0 ){
+					const decString value( tag->GetFirstData()->GetData() );
+					if( value == "adaptive" ){
+						configuration.SetVSyncMode( deoglConfiguration::evsmAdaptive );
+						
+					}else if( value == "on" ){
+						configuration.SetVSyncMode( deoglConfiguration::evsmOn );
+						
+					}else if( value == "off" ){
+						configuration.SetVSyncMode( deoglConfiguration::evsmOff );
+						
+					}else{
+						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString() );
+					}
+					
 				}else if( strcmp( name, "vrRenderScale" ) == 0 ){
 					configuration.SetVRRenderScale( tag->GetFirstData()->GetData().ToFloat() );
 					
