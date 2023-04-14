@@ -1387,7 +1387,7 @@ void deoglRRenderWindow::pUpdateVSync(){
 	if( ext.GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control ) ){
 		switch( pVSyncMode ){
 		case deoglConfiguration::evsmAdaptive:
-			if( ext.GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control_tear )) ){
+			if( ext.GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control_tear ) ){
 				logger.LogInfo( "RenderWindow: Enable Adaptive V-Sync" );
 				DEASSERT_TRUE( pwglSwapInterval( -1 ) )
 				

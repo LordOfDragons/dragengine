@@ -1863,6 +1863,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglMath.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPVSyncMode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\ChangeLog">
@@ -3670,6 +3673,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPVSyncMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
