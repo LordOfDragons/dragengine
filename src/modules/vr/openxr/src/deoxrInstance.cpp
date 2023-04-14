@@ -120,13 +120,6 @@ pInstance( XR_NULL_HANDLE )
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
 	pSupportsLayer[ layerApiDump ].name = "XR_APILAYER_LUNARG_api_dump";
-	pSupportsLayer[ viveFacialTracking ].name = "XR_APILAYER_VIVE_facial_tracking";
-	pSupportsLayer[ viveHandTracking ].name = "XR_APILAYER_VIVE_hand_tracking";
-	pSupportsLayer[ viveSrWorks ].name = "XR_APILAYER_VIVE_srworks";
-
-	pSupportsLayer[ viveFacialTracking ].enableIfSupported = false;
-	pSupportsLayer[ viveHandTracking ].enableIfSupported = false;
-	pSupportsLayer[ viveSrWorks ].enableIfSupported = false;
 
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION( name ) name = XR_NULL_HANDLE;
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( name, extension ) name = XR_NULL_HANDLE;

@@ -81,12 +81,9 @@ public:
 	enum eLayer{
 		layerLunarCoreValidation, //<! XR_APILAYER_LUNARG_core_validation
 		layerApiDump, //<! XR_APILAYER_LUNARG_api_dump
-		viveFacialTracking, //<! XR_APILAYER_VIVE_facial_tracking
-		viveHandTracking, //<! XR_APILAYER_VIVE_hand_tracking
-		viveSrWorks, //<! XR_APILAYER_VIVE_srworks
 	};
 	
-	static const int LayerCount = viveSrWorks + 1;
+	static const int LayerCount = layerApiDump + 1;
 	
 	/** Suggest binding. */
 	struct sSuggestBinding{

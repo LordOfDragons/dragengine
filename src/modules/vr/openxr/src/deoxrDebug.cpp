@@ -63,9 +63,6 @@ void deoxrDebug::SetEnabled( bool enabled ){
 		if( ! pInstance.SupportsExtension( deoxrInstance::extEXTDebugUtils ) ){
 			return;
 		}
-		if( ! pInstance.SupportsLayer( deoxrInstance::layerLunarCoreValidation ) ){
-			return;
-		}
 		
 		pRegisterReportCallback();
 		pEnabled = true;
