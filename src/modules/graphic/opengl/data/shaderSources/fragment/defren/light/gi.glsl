@@ -66,7 +66,8 @@ in vec2 vScreenCoord;
 ////////////
 
 out vec4 outColor;
-out float outLuminance;
+out vec4 outLuminance; // vec4 not float since blending is required. if float is used
+                       // GPU randomly writes NaN values breaking rendering
 out vec4 outSubSurface;
 
 
@@ -86,6 +87,17 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 #include "shared/defren/light/gi_illuminate.glsl"
 
 
+
+// Discard fragment without disabling early-z
+///////////////////////////////////////////////
+
+void outputUnlit(){
+	outColor = vec4( 0 );
+	outLuminance = vec4( 0 );
+	outSubSurface = vec4( 0 );
+}
+
+
 // Main Function
 //////////////////
 
@@ -99,18 +111,21 @@ void main( void ){
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
 	#ifndef GI_RAY
-		if( diffuse.a == 0.0 ){
-			discard;
+		if( diffuse.a == 0 ){
+			outputUnlit();
+			return;
 		}
 	#endif
 	
 	// determine position of fragment to light
 	#ifdef GI_RAY
 		vec4 positionDistance = texelFetch( texPosition, tc, 0 );
-		if( positionDistance.a > 9999.0 ){
-			discard; // ray hits nothing
+		if( positionDistance.a > 9999 ){
+			// ray hits nothing
+			outputUnlit();
+			return;
 		}
-		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1.0 ) );
+		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1 ) );
 	#else
 		float depth = sampleDepth( texDepth, tc );
 		vec3 position = depthToPosition( depth, vScreenCoord, vLayer );
@@ -159,7 +174,7 @@ void main( void ){
 		finalColor *= vec3( aoSolidity.g ); // texture AO and SSAO
 	#endif
 	
-	outLuminance = dot( finalColor, lumiFactors );
+	outLuminance = vec4( vec3( dot( finalColor, lumiFactors ) ), diffuse.a );
 	outColor = vec4( finalColor * diffuse.rgb, diffuse.a );
-	outSubSurface = vec4( 0.0 );
+	outSubSurface = vec4( 0, 0, 0, diffuse.a );
 }

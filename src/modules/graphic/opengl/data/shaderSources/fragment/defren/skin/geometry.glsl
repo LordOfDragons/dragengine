@@ -549,7 +549,7 @@ void main( void ){
 		
 		#ifdef AMBIENT_LIGHT_PROBE
 			//outColor = color * vec4( textureLod( texEnvMap, -vReflectDir, 12.0 ).rgb, 1.0 );
-			outColor = color * vec4( pParticleLightHack, 1.0 );
+			outColor = color * vec4( pParticleLightHack, 1 );
 		#else
 			outColor = color * pAmbient;
 		#endif

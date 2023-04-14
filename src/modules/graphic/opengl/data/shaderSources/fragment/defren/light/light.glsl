@@ -207,7 +207,8 @@ precision highp int;
 
 out vec4 outColor;
 #ifndef GI_RAY
-	out float outLuminance;
+	out vec4 outLuminance; // vec4 not float since blending is required. if float is used
+                           // GPU randomly writes NaN values breaking rendering
 #endif
 #ifdef WITH_SUBSURFACE
 	out vec4 outSubSurface;
@@ -659,7 +660,7 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 void outputUnlit(){
 	outColor = vec4( 0 );
 	#ifndef GI_RAY
-		outLuminance = 0;
+		outLuminance = vec4( 0 );
 	#endif
 	#ifdef WITH_SUBSURFACE
 		outSubSurface = vec4( 0 );
@@ -700,7 +701,7 @@ void main( void ){
 			// for all other light sources do not light the ray
 			#ifdef SKY_LIGHT
 				vec3 lightColor = pLightColor * pLightGIAmbientRatio;
-				//outLuminance = dot( lightColor, lumiFactors );
+				//outLuminance = vec4( vec3( dot( lightColor, lumiFactors ) ), diffuse.a );
 				outColor = vec4( lightColor * diffuse.rgb, diffuse.a );
 			#else
 				outputUnlit();
@@ -1322,7 +1323,7 @@ void main( void ){
 	#endif
 	
 	#ifndef GI_RAY
-		outLuminance = dot( finalColorSubSurface + finalColorSurface, lumiFactors );
+		outLuminance = vec4( vec3( dot( finalColorSubSurface + finalColorSurface, lumiFactors ) ), diffuse.a );
 	#endif
 	
 	#ifdef WITH_SUBSURFACE
