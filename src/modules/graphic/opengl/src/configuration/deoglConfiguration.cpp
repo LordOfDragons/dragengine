@@ -199,10 +199,13 @@ pVRForceFrameRate( 0 )
 	//pAsyncRendering = false;
 	#endif
 	
-	// rendeerdoc
-	#if 0
-	pDebugContext = true;
-	pDebugNoMessages = true;
+	// renderdoc
+	#if defined WITH_DEBUG && defined OS_UNIX
+	const char * const envRenderDocDebug = secure_getenv( "DE_OGL_RENDERDOC_DEBUG" );
+	if( envRenderDocDebug && strcmp( envRenderDocDebug, "1" ) == 0 ){
+		pDebugContext = true;
+		pDebugNoMessages = true;
+	}
 	#endif
 }
 
