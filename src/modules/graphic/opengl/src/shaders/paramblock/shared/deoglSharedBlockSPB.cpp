@@ -27,6 +27,7 @@
 #include "deoglSharedBlockSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
 #include "../../../renderthread/deoglRenderThread.h"
+#include "../../../renderthread/deoglRTLogger.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -177,6 +178,22 @@ int deoglSharedBlockSPB::GetFreeElementCountAtEnd() const{
 	const deoglSharedBlockSPBElement &element =
 		*( ( deoglSharedBlockSPBElement* )pElements.GetAt( pElements.GetCount() - 1 ) );
 	return element.GetEmpty() ? element.GetCount() : 0;
+}
+
+void deoglSharedBlockSPB::DebugPrint( deoglRTLogger &logger ) const{
+	const int count = pElements.GetCount();
+	decStringList list;
+	decString string;
+	int i;
+	
+	logger.LogInfoFormat( "SPB: size=%d used=%d free=%d freeAtEnd=%d",
+		pSize, pUsedElementCount, pFreeElementCount, GetFreeElementCountAtEnd() );
+	for( i=0; i<count; i++ ){
+		const deoglSharedBlockSPBElement * const element = ( deoglSharedBlockSPBElement* )pElements.GetAt( i );
+		string.Format( "[%c:%d,%d]", element->GetEmpty() ? 'E' : 'U', element->GetIndex(), element->GetCount() );
+		list.Add( string );
+	}
+	logger.LogInfo( list.Join( " " ) );
 }
 
 int deoglSharedBlockSPB::pIndexOfEmptyElementWithMinCount( int count ){

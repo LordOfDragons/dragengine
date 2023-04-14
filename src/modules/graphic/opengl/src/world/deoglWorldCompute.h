@@ -209,6 +209,8 @@ private:
 	
 	void pUpdateFullUpdateLimits();
 	void pUpdateFullUpdateGeometryLimits();
+	
+	void pDebugPrintElements();
 };
 
 #endif

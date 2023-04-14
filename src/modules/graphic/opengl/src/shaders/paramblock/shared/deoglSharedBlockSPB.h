@@ -29,7 +29,7 @@
 
 class deoglSharedBlockSPBElement;
 class deoglShaderParameterBlock;
-
+class deoglRTLogger;
 
 
 /**
@@ -102,6 +102,9 @@ public:
 	
 	/** Count of free elements at the end of the buffer. */
 	int GetFreeElementCountAtEnd() const;
+	
+	/** Debug print blocks. */
+	void DebugPrint( deoglRTLogger &logger ) const;
 	/*@}*/
 	
 	

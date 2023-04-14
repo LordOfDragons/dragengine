@@ -26,6 +26,8 @@
 #include "plan/deoglRenderPlan.h"
 #include "plan/deoglRenderPlanSkyLight.h"
 #include "task/deoglComputeRenderTask.h"
+#include "task/shared/deoglRenderTaskSharedPool.h"
+#include "task/shared/deoglRenderTaskSharedVAO.h"
 #include "../deoglMath.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
@@ -298,6 +300,7 @@ void deoglRenderCompute::UpdateElementGeometries( const deoglRenderPlan &plan ){
 	pPipelineUpdateElementGeometries->GetGlShader().SetParameterUInt( 0, count );
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+	// pDebugPrintSSBOGeometries( plan, "UpdateElementGeometries: " );
 }
 
 void deoglRenderCompute::ClearGeometries( const deoglRenderPlan &plan ){
@@ -315,6 +318,7 @@ void deoglRenderCompute::ClearGeometries( const deoglRenderPlan &plan ){
 	pPipelineClearGeometries->GetGlShader().SetParameterUInt( 0, count );
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+	// pDebugPrintSSBOGeometries( plan, "ClearGeometries: " );
 }
 
 void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
@@ -847,3 +851,35 @@ if(isValid(input[index])){
 
 // Protected Functions
 ////////////////////////
+
+void deoglRenderCompute::pDebugPrintSSBOGeometries( const deoglRenderPlan &plan, const char *prefix ){
+	deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	deoglRenderThread &renderThread = GetRenderThread();
+	
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
+	const deoglFence::Ref fence( deoglFence::Ref::New( new deoglFence( GetRenderThread() ) ) );
+	fence->Arm();
+	fence->Wait();
+	
+	deoglRTLogger &logger = GetRenderThread().GetLogger();
+	const deoglRenderTaskSharedPool &rtsp = GetRenderThread().GetRenderTaskSharedPool();
+	wcompute.GetSSBOElementGeometries()->Deactivate( 1 );
+	deoglWorldComputeElement::sDataElementGeometry *data;
+	
+	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, wcompute.GetSSBOElementGeometries()->GetSSBO() ) );
+	OGL_CHECK( renderThread, data = ( deoglWorldComputeElement::sDataElementGeometry* )pglMapBufferRange(
+		GL_PIXEL_PACK_BUFFER, 0, wcompute.GetSSBOElementGeometries()->GetBufferSize(), GL_MAP_READ_BIT ) );
+	
+	decStringList list;
+	decString s;
+	int i, cc = wcompute.GetSSBOElementGeometries()->GetElementCount();
+	logger.LogInfoFormat("%sSSBO: %d", prefix, cc);
+	for(i=0; i<cc; i++){
+		s.Format("[%d:%d,%x,%d]", i, data[i].element, data[i].renderFilter, rtsp.GetVAOAt(data[i].vao).GetVAO() != nullptr);
+		list.Add(s);
+	}
+	logger.LogInfo(list.Join(" "));
+	
+	OGL_CHECK( renderThread, pglUnmapBuffer( GL_PIXEL_PACK_BUFFER ) );
+	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
+}

@@ -58,7 +58,7 @@ pRTSVAO( NULL )
 
 deoglVAO::~deoglVAO(){
 	if( pRTSVAO ){
-		pRenderThread.GetRenderTaskSharedPool().ReturnVAO( pRTSVAO );
+		pRTSVAO->ReturnToPool();
 	}
 	
 	pRenderThread.GetDelayedOperations().DeleteOpenGLVertexArray( pVAO );

@@ -154,6 +154,7 @@ public:
 	
 protected:
 	void SortRenderTask( deoglComputeRenderTask &renderTask );
+	void pDebugPrintSSBOGeometries( const deoglRenderPlan &plan, const char *prefix );
 };
 
 #endif

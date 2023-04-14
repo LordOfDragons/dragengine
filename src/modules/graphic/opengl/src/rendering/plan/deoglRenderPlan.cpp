@@ -372,7 +372,6 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	pWorld->PrepareForRender( *this, mask );
 	pRenderThread.GetShader().UpdateSSBOSkinTextures();
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pCompute->ClearGeometries();
 		pCompute->UpdateElementGeometries();
 		pCompute->BuildRTOcclusion( mask );
 	}

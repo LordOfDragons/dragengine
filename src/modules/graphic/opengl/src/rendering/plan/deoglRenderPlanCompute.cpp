@@ -216,19 +216,16 @@ void deoglRenderPlanCompute::UpdateElementGeometries(){
 	deoglWorldCompute &compute = pPlan.GetWorld()->GetCompute();
 	
 	compute.PrepareGeometries();
-	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Update %dys (%d)", (int)(timer.GetElapsedTime()*1e6f), compute.GetUpdateElementGeometryCount());
-	if( compute.GetUpdateElementGeometryCount() == 0 ){
-		return;
-	}
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Prepare %dys (%d)", (int)(timer.GetElapsedTime()*1e6f), compute.GetUpdateElementGeometryCount());
 	
-	pPlan.GetRenderThread().GetRenderers().GetCompute().UpdateElementGeometries( pPlan );
-	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Compute %dys", (int)(timer.GetElapsedTime()*1e6f));
-}
-
-void deoglRenderPlanCompute::ClearGeometries(){
-	const deoglWorldCompute &compute = pPlan.GetWorld()->GetCompute();
 	if( compute.GetClearGeometryCount() > 0 ){
 		pPlan.GetRenderThread().GetRenderers().GetCompute().ClearGeometries( pPlan );
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Clear %dys", (int)(timer.GetElapsedTime()*1e6f));
+	}
+	
+	if( compute.GetUpdateElementGeometryCount() > 0 ){
+		pPlan.GetRenderThread().GetRenderers().GetCompute().UpdateElementGeometries( pPlan );
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Update %dys", (int)(timer.GetElapsedTime()*1e6f));
 	}
 }
 

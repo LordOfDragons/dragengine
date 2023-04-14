@@ -176,6 +176,10 @@ void deoglWorldCompute::AddElement( deoglWorldComputeElement *element ){
 	if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit ){
 		pUpdateElementGeometries.Add( element );
 	}
+	
+	// pWorld.GetRenderThread().GetLogger().LogInfoFormat( "WorldCompute.AddElement: type=%d index=%d", element->GetType(), index );
+	// pDebugPrintElements();
+	// pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
 }
 
 void deoglWorldCompute::UpdateElement( deoglWorldComputeElement *element ){
@@ -198,6 +202,7 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 	
 	const int index = element->GetIndex();
 	DEASSERT_TRUE( index != -1 )
+	// pWorld.GetRenderThread().GetLogger().LogInfoFormat( "WorldCompute.RemoveElement: type=%d index=%d", element->GetType(), index );
 	
 	const int last = pElements.GetCount() - 1;
 	
@@ -252,6 +257,9 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 	}
 	
 	pElements.RemoveFrom( last );
+	
+	// pDebugPrintElements();
+	// pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
 }
 
 int deoglWorldCompute::GetElementGeometryCount() const{
@@ -481,6 +489,10 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 		// pWorld.GetRenderThread().GetLogger().LogInfoFormat("pUpdateSSBOElementGeometries: Upload %dys", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	pUpdateElementGeometries.RemoveAll();
+	
+	// pWorld.GetRenderThread().GetLogger().LogInfo( "WorldCompute.UpdateElementGeometries" );
+	// pDebugPrintElements();
+	// pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
 }
 
 void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
@@ -512,6 +524,10 @@ void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 		// pWorld.GetRenderThread().GetLogger().LogInfoFormat( "pFullUpdateSSBOElementGeometries: Write %dys", (int)(timer.GetElapsedTime() * 1e6f) );
 		// mapped.Unmap();
 		// pWorld.GetRenderThread().GetLogger().LogInfoFormat( "pFullUpdateSSBOElementGeometries: Upload %dys", (int)(timer.GetElapsedTime() * 1e6f) );
+	
+	// pWorld.GetRenderThread().GetLogger().LogInfo( "WorldCompute.FullUpdateSSBOElementGeometries" );
+	// pDebugPrintElements();
+	// pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
 }
 
 
@@ -547,6 +563,10 @@ void deoglWorldCompute::pUpdateSSBOClearGeometries(){
 		}
 	}
 	pClearGeometriesCount = 0;
+	
+	// pWorld.GetRenderThread().GetLogger().LogInfo( "WorldCompute.ClearGeometries" );
+	// pDebugPrintElements();
+	// pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
 }
 
 
@@ -572,4 +592,22 @@ void deoglWorldCompute::pUpdateFullUpdateGeometryLimits(){
 		pClearGeometriesSize = pFullUpdateGeometryLimit;
 		pClearGeometriesCount = 0; // should be 0 already
 	}
+}
+
+void deoglWorldCompute::pDebugPrintElements(){
+	deoglRTLogger &logger = pWorld.GetRenderThread().GetLogger();
+	const int count = pElements.GetCount();
+	decStringList list;
+	decString string;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglWorldComputeElement &element = *( deoglWorldComputeElement* )pElements.GetAt( i );
+			if(element.GetType() == deoglWorldComputeElement::eetHeightTerrainSectorCluster) continue;
+		string.Format( "[%d:%d(%p),%d,%d]", i, element.GetType(), element.GetOwner(),
+			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetIndex() : -1,
+			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1 );
+		list.Add( string );
+	}
+	logger.LogInfo( list.Join( " " ) );
 }
