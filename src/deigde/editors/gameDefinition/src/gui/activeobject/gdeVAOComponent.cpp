@@ -238,7 +238,7 @@ void gdeVAOComponent::pCreateComponent(){
 			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
 			
 		}catch( const deException & ){
-			skin = environment.GetErrorSkin();
+			skin = environment.GetStockSkin( igdeEnvironment::essError );
 		}
 	}
 	
@@ -344,7 +344,7 @@ deComponentTexture &engTexture, int engTextureIndex ){
 			}
 			
 		}catch( const deException & ){
-			occtextureSkin = environment.GetErrorSkin();
+			occtextureSkin = environment.GetStockSkin( igdeEnvironment::essError );
 		}
 		
 		if( occtextureSkin ){

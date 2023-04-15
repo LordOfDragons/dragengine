@@ -515,17 +515,7 @@ void igdeWObject::SetOutlineSkin( deSkin *skin ){
 }
 
 void igdeWObject::SetOutlineSkinSharedEditing(){
-	deSkinReference skin;
-	
-	try{
-		skin.TakeOver( pEnvironment.GetEngineController()->GetEngine()->GetSkinManager()->LoadSkin(
-			pEnvironment.GetFileSystemIGDE(), "/data/data/materials/editing/outlined.deskin", "/" ) );
-		
-	}catch( const deException &e ){
-		pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-	}
-	
-	SetOutlineSkin( skin );
+	SetOutlineSkin( pEnvironment.GetStockSkin( igdeEnvironment::essEditOutline ) );
 }
 
 void igdeWObject::SetOutlineColor( const decColor &color ){

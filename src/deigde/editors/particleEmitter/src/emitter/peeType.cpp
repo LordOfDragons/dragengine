@@ -530,7 +530,7 @@ void peeType::pLoadSkin(){
 			
 		}catch( const deException & ){
 			if( pEmitter ){
-				pEngSkin = pEmitter->GetEnvironment()->GetErrorSkin();
+				pEngSkin = pEmitter->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
 				pEngSkin->AddReference();
 			}
 		}
@@ -581,7 +581,7 @@ void peeType::pLoadModelSkin(){
 			
 		}catch( const deException & ){
 			if( pEmitter ){
-				pEngCastSkin = pEmitter->GetEnvironment()->GetErrorSkin();
+				pEngCastSkin = pEmitter->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
 				pEngCastSkin->AddReference();
 			}
 		}

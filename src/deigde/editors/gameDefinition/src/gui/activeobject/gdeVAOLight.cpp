@@ -300,7 +300,7 @@ void gdeVAOLight::pCreateLight(){
 			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
 			
 		}catch( const deException & ){
-			skin = environment.GetErrorSkin();
+			skin = environment.GetStockSkin( igdeEnvironment::essError );
 		}
 	}
 	

@@ -165,7 +165,7 @@ void seBody::pUpdateSkin(){
 		
 	}catch( const deException & ){
 		if( pLayer && pLayer->GetSky() ){
-			pEngSkin = pLayer->GetSky()->GetEnvironment()->GetErrorSkin();
+			pEngSkin = pLayer->GetSky()->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
 		}
 	}
 }

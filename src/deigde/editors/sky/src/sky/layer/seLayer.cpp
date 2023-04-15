@@ -434,7 +434,7 @@ void seLayer::pUpdateSkin(){
 		
 	}catch( const deException & ){
 		if( pSky ){
-			pEngSkin = pSky->GetEnvironment()->GetErrorSkin();
+			pEngSkin = pSky->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
 		}
 	}
 }

@@ -565,9 +565,9 @@ void igdeWOSOComponent::pUpdateComponent(){
 		return;
 	}
 	
-	deSkin *skin = rl.GetSkin();
+	deSkin::Ref skin( rl.GetSkin() );
 	if( ! skin && rl.HasPathSkin() && GetWrapper().GetGDClass() ){
-		skin = GetEnvironment().GetErrorSkin();
+		skin = GetEnvironment().GetStockSkin( igdeEnvironment::essError );
 	}
 	
 	deRig *rig = rl.GetRig();

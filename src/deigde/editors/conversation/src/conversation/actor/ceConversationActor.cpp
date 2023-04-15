@@ -794,7 +794,7 @@ void ceConversationActor::pUpdateComponent(){
 	try{
 		// if the skin is missing use the default one
 		if( ! skin && gamedef ){
-			skin = pEnvironment.GetErrorSkin();
+			skin = pEnvironment.GetStockSkin( igdeEnvironment::essError );
 			skin->AddReference();
 		}
 		

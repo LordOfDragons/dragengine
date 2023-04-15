@@ -33,7 +33,7 @@
 #include <dragengine/common/utils/decCollisionFilter.h>
 #include <dragengine/resources/camera/deCameraReference.h>
 #include <dragengine/resources/collider/deColliderReference.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkinReference.h>
 #include <dragengine/resources/world/deWorldReference.h>
 
@@ -124,7 +124,7 @@ private:
 	bool pDirtyExtends;
 	bool pDirtyFallbackColliderShape;
 	
-	deSkinReference pOutlineSkin;
+	deSkin::Ref pOutlineSkin;
 	deDynamicSkinReference pOutlineDynamicSkin;
 	decColor pOutlineColor;
 	

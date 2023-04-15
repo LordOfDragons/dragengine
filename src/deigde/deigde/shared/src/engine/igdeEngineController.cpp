@@ -174,13 +174,15 @@ void igdeEngineController::CloseEngine(){
 	logger.LogInfo( LOGSOURCE, "Engine released." );
 }
 
-void igdeEngineController::UpdateEngine( const igdeGameProject &gameProject,
+void igdeEngineController::UpdateEngine( const igdeGameProject *gameProject,
 const char *pathIGDEData, const char *pathIGDEModuleData ){
-	if( ! pathIGDEData || ! pathIGDEModuleData ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pathIGDEData )
+	DEASSERT_NOTNULL( pathIGDEModuleData )
 	
-	const decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
+	decPath pathData;
+	if( gameProject ){
+		pathData.SetFromNative( gameProject->GetDirectoryPath() );
+	}
 	const bool notEmptyPathData = pathData.GetComponentCount() > 0;
 	deLogger &logger = *pMainWindow.GetLogger();
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
@@ -190,7 +192,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 	// set engine specific parameters
 	if( notEmptyPathData ){
 		diskPath = pathData;
-		diskPath.AddUnixPath( gameProject.GetPathData() );
+		diskPath.AddUnixPath( gameProject->GetPathData() );
 		logger.LogInfoFormat( LOGSOURCE, "Set Data Directory %s", diskPath.GetPathNative().GetString() );
 		pEngine->SetDataDir( diskPath.GetPathNative() );
 		
@@ -203,25 +205,27 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 	logger.LogInfo( LOGSOURCE, "Setup virtual file system:" );
 	vfs.RemoveAllContainers();
 	
-	const igdeGameDefinitionList &baseGameDefs = gameProject.GetBaseGameDefinitionList();
-	const int baseGameDefCount = baseGameDefs.GetCount();
-	int i;
-	for( i=0; i<baseGameDefCount; i++ ){
-		const igdeGameDefinition &baseGameDef = *baseGameDefs.GetAt( i );
-		
-		diskPath.SetFromNative( baseGameDef.GetBasePath() );
-		rootPath.SetFromUnix( baseGameDef.GetVFSPath() );
-		logger.LogInfoFormat( LOGSOURCE, "- Adding base game definition '%s' as '%s' (read-only)",
-			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
-		container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
-		( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
-		vfs.AddContainer( container );
+	if( gameProject ){
+		const igdeGameDefinitionList &baseGameDefs = gameProject->GetBaseGameDefinitionList();
+		const int baseGameDefCount = baseGameDefs.GetCount();
+		int i;
+		for( i=0; i<baseGameDefCount; i++ ){
+			const igdeGameDefinition &baseGameDef = *baseGameDefs.GetAt( i );
+			
+			diskPath.SetFromNative( baseGameDef.GetBasePath() );
+			rootPath.SetFromUnix( baseGameDef.GetVFSPath() );
+			logger.LogInfoFormat( LOGSOURCE, "- Adding base game definition '%s' as '%s' (read-only)",
+				diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
+			container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
+			( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
+			vfs.AddContainer( container );
+		}
 	}
 	
 	rootPath.SetFromUnix( "/" );
 	if( notEmptyPathData ){
 		diskPath = pathData;
-		diskPath.AddUnixPath( gameProject.GetPathData() );
+		diskPath.AddUnixPath( gameProject->GetPathData() );
 		logger.LogInfoFormat( LOGSOURCE, "- Adding data directory '%s' as '%s' (read-write)",
 			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
 		container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
@@ -244,7 +248,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 	rootPath.SetFromUnix( "/igde/cache" );
 	if( notEmptyPathData ){
 		diskPath = pathData;
-		diskPath.AddUnixPath( gameProject.GetPathCache() );
+		diskPath.AddUnixPath( gameProject->GetPathCache() );
 		logger.LogInfoFormat( LOGSOURCE, "- Adding cache directory '%s' as '%s' (read-write)",
 			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
 		container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
@@ -268,7 +272,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 	rootPath.SetFromUnix( "/igde/local" );
 	if( notEmptyPathData ){
 		diskPath = pathData;
-		diskPath.AddUnixPath( gameProject.GetPathLocal() );
+		diskPath.AddUnixPath( gameProject->GetPathLocal() );
 		logger.LogInfoFormat( LOGSOURCE, "- Adding local directory '%s' as '%s' (read-write)",
 			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
 		container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );

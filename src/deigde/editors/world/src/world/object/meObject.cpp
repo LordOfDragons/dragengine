@@ -2085,15 +2085,15 @@ void meObject::pRepositionDDSNavSpaces(){
 
 void meObject::pUpdateOutline(){
 	if( pActive ){
-		pWObject->SetOutlineSkinSharedEditing();
+		pWObject->SetOutlineSkin( pEnvironment->GetStockSkin( igdeEnvironment::essEditOutline ) );
 		pWObject->SetOutlineColor( decColor( 1.0f, 0.5f, 0.0f ) );
 		
 	}else if( pSelected ){
-		pWObject->SetOutlineSkinSharedEditing();
+		pWObject->SetOutlineSkin( pEnvironment->GetStockSkin( igdeEnvironment::essEditOutline ) );
 		pWObject->SetOutlineColor( decColor( 1.0f, 0.0f, 0.0f ) );
 		
 	}else{
-		pWObject->SetOutlineSkin( NULL );
+		pWObject->SetOutlineSkin( nullptr );
 	}
 }
 

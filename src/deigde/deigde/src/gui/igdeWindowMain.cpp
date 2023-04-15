@@ -506,7 +506,11 @@ pTaskSyncGameDefinition( NULL )
 		pResourceLoader = new igdeResourceLoader( pEnvironmentIGDE );
 		
 		CreateEngineController(); // uses methods provided by base class
+		GetEngineController().UpdateEngine( nullptr, pConfiguration.GetPathIGDEData(),
+			pConfiguration.GetPathIGDEEditorData() );
+		
 		pCreateSharedModelCollisionRig();
+		pLoadStockSkins();
 		
 		pAddIGDEEngineModules();
 		GetEngineController().ActivateModule( igdeEngineController::esScripting, "IGDEScript" );
@@ -727,11 +731,12 @@ void igdeWindowMain::SetGameProject( igdeGameProject *project ){
 	
 	if( project ){
 		project->AddReference();
-		
-		GetEngineController().UpdateEngine( *project, pConfiguration.GetPathIGDEData(),
-			pConfiguration.GetPathIGDEEditorData() );
-		
-		pErrorSkin.TakeOver( GetEngine()->GetSkinManager()->LoadSkin( "/igde/materials/error/material.deskin", "/" ) );
+	}
+	
+	GetEngineController().UpdateEngine( project, pConfiguration.GetPathIGDEData(),
+		pConfiguration.GetPathIGDEEditorData() );
+	
+	if( project ){
 		project->GetGameDefinition()->UpdateEngineObjects();
 	}
 	
@@ -1513,10 +1518,15 @@ bool igdeWindowMain::RequestSaveDocuments( const char *title, const char *messag
 }
 
 igdeIcon *igdeWindowMain::GetStockIcon( igdeEnvironment::eStockIcons icon ) const{
-	if( icon < 0 || icon >= pStockImageCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( icon >= 0 )
+	DEASSERT_TRUE( icon < pStockImageCount )
 	return pStockIcons[ icon ];
+}
+
+const deSkin::Ref &igdeWindowMain::GetStockSkin( igdeEnvironment::eStockSkins skin ) const{
+	DEASSERT_TRUE( skin >= 0 )
+	DEASSERT_TRUE( skin < pStockSkinCount )
+	return pStockSkins[ skin ];
 }
 
 
@@ -1786,6 +1796,23 @@ void igdeWindowMain::pLoadStockIcons(){
 		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_small_strong_right.png" ) );
 	pStockIcons[ igdeEnvironment::esiSmallWarning ].TakeOver(
 		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_small_warning.png" ) );
+}
+
+void igdeWindowMain::pLoadStockSkins(){
+	deSkinManager &manager = *GetEngine()->GetSkinManager();
+	
+	pStockSkins[ igdeEnvironment::essMissing ].TakeOver(
+		manager.LoadSkin( "/igde/materials/missing/material.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essError ].TakeOver(
+		manager.LoadSkin( "/igde/materials/error/material.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essTestMap ].TakeOver(
+		manager.LoadSkin( "/igde/materials/testmap/material.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essEditOutline ].TakeOver(
+		manager.LoadSkin( "/igde/materials/editing/outlined.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essEditRim ].TakeOver(
+		manager.LoadSkin( "/igde/materials/editing/rim.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essEditRimOutline ].TakeOver(
+		manager.LoadSkin( "/igde/materials/editing/rimOutlined.deskin", "/" ) );
 }
 
 void igdeWindowMain::pCreateGuiThemes(){
