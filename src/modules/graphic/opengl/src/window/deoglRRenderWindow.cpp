@@ -636,8 +636,10 @@ void deoglRRenderWindow::Render(){
 	glDisable( GL_DITHER );
 	
 	// prepare canvas
+	deoglRCanvas * const debugOverlayCanvas = ! pRenderThread.GetVRCamera()
+		? pRenderThread.GetCanvasDebugOverlay() : nullptr;
+	
 	deoglRCanvas * const inputOverlayCanvas = pRenderThread.GetCanvasInputOverlay();
-	deoglRCanvas * const debugOverlayCanvas = pRenderThread.GetCanvasDebugOverlay();
 	deoglRCanvas * const overlayCanvas = pRenderThread.GetCanvasOverlay();
 	bool isMainWindow = true; // a problem only if more than one render window exists
 	

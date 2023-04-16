@@ -109,7 +109,7 @@ public:
 	void BeginRenderText();
 	
 	/** Add rendered text to TBO. */
-	void AddRenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color );
+	void AddRenderText( const decPoint &viewport, const char *text, int x, int y, const decColor &color );
 	
 	/** Finish render text. */
 	void EndRenderText();
@@ -120,7 +120,7 @@ public:
 	void BeginRenderRectangle();
 	
 	/** Add rendered filled rectangle to TBO. */
-	void AddRenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color );
+	void AddRenderRectangle( const decPoint &viewport, int x1, int y1, int x2, int y2, const decColor &color );
 	
 	/** Finish render filled rectangle. */
 	void EndRenderRectangle();

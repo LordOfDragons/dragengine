@@ -158,6 +158,20 @@ public:
 	 * Returns 0 if module is not using a separate thread.
 	 */
 	virtual int GetFPSRate();
+	
+	/**
+	 * \brief Set position and orientation of VR debug panel if graphic module shows one.
+	 * \version 1.17
+	 * 
+	 * The debug panel is usually shown if the user looks at the back of his right hand
+	 * like looking at a wrist watch. The position is the center of the debug panel with
+	 * the size determined by the graphic module. The matrix defined by the orientation
+	 * lines up with the panel like this:
+	 * - matrix right vector along panel right direction
+	 * - matrix up vector along panel down direction
+	 * - matrix forward vector pointing towards the user
+	 */
+	virtual void SetVRDebugPanelPosition( const decDVector &position, const decQuaternion &orientation );
 	/*@}*/
 	
 	

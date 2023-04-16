@@ -106,6 +106,7 @@ private:
 	bool pConfigChanged;
 	uint32_t pFrameCounter;
 	deoglRCamera *pVRCamera;
+	decDMatrix pVRDebugPanelMatrix;
 	
 	deoglConfiguration pConfiguration;
 	deoglRTLeakTracker pLeakTracker;
@@ -251,7 +252,13 @@ public:
 	inline deoglRCamera *GetVRCamera() const{ return pVRCamera; }
 	
 	/** Set VR camera or nullptr. */
-	void SetVRCamera ( deoglRCamera *camera );
+	void SetVRCamera( deoglRCamera *camera );
+	
+	/** VR debug panel matrix. */
+	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }
+	
+	/** Set VR debug panel matrix. */
+	void SetVRDebugPanelMatrix( const decDMatrix &matrix );
 	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }

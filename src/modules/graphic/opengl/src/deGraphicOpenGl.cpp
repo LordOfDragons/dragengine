@@ -350,6 +350,7 @@ void deGraphicOpenGl::RenderWindows(){
 	}
 	
 	pShaderCompilingInfo->Update( GetGameEngine()->GetElapsedTime() );
+	pRenderThread->SetVRDebugPanelMatrix( pVRDebugPanelMatrix );
 	
 	if( renderWindow ){
 		deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )pOverlay->GetPeerGraphic() );
@@ -399,6 +400,10 @@ void deGraphicOpenGl::RenderWindows(){
 
 int deGraphicOpenGl::GetFPSRate(){
 	return pRenderThread->GetFPSRate();
+}
+
+void deGraphicOpenGl::SetVRDebugPanelPosition( const decDVector &position, const decQuaternion &orientation ){
+	pVRDebugPanelMatrix.SetWorld( position, orientation );
 }
 
 

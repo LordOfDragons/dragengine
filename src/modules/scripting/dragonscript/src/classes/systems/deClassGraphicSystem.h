@@ -49,6 +49,8 @@ private:
 	struct sInitData{
 		dsClass *clsGraSys, *clsVoid, *clsInt, *clsFlt;
 		dsClass *clsBool, *clsStr, *clsModPar, *clsCView, *clsPoint;
+		dsClass *clsDVector;
+		dsClass *clsQuaternion;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -69,6 +71,7 @@ private:
 	DEF_NATFUNC(nfSetParameterValue);
 	DEF_NATFUNC( nfSendCommand );
 	DEF_NATFUNC( nfGetFPSRate );
+	DEF_NATFUNC( nfSetVRDebugPanelPosition );
 #undef DEF_NATFUNC
 };
 

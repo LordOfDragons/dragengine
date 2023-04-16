@@ -28,6 +28,8 @@
 #include "../canvas/deoglCanvasView.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTContext.h"
+#include "../world/deoglRCamera.h"
+#include "../vr/deoglVR.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/deEngine.h>
@@ -63,13 +65,28 @@ void deoglDebugOverlay::PrepareOverlay( deCanvasView &canvasView ){
 		return;
 	}
 	
-	const deRenderWindow * const renderWindow = pOgl.GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if( ! renderWindow ){
-		renderThread.SetCanvasDebugOverlay( nullptr );
-		return;
-	}
+	decPoint size;
 	
-	canvasView.SetSize( decPoint( renderWindow->GetWidth(), renderWindow->GetHeight() ) );
+	if( renderThread.GetVRCamera() ){
+		const deoglVR * const vr = renderThread.GetVRCamera()->GetVR();
+		if( vr ){
+			canvasView.SetSize( vr->GetDebugPanelSize() );
+			
+		}else{
+			renderThread.SetCanvasDebugOverlay( nullptr );
+			return;
+		}
+		
+	}else{
+		const deRenderWindow * const renderWindow = pOgl.GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+		if( renderWindow ){
+			canvasView.SetSize( decPoint( renderWindow->GetWidth(), renderWindow->GetHeight() ) );
+			
+		}else{
+			renderThread.SetCanvasDebugOverlay( nullptr );
+			return;
+		}
+	}
 	
 	pSortViews( canvasView );
 	pAlignViews();

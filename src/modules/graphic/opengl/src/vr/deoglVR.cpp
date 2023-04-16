@@ -25,6 +25,7 @@
 #include "deoglVR.h"
 #include "../deGraphicOpenGl.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../canvas/render/deoglRCanvasView.h"
 #include "../debug/deoglDebugTraceGroup.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
@@ -87,11 +88,15 @@ pTimeHistoryFrame( 9, 2 ),
 pTargetFPS( 90 ),
 pTargetFPSHysteresis( 0.1f ), // 0.2f
 pUseRenderStereo( false ),
-pFBOStereo( nullptr )
+pFBOStereo( nullptr ),
+pDebugPanelSize( 1024, 512 ),
+pDebugPanelRenderSize( 0.4f, 0.2f )
 {
 	// WARNING called from main thread.
 	// 
 	// for this reason initialization is delayed until BeginFrame.
+	
+	pDebugPanelColorTransform.SetScaling( 1.0f, 1.0f, 1.0f, 0.9f );
 }
 
 deoglVR::~deoglVR(){
@@ -145,6 +150,18 @@ void deoglVR::DropFBOStereo(){
 
 
 
+const deoglRenderTarget::Ref &deoglVR::GetRenderTargetDebugPanel(){
+	if( ! pRenderTargetDebugPanel ){
+		pRenderTargetDebugPanel.TakeOver( new deoglRenderTarget(
+			pCamera.GetRenderThread(), pDebugPanelSize, 4, 8 ) );
+		pRenderTargetDebugPanel->PrepareFramebuffer();
+	}
+	
+	return pRenderTargetDebugPanel;
+}
+
+
+
 void deoglVR::BeginFrame(){
 	if( pState != esBeginFrame ){
 		return;
@@ -181,7 +198,14 @@ void deoglVR::Render(){
 		return;
 	}
 	
-	const deoglDebugTraceGroup debugTrace( pCamera.GetRenderThread(), "VR.Render" );
+	deoglRenderThread &renderThread = pCamera.GetRenderThread();
+	deoglRCanvas * const debugOverlayCanvas = renderThread.GetCanvasDebugOverlay();
+	if( debugOverlayCanvas ){
+		debugOverlayCanvas->PrepareForRender( nullptr );
+		debugOverlayCanvas->PrepareForRenderRender( nullptr );
+	}
+	
+	const deoglDebugTraceGroup debugTrace( renderThread, "VR.Render" );
 	if( ! pUseRenderStereo ){
 		pLeftEye.Render();
 		pRightEye.Render();
@@ -189,7 +213,7 @@ void deoglVR::Render(){
 	}
 	
 	// render using stereo rendering
-	const deoglConfiguration &config = pCamera.GetRenderThread().GetConfiguration();
+	const deoglConfiguration &config = renderThread.GetConfiguration();
 	
 	const decPoint &targetSize = pLeftEye.GetTargetSize();
 	pRenderStereoSize = ( decVector2( targetSize ) * config.GetVRRenderScale() ).Round();
@@ -216,7 +240,7 @@ void deoglVR::Render(){
 	plan.SetFBOTarget( nullptr );
 	plan.SetRenderVR( deoglRenderPlan::ervrNone );
 	plan.SetRenderStereo( false );
-	pCamera.GetRenderThread().SampleDebugTimerVRRender();
+	renderThread.SampleDebugTimerVRRender();
 }
 
 void deoglVR::Submit(){

@@ -628,18 +628,22 @@ DEBUG_RESET_TIMER
 		DebugTimer1Sample( plan, *pDebugInfo.infoWorld, true );
 		
 		// debug information
-		if( plan.GetDebugTiming() && ! plan.GetFBOTarget() && devMode.GetEnabled() ){ // only in canvas rendering and main pass
-			// measuring the time required for rendering developer mode is tricky. the reason is
-			// that we need to sample the time across this function call. the sampling is present
-			// only after the function call returns which draws the measurements. we can not
-			// simply delay the result and show it the next time since we also need to clear
-			// at some time. to solve this a temporary measurement container is used. before
-			// showing the result the temporary measurement is copied to the real measurement
-			// which is then displayed while the temporary one is clear
-			pDebugInfo.infoDeveloperMode->CopyResults( *pDebugInfo.infoDeveloperModeTemp );
-			pDebugInfo.infoDeveloperModeTemp->Clear();
-			renderers.GetDevMode().RenderDevMode( plan );
-			DebugTimer1Sample( plan, *pDebugInfo.infoDeveloperModeTemp, true );
+		if( plan.GetDebugTiming() && devMode.GetEnabled() ){
+			// only in canvas rendering and main pass or VR depending if VR is used
+			if( ( renderThread.GetVRCamera() && plan.GetRenderVR() != deoglRenderPlan::ervrNone )
+			|| ( ! renderThread.GetVRCamera() && ! plan.GetFBOTarget() ) ){
+				// measuring the time required for rendering developer mode is tricky. the reason is
+				// that we need to sample the time across this function call. the sampling is present
+				// only after the function call returns which draws the measurements. we can not
+				// simply delay the result and show it the next time since we also need to clear
+				// at some time. to solve this a temporary measurement container is used. before
+				// showing the result the temporary measurement is copied to the real measurement
+				// which is then displayed while the temporary one is clear
+				pDebugInfo.infoDeveloperMode->CopyResults( *pDebugInfo.infoDeveloperModeTemp );
+				pDebugInfo.infoDeveloperModeTemp->Clear();
+				renderers.GetDevMode().RenderDevMode( plan );
+				DebugTimer1Sample( plan, *pDebugInfo.infoDeveloperModeTemp, true );
+			}
 		}
 		
 		// swap one last time so the caller finds the final image to work with in GetPostProcessTexture

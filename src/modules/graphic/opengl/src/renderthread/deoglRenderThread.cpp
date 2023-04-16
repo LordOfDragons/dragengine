@@ -230,6 +230,10 @@ void deoglRenderThread::SetVRCamera( deoglRCamera *camera ){
 	pVRCamera = camera;
 }
 
+void deoglRenderThread::SetVRDebugPanelMatrix( const decDMatrix &matrix ){
+	pVRDebugPanelMatrix = matrix;
+}
+
 void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvasView *canvas ){
 	if( canvas == pCanvasInputOverlay ){
 		return;

@@ -66,6 +66,11 @@ private:
 	decPoint pRenderStereoSize;
 	deoglFramebuffer *pFBOStereo;
 	
+	decPoint pDebugPanelSize;
+	deoglRenderTarget::Ref pRenderTargetDebugPanel;
+	decVector2 pDebugPanelRenderSize;
+	decColorMatrix pDebugPanelColorTransform;
+	
 	
 	
 public:
@@ -118,6 +123,20 @@ public:
 	
 	/** Drop stereo framebuffer. */
 	void DropFBOStereo();
+	
+	
+	
+	/** Debug panel size. */
+	inline const decPoint &GetDebugPanelSize() const{ return pDebugPanelSize; }
+	
+	/** Get debug panel render target. Creates it if not created yet. */
+	const deoglRenderTarget::Ref &GetRenderTargetDebugPanel();
+	
+	/** Debug panel render size. */
+	inline const decVector2 &GetDebugPanelRenderSize() const{ return pDebugPanelRenderSize; }
+	
+	/** Debug panel color transform. */
+	inline const decColorMatrix &GetDebugPanelColorTransform() const{ return pDebugPanelColorTransform; }
 	
 	
 	

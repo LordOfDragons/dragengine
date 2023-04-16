@@ -61,6 +61,7 @@ private:
 	deoglShaderCompilingInfo::Ref pShaderCompilingInfo;
 	
 	deoglCamera *pVRCamera;
+	decDMatrix pVRDebugPanelMatrix;
 	
 	
 	
@@ -128,6 +129,9 @@ public:
 	 * Returns 0 if module is not using a separate thread.
 	 */
 	virtual int GetFPSRate();
+	
+	/** Set position and orientation of VR debug panel if graphic module shows one. */
+	virtual void SetVRDebugPanelPosition( const decDVector &position, const decQuaternion &orientation );
 	/*@}*/
 	
 	
@@ -314,6 +318,9 @@ public:
 	
 	/** Set VR camera or null. */
 	void SetVRCamera( deoglCamera *camera );
+	
+	/** VR debug panel matrix. */
+	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }
 	/*@}*/
 	
 private:
