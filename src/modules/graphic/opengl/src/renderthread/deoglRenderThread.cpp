@@ -1579,11 +1579,13 @@ void deoglRenderThread::pRenderSingleFrame(){
 #endif
 	
 	// synchronize with GPU. it is annoying this has to be required since it prevents fullly
-	// occupying the GPU. the problem is that swap buller stalls GPU processing and thus
-	// GPU->CPU transfer. by synchronizing with the GPU we can ensure all rendering has
-	// finished so we can use the GPU for pre-render processing. this trades stalling at
-	// an unfortunate time with stalling at a well known time
-	OGL_CHECK( *this, glFinish() );
+	// occupying the GPU. the problem is that swap stalls GPU processing and thus GPU->CPU
+	// transfer. by synchronizing with the GPU we can ensure all rendering has finished so
+	// we can use the GPU for pre-render processing. this trades stalling at an unfortunate
+	// time with stalling at a well known time
+	if( ! ( pVRCamera && pVRCamera->GetVR() ) && showDebugInfoModule ){
+		OGL_CHECK( *this, glFinish() );
+	}
 	
 	if( showDebugInfoModule ){
 		pDebugTimeThreadRenderSyncGpu = pDebugTimerRenderThread2.GetElapsedTime();
@@ -2193,7 +2195,7 @@ void deoglRenderThread::pBeginFrame(){
 	pOgl.GetShaderCompilingInfo()->PrepareForRender( pLastFrameTime );
 	
 	pFrameCounter++; // wraps around when hitting maximum
-	pVRBeginFrame();
+	pVRWaitBeginFrameFinished();
 }
 
 void deoglRenderThread::pSyncConfiguration(){
@@ -2229,13 +2231,22 @@ void deoglRenderThread::pRenderWindows(){
 	}
 }
 
-void deoglRenderThread::pVRBeginFrame(){
+void deoglRenderThread::pVRStartBeginFrame(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
 	if( ! vr ){
 		return;
 	}
 	
-	vr->BeginFrame();
+	vr->StartBeginFrame();
+}
+
+void deoglRenderThread::pVRWaitBeginFrameFinished(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( ! vr ){
+		return;
+	}
+	
+	vr->WaitBeginFrameFinished();
 	
 	if( pSignalSemaphoreSyncVR ){
 		pSignalSemaphoreSyncVR = false;
@@ -2261,6 +2272,7 @@ void deoglRenderThread::pVREndFrame(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
 	if( vr ){
 		vr->EndFrame();
+		pVRStartBeginFrame();
 	}
 }
 

@@ -299,12 +299,25 @@ public:
 	virtual void GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo );
 	
 	/**
-	 * \brief Begin frame.
+	 * \brief Start begin frame.
 	 * \warning For Graphic Module use only.
 	 * 
-	 * Graphic module has to check after this function returns if render parameters changed.
+	 * Begin frame typically causes VR runtime to synchronize and blocks the calling thread
+	 * until the next synchronization point is hit. This call returns immediately after
+	 * starting the begin frame process. Graphic module has to call WaitBeginFrameFinished()
+	 * to wait for the synchronization to be finished.
 	 */
-	virtual void BeginFrame() = 0;
+	virtual void StartBeginFrame() = 0;
+	
+	/**
+	 * \brief Wait for begin frame to be finished.
+	 * \warning For Graphic Module use only.
+	 * 
+	 * Waits for a StartBeginFrame() call to finish. If no begin frame process is running
+	 * this function returns immediately. Graphic module has to check after this function
+	 * returns if render parameters changed.
+	 */
+	virtual void WaitBeginFrameFinished() = 0;
 	
 	/**
 	 * \brief Acquire eye view image to render into.

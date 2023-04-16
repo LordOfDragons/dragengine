@@ -518,7 +518,8 @@ private:
 	void pSwapBuffers();
 	void pBeginFrame();
 	void pRenderWindows();
-	void pVRBeginFrame();
+	void pVRStartBeginFrame();
+	void pVRWaitBeginFrameFinished();
 	void pVRRender();
 	void pVRSubmit();
 	void pVREndFrame();

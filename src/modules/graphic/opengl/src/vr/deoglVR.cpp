@@ -162,7 +162,7 @@ const deoglRenderTarget::Ref &deoglVR::GetRenderTargetDebugPanel(){
 
 
 
-void deoglVR::BeginFrame(){
+void deoglVR::StartBeginFrame(){
 	if( pState != esBeginFrame ){
 		return;
 	}
@@ -182,7 +182,23 @@ void deoglVR::BeginFrame(){
 	
 	pUseRenderStereo = renderThread.GetChoices().GetVRRenderStereo();
 	
-	vrmodule->BeginFrame();
+	vrmodule->StartBeginFrame();
+	
+	pState = esWaitBeginFrameFinished;
+}
+
+void deoglVR::WaitBeginFrameFinished(){
+	if( pState != esWaitBeginFrameFinished ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = pCamera.GetRenderThread();
+	deBaseVRModule * const vrmodule = renderThread.GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
+	if( ! vrmodule ){
+		return;
+	}
+	
+	vrmodule->WaitBeginFrameFinished();
 	
 	pState = esRender;
 }

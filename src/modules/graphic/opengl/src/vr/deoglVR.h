@@ -42,6 +42,7 @@ class deoglVR{
 private:
 	enum eState{
 		esBeginFrame,
+		esWaitBeginFrameFinished,
 		esRender,
 		esSubmit
 	};
@@ -140,8 +141,11 @@ public:
 	
 	
 	
-	/** Begin frame. */
-	void BeginFrame();
+	/** Start begin frame. */
+	void StartBeginFrame();
+	
+	/** Wait until begin frame finished. */
+	void WaitBeginFrameFinished();
 	
 	/** Render if required. */
 	void Render();

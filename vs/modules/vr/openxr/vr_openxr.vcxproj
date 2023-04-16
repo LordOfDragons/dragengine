@@ -44,6 +44,7 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\action\deoxrActionSet.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrBasics.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrThreadSync.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFaceTracker.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFunctionNames.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrGlobalFunctions.h" />
@@ -97,6 +98,7 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\action\deoxrActionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrBasics.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrThreadSync.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFaceTracker.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrGlobalFunctions.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrHandTracker.cpp" />

@@ -334,7 +334,8 @@ void deoglVREye::pGetParameters( deBaseVRModule &vrmodule ){
 		pHiddenMesh = hiddenMesh;
 		pHiddenRMesh = nullptr;
 		if( pHiddenMesh ){
-			pHiddenRMesh = ( ( deoglModel* )pHiddenMesh->GetPeerGraphic() )->GetRModel();
+			deoglModel * const oglModel = ( deoglModel* )pHiddenMesh->GetPeerGraphic();
+			pHiddenRMesh = oglModel ? oglModel->GetRModel() : nullptr;
 		}
 // 	}
 }
