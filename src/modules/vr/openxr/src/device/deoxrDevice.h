@@ -313,6 +313,9 @@ public:
 	
 	/** Get device pose. */
 	void GetDevicePose( deInputDevicePose &pose );
+
+	/** Direct device pose access for internal use. */
+	inline const deInputDevicePose &GetDirectDevicePose() const{ return pPoseDevice; }
 	/*@}*/
 };
 
