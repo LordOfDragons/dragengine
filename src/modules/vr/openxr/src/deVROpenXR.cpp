@@ -312,7 +312,7 @@ bool deVROpenXR::RuntimeUsable(){
 void deVROpenXR::StartRuntime(){
 	deMutexGuard lock( pMutexOpenXR );
 	
-	const bool enableDebug = true;
+	const bool enableDebug = false; //true;
 	
 	LogInfo( "Start Runtime" );
 	pShutdownRequested = false;

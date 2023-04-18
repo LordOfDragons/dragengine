@@ -78,6 +78,7 @@ private:
 	
 	deoxrSpace::Ref pSpaceStage;
 	deoxrSpace::Ref pSpaceView;
+	deoxrSpace::Ref pSpaceLocal;
 	
 	int64_t *pSwapchainFormats;
 	int pSwapchainFormatCount;
@@ -178,9 +179,12 @@ public:
 	/** Sync actions. */
 	void SyncActions();
 	
-	/** Space. */
+	/** Spaces. */
 	inline const deoxrSpace::Ref &GetSpace() const{ return pSpaceStage; }
-	
+	inline const deoxrSpace::Ref &GetSpaceStage() const{ return pSpaceStage; }
+	inline const deoxrSpace::Ref &GetSpaceView() const{ return pSpaceView; }
+	inline const deoxrSpace::Ref &GetSpaceLocal() const{ return pSpaceLocal; }
+
 	/** Left eye swapchain. */
 	inline deoxrSwapchain *GetSwapchainLeftEye() const{ return pSwapchainLeftEye; }
 	

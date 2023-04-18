@@ -441,6 +441,9 @@ void deoxrDevice::GetInfo( deInputDevice &info ) const{
 	}
 }
 
+void deoxrDevice::UpdateParameters(){
+}
+
 void deoxrDevice::TrackStates(){
 	const deoxrInstance &instance = pOxr.GetInstance();
 	const deoxrSession &session = pOxr.GetSession();
@@ -468,9 +471,25 @@ void deoxrDevice::TrackStates(){
 		memset( &state, 0, sizeof( state ) );
 		state.type = XR_TYPE_ACTION_STATE_POSE;
 		
+		void **nextState = &state.next;
+
+		XrEyeGazeSampleTimeEXT sampleTime;
+		if( pType == deInputDevice::edtVREyeTracker ){
+			memset( &sampleTime, 0, sizeof( sampleTime ) );
+			sampleTime.type = XR_TYPE_EYE_GAZE_SAMPLE_TIME_EXT;
+			*nextState = &sampleTime;
+			nextState = &sampleTime.next;
+		}
+
 		if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
 		&& state.isActive ){
-			pSpacePose->LocateSpace( session.GetSpace(), session.GetPredictedDisplayTime(),
+			deoxrSpace *space = session.GetSpace();
+
+			/*if( pType == deInputDevice::edtVREyeTracker ){
+				space = session.GetSpaceLocal();
+			}*/
+
+			pSpacePose->LocateSpace( *space, session.GetPredictedDisplayTime(),
 				pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
 			
 			pPoseDevice.SetPosition( pPosePosition );

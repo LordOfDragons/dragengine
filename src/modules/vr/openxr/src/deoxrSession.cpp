@@ -175,6 +175,7 @@ pIsGACOpenGL( false ),
 		// create spaces
 		pSpaceStage.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_STAGE ) );
 		pSpaceView.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_VIEW ) );
+		pSpaceLocal.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_LOCAL ) );
 		
 		// enumerate swapchain formats
 		pEnumSwapchainFormats();

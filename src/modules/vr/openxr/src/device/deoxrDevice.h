@@ -94,7 +94,7 @@ private:
 	decMatrix pMatrixWristToDevice;
 	
 	deoxrFaceTracker::Ref pFaceTracker;
-	
+
 	
 	
 public:
