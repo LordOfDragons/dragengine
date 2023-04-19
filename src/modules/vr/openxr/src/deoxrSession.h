@@ -58,6 +58,9 @@ public:
 		escfGlSrgb8Alpha8Ext = 0x8c43, //<! GL_SRGB8_ALPHA8_EXT
 		escfGlRgba8Ext = 0x8058, //<! GL_RGBA8_EXT
 		escfGlR11fG11fB10f = 0x8c3a, //<! GL_R11F_G11F_B10F
+		escfGlDepth16 = 0x81A5, //<! GL_DEPTH_COMPONENT16
+		escfGlDepth24 = 0x81A6, //<! GL_DEPTH_COMPONENT24
+		escfGlDepth32F = 0x8CAC //<! GL_DEPTH_COMPONENT32F
 	};
 	
 	
@@ -85,6 +88,8 @@ private:
 	
 	deoxrSwapchain::Ref pSwapchainLeftEye;
 	deoxrSwapchain::Ref pSwapchainRightEye;
+	deoxrSwapchain::Ref pSwapchainDepthLeftEye;
+	deoxrSwapchain::Ref pSwapchainDepthRightEye;
 	
 	XrPosef pLeftEyePose;
 	XrFovf pLeftEyeFov;
@@ -186,10 +191,16 @@ public:
 	inline const deoxrSpace::Ref &GetSpaceLocal() const{ return pSpaceLocal; }
 
 	/** Left eye swapchain. */
-	inline deoxrSwapchain *GetSwapchainLeftEye() const{ return pSwapchainLeftEye; }
+	inline const deoxrSwapchain::Ref &GetSwapchainLeftEye() const{ return pSwapchainLeftEye; }
 	
 	/** Right eye swapchain. */
-	inline deoxrSwapchain *GetSwapchainRightEye() const{ return pSwapchainRightEye; }
+	inline const deoxrSwapchain::Ref &GetSwapchainRightEye() const{ return pSwapchainRightEye; }
+	
+	/** Depth left eye swapchain. */
+	inline const deoxrSwapchain::Ref &GetSwapchainDepthLeftEye() const{ return pSwapchainDepthLeftEye; }
+	
+	/** Depth right eye swapchain. */
+	inline const deoxrSwapchain::Ref &GetSwapchainDepthRightEye() const{ return pSwapchainDepthRightEye; }
 	
 	/** Left eye pose. */
 	inline const XrPosef &GetLeftEyePose() const{ return pLeftEyePose; }

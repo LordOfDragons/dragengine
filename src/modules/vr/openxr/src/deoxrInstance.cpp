@@ -85,6 +85,7 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extHTCViveFocus3ControllerInteraction ].name = XR_HTC_VIVE_FOCUS3_CONTROLLER_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extHUAWEIControllerInteraction ].name = XR_HUAWEI_CONTROLLER_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extMSFTHandInteraction ].name = XR_MSFT_HAND_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[ extKHRCompositionLayerDepth ].name = XR_KHR_COMPOSITION_LAYER_DEPTH_EXTENSION_NAME;
 	
 	pSupportsExtension[ extKHROpenglEnable ].enableIfSupported = true;
 	pSupportsExtension[ extKHRVisibilityMask ].enableIfSupported = true;
@@ -116,6 +117,7 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extHTCViveFocus3ControllerInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extHUAWEIControllerInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extMSFTHandInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extKHRCompositionLayerDepth ].enableIfSupported = true;
 	
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
