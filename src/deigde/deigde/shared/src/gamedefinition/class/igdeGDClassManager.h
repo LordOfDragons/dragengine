@@ -27,7 +27,7 @@
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/string/decStringList.h>
 
 class igdeGDClass;
 class igdeGDVisitor;
@@ -50,7 +50,7 @@ private:
 	
 	igdeTagManager pHideTags;
 	igdeTagManager pPartialHideTags;
-	decStringSet pAutoFindPath;
+	decStringList pAutoFindPath;
 	
 	decString pDefaultClassName;
 	
@@ -121,8 +121,8 @@ public:
 	void SetDefaultClassName( const char *defaultClassName );
 	
 	/** \brief Set of path to use to auto-find objects. */
-	inline decStringSet &GetAutoFindPath(){ return pAutoFindPath; }
-	inline const decStringSet &GetAutoFindPath() const{ return pAutoFindPath; }
+	inline decStringList &GetAutoFindPath(){ return pAutoFindPath; }
+	inline const decStringList &GetAutoFindPath() const{ return pAutoFindPath; }
 	
 	/** \brief Resolves inherit classes. */
 	void ResolveInheritClasses();

@@ -26,7 +26,7 @@
 #include "../igdeGDCategoryReference.h"
 
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/string/decStringList.h>
 
 class igdeGDVisitor;
 class deVirtualFileSystem;
@@ -41,7 +41,7 @@ private:
 	igdeGDSkyList pSkyList;
 	igdeGDCategoryReference pCategories;
 	decString pDefaultPath;
-	decStringSet pAutoFindPath;
+	decStringList pAutoFindPath;
 	
 	
 	
@@ -81,8 +81,8 @@ public:
 	void SetDefaultPath( const char *path );
 	
 	/** \brief Set of path to use to auto-find skies. */
-	inline decStringSet &GetAutoFindPath(){ return pAutoFindPath; }
-	inline const decStringSet &GetAutoFindPath() const{ return pAutoFindPath; }
+	inline decStringList &GetAutoFindPath(){ return pAutoFindPath; }
+	inline const decStringList &GetAutoFindPath() const{ return pAutoFindPath; }
 	
 	/** \brief Visit skies matching the given category. */
 	void VisitSkiesMatchingCategory( igdeGDVisitor &visitor, const igdeGDCategory *category ) const;

@@ -2308,7 +2308,7 @@ void igdeWindowMain::pLoadXMLElementClasses( igdeGameProject &gameProject ){
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
 	vfs->AddContainer( container );
 	
-	const decStringSet &pathList = gameProject.GetProjectGameDefinition()->GetClassManager()->GetAutoFindPath();
+	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetClassManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i;
 	for( i=0; i<pathCount; i++ ){
@@ -2352,7 +2352,7 @@ void igdeWindowMain::pFindAndAddSkins( igdeGameProject &gameProject ){
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
 	vfs->AddContainer( container );
 	
-	const decStringSet &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
+	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i, j;
 	
@@ -2389,7 +2389,7 @@ void igdeWindowMain::pFindAndAddSkies( igdeGameProject &gameProject ){
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
 	vfs->AddContainer( container );
 	
-	const decStringSet &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();
+	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i, j;
 	

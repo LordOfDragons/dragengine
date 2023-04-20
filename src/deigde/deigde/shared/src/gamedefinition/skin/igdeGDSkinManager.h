@@ -26,7 +26,7 @@
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/string/decStringList.h>
 
 class igdeGDSkin;
 class igdeGDVisitor;
@@ -46,7 +46,7 @@ private:
 	decObjectOrderedSet pSkins;
 	igdeGDCategoryReference pCategories;
 	decString pDefaultSkinPath;
-	decStringSet pAutoFindPath;
+	decStringList pAutoFindPath;
 	
 	
 	
@@ -120,8 +120,8 @@ public:
 	void SetDefaultSkinPath( const char *defaultSkinPath );
 	
 	/** \brief Set of path to use to auto-find skins. */
-	inline decStringSet &GetAutoFindPath(){ return pAutoFindPath; }
-	inline const decStringSet &GetAutoFindPath() const{ return pAutoFindPath; }
+	inline decStringList &GetAutoFindPath(){ return pAutoFindPath; }
+	inline const decStringList &GetAutoFindPath() const{ return pAutoFindPath; }
 	
 	/** \brief Visit skins matching the given category. */
 	void VisitSkinsMatchingCategory( igdeGDVisitor &visitor, const igdeGDCategory *category ) const;

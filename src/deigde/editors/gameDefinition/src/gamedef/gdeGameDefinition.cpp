@@ -491,7 +491,7 @@ void gdeGameDefinition::NotifyDecalPropertyNameChanged( gdeProperty *property ){
 
 
 
-void gdeGameDefinition::SetAutoFindPathObjectClasses( const decStringSet &list ){
+void gdeGameDefinition::SetAutoFindPathObjectClasses( const decStringList &list ){
 	if( list == pAutoFindPathObjectClasses ){
 		return;
 	}
@@ -510,7 +510,7 @@ void gdeGameDefinition::NotifyAutoFindPathObjectClassesChanged(){
 	SetChanged( true );
 }
 
-void gdeGameDefinition::SetAutoFindPathSkins( const decStringSet &list ){
+void gdeGameDefinition::SetAutoFindPathSkins( const decStringList &list ){
 	if( list == pAutoFindPathSkins ){
 		return;
 	}
@@ -529,7 +529,7 @@ void gdeGameDefinition::NotifyAutoFindPathSkinsChanged(){
 	SetChanged( true );
 }
 
-void gdeGameDefinition::SetAutoFindPathSkies( const decStringSet &list ){
+void gdeGameDefinition::SetAutoFindPathSkies( const decStringList &list ){
 	if( list == pAutoFindPathSkies ){
 		return;
 	}

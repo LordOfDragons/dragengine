@@ -25,7 +25,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/string/decStringList.h>
 
 class gdeOCSpeaker;
 class gdeGameDefinition;
@@ -39,8 +39,8 @@ class gdeUGDSetAutoFindPathObjectClasses : public igdeUndo{
 private:
 	gdeGameDefinition *pGameDefinition;
 	
-	decStringSet pOldValue;
-	decStringSet pNewValue;
+	decStringList pOldValue;
+	decStringList pNewValue;
 	
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetAutoFindPathObjectClasses( gdeGameDefinition *gameDefinition, const decStringSet &newValue );
+	gdeUGDSetAutoFindPathObjectClasses( gdeGameDefinition *gameDefinition, const decStringList &newValue );
 	
 protected:
 	/** \brief Clean up undo action. */

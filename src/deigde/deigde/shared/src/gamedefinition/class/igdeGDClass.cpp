@@ -44,6 +44,7 @@
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/image/deImage.h>
 
 

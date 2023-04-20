@@ -52,13 +52,13 @@
 
 namespace{
 
-class cActionAdd : public igdeAction {
+class cActionAppend : public igdeAction {
 	gdeWPTagList &pPanel;
 	igdeComboBoxFilterReference &pComboBox;
 	igdeListBoxReference &pListBox;
 	
 public:
-	cActionAdd( gdeWPTagList &panel, igdeComboBoxFilterReference &comboBox, igdeListBoxReference &listBox ) : 
+	cActionAppend ( gdeWPTagList &panel, igdeComboBoxFilterReference &comboBox, igdeListBoxReference &listBox ) : 
 	igdeAction( "Add...", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add tag" ),
 	pPanel( panel ), pComboBox( comboBox ), pListBox( listBox ){ }
 	
@@ -153,7 +153,7 @@ igdeContainerFlow( helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContaine
 pTagList( NULL ),
 pUndoSystem( NULL )
 {
-	pActionAdd.TakeOver( new cActionAdd( *this, pComboBox, pListBox ) );
+	pActionAdd.TakeOver( new cActionAppend ( *this, pComboBox, pListBox ) );
 	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
 	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
 	

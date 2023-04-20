@@ -213,7 +213,7 @@ void igdeGameDefinition::FindClasses( deVirtualFileSystem &vfs, igdeGDClassManag
 	
 	found.RemoveAll();
 	
-	const decStringSet &pathList = pClassManager->GetAutoFindPath();
+	const decStringList &pathList = pClassManager->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i;
 	for( i=0; i<pathCount; i++ ){
@@ -241,7 +241,7 @@ void igdeGameDefinition::FindClasses( deVirtualFileSystem &vfs, igdeGDClassManag
 
 void igdeGameDefinition::FindSkins( deVirtualFileSystem &vfs, igdeGDSkinManager &found ){
 	const igdeFilePatternList &patterns = *pEnvironment.GetOpenFilePatternList( igdeEnvironment::efpltSkin );
-	const decStringSet &pathList = pSkinManager->GetAutoFindPath();
+	const decStringList &pathList = pSkinManager->GetAutoFindPath();
 	deLogger &logger = *pEnvironment.GetLogger();
 	const int pathCount = pathList.GetCount();
 	decTimer timer;
@@ -264,7 +264,7 @@ void igdeGameDefinition::FindSkins( deVirtualFileSystem &vfs, igdeGDSkinManager 
 
 void igdeGameDefinition::FindSkies( deVirtualFileSystem &vfs, igdeGDSkyManager &found ){
 	const igdeFilePatternList &patterns = *pEnvironment.GetOpenFilePatternList( igdeEnvironment::efpltSky );
-	const decStringSet &pathList = pSkyManager->GetAutoFindPath();
+	const decStringList &pathList = pSkyManager->GetAutoFindPath();
 	deLogger &logger = *pEnvironment.GetLogger();
 	const int pathCount = pathList.GetCount();
 	decTimer timer;
