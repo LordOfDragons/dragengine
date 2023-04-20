@@ -32,42 +32,41 @@ pin Dragengine.Preloading
  * \brief UnicodeString value element class property for use with XML loading.
  */
 class ECPUnicodeString extends ElementClassProperty
-	/** \brief Value. */
 	private var UnicodeString pValue
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name, UnicodeString value ) super( name )
-		this.pValue = value
+	public func new(String name, UnicodeString value) super(name)
+		pValue = value
 	end
 	
 	/** \brief Create property. */
-	public func new( String name, String value ) super( name )
-		this.pValue = UnicodeString.newFromUTF8( value )
+	public func new(String name, String value) super(name)
+		pValue = UnicodeString.newFromUTF8(value)
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func UnicodeString getValue()
-		return this.pValue
+		return pValue
 	end
 	
 	/** \brief Set value. */
-	public func void setValue( UnicodeString value )
-		this.pValue = value
+	public func void setValue(UnicodeString value)
+		pValue = value
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
+	public func void setValue(Object value)
 		if value castable UnicodeString
-			this.pValue = value cast UnicodeString
+			pValue = value cast UnicodeString
 			
 		else
-			this.pValue = UnicodeString.newFromUTF8( value cast String )
+			pValue = UnicodeString.newFromUTF8(value cast String)
 		end
 	end
 	
@@ -79,13 +78,21 @@ class ECPUnicodeString extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored value is returned.
 	 * If the named stub property is present it is returned.
 	 */
-	public func UnicodeString getValue( StubWithProperties stub )
-		var String value = stub.getPropertyValueFor( this.getName(), null )
+	public func UnicodeString getValue(StubWithProperties stub)
+		var String value = stub.getPropertyValueFor(getName(), null)
 		if value != null
-			return UnicodeString.newFromUTF8( value )
+			return UnicodeString.newFromUTF8(value)
 			
 		else
-			return this.pValue
+			return pValue
 		end
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pValue = (property cast ECPUnicodeString).pValue
 	end
 end

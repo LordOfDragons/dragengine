@@ -33,31 +33,30 @@ pin Dragengine.Utils
  * Similar to ECPFloatRectAreaList but uses a Dictionary mapping FloatRectArea to String.
  */
 class ECPFloatRectAreaMap extends ElementClassProperty
-	/** \brief Dictionary mapping String to FloatRectArea. */
 	private var Dictionary pMap
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pMap = Dictionary.new()
+	public func new(String name) super(name)
+		pMap = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Number of float rect areas. */
 	public func int getCount()
-		return this.pMap.getCount()
+		return pMap.getCount()
 	end
 	
 	/** \brief FloatRectArea with String or \em null if not found. */
-	public func FloatRectArea getAt( String name )
-		return this.pMap.getAt( name ) cast FloatRectArea
+	public func FloatRectArea getAt(String name)
+		return pMap.getAt(name) cast FloatRectArea
 	end
 	
 	/** \brief Array of String names. */
 	public func Array getNames()
-		return this.pMap.getKeys()
+		return pMap.getKeys()
 	end
 	
 	/**
@@ -65,27 +64,37 @@ class ECPFloatRectAreaMap extends ElementClassProperty
 	 * 
 	 * Block receives parameters String name and FloatRectArea area.
 	 */
-	public func void forEach( Block ablock )
-		this.pMap.forEach( ablock )
+	public func void forEach(Block ablock)
+		pMap.forEach(ablock)
 	end
 	
 	/** \brief Remove all float react areas. */
 	public func void removeAll()
-		this.pMap.removeAll()
+		pMap.removeAll()
 	end
 	
 	/** \brief Add or replace float react area with name. */
-	public func void setAt( String name, FloatRectArea area )
-		this.pMap.setAt( name, area )
+	public func void setAt(String name, FloatRectArea area)
+		pMap.setAt(name, area)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pMap.removeAll()
-		( value cast Dictionary ).forEach( block String key, FloatRectArea value
-			this.pMap.setAt( key, value )
-		end )
+	public func void setValue(Object value)
+		pMap.removeAll()
+		(value cast Dictionary).forEach(block String key, FloatRectArea value
+			pMap.setAt(key, value)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pMap = (property cast ECPFloatRectAreaMap).pMap.map(block String key, FloatRectArea value
+			return FloatRectArea.new(value)
+		end)
 	end
 end

@@ -44,64 +44,72 @@ class ECPRig extends ElementClassProperty implements ResourceListener
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
+	public func new(String name) super(name)
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, String path ) super( name )
-		this.pPath = path
+	public func new(String name, String path) super(name)
+		pPath = path
 	end
 	
 	
 	
 	/** \brief Path to rig resource. */
 	public func String getPath()
-		return this.pPath
+		return pPath
 	end
 	
 	/** \brief Set path to rig resource. */
-	public func void setPath( String path )
-		this.pPath = path
+	public func void setPath(String path)
+		pPath = path
 	end
 	
 	/** \brief Rig resource or \em null if not present. */
 	public func Rig getRig()
-		return this.pRig
+		return pRig
 	end
 	
 	/** \brief Set rig resource or \em null if not present. */
-	public func void setRig( Rig rig )
-		this.pRig = rig
+	public func void setRig(Rig rig)
+		pRig = rig
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath = value cast String
+	public func void setValue(Object value)
+		pPath = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pPath = (property cast ECPRig).pPath
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
+		pHasPreloaded = true
 		
-		if this.pPath == null or this.pPath.empty()
+		if pPath == null or pPath.empty()
 			return
 		end
 		
-		Rig.loadAsynchron( File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath(), this )
-		this.pCounter = counter
+		Rig.loadAsynchron(File.absolutePath(pPath, elementClass.getBasePath()).getPath(), this)
+		pCounter = counter
 		counter.increase()
 	end
 	
@@ -109,11 +117,11 @@ class ECPRig extends ElementClassProperty implements ResourceListener
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pPath != null and not this.pPath.empty() and this.pRig == null
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Failed loading rig " \
-				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pPath != null and not pPath.empty() and pRig == null
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Failed loading rig " \
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
 			return true
 		end
 		return false
@@ -122,14 +130,14 @@ class ECPRig extends ElementClassProperty implements ResourceListener
 	
 	
 	/** \brief Resource has finished loading. */
-	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
-		this.pRig = resource cast Rig
-		this.pCounter.decrease()
+	public func void finishedLoading(String path, ResourceLoaderType resourceType, Object resource)
+		pRig = resource cast Rig
+		pCounter.decrease()
 	end
 	
 	/** \brief Resource failed loading. */
-	public func void failedLoading( String filename, ResourceLoaderType resourceType )
-		this.pCounter.decrease()
+	public func void failedLoading(String filename, ResourceLoaderType resourceType)
+		pCounter.decrease()
 	end
 	
 	
@@ -140,17 +148,17 @@ class ECPRig extends ElementClassProperty implements ResourceListener
 	 * If named stub property is not present or empty string the stored rig is returned.
 	 * If the named stub property is present it is loaded as rig resource.
 	 */
-	public func Rig getRig( StubWithProperties stub, ElementClass eclass )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Rig getRig(StubWithProperties stub, ElementClass eclass)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pRig
+			return pRig
 			
 		else
 			try
-				return Rig.new( value )
+				return Rig.new(value)
 				
 			catch Exception e
-				throw ELoadResourceFailed.new( value, eclass.getClassname() )
+				throw ELoadResourceFailed.new(value, eclass.getClassname())
 			end
 		end
 	end

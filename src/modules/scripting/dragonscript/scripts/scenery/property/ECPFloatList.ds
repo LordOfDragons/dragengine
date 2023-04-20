@@ -31,105 +31,104 @@ pin Dragengine.Utils
  * \brief Floating point list value element class property for use with XML loading.
  */
 class ECPFloatList extends ElementClassProperty
-	/** \brief Values as array of float. */
 	private var Array pValues
-	
-	/** \brief Enable lower limit. */
 	private var bool pEnableLimitLower
-	
-	/** \brief Lower limit. */
 	private var float pLimitLower
-	
-	/** \brief Enable upper limit. */
 	private var bool pEnableLimitUpper
-	
-	/** \brief Upper limit. */
 	private var float pLimitUpper
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pValues = Array.new()
-		this.pEnableLimitLower = false
-		this.pLimitLower = 0.0
-		this.pEnableLimitUpper = false
-		this.pLimitUpper = 1.0
+	public func new(String name) super(name)
+		pValues = Array.new()
+		pEnableLimitLower = false
+		pLimitLower = 0
+		pEnableLimitUpper = false
+		pLimitUpper = 1
 	end
 	
 	
 	
 	/** \brief Values as array of float. */
 	public func Array getValues()
-		return this.pValues
+		return pValues
 	end
 	
 	/** \brief Set values as array of float. */
-	public func void setValues( Array values )
-		this.pValues = Array.new( values )
+	public func void setValues(Array values)
+		pValues = Array.new(values)
 	end
 	
 	/** \brief Enable lower limit. */
 	public func bool getEnableLimitLower()
-		return this.pEnableLimitLower
+		return pEnableLimitLower
 	end
 	
 	/** \brief Set enable lower limit. */
-	public func void setEnableLimitLower( bool enable )
-		this.pEnableLimitLower = enable
+	public func void setEnableLimitLower(bool enable)
+		pEnableLimitLower = enable
 	end
 	
 	/** \brief Lower limit. */
 	public func float getLimitLower()
-		return this.pLimitLower
+		return pLimitLower
 	end
 	
 	/** \brief Set lower limit. */
-	public func void setLimitLower( float limit )
-		this.pLimitLower = limit
+	public func void setLimitLower(float limit)
+		pLimitLower = limit
 	end
 	
 	/** \brief Enable upper limit. */
 	public func bool getEnableLimitUpper()
-		return this.pEnableLimitUpper
+		return pEnableLimitUpper
 	end
 	
 	/** \brief Set enable upper limit. */
-	public func void setEnableLimitUpper( bool enable )
-		this.pEnableLimitUpper = enable
+	public func void setEnableLimitUpper(bool enable)
+		pEnableLimitUpper = enable
 	end
 	
 	/** \brief Upper limit. */
 	public func float getLimitUpper()
-		return this.pLimitUpper
+		return pLimitUpper
 	end
 	
 	/** \brief Set upper limit. */
-	public func void setLimitUpper( float limit )
-		this.pLimitUpper = limit
+	public func void setLimitUpper(float limit)
+		pLimitUpper = limit
 	end
 	
 	/** \brief Set limits. */
-	public func void setLimits( bool enableLower, float limitLower, bool enableUpper, float limitUpper )
-		this.pEnableLimitLower = enableLower
-		this.pLimitLower = limitLower
-		this.pEnableLimitUpper = enableUpper
-		this.pLimitUpper = limitUpper
+	public func void setLimits(bool enableLower, float limitLower, bool enableUpper, float limitUpper)
+		pEnableLimitLower = enableLower
+		pLimitLower = limitLower
+		pEnableLimitUpper = enableUpper
+		pLimitUpper = limitUpper
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValues.removeAll()
-		( value cast Array ).forEach( block float each
-			if this.pEnableLimitUpper
-				each = DEMath.min( each, this.pLimitUpper )
+	public func void setValue(Object value)
+		pValues.removeAll()
+		(value cast Array).forEach(block float each
+			if pEnableLimitUpper
+				each = DEMath.min(each, pLimitUpper)
 			end
-			if this.pEnableLimitLower
-				each = DEMath.max( each, this.pLimitLower )
+			if pEnableLimitLower
+				each = DEMath.max(each, pLimitLower)
 			end
-			this.pValues.add( each )
-		end )
+			pValues.add(each)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pValues = Array.new((property cast ECPFloatList).pValues)
 	end
 end

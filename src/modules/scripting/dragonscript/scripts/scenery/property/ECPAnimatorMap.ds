@@ -46,118 +46,126 @@ class ECPAnimatorMap extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, LoadAnimator loader ) super( name )
-		this.pLoader = loader
-		this.pPath = Dictionary.new()
-		this.pAnimators = Dictionary.new()
+	public func new(String name, LoadAnimator loader) super(name)
+		pLoader = loader
+		pPath = Dictionary.new()
+		pAnimators = Dictionary.new()
 	end
 	
 	/** \brief Dispose of element class property to break reference loops. */
 	public func void dispose()
-		this.pAnimators = null
+		pAnimators = null
 	end
 	
 	
 	
 	/** \brief Animator loader. */
 	public func LoadAnimator getLoader()
-		return this.pLoader
+		return pLoader
 	end
 	
 	/** \brief Remove all path. */
 	public func void removeAllPath()
-		this.pPath.removeAll()
+		pPath.removeAll()
 	end
 	
 	/** \brief Set path to load for identifier. */
-	public func void setPathAt( String id, String path )
-		this.pPath.setAt( id, path )
+	public func void setPathAt(String id, String path)
+		pPath.setAt(id, path)
 	end
 	
 	
 	
 	/** \brief Number of animators. */
 	public func int getCount()
-		return this.pAnimators.getCount()
+		return pAnimators.getCount()
 	end
 	
 	/** \brief Animator with identifier or \em null if absent. */
-	public func Animator getAt( String id )
-		return this.pAnimators.getAt( id ) cast Animator
+	public func Animator getAt(String id)
+		return pAnimators.getAt(id) cast Animator
 	end
 	
 	/** \brief Visit animators with block with String id and Animator value. */
-	public func void forEach( Block ablock )
-		this.pAnimators.forEach( ablock )
+	public func void forEach(Block ablock)
+		pAnimators.forEach(ablock)
 	end
 	
 	/** \brief Remove all animators. */
 	public func void removeAll()
-		this.pAnimators.removeAll()
+		pAnimators.removeAll()
 	end
 	
 	/** \brief Set animator for identifier. */
-	public func void setAt( String id, Animator animator )
-		this.pAnimators.setAt( id, animator )
+	public func void setAt(String id, Animator animator)
+		pAnimators.setAt(id, animator)
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath.removeAll()
-		( value cast Dictionary ).forEach( block String id, String path
-			this.pPath.setAt( id, path )
-		end )
+	public func void setValue(Object value)
+		pPath.removeAll()
+		(value cast Dictionary).forEach(block String id, String path
+			pPath.setAt(id, path)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pPath = Dictionary.new((property cast ECPAnimatorMap).pPath)
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
-		this.pFailedLoading = null
-		this.pAnimators.removeAll()
+		pHasPreloaded = true
+		pFailedLoading = null
+		pAnimators.removeAll()
 		
 		var String realPath, basePath = elementClass.getBasePath()
 		
-		this.pPath.forEach( block String id, String path
+		pPath.forEach(block String id, String path
 			if path.empty()
 				return null
 			end
 			
-			realPath = File.absolutePath( path, basePath ).getPath()
+			realPath = File.absolutePath(path, basePath).getPath()
 			try
-				this.pAnimators.setAt( id, this.pLoader.loadFromFile( realPath ) )
+				pAnimators.setAt(id, pLoader.loadFromFile(realPath))
 				
 			catch Exception e
-				this.pFailedLoading.add( realPath )
+				pFailedLoading.add(realPath)
 			end
-		end )
+		end)
 	end
 	
 	/**
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pFailedLoading == null
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pFailedLoading == null
 			return false
 		end
 		
-		this.pFailedLoading.forEach( block String each
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Failed loading animator " + each )
-		end )
+		pFailedLoading.forEach(block String each
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Failed loading animator " + each)
+		end)
 		return true
 	end
 	
@@ -174,17 +182,17 @@ class ECPAnimatorMap extends ElementClassProperty
 	 * 
 	 * \returns Dictionary mapping String id to Animator.
 	 */
-	public func Dictionary getAnimators( StubWithProperties stub, CodecPropertyString codec )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Dictionary getAnimators(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return Dictionary.new( this.pAnimators )
+			return Dictionary.new(pAnimators)
 		end
 		
 		var Dictionary map = Dictionary.new()
-		codec.decodeStringList( value ).forEach( block String each
-			var Array parts = each.split( ':' )
-			map.setAt( parts.getAt( 0 ) cast String, this.pLoader.loadFromFile( parts.getAt( 1 ) cast String ) )
-		end )
+		codec.decodeStringList(value).forEach(block String each
+			var Array parts = each.split(':')
+			map.setAt(parts.getAt(0) cast String, pLoader.loadFromFile(parts.getAt(1) cast String))
+		end)
 		return map
 	end
 end

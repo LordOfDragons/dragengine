@@ -50,29 +50,29 @@ class BehaviorElementClass extends ElementClass
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new() this( "BehaviorElement", BaseGameApp.getApp().getLoaders() )
+	public func new() this("BehaviorElement", BaseGameApp.getApp().getLoaders())
 	end
 	
 	/** \brief Create element class. */
-	public func new( Loaders loaders ) this( "BehaviorElement", loaders )
+	public func new(Loaders loaders) this("BehaviorElement", loaders)
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders() )
+	public func new(String className) this(className, BaseGameApp.getApp().getLoaders())
 	end
 	
 	/** \brief Create element class. */
-	public func new( String className, Loaders loaders ) super( className )
-		this.pBehaviors = Array.new()
+	public func new(String className, Loaders loaders) super(className)
+		pBehaviors = Array.new()
 	end
 	
 	/** \brief Dispose of element class. */
 	public func void dispose()
-		if this.pBehaviors != null
-			this.pBehaviors.forEachReverse( block ECBehavior each
+		if pBehaviors != null
+			pBehaviors.forEachReverse(block ECBehavior each
 				each.dispose()
-			end )
-			this.pBehaviors = null
+			end)
+			pBehaviors = null
 		end
 		
 		super.dispose()
@@ -82,12 +82,12 @@ class BehaviorElementClass extends ElementClass
 	
 	/** \brief Number of behaviors. */
 	public func int getBehaviorCount()
-		return this.pBehaviors.getCount()
+		return pBehaviors.getCount()
 	end
 	
 	/** \brief Behavior at index. */
-	public func ECBehavior getBehaviorAt( int index )
-		return this.pBehaviors.getAt( index ) cast ECBehavior
+	public func ECBehavior getBehaviorAt(int index)
+		return pBehaviors.getAt(index) cast ECBehavior
 	end
 	
 	/**
@@ -96,14 +96,14 @@ class BehaviorElementClass extends ElementClass
 	 * This is called by constructors of class implementing ECBehavior. Usually you do not
 	 * have to call this manually.
 	 */
-	public func void addBehavior( ECBehavior behavior )
-		if behavior == null or this.pBehaviors.has( behavior )
+	public func void addBehavior(ECBehavior behavior)
+		if behavior == null or pBehaviors.has(behavior)
 			throw EInvalidParam.new()
 		end
 		
-		var int instanceIndex = this.pBehaviors.getCount()
-		this.pBehaviors.add( behavior )
-		behavior.assignInstanceIndex( instanceIndex )
+		var int instanceIndex = pBehaviors.getCount()
+		pBehaviors.add(behavior)
+		behavior.assignInstanceIndex(instanceIndex)
 	end
 	
 	/**
@@ -112,8 +112,8 @@ class BehaviorElementClass extends ElementClass
 	 * Block is required to have one parameter of type ECBehavior or subclass thereof.
 	 * Block is called only for behaviors castable to block parameter type.
 	 */
-	public func void forEachBehavior( Block ablock )
-		this.pBehaviors.forEachCastable( ablock )
+	public func void forEachBehavior(Block ablock)
+		pBehaviors.forEachCastable(ablock)
 	end
 	
 	/**
@@ -123,8 +123,8 @@ class BehaviorElementClass extends ElementClass
 	 * true if the right behavior is found otherwise false. Block is called only for
 	 * behaviors castable to block parameter type.
 	 */
-	public func ECBehavior findBehavior( Block ablock )
-		return this.pBehaviors.findCastable( ablock ) cast ECBehavior
+	public func ECBehavior findBehavior(Block ablock)
+		return pBehaviors.findCastable(ablock) cast ECBehavior
 	end
 	
 	/**
@@ -135,8 +135,8 @@ class BehaviorElementClass extends ElementClass
 	 * true if the right behavior is found otherwise false. Block is called only for
 	 * behaviors castable to block parameter type.
 	 */
-	public func Array collectBehaviors( Block ablock )
-		return this.pBehaviors.collectCastable( ablock )
+	public func Array collectBehaviors(Block ablock)
+		return pBehaviors.collectCastable(ablock)
 	end
 	
 	
@@ -146,14 +146,14 @@ class BehaviorElementClass extends ElementClass
 	 * 
 	 * Block is required to have one parameter of type ECBehavior. For use by BehaviorElement.
 	 */
-	public func void forEachBehaviorDirect( Block ablock )
-		this.pBehaviors.forEach( ablock )
+	public func void forEachBehaviorDirect(Block ablock)
+		pBehaviors.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Create element instance. */
 	protected func Element createElement()
-		return BehaviorElement.new( this )
+		return BehaviorElement.new(this)
 	end
 end

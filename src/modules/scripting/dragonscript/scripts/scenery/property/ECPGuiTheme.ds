@@ -46,75 +46,83 @@ class ECPGuiTheme extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, LoadGuiTheme loader ) this( name, loader, null )
+	public func new(String name, LoadGuiTheme loader) this(name, loader, null)
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, LoadGuiTheme loader, String path ) super( name )
-		this.pLoader = loader
-		this.pPath = path
+	public func new(String name, LoadGuiTheme loader, String path) super(name)
+		pLoader = loader
+		pPath = path
 	end
 	
 	
 	
 	/** \brief GuiTheme loader. */
 	public func LoadGuiTheme getLoader()
-		return this.pLoader
+		return pLoader
 	end
 	
 	/** \brief Path to animator. */
 	public func String getPath()
-		return this.pPath
+		return pPath
 	end
 	
 	/** \brief Set path to animator. */
-	public func void setPath( String path )
-		this.pPath = path
+	public func void setPath(String path)
+		pPath = path
 	end
 	
 	/** \brief GuiTheme or \em null if not present. */
 	public func GuiTheme getGuiTheme()
-		return this.pGuiTheme
+		return pGuiTheme
 	end
 	
 	/** \brief Set animator or \em null if not present. */
-	public func void setGuiTheme( GuiTheme animator )
-		this.pGuiTheme = animator
+	public func void setGuiTheme(GuiTheme animator)
+		pGuiTheme = animator
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath = value cast String
+	public func void setValue(Object value)
+		pPath = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pPath = (property cast ECPGuiTheme).pPath
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
+		pHasPreloaded = true
 		
-		if this.pPath == null or this.pPath.empty()
+		if pPath == null or pPath.empty()
 			return
 		end
 		
-		var String path = File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath()
+		var String path = File.absolutePath(pPath, elementClass.getBasePath()).getPath()
 		
 		try
-			this.pGuiTheme = this.pLoader.loadFromFile( path )
+			pGuiTheme = pLoader.loadFromFile(path)
 			
 		catch Exception e
-			this.pException = e
+			pException = e
 		end
 	end
 	
@@ -122,17 +130,17 @@ class ECPGuiTheme extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pPath != null and not this.pPath.empty() and this.pGuiTheme == null
-			var String message = "Property {}.{}: Failed loading gui theme {}".format( \
-				Array.newWith( elementClass.getClassname(), this.getName(), \
-					File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() ) )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pPath != null and not pPath.empty() and pGuiTheme == null
+			var String message = "Property {}.{}: Failed loading gui theme {}".format(\
+				Array.newWith(elementClass.getClassname(), getName(), \
+					File.absolutePath(pPath, elementClass.getBasePath()).getPath()))
 			
-			if this.pException != null
-				console.addError( message, this.pException )
+			if pException != null
+				console.addError(message, pException)
 				
 			else
-				console.addMessage( message )
+				console.addMessage(message)
 			end
 			return true
 		end
@@ -147,17 +155,17 @@ class ECPGuiTheme extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored animator is returned.
 	 * If the named stub property is present it is loaded as animator resource.
 	 */
-	public func GuiTheme getGuiTheme( StubWithProperties stub, ElementClass eclass )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func GuiTheme getGuiTheme(StubWithProperties stub, ElementClass eclass)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pGuiTheme
+			return pGuiTheme
 		end
 		
 		try
-			return this.pLoader.loadFromFile( value )
+			return pLoader.loadFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new( value, eclass.getClassname() + "(" + e + ")" )
+			throw ELoadResourceFailed.new(value, eclass.getClassname() + "(" + e + ")")
 		end
 	end
 end

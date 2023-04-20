@@ -32,71 +32,78 @@ pin Dragengine.Utils
  * \brief List of string values class property for use with XML loading.
  */
 class ECPStringList extends ElementClassProperty
-	/** \brief List of strings (Array of String). */
 	private var Array pStrings
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pStrings = Array.new()
+	public func new(String name) super(name)
+		pStrings = Array.new()
 	end
 	
 	
 	
 	/** \brief Number of strings. */
 	public func int getCount()
-		return this.pStrings.getCount()
+		return pStrings.getCount()
 	end
 	
 	/** \brief String at index. */
-	public func String getAt( int index )
-		return this.pStrings.getAt( index ) cast String
+	public func String getAt(int index)
+		return pStrings.getAt(index) cast String
 	end
 	
 	/** \brief Index of first string or -1 if absent. */
-	public func int indexOf( String string )
-		return this.pStrings.indexOf( string )
+	public func int indexOf(String string)
+		return pStrings.indexOf(string)
 	end
 	
 	/** \brief String is present. */
-	public func bool has( String string )
-		return this.pStrings.has( string )
+	public func bool has(String string)
+		return pStrings.has(string)
 	end
 	
 	/** \brief Get random string or \em null if no strings are present. */
 	public func String getRandom()
-		if this.pStrings.getCount() == 0
+		if pStrings.getCount() == 0
 			return null
 			
 		else
-			return this.pStrings.random() cast String
+			return pStrings.random() cast String
 		end
 	end
 	
 	/** \brief For each string with block with String as parameter. */
-	public func void forEach( Block ablock )
-		this.pStrings.forEach( ablock )
+	public func void forEach(Block ablock)
+		pStrings.forEach(ablock)
 	end
 	
 	/** \brief Remove all strings. */
 	public func void removeAll()
-		this.pStrings.removeAll()
+		pStrings.removeAll()
 	end
 	
 	/** \brief Add string. */
-	public func void add( String string )
-		this.pStrings.add( string )
+	public func void add(String string)
+		pStrings.add(string)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pStrings.removeAll()
-		( value cast Array ).forEach( block String each
-			this.pStrings.add( each )
-		end )
+	public func void setValue(Object value)
+		pStrings.removeAll()
+		(value cast Array).forEach(block String each
+			pStrings.add(each)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pStrings = Array.new((property cast ECPStringList).pStrings)
 	end
 	
 	
@@ -109,13 +116,13 @@ class ECPStringList extends ElementClassProperty
 	 * 
 	 * - "string1 string2 ... stringN"
 	 */
-	public func Array getList( StubWithProperties stub, CodecPropertyString codec )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Array getList(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pStrings
+			return pStrings
 			
 		else
-			return codec.decodeStringList( value )
+			return codec.decodeStringList(value)
 		end
 	end
 end

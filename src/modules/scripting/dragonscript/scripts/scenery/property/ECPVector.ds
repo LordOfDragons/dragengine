@@ -34,7 +34,6 @@ pin Dragengine.Preloading
  * Vector is stored as Vector instance.
  */
 class ECPVector extends ElementClassProperty
-	/** \brief Vector. */
 	private var Vector pVector
 	
 	
@@ -88,5 +87,13 @@ class ECPVector extends ElementClassProperty
 		else
 			return codec.decodeVector(value)
 		end
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pVector = (property cast ECPVector).pVector
 	end
 end

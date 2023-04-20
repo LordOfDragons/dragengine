@@ -31,32 +31,39 @@ pin Dragengine.Utils
  * \brief Float rect area value element class property for use with XML loading.
  */
 class ECPFloatRectArea extends ElementClassProperty
-	/** \brief Value. */
 	private var FloatRectArea pValue
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name, FloatRectArea value ) super( name )
-		this.pValue = value
+	public func new(String name, FloatRectArea value) super(name)
+		pValue = value
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func FloatRectArea getFloatRectArea()
-		return this.pValue
+		return pValue
 	end
 	
 	/** \brief Set value. */
-	public func void setFloatRectArea( FloatRectArea area )
-		this.pValue = area
+	public func void setFloatRectArea(FloatRectArea area)
+		pValue = area
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValue = value cast FloatRectArea
+	public func void setValue(Object value)
+		pValue = value cast FloatRectArea
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pValue = FloatRectArea.new((property cast ECPFloatRectArea).pValue)
 	end
 end

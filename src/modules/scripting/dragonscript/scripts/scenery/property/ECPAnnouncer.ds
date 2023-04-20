@@ -47,73 +47,81 @@ class ECPAnnouncer extends ElementClassProperty implements PreloadListener
 	
 	
 	/** \brief Create property. */
-	public func new( String name, LoadAnnouncer loader ) this( name, loader, null )
+	public func new(String name, LoadAnnouncer loader) this(name, loader, null)
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, LoadAnnouncer loader, String path ) super( name )
-		this.pLoader = loader
-		this.pPath = path
+	public func new(String name, LoadAnnouncer loader, String path) super(name)
+		pLoader = loader
+		pPath = path
 	end
 	
 	
 	
 	/** \brief Announcer loader. */
 	public func LoadAnnouncer getLoader()
-		return this.pLoader
+		return pLoader
 	end
 	
 	/** \brief Path to announcer. */
 	public func String getPath()
-		return this.pPath
+		return pPath
 	end
 	
 	/** \brief Set path to announcer. */
-	public func void setPath( String path )
-		this.pPath = path
+	public func void setPath(String path)
+		pPath = path
 	end
 	
 	/** \brief Announcer or \em null if not present. */
 	public func Announcer getAnnouncer()
-		return this.pAnnouncer
+		return pAnnouncer
 	end
 	
 	/** \brief Set announcer or \em null if not present. */
-	public func void setAnnouncer( Announcer announcer )
-		this.pAnnouncer = announcer
+	public func void setAnnouncer(Announcer announcer)
+		pAnnouncer = announcer
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath = value cast String
+	public func void setValue(Object value)
+		pPath = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pPath = (property cast ECPAnnouncer).pPath
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
+		pHasPreloaded = true
 		
-		if this.pPath == null or this.pPath.empty()
+		if pPath == null or pPath.empty()
 			return
 		end
 		
-		var String path = File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath()
+		var String path = File.absolutePath(pPath, elementClass.getBasePath()).getPath()
 		
 		try
-			var PreloadAnnouncer preloader = this.pLoader.loadFromFileAsync( path, counter )
-			preloader.addListener( this )
+			var PreloadAnnouncer preloader = pLoader.loadFromFileAsync(path, counter)
+			preloader.addListener(this)
 			preloader.checkFinished()
 			
 		catch Exception e
@@ -124,11 +132,11 @@ class ECPAnnouncer extends ElementClassProperty implements PreloadListener
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pFailed
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Failed loading announcer " \
-				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pFailed
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Failed loading announcer " \
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
 			return true
 		end
 		return false
@@ -137,16 +145,16 @@ class ECPAnnouncer extends ElementClassProperty implements PreloadListener
 	
 	
 	/** \brief One or more resources finished preloading but not all yet. */
-	public func void resourcesFinished( Preloader preloader )
+	public func void resourcesFinished(Preloader preloader)
 	end
 	
 	/** \brief Preloading of all resources finished.  */
-	public func void preloadingFinished( Preloader preloader, bool success )
+	public func void preloadingFinished(Preloader preloader, bool success)
 		if success
-			this.pAnnouncer = ( preloader cast PreloadAnnouncer ).getAnnouncer()
+			pAnnouncer = (preloader cast PreloadAnnouncer).getAnnouncer()
 			
 		else
-			this.pFailed = true
+			pFailed = true
 		end
 	end
 	
@@ -158,17 +166,17 @@ class ECPAnnouncer extends ElementClassProperty implements PreloadListener
 	 * If named stub property is not present or empty string the stored announcer is returned.
 	 * If the named stub property is present it is loaded as announcer resource.
 	 */
-	public func Announcer getAnnouncer( StubWithProperties stub, ElementClass eclass )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Announcer getAnnouncer(StubWithProperties stub, ElementClass eclass)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pAnnouncer
+			return pAnnouncer
 		end
 		
 		try
-			return this.pLoader.loadFromFile( value )
+			return pLoader.loadFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new( value, eclass.getClassname() )
+			throw ELoadResourceFailed.new(value, eclass.getClassname())
 		end
 	end
 end

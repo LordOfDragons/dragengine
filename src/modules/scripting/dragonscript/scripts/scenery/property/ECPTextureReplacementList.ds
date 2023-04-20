@@ -113,6 +113,14 @@ class ECPTextureReplacementList extends ElementClassProperty implements Resource
 		end)
 	end
 	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pList = TextureReplacementList.new((property cast ECPTextureReplacementList).pList)
+	end
+	
 	
 	
 	/** \brief Preload resources if supported. */

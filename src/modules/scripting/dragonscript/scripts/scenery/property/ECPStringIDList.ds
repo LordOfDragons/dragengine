@@ -32,61 +32,68 @@ pin Dragengine.Preloading
  * \brief List of string identifier values class property for use with XML loading.
  */
 class ECPStringIDList extends ElementClassProperty
-	/** \brief List of strings (Array of StringID). */
 	private var Array pStringIDs
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pStringIDs = Array.new()
+	public func new(String name) super(name)
+		pStringIDs = Array.new()
 	end
 	
 	
 	
 	/** \brief Number of string identifiers. */
 	public func int getCount()
-		return this.pStringIDs.getCount()
+		return pStringIDs.getCount()
 	end
 	
 	/** \brief String identifier at index. */
-	public func StringID getAt( int index )
-		return this.pStringIDs.getAt( index ) cast StringID
+	public func StringID getAt(int index)
+		return pStringIDs.getAt(index) cast StringID
 	end
 	
 	/** \brief Get random string identifier or \em null if no string identifiers are present. */
 	public func StringID getRandom()
-		if this.pStringIDs.getCount() == 0
+		if pStringIDs.getCount() == 0
 			return null
 			
 		else
-			return this.pStringIDs.random() cast StringID
+			return pStringIDs.random() cast StringID
 		end
 	end
 	
 	/** \brief For each string identifier with block with String as parameter. */
-	public func void forEach( Block ablock )
-		this.pStringIDs.forEach( ablock )
+	public func void forEach(Block ablock)
+		pStringIDs.forEach(ablock)
 	end
 	
 	/** \brief Remove all string identifiers. */
 	public func void removeAll()
-		this.pStringIDs.removeAll()
+		pStringIDs.removeAll()
 	end
 	
 	/** \brief Add string identifier. */
-	public func void add( StringID string )
-		this.pStringIDs.add( string )
+	public func void add(StringID string)
+		pStringIDs.add(string)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pStringIDs.removeAll()
-		( value cast Array ).forEach( block String each
-			this.pStringIDs.add( StringID.new( each ) )
-		end )
+	public func void setValue(Object value)
+		pStringIDs.removeAll()
+		(value cast Array).forEach(block String each
+			pStringIDs.add(StringID.new(each))
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pStringIDs = Array.new((property cast ECPStringIDList).pStringIDs)
 	end
 	
 	
@@ -99,15 +106,15 @@ class ECPStringIDList extends ElementClassProperty
 	 * 
 	 * - "id1 id2 ... idN"
 	 */
-	public func Array getList( StubWithProperties stub, CodecPropertyString codec )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Array getList(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pStringIDs
+			return pStringIDs
 			
 		else
-			return codec.decodeStringList( value ).map( block String each
-				return StringID.new( each )
-			end )
+			return codec.decodeStringList(value).map(block String each
+				return StringID.new(each)
+			end)
 		end
 	end
 end

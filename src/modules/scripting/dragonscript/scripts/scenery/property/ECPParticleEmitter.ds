@@ -45,72 +45,80 @@ class ECPParticleEmitter extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, LoadParticleEmitter loader ) super( name )
-		this.pLoader = loader
+	public func new(String name, LoadParticleEmitter loader) super(name)
+		pLoader = loader
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, LoadParticleEmitter loader, String path ) super( name )
-		this.pLoader = loader
-		this.pPath = path
+	public func new(String name, LoadParticleEmitter loader, String path) super(name)
+		pLoader = loader
+		pPath = path
 	end
 	
 	
 	
 	/** \brief Particle emitter loader. */
 	public func LoadParticleEmitter getLoader()
-		return this.pLoader
+		return pLoader
 	end
 	
 	/** \brief Path to particle emitter. */
 	public func String getPath()
-		return this.pPath
+		return pPath
 	end
 	
 	/** \brief Set path to particle emitter. */
-	public func void setPath( String path )
-		this.pPath = path
+	public func void setPath(String path)
+		pPath = path
 	end
 	
 	/** \brief ParticleEmitter or \em null if not present. */
 	public func ParticleEmitter getParticleEmitter()
-		return this.pParticleEmitter
+		return pParticleEmitter
 	end
 	
 	/** \brief Set particle emitter or \em null if not present. */
-	public func void setParticleEmitter( ParticleEmitter particleEmitter )
-		this.pParticleEmitter = particleEmitter
+	public func void setParticleEmitter(ParticleEmitter particleEmitter)
+		pParticleEmitter = particleEmitter
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath = value cast String
+	public func void setValue(Object value)
+		pPath = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pPath = (property cast ECPParticleEmitter).pPath
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
+		pHasPreloaded = true
 		
-		if this.pPath == null or this.pPath.empty()
+		if pPath == null or pPath.empty()
 			return
 		end
 		
 		try
-			this.pParticleEmitter = this.pLoader.loadFromFile( \
-				File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+			pParticleEmitter = pLoader.loadFromFile(\
+				File.absolutePath(pPath, elementClass.getBasePath()).getPath())
 			
 		catch Exception e
 		end
@@ -120,11 +128,11 @@ class ECPParticleEmitter extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pPath != null and not this.pPath.empty() and this.pParticleEmitter == null
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Failed loading particle emitter " \
-				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pPath != null and not pPath.empty() and pParticleEmitter == null
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Failed loading particle emitter " \
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
 			return true
 		end
 		return false

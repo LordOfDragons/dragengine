@@ -47,75 +47,83 @@ class ECPConversation extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, LoadConversation loader ) this( name, loader, null )
+	public func new(String name, LoadConversation loader) this(name, loader, null)
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, LoadConversation loader, String path ) super( name )
-		this.pLoader = loader
-		this.pPath = path
+	public func new(String name, LoadConversation loader, String path) super(name)
+		pLoader = loader
+		pPath = path
 	end
 	
 	
 	
 	/** \brief Conversation loader. */
 	public func LoadConversation getLoader()
-		return this.pLoader
+		return pLoader
 	end
 	
 	/** \brief Path to conversation. */
 	public func String getPath()
-		return this.pPath
+		return pPath
 	end
 	
 	/** \brief Set path to conversation. */
-	public func void setPath( String path )
-		this.pPath = path
+	public func void setPath(String path)
+		pPath = path
 	end
 	
 	/** \brief Conversation or \em null if not present. */
 	public func Conversation getConversation()
-		return this.pConversation
+		return pConversation
 	end
 	
 	/** \brief Set conversation or \em null if not present. */
-	public func void setConversation( Conversation conversation )
-		this.pConversation = conversation
+	public func void setConversation(Conversation conversation)
+		pConversation = conversation
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath = value cast String
+	public func void setValue(Object value)
+		pPath = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pPath = (property cast ECPConversation).pPath
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
+		pHasPreloaded = true
 		
-		if this.pPath == null or this.pPath.empty()
+		if pPath == null or pPath.empty()
 			return
 		end
 		
-		var String path = File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath()
+		var String path = File.absolutePath(pPath, elementClass.getBasePath()).getPath()
 		
 		try
-			this.pConversation = this.pLoader.loadFromFile( path )
+			pConversation = pLoader.loadFromFile(path)
 			
 		catch Exception e
-			this.pException = e
+			pException = e
 		end
 	end
 	
@@ -123,11 +131,11 @@ class ECPConversation extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pPath != null and not this.pPath.empty() and this.pConversation == null
-			console.addError( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Failed loading conversation " \
-				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath(), this.pException )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pPath != null and not pPath.empty() and pConversation == null
+			console.addError("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Failed loading conversation " \
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath(), pException)
 			return true
 		end
 		return false
@@ -141,17 +149,17 @@ class ECPConversation extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored conversation is
 	 * returned. If the named stub property is present it is loaded as conversation resource.
 	 */
-	public func Conversation getConversation( StubWithProperties stub, ElementClass eclass )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Conversation getConversation(StubWithProperties stub, ElementClass eclass)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pConversation
+			return pConversation
 		end
 		
 		try
-			return this.pLoader.loadFromFile( value )
+			return pLoader.loadFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new( value, eclass.getClassname() + ": " + e.getReason() )
+			throw ELoadResourceFailed.new(value, eclass.getClassname() + ": " + e.getReason())
 		end
 	end
 end

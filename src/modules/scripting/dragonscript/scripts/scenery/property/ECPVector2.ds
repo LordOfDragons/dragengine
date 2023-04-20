@@ -34,38 +34,45 @@ pin Dragengine.Preloading
  * Vector2 is stored as Vector2 instance.
  */
 class ECPVector2 extends ElementClassProperty
-	/** \brief Vector2. */
 	private var Vector2 pVector2
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pVector2 = Vector2.new()
+	public func new(String name) super(name)
+		pVector2 = Vector2.new()
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, Vector2 vector ) super( name )
-		this.pVector2 = vector
+	public func new(String name, Vector2 vector) super(name)
+		pVector2 = vector
 	end
 	
 	
 	
 	/** \brief Vector2. */
 	public func Vector2 getVector2()
-		return this.pVector2
+		return pVector2
 	end
 	
 	/** \brief Set vector. */
-	public func void setVector2( Vector2 vector )
-		this.pVector2 = vector
+	public func void setVector2(Vector2 vector)
+		pVector2 = vector
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.setVector2( value cast Vector2 )
+	public func void setValue(Object value)
+		setVector2(value cast Vector2)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pVector2 = (property cast ECPVector2).pVector2
 	end
 	
 	
@@ -80,13 +87,13 @@ class ECPVector2 extends ElementClassProperty
 	 * point values:
 	 * - "x y": Vector2.new(x, x)
 	 */
-	public func Vector2 getVector2( StubWithProperties stub, CodecPropertyString codec )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Vector2 getVector2(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pVector2
+			return pVector2
 			
 		else
-			return codec.decodeVector2( value )
+			return codec.decodeVector2(value)
 		end
 	end
 end

@@ -45,43 +45,43 @@ class IMMCameraSpotClass extends ElementClass
 	
 	
 	/** \brief Create element class. */
-	public func new( InteractiveMainMenu mainMenu ) \
-	this( mainMenu, "DE_IMM_CameraSpot" )
+	public func new(InteractiveMainMenu mainMenu) \
+	this(mainMenu, "DE_IMM_CameraSpot")
 	end
 	
 	/** \brief Create element class. */
-	public func new( InteractiveMainMenu mainMenu, String name ) super( name )
+	public func new(InteractiveMainMenu mainMenu, String name) super(name)
 		if mainMenu == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pMainMenu = mainMenu
+		pMainMenu = mainMenu
 		
-		this.pName = ECPString.new( "name", "" )
-		this.addProperty( this.pName )
+		pName = ECPString.new("name", "")
+		addProperty(pName)
 	end
 	
 	
 	
 	/** \brief Main menu. */
 	public func InteractiveMainMenu getMainMenu()
-		return this.pMainMenu
+		return pMainMenu
 	end
 	
 	/** \brief Name. */
 	public func ECPString getName()
-		return this.pName
+		return pName
 	end
 	
 	
 	
 	/** \brief Create IMMCameraSpotClass with different name. */
-	public func ElementClass duplicateNamed( String name )
-		return IMMCameraSpotClass.new( this.pMainMenu, name )
+	public func ElementClass duplicateNamed(String name)
+		return IMMCameraSpotClass.new(pMainMenu, name)
 	end
 	
 	/** \brief Create element instance. */
 	protected func Element createElement()
-		return IMMCameraSpot.new( this )
+		return IMMCameraSpot.new(this)
 	end
 end

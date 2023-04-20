@@ -46,72 +46,80 @@ class ECPStateMachine extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, LoadStateMachine loader ) this( name, loader, null )
+	public func new(String name, LoadStateMachine loader) this(name, loader, null)
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, LoadStateMachine loader, String path ) super( name )
-		this.pLoader = loader
-		this.pPath = path
+	public func new(String name, LoadStateMachine loader, String path) super(name)
+		pLoader = loader
+		pPath = path
 	end
 	
 	
 	
 	/** \brief StateMachine loader. */
 	public func LoadStateMachine getLoader()
-		return this.pLoader
+		return pLoader
 	end
 	
 	/** \brief Path to state machine. */
 	public func String getPath()
-		return this.pPath
+		return pPath
 	end
 	
 	/** \brief Set path to state machine. */
-	public func void setPath( String path )
-		this.pPath = path
+	public func void setPath(String path)
+		pPath = path
 	end
 	
 	/** \brief StateMachine or \em null if not present. */
 	public func StateMachine getStateMachine()
-		return this.pStateMachine
+		return pStateMachine
 	end
 	
 	/** \brief Set state machine or \em null if not present. */
-	public func void setStateMachine( StateMachine behaviorTree )
-		this.pStateMachine = behaviorTree
+	public func void setStateMachine(StateMachine behaviorTree)
+		pStateMachine = behaviorTree
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath = value cast String
+	public func void setValue(Object value)
+		pPath = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pPath = (property cast ECPStateMachine).pPath
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
+		pHasPreloaded = true
 		
-		if this.pPath == null or this.pPath.empty()
+		if pPath == null or pPath.empty()
 			return
 		end
 		
-		var String path = File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath()
+		var String path = File.absolutePath(pPath, elementClass.getBasePath()).getPath()
 		
 		try
-			this.pStateMachine = this.pLoader.loadFromFile( path )
+			pStateMachine = pLoader.loadFromFile(path)
 			
 		catch Exception e
 		end
@@ -121,11 +129,11 @@ class ECPStateMachine extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pPath != null and not this.pPath.empty() and this.pStateMachine == null
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Failed loading state machine " \
-				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pPath != null and not pPath.empty() and pStateMachine == null
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Failed loading state machine " \
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
 			return true
 		end
 		return false
@@ -139,17 +147,17 @@ class ECPStateMachine extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored state machine is
 	 * returned. If the named stub property is present it is loaded as state machine resource.
 	 */
-	public func StateMachine getStateMachine( StubWithProperties stub, ElementClass eclass )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func StateMachine getStateMachine(StubWithProperties stub, ElementClass eclass)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pStateMachine
+			return pStateMachine
 		end
 		
 		try
-			return this.pLoader.loadFromFile( value )
+			return pLoader.loadFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new( value, eclass.getClassname() )
+			throw ELoadResourceFailed.new(value, eclass.getClassname())
 		end
 	end
 end

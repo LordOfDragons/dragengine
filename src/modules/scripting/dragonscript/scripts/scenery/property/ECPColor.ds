@@ -40,32 +40,40 @@ class ECPColor extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pColor = Color.black
+	public func new(String name) super(name)
+		pColor = Color.black
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, Color color ) super( name )
-		this.pColor = color
+	public func new(String name, Color color) super(name)
+		pColor = color
 	end
 	
 	
 	
 	/** \brief Color. */
 	public func Color getColor()
-		return this.pColor
+		return pColor
 	end
 	
 	/** \brief Set color. */
-	public func void setColor( Color color )
-		this.pColor = color
+	public func void setColor(Color color)
+		pColor = color
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.setColor( value cast Color )
+	public func void setValue(Object value)
+		setColor(value cast Color)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pColor = (property cast ECPColor).pColor
 	end
 	
 	
@@ -81,13 +89,13 @@ class ECPColor extends ElementClassProperty
 	 * - "red green blue": Color.new(red, green, blue, 1)
 	 * - "red green blue alpha": Color.new(red, green, blue, alpha)
 	 */
-	public func Color getColor( StubWithProperties stub, CodecPropertyString codec )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Color getColor(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pColor
+			return pColor
 			
 		else
-			return codec.decodeColor4( value )
+			return codec.decodeColor4(value)
 		end
 	end
 end

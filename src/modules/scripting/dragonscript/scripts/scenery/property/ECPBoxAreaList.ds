@@ -52,38 +52,46 @@ class ECPBoxAreaList extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pBoxAreaList = BoxAreaList.new()
+	public func new(String name) super(name)
+		pBoxAreaList = BoxAreaList.new()
 	end
 	
 	/** \brief Create property with initial value. */
-	public func new( String name, BoxAreaList boxAreaList ) super( name )
-		this.pBoxAreaList = BoxAreaList.new( boxAreaList )
+	public func new(String name, BoxAreaList boxAreaList) super(name)
+		pBoxAreaList = BoxAreaList.new(boxAreaList)
 	end
 	
 	
 	
 	/** \brief Box area list. */
 	public func BoxAreaList getList()
-		return this.pBoxAreaList
+		return pBoxAreaList
 	end
 	
 	/** \brief Set box area list. */
-	public func void setList( BoxAreaList boxAreaList )
-		this.pBoxAreaList = BoxAreaList.new( boxAreaList )
+	public func void setList(BoxAreaList boxAreaList)
+		pBoxAreaList = BoxAreaList.new(boxAreaList)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClassProperty property)
+		pBoxAreaList = BoxAreaList.new((property cast ECPBoxAreaList).pBoxAreaList)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pBoxAreaList.removeAll()
+	public func void setValue(Object value)
+		pBoxAreaList.removeAll()
 		
-		( value cast Array ).forEach( block Dictionary each
-			this.pBoxAreaList.add( BoxArea.new( \
-				DVector.new( each.getAt( "position", Vector.new() ) cast Vector ), \
-				each.getAt( "extends", Vector.new() ) cast Vector, \
-				Quaternion.newFromEuler( each.getAt( "rotation", Vector.new() ) cast Vector ) ) )
-		end )
+		(value cast Array).forEach(block Dictionary each
+			pBoxAreaList.add(BoxArea.new(\
+				DVector.new(each.getAt("position", Vector.new()) cast Vector), \
+				each.getAt("extends", Vector.new()) cast Vector, \
+				Quaternion.newFromEuler(each.getAt("rotation", Vector.new()) cast Vector)))
+		end)
 	end
 end
