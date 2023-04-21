@@ -461,10 +461,14 @@ void deoglGIInstance::Clear(){
 	pRecheckDynamic = false;
 	
 	if( pComponent ){
-		pInstances.UnregisterElement( pComponent );
+		try{
+			pInstances.UnregisterElement( pComponent );
+		}catch( const deException &e ){
+			pComponent->GetRenderThread().GetLogger().LogException( e );
+		}
 		
 		pComponent->RemoveListener( ( deoglComponentListener* )( deObject* )pComponentListener );
-		pComponent = NULL;
+		pComponent = nullptr;
 		
 	}else if( pDecal ){
 		pDecal->RemoveListener( ( deoglDecalListener* )( deObject* )pDecalListener );
