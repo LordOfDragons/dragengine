@@ -51,6 +51,7 @@
 #include <dragengine/logger/deLoggerReference.h>
 #include <dragengine/filesystem/deVirtualFileSystemReference.h>
 #include <dragengine/resources/rig/deRigReference.h>
+#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/skin/deSkin.h>
 
 
@@ -120,6 +121,9 @@ private:
 	
 	static const int pStockSkinCount = igdeEnvironment::essEditRimOutline + 1;
 	deSkin::Ref pStockSkins[ pStockSkinCount ];
+	
+	static const int pStockRigCount = igdeEnvironment::esrGhostCollision + 1;
+	deRig::Ref pStockRigs[ pStockRigCount ];
 	
 	igdeActionReference pActionGameNew;
 	igdeActionReference pActionGameOpen;
@@ -425,6 +429,7 @@ public:
 	/*@{*/
 	igdeIcon *GetStockIcon( igdeEnvironment::eStockIcons icon ) const;
 	const deSkin::Ref &GetStockSkin( igdeEnvironment::eStockSkins skin ) const;
+	const deRig::Ref &GetStockRig( igdeEnvironment::eStockRigs rig ) const;
 	/*@}*/
 	
 	
@@ -463,6 +468,7 @@ private:
 	void pInitLogger();
 	void pLoadStockIcons();
 	void pLoadStockSkins();
+	void pLoadStockRigs();
 	void pCreateGuiThemes();
 	void pLoadIGDEGameDefinition();
 	void pAddIGDEEngineModules();

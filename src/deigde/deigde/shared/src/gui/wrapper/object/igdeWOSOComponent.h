@@ -27,8 +27,8 @@
 
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/resources/animator/deAnimatorInstanceReference.h>
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/component/deComponent.h>
 
 
 class deColliderAttachment;
@@ -43,11 +43,13 @@ class deAnimatorController;
 class DE_DLL_EXPORT igdeWOSOComponent : public igdeWOSubObject{
 private:
 	const igdeGDCComponent &pGDComponent;
-	deComponentReference pComponent;
-	deColliderReference pCollider;
+	deComponent::Ref pComponent;
+	deComponent::Ref pComponentSelect;
+	deColliderComponent::Ref pCollider;
+	deColliderComponent::Ref pColliderSelect;
 	igdeResourceLoaderListenerReference pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
 	deAnimatorInstanceReference pAnimator;
 	int pPlaybackControllerIndex;
@@ -77,10 +79,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
+	
+	/** \brief Component select. */
+	inline const deComponent::Ref &GetComponentSelect() const{ return pComponentSelect; }
 	
 	/** \brief Collider. */
-	inline deColliderComponent *GetCollider() const{ return ( deColliderComponent* )( deCollider* )pCollider; }
+	inline const deColliderComponent::Ref &GetCollider() const{ return pCollider; }
+	
+	/** \brief Select Collider. */
+	inline const deColliderComponent::Ref &GetColliderSelect() const{ return pColliderSelect; }
 	
 	/** \brief Animator. */
 	inline deAnimatorInstance *GetAnimator() const{ return pAnimator; }

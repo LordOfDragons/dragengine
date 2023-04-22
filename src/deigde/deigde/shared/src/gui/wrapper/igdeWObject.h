@@ -32,7 +32,8 @@
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decCollisionFilter.h>
 #include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkinReference.h>
 #include <dragengine/resources/world/deWorldReference.h>
@@ -53,8 +54,8 @@ class deBaseScriptingCollider;
 /**
  * \brief Object Wrapper.
  * 
- * Provides a simple way to display a object defined by a game definition object class in a world.
- * The object can be fine tuned using string properties.
+ * Provides a simple way to display a object defined by a game definition object class
+ * in a world. The object can be fine tuned using string properties.
  * 
  * These are the default layer masks set for a newly constructed igdeWObject:
  * - Render Layer Mask: 1 (Bit 0 set)
@@ -85,10 +86,11 @@ private:
 	deCameraReference pCamera;
 	igdeGDClassReference pGDClass;
 	
-	deColliderReference pColliderComponent;
-	deColliderReference pColliderFallback;
+	deColliderComponent::Ref pColliderComponent;
+	deColliderVolume::Ref pColliderFallback;
+	decObjectSet pCollidersSelection;
 	
-	deColliderReference pParentCollider;
+	deCollider::Ref pParentCollider;
 	decString pAttachToBone;
 	
 	decObjectOrderedSet pSubObjects;
@@ -108,6 +110,7 @@ private:
 	decCollisionFilter pCollisionFilterParticles;
 	decCollisionFilter pCollisionFilterForceField;
 	decCollisionFilter pCollisionFilterFallback;
+	decCollisionFilter pCollisionFilterSelect;
 	bool pDynamicCollider;
 	
 	bool pVisible;
@@ -260,6 +263,12 @@ public:
 	/** \brief Set collision filter fallback. */
 	void SetCollisionFilterFallback( const decCollisionFilter &collisionFilter );
 	
+	/** \brief Collision filter for selection. */
+	inline const decCollisionFilter &GetCollisionFilterSelect() const{ return pCollisionFilterSelect; }
+	
+	/** \brief Set collision filter for selection. */
+	void SetCollisionFilterSelect( const decCollisionFilter &collisionFilter );
+	
 	
 	
 	/** \brief Determines if the collider is allowed to be dynamic or always kinematic. */
@@ -309,14 +318,10 @@ public:
 	deComponent *GetComponent() const;
 	
 	/** \brief Collider component. */
-	inline deColliderComponent *GetColliderComponent() const{
-		return ( deColliderComponent* )( deCollider* )pColliderComponent;
-	}
+	inline const deColliderComponent::Ref &GetColliderComponent() const{ return pColliderComponent; }
 	
 	/** \brief Fallback collider volume. */
-	inline deColliderVolume *GetColliderFallback() const{
-		return ( deColliderVolume* )( deCollider* )pColliderFallback;
-	}
+	inline const deColliderVolume::Ref &GetColliderFallback() const{ return pColliderFallback; }
 	
 	/** \brief Set collider user pointer for all colliders used. */
 	void SetColliderUserPointer( void *userPointer );
@@ -412,6 +417,8 @@ public:
 	void SubObjectExtendsDirty();
 	void SetInteractCollider( deColliderComponent *collider );
 	inline deDynamicSkin *GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
+	void AddSelectCollider( deCollider *collider );
+	void RemoveSelectCollider( deCollider *collider );
 	/*@}*/
 	
 	

@@ -26,6 +26,7 @@
 
 #include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/rig/deRig.h>
 
 class igdeEngineController;
 class igdeFilePatternList;
@@ -191,6 +192,23 @@ public:
 		essEditRimOutline
 	};
 	
+	/** \brief Stock rigs. */
+	enum eStockRigs{
+		/**
+		 * \brief Model collision rig.
+		 * 
+		 * This rig uses model collision.
+		 */
+		esrModelCollision,
+		
+		/**
+		 * \brief Ghost collision rig.
+		 * 
+		 * This rig uses no collision.
+		 */
+		esrGhostCollision
+	};
+	
 	
 	
 protected:
@@ -228,6 +246,14 @@ public:
 	 * first time. If not available nullptr is returned.
 	 */
 	virtual deSkin::Ref GetStockSkin( eStockSkins skin ) = 0;
+	
+	/**
+	 * \brief Stock rig.
+	 * 
+	 * Stock rigs are only available after the engine controller has been started for the
+	 * first time. If not available nullptr is returned.
+	 */
+	virtual deRig::Ref GetStockRig( eStockRigs rig ) = 0;
 	
 	/** \brief Engine controller. */
 	virtual igdeEngineController *GetEngineController() = 0;

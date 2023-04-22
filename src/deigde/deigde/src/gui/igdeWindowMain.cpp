@@ -511,6 +511,7 @@ pTaskSyncGameDefinition( NULL )
 		
 		pCreateSharedModelCollisionRig();
 		pLoadStockSkins();
+		pLoadStockRigs();
 		
 		pAddIGDEEngineModules();
 		GetEngineController().ActivateModule( igdeEngineController::esScripting, "IGDEScript" );
@@ -1529,6 +1530,12 @@ const deSkin::Ref &igdeWindowMain::GetStockSkin( igdeEnvironment::eStockSkins sk
 	return pStockSkins[ skin ];
 }
 
+const deRig::Ref &igdeWindowMain::GetStockRig( igdeEnvironment::eStockRigs rig ) const{
+	DEASSERT_TRUE( rig >= 0 )
+	DEASSERT_TRUE( rig < pStockRigCount )
+	return pStockRigs[ rig ];
+}
+
 
 
 bool igdeWindowMain::CloseWindow(){
@@ -1813,6 +1820,15 @@ void igdeWindowMain::pLoadStockSkins(){
 		manager.LoadSkin( "/igde/materials/editing/rim.deskin", "/" ) );
 	pStockSkins[ igdeEnvironment::essEditRimOutline ].TakeOver(
 		manager.LoadSkin( "/igde/materials/editing/rimOutlined.deskin", "/" ) );
+}
+
+void igdeWindowMain::pLoadStockRigs(){
+	deRigManager &manager = *GetEngine()->GetRigManager();
+	
+	pStockRigs[ igdeEnvironment::esrModelCollision ].TakeOver(
+		manager.LoadRig( "/igde/models/modelCollision.derig", "/" ) );
+	pStockRigs[ igdeEnvironment::esrGhostCollision ].TakeOver(
+		manager.LoadRig( "/igde/models/ghostCollision.derig", "/" ) );
 }
 
 void igdeWindowMain::pCreateGuiThemes(){

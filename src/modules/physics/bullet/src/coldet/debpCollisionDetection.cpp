@@ -156,7 +156,7 @@ debpWorld &world, const decCollisionFilter &collisionFilter, deBaseScriptingColl
 		// bullet has a broken ray-box test implementation using Gjk which has a tendency
 		// to miss collisions half of the time. as a quick fix a sweep test is done with
 		// a tiny sphere which yields a comparable result but is not prone to the problem
-		const btQuaternion btQuaterion( ( btScalar )0.0, ( btScalar )0.0, ( btScalar )0.0, ( btScalar )1.0 );
+		const btQuaternion btQuaterion( BT_ZERO, BT_ZERO, BT_ZERO, BT_ONE );
 		const btTransform btTransformFrom( btQuaterion, btRayFrom );
 		const btTransform btTransformTo( btQuaterion, btRayTo );
 		

@@ -71,6 +71,9 @@ public:
 	/** \brief Retrieves a stock icon. */
 	virtual igdeIcon *GetStockIcon( eStockIcons icon );
 	
+	/** \brief Stock rig. */
+	virtual deRig::Ref GetStockRig( eStockRigs rig );
+	
 	/**
 	 * \brief Stock skin.
 	 * 

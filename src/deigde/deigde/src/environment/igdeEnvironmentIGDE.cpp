@@ -236,6 +236,10 @@ deSkin::Ref igdeEnvironmentIGDE::GetStockSkin( igdeEnvironment::eStockSkins skin
 	return pWindowMain->GetStockSkin( skin );
 }
 
+deRig::Ref igdeEnvironmentIGDE::GetStockRig( igdeEnvironment::eStockRigs rig ){
+	return pWindowMain->GetStockRig( rig );
+}
+
 deLogger *igdeEnvironmentIGDE::GetLogger(){
 	return pLogger;
 }

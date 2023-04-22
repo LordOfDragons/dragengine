@@ -298,7 +298,26 @@ pColliderAddedToWorld( false )
 	pCollider.TakeOver( GetEngine().GetColliderManager()->CreateColliderComponent() );
 	pCollider->SetEnabled( false );
 	pCollider->SetMass( wrapper.GetColliderFallback()->GetMass() );
+	
+	pColliderSelect.TakeOver( GetEngine().GetColliderManager()->CreateColliderComponent() );
+	pColliderSelect->SetEnabled( false );
+	pColliderSelect->SetResponseType( deCollider::ertKinematic );
+	
+	deColliderAttachment *attachment = nullptr;
+	try{
+		attachment = new deColliderAttachment( pColliderSelect );
+		attachment->SetAttachType( deColliderAttachment::eatRig );
+		pCollider->AddAttachment( attachment );
+		
+	}catch( const deException & ){
+		if( attachment ){
+			delete attachment;
+		}
+		throw;
+	}
+	
 	GetWrapper().GetWorld()->AddCollider( pCollider );
+	GetWrapper().GetWorld()->AddCollider( pColliderSelect );
 	pColliderAddedToWorld = true;
 	
 	UpdateCollisionFilter();
@@ -317,6 +336,7 @@ igdeWOSOComponent::~igdeWOSOComponent(){
 	pDestroyComponent();
 	
 	if( pColliderAddedToWorld ){
+		GetWrapper().GetWorld()->RemoveCollider( pColliderSelect );
 		GetWrapper().GetWorld()->RemoveCollider( pCollider );
 	}
 }
@@ -339,6 +359,7 @@ void igdeWOSOComponent::OnAllSubObjectsFinishedLoading(){
 void igdeWOSOComponent::UpdateVisibility(){
 	const bool visible = pIsVisible();
 	pCollider->SetEnabled( visible );
+	pColliderSelect->SetEnabled( visible );
 	if( pComponent ){
 		pComponent->SetVisible( visible );
 	}
@@ -362,6 +383,7 @@ void igdeWOSOComponent::UpdateLayerMasks(){
 
 void igdeWOSOComponent::UpdateCollisionFilter(){
 	pCollider->SetCollisionFilter( GetWrapper().GetCollisionFilter() );
+	pColliderSelect->SetCollisionFilter( GetWrapper().GetCollisionFilterSelect() );
 }
 
 void igdeWOSOComponent::UpdateGeometry(){
@@ -447,7 +469,8 @@ void igdeWOSOComponent::ResetPhysics(){
 	}
 	
 	// sync the collider bones to the component bones. this also resets linear and angular velocities
-	( ( deColliderComponent& )( deCollider& )pCollider ).CopyStatesFromComponent();
+	pCollider->CopyStatesFromComponent();
+	pCollider->AttachmentsForceUpdate();
 }
 
 void igdeWOSOComponent::ResetComponentTextures(){
@@ -602,13 +625,15 @@ void igdeWOSOComponent::pUpdateComponent(){
 	}
 	
 	if( pColliderCanInteract && ! GetWrapper().GetColliderComponent() ){
-		GetWrapper().SetInteractCollider( ( deColliderComponent* )( deCollider* )pCollider );
+		GetWrapper().SetInteractCollider( pCollider );
+		GetWrapper().AddSelectCollider( pColliderSelect );
 		pCollider->SetEnabled( pIsVisible() );
+		pColliderSelect->SetEnabled( pCollider->GetEnabled() );
 	}
 	
-	deModel *currentModel = NULL;
-	deSkin *currentSkin = NULL;
-	deRig *currentRig = NULL;
+	deModel *currentModel = nullptr;
+	deSkin *currentSkin = nullptr;
+	deRig *currentRig = nullptr;
 	
 	if( pComponent ){
 		currentModel = pComponent->GetModel();
@@ -625,6 +650,12 @@ void igdeWOSOComponent::pUpdateComponent(){
 		UpdateVisibility();
 	}
 	
+	if( ! pComponentSelect ){
+		pComponentSelect.TakeOver( GetEngine().GetComponentManager()->CreateComponent() );
+		pComponentSelect->SetHintMovement( pComponent->GetHintMovement() );
+		pComponentSelect->SetVisible( false );
+	}
+	
 	const bool modelChanged = model != currentModel;
 	const bool skinChanged = skin != currentSkin;
 	const bool rigChanged = rig != currentRig;
@@ -632,9 +663,10 @@ void igdeWOSOComponent::pUpdateComponent(){
 	// if the model, skin or rig changed the component has to be removed from certain
 	// places first to avoid problems
 	if( modelChanged || skinChanged || rigChanged ){
-		( ( deColliderComponent& )( deCollider& )pCollider ).SetComponent( NULL );
+		pCollider->SetComponent( nullptr );
+		pColliderSelect->SetComponent( nullptr );
 		if( pAnimator ){
-			pAnimator->SetComponent( NULL ); // otherwise the animator is not reset
+			pAnimator->SetComponent( nullptr ); // otherwise the animator is not reset
 		}
 	}
 	
@@ -643,6 +675,9 @@ void igdeWOSOComponent::pUpdateComponent(){
 	pComponent->SetRig( rig );
 	pComponent->SetOcclusionMesh( rl.GetOcclusionMesh() );
 	pComponent->SetAudioModel( rl.GetAudioModel() );
+	
+	pComponentSelect->SetModelAndSkin( model, skin );
+	pComponentSelect->SetRig( rig );
 	
 	pRenderEnvMap = GetBoolProperty(
 		pGDComponent.GetPropertyName( igdeGDCComponent::epRenderEnvMap ),
@@ -670,8 +705,8 @@ void igdeWOSOComponent::pUpdateComponent(){
 	
 	// assign component back to the places it has been previously been removed from
 	if( modelChanged || skinChanged || rigChanged ){
-		deColliderComponent &collider = ( deColliderComponent& )( deCollider& )pCollider;
-		collider.SetComponent( pComponent );
+		pCollider->SetComponent( pComponent );
+		pColliderSelect->SetComponent( pComponentSelect );
 		if( pAnimator ){
 			pAnimator->SetComponent( pComponent );
 		}
@@ -765,7 +800,8 @@ void igdeWOSOComponent::pUpdateComponent(){
 		pComponent->InvalidateBones();
 		pComponent->PrepareBones();
 		
-		( ( deColliderComponent& )( deCollider& )pCollider ).CopyStatesFromComponent();
+		pCollider->CopyStatesFromComponent();
+		pCollider->AttachmentsForceUpdate();
 	}
 	
 	// to be on the safe side the animator is always applied
@@ -881,30 +917,34 @@ void igdeWOSOComponent::pUpdateTextures(){
 }
 
 void igdeWOSOComponent::pDestroyComponent(){
-	if( ! pComponent ){
-		return;
+	if( pComponent ){
+		if( pCollider == GetWrapper().GetColliderComponent() ){
+			GetWrapper().SetInteractCollider( nullptr );
+			GetWrapper().RemoveSelectCollider( pColliderSelect );
+			pCollider->SetEnabled( false );
+			pColliderSelect->SetEnabled( false );
+		}
+		pColliderCanInteract = false;
+		
+		ClearBoxExtends();
+		DetachFromCollider();
+		pPlaybackControllerIndex = -1;
+		pAnimator = NULL;
+		pPathAnimator.Empty();
+		
+		if( pAddedToWorld ){
+			GetWrapper().GetWorld()->RemoveComponent( pComponent );
+			pAddedToWorld = false;
+		}
+		
+		pCollider->SetComponent( nullptr );
+		pComponent = nullptr;
 	}
 	
-	if( pCollider == GetWrapper().GetColliderComponent() ){
-		GetWrapper().SetInteractCollider( NULL );
-		pCollider->SetEnabled( false );
+	if( pComponentSelect ){
+		pColliderSelect->SetComponent( nullptr );
+		pComponentSelect = nullptr;
 	}
-	pColliderCanInteract = false;
-	
-	ClearBoxExtends();
-	DetachFromCollider();
-	pPlaybackControllerIndex = -1;
-	pAnimator = NULL;
-	pPathAnimator.Empty();
-	
-	if( pAddedToWorld ){
-		GetWrapper().GetWorld()->RemoveComponent( pComponent );
-		pAddedToWorld = false;
-	}
-	
-	( ( deColliderComponent& )( deCollider& )pCollider ).SetComponent( NULL );
-	
-	pComponent = NULL;
 }
 
 void igdeWOSOComponent::AttachToCollider(){
