@@ -98,8 +98,10 @@ class ECPBehaviorTree extends ElementClassProperty
 	 * \brief Copy value from another element class property of the same type.
 	 * \version 1.17
 	 */
-	public func void copyValue(ElementClassProperty property)
-		pPath = (property cast ECPBehaviorTree).pPath
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		if pPath != null and not pPath.empty()
+			pPath = File.absolutePath((property cast ECPBehaviorTree).pPath, elementClass.getBasePath()).getPath()
+		end
 	end
 	
 	

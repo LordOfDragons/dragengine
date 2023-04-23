@@ -98,8 +98,10 @@ class ECPParticleEmitter extends ElementClassProperty
 	 * \brief Copy value from another element class property of the same type.
 	 * \version 1.17
 	 */
-	public func void copyValue(ElementClassProperty property)
-		pPath = (property cast ECPParticleEmitter).pPath
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		if pPath != null and not pPath.empty()
+			pPath = File.absolutePath((property cast ECPParticleEmitter).pPath, elementClass.getBasePath()).getPath()
+		end
 	end
 	
 	

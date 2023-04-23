@@ -352,7 +352,7 @@ void meViewEditorSelect::pUpdateInfoBubble( int x, int y ){
 		pInfoBubbleText->SetSize( textSize );
 		pInfoBubble->GetCanvasContent()->SetSize( textSize );
 		
-		pInfoBubble->ShowAt( decPoint( x + 16, y ), meInfoBubble::epTopRight );
+		pInfoBubble->ShowAt( decPoint( x + 32, y ), meInfoBubble::epTopRight );
 		
 	}else{
 		pInfoBubble->Hide();

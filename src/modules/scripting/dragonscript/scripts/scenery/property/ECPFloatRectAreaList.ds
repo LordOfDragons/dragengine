@@ -91,7 +91,7 @@ class ECPFloatRectAreaList extends ElementClassProperty
 	 * \brief Copy value from another element class property of the same type.
 	 * \version 1.17
 	 */
-	public func void copyValue(ElementClassProperty property)
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
 		pFloatRectAreas = (property cast ECPFloatRectAreaList).pFloatRectAreas.map(block FloatRectArea each
 			return FloatRectArea.new(each)
 		end)

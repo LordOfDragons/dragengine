@@ -72,7 +72,7 @@ class ECPColor extends ElementClassProperty
 	 * \brief Copy value from another element class property of the same type.
 	 * \version 1.17
 	 */
-	public func void copyValue(ElementClassProperty property)
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
 		pColor = (property cast ECPColor).pColor
 	end
 	

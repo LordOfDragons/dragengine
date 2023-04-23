@@ -274,7 +274,7 @@ class ElementClass implements ResourceListener
 	 */
 	public func void copyPropertyValues(ElementClass eclass)
 		eclass.pProperties.forEach(block String name, ElementClassProperty property
-			(pProperties.getAt(name) cast ElementClassProperty).copyValue(property)
+			(pProperties.getAt(name) cast ElementClassProperty).copyValue(eclass, property)
 		end)
 	end
 	

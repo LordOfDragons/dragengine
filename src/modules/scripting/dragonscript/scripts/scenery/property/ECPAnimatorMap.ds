@@ -120,8 +120,11 @@ class ECPAnimatorMap extends ElementClassProperty
 	 * \brief Copy value from another element class property of the same type.
 	 * \version 1.17
 	 */
-	public func void copyValue(ElementClassProperty property)
-		pPath = Dictionary.new((property cast ECPAnimatorMap).pPath)
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		var String basePath = elementClass.getBasePath()
+		pPath = (property cast ECPAnimatorMap).pPath.map(block String id, String path
+			return not path.empty() if File.absolutePath(path, basePath).getPath() else null
+		end)
 	end
 	
 	
