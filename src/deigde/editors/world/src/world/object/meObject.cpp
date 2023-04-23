@@ -201,8 +201,8 @@ pWOAsyncFinished( *this )
 		collisionCategory.SetBit( meWorld::eclmObjects );
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
 		collisionFilter.SetBit( meWorld::eclmParticles );
+		collisionFilter.SetBit( meWorld::eclmEditing );
 		
 		pWObject->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
 		
@@ -228,7 +228,7 @@ pWOAsyncFinished( *this )
 		
 		pWObject->SetCollisionFilterForceFields( decCollisionFilter( collisionCategory, collisionFilter ) );
 		
-		// collision filter fallback
+		// collision filter fallback and selection
 		collisionCategory = decLayerMask();
 		collisionCategory.SetBit( meWorld::eclmObjects );
 		
@@ -236,6 +236,7 @@ pWOAsyncFinished( *this )
 		collisionFilter.SetBit( meWorld::eclmEditing );
 		
 		pWObject->SetCollisionFilterFallback( decCollisionFilter( collisionCategory, collisionFilter ) );
+		// pWObject->SetCollisionFilterInteract( decCollisionFilter( collisionCategory, collisionFilter ) );
 		
 		// other parameters
 		pWObject->SetRenderEnvMapMask( 1 << meWorld::elmEnvMapProbes );

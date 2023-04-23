@@ -39,7 +39,7 @@ class deCollider;
 
 
 /**
- * \brief Closest element visitor.
+ *  Closest element visitor.
  *
  * Collision listener storing the closes hit element. In addition an object and decal can
  * be defined to ignore during testing. This avoids self-collision results.
@@ -71,10 +71,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/**  Create visitor. */
 	meCLClosestElement( meWorld &world );
 	
-	/** \brief Clean up visitor. */
+	/**  Clean up visitor. */
 	virtual ~meCLClosestElement();
 	/*@}*/
 	
@@ -82,36 +82,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set if height terrain are tested. */
+	/**  Set if height terrain are tested. */
 	void SetTestHeightTerrain( bool test );
 	
-	/** \brief Set if objects are tested. */
+	/**  Set if objects are tested. */
 	void SetTestObjects( bool test );
 	
-	/** \brief Set if decals are tested. */
+	/**  Set if decals are tested. */
 	void SetTestDecals( bool test );
 	
-	/** \brief Set if object snap points are tested. */
+	/**  Set if object snap points are tested. */
 	void SetTestSnapPoints( bool test );
 	
 	
 	
-	/** \brief Set decal to ignore or \em NULL. */
+	/**  Set decal to ignore or nullptr. */
 	void SetIgnoreDecal( meDecal *decal );
 	
-	/** \breif Object filter or \em NULL to not use filtering. */
+	/** \breif Object filter or nullptr to not use filtering. */
 	inline const meFilterObjects *GetFilterObjects() const{ return pFilterObjects; }
 	
-	/** \brief Set object filter or \em NULL to not use filtering. */
+	/**  Set object filter or nullptr to not use filtering. */
 	void SetFilterObjects( const meFilterObjects *filter );
 	
-	/** \brief List of objects to ignore. */
+	/**  List of objects to ignore. */
 	inline meObjectList &GetIgnoreObjects(){ return pIgnoreObjects; }
 	inline const meObjectList &GetIgnoreObjects() const{ return pIgnoreObjects; }
 	
 	
 	
-	/** \brief Reset visitor. */
+	/**  Reset visitor. */
 	void Reset();
 	
 	
@@ -119,22 +119,22 @@ public:
 	/** \breief Element has been hit. */
 	inline bool GetHasHit() const{ return pHasHit; }
 	
-	/** \brief Hit distance. */
+	/**  Hit distance. */
 	inline float GetHitDistance() const{ return pHitDistance; }
 	
-	/** \brief Hit normal. */
+	/**  Hit normal. */
 	inline const decVector &GetHitNormal() const{ return pHitNormal; }
 	
-	/** \brief Hit height terrain sector or \em NULL. */
+	/**  Hit height terrain sector or nullptr. */
 	inline meHeightTerrainSector *GetHitHTSector() const{ return pHitHTSector; }
 	
-	/** \brief Hit object or \em NULL. */
+	/**  Hit object or nullptr. */
 	inline meObject *GetHitObject() const{ return pHitObject; }
 	
-	/** \brief Hit decal or \em NULL. */
+	/**  Hit decal or nullptr. */
 	inline meDecal *GetHitDecal() const{ return pHitDecal; }
 	
-	/** \brief Hit object snap point or \em NULL. */
+	/**  Hit object snap point or nullptr. */
 	inline meObjectSnapPoint *GetHitSnapPoint() const{ return pHitSnapPoint; }
 	/*@}*/
 	
@@ -142,13 +142,13 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Collision response. */
+	/**  Collision response. */
 	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
 	
-	/** \brief Collider can hit another collider. */
+	/**  Collider can hit another collider. */
 	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
 	
-	/** \brief Collider changed. */
+	/**  Collider changed. */
 	virtual void ColliderChanged( deCollider *owner );
 	/*@}*/
 };

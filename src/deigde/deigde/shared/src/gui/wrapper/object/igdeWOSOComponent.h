@@ -44,9 +44,9 @@ class DE_DLL_EXPORT igdeWOSOComponent : public igdeWOSubObject{
 private:
 	const igdeGDCComponent &pGDComponent;
 	deComponent::Ref pComponent;
-	deComponent::Ref pComponentSelect;
+	deComponent::Ref pComponentInteraction;
 	deColliderComponent::Ref pCollider;
-	deColliderComponent::Ref pColliderSelect;
+	deColliderComponent::Ref pColliderInteraction;
 	igdeResourceLoaderListenerReference pResLoad;
 	bool pAddedToWorld;
 	deCollider::Ref pAttachedToCollider;
@@ -81,14 +81,14 @@ public:
 	/** \brief Component. */
 	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
-	/** \brief Component select. */
-	inline const deComponent::Ref &GetComponentSelect() const{ return pComponentSelect; }
+	/** \brief Component interaction. */
+	inline const deComponent::Ref &GetComponentInteraction() const{ return pComponentInteraction; }
 	
 	/** \brief Collider. */
 	inline const deColliderComponent::Ref &GetCollider() const{ return pCollider; }
 	
-	/** \brief Select Collider. */
-	inline const deColliderComponent::Ref &GetColliderSelect() const{ return pColliderSelect; }
+	/** \brief Interaction collider. */
+	inline const deColliderComponent::Ref &GetColliderInteraction() const{ return pColliderInteraction; }
 	
 	/** \brief Animator. */
 	inline deAnimatorInstance *GetAnimator() const{ return pAnimator; }

@@ -28,21 +28,26 @@
 #include "../meView3D.h"
 #include "../meWindowMain.h"
 #include "../../collisions/meCLSelect.h"
+#include "../../collisions/meCLClosestElement.h"
 #include "../../configuration/meConfiguration.h"
 #include "../../world/meCamera.h"
 #include "../../world/meWorld.h"
 #include "../../world/meWorldGuiParameters.h"
+#include "../../world/object/meObject.h"
+
+#include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/common/utils/decLayerMask.h>
-#include <dragengine/resources/collider/deColliderManager.h>
-#include <dragengine/resources/collider/deColliderVolume.h>
-#include <dragengine/resources/world/deWorld.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
-#include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/collider/deColliderManager.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/font/deFont.h>
+#include <dragengine/resources/font/deFontManager.h>
+#include <dragengine/resources/world/deWorld.h>
 
 
 
@@ -54,7 +59,8 @@
 
 meViewEditorSelect::meViewEditorSelect( meView3D &view ) :
 meViewEditorNavigation( view ),
-pCLSelect( NULL )
+pCLSelect( nullptr ),
+pCLClosest ( nullptr )
 {
 	pColVol.TakeOver( view.GetEngine()->GetColliderManager()->CreateColliderVolume() );
 	
@@ -67,8 +73,19 @@ pCLSelect( NULL )
 	pCanvasSelect->SetVisible( false );
 	view.AddCanvas( pCanvasSelect );
 	
+	pInfoBubble.TakeOver( new meInfoBubble( view ) );
+	
+	pInfoBubbleText.TakeOver( view.GetEngine()->GetCanvasManager()->CreateCanvasText() );
+	pInfoBubbleText->SetFont( deFont::Ref::New( view.GetEngine()->GetFontManager()->
+		LoadFont( "/igde/fonts/sans_10.defont", "/" ) ) );
+	pInfoBubbleText->SetFontSize( ( float )pInfoBubbleText->GetFont()->GetLineHeight() );
+	pInfoBubbleText->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
+	pInfoBubbleText->SetOrder( 0.0f );
+	pInfoBubble->GetCanvasContent()->AddCanvas( pInfoBubbleText );
+	
 	try{
 		pCLSelect = new meCLSelect( *view.GetWorld() );
+		pCLClosest = new meCLClosestElement( *view.GetWorld() );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -209,6 +226,7 @@ void meViewEditorSelect::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 		RayTestCollision( pCLSelect, rayPosition, rayDirection, decCollisionFilter( collisionCategory, collisionFilter ) );
 		pCLSelect->RunAction();
 		
+		pInfoBubble->Hide();
 		OnResize();
 	}
 }
@@ -220,7 +238,20 @@ void meViewEditorSelect::OnLeftMouseButtonRelease( int x, int y, bool shift, boo
 		pCLSelect->Reset();
 		
 		OnResize();
+		pUpdateInfoBubble( x, y );
 	}
+}
+
+void meViewEditorSelect::OnRightMouseButtonPress( int x, int y, bool shift, bool control ){
+	meViewEditorNavigation::OnRightMouseButtonPress( x, y, shift, control );
+	
+	pInfoBubble->Hide();
+}
+
+void meViewEditorSelect::OnRightMouseButtonRelease( int x, int y, bool shift, bool control ){
+	meViewEditorNavigation::OnRightMouseButtonRelease( x, y, shift, control );
+	
+	pUpdateInfoBubble( x, y );
 }
 
 void meViewEditorSelect::OnMouseMove( int x, int y, bool shift, bool control ){
@@ -241,6 +272,9 @@ void meViewEditorSelect::OnMouseMove( int x, int y, bool shift, bool control ){
 		}
 		
 		UpdateRectSelection();
+		
+	}else{
+		pUpdateInfoBubble( x, y );
 	}
 }
 
@@ -273,7 +307,54 @@ void meViewEditorSelect::pCleanUp(){
 		GetView().RemoveCanvas( pCanvasSelect );
 	}
 	
+	if( pCLClosest ){
+		delete pCLClosest;
+	}
 	if( pCLSelect ){
 		delete pCLSelect;
+	}
+}
+
+void meViewEditorSelect::pUpdateInfoBubble( int x, int y ){
+	if( GetDragLeftMouseButton() || GetDragRightMouseButton() || ! pCLClosest ){
+		return;
+	}
+	if( GetElementMode() != meWorldGuiParameters::eemObject ){
+		return;
+	}
+	
+	decLayerMask collisionCategory;
+	collisionCategory.SetBit( meWorld::eclmEditing );
+	
+	decLayerMask collisionFilter;
+	collisionFilter.SetBit( meWorld::eclmObjects );
+	
+	UpdateMatrices();
+	
+	pCLClosest->Reset();
+	
+	pCLClosest->SetTestObjects( true );
+	
+	meWorldGuiParameters &guiparams = GetWorldGuiParameters();
+	const decDVector rayPosition = GetMatrixView().GetPosition();
+	const decVector rayDirection = GetActiveCamera().GetDirectionFor(
+		GetViewWidth(), GetViewHeight(), x, y ) * guiparams.GetRectSelDistance();
+	RayTestCollision( pCLClosest, rayPosition, rayDirection,
+		decCollisionFilter( collisionCategory, collisionFilter ) );
+	
+	if( pCLClosest->GetHasHit() ){
+		const meObject &object = *pCLClosest->GetHitObject();
+		decString text;
+		text.Format( "%s (%s)", object.GetClassName().GetString(), object.GetID().ToHexString().GetString() );
+		const decPoint textSize( pInfoBubbleText->GetFont()->TextSize( text ) );
+		
+		pInfoBubbleText->SetText( text );
+		pInfoBubbleText->SetSize( textSize );
+		pInfoBubble->GetCanvasContent()->SetSize( textSize );
+		
+		pInfoBubble->ShowAt( decPoint( x + 16, y ), meInfoBubble::epTopRight );
+		
+	}else{
+		pInfoBubble->Hide();
 	}
 }

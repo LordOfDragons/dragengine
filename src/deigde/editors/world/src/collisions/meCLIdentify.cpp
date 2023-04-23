@@ -43,14 +43,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCLIdentify::meCLIdentify( meWorld *world ){
-	if( ! world ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pWorld = world;
-	pObject = NULL;
-	pDecal = NULL;
+meCLIdentify::meCLIdentify( meWorld &world ) :
+pWorld( world ),
+pObject( nullptr ),
+pDecal( nullptr ),
+pBestDistance( 0.0f ){
 }
 
 meCLIdentify::~meCLIdentify(){
@@ -62,16 +59,17 @@ meCLIdentify::~meCLIdentify(){
 ///////////////
 
 void meCLIdentify::Reset(){
-	pObject = NULL;
-	pDecal = NULL;
+	pObject = nullptr;
+	pDecal = nullptr;
+	pBestDistance = 0.0f;
 }
 
 bool meCLIdentify::HasObject() const{
-	return pObject != NULL;
+	return pObject != nullptr;
 }
 
 bool meCLIdentify::HasDecal() const{
-	return pDecal != NULL;
+	return pDecal != nullptr;
 }
 
 
@@ -79,22 +77,25 @@ bool meCLIdentify::HasDecal() const{
 // Notifications
 //////////////////
 
-void meCLIdentify::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
+void meCLIdentify::CollisionResponse( deCollider*, deCollisionInfo *info ){
 	if( info->IsCollider() ){
-		pObject = pGetObjectForCollider( info->GetCollider() );
+		meObject * const object = pGetObjectForCollider( info->GetCollider() );
+		if( ! object ){
+			return;
+		}
+		
+		if( ! pObject || info->GetDistance() < pBestDistance ){
+			pObject = object;
+		}
 	}
 }
 
-bool meCLIdentify::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool meCLIdentify::CanHitCollider( deCollider*, deCollider *collider ){
 	const meObject * const object = pGetObjectForCollider( collider );
-	if( object ){
-		return object->GetVisible();
-	}
-	
-	return false;
+	return object && object->GetVisible();
 }
 
-void meCLIdentify::ColliderChanged( deCollider *owner ){
+void meCLIdentify::ColliderChanged( deCollider* ){
 }
 
 
@@ -103,11 +104,7 @@ void meCLIdentify::ColliderChanged( deCollider *owner ){
 //////////////////////
 
 meObject *meCLIdentify::pGetObjectForCollider( deCollider *collider ) const{
-	const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
-		*pWorld->GetEnvironment(), collider );
-	if( ! colliderOwner ){
-		return NULL;
-	}
-	
-	return colliderOwner->GetObject();
+	const meColliderOwner * const colliderOwner =
+		meColliderOwner::GetColliderOwner( *pWorld.GetEnvironment(), collider );
+	return colliderOwner ? colliderOwner->GetObject() : nullptr;
 }

@@ -88,7 +88,7 @@ private:
 	
 	deColliderComponent::Ref pColliderComponent;
 	deColliderVolume::Ref pColliderFallback;
-	decObjectSet pCollidersSelection;
+	decObjectSet pCollidersInteraction;
 	
 	deCollider::Ref pParentCollider;
 	decString pAttachToBone;
@@ -110,7 +110,7 @@ private:
 	decCollisionFilter pCollisionFilterParticles;
 	decCollisionFilter pCollisionFilterForceField;
 	decCollisionFilter pCollisionFilterFallback;
-	decCollisionFilter pCollisionFilterSelect;
+	decCollisionFilter pCollisionFilterInteract;
 	bool pDynamicCollider;
 	
 	bool pVisible;
@@ -263,11 +263,11 @@ public:
 	/** \brief Set collision filter fallback. */
 	void SetCollisionFilterFallback( const decCollisionFilter &collisionFilter );
 	
-	/** \brief Collision filter for selection. */
-	inline const decCollisionFilter &GetCollisionFilterSelect() const{ return pCollisionFilterSelect; }
+	/** \brief Collision filter for interaction. */
+	inline const decCollisionFilter &GetCollisionFilterInteract() const{ return pCollisionFilterInteract; }
 	
-	/** \brief Set collision filter for selection. */
-	void SetCollisionFilterSelect( const decCollisionFilter &collisionFilter );
+	/** \brief Set collision filter for interaction. */
+	void SetCollisionFilterInteract( const decCollisionFilter &collisionFilter );
 	
 	
 	
@@ -417,8 +417,8 @@ public:
 	void SubObjectExtendsDirty();
 	void SetInteractCollider( deColliderComponent *collider );
 	inline deDynamicSkin *GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
-	void AddSelectCollider( deCollider *collider );
-	void RemoveSelectCollider( deCollider *collider );
+	void AddInteractionCollider( deCollider *collider );
+	void RemoveInteractionCollider( deCollider *collider );
 	/*@}*/
 	
 	

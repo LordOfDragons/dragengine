@@ -432,12 +432,12 @@ void igdeWObject::SetCollisionFilterFallback( const decCollisionFilter &collisio
 	pSubObjectsUpdateCollisionFilter();
 }
 
-void igdeWObject::SetCollisionFilterSelect( const decCollisionFilter &collisionFilter ){
-	if( collisionFilter == pCollisionFilterSelect ){
+void igdeWObject::SetCollisionFilterInteract( const decCollisionFilter &collisionFilter ){
+	if( collisionFilter == pCollisionFilterInteract ){
 		return;
 	}
 	
-	pCollisionFilterSelect = collisionFilter;
+	pCollisionFilterInteract = collisionFilter;
 	
 	pSubObjectsUpdateCollisionFilter();
 }
@@ -695,10 +695,10 @@ void igdeWObject::SetColliderUserPointer( void *userPointer ){
 	}
 	pEnvironment.SetColliderUserPointer( pColliderFallback, userPointer );
 	
-	const int count = pCollidersSelection.GetCount();
+	const int count = pCollidersInteraction.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		pEnvironment.SetColliderUserPointer( ( deCollider* )pCollidersSelection.GetAt( i ), userPointer );
+		pEnvironment.SetColliderUserPointer( ( deCollider* ) pCollidersInteraction.GetAt( i ), userPointer );
 	}
 }
 
@@ -755,12 +755,12 @@ void igdeWObject::SetInteractCollider( deColliderComponent *collider ){
 		pColliderFallback->SetEnabled( pVisible && ! pPartiallyHidden );
 	}
 	
-	const int count = pCollidersSelection.GetCount();
+	const int count = pCollidersInteraction.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		deCollider * const colliderSelect = ( deCollider* )pCollidersSelection.GetAt( i );
-		pEnvironment.SetColliderDelegee( colliderSelect, nullptr );
-		pEnvironment.SetColliderUserPointer( colliderSelect, nullptr );
+		deCollider * const colliderInteract = ( deCollider* ) pCollidersInteraction.GetAt( i );
+		pEnvironment.SetColliderDelegee( colliderInteract, nullptr );
+		pEnvironment.SetColliderUserPointer( colliderInteract, nullptr );
 	}
 	
 	if( ! collider ){
@@ -775,18 +775,28 @@ void igdeWObject::SetInteractCollider( deColliderComponent *collider ){
 	pEnvironment.SetColliderUserPointer( collider, userPointer );
 	
 	for( i=0; i<count; i++ ){
-		deCollider * const colliderSelect = ( deCollider* )pCollidersSelection.GetAt( i );
-		pEnvironment.SetColliderDelegee( colliderSelect, pListenerCollider );
-		pEnvironment.SetColliderUserPointer( colliderSelect, userPointer );
+		deCollider * const colliderInteract = ( deCollider* ) pCollidersInteraction.GetAt( i );
+		pEnvironment.SetColliderDelegee( colliderInteract, pListenerCollider );
+		pEnvironment.SetColliderUserPointer( colliderInteract, userPointer );
 	}
 }
 
-void igdeWObject::AddSelectCollider( deCollider *collider ){
-	pCollidersSelection.Add( collider );
+void igdeWObject::AddInteractionCollider( deCollider *collider ){
+	DEASSERT_NOTNULL( collider )
+	
+	pCollidersInteraction.Add( collider );
+	
+	pEnvironment.SetColliderDelegee( collider, pListenerCollider );
+	pEnvironment.SetColliderUserPointer( collider, pEnvironment.GetColliderUserPointer( pColliderFallback ) );
 }
 
-void igdeWObject::RemoveSelectCollider( deCollider *collider ){
-	pCollidersSelection.Remove( collider );
+void igdeWObject::RemoveInteractionCollider( deCollider *collider ){
+	DEASSERT_NOTNULL( collider );
+	
+	pEnvironment.SetColliderDelegee( collider, nullptr );
+	pEnvironment.SetColliderUserPointer( collider, nullptr );
+	
+	pCollidersInteraction.Remove( collider );
 }
 
 
@@ -799,10 +809,10 @@ void igdeWObject::pCleanUp(){
 	pDestroySubObjects();
 	SetWorld( nullptr );
 	
-	const int count = pCollidersSelection.GetCount();
+	const int count = pCollidersInteraction.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		pEnvironment.SetColliderUserPointer( ( deCollider* )pCollidersSelection.GetAt( i ), nullptr );
+		pEnvironment.SetColliderUserPointer( ( deCollider* ) pCollidersInteraction.GetAt( i ), nullptr );
 	}
 	
 	if( pColliderFallback ){
