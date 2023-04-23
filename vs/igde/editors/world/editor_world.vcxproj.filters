@@ -1060,6 +1060,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\worldedit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\meInfoBubble.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\actions\meASubclassAsEClass.h">
@@ -2101,6 +2104,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\worldedit.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\meInfoBubble.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -64,6 +64,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\changelog\meWCEntry.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\changelog\meWindowChangelog.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\changelog\meWindowChangelogListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\meInfoBubble.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\meTaskSyncGameDefinition.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\meView3D.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\meView3DListener.cpp" />
@@ -413,6 +414,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\changelog\meWCEntry.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\changelog\meWindowChangelog.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\changelog\meWindowChangelogListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\meInfoBubble.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\meTaskSyncGameDefinition.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\meView3D.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\meView3DListener.h" />
