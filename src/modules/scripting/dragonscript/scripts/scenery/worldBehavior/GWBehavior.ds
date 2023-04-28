@@ -41,6 +41,9 @@ public interface GWBehavior
 	/** \brief Initialize game world from stub. */
 	func void init(StubGameWorld stub)
 	
+	/** \brief Behavior instance requires update(), think() and postThink() to be called. */
+	func bool requiresThink()
+	
 	/**
 	 * \brief Frame update.
 	 * 

@@ -58,6 +58,7 @@ class GameWorld
 	private var StubGameWorld pStub
 	private var Array pBehaviors
 	private var bool pBehaviorsInited
+	private var Array pThinkingBehaviors
 	
 	private var GWBehaviorOneShotSpeaker pBehaviorOneShotSpeaker
 	
@@ -80,6 +81,7 @@ class GameWorld
 		pConvoCoordSystemList = ConversationCoordSystemList.new()
 		pAnchoredElementList = AnchoredElementList.new()
 		pBehaviors = Array.new()
+		pThinkingBehaviors = Array.new()
 		
 		// add behaviors
 		pBehaviorOneShotSpeaker = GWBehaviorOneShotSpeaker.new(this)
@@ -111,6 +113,8 @@ class GameWorld
 			end)
 			pBehaviors = null
 		end
+		pThinkingBehaviors = null
+		pBehaviorOneShotSpeaker = null
 		
 		pThinkers = null
 		pEnterFrameOnce = null
@@ -175,6 +179,10 @@ class GameWorld
 		
 		pBehaviors.add(behavior)
 		
+		if behavior.requiresThink()
+			pThinkingBehaviors.add(behavior)
+		end
+		
 		if pBehaviorsInited
 			behavior.init(pStub)
 		end
@@ -213,6 +221,35 @@ class GameWorld
 	 */
 	public func Array collectBehaviors(Block ablock)
 		return pBehaviors.collectCastable(ablock)
+	end
+	
+	/**
+	 * \brief Requires thinking changed.
+	 * \version 1.17
+	 * 
+	 * Called by GWBehavior if their requirement for thinking changed. This means requiresThink()
+	 * implementations return different values than last time they have been checked. Game world
+	 * will check all behaviors for their thinking requirements changes. Using this method helps
+	 * to reduce script processing load by not making calling update(), think() and postThink()
+	 * on behaviors not requiring it.
+	 */
+	public func void requiresThinkChanged()
+		pThinkingBehaviors.removeAll()
+		pBehaviors.forEach(block GWBehavior each
+			if each.requiresThink()
+				pThinkingBehaviors.add(each)
+			end
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief One shot speaker game world behavior.
+	 * \version 1.17
+	 */
+	public func GWBehaviorOneShotSpeaker getBehaviorOneShotSpeaker()
+		return pBehaviorOneShotSpeaker
 	end
 	
 	
@@ -382,88 +419,61 @@ class GameWorld
 	
 	
 	
-	/** \brief Layer mask to use for one shot speaker. */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func LayerMask getLayerMaskOneShotSpeaker()
 		return pBehaviorOneShotSpeaker.getLayerMask()
 	end
 	
-	/** \brief Set layer mask to use for one shot speaker. */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void setLayerMaskOneShotSpeaker(LayerMask layerMask)
 		pBehaviorOneShotSpeaker.setLayerMask(layerMask)
 	end
 	
-	/**
-	 * \brief Add one shot speaker.
-	 * \details Plays a short sound once and will be deleted once finished playing.
-	 */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void addOneShotSpeaker(Speaker speaker)
 		pBehaviorOneShotSpeaker.addSpeaker(speaker)
 	end
 	
-	/**
-	 * \brief Play sound once.
-	 * \details Creates a speaker with the sound and parameters playing it once.
-	 *          If sound it \em null nothing is done.
-	 */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void playSoundOnce(Sound sound, Element element, float volume, float range)
 		pBehaviorOneShotSpeaker.playSoundOnce(sound, element, volume, range)
 	end
 	
-	/**
-	 * \brief Play sound once.
-	 * \details Creates a speaker with the sound and parameters playing it once.
-	 *          If sound it \em null nothing is done.
-	 */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void playSoundOnce(Sound sound, DVector position, float volume, float range)
 		pBehaviorOneShotSpeaker.playSoundOnce(sound, position, volume, range)
 	end
 	
-	/**
-	 * \brief Play sound once.
-	 * \details Creates a speaker with the sound and parameters playing it once.
-	 *          If sound it \em null nothing is done.
-	 */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void playSoundOnce(Sound sound, DVector position, Quaternion orientation, \
 	float volume, float range)
 		pBehaviorOneShotSpeaker.playSoundOnce(sound, position, orientation, volume, range)
 	end
 	
-	/**
-	 * \brief Play synthesizer instance once.
-	 * \details Creates speaker with synthesizer instance and parameters playing it once.
-	 *          If synthesizer is \em null nothing is done.
-	 */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, Element element, \
 	float volume, float range)
 		pBehaviorOneShotSpeaker.playSynthesizerOnce(synthesizer, element, volume, range)
 	end
 	
-	/**
-	 * \brief Play synthesizer instance once.
-	 * \details Creates speaker with synthesizer instance and parameters playing it once.
-	 *          If synthesizer is \em null nothing is done.
-	 */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
 	float volume, float range)
 		pBehaviorOneShotSpeaker.playSynthesizerOnce(synthesizer, position, volume, range)
 	end
 	
-	/**
-	 * \brief Play synthesizer instance once.
-	 * \details Creates speaker with synthesizer instance and parameters playing it once.
-	 *          If synthesizer is \em null nothing is done.
-	 */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
 	Quaternion orientation, float volume, float range)
 		pBehaviorOneShotSpeaker.playSynthesizerOnce(synthesizer, position, orientation, volume, range)
 	end
 	
-	/** \brief Remove one shot speakers that finished playing. */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void removeFinishedOneShotSpeakers()
 		pBehaviorOneShotSpeaker.removeFinishedSpeakers()
 	end
 	
-	/** \brief Stop and remove all one shot speakers. */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void removeAllOneShotSpeakers()
 		pBehaviorOneShotSpeaker.removeAllSpeakers()
 	end
@@ -472,7 +482,7 @@ class GameWorld
 	
 	/** \brief Make elements think. */
 	public func void think(float elapsed)
-		pBehaviors.forEach(block GWBehavior each
+		pThinkingBehaviors.forEach(block GWBehavior each
 			each.think(elapsed)
 		end)
 		
@@ -487,7 +497,7 @@ class GameWorld
 			each.postThink(elapsed)
 		end)
 		
-		pBehaviors.forEach(block GWBehavior each
+		pThinkingBehaviors.forEach(block GWBehavior each
 			each.postThink(elapsed)
 		end)
 	end
@@ -513,7 +523,7 @@ class GameWorld
 	 *          be rendered multiple times.
 	 */
 	public func void update(float elapsed)
-		pBehaviors.forEach(block GWBehavior each
+		pThinkingBehaviors.forEach(block GWBehavior each
 			each.update(elapsed)
 		end)
 		

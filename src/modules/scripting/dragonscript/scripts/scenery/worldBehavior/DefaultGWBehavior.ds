@@ -35,6 +35,7 @@ public class DefaultGWBehavior implements GWBehavior
 	private var String pID
 	private var GameWorld pGameWorld
 	private var String pBehaviorID
+	private var bool pRequiresThink
 	
 	
 	
@@ -146,6 +147,26 @@ public class DefaultGWBehavior implements GWBehavior
 	
 	/** \brief Initialize game world from stub. */
 	public func void init(StubGameWorld stub)
+	end
+	
+	/** \brief Behavior instance requires update(), think() and postThink() to be called. */
+	public func bool requiresThink()
+		return pRequiresThink
+	end
+	
+	/**
+	 * \brief Set if behavior instance requires update(), think() and postThink() to be called.
+	 */
+	protected func void setRequiresThink(bool required)
+		if required == pRequiresThink
+			return
+		end
+		
+		pRequiresThink = required
+		
+		if pGameWorld != null // dispose protection
+			pGameWorld.requiresThinkChanged()
+		end
 	end
 	
 	/**
