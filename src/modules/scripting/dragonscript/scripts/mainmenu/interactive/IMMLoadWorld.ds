@@ -123,6 +123,7 @@ class IMMLoadWorld
 			pWorld = GameWorld.new()
 			pStubWorld = StubGameWorld.new(pWorld, pPreloadManager.getCounter())
 			pMainMenu.getLoaders().getWorld().loadFromFile(pStubWorld, path, false)
+			pStubWorld.getGameWorld().init(pStubWorld)
 			
 			// one solution is to use preloadAll to preload all element classes including
 			// xml ones if present. another solution is to preload only actually used

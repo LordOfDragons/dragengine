@@ -46,6 +46,7 @@ pin Dragengine.Utils
  */
 class BehaviorElementClass extends ElementClass
 	private var Array pBehaviors
+	private var Array pPrepareStubBehaviors
 	
 	
 	
@@ -64,6 +65,7 @@ class BehaviorElementClass extends ElementClass
 	/** \brief Create element class. */
 	public func new(String className, Loaders loaders) super(className)
 		pBehaviors = Array.new()
+		pPrepareStubBehaviors = Array.new()
 	end
 	
 	/** \brief Dispose of element class. */
@@ -74,6 +76,8 @@ class BehaviorElementClass extends ElementClass
 			end)
 			pBehaviors = null
 		end
+		
+		pPrepareStubBehaviors = null
 		
 		super.dispose()
 	end
@@ -152,8 +156,51 @@ class BehaviorElementClass extends ElementClass
 	
 	
 	
+	/**
+	 * \brief Add behavior to be notified before initialization is done.
+	 * \version 1.17
+	 * 
+	 * Preinitializing allows behaviors to modify StubElement before Element.init() is called.
+	 * This can be used to alter the behavior initialization procss my modifying the stub
+	 * properties or textures.
+	 * 
+	 * This function is only called for newly created elements. For loading elements
+	 * preinitializing is not done since the preinitialized state has been already saved.
+	 * 
+	 * Usually preinitializing is done for elements to be added to a game world. It is thus
+	 * possible to use game world stub properties to alter the initialization. This can be
+	 * used to adjust the behavior depending on what game world they are created for. It is
+	 * also possible preinitialization is done without the element to be added to a specific
+	 * game world. In this case gameWorld is null. Behaviors added for preinitializing have
+	 * to be able to handle gameWorld being null.
+	 */
+	public func void addPrepareStubBehavior(BehaviorPrepareStub behavior)
+		if behavior == null
+			throw ENullPointer.new("behavior")
+		end
+		
+		pPrepareStubBehaviors.add(behavior)
+	end
+	
+	
+	
 	/** \brief Create element instance. */
 	protected func Element createElement()
 		return BehaviorElement.new(this)
+	end
+	
+	/**
+	 * \brief Create element from given stub and add it to game world.
+	 * 
+	 * Calls prepareStub() on behaviors supporting stub preparation. Then calls createElement(stub)
+	 * to obtain new element instance. If returned element is null no further processing is done.
+	 * Otherwise element is added to gameWorld.
+	 */
+	public func void createAndAddElement(StubElement stub, GameWorld gameWorld)
+		pPrepareStubBehaviors.forEach(block BehaviorPrepareStub each
+			each.prepareStub(stub, gameWorld)
+		end)
+		
+		super.createAndAddElement(stub, gameWorld)
 	end
 end
