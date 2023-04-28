@@ -47,6 +47,9 @@ pin Dragengine.Preloading
 public interface BehaviorPrepareStub
 	/**
 	 * \brief Prepare stub.
+	 * 
+	 * Called by BehaviorElementClass.createAndAddElement() with loading set to false and
+	 * BehaviorElementClass.loadAndAddElement() with loading set to true.
 	 */
-	func void prepareStub(StubElement stub, GameWorld gameWorld)
+	func void prepareStub(StubElement stub, GameWorld gameWorld, bool loading)
 end
