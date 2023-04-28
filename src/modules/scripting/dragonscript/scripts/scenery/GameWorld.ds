@@ -679,10 +679,6 @@ class GameWorld
 	 * Subclass has to super-call readFromFile() to save behaviors properly.
 	 */
 	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
-		if Engine.isCompatibleVersionOlder(1, 17)
-			return
-		end
-		
 		select reader.readByte() // version
 		case 0
 			var Dictionary map = Dictionary.new()
@@ -727,10 +723,6 @@ class GameWorld
 	 * Subclass has to super-call writeToFile() to save behaviors properly.
 	 */
 	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
-		if Engine.isCompatibleVersionOlder(1, 17)
-			return
-		end
-		
 		var MemoryFile behaviorData = MemoryFile.new("behaviorData")
 		
 		writer.writeByte(0) // version
