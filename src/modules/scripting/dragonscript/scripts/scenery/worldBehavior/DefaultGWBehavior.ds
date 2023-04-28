@@ -1,0 +1,209 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Default implementation of GWBehavior doing nothing.
+ * \version 1.17
+ */
+public class DefaultGWBehavior implements GWBehavior
+	private var String pID
+	private var GameWorld pGameWorld
+	private var String pBehaviorID
+	
+	
+	
+	/** \brief Create default behavior with empty identifier. */
+	public func new(GameWorld gameWorld) this(gameWorld, "")
+	end
+	
+	/** \brief Create default behavior. */
+	public func new(GameWorld gameWorld, String id)
+		if id == null
+			throw ENullPointer.new("id")
+		end
+		if gameWorld == null
+			throw ENullPointer.new("gameWorld")
+		end
+		
+		pID = id
+		pGameWorld = gameWorld
+		useClassNameAsBehaviorID()
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pGameWorld = null
+	end
+	
+	
+	
+	/** \brief Identifier. */
+	public func String getID()
+		return pID
+	end
+	
+	/** \brief Game world this behavior belongs to. */
+	public func GameWorld getGameWorld()
+		return pGameWorld
+	end
+	
+	
+	
+	/**
+	 * \brief Unique identifier of behavior.
+	 * 
+	 * Has to return a string which is unique in the owner GameWorld. This string will be
+	 * stored. This allows to assign restored behavior data to the correct behavior if present.
+	 * 
+	 * The default implementation returns "<class-name>:<identifier>" or "<class-name>" if
+	 * identifier is empty string (constructor calls useClassNameAsBehaviorID()). If two or
+	 * more behaviors share the same class name you have to make sure getBehaviorID() returns
+	 * unique names. This can be done using one of these possible ways:
+	 * <ul>
+	 * <li>Overwrite getBehaviorID()</li>
+	 * <li>Call useFullyQualifiedClassNameAsBehaviorID() in the constructor</li>
+	 * <li>Call setBehaviorID(String) in the constructor</li>
+	 * </ul>
+	 */
+	public func String getBehaviorID()
+		return pBehaviorID
+	end
+	
+	/**
+	 * \brief Set behavior identifier.
+	 * 
+	 * \note Call this only during the constructor. Behavior identifier has to be
+	 *       static during the entire life time of the behavior.
+	 */
+	protected func void setBehaviorID(String identifier)
+		if identifier == null
+			throw ENullPointer.new("identifier")
+		end
+		if identifier.empty()
+			throw EInvalidParam.new("identifier is empty")
+		end
+		
+		pBehaviorID = identifier
+	end
+	
+	/**
+	 * \brief Set behavior identifier to "<class-name>:<identifier>".
+	 * 
+	 * If identifier is empty string omits the double-colon.
+	 * 
+	 * \note Call this only during the constructor. Behavior identifier has to be
+	 *       static during the entire life time of the behavior.
+	 */
+	protected func void useClassNameAsBehaviorID()
+		pBehaviorID = className().split('.').getAt(-1) cast String
+		if not pID.empty()
+			pBehaviorID = pBehaviorID + ":" + pID
+		end
+	end
+	
+	/**
+	 * \brief Set behavior identifier to "<fully-qualified-class-name>:<identifier>".
+	 * 
+	 * If identifier is empty string omits the double-colon.
+	 * 
+	 * \note Call this only during the constructor. Behavior identifier has to be
+	 *       static during the entire life time of the behavior.
+	 */
+	protected func void useFullyQualifiedClassNameAsBehaviorID()
+		pBehaviorID = className()
+		if not pID.empty()
+			pBehaviorID = pBehaviorID + ":" + pID
+		end
+	end
+	
+	
+	
+	/** \brief Initialize game world from stub. */
+	public func void init(StubGameWorld stub)
+	end
+	
+	/**
+	 * \brief Frame update.
+	 * 
+	 * Update is called on behaviors before enter frame and world updating is called.
+	 */
+	public func void update(float elapsed)
+	end
+	
+	/**
+	 * \brief Think about what to do for the next frame update.
+	 * 
+	 * Think is called first on all behaviors then on all elements.
+	 */
+	public func void think(float elapsed)
+	end
+	
+	/**
+	 * \brief Post thinking after physics processing is finished.
+	 * 
+	 * Post think is called first on all elements then on all behaviors.
+	 */
+	public func void postThink(float elapsed)
+	end
+	
+	/** \brief Read from file. */
+	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		if reader.readByte() !=  0 // version
+			throw EInvalidParam.new("unsupported version")
+		end
+	end
+	
+	/** \brief Write to file. */
+	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
+	end
+	
+	
+	
+	/**
+	 * \brief Behavior supports loading data of another behavior.
+	 * 
+	 * Returns true if this behavior supports loading data of another behavior matching behavior
+	 * identifier. Called for all behaviors if GameWorld encounters a data block with a behavior
+	 * identifier not matching any behaviors.
+	 */
+	public func bool supportsBehaviorID(String identifier)
+		return false
+	end
+	
+	/**
+	 * \brief Load data of another behavior.
+	 * 
+	 * Called if supportsBehaviorID(String) returns true for identifier. GameWorld requests
+	 * behavior to load the supported data block.
+	 */
+	public func void loadSupportedData(String identifier, PersistencyEnvironment env, FileReader reader)
+		throw EInvalidAction.new("not supported")
+	end
+end
