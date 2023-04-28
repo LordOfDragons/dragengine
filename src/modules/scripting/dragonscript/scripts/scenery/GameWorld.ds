@@ -58,6 +58,8 @@ class GameWorld
 	private var ConversationCoordSystemList pConvoCoordSystemList
 	private var AnchoredElementList pAnchoredElementList
 	private var StubGameWorld pStub
+	private var Array pBehaviors
+	private var bool pBehaviorsInited
 	
 	
 	
@@ -74,11 +76,12 @@ class GameWorld
 		pSpawnPoints = SpawnPointList.new()
 		pTempDecalMgr = TemporaryDecalManager.new()
 		pUniqueIDRemapper = UniqueIDRemapper.new()
-		pGravity = Vector.new(0.0, -9.81, 0.0)
+		pGravity = Vector.new(0, -9.81, 0)
 		pRailList = RailList.new()
 		pConvoActorList = ConversationActorList.new()
 		pConvoCoordSystemList = ConversationCoordSystemList.new()
 		pAnchoredElementList = AnchoredElementList.new()
+		pBehaviors = Array.new()
 	end
 	
 	
@@ -99,10 +102,17 @@ class GameWorld
 			each.setGameWorld(null)
 			each.safeDispose()
 		end)
-		pElementIDMap = null
+		
+		if pBehaviors != null
+			pBehaviors.forEachReverse(block GWBehavior each
+				each.dispose()
+			end)
+			pBehaviors = null
+		end
 		
 		pThinkers = null
 		pEnterFrameOnce = null
+		pElementIDMap = null
 		
 		if pCachedVegetation != null
 			pCachedVegetation.setWorld(null)
@@ -130,6 +140,78 @@ class GameWorld
 	/** \brief Engine world resource. */
 	public func World getWorld()
 		return pWorld
+	end
+	
+	
+	
+	/**
+	 * \brief Count of behaviors.
+	 * \version 1.17
+	 */
+	public func int getBehaviorCount()
+		return pBehaviors.getCount()
+	end
+	
+	/**
+	 * \brief Behavior at index.
+	 * \version 1.17
+	 */
+	public func GWBehavior getBehaviorAt(int index)
+		return pBehaviors.getAt(index) cast GWBehavior
+	end
+	
+	/**
+	 * \brief Add behavior.
+	 * \version 1.17
+	 * 
+	 * This is called by constructors of class implementing GWBehavior. Usually you do not
+	 * have to call this manually.
+	 */
+	public func void addBehavior(GWBehavior behavior)
+		if behavior == null or pBehaviors.has(behavior)
+			throw EInvalidParam.new("duplicate behavior")
+		end
+		
+		pBehaviors.add(behavior)
+		
+		if pBehaviorsInited
+			behavior.init(pStub)
+		end
+	end
+	
+	/**
+	 * \brief Visit behaviors with block.
+	 * \versoin 1.17
+	 * 
+	 * Block is required to have one parameter of type GWBehavior or subclass thereof.
+	 * Block is called only for behaviors castable to block parameter type.
+	 */
+	public func void forEachBehavior(Block ablock)
+		pBehaviors.forEachCastable(ablock)
+	end
+	
+	/**
+	 * \brief Find behavior with block.
+	 * \version 1.17
+	 * 
+	 * Block is required to have one parameter GWBehavior or subclass thereof and returning
+	 * true if the right behavior is found otherwise false. Block is called only for
+	 * behaviors castable to block parameter type.
+	 */
+	public func GWBehavior findBehavior(Block ablock)
+		return pBehaviors.findCastable(ablock) cast GWBehavior
+	end
+	
+	/**
+	 * \brief Collect behaviors with block into Array.
+	 * \version 1.17
+	 * 
+	 * Block is required to have one parameter GWBehavior or subclass thereof and returning
+	 * true if the right behavior is found otherwise false. Block is called only for
+	 * behaviors castable to block parameter type.
+	 */
+	public func Array collectBehaviors(Block ablock)
+		return pBehaviors.collectCastable(ablock)
 	end
 	
 	
@@ -291,8 +373,9 @@ class GameWorld
 	/** \brief Set gravity. */
 	public func void setGravity(Vector gravity)
 		if gravity == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("gravity")
 		end
+		
 		pGravity = gravity
 	end
 	
@@ -306,8 +389,9 @@ class GameWorld
 	/** \brief Set layer mask to use for one shot speaker. */
 	public func void setLayerMaskOneShotSpeaker(LayerMask layerMask)
 		if layerMask == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("layerMask")
 		end
+		
 		pLayerMaskOneShotSpeaker = layerMask
 	end
 	
@@ -442,6 +526,10 @@ class GameWorld
 	
 	/** \brief Make elements think. */
 	public func void think(float elapsed)
+		pBehaviors.forEach(block GWBehavior each
+			each.think(elapsed)
+		end)
+		
 		pThinkers.forEach(block Element each
 			each.think(elapsed)
 		end)
@@ -450,6 +538,10 @@ class GameWorld
 	/** \brief Make elements think after physics simulation. */
 	public func void postThink(float elapsed)
 		pThinkers.forEach(block Element each
+			each.postThink(elapsed)
+		end)
+		
+		pBehaviors.forEach(block GWBehavior each
 			each.postThink(elapsed)
 		end)
 	end
@@ -475,6 +567,10 @@ class GameWorld
 	 *          be rendered multiple times.
 	 */
 	public func void update(float elapsed)
+		pBehaviors.forEach(block GWBehavior each
+			each.update(elapsed)
+		end)
+		
 		enterFrame()
 		
 		pWorld.update(elapsed)
@@ -493,6 +589,10 @@ class GameWorld
 			Debugging.DebugPerformanceCounter debugThink, \
 			Debugging.DebugPerformanceCounter debugCollisions, \
 			Debugging.DebugPerformanceCounter debugPostThink)
+		pBehaviors.forEach(block GWBehavior each
+			each.update(elapsed)
+		end)
+		
 		enterFrame()
 		
 		debugUpdate.start()
@@ -562,20 +662,86 @@ class GameWorld
 	 * \brief Init game world from stub.
 	 * \version 1.17
 	 * 
-	 * Stub is stored in game world for referencing. Stub can be changed in certain
-	 * situations. In general though the stub should be kept unchanged.
+	 * Subclass is required to super-call init() to init behaviors properly.
 	 */
 	public func void init(StubGameWorld stub)
+		pBehaviors.forEach(block GWBehavior each
+			each.init(stub)
+		end)
+		pBehaviorsInited = true
 	end
 	
 	
 	
-	/** \brief Read from file. */
+	/**
+	 * \brief Read from file.
+	 * 
+	 * Subclass has to super-call readFromFile() to save behaviors properly.
+	 */
 	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		if Engine.isCompatibleVersionOlder(1, 17)
+			return
+		end
+		
+		select reader.readByte() // version
+		case 0
+			var Dictionary map = Dictionary.new()
+			pBehaviors.forEach(block int index, GWBehavior each
+				map.setAt((pBehaviors.getAt(index) cast GWBehavior).getBehaviorID(), each)
+			end)
+			
+			var int i, dataLength, count = reader.readShort()
+			var GWBehavior behavior
+			var String identifier
+			
+			for i = 0 to count
+				identifier = reader.readString8()
+				behavior = map.getAt(identifier, null) cast GWBehavior
+				dataLength = reader.readInt()
+				
+				if behavior != null
+					behavior.readFromFile(env, reader)
+					
+				elif pBehaviors.find(block int index, GWBehavior each
+					if each.supportsBehaviorID(identifier)
+						each.loadSupportedData(identifier, env, reader)
+						return true
+						
+					else
+						return false
+					end
+					
+				end) == null
+					reader.movePosition(dataLength)
+				end
+			end
+			
+		else
+			throw EInvalidParam.new("unsupported version")
+		end
 	end
 	
-	/** \brief Write to file. */
+	/**
+	 * \brief Write to file.
+	 * 
+	 * Subclass has to super-call writeToFile() to save behaviors properly.
+	 */
 	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		if Engine.isCompatibleVersionOlder(1, 17)
+			return
+		end
+		
+		var MemoryFile behaviorData = MemoryFile.new("behaviorData")
+		
+		writer.writeByte(0) // version
+		writer.writeShort(pBehaviors.getCount())
+		
+		pBehaviors.forEach(block GWBehavior each
+			each.writeToFile(env, behaviorData.getWriter(false))
+			writer.writeString8(each.getBehaviorID())
+			writer.writeInt(behaviorData.getSize())
+			writer.writeData(behaviorData.getReader())
+		end)
 	end
 	
 	/**
