@@ -543,7 +543,7 @@ class GameWorldLoader
 	 * Called by loadWorld().
 	 */
 	protected func void persistencyReadWorld()
-		if pPersistencyReader == null or pPersistencyReader == null or pIDGenerator == null
+		if pPersistEnvironment == null or pPersistencyReader == null or pIDGenerator == null
 			return
 		end
 		

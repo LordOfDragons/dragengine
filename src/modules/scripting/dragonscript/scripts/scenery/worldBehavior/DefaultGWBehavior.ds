@@ -36,6 +36,7 @@ public class DefaultGWBehavior implements GWBehavior
 	private var GameWorld pGameWorld
 	private var String pBehaviorID
 	private var bool pRequiresThink
+	private var bool pRequiresPersistency
 	
 	
 	
@@ -154,9 +155,7 @@ public class DefaultGWBehavior implements GWBehavior
 		return pRequiresThink
 	end
 	
-	/**
-	 * \brief Set if behavior instance requires update(), think() and postThink() to be called.
-	 */
+	/** \brief Set if behavior instance requires update(), think() and postThink() to be called. */
 	protected func void setRequiresThink(bool required)
 		if required == pRequiresThink
 			return
@@ -191,6 +190,16 @@ public class DefaultGWBehavior implements GWBehavior
 	 * Post think is called first on all elements then on all behaviors.
 	 */
 	public func void postThink(float elapsed)
+	end
+	
+	/** \brief Behavior requires readFromFile() and writeToFile() to be called. */
+	public func bool requiresPersistency()
+		return pRequiresPersistency
+	end
+	
+	/** \brief Set if behavior requires readFromFile() and writeToFile() to be called. */
+	protected func void setRequiresPersistency(bool required)
+		pRequiresPersistency = required
 	end
 	
 	/** \brief Read from file. */

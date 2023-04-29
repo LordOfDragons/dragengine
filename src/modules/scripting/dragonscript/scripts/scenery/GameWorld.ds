@@ -59,6 +59,7 @@ class GameWorld
 	private var Array pBehaviors
 	private var bool pBehaviorsInited
 	private var Array pThinkingBehaviors
+	private var bool pEnablePersistency
 	
 	private var GWBehaviorOneShotSpeaker pBehaviorOneShotSpeaker
 	
@@ -67,6 +68,7 @@ class GameWorld
 	/** \brief Create game world. */
 	public func new()
 		pWorld = World.new()
+		pEnablePersistency = not Engine.isCompatibleVersionOlder(1, 17)
 		
 		pElements = SafeArray.new()
 		pThinkers = SafeArray.new()
@@ -250,6 +252,36 @@ class GameWorld
 	 */
 	public func GWBehaviorOneShotSpeaker getBehaviorOneShotSpeaker()
 		return pBehaviorOneShotSpeaker
+	end
+	
+	
+	
+	/**
+	 * \brief Enable persistency (backwards compatibility).
+	 * \version 1.17
+	 * 
+	 * Since Drag[en]gine 1.17 GameWorld supports persistency to load and save game world
+	 * behavior states. This is incompatible with old saves where GameWorld did not persist
+	 * any data. To support loading and saving saves prior to 1.17 use this method.
+	 * 
+	 * - While loading save states created prior to 1.17 set false
+	 * - While loading save states created using 1.17 or later set to true
+	 * - While saving converted save states supported 1.17 and later set to true
+	 * - While saving save states not supporting 1.17 or later set to false
+	 * 
+	 * Hence to support loading old saves and saving new saves load with false and save with true.
+	 * 
+	 * By default enable persistency is set to true if the required version of the game project
+	 * is set to 1.17 or newer and false otherwise. Hence projects require an earlier version
+	 * will always operate with enable persistency set to false keeping them compatible while
+	 * projects requiring 1.17 or newer enable persistency.
+	 */
+	public func bool getEnablePersistency()
+		return pEnablePersistency
+	end
+	
+	public func void setEnablePersistency(bool enable)
+		pEnablePersistency = enable
 	end
 	
 	
@@ -631,6 +663,10 @@ class GameWorld
 	 * Subclass has to super-call readFromFile() to save behaviors properly.
 	 */
 	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		if not pEnablePersistency
+			return
+		end
+		
 		select reader.readByte() // version
 		case 0
 			var Dictionary map = Dictionary.new()
@@ -638,7 +674,7 @@ class GameWorld
 				map.setAt((pBehaviors.getAt(index) cast GWBehavior).getBehaviorID(), each)
 			end)
 			
-			var int i, dataLength, count = reader.readShort()
+			var int i, dataLength, count = reader.readUShort()
 			var GWBehavior behavior
 			var String identifier
 			
@@ -675,17 +711,28 @@ class GameWorld
 	 * Subclass has to super-call writeToFile() to save behaviors properly.
 	 */
 	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
-		var MemoryFile behaviorData = MemoryFile.new("behaviorData")
+		if not pEnablePersistency
+			return
+		end
 		
 		writer.writeByte(0) // version
-		writer.writeShort(pBehaviors.getCount())
 		
-		pBehaviors.forEach(block GWBehavior each
-			each.writeToFile(env, behaviorData.getWriter(false))
-			writer.writeString8(each.getBehaviorID())
-			writer.writeInt(behaviorData.getSize())
-			writer.writeData(behaviorData.getReader())
+		var Array behaviors = pBehaviors.collect(block GWBehavior each
+			return each.requiresPersistency()
 		end)
+		
+		writer.writeUShort(behaviors.getCount())
+		
+		if behaviors.getCount() > 0
+			var MemoryFile behaviorData = MemoryFile.new("behaviorData")
+			
+			behaviors.forEach(block GWBehavior each
+				each.writeToFile(env, behaviorData.getWriter(false))
+				writer.writeString8(each.getBehaviorID())
+				writer.writeInt(behaviorData.getSize())
+				writer.writeData(behaviorData.getReader())
+			end)
+		end
 	end
 	
 	/**

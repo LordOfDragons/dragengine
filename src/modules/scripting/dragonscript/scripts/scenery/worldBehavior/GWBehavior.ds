@@ -47,6 +47,7 @@ public interface GWBehavior
 	/**
 	 * \brief Frame update.
 	 * 
+	 * This method is only called if requiresThink() returns true.
 	 * Update is called on behaviors before enter frame and world updating is called.
 	 */
 	func void update(float elapsed)
@@ -54,6 +55,7 @@ public interface GWBehavior
 	/**
 	 * \brief Think about what to do for the next frame update.
 	 * 
+	 * This method is only called if requiresThink() returns true.
 	 * Think is called first on all behaviors then on all elements.
 	 */
 	func void think(float elapsed)
@@ -61,14 +63,26 @@ public interface GWBehavior
 	/**
 	 * \brief Post thinking after physics processing is finished.
 	 * 
+	 * This method is only called if requiresThink() returns true.
 	 * Post think is called first on all elements then on all behaviors.
 	 */
 	func void postThink(float elapsed)
 	
-	/** \brief Read from file. */
+	/** \brief Behavior requires readFromFile() and writeToFile() to be called. */
+	func bool requiresPersistency()
+	
+	/**
+	 * \brief Read from file.
+	 *
+	 * This method is only called if requiresPersistency() returns true.
+	 */
 	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 	
-	/** \brief Write to file. */
+	/**
+	 * \brief Write to file.
+	 *
+	 * This method is only called if requiresPersistency() returns true.
+	 */
 	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 	
 	/**

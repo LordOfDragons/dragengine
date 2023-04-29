@@ -48,11 +48,11 @@ class PersistencyFlags
 	 * \details The default value of all flags is \em false.
 	 * \throws EInvalidParam \em flagCount is less than 1.
 	 */
-	public func new( int flagCount )
+	public func new(int flagCount)
 		if flagCount < 1
 			throw EInvalidParam.new()
 		end
-		this.pFlags = Array.new( flagCount, false )
+		pFlags = Array.new(flagCount, false)
 	end
 	
 	/**
@@ -60,21 +60,21 @@ class PersistencyFlags
 	 * \throws EInvalidParam \em flagCount is less than 1.
 	 * \throws EInvalidParam \em reader is \em null.
 	 */
-	public func new( int flagCount, FileReader reader )
+	public func new(int flagCount, FileReader reader)
 		if flagCount < 1 or reader == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pFlags = Array.new( flagCount )
+		pFlags = Array.new(flagCount)
 		
 		var int i, j, value, lastBit
 		
 		for i = 0 to flagCount step 8
-			lastBit = Math.min( 8, flagCount - i )
+			lastBit = Math.min(8, flagCount - i)
 			value = reader.readByte()
 			
 			for j = 0 to lastBit
-				this.pFlags.add( ( value & ( 1 << j ) ) != 0 )
+				pFlags.add((value & (1 << j)) != 0)
 			end
 		end
 	end
@@ -83,41 +83,41 @@ class PersistencyFlags
 	
 	/** \brief Number of flags. */
 	public func int getCount()
-		return this.pFlags.getCount()
+		return pFlags.getCount()
 	end
 	
 	/**
 	 * \brief Flag is set.
 	 * \throws EInvalidParam \em flag is less than 0 or larger or equal than getFlagCount().
 	 */
-	public func bool getAt( int flag )
-		return this.pFlags.getAt( flag ) cast bool
+	public func bool getAt(int flag)
+		return pFlags.getAt(flag) cast bool
 	end
 	
 	/**
 	 * \brief Set flag.
 	 * \throws EInvalidParam \em flag is less than 0 or larger or equal than getFlagCount().
 	 */
-	public func void setAt( int flag, bool value )
-		this.pFlags.setAt( flag, value )
+	public func void setAt(int flag, bool value)
+		pFlags.setAt(flag, value)
 	end
 	
 	/** \brief Write flags to file writer. */
-	public func void writeToFile( FileWriter writer )
-		var int count = this.pFlags.getCount()
+	public func void writeToFile(FileWriter writer)
+		var int count = pFlags.getCount()
 		var int i, j, value, lastBit
 		
 		for i = 0 to count step 8
-			lastBit = Math.min( 8, count - i )
+			lastBit = Math.min(8, count - i)
 			value = 0
 			
 			for j = 0 to lastBit
-				if this.pFlags.getAt( i + j ) cast bool
+				if pFlags.getAt(i + j) cast bool
 					value |= 1 << j
 				end
 			end
 			
-			writer.writeByte( value )
+			writer.writeByte(value)
 		end
 	end
 end
