@@ -1014,6 +1014,15 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3000,6 +3009,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertex.h">

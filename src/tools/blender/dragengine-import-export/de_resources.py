@@ -237,6 +237,31 @@ class Mesh:
 		def __str__(self):
 			return self.uv.__str__()
 	
+	class VertexPositionSet:
+		def __init__(self, index, shapeKey, name=None):
+			self.index = index
+			self.shapeKey = shapeKey
+			self.name = shapeKey.name if shapeKey else name
+			self.baseSet = None
+			self.positions = []
+		
+		def __repr__(self):
+			return "[%s]" % (self.name)
+		
+		def __str__(self):
+			return self.__repr__()
+	
+	class VertexPositionSetPosition:
+		def __init__(self, vertex, position):
+			self.vertex = vertex
+			self.position = position
+		
+		def __repr__(self):
+			return "[%s]" % (self.name)
+		
+		def __str__(self):
+			return self.__repr__()
+	
 	class Weight:
 		def __init__(self, bone, weight):
 			self.bone = bone
@@ -341,6 +366,7 @@ class Mesh:
 			self.index = index
 			self.texture = None
 			self.texCoordSets = []
+			self.vertPosSets = []
 		
 		def __repr__(self):
 			return "[%i: vertices(%s) normals(%s) tangents(%s) edges(%s)]" % (self.index,
@@ -381,6 +407,7 @@ class Mesh:
 		self.degeneratedFaces = []
 		self.textures = []
 		self.texCoordSets = []
+		self.vertPosSets = []
 		self.normalCount = 0
 		self.tangentCount = 0
 		self.maxBoneWeightCount = 0
@@ -427,6 +454,43 @@ class Mesh:
 					if self.mesh.uv_layers[i].name != "default":
 						self.texCoordSets.append(Mesh.TexCoordSet(len(self.texCoordSets),
 							None, self.mesh.uv_layers[i]))
+	
+	# add vertex position sets
+	def initAddVertPosSets(self, baseMesh):
+		if not self.mesh.shape_keys:
+			if baseMesh:
+				for vps in baseMesh.vertPosSets:
+					self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), None, vps.name))
+			return
+		
+		if baseMesh:
+			for vps in baseMesh.vertPosSets:
+				shapeKey = [x for x in self.mesh.shape_keys.key_blocks if x.name == vps.name]
+				if shapeKey:
+					self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), shapeKey))
+				else:
+					self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), None, vps.name))
+		else:
+			for shapeKey in self.mesh.shape_keys.key_blocks:
+				self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), shapeKey))
+			
+		for vps in self.vertPosSets:
+			# base shape key (first one) has itself as base shape key
+			if not vps.shapeKey or vps.shapeKey.relative_key == vps.shapeKey:
+				continue
+			
+			found = [x for x in self.vertPosSets if x.shapeKey == vps.shapeKey.relative_key]
+			if found:
+				vps.baseSet = found[0]
+			
+			p1 = vps.shapeKey.data
+			p2 = vps.shapeKey.relative_key.data
+			for i in range(len(p1)):
+				# ignore vertices not having changed
+				if (p1[i].co - p2[i].co).length < 0.001:
+					continue
+				
+				vps.positions.append(Mesh.VertexPositionSetPosition(i, p1[i].co))
 	
 	# add vertices
 	def initAddVertices(self):
@@ -761,6 +825,7 @@ class Mesh:
 		print("textures:   {}".format(len(self.textures)))
 		print("texCoordSets: {}".format(len(self.texCoordSets)))
 		print("texCoords:  {}".format(len(self.texCoordSets[0].texCoords) if self.texCoordSets else 0))
+		print("vertPosSets: {}".format(len(self.vertPosSets)))
 		print("vertices:   {}".format(len(self.vertices)))
 		print("faces:      {}".format(len(self.faces)))
 		print("- tris:     {}".format(len(self.triangles)))

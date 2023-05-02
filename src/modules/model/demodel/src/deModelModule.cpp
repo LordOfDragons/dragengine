@@ -36,6 +36,9 @@
 #include <dragengine/resources/model/deModelWeight.h>
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelTextureCoordinatesSet.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
+#include <dragengine/resources/model/deModelLodVertexPositionSet.h>
+#include <dragengine/resources/model/deModelLodVertexPositionSetPosition.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -627,6 +630,7 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 	// read infos
 	infos.filename = reader.GetFilename();
 	infos.weightSetList = NULL;
+	infos.vertexPositionSetCount = 0;
 	
 	infos.version = reader.ReadUShort();
 	infos.flags = reader.ReadUShort();
@@ -664,10 +668,10 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 			pLoadBones( reader, model, infos );
 			pLoadTextures( reader, model, infos );
 			pLoadTexCoordSetsOld( reader, model, infos );
-			pLoadWeights( reader, model, infos, *lod );
-			pLoadVertices( reader, model, infos, *lod );
-			pLoadTrianglesOld( reader, model, infos, *lod );
-			pLoadQuadsOld( reader, model, infos, *lod );
+			pLoadWeights( reader, infos, *lod );
+			pLoadVertices( reader, infos, *lod );
+			pLoadTrianglesOld( reader, infos, *lod );
+			pLoadQuadsOld( reader, infos, *lod );
 			
 			pUpdateFaceTexCoordIndices( model, infos, *lod );
 			}break;
@@ -732,10 +736,10 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 				
 				texCoordSorter.Resize( infos.faceCount, infos.texCoordSetCount );
 				
-				pLoadWeights( reader, model, infos, *lod );
-				pLoadVertices( reader, model, infos, *lod );
-				pLoadTrianglesOld( reader, model, infos, *lod );
-				pLoadQuadsOld( reader, model, infos, *lod );
+				pLoadWeights( reader, infos, *lod );
+				pLoadVertices( reader, infos, *lod );
+				pLoadTrianglesOld( reader, infos, *lod );
+				pLoadQuadsOld( reader, infos, *lod );
 				
 				pUpdateFaceTexCoordIndices( model, infos, *lod );
 			}
@@ -794,9 +798,74 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 				lod->SetLodError( lodError );
 				lod->SetHasLodError( hasLodError );
 				
-				pLoadWeights( reader, model, infos, *lod );
-				pLoadVertices( reader, model, infos, *lod );
+				pLoadWeights( reader, infos, *lod );
+				pLoadVertices( reader, infos, *lod );
 				pLoadTexCoords( reader, infos, *lod );
+				pLoadTriangles( reader, infos, *lod );
+				pLoadQuads( reader, infos, *lod );
+			}
+			}break;
+			
+		case 6:{
+			infos.boneCount = reader.ReadUShort();
+			infos.textureCount = reader.ReadUShort();
+			infos.texCoordSetCount = reader.ReadUShort();
+			infos.vertexPositionSetCount = reader.ReadUShort();
+			const int lodMeshCount = reader.ReadUShort();
+			
+			pLoadBones( reader, model, infos );
+			pLoadTextures( reader, model, infos );
+			pLoadTexCoordSets( reader, model, infos );
+			pLoadVertPosSets( reader, model, infos );
+			
+			for( i=0; i<lodMeshCount; i++ ){
+				const int flags = reader.ReadByte();
+				
+				const bool hasLodError = ( ( flags & FLAG_HAS_LOD_ERROR ) == FLAG_HAS_LOD_ERROR );
+				float lodError = 0.01f;
+				if( hasLodError ){
+					lodError = reader.ReadFloat(); // lod error
+				}
+				
+				infos.isLargeModel = ( ( flags & FLAG_LARGE_MODEL ) == FLAG_LARGE_MODEL );
+				
+				if( infos.isLargeModel ){
+					infos.normalCount = reader.ReadInt();
+					infos.tangentCount = reader.ReadInt();
+					infos.weightsCount = reader.ReadInt();
+					infos.vertexCount = reader.ReadInt();
+					infos.triangleCount = reader.ReadInt();
+					infos.quadCount = reader.ReadInt();
+					
+				}else{
+					infos.normalCount = reader.ReadUShort();
+					infos.tangentCount = reader.ReadUShort();
+					infos.weightsCount = reader.ReadUShort();
+					infos.vertexCount = reader.ReadUShort();
+					infos.triangleCount = reader.ReadUShort();
+					infos.quadCount = reader.ReadUShort();
+				}
+				
+				infos.faceCount = infos.triangleCount + infos.quadCount * 2;
+				infos.weightSetList->RemoveAll();
+				
+				lod = new deModelLOD;
+				model.AddLOD( lod );
+				
+				lod->SetVertexCount( infos.vertexCount );
+				lod->SetFaceCount( infos.faceCount );
+				lod->SetNormalCount( infos.normalCount );
+				lod->SetTangentCount( infos.tangentCount );
+				lod->SetTextureCoordinatesSetCount( infos.texCoordSetCount );
+				lod->SetVertexPositionSetCount( infos.vertexPositionSetCount );
+				
+				lod->SetLodError( lodError );
+				lod->SetHasLodError( hasLodError );
+				
+				pLoadWeights( reader, infos, *lod );
+				pLoadVertices( reader, infos, *lod );
+				pLoadTexCoords( reader, infos, *lod );
+				pLoadVertPosSets( reader, infos, *lod );
 				pLoadTriangles( reader, infos, *lod );
 				pLoadQuads( reader, infos, *lod );
 			}
@@ -928,7 +997,22 @@ void deModelModule::pLoadTexCoordSets( decBaseFileReader &reader, deModel &model
 	}
 }
 
-void deModelModule::pLoadWeights( decBaseFileReader &reader, deModel &model, sModelInfos &infos, deModelLOD &lodMesh ){
+void deModelModule::pLoadVertPosSets( decBaseFileReader& reader, deModel& model, sModelInfos& infos ){
+	int i;
+	for( i=0; i<infos.vertexPositionSetCount; i++ ){
+		const decString name( reader.ReadString8() );
+		if( model.HasVertexPositionSetNamed( name ) ){
+			DETHROW( deeInvalidFormat );
+		}
+		
+		const int baseSet = reader.ReadUShort() - 1;
+		deModelVertexPositionSet * const vpset = new deModelVertexPositionSet( name );
+		vpset->SetBaseSet( baseSet );
+		model.AddVertexPositionSet( vpset );
+	}
+}
+
+void deModelModule::pLoadWeights( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
 	demdlWeightSet *weightSet = NULL;
 	int w, b, boneCount;
 	float factor;
@@ -1005,7 +1089,7 @@ void deModelModule::pLoadWeights( decBaseFileReader &reader, deModel &model, sMo
 	}
 }
 
-void deModelModule::pLoadVertices( decBaseFileReader &reader, deModel &model, sModelInfos &infos, deModelLOD &lodMesh ){
+void deModelModule::pLoadVertices( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
 	const int indexOffset = ( infos.version >= 3 ) ? -1 : 0; // hack until format is final
 	deModelVertex * const vertices = lodMesh.GetVertices();
 	int v, weights;
@@ -1066,8 +1150,36 @@ void deModelModule::pLoadTexCoords( decBaseFileReader &reader, sModelInfos &info
 	}
 }
 
-void deModelModule::pLoadTrianglesOld( decBaseFileReader &reader, deModel &model,
-sModelInfos &infos, deModelLOD &lodMesh ){
+void deModelModule::pLoadVertPosSets( decBaseFileReader& reader, sModelInfos& infos, deModelLOD& lodMesh ){
+	int i, j;
+	
+	for( i=0; i<infos.vertexPositionSetCount; i++ ){
+		deModelLodVertexPositionSet &vpset = lodMesh.GetVertexPositionSetAt( i );
+		
+		int vertexCount;
+		if( infos.isLargeModel ){
+			vertexCount = reader.ReadInt();
+			
+		}else{
+			vertexCount = reader.ReadUShort();
+		}
+		
+		vpset.SetPositionCount( vertexCount );
+		deModelLodVertexPositionSetPosition * const positions = vpset.GetPositions();
+		
+		for( j=0; j<vertexCount; j++ ){
+			if( infos.isLargeModel ){
+				positions[ j ].SetVertex( reader.ReadInt() );
+				
+			}else{
+				positions[ j ].SetVertex( reader.ReadUShort() );
+			}
+			positions[ j ].SetPosition( reader.ReadVector() );
+		}
+	}
+}
+
+void deModelModule::pLoadTrianglesOld( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
 	deModelFace * const faces = lodMesh.GetFaces();
 	int i, tcs, index;
 	
@@ -1183,7 +1295,7 @@ sModelInfos &infos, deModelLOD &lodMesh ){
 	}
 }
 
-void deModelModule::pLoadQuadsOld( decBaseFileReader &reader, deModel &model, sModelInfos &infos, deModelLOD &lodMesh ){
+void deModelModule::pLoadQuadsOld( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
 	deModelFace * const faces = lodMesh.GetFaces();
 	decVector2 texCoord;
 	int i, tcs, index;
@@ -1901,16 +2013,18 @@ void deModelModule::pUpdateFaceTexCoordIndices( deModel &model, sModelInfos &inf
 
 void deModelModule::pSaveModel( decBaseFileWriter &writer, const deModel &model ){
 	writer.Write( "Drag[en]gine Model", 18 );
-	writer.WriteUShort( 5 ); // version
+	writer.WriteUShort( 6 ); // version
 	writer.WriteUShort( 0 ); // flags
 	writer.WriteUShort( model.GetBoneCount() );
 	writer.WriteUShort( model.GetTextureCount() );
 	writer.WriteUShort( model.GetTextureCoordinatesSetList().GetCount() );
+	writer.WriteUShort( model.GetVertexPositionSetCount() );
 	writer.WriteUShort( model.GetLODCount() );
 	
 	pSaveBones( writer, model );
 	pSaveTextures( writer, model );
 	pSaveTexCoordSets( writer, model );
+	pSaveVertPosSets( writer, model );
 	pSaveLods( writer, model );
 }
 
@@ -1962,6 +2076,17 @@ void deModelModule::pSaveTexCoordSets( decBaseFileWriter &writer, const deModel 
 	}
 }
 
+void deModelModule::pSaveVertPosSets( decBaseFileWriter& writer, const deModel& model ){
+	const int count = model.GetVertexPositionSetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deModelVertexPositionSet &vpset = *model.GetVertexPositionSetAt( i );
+		writer.WriteString8( vpset.GetName() );
+		writer.WriteUShort( ( uint16_t )( vpset.GetBaseSet() + 1 ) );
+	}
+}
+
 void deModelModule::pSaveLods( decBaseFileWriter &writer, const deModel &model ){
 	const int count = model.GetLODCount();
 	int i;
@@ -2005,14 +2130,15 @@ void deModelModule::pSaveLods( decBaseFileWriter &writer, const deModel &model )
 			writer.WriteUShort( 0 ); // quad count
 		}
 		
-		pSaveWeights( writer, model, lod );
-		pSaveVertices( writer, model, lod, largeModel );
+		pSaveWeights( writer, lod );
+		pSaveVertices( writer, lod, largeModel );
 		pSaveTexCoords( writer, lod, largeModel );
+		pSaveVertPosSets( writer, lod, largeModel );
 		pSaveTriangles( writer, lod, largeModel );
 	}
 }
 
-void deModelModule::pSaveWeights( decBaseFileWriter &writer, const deModel &model, const deModelLOD &lodMesh ){
+void deModelModule::pSaveWeights( decBaseFileWriter &writer, const deModelLOD &lodMesh ){
 	const int wgcount = lodMesh.GetWeightGroupCount();
 	int weightIndex = 0;
 	int i, j, k;
@@ -2033,8 +2159,7 @@ void deModelModule::pSaveWeights( decBaseFileWriter &writer, const deModel &mode
 	}
 }
 
-void deModelModule::pSaveVertices( decBaseFileWriter &writer, const deModel &model,
-const deModelLOD &lodMesh, bool largeModel ){
+void deModelModule::pSaveVertices( decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel ){
 	const deModelVertex * const vertices = lodMesh.GetVertices();
 	const int count = lodMesh.GetVertexCount();
 	int i;
@@ -2072,6 +2197,35 @@ void deModelModule::pSaveTexCoords( decBaseFileWriter &writer, const deModelLOD 
 		
 		for( j=0; j<texCoordCount; j++ ){
 			writer.WriteVector2( texCoords[ j ] );
+		}
+	}
+}
+
+void deModelModule::pSaveVertPosSets( decBaseFileWriter& writer, const deModelLOD& lodMesh, bool largeModel ){
+	const int setCount = lodMesh.GetVertexPositionSetCount();
+	int i, j;
+	
+	for( i=0; i<setCount; i++ ){
+		const deModelLodVertexPositionSet &vpset = lodMesh.GetVertexPositionSetAt( i );
+		const deModelLodVertexPositionSetPosition * const positions = vpset.GetPositions();
+		const int positionCount = vpset.GetPositionCount();
+		
+		if( largeModel ){
+			writer.WriteInt( positionCount );
+			
+		}else{
+			writer.WriteUShort( ( uint16_t )positionCount );
+		}
+		
+		for( j=0; j<positionCount; j++ ){
+			if( largeModel ){
+				writer.WriteInt( positions[ j ].GetVertex() );
+				
+			}else{
+				writer.WriteUShort( ( uint16_t )positions[ j ].GetVertex() );
+			}
+			
+			writer.WriteVector( positions[ j ].GetPosition() );
 		}
 	}
 }

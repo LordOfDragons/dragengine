@@ -33,6 +33,8 @@
 #include "deModelManager.h"
 #include "deModelWeight.h"
 #include "deModelTextureCoordinatesSet.h"
+#include "deModelVertexPositionSet.h"
+#include "deModelLodVertexPositionSet.h"
 #include "../../deEngine.h"
 #include "../../common/exceptions.h"
 #include "../../systems/modules/audio/deBaseAudioModel.h"
@@ -62,6 +64,10 @@ pTextureSize( 0 ),
 pLODs( NULL ),
 pLODCount( 0 ),
 pLODSize( 0 ),
+
+pVertexPositionSets( nullptr ),
+pVertexPositionSetCount( 0 ),
+pVertexPositionSetSize( 0 ),
 
 pPeerGraphic ( NULL ),
 pPeerPhysics ( NULL ),
@@ -98,6 +104,14 @@ deModel::~deModel(){
 		delete [] pTextures;
 	}
 	
+	if( pVertexPositionSets ){
+		while( pVertexPositionSetCount > 0 ){
+			pVertexPositionSetCount--;
+			delete pVertexPositionSets[ pVertexPositionSetCount ];
+		}
+		delete [] pVertexPositionSets;
+	}
+	
 	if( pBones ){
 		while( pBoneCount > 0 ){
 			pBoneCount--;
@@ -113,7 +127,7 @@ deModel::~deModel(){
 ///////////////
 
 bool deModel::Verify(){
-	bool *visited = NULL;
+	bool *visited = nullptr;
 	int i, j, parent;
 	bool success = true;
 	
@@ -177,6 +191,13 @@ bool deModel::Verify(){
 			if( pLODs[ i ]->GetTextureCoordinatesSetAt( j ).GetTextureCoordinatesCount() != texCoordCount ){
 				return false;
 			}
+		}
+	}
+	
+	// verify each lod level has the correct count of vertex position sets
+	for( i=0; i<pLODCount; i++ ){
+		if( pLODs[ i ]->GetVertexPositionSetCount() != pVertexPositionSetCount ){
+			return false;
 		}
 	}
 	
@@ -319,6 +340,59 @@ void deModel::AddLOD( deModelLOD *lod ){
 	}
 	
 	pLODs[ pLODCount++ ] = lod;
+}
+
+
+
+// Vertex position sets
+/////////////////////////
+
+int deModel::IndexOfVertexPositionSetNamed( const char *name ) const{
+	int i;
+	for( i=0; i<pVertexPositionSetCount; i++ ){
+		if( pVertexPositionSets[ i ]->GetName() == name ){
+			return i;
+		}
+	}
+	return -1;
+}
+
+bool deModel::HasVertexPositionSetNamed( const char *name ) const{
+	int i;
+	for( i=0; i<pVertexPositionSetCount; i++ ){
+		if( pVertexPositionSets[ i ]->GetName() == name ){
+			return true;
+		}
+	}
+	return false;
+}
+
+deModelVertexPositionSet *deModel::GetVertexPositionSetAt( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pVertexPositionSetCount )
+	
+	return pVertexPositionSets[ index ];
+}
+
+void deModel::AddVertexPositionSet( deModelVertexPositionSet *set ){
+	DEASSERT_NOTNULL( set )
+	
+	if( pVertexPositionSetCount == pVertexPositionSetSize ){
+		const int newSize = pVertexPositionSetSize * 3 / 2 + 1;
+		int i;
+		
+		deModelVertexPositionSet ** const newArray = new deModelVertexPositionSet*[ newSize ];
+		if( pVertexPositionSets ){
+			for( i=0; i<pVertexPositionSetCount; i++ ){
+				newArray[ i ] = pVertexPositionSets[ i ];
+			}
+			delete [] pVertexPositionSets;
+		}
+		pVertexPositionSets = newArray;
+		pVertexPositionSetSize = newSize;
+	}
+	
+	pVertexPositionSets[ pVertexPositionSetCount++ ] = set;
 }
 
 

@@ -365,6 +365,9 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelReference.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTexture.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertex.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelWeight.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlocker.cpp" />
@@ -1035,6 +1038,9 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelReference.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTexture.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertex.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelWeight.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlocker.h" />
