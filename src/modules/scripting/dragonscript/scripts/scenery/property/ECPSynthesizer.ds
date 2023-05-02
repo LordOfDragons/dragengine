@@ -98,8 +98,9 @@ class ECPSynthesizer extends ElementClassProperty
 	 * \version 1.17
 	 */
 	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
-		if pPath != null and not pPath.empty()
-			pPath = File.absolutePath((property cast ECPSynthesizer).pPath, elementClass.getBasePath()).getPath()
+		var String path = (property cast ECPSynthesizer).pPath
+		if path != null and not path.empty()
+			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
 		end
 	end
 	

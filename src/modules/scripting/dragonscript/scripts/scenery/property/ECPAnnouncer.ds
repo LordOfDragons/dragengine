@@ -100,8 +100,9 @@ class ECPAnnouncer extends ElementClassProperty implements PreloadListener
 	 * \version 1.17
 	 */
 	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
-		if pPath != null and not pPath.empty()
-			pPath = File.absolutePath((property cast ECPAnnouncer).pPath, elementClass.getBasePath()).getPath()
+		var String path = (property cast ECPAnnouncer).pPath
+		if path != null and not path.empty()
+			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
 		end
 	end
 	

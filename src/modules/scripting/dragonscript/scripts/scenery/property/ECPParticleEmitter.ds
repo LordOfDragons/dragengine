@@ -99,8 +99,9 @@ class ECPParticleEmitter extends ElementClassProperty
 	 * \version 1.17
 	 */
 	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
-		if pPath != null and not pPath.empty()
-			pPath = File.absolutePath((property cast ECPParticleEmitter).pPath, elementClass.getBasePath()).getPath()
+		var String path = (property cast ECPParticleEmitter).pPath
+		if path != null and not path.empty()
+			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
 		end
 	end
 	
