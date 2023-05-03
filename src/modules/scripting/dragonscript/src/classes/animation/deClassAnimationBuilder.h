@@ -88,6 +88,8 @@ private:
 	DEF_NATFUNC( nfAddMove2 );
 	DEF_NATFUNC( nfSetKeyframeListCount );
 	DEF_NATFUNC( nfAddKeyframe );
+	DEF_NATFUNC( nfSetVertexPositionSetKeyframeListCount );
+	DEF_NATFUNC( nfAddVertexPositionSetKeyframe );
 #undef DEF_NATFUNC
 };
 

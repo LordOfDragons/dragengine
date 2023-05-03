@@ -206,6 +206,8 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationBuilder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframe.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSetList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationMove.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationReference.cpp" />
@@ -879,6 +881,8 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationBuilder.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframe.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSetList.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationMove.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationReference.h" />

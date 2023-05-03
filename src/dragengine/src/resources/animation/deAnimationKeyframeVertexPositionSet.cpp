@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine Game Engine
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,27 +19,23 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "deAnimation.h"
-#include "deAnimationKeyframe.h"
-#include "../../common/file/decBaseFileReader.h"
+#include "deAnimationKeyframeVertexPositionSet.h"
 #include "../../common/exceptions.h"
 
 
-// class deAnimationKeyframe
-//////////////////////////////
+// class deAnimationKeyframeVertexPositionSet
+///////////////////////////////////////////////
 
 // constructor, destructor
 ////////////////////////////
 
-deAnimationKeyframe::deAnimationKeyframe() :
+deAnimationKeyframeVertexPositionSet::deAnimationKeyframeVertexPositionSet() :
 pTime( 0.0f ),
-pScale( 1.0f, 1.0f, 1.0f ){
+pWeight( 0.0f ){
 }
 
-deAnimationKeyframe::~deAnimationKeyframe(){
+deAnimationKeyframeVertexPositionSet::~deAnimationKeyframeVertexPositionSet(){
 }
 
 
@@ -47,18 +43,10 @@ deAnimationKeyframe::~deAnimationKeyframe(){
 // management
 ///////////////
 
-void deAnimationKeyframe::SetTime( float time ){
+void deAnimationKeyframeVertexPositionSet::SetTime( float time ){
 	pTime = decMath::max( time, 0.0f );
 }
 
-void deAnimationKeyframe::SetPosition( const decVector &position ){
-	pPosition = position;
-}
-
-void deAnimationKeyframe::SetRotation( const decVector &rotation ){
-	pRotation = rotation;
-}
-
-void deAnimationKeyframe::SetScale( const decVector &scale ){
-	pScale = scale;
+void deAnimationKeyframeVertexPositionSet::SetWeight( float weight ){
+	pWeight = weight;
 }
