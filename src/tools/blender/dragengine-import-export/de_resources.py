@@ -366,7 +366,6 @@ class Mesh:
 			self.index = index
 			self.texture = None
 			self.texCoordSets = []
-			self.vertPosSets = []
 		
 		def __repr__(self):
 			return "[%i: vertices(%s) normals(%s) tangents(%s) edges(%s)]" % (self.index,
@@ -456,7 +455,7 @@ class Mesh:
 							None, self.mesh.uv_layers[i]))
 	
 	# add vertex position sets
-	def initAddVertPosSets(self, baseMesh):
+	def initAddVertPosSets(self, baseMesh=None):
 		if not self.mesh.shape_keys:
 			if baseMesh:
 				for vps in baseMesh.vertPosSets:
@@ -471,12 +470,14 @@ class Mesh:
 				else:
 					self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), None, vps.name))
 		else:
-			for shapeKey in self.mesh.shape_keys.key_blocks:
-				self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), shapeKey))
+			# skip first shape key as this is the base shape key.
+			# fun fact: the first shape key has itself as relative key
+			for shapeKey in self.mesh.shape_keys.key_blocks[1:]:
+				if shapeKey and shapeKey.relative_key != shapeKey:
+					self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), shapeKey))
 			
 		for vps in self.vertPosSets:
-			# base shape key (first one) has itself as base shape key
-			if not vps.shapeKey or vps.shapeKey.relative_key == vps.shapeKey:
+			if not vps.shapeKey:
 				continue
 			
 			found = [x for x in self.vertPosSets if x.shapeKey == vps.shapeKey.relative_key]

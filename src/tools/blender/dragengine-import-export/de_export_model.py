@@ -197,7 +197,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			timer.logTime('mesh.initAddTexCoordSets')
 			self.progress.advance("Prepare texture coordinate sets")
 			
-			mesh.initAddVertPosSets(self.mesh)
+			mesh.initAddVertPosSets(self.mesh if mesh != self.mesh else None)
 			timer.logTime('mesh.initAddVertPosSets')
 			self.progress.advance("Prepare vertex position sets")
 			
