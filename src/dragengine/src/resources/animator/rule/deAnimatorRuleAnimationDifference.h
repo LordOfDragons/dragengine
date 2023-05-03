@@ -55,6 +55,7 @@ private:
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 	deAnimatorControllerTarget pTargetLeadMoveTime;
 	deAnimatorControllerTarget pTargetRefMoveTime;
@@ -127,6 +128,12 @@ public:
 	
 	/** \brief Sets if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
+	
+	/** \brief Vertex position sets are enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** \brief Set if vertex position sets are enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
 	
 	/** \brief Leading move time target. */
 	inline deAnimatorControllerTarget &GetTargetLeadingMoveTime(){ return pTargetLeadMoveTime; }

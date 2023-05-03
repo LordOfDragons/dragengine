@@ -37,7 +37,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimatorRuleLimit::deAnimatorRuleLimit(){
+deAnimatorRuleLimit::deAnimatorRuleLimit() :
+pMinVertexPositionSet( 0.0f ),
+pMaxVertexPositionSet( 1.0f ),
+pEnableVertexPositionSetMin( false ),
+pEnableVertexPositionSetMax( false )
+{
 	pCoordinateFrame = ecfComponent;
 	pMinScaling.Set( 1.0f, 1.0f, 1.0f );
 	pMaxScaling.Set( 1.0f, 1.0f, 1.0f );
@@ -96,12 +101,17 @@ void deAnimatorRuleLimit::SetMaximumScaling( const decVector &scaling ){
 	pMaxScaling = scaling;
 }
 
+void deAnimatorRuleLimit::SetMinimumVertexPositionSet( float weight ){
+	pMinVertexPositionSet = weight;
+}
+
+void deAnimatorRuleLimit::SetMaximumVertexPositionSet( float weight ){
+	pMaxVertexPositionSet = weight;
+}
+
 
 
 void deAnimatorRuleLimit::SetCoordinateFrame( eCoordinateFrames coordinateFrame ){
-	if( coordinateFrame < ecfBoneLocal || coordinateFrame > ecfTargetBone ){
-		DETHROW( deeInvalidParam );
-	}
 	pCoordinateFrame = coordinateFrame;
 }
 
@@ -185,8 +195,22 @@ void deAnimatorRuleLimit::SetEnableScalingZMax( bool enabled ){
 
 
 
+void deAnimatorRuleLimit::SetEnableVertexPositionSetMin( bool enabled ){
+	pEnableVertexPositionSetMin = enabled;
+}
+
+void deAnimatorRuleLimit::SetEnableVertexPositionSetMax( bool enabled ){
+	pEnableVertexPositionSetMax = enabled;
+}
+
+
+
 void deAnimatorRuleLimit::SetTargetBone( const char *boneName ){
 	pTargetBone = boneName;
+}
+
+void deAnimatorRuleLimit::SetTargetVertexPositionSet( const char *vertexPositionSet ){
+	pTargetVertexPositionSet = vertexPositionSet;
 }
 
 

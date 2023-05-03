@@ -400,6 +400,23 @@ void deClassAnimator::nfSetLinkBoneValueRangeRotation::RunFunction( dsRunTime *r
 	animator.NotifyLinkChangedAt( index );
 }
 
+// public func void setLinkVertexPositionSet(int link, String name);
+deClassAnimator::nfSetLinkVertexPositionSet::nfSetLinkVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassAnimator::nfSetLinkVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetVertexPositionSet( rt->GetValue( 1 )->GetString() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
 // public func void setLinkWrapY( int link, bool wrap );
 deClassAnimator::nfSetLinkWrapY::nfSetLinkWrapY( const sInitData &init ) :
 dsFunction( init.clsAr, "setLinkWrapY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -507,6 +524,31 @@ void deClassAnimator::nfRemoveAllBones::RunFunction( dsRunTime *rt, dsValue *mys
 	
 	animator.GetListBones().RemoveAll();
 	animator.NotifyBonesChanged();
+}
+
+
+
+// public func void addVertexPositionSet(String name)
+deClassAnimator::nfAddVertexPositionSet::nfAddVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsArR, "addVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // bonename
+}
+void deClassAnimator::nfAddVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	animator.GetListVertexPositionSets().Add( rt->GetValue( 0 )->GetString() );
+	animator.NotifyVertexPositionSetsChanged();
+}
+
+// public func void removeAllVertexPositionSets()
+deClassAnimator::nfRemoveAllVertexPositionSets::nfRemoveAllVertexPositionSets( const sInitData &init ) :
+dsFunction( init.clsArR, "removeAllVertexPositionSets", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassAnimator::nfRemoveAllVertexPositionSets::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	animator.GetListVertexPositionSets().RemoveAll();
+	animator.NotifyVertexPositionSetsChanged();
 }
 
 
@@ -629,6 +671,7 @@ void deClassAnimator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetLinkBoneParameter( init ) );
 	AddFunction( new nfSetLinkBoneValueRange( init ) );
 	AddFunction( new nfSetLinkBoneValueRangeRotation( init ) );
+	AddFunction( new nfSetLinkVertexPositionSet( init ) );
 	AddFunction( new nfSetLinkWrapY( init ) );
 	
 	AddFunction( new nfGetRuleCount( init ) );
@@ -639,6 +682,9 @@ void deClassAnimator::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfAddBone( init ) );
 	AddFunction( new nfRemoveAllBones( init ) );
+	
+	AddFunction( new nfAddVertexPositionSet( init ) );
+	AddFunction( new nfRemoveAllVertexPositionSets( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfEquals2( init ) );

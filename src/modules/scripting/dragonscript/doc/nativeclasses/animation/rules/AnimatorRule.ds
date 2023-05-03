@@ -60,5 +60,28 @@ class AnimatorRule
 	/** \brief Copy all bones from another rule. */
 	public func void copyBonesFrom(AnimatorRule rule)
 	end
+	
+	
+	
+	/**
+	 * \brief Add vertex position set.
+	 * \version 1.17
+	 */
+	public func void addVertexPositionSet(String vertexPositionSet)
+	end
+	
+	/**
+	 * \brief Remove all vertex position sets.
+	 * \version 1.17
+	 */
+	public func void removeAllVertexPositionSets()
+	end
+	
+	/**
+	 * \brief Copy all vertex position sets from another rule.
+	 * \version 1.17
+	 */
+	public func void copyVertexPositionSetsFrom(AnimatorRule rule)
+	end
 	/*@}*/
 end

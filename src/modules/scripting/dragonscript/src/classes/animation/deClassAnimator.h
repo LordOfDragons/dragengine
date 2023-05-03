@@ -108,6 +108,7 @@ private:
 	DEF_NATFUNC( nfSetLinkBoneParameter );
 	DEF_NATFUNC( nfSetLinkBoneValueRange );
 	DEF_NATFUNC( nfSetLinkBoneValueRangeRotation );
+	DEF_NATFUNC( nfSetLinkVertexPositionSet );
 	DEF_NATFUNC( nfSetLinkWrapY );
 	
 	DEF_NATFUNC( nfGetRuleCount );
@@ -118,6 +119,9 @@ private:
 	
 	DEF_NATFUNC( nfAddBone );
 	DEF_NATFUNC( nfRemoveAllBones );
+	
+	DEF_NATFUNC( nfAddVertexPositionSet );
+	DEF_NATFUNC( nfRemoveAllVertexPositionSets );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfEquals2 );

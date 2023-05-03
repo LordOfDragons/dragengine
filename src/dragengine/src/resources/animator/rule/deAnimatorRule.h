@@ -75,6 +75,7 @@ public:
 private:
 	deAnimator *pAnimator;
 	decStringSet pListBones;
+	decStringSet pListVertexPositionSets;
 	eBlendModes pBlendMode;
 	float pBlendFactor;
 	bool pInvertBlendFactor;
@@ -147,6 +148,13 @@ public:
 	/** \brief List of bones. */
 	inline decStringSet &GetListBones(){ return pListBones; }
 	inline const decStringSet &GetListBones() const{ return pListBones; }
+	
+	/**
+	 * \brief List of vertex position sets.
+	 * \version 1.17
+	 */
+	inline decStringSet &GetListVertexPositionSets(){ return pListVertexPositionSets; }
+	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
 	
 	/** \brief Blend factor target. */
 	inline deAnimatorControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }

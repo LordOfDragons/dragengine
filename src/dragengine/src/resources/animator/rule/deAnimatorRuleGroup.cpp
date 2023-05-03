@@ -41,6 +41,7 @@ deAnimatorRuleGroup::deAnimatorRuleGroup() :
 pEnablePosition( true ),
 pEnableOrientation( true ),
 pEnableSize( true ),
+pEnableVertexPositionSet( true ),
 pUseCurrentState( false ),
 pApplicationType( deAnimatorRuleGroup::eatAll ){
 }
@@ -71,9 +72,7 @@ bool deAnimatorRuleGroup::HasRule( deAnimatorRule *rule ) const{
 }
 
 void deAnimatorRuleGroup::AddRule( deAnimatorRule *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( rule )
 	pRules.Add( rule );
 }
 
@@ -99,6 +98,10 @@ void deAnimatorRuleGroup::SetEnableSize( bool enabled ){
 	pEnableSize = enabled;
 }
 
+void deAnimatorRuleGroup::SetEnableVertexPositionSet( bool enabled ){
+	pEnableVertexPositionSet = enabled;
+}
+
 
 
 void deAnimatorRuleGroup::SetUseCurrentState( bool useCurrentState ){
@@ -106,10 +109,6 @@ void deAnimatorRuleGroup::SetUseCurrentState( bool useCurrentState ){
 }
 
 void deAnimatorRuleGroup::SetApplicationType( deAnimatorRuleGroup::eApplicationTypes type ){
-	if( type < deAnimatorRuleGroup::eatAll || type > deAnimatorRuleGroup::eatSelect ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pApplicationType = type;
 }
 

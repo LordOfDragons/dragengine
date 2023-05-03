@@ -204,6 +204,14 @@ class Animator
 	end
 	
 	/**
+	 * \brief Set vertex position set to use as input for link or empty string to not use.
+	 * \version 1.17
+	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
+	 */
+	public func void setLinkVertexPositionSet(int link, String vertexPositionSet)
+	end
+	
+	/**
 	 * \brief Set to wrap Y value instead of clamping.
 	 * \version 1.9
 	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
@@ -248,6 +256,25 @@ class Animator
 	
 	/** \brief Remove all bones. */
 	public func void removeAllBones()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name VertexPositionSets */
+	/*@{*/
+	/**
+	 * \brief Add vertex position set.
+	 * \version 1.17
+	 */
+	public func void addVertexPositionSet(String vertexPositionSet)
+	end
+	
+	/**
+	 * \brief Remove all vertex position sets.
+	 * \version 1.17
+	 */
+	public func void removeAllVertexPositionSets()
 	end
 	/*@}*/
 end

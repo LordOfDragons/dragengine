@@ -26,68 +26,89 @@ class ARForeignState extends AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Set scale position. */
-	public func void setScalePosition( float scalePosition )
+	public func void setScalePosition(float scalePosition)
 	end
 	
 	/** \brief Set scale orientation. */
-	public func void setScaleOrientation( float scaleOrientation )
+	public func void setScaleOrientation(float scaleOrientation)
 	end
 	
 	/** \brief Set scale size. */
-	public func void setScaleSize( float scaleSize )
+	public func void setScaleSize(float scaleSize)
+	end
+	
+	/**
+	 * \brief Set scale vertex position set.
+	 * \version 1.17
+	 */
+	public func void setScaleVertexPositionSet(float scale)
 	end
 	
 	/** \brief Set foreign bone. */
-	public func void setForeignBone( String boneName )
+	public func void setForeignBone(String boneName)
+	end
+	
+	/**
+	 * \brief Set foreign vertex position set.
+	 * \version 1.17
+	 */
+	public func void setForeignVertexPositionSet(String vertexPositionSet)
 	end
 	
 	/**
 	 * \brief Set source coordinate frame.
 	 * \throws EInvalidParam \em coordinateFrame is not a valid value.
 	 */
-	public func void setSourceCoordinateFrame( ARForeignStateCFrame coordinateFrame )
+	public func void setSourceCoordinateFrame(ARForeignStateCFrame coordinateFrame)
 	end
 	
 	/**
 	 * \brief Set destination coordinate frame.
 	 * \throws EInvalidParam \em coordinateFrame is not a valid value.
 	 */
-	public func void setDestinationCoordinateFrame( ARForeignStateCFrame coordinateFrame )
+	public func void setDestinationCoordinateFrame(ARForeignStateCFrame coordinateFrame)
 	end
 	
 	/**
 	 * \brief Modify X component.
 	 * \version 1.6
 	 */
-	public func void setModifyX( bool modify )
+	public func void setModifyX(bool modify)
 	end
 	
 	/**
 	 * \brief Modify Y component.
 	 * \version 1.6
 	 */
-	public func void setModifyY( bool modify )
+	public func void setModifyY(bool modify)
 	end
 	
 	/**
 	 * \brief Modify Z component.
 	 * \version 1.6
 	 */
-	public func void setModifyZ( bool modify )
+	public func void setModifyZ(bool modify)
 	end
 	
 	
 	
 	/** \brief Enable position modification. */
-	public func void setEnablePosition( bool enabled )
+	public func void setEnablePosition(bool enabled)
 	end
 	
 	/** \brief Enable orientation modification. */
-	public func void setEnableOrientation( bool enabled )
+	public func void setEnableOrientation(bool enabled)
 	end
 	
 	/** \brief Enable size modification. */
-	public func void setEnableSize( bool enabled )
+	public func void setEnableSize(bool enabled)
+	end
+	
+	/**
+	 * \brief Enable vertex position set modification.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enabled)
 	end
 	
 	
@@ -96,14 +117,14 @@ class ARForeignState extends AnimatorRule
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink( ARForeignStateTarget target, int link )
+	public func void targetAddLink(ARForeignStateTarget target, int link)
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks( ARForeignStateTarget target )
+	public func void targetRemoveAllLinks(ARForeignStateTarget target)
 	end
 	/*@}*/
 end

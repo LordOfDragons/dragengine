@@ -152,6 +152,21 @@ void deClassARMirror::nfSetEnableSize::RunFunction( dsRunTime *rt, dsValue *myse
 	}
 }
 
+// public func void setEnableVertexPositionSet( bool enabled )
+deClassARMirror::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARMirror, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARMirror::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARMirrorNatDat &nd = *( ( sARMirrorNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void targetAddLink( ARMirrorTarget target, int link )

@@ -26,64 +26,99 @@ class ARLimit extends AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Set enable position minimum. */
-	public func void setEnablePosMin( bool enabledX, bool enabledY, bool enabledY )
+	public func void setEnablePosMin(bool enabledX, bool enabledY, bool enabledY)
 	end
 	
 	/** \brief Set enable position maximum. */
-	public func void setEnablePosMax( bool enabledX, bool enabledY, bool enabledY )
+	public func void setEnablePosMax(bool enabledX, bool enabledY, bool enabledY)
 	end
 	
 	/** \brief Set enable rotation minimum. */
-	public func void setEnableRotMin( bool enabledX, bool enabledY, bool enabledY )
+	public func void setEnableRotMin(bool enabledX, bool enabledY, bool enabledY)
 	end
 	
 	/** \brief Set enable rotation maximum. */
-	public func void setEnableRotMax( bool enabledX, bool enabledY, bool enabledY )
+	public func void setEnableRotMax(bool enabledX, bool enabledY, bool enabledY)
 	end
 	
 	/** \brief Set enable scale minimum. */
-	public func void setEnableScaleMin( bool enabledX, bool enabledY, bool enabledY )
+	public func void setEnableScaleMin(bool enabledX, bool enabledY, bool enabledY)
 	end
 	
 	/** \brief Set enable scale maximum. */
-	public func void setEnableScaleMax( bool enabledX, bool enabledY, bool enabledY )
+	public func void setEnableScaleMax(bool enabledX, bool enabledY, bool enabledY)
+	end
+	
+	/**
+	 * \brief Set enable vertex position minimum.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSetMin(bool enabled)
+	end
+	
+	/**
+	 * \brief Set enable vertex position set maximum.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSetMax(bool enabled)
 	end
 	
 	/** \brief Set minimum position value. */
-	public func void setMinimumPosition( Vector position )
+	public func void setMinimumPosition(Vector position)
 	end
 	
 	/** \brief Set maximum position value. */
-	public func void setMaximumPosition( Vector position )
+	public func void setMaximumPosition(Vector position)
 	end
 	
 	/** \brief Set minimum rotation value. */
-	public func void setMinimumRotation( Vector rotation )
+	public func void setMinimumRotation(Vector rotation)
 	end
 	
 	/** \brief Set maximum rotation value. */
-	public func void setMaximumRotation( Vector rotation )
+	public func void setMaximumRotation(Vector rotation)
 	end
 	
 	/** \brief Set minimum scaling value. */
-	public func void setMinimumScaling( Vector scaling )
+	public func void setMinimumScaling(Vector scaling)
 	end
 	
 	/** \brief Set maximum scaling value. */
-	public func void setMaximumScaling( Vector scaling )
+	public func void setMaximumScaling(Vector scaling)
+	end
+	
+	/**
+	 * \brief Set minimum vertex position set weight.
+	 * \version 1.17
+	 */
+	public func void setMinimumVertexPositionSet(float weight)
+	end
+	
+	/**
+	 * \brief Set maximum vertex position set weight.
+	 * \version 1.17
+	 */
+	public func void setMaximumVertexPositionSet(float weight)
 	end
 	
 	/**
 	 * \brief Set coordinate frame.
 	 * \throws EInvalidParam \em coordinateFrame is an invalid value.
 	 */
-	public func void setCoordinateFrame( ARLimitCFrame coordinateFrame )
+	public func void setCoordinateFrame(ARLimitCFrame coordinateFrame)
 	end
 	
 	/**
 	 * \brief Set target bone or empty string if not set.
 	 */
-	public func void setTargetBone( String boneName )
+	public func void setTargetBone(String boneName)
+	end
+	
+	/**
+	 * \brief Set target vertex position set or empty string if not set.
+	 * \version 1.17
+	 */
+	public func void setTargetVertexPositionSet(String vertexPositionSet)
 	end
 	
 	
@@ -92,14 +127,14 @@ class ARLimit extends AnimatorRule
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink( ARLimitTarget target, int link )
+	public func void targetAddLink(ARLimitTarget target, int link)
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks( ARLimitTarget target )
+	public func void targetRemoveAllLinks(ARLimitTarget target)
 	end
 	/*@}*/
 end

@@ -258,6 +258,70 @@ void deClassAnimatorRule::nfCopyBonesFrom::RunFunction( dsRunTime *rt, dsValue *
 
 
 
+// public func void addVertexPositionSet(String name)
+deClassAnimatorRule::nfAddVertexPositionSet::nfAddVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsArR, "addVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassAnimatorRule::nfAddVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	
+	if( ! nd.rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.rule->GetListVertexPositionSets().Add( rt->GetValue( 0 )->GetString() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void removeAllVertexPositionSets()
+deClassAnimatorRule::nfRemoveAllVertexPositionSets::nfRemoveAllVertexPositionSets( const sInitData &init ) :
+dsFunction( init.clsArR, "removeAllVertexPositionSets", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassAnimatorRule::nfRemoveAllVertexPositionSets::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	
+	if( ! nd.rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.rule->GetListVertexPositionSets().RemoveAll();
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void copyVertexPositionSetsFrom(AnimatorRule rule)
+deClassAnimatorRule::nfCopyVertexPositionSetsFrom::nfCopyVertexPositionSetsFrom( const sInitData &init ) :
+dsFunction( init.clsArR, "copyVertexPositionSetsFrom", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsArR ); // rule
+}
+void deClassAnimatorRule::nfCopyVertexPositionSetsFrom::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	deClassAnimatorRule &clsArR = *( ( deClassAnimatorRule* )GetOwnerClass() );
+	
+	if( ! nd.rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deAnimatorRule *rule = clsArR.GetRule( rt->GetValue( 0 )->GetRealObject() );
+	if( ! rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.rule->GetListVertexPositionSets() = rule->GetListVertexPositionSets();
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+
+
 // Class deClassAnimatorRule
 //////////////////////////////
 
@@ -306,6 +370,10 @@ void deClassAnimatorRule::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfAddBone( init ) );
 	AddFunction( new nfRemoveAllBones( init ) );
 	AddFunction( new nfCopyBonesFrom( init ) );
+	
+	AddFunction( new nfAddVertexPositionSet( init ) );
+	AddFunction( new nfRemoveAllVertexPositionSets( init ) );
+	AddFunction( new nfCopyVertexPositionSetsFrom( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

@@ -47,7 +47,8 @@ public:
 		etBlendFactor,
 		etPosition,
 		etOrientation,
-		etSize
+		etSize,
+		etVertexPositionSet
 	};
 	
 private:
@@ -104,6 +105,7 @@ private:
 	DEF_NATFUNC( nfSetEnablePosition );
 	DEF_NATFUNC( nfSetEnableOrientation );
 	DEF_NATFUNC( nfSetEnableSize );
+	DEF_NATFUNC( nfSetEnableVertexPositionSet );
 	
 	DEF_NATFUNC( nfSetMinimumPosition );
 	DEF_NATFUNC( nfSetMaximumPosition );
@@ -111,6 +113,8 @@ private:
 	DEF_NATFUNC( nfSetMaximumRotation );
 	DEF_NATFUNC( nfSetMinimumSize );
 	DEF_NATFUNC( nfSetMaximumSize );
+	DEF_NATFUNC( nfSetMinimumVertexPositionSet );
+	DEF_NATFUNC( nfSetMaximumVertexPositionSet );
 	
 	DEF_NATFUNC( nfTargetAddLink );
 	DEF_NATFUNC( nfTargetRemoveAllLinks );

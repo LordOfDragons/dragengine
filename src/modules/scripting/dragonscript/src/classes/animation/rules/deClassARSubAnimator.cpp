@@ -153,6 +153,21 @@ void deClassARSubAnimator::nfSetEnableSize::RunFunction( dsRunTime *rt, dsValue 
 	}
 }
 
+// public func void setEnableVertexPositionSet( bool enabled )
+deClassARSubAnimator::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARSubA, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARSubAnimator::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARSubANatDat &nd = *( ( sARSubANatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void targetAddLink( ARSubAnimatorTarget target, int link )
@@ -344,6 +359,7 @@ void deClassARSubAnimator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnablePosition( init ) );
 	AddFunction( new nfSetEnableOrientation( init ) );
 	AddFunction( new nfSetEnableSize( init ) );
+	AddFunction( new nfSetEnableVertexPositionSet( init ) );
 	
 	AddFunction( new nfSetSubAnimator( init ) );
 	AddFunction( new nfSetConnectionAt( init ) );

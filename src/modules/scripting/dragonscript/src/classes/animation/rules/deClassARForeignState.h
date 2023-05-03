@@ -47,7 +47,8 @@ public:
 		etBlendFactor,
 		etPosition,
 		etOrientation,
-		etSize
+		etSize,
+		etVertexPositionSet
 	};
 	
 private:
@@ -110,7 +111,9 @@ private:
 	DEF_NATFUNC( nfSetScalePosition );
 	DEF_NATFUNC( nfSetScaleOrientation );
 	DEF_NATFUNC( nfSetScaleSize );
+	DEF_NATFUNC( nfSetScaleVertexPositionSet );
 	DEF_NATFUNC( nfSetForeignBone );
+	DEF_NATFUNC( nfSetForeignVertexPositionSet );
 	DEF_NATFUNC( nfSetSourceCoordinateFrame );
 	DEF_NATFUNC( nfSetDestinationCoordinateFrame );
 	DEF_NATFUNC( nfSetModifyX );
@@ -120,6 +123,7 @@ private:
 	DEF_NATFUNC( nfSetEnablePosition );
 	DEF_NATFUNC( nfSetEnableOrientation );
 	DEF_NATFUNC( nfSetEnableSize );
+	DEF_NATFUNC( nfSetEnableVertexPositionSet );
 #undef DEF_NATFUNC
 };
 

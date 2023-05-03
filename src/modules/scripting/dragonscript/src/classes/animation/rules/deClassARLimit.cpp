@@ -221,6 +221,36 @@ void deClassARLimit::nfSetEnableScaleMax::RunFunction( dsRunTime *rt, dsValue *m
 	}
 }
 
+// public func void setEnableVertexPositionSetMin(bool enabled)
+deClassARLimit::nfSetEnableVertexPositionSetMin::nfSetEnableVertexPositionSetMin( const sInitData &init ) :
+dsFunction( init.clsARLimit, "setEnableVertexPositionSetMin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARLimit::nfSetEnableVertexPositionSetMin::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSetMin( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setEnableVertexPositionSetMax(bool enabled)
+deClassARLimit::nfSetEnableVertexPositionSetMax::nfSetEnableVertexPositionSetMax( const sInitData &init ) :
+dsFunction( init.clsARLimit, "setEnableVertexPositionSetMax", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARLimit::nfSetEnableVertexPositionSetMax::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSetMax( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void setMinimumPosition( Vector translation )
@@ -337,6 +367,36 @@ void deClassARLimit::nfSetMaximumScaling::RunFunction( dsRunTime *rt, dsValue *m
 	}
 }
 
+// public func void setMinimumVertexPositionSet(float scale)
+deClassARLimit::nfSetMinimumVertexPositionSet::nfSetMinimumVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARLimit, "setMinimumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // scale
+}
+void deClassARLimit::nfSetMinimumVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetMinimumVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setMaximumVertexPositionSet(float scale)
+deClassARLimit::nfSetMaximumVertexPositionSet::nfSetMaximumVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARLimit, "setMaximumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // scale
+}
+void deClassARLimit::nfSetMaximumVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetMaximumVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 // public func void setCoordinateFrame( ARLimitCFrame coordinateFrame )
 deClassARLimit::nfSetCoordinateFrame::nfSetCoordinateFrame( const sInitData &init ) : dsFunction( init.clsARLimit,
 "setCoordinateFrame", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -367,6 +427,21 @@ void deClassARLimit::nfSetTargetBone::RunFunction( dsRunTime *rt, dsValue *mysel
 	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
 	
 	nd.rule->SetTargetBone( rt->GetValue( 0 )->GetString() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setTargetVertexPositionSet(String name)
+deClassARLimit::nfSetTargetVertexPositionSet::nfSetTargetVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARLimit, "setTargetVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassARLimit::nfSetTargetVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetTargetVertexPositionSet( rt->GetValue( 0 )->GetString() );
 	
 	if( nd.animator ){
 		nd.animator->NotifyRulesChanged();
@@ -491,6 +566,8 @@ void deClassARLimit::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnableRotMax( init ) );
 	AddFunction( new nfSetEnableScaleMin( init ) );
 	AddFunction( new nfSetEnableScaleMax( init ) );
+	AddFunction( new nfSetEnableVertexPositionSetMin( init ) );
+	AddFunction( new nfSetEnableVertexPositionSetMax( init ) );
 	
 	AddFunction( new nfSetMinimumPosition( init ) );
 	AddFunction( new nfSetMaximumPosition( init ) );
@@ -498,8 +575,11 @@ void deClassARLimit::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetMaximumRotation( init ) );
 	AddFunction( new nfSetMinimumScaling( init ) );
 	AddFunction( new nfSetMaximumScaling( init ) );
+	AddFunction( new nfSetMinimumVertexPositionSet( init ) );
+	AddFunction( new nfSetMaximumVertexPositionSet( init ) );
 	AddFunction( new nfSetCoordinateFrame( init ) );
 	AddFunction( new nfSetTargetBone( init ) );
+	AddFunction( new nfSetTargetVertexPositionSet( init ) );
 	
 	AddFunction( new nfTargetAddLink( init ) );
 	AddFunction( new nfTargetRemoveAllLinks( init ) );
