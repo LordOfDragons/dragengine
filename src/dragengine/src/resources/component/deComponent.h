@@ -100,6 +100,9 @@ private:
 	deComponentBone *pBones;
 	int pBoneCount;
 	
+	float *pVertexPositionSetWeights;
+	int pVertexPositionSetCount;
+	
 	bool pBonesDirty;
 	bool pMatrixDirty;
 	
@@ -259,6 +262,15 @@ public:
 	 * during the next update step.
 	 */
 	void ValidateBones();
+	
+	/** \brief Vertex position set count. */
+	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	
+	/** \brief Vertex position set weight. */
+	float GetVertexPositionSetWeightAt( int index ) const;
+	
+	/** \brief Set vertex position set weight. */
+	void SetVertexPositionSetWeightAt( int index, float weight );
 	
 	/** \brief Mark mesh dirty. */
 	void InvalidateMesh();

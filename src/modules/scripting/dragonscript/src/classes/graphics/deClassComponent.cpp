@@ -53,6 +53,7 @@
 #include <dragengine/resources/decal/deDecal.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelTexture.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/skin/deSkin.h>
@@ -445,7 +446,6 @@ void deClassComponent::nfSetDynamicSkin::RunFunction( dsRunTime *rt, dsValue *my
 
 
 
-
 // public func int getBoneCount()
 deClassComponent::nfGetBoneCount::nfGetBoneCount( const sInitData &init ) : dsFunction( init.clsCom,
 "getBoneCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
@@ -774,6 +774,100 @@ void deClassComponent::nfSetBoneRotation::RunFunction( dsRunTime *rt, dsValue *m
 			component.InvalidateBones();
 		}
 	}
+}
+
+
+
+// public func int getVertexPositionSetCount()
+deClassComponent::nfGetVertexPositionSetCount::nfGetVertexPositionSetCount( const sInitData &init ) :
+dsFunction( init.clsCom, "getVertexPositionSetCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassComponent::nfGetVertexPositionSetCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	rt->PushInt( component.GetVertexPositionSetCount() );
+}
+
+// public func int indexOfVertexPositionSetNamed(String name)
+deClassComponent::nfIndexOfVertexPositionSetNamed::nfIndexOfVertexPositionSetNamed( const sInitData &init ) :
+dsFunction( init.clsCom, "indexOfVertexPositionSetNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassComponent::nfIndexOfVertexPositionSetNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	const char * const name = rt->GetValue( 0 )->GetString();
+	const deModel * const model = component.GetModel();
+	
+	rt->PushInt( model ? model->IndexOfVertexPositionSetNamed( name ) : -1 );
+}
+
+// public func String vertexPositionSetGetNameAt(int index)
+deClassComponent::nfVertexPositionSetGetNameAt::nfVertexPositionSetGetNameAt( const sInitData &init ) : dsFunction( init.clsCom,
+"vertexPositionSetGetNameAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // bone
+}
+void deClassComponent::nfVertexPositionSetGetNameAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	const int index = rt->GetValue( 0 )->GetInt();
+	const deModel * const model = component.GetModel();
+	
+	if( ! model ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	rt->PushString( model->GetVertexPositionSetAt( index )->GetName() );
+}
+
+// public func float vertexPositionSetGetWeightAt(int index)
+deClassComponent::nfVertexPositionSetGetWeightAt::nfVertexPositionSetGetWeightAt( const sInitData &init ) :
+dsFunction( init.clsCom, "vertexPositionSetGetWeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassComponent::nfVertexPositionSetGetWeightAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	rt->PushFloat( component.GetVertexPositionSetWeightAt( rt->GetValue( 0 )->GetInt() ) );
+}
+
+// public func float vertexPositionSetGetWeightNamed(String name)
+deClassComponent::nfVertexPositionSetGetWeightNamed::nfVertexPositionSetGetWeightNamed( const sInitData &init ) :
+dsFunction( init.clsCom, "vertexPositionSetGetWeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassComponent::nfVertexPositionSetGetWeightNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	if( ! component.GetModel() ){
+		DSTHROW( dueNullPointer );
+	}
+	rt->PushFloat( component.GetVertexPositionSetWeightAt(
+		component.GetModel()->IndexOfVertexPositionSetNamed( rt->GetValue( 0 )->GetString() ) ) );
+}
+
+// public func void vertexPositionSetSetWeightAt(int index, float weight)
+deClassComponent::nfVertexPositionSetSetWeightAt::nfVertexPositionSetSetWeightAt( const sInitData &init ) :
+dsFunction( init.clsCom, "vertexPositionSetSetWeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // index
+	p_AddParameter( init.clsFlt ); // weight
+}
+void deClassComponent::nfVertexPositionSetSetWeightAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	component.SetVertexPositionSetWeightAt( rt->GetValue( 0 )->GetInt(), rt->GetValue( 1 )->GetFloat() );
+	component.InvalidateMesh();
+}
+
+// public func void vertexPositionSetSetWeightNamed(String name, float weight)
+deClassComponent::nfVertexPositionSetSetWeightNamed::nfVertexPositionSetSetWeightNamed( const sInitData &init ) :
+dsFunction( init.clsCom, "vertexPositionSetSetWeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // name
+	p_AddParameter( init.clsFlt ); // weight
+}
+void deClassComponent::nfVertexPositionSetSetWeightNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	if( ! component.GetModel() ){
+		DSTHROW( dueNullPointer );
+	}
+	component.SetVertexPositionSetWeightAt(
+		component.GetModel()->IndexOfVertexPositionSetNamed( rt->GetValue( 0 )->GetString() ),
+		rt->GetValue( 1 )->GetFloat() );
+	component.InvalidateMesh();
 }
 
 
@@ -1221,6 +1315,14 @@ void deClassComponent::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetBoneOriginInverseMatrix( init ) );
 	AddFunction( new nfSetBonePosition( init ) );
 	AddFunction( new nfSetBoneRotation( init ) );
+	
+	AddFunction( new nfGetVertexPositionSetCount( init ) );
+	AddFunction( new nfIndexOfVertexPositionSetNamed( init ) );
+	AddFunction( new nfVertexPositionSetGetNameAt( init ) );
+	AddFunction( new nfVertexPositionSetGetWeightAt( init ) );
+	AddFunction( new nfVertexPositionSetGetWeightNamed( init ) );
+	AddFunction( new nfVertexPositionSetSetWeightAt( init ) );
+	AddFunction( new nfVertexPositionSetSetWeightNamed( init ) );
 	
 	AddFunction( new nfGetOcclusionMesh( init ) );
 	AddFunction( new nfSetOcclusionMesh( init ) );

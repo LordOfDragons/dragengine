@@ -131,6 +131,14 @@ private:
 	DEF_NATFUNC( nfSetBonePosition );
 	DEF_NATFUNC( nfSetBoneRotation );
 	
+	DEF_NATFUNC( nfGetVertexPositionSetCount );
+	DEF_NATFUNC( nfIndexOfVertexPositionSetNamed );
+	DEF_NATFUNC( nfVertexPositionSetGetNameAt );
+	DEF_NATFUNC( nfVertexPositionSetGetWeightAt );
+	DEF_NATFUNC( nfVertexPositionSetGetWeightNamed );
+	DEF_NATFUNC( nfVertexPositionSetSetWeightAt );
+	DEF_NATFUNC( nfVertexPositionSetSetWeightNamed );
+	
 	DEF_NATFUNC( nfGetVisible );
 	DEF_NATFUNC( nfSetVisible );
 	

@@ -77,6 +77,9 @@ pHintMovement( emhStationary ),
 pBones( NULL ),
 pBoneCount( 0 ),
 
+pVertexPositionSetWeights( nullptr ),
+pVertexPositionSetCount( 0 ),
+
 pBonesDirty( true ),
 pMatrixDirty( false ),
 
@@ -467,20 +470,16 @@ void deComponent::NotifyTextureChanged( int index ) const{
 
 
 deComponentBone &deComponent::GetBoneAt( int index ) const{
-	if( index < 0 || index >= pBoneCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pBoneCount )
 	return pBones[ index ];
 }
 
 void deComponent::UpdateBoneAt( int bone ){
-	if( bone < 0 || bone >= pBoneCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( bone >= 0 )
+	DEASSERT_TRUE( bone < pBoneCount )
 	pUpdateBoneAt( bone );
 }
-
-
 
 void deComponent::InvalidateBones(){
 	pBonesDirty = true;
@@ -491,6 +490,18 @@ void deComponent::InvalidateBones(){
 
 void deComponent::ValidateBones(){
 	pBonesDirty = false;
+}
+
+float deComponent::GetVertexPositionSetWeightAt( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pVertexPositionSetCount )
+	return pVertexPositionSetWeights[ index ];
+}
+
+void deComponent::SetVertexPositionSetWeightAt( int index, float weight ){
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pVertexPositionSetCount )
+	pVertexPositionSetWeights[ index ] = weight;
 }
 
 void deComponent::InvalidateMesh(){
@@ -831,6 +842,9 @@ void deComponent::pCleanUp(){
 	if( pTextures ){
 		delete [] pTextures;
 	}
+	if( pVertexPositionSetWeights ){
+		delete [] pVertexPositionSetWeights;
+	}
 	if( pBones ){
 		delete [] pBones;
 	}
@@ -851,7 +865,9 @@ void deComponent::pUpdateBoneAt( int bone ){
 }
 
 void deComponent::pChangeModel( deModel *model ){
-	deComponentTexture *textures = NULL;
+	float *vertexPositionSetWeights = nullptr;
+	deComponentTexture *textures = nullptr;
+	int vertexPositionSetCount = 0;
 	int textureCount = 0;
 	
 	if( model ){
@@ -861,7 +877,16 @@ void deComponent::pChangeModel( deModel *model ){
 				textures = new deComponentTexture[ textureCount ];
 			}
 			
+			vertexPositionSetCount = model->GetVertexPositionSetCount();
+			if( vertexPositionSetCount > 0 ){
+				vertexPositionSetWeights = new float[ vertexPositionSetCount ];
+				memset( vertexPositionSetWeights, 0, sizeof( float ) * vertexPositionSetCount );
+			}
+			
 		}catch( const deException & ){
+			if( vertexPositionSetWeights ){
+				delete [] vertexPositionSetWeights;
+			}
 			if( textures ){
 				delete [] textures;
 			}
@@ -874,6 +899,12 @@ void deComponent::pChangeModel( deModel *model ){
 	}
 	pTextures = textures;
 	pTextureCount = textureCount;
+	
+	if( pVertexPositionSetWeights ){
+		delete [] pVertexPositionSetWeights;
+	}
+	pVertexPositionSetWeights = vertexPositionSetWeights;
+	pVertexPositionSetCount = vertexPositionSetCount;
 	
 	pModel = model;
 }
