@@ -352,6 +352,7 @@ void deClassARMirror::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnablePosition( init ) );
 	AddFunction( new nfSetEnableOrientation( init ) );
 	AddFunction( new nfSetEnableSize( init ) );
+	AddFunction( new nfSetEnableVertexPositionSet( init ) );
 	
 	AddFunction( new nfTargetAddLink( init ) );
 	AddFunction( new nfTargetRemoveAllLinks( init ) );

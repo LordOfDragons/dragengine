@@ -39,8 +39,11 @@ class ADRuleLimit extends ADRule
 	private var Vector pMaximumRotation
 	private var Vector pMinimumScaling
 	private var Vector pMaximumScaling
+	private var float pMinimumVertexPositionSet
+	private var float pMaximumVertexPositionSet
 	private var ARLimitCFrame pCoordFrame
 	private var String pTargetBone
+	private var String pTargetVertexPositionSet
 	
 	private var bool pEnablePosXMin
 	private var bool pEnablePosXMax
@@ -63,6 +66,9 @@ class ADRuleLimit extends ADRule
 	private var bool pEnableScaleZMin
 	private var bool pEnableScaleZMax
 	
+	private var bool pEnableVertexPositionSetMin
+	private var bool pEnableVertexPositionSetMax
+	
 	
 	
 	/** \brief Create animation rule definition. */
@@ -73,8 +79,11 @@ class ADRuleLimit extends ADRule
 		pMaximumRotation = Vector.new()
 		pMinimumScaling = Vector.new(1, 1, 1)
 		pMaximumScaling = Vector.new(1, 1, 1)
+		pMinimumVertexPositionSet = 1
+		pMaximumVertexPositionSet = 1
 		pCoordFrame = ARLimitCFrame.component
 		pTargetBone = ""
+		pTargetVertexPositionSet = ""
 		
 		pEnablePosXMin = false
 		pEnablePosXMax = false
@@ -96,6 +105,9 @@ class ADRuleLimit extends ADRule
 		pEnableScaleYMax = false
 		pEnableScaleZMin = false
 		pEnableScaleZMax = false
+		
+		pEnableVertexPositionSetMin = true
+		pEnableVertexPositionSetMax = true
 	end
 	
 	/** \brief Create animation rule definition. */
@@ -107,8 +119,11 @@ class ADRuleLimit extends ADRule
 		pMaximumRotation = rule.pMaximumRotation
 		pMinimumScaling = rule.pMinimumScaling
 		pMaximumScaling = rule.pMaximumScaling
+		pMinimumVertexPositionSet = rule.pMinimumVertexPositionSet
+		pMaximumVertexPositionSet = rule.pMaximumVertexPositionSet
 		pCoordFrame = rule.pCoordFrame
 		pTargetBone = rule.pTargetBone
+		pTargetVertexPositionSet = rule.pTargetVertexPositionSet
 		
 		pEnablePosXMin = rule.pEnablePosXMin
 		pEnablePosXMax = rule.pEnablePosXMax
@@ -130,6 +145,9 @@ class ADRuleLimit extends ADRule
 		pEnableScaleYMax = rule.pEnableScaleYMax
 		pEnableScaleZMin = rule.pEnableScaleZMin
 		pEnableScaleZMax = rule.pEnableScaleZMax
+		
+		pEnableVertexPositionSetMin = rule.pEnableVertexPositionSetMin
+		pEnableVertexPositionSetMax = rule.pEnableVertexPositionSetMax
 	end
 	
 	
@@ -212,6 +230,38 @@ class ADRuleLimit extends ADRule
 		pMaximumScaling = scaling
 	end
 	
+	/**
+	 * \brief Minimum vertex position set weight.
+	 * \version 1.17
+	 */
+	public func float getMinimumVertexPositionSet()
+		return pMinimumVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set minimum vertex position set.
+	 * \version 1.17
+	 */
+	public func void setMinimumVertexPositionSet(float weight)
+		pMinimumVertexPositionSet = weight
+	end
+	
+	/**
+	 * \brief Maximum vertex position set.
+	 * \version 1.17
+	 */
+	public func float getMaximumVertexPositionSet()
+		return pMaximumVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set maximum scaling.
+	 * \version 1.17
+	 */
+	public func void setMaximumVertexPositionSet(float weight)
+		pMaximumVertexPositionSet = weight
+	end
+	
 	/** \brief Coordinate frame of rotation. */
 	public func ARLimitCFrame getCoordinateFrame()
 		return pCoordFrame
@@ -233,6 +283,25 @@ class ADRuleLimit extends ADRule
 			throw ENullPointer.new("name")
 		end
 		pTargetBone = name
+	end
+	
+	/**
+	 * \brief Target vertex position set name.
+	 * \version 1.17
+	 */
+	public func String getTargetVertexPositionSet()
+		return pTargetVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set target vertex position set name.
+	 * \version 1.17
+	 */
+	public func void setTargetVertexPositionSet(String name)
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		pTargetVertexPositionSet = name
 	end
 	
 	
@@ -423,6 +492,40 @@ class ADRuleLimit extends ADRule
 	
 	
 	
+	/**
+	 * \brief Minimum vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func bool getEnableVertexPositionSetMin()
+		return pEnableVertexPositionSetMin
+	end
+	
+	/**
+	 * \brief Set if minimum vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSetMin(bool enable)
+		pEnableVertexPositionSetMin = enable
+	end
+	
+	/**
+	 * \brief Maximum vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func bool getEnableVertexPositionSetMax()
+		return pEnableVertexPositionSetMax
+	end
+	
+	/**
+	 * \brief Set if maximum vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSetMax(bool enable)
+		pEnableVertexPositionSetMax = enable
+	end
+	
+	
+	
 	/** \brief Build engine animator rule using the stored definition. */
 	public func AnimatorRule buildRule(Animator animator)
 		var ARLimit rule = ARLimit.new()
@@ -439,14 +542,19 @@ class ADRuleLimit extends ADRule
 		rule.setMaximumRotation(pMaximumRotation)
 		rule.setMinimumScaling(pMinimumScaling)
 		rule.setMaximumScaling(pMaximumScaling)
+		rule.setMinimumVertexPositionSet(pMinimumVertexPositionSet)
+		rule.setMaximumVertexPositionSet(pMaximumVertexPositionSet)
 		rule.setCoordinateFrame(pCoordFrame)
 		rule.setTargetBone(pTargetBone)
+		rule.setTargetVertexPositionSet(pTargetVertexPositionSet)
 		rule.setEnablePosMin(pEnablePosXMin, pEnablePosYMin, pEnablePosZMin)
 		rule.setEnablePosMax(pEnablePosXMax, pEnablePosYMax, pEnablePosZMax)
 		rule.setEnableRotMin(pEnableRotXMin, pEnableRotYMin, pEnableRotZMin)
 		rule.setEnableRotMax(pEnableRotXMax, pEnableRotYMax, pEnableRotZMax)
 		rule.setEnableScaleMin(pEnableScaleXMin, pEnableScaleYMin, pEnableScaleZMin)
 		rule.setEnableScaleMax(pEnableScaleXMax, pEnableScaleYMax, pEnableScaleZMax)
+		rule.setEnableVertexPositionSetMin(pEnableVertexPositionSetMin)
+		rule.setEnableVertexPositionSetMax(pEnableVertexPositionSetMax)
 		
 		return rule
 	end
@@ -468,6 +576,7 @@ class ADRuleLimit extends ADRule
 			" minPos=" + pMinimumPosition + " maxPos=" + pMaximumPosition + \
 			" minRot=" + pMinimumRotation + " maxRot=" + pMaximumRotation + \
 			" minScale=" + pMinimumScaling + " maxScale=" + pMaximumScaling + \
+			" minVPS=" + pMinimumVertexPositionSet + " maxVPS=" + pMaximumVertexPositionSet + \
 			" enMinXPos=" + pEnablePosXMin + " enMaxXPos=" + pEnablePosXMax + \
 			" enMinYPos=" + pEnablePosYMin + " enMaxYPos=" + pEnablePosYMax + \
 			" enMinZPos=" + pEnablePosZMin + " enMaxZPos=" + pEnablePosZMax + \
@@ -476,6 +585,7 @@ class ADRuleLimit extends ADRule
 			" enMinZRot=" + pEnableRotZMin + " enMaxZRot=" + pEnableRotZMax + \
 			" enMinXScale=" + pEnableScaleXMin + " enMaxXScale=" + pEnableScaleXMax + \
 			" enMinYScale=" + pEnableScaleYMin + " enMaxYScale=" + pEnableScaleYMax + \
-			" enMinZScale=" + pEnableScaleZMin + " enMaxZScale=" + pEnableScaleZMax + ")")
+			" enMinZScale=" + pEnableScaleZMin + " enMaxZScale=" + pEnableScaleZMax + \
+			" evpsMin=" + pEnableVertexPositionSetMin  + " evpsMax=" + pEnableVertexPositionSetMax + ")")
 	end
 end

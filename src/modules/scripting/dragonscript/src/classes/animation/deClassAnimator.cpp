@@ -417,6 +417,24 @@ void deClassAnimator::nfSetLinkVertexPositionSet::RunFunction( dsRunTime *rt, ds
 	animator.NotifyLinkChangedAt( index );
 }
 
+// public func void setLinkVertexPositionSetValueRange( int link, float minimum, float maximum );
+deClassAnimator::nfSetLinkVertexPositionSetValueRange::nfSetLinkVertexPositionSetValueRange( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkVertexPositionSetValueRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsFlt ); // minimum
+	p_AddParameter( init.clsFlt ); // maximum
+}
+void deClassAnimator::nfSetLinkVertexPositionSetValueRange::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetVertexPositionSetValueRange( rt->GetValue( 1 )->GetFloat(), rt->GetValue( 2 )->GetFloat() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
 // public func void setLinkWrapY( int link, bool wrap );
 deClassAnimator::nfSetLinkWrapY::nfSetLinkWrapY( const sInitData &init ) :
 dsFunction( init.clsAr, "setLinkWrapY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -672,6 +690,7 @@ void deClassAnimator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetLinkBoneValueRange( init ) );
 	AddFunction( new nfSetLinkBoneValueRangeRotation( init ) );
 	AddFunction( new nfSetLinkVertexPositionSet( init ) );
+	AddFunction( new nfSetLinkVertexPositionSetValueRange( init ) );
 	AddFunction( new nfSetLinkWrapY( init ) );
 	
 	AddFunction( new nfGetRuleCount( init ) );

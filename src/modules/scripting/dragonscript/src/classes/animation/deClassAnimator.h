@@ -109,6 +109,7 @@ private:
 	DEF_NATFUNC( nfSetLinkBoneValueRange );
 	DEF_NATFUNC( nfSetLinkBoneValueRangeRotation );
 	DEF_NATFUNC( nfSetLinkVertexPositionSet );
+	DEF_NATFUNC( nfSetLinkVertexPositionSetValueRange );
 	DEF_NATFUNC( nfSetLinkWrapY );
 	
 	DEF_NATFUNC( nfGetRuleCount );

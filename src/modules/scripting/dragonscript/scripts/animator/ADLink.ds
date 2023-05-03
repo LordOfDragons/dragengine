@@ -41,6 +41,9 @@ class ADLink
 	private var AnimatorLinkBoneParameter pBoneParameter
 	private var float pBoneMinimum
 	private var float pBoneMaximum
+	private var String pVertexPositionSet
+	private var float pVertexPositionSetMinimum
+	private var float pVertexPositionSetMaximum
 	private var bool pWrapY
 	
 	
@@ -54,6 +57,9 @@ class ADLink
 		pBoneParameter = AnimatorLinkBoneParameter.positionZ
 		pBoneMinimum = 0
 		pBoneMaximum = 1
+		pVertexPositionSet = ""
+		pVertexPositionSetMinimum = 0
+		pVertexPositionSetMaximum = 1
 		pWrapY = false
 	end
 	
@@ -79,6 +85,9 @@ class ADLink
 		pBoneParameter = link.pBoneParameter
 		pBoneMinimum = link.pBoneMinimum
 		pBoneMaximum = link.pBoneMaximum
+		pVertexPositionSet = link.pVertexPositionSet
+		pVertexPositionSetMinimum = link.pVertexPositionSetMinimum
+		pVertexPositionSetMaximum = link.pVertexPositionSetMaximum
 		pWrapY = link.pWrapY
 		
 		if link.pController != null
@@ -189,6 +198,57 @@ class ADLink
 	end
 	
 	/**
+	 * \brief Vertex position set to use as input or empty string to not use.
+	 * \version 1.17
+	 */
+	public func String getVertexPositionSet()
+		return pVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set vertex position set to use as input or empty string to not use.
+	 * \version 1.17
+	 */
+	public func void setVertexPositionSet(String vertexPositionSet)
+		if vertexPositionSet == null
+			throw ENullPointer.new("vertexPositionSet")
+		end
+		pVertexPositionSet = vertexPositionSet
+	end
+	
+	/**
+	 * \brief Minimum vertex position set value.
+	 * \version 1.17
+	 */
+	public func float getVertexPositionSetMinimum()
+		return pVertexPositionSetMinimum
+	end
+	
+	/**
+	 * \brief Set minimum vertex position set value.
+	 * \version 1.17
+	 */
+	public func void setVertexPositionSetMinimum(float value)
+		pVertexPositionSetMinimum = value
+	end
+	
+	/**
+	 * \brief Maximum vertex position set value.
+	 * \version 1.17
+	 */
+	public func float getVertexPositionSetMaximum()
+		return pVertexPositionSetMaximum
+	end
+	
+	/**
+	 * \brief Set maximum vertex position set value.
+	 * \version 1.17
+	 */
+	public func void setVertexPositionSetMaximum(float value)
+		pVertexPositionSetMaximum = value
+	end
+	
+	/**
 	 * \brief Wrap Y value instead of clamping.
 	 * \version 1.9
 	 */
@@ -230,6 +290,8 @@ class ADLink
 		animator.setLinkRepeat(pIndex, pRepeat)
 		animator.setLinkBone(pIndex, pBone)
 		animator.setLinkBoneParameter(pIndex, pBoneParameter)
+		animator.setLinkVertexPositionSet(pIndex, pVertexPositionSet)
+		animator.setLinkVertexPositionSetValueRange(pIndex, pVertexPositionSetMinimum, pVertexPositionSetMaximum)
 		animator.setLinkWrapY(pIndex, pWrapY)
 		
 		select pBoneParameter
@@ -251,6 +313,8 @@ class ADLink
 		console.addMessage("- Link " + index + " (controller=" \
 			+ (pController == null if -1 else pController.getIndex()) \
 			+ " repeat=" + pRepeat + " bone=" + pBone + " boneParam=" + pBoneParameter \
-			+ " boneMin=" + pBoneMinimum + " " + pBoneMaximum + " wrapY=" + pWrapY + ")")
+			+ " boneMin=" + pBoneMinimum + " boneMax" + pBoneMaximum \
+			+ " vertPosSet=" + pVertexPositionSet + " vpsMin=" + pVertexPositionSetMinimum \
+			+ " vpsMax=" + pVertexPositionSetMaximum + " wrapY=" + pWrapY + ")")
 	end
 end

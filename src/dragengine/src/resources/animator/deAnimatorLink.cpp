@@ -40,6 +40,8 @@ pRepeat( 1 ),
 pBoneParameter( ebpPositionZ ),
 pBoneMinValue( 0.0f ),
 pBoneMaxValue( 1.0f ),
+pVertexPositionSetMinValue( 0.0f ),
+pVertexPositionSetMaxValue( 1.0f ),
 pWrapY( false )
 {
 	pCurve.SetDefaultLinear();
@@ -54,6 +56,8 @@ pBoneParameter( copy.pBoneParameter ),
 pBoneMinValue( copy.pBoneMinValue ),
 pBoneMaxValue( copy.pBoneMaxValue ),
 pVertexPositionSet( copy.pVertexPositionSet ),
+pVertexPositionSetMinValue( copy.pVertexPositionSetMinValue ),
+pVertexPositionSetMaxValue( copy.pVertexPositionSetMaxValue ),
 pWrapY( copy.pWrapY ){
 }
 
@@ -96,6 +100,11 @@ void deAnimatorLink::SetVertexPositionSet( const char *vertexPositionSet ){
 	pVertexPositionSet = vertexPositionSet;
 }
 
+void deAnimatorLink::SetVertexPositionSetValueRange( float minimum, float maximum ){
+	pVertexPositionSetMinValue = minimum;
+	pVertexPositionSetMaxValue = maximum;
+}
+
 void deAnimatorLink::SetWrapY( bool wrap ){
 	pWrapY = wrap;
 }
@@ -114,6 +123,8 @@ deAnimatorLink &deAnimatorLink::operator=( const deAnimatorLink &copy ){
 	pBoneMinValue = copy.pBoneMinValue;
 	pBoneMaxValue = copy.pBoneMaxValue;
 	pVertexPositionSet = copy.pVertexPositionSet;
+	pVertexPositionSetMinValue = copy.pVertexPositionSetMinValue;
+	pVertexPositionSetMaxValue = copy.pVertexPositionSetMaxValue;
 	pWrapY = copy.pWrapY;
 	return *this;
 }

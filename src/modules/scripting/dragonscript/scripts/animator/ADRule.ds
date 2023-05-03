@@ -37,6 +37,7 @@ abstract class ADRule
 	private var String pName
 	private var Array pTargetLinks
 	private var Array pBones
+	private var Array pVertexPositionSets
 	private var bool pEnabled
 	private var AnimatorRuleBlendMode pBlendMode
 	private var float pBlendFactor
@@ -49,6 +50,7 @@ abstract class ADRule
 		pName = ""
 		pTargetLinks = Array.new()
 		pBones = Array.new()
+		pVertexPositionSets = Array.new()
 		pEnabled = true
 		pBlendMode = AnimatorRuleBlendMode.blend
 		pBlendFactor = 1
@@ -71,6 +73,7 @@ abstract class ADRule
 		
 		pName = rule.pName
 		pBones = Array.new(rule.pBones)
+		pVertexPositionSets = Array.new(rule.pVertexPositionSets)
 		pEnabled = rule.pEnabled
 		pBlendMode = rule.pBlendMode
 		pBlendFactor = rule.pBlendFactor
@@ -146,6 +149,35 @@ abstract class ADRule
 	
 	
 	
+	/**
+	 * \brief Count of vertex position sets.
+	 * \version 1.17
+	 */
+	public func int getVertexPositionSetCount()
+		return pVertexPositionSets.getCount()
+	end
+	
+	/**
+	 * \brief Vertex position set at index.
+	 * \version 1.17
+	 */
+	public func String getVertexPositionSetAt(int index)
+		return pVertexPositionSets.getAt(index) cast String
+	end
+	
+	/**
+	 * \brief Add vertex position set.
+	 * \version 1.17
+	 */
+	public func void addVertexPositionSet(String vertexPositionSet)
+		if vertexPositionSet == null
+			throw ENullPointer.new("vertexPositionSet")
+		end
+		pVertexPositionSets.add(vertexPositionSet)
+	end
+	
+	
+	
 	/** \brief Rule is enabled. */
 	public func bool getEnabled()
 		return pEnabled
@@ -211,6 +243,9 @@ abstract class ADRule
 		pBones.forEach(block String each
 			rule.addBone(each)
 		end)
+		pVertexPositionSets.forEach(block String each
+			rule.addVertexPositionSet(each)
+		end)
 	end
 	
 	
@@ -239,6 +274,11 @@ abstract class ADRule
 		count = pBones.getCount()
 		for i = 0 to count
 			text = text + " bone=" + pBones.getAt(i).toString()
+		end
+		
+		count = pVertexPositionSets.getCount()
+		for i = 0 to count
+			text = text + " vertPosSet=" + pVertexPositionSets.getAt(i).toString()
 		end
 		
 		count = pTargetLinks.getCount()

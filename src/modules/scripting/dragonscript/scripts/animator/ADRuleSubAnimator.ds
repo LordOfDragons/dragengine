@@ -38,6 +38,7 @@ class ADRuleSubAnimator extends ADRule
 	private var bool pEnablePosition
 	private var bool pEnableOrientation
 	private var bool pEnableSize
+	private var bool pEnableVertexPositionSet
 	
 	
 	
@@ -47,6 +48,7 @@ class ADRuleSubAnimator extends ADRule
 		pEnablePosition = true
 		pEnableOrientation = true
 		pEnableSize = true
+		pEnableVertexPositionSet = true
 	end
 	
 	/**
@@ -60,6 +62,7 @@ class ADRuleSubAnimator extends ADRule
 		pEnablePosition = rule.pEnablePosition
 		pEnableOrientation = rule.pEnableOrientation
 		pEnableSize = rule.pEnableSize
+		pEnableVertexPositionSet = rule.pEnableVertexPositionSet
 	end
 	
 	
@@ -149,6 +152,22 @@ class ADRuleSubAnimator extends ADRule
 		pEnableSize = enable
 	end
 	
+	/**
+	 * \brief Vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func bool getEnableVertexPositionSet()
+		return pEnableVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set if vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enable)
+		pEnableVertexPositionSet = enable
+	end
+	
 	
 	
 	/** \brief Build engine animator rule using the stored definition. */
@@ -179,6 +198,7 @@ class ADRuleSubAnimator extends ADRule
 		rule.setEnablePosition(pEnablePosition)
 		rule.setEnableOrientation(pEnableOrientation)
 		rule.setEnableSize(pEnableSize)
+		rule.setEnableVertexPositionSet(pEnableVertexPositionSet)
 		
 		return rule
 	end
@@ -197,6 +217,7 @@ class ADRuleSubAnimator extends ADRule
 	
 	public func void debug(Console console)
 		console.addMessage(debugCommon("Sub Animator") + " epos=" + pEnablePosition \
-			+ " eorient=" + pEnableOrientation + " esize=" + pEnableSize + ")")
+			+ " eorient=" + pEnableOrientation + " esize=" + pEnableSize \
+			+ " evps=" + pEnableVertexPositionSet + ")")
 	end
 end

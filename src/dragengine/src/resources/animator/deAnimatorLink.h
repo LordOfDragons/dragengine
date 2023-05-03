@@ -102,6 +102,8 @@ private:
 	float pBoneMinValue;
 	float pBoneMaxValue;
 	decString pVertexPositionSet;
+	float pVertexPositionSetMinValue;
+	float pVertexPositionSetMaxValue;
 	bool pWrapY;
 	
 	
@@ -203,6 +205,24 @@ public:
 	 * \version 1.17
 	 */
 	void SetVertexPositionSet( const char *vertexPositionSet );
+	
+	/**
+	 * \brief Minimum vertex position set value.
+	 * \version 1.17
+	 */
+	inline float GetVertexPositionSetMinimumValue() const{ return pVertexPositionSetMinValue; }
+	
+	/**
+	 * \brief Maximum vertex position set value.
+	 * \version 1.17
+	 */
+	inline float GetVertexPositionSetMaximumValue() const{ return pVertexPositionSetMaxValue; }
+	
+	/**
+	 * \brief Set vertex position set range.
+	 * \version 1.17
+	 */
+	void SetVertexPositionSetValueRange( float minimum, float maximum );
 	
 	/**
 	 * \brief Wrap Y value instead of clamping.

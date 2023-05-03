@@ -127,6 +127,9 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("bone")
 				animator.addBone(element.getFirstCData())
 				
+			elif tagName.equals("vertexPositionSet")
+				animator.addVertexPositionSet(element.getFirstCData())
+				
 			else
 				var ADRule rule = pParseRule(element, animator, basePath)
 				if rule != null
@@ -191,6 +194,13 @@ class LoadAnimator extends BaseXmlLoader
 				link.setBoneMinimum(element.getAttributeFloatNamed("min"))
 				link.setBoneMaximum(element.getAttributeFloatNamed("max"))
 				
+			elif tagName.equals("vertexPositionSet")
+				link.setVertexPositionSet(element.getFirstCData())
+				
+			elif tagName.equals("vertexPositionSetLimits")
+				link.setVertexPositionSetMinimum(element.getAttributeFloatNamed("min"))
+				link.setVertexPositionSetMaximum(element.getAttributeFloatNamed("max"))
+				
 			elif tagName.equals("wrapY")
 				link.setWrapY(element.getFirstCDataBool())
 			end
@@ -226,6 +236,9 @@ class LoadAnimator extends BaseXmlLoader
 			
 		elif tagName.equals("bone")
 			rule.addBone(element.getFirstCData())
+			
+		elif tagName.equals("vertexPositionSet")
+			rule.addVertexPositionSet(element.getFirstCData())
 		end
 	end
 	
@@ -296,6 +309,9 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("enableSize")
 				rule.setEnableSize(element.getFirstCDataBool())
 				
+			elif tagName.equals("enableVertexPositionSet")
+				rule.setEnableVertexPositionSet(element.getFirstCDataBool())
+				
 			elif tagName.equals("target")
 				var ARAnimationTarget target = ARAnimationTarget.named(element.getAttributeNamed("name"))
 				if target != null
@@ -340,6 +356,9 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("enableSize")
 				rule.setEnableSize(element.getFirstCDataBool())
 				
+			elif tagName.equals("enableVertexPositionSet")
+				rule.setEnableVertexPositionSet(element.getFirstCDataBool())
+				
 			elif tagName.equals("target")
 				var ARAnimationDifferenceTarget target = ARAnimationDifferenceTarget.named(element.getAttributeNamed("name"))
 				if target != null
@@ -374,6 +393,9 @@ class LoadAnimator extends BaseXmlLoader
 				
 			elif tagName.equals("enableSize")
 				rule.setEnableSize(element.getFirstCDataBool())
+				
+			elif tagName.equals("enableVertexPositionSet")
+				rule.setEnableVertexPositionSet(element.getFirstCDataBool())
 				
 			elif tagName.equals("target")
 				var ARAnimationSelectTarget target = ARAnimationSelectTarget.named(element.getAttributeNamed("name"))
@@ -503,6 +525,12 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("sizeMaximum")
 				rule.setMaximumSize(readVector(element))
 				
+			elif tagName.equals("vertexPositionSetMinimum")
+				rule.setMinimumVertexPositionSet(element.getFirstCDataFloat())
+				
+			elif tagName.equals("vertexPositionSetMaximum")
+				rule.setMaximumVertexPositionSet(element.getFirstCDataFloat())
+				
 			elif tagName.equals("enablePosition")
 				rule.setEnablePosition(element.getFirstCDataBool())
 				
@@ -511,6 +539,9 @@ class LoadAnimator extends BaseXmlLoader
 				
 			elif tagName.equals("enableSize")
 				rule.setEnableSize(element.getFirstCDataBool())
+				
+			elif tagName.equals("enableVertexPositionSet")
+				rule.setEnableVertexPositionSet(element.getFirstCDataBool())
 				
 			elif tagName.equals("target")
 				var ARStateManipulatorTarget target = ARStateManipulatorTarget.named(element.getAttributeNamed("name"))
@@ -549,6 +580,9 @@ class LoadAnimator extends BaseXmlLoader
 				
 			elif tagName.equals("enableSize")
 				rule.setEnableSize(element.getFirstCDataBool())
+				
+			elif tagName.equals("enableVertexPositionSet")
+				rule.setEnableVertexPositionSet(element.getFirstCDataBool())
 				
 			elif tagName.equals("target")
 				var ARStateSnapshotTarget target = ARStateSnapshotTarget.named(element.getAttributeNamed("name"))
@@ -635,6 +669,9 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("scaleSize")
 				rule.setScaleSize(element.getFirstCDataFloat())
 				
+			elif tagName.equals("scaleVertexPositionSet")
+				rule.setScaleVertexPositionSet(element.getFirstCDataFloat())
+				
 			elif tagName.equals("enablePosition")
 				rule.setEnablePosition(element.getFirstCDataBool())
 				
@@ -644,8 +681,14 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("enableSize")
 				rule.setEnableSize(element.getFirstCDataBool())
 				
+			elif tagName.equals("enableVertexPositionSet")
+				rule.setEnableVertexPositionSet(element.getFirstCDataBool())
+				
 			elif tagName.equals("foreignBone")
 				rule.setForeignBone(element.getFirstCData())
+				
+			elif tagName.equals("foreignVertexPositionSet")
+				rule.setForeignVertexPositionSet(element.getFirstCData())
 				
 			elif tagName.equals("srcCFrame")
 				var ARForeignStateCFrame cframe = ARForeignStateCFrame.named(element.getFirstCData())
@@ -698,6 +741,9 @@ class LoadAnimator extends BaseXmlLoader
 				
 			elif tagName.equals("enableSize")
 				rule.setEnableSize(element.getFirstCDataBool())
+				
+			elif tagName.equals("enableVertexPositionSet")
+				rule.setEnableVertexPositionSet(element.getFirstCDataBool())
 				
 			elif tagName.equals("mirrorAxis")
 				var ARMirrorMirrorAxis axis = ARMirrorMirrorAxis.named(element.getFirstCData())
@@ -772,6 +818,9 @@ class LoadAnimator extends BaseXmlLoader
 				
 			elif tagName.equals("enableSize")
 				rule.setEnableSize(element.getFirstCDataBool())
+				
+			elif tagName.equals("enableVertexPositionSet")
+				rule.setEnableVertexPositionSet(element.getFirstCDataBool())
 				
 			elif tagName.equals("target")
 				var ARSubAnimatorTarget target = ARSubAnimatorTarget.named(element.getAttributeNamed("name"))
@@ -896,6 +945,12 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("maximumScaling")
 				rule.setMaximumScaling(readVector(element))
 				
+			elif tagName.equals("minimumVertexPositionSet")
+				rule.setMinimumVertexPositionSet(element.getFirstCDataFloat())
+				
+			elif tagName.equals("maximumVertexPositionSet")
+				rule.setMaximumVertexPositionSet(element.getFirstCDataFloat())
+				
 			elif tagName.equals("cframe")
 				var ARLimitCFrame cframe = ARLimitCFrame.named(element.getFirstCData())
 				if cframe != null
@@ -936,8 +991,17 @@ class LoadAnimator extends BaseXmlLoader
 				rule.setEnableScaleYMax(element.getAttributeBoolNamed("y"))
 				rule.setEnableScaleZMax(element.getAttributeBoolNamed("z"))
 				
+			elif tagName.equals("enableVertexPositionSetMin")
+				rule.setEnableVertexPositionSetMin(element.getFirstCDataBool())
+				
+			elif tagName.equals("enableVertexPositionSetMax")
+				rule.setEnableVertexPositionSetMax(element.getFirstCDataBool())
+				
 			elif tagName.equals("targetBone")
 				rule.setTargetBone(element.getFirstCData())
+				
+			elif tagName.equals("targetVertexPositionSet")
+				rule.setTargetVertexPositionSet(element.getFirstCData())
 				
 			elif tagName.equals("target")
 				var ARLimitTarget target = ARLimitTarget.named(element.getAttributeNamed("name"))
@@ -984,6 +1048,9 @@ class LoadAnimator extends BaseXmlLoader
 				
 			elif tagName.equals("enableSize")
 				rule.setEnableSize(element.getFirstCDataBool())
+				
+			elif tagName.equals("enableVertexPositionSet")
+				rule.setEnableVertexPositionSet(element.getFirstCDataBool())
 				
 			elif tagName.equals("target")
 				var ARGroupTarget target = ARGroupTarget.named(element.getAttributeNamed("name"))
