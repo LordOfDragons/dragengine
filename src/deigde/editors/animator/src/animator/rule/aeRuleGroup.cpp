@@ -44,6 +44,7 @@ aeRule( deAnimatorRuleVisitorIdentify::ertGroup ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
 pEnableSize( false ),
+pEnableVertexPositionSet( true ),
 pUseCurrentState( false ),
 pApplicationType( deAnimatorRuleGroup::eatAll ),
 pTreeListExpanded( false )
@@ -56,6 +57,7 @@ aeRule( copy ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
 pEnableSize( copy.pEnableSize ),
+pEnableVertexPositionSet( copy.pEnableVertexPositionSet ),
 pUseCurrentState( copy.pUseCurrentState ),
 pApplicationType( copy.pApplicationType ),
 pTargetSelect( copy.pTargetSelect ),
@@ -221,6 +223,18 @@ void aeRuleGroup::SetEnableSize( bool enabled ){
 	}
 }
 
+void aeRuleGroup::SetEnableVertexPositionSet( bool enabled ){
+	if( enabled != pEnableVertexPositionSet ){
+		pEnableVertexPositionSet = enabled;
+		
+		if( GetEngineRule() ){
+			( ( deAnimatorRuleGroup* )GetEngineRule() )->SetEnableVertexPositionSet( enabled );
+			NotifyRuleChanged();
+		}
+	}
+}
+
+
 
 void aeRuleGroup::SetUseCurrentState( bool useCurrentState ){
 	if( useCurrentState == pUseCurrentState ){
@@ -341,6 +355,7 @@ deAnimatorRule *aeRuleGroup::CreateEngineRule(){
 		engRule->SetEnablePosition( pEnablePosition );
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
+		engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
 		
 		engRule->SetUseCurrentState( pUseCurrentState );
 		engRule->SetApplicationType( pApplicationType );
@@ -405,6 +420,7 @@ aeRuleGroup &aeRuleGroup::operator=( const aeRuleGroup &copy ){
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
 	SetTreeListExpanded( copy.pTreeListExpanded );
 	SetUseCurrentState( copy.pUseCurrentState );
 	SetApplicationType( copy.pApplicationType );

@@ -57,6 +57,9 @@ private:
 	deAnimatorLink::eBoneParameter pBoneParameter;
 	float pBoneMinimum;
 	float pBoneMaximum;
+	decString pVertexPositionSet;
+	float pVertexPositionSetMinimum;
+	float pVertexPositionSetMaximum;
 	bool pWrapY;
 	
 	
@@ -167,6 +170,24 @@ public:
 	 * \version 1.6
 	 */
 	void SetBoneMaximum( float value );
+	
+	/** Vertex position set to use as input or empty string to not use. */
+	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
+	
+	/** Set vertex position set to use as input or empty string to not use. */
+	void SetVertexPositionSet( const char *vertexPositionSet );
+	
+	/** Minimum vertex position set parameter value. */
+	inline float GetVertexPositionSetMinimum() const{ return pVertexPositionSetMinimum; }
+	
+	/** Set minimum vertex position set parameter value. */
+	void SetVertexPositionSetMinimum( float value );
+	
+	/** Maximum vertex position set parameter value. */
+	inline float GetVertexPositionSetMaximum() const{ return pVertexPositionSetMaximum; }
+	
+	/** Set maximum vertex position set parameter value. */
+	void SetVertexPositionSetMaximum( float value );
 	
 	/**
 	 * \brief Wrap Y value instead of clamping.

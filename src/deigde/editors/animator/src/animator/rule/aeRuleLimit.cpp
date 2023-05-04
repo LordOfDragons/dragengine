@@ -43,6 +43,8 @@ aeRuleLimit::aeRuleLimit() :
 aeRule( deAnimatorRuleVisitorIdentify::ertLimit ),
 pMinScaling( 1.0f, 1.0f, 1.0f ),
 pMaxScaling( 1.0f, 1.0f, 1.0f ),
+pMinVertexPositionSet( 0.0f ),
+pMaxVertexPositionSet( 1.0f ),
 pCoordinateFrame( deAnimatorRuleLimit::ecfComponent ),
 pEnablePositionXMin( false ),
 pEnablePositionXMax( false ),
@@ -61,7 +63,9 @@ pEnableScalingXMax( false ),
 pEnableScalingYMin( false ),
 pEnableScalingYMax( false ),
 pEnableScalingZMin( false ),
-pEnableScalingZMax( false )
+pEnableScalingZMax( false ),
+pEnableVertexPositionSetMin( false ),
+pEnableVertexPositionSetMax( false )
 {
 	SetName( "Limit" );
 }
@@ -74,6 +78,8 @@ pMinRotation( copy.pMinRotation ),
 pMaxRotation( copy.pMaxRotation ),
 pMinScaling( copy.pMinScaling ),
 pMaxScaling( copy.pMaxScaling ),
+pMinVertexPositionSet( copy.pMinVertexPositionSet ),
+pMaxVertexPositionSet( copy.pMaxVertexPositionSet ),
 pCoordinateFrame( copy.pCoordinateFrame ),
 pEnablePositionXMin( copy.pEnablePositionXMin ),
 pEnablePositionXMax( copy.pEnablePositionXMax ),
@@ -93,7 +99,10 @@ pEnableScalingYMin( copy.pEnableScalingYMin ),
 pEnableScalingYMax( copy.pEnableScalingYMax ),
 pEnableScalingZMin( copy.pEnableScalingZMin ),
 pEnableScalingZMax( copy.pEnableScalingZMax ),
-pTargetBone( copy.pTargetBone ){
+pEnableVertexPositionSetMin( copy.pEnableVertexPositionSetMin ),
+pEnableVertexPositionSetMax( copy.pEnableVertexPositionSetMax ),
+pTargetBone( copy.pTargetBone ),
+pTargetVertexPositionSet( copy.pTargetVertexPositionSet ){
 }
 
 aeRuleLimit::~aeRuleLimit(){
@@ -166,6 +175,28 @@ void aeRuleLimit::SetMaximumScaling( const decVector &scaling ){
 	
 	if( rule ){
 		rule->SetMaximumScaling( scaling );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleLimit::SetMinimumVertexPositionSet( float weight ){
+	deAnimatorRuleLimit *rule = ( deAnimatorRuleLimit* )GetEngineRule();
+	
+	pMinVertexPositionSet = weight;
+	
+	if( rule ){
+		rule->SetMinimumVertexPositionSet( weight );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleLimit::SetMaximumVertexPositionSet( float weight ){
+	deAnimatorRuleLimit *rule = ( deAnimatorRuleLimit* )GetEngineRule();
+	
+	pMaxVertexPositionSet = weight;
+	
+	if( rule ){
+		rule->SetMaximumVertexPositionSet( weight );
 		NotifyRuleChanged();
 	}
 }
@@ -393,17 +424,48 @@ void aeRuleLimit::SetEnableScalingZMax( bool enabled ){
 
 
 
-void aeRuleLimit::SetTargetBone( const char *boneName ){
-	if( ! boneName ){
-		DETHROW( deeInvalidParam );
-	}
+void aeRuleLimit::SetEnableVertexPositionSetMin( bool enabled ){
+	deAnimatorRuleLimit * const rule = ( deAnimatorRuleLimit* )GetEngineRule();
 	
+	pEnableVertexPositionSetMin = enabled;
+	
+	if( rule ){
+		rule->SetEnableVertexPositionSetMin( enabled );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleLimit::SetEnableVertexPositionSetMax( bool enabled ){
+	deAnimatorRuleLimit * const rule = ( deAnimatorRuleLimit* )GetEngineRule();
+	
+	pEnableVertexPositionSetMax = enabled;
+	
+	if( rule ){
+		rule->SetEnableVertexPositionSetMax( enabled );
+		NotifyRuleChanged();
+	}
+}
+
+
+
+void aeRuleLimit::SetTargetBone( const char *boneName ){
 	deAnimatorRuleLimit *rule = ( deAnimatorRuleLimit* )GetEngineRule();
 	
 	pTargetBone = boneName;
 	
 	if( rule ){
 		rule->SetTargetBone( boneName );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleLimit::SetTargetVertexPositionSet( const char *vertexPositionSet ){
+	deAnimatorRuleLimit *rule = ( deAnimatorRuleLimit* )GetEngineRule();
+	
+	pTargetVertexPositionSet = vertexPositionSet;
+	
+	if( rule ){
+		rule->SetTargetVertexPositionSet( vertexPositionSet );
 		NotifyRuleChanged();
 	}
 }
@@ -424,8 +486,11 @@ deAnimatorRule *aeRuleLimit::CreateEngineRule(){
 		engRule->SetMaximumRotation( pMaxRotation * DEG2RAD );
 		engRule->SetMinimumScaling( pMinScaling );
 		engRule->SetMaximumScaling( pMaxScaling );
+		engRule->SetMinimumVertexPositionSet( pMinVertexPositionSet );
+		engRule->SetMaximumVertexPositionSet( pMaxVertexPositionSet );
 		engRule->SetCoordinateFrame( pCoordinateFrame );
-		engRule->SetTargetBone( pTargetBone.GetString() );
+		engRule->SetTargetBone( pTargetBone );
+		engRule->SetTargetVertexPositionSet( pTargetVertexPositionSet );
 		
 		engRule->SetEnablePositionXMin( pEnablePositionXMin );
 		engRule->SetEnablePositionXMax( pEnablePositionXMax );
@@ -447,6 +512,9 @@ deAnimatorRule *aeRuleLimit::CreateEngineRule(){
 		engRule->SetEnableScalingYMax( pEnableScalingYMax );
 		engRule->SetEnableScalingZMin( pEnableScalingZMin );
 		engRule->SetEnableScalingZMax( pEnableScalingZMax );
+		
+		engRule->SetEnableVertexPositionSetMin( pEnableVertexPositionSetMin );
+		engRule->SetEnableVertexPositionSetMax( pEnableVertexPositionSetMax );
 		
 	}catch( const deException & ){
 		if( engRule ){
@@ -481,6 +549,8 @@ aeRuleLimit &aeRuleLimit::operator=( const aeRuleLimit &copy ){
 	SetMaximumRotation( copy.pMaxRotation );
 	SetMinimumScaling( copy.pMinScaling );
 	SetMaximumScaling( copy.pMaxScaling );
+	SetMinimumVertexPositionSet( copy.pMinVertexPositionSet );
+	SetMaximumVertexPositionSet( copy.pMaxVertexPositionSet );
 	SetCoordinateFrame( copy.pCoordinateFrame );
 	SetEnablePositionXMin( copy.pEnablePositionXMin );
 	SetEnablePositionXMax( copy.pEnablePositionXMax );
@@ -500,7 +570,10 @@ aeRuleLimit &aeRuleLimit::operator=( const aeRuleLimit &copy ){
 	SetEnableScalingYMax( copy.pEnableScalingYMax );
 	SetEnableScalingZMin( copy.pEnableScalingZMin );
 	SetEnableScalingZMax( copy.pEnableScalingZMax );
+	SetEnableVertexPositionSetMin( copy.pEnableVertexPositionSetMin );
+	SetEnableVertexPositionSetMax( copy.pEnableVertexPositionSetMax );
 	SetTargetBone( copy.pTargetBone );
+	SetTargetVertexPositionSet( copy.pTargetVertexPositionSet );
 	aeRule::operator=( copy );
 	return *this;
 }

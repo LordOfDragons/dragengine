@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Animator rule state manipulator.
+ * Animator rule state manipulator.
  */
 class aeRuleStateManipulator : public aeRule{
 public:
@@ -40,26 +40,30 @@ private:
 	decVector pMaxRotation;
 	decVector pMinSize;
 	decVector pMaxSize;
+	float pMinVertexPositionSet;
+	float pMaxVertexPositionSet;
 	bool pEnablePosition;
 	bool pEnableRotation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 	aeControllerTarget pTargetPosition;
 	aeControllerTarget pTargetRotation;
 	aeControllerTarget pTargetSize;
+	aeControllerTarget pTargetVertexPositionSet;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	aeRuleStateManipulator();
 	
-	/** \brief Create copy of rule. */
+	/** Create copy of rule. */
 	aeRuleStateManipulator( const aeRuleStateManipulator &copy );
 	
-	/** \brief Clean up rule. */
+	/** Clean up rule. */
 	virtual ~aeRuleStateManipulator();
 	/*@}*/
 	
@@ -67,101 +71,123 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Minimum position. */
+	/** Minimum position. */
 	inline const decVector &GetMinimumPosition() const{ return pMinPosition; }
 	
-	/** \brief Set minimum position. */
+	/** Set minimum position. */
 	void SetMinimumPosition( const decVector &position );
 	
-	/** \brief Maximum position. */
+	/** Maximum position. */
 	inline const decVector &GetMaximumPosition() const{ return pMaxPosition; }
 	
-	/** \brief Set maximum position. */
+	/** Set maximum position. */
 	void SetMaximumPosition( const decVector &position );
 	
-	/** \brief Minimum rotation. */
+	/** Minimum rotation. */
 	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
 	
-	/** \brief Set minimum rotation. */
+	/** Set minimum rotation. */
 	void SetMinimumRotation( const decVector &rotation );
 	
-	/** \brief Maximum rotation. */
+	/** Maximum rotation. */
 	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
 	
-	/** \brief Set maximum rotation. */
+	/** Set maximum rotation. */
 	void SetMaximumRotation( const decVector &rotation );
 	
-	/** \brief Minimum size. */
+	/** Minimum size. */
 	inline const decVector &GetMinimumSize() const{ return pMinSize; }
 	
-	/** \brief Set minimum size. */
+	/** Set minimum size. */
 	void SetMinimumSize( const decVector &size );
 	
-	/** \brief Maximum size. */
+	/** Maximum size. */
 	inline const decVector &GetMaximumSize() const{ return pMaxSize; }
 	
-	/** \brief Set maximum size. */
+	/** Set maximum size. */
 	void SetMaximumSize( const decVector &size );
 	
+	/** Minimum vertex position set. */
+	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
+	
+	/** Set minimum vertex position set. */
+	void SetMinimumVertexPositionSet( float weight );
+	
+	/** Maximum vertex position set. */
+	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
+	
+	/** Set maximum vertex position set. */
+	void SetMaximumVertexPositionSet( float weight );
 	
 	
-	/** \brief Position manipulation is enabled. */
+	
+	/** Position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
-	/** \brief Set if position manipulation is enabled. */
+	/** Set if position manipulation is enabled. */
 	void SetEnablePosition( bool enabled );
 	
-	/** \brief Rotation manipulation is enabled. */
+	/** Rotation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableRotation; }
 	
-	/** \brief Set if rotation manipulation is enabled. */
+	/** Set if rotation manipulation is enabled. */
 	void SetEnableRotation( bool enabled );
 	
-	/** \brief Size manipulation is enabled. */
+	/** Size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
-	/** \brief Set if size manipulation is enabled. */
+	/** Set if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
+	/** Vertex position set manipulation is enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** Set if vertex position set manipulation is enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
 	
 	
-	/** \brief Position target. */
+	
+	/** Position target. */
 	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
 	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
 	
-	/** \brief Rotation target. */
+	/** Rotation target. */
 	inline aeControllerTarget &GetTargetRotation(){ return pTargetRotation; }
 	inline const aeControllerTarget &GetTargetRotation() const{ return pTargetRotation; }
 	
-	/** \brief Size target. */
+	/** Size target. */
 	inline aeControllerTarget &GetTargetSize(){ return pTargetSize; }
 	inline const aeControllerTarget &GetTargetSize() const{ return pTargetSize; }
 	
+	/** Vertex position set target. */
+	inline aeControllerTarget &GetTargetVertexPositionSet(){ return pTargetVertexPositionSet; }
+	inline const aeControllerTarget &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
 	
 	
-	/** \brief Create an engine animator rule. */
+	
+	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();
 	
-	/** \brief Update targets. */
+	/** Update targets. */
 	virtual void UpdateTargets();
 	
-	/** \brief Retrieve the number of targets using a given link. */
+	/** Retrieve the number of targets using a given link. */
 	virtual int CountLinkUsage( aeLink *link ) const;
 	
-	/** \brief Remove a link from all targets using it. */
+	/** Remove a link from all targets using it. */
 	virtual void RemoveLinkFromTargets( aeLink *link );
 	
-	/** \brief Remove all links from all targets. */
+	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
 	
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const;
 	
 	
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	/*@}*/
 	
@@ -169,7 +195,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another state manipulator rule to this state manipulator rule. */
+	/** Copy another state manipulator rule to this state manipulator rule. */
 	virtual aeRuleStateManipulator &operator=( const aeRuleStateManipulator &copy );
 	/*@}*/
 };

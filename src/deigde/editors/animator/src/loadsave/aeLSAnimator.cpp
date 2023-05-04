@@ -171,7 +171,15 @@ void aeLSAnimator::SaveAnimator( aeAnimator *animator, decBaseFileWriter *file )
 	
 	count = boneList.GetCount();
 	for( i=0; i<count; i++ ){
-		writer.WriteDataTagString( "bone", boneList.GetAt( i ).GetString() );
+		writer.WriteDataTagString( "bone", boneList.GetAt( i ) );
+	}
+	
+	// write vertex position sets
+	const decStringSet &vpsList = animator->GetListVertexPositionSets();
+	
+	count = vpsList.GetCount();
+	for( i=0; i<count; i++ ){
+		writer.WriteDataTagString( "vertexPositionSet", vpsList.GetAt( i ) );
 	}
 	
 	// write controllers
@@ -500,6 +508,18 @@ void aeLSAnimator::pSaveLink( decXmlWriter &writer, const aeAnimator &animator, 
 		writer.WriteOpeningTagEnd( true );
 	}
 	
+	if( ! link.GetVertexPositionSet().IsEmpty() ){
+		writer.WriteDataTagString( "vertexPositionSet", link.GetVertexPositionSet() );
+	}
+	
+	if( fabsf( link.GetVertexPositionSetMinimum() ) > FLOAT_SAFE_EPSILON
+	|| fabsf( link.GetVertexPositionSetMaximum() - 1.0f ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteOpeningTagStart( "vertexPositionSetLimits" );
+		writer.WriteAttributeFloat( "min", link.GetVertexPositionSetMinimum() );
+		writer.WriteAttributeFloat( "max", link.GetVertexPositionSetMaximum() );
+		writer.WriteOpeningTagEnd( true );
+	}
+	
 	if( link.GetWrapY() ){
 		writer.WriteDataTagBool( "wrapY", link.GetWrapY() );
 	}
@@ -515,7 +535,6 @@ void aeLSAnimator::pSaveLink( decXmlWriter &writer, const aeAnimator &animator, 
 }
 
 void aeLSAnimator::pSaveRuleCommon( decXmlWriter &writer, const aeAnimator &animator, const aeRule &rule ){
-	const decStringSet &boneList = rule.GetListBones();
 	int i, count;
 	
 	writer.WriteDataTagString( "name", rule.GetName() );
@@ -542,9 +561,16 @@ void aeLSAnimator::pSaveRuleCommon( decXmlWriter &writer, const aeAnimator &anim
 	
 	pSaveControllerTarget( writer, animator, rule.GetTargetBlendFactor(), "blendFactor" );
 	
+	const decStringSet &boneList = rule.GetListBones();
 	count = boneList.GetCount();
 	for( i=0; i<count; i++ ){
-		writer.WriteDataTagString( "bone", boneList.GetAt( i ).GetString() );
+		writer.WriteDataTagString( "bone", boneList.GetAt( i ) );
+	}
+	
+	const decStringSet &vpsList = rule.GetListVertexPositionSets();
+	count = vpsList.GetCount();
+	for( i=0; i<count; i++ ){
+		writer.WriteDataTagString( "vertexPositionSet", vpsList.GetAt( i ) );
 	}
 }
 
@@ -633,6 +659,9 @@ const aeRuleAnimation &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
+	if( rule.GetEnableVertexPositionSet() ){
+		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
+	}
 	
 	pSaveControllerTarget( writer, animator, rule.GetTargetMoveTime(), "moveTime" );
 	
@@ -658,6 +687,9 @@ const aeRuleAnimationDifference &rule ){
 	}
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
+	}
+	if( rule.GetEnableVertexPositionSet() ){
+		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
 	pSaveControllerTarget( writer, animator, rule.GetTargetLeadingMoveTime(), "leadingMoveTime" );
@@ -688,6 +720,9 @@ const aeRuleAnimationSelect &rule ){
 	}
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
+	}
+	if( rule.GetEnableVertexPositionSet() ){
+		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
 	pSaveControllerTarget( writer, animator, rule.GetTargetMoveTime(), "moveTime" );
@@ -844,6 +879,9 @@ const aeRuleStateManipulator &rule ){
 	writer.WriteAttributeFloat( "z", rule.GetMaximumSize().z );
 	writer.WriteOpeningTagEnd( true );
 	
+	writer.WriteDataTagFloat( "vertexPositionSetMinimum", rule.GetMinimumVertexPositionSet() );
+	writer.WriteDataTagFloat( "vertexPositionSetMaximum", rule.GetMaximumVertexPositionSet() );
+	
 	if( rule.GetEnablePosition() ){
 		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
@@ -853,10 +891,14 @@ const aeRuleStateManipulator &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
+	if( rule.GetEnableVertexPositionSet() ){
+		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
+	}
 	
 	pSaveControllerTarget( writer, animator, rule.GetTargetPosition(), "position" );
 	pSaveControllerTarget( writer, animator, rule.GetTargetRotation(), "orientation" );
 	pSaveControllerTarget( writer, animator, rule.GetTargetSize(), "size" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetVertexPositionSet(), "vertexPositionSet" );
 	
 	writer.WriteClosingTag( "ruleStateManipulator" );
 }
@@ -879,6 +921,9 @@ const aeRuleStateSnapshot &rule ){
 	}
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
+	}
+	if( rule.GetEnableVertexPositionSet() ){
+		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
 	writer.WriteClosingTag( "ruleStateSnapshot" );
@@ -960,9 +1005,11 @@ const aeRuleForeignState &rule ){
 	pSaveRuleCommon( writer, animator, rule );
 	
 	writer.WriteDataTagString( "foreignBone", rule.GetForeignBone() );
+	writer.WriteDataTagString( "foreignVertexPositionSet", rule.GetForeignVertexPositionSet() );
 	writer.WriteDataTagFloat( "scalePosition", rule.GetScalePosition() );
 	writer.WriteDataTagFloat( "scaleOrientation", rule.GetScaleOrientation() );
 	writer.WriteDataTagFloat( "scaleSize", rule.GetScaleSize() );
+	writer.WriteDataTagFloat( "scaleVertexPositionSet", rule.GetScaleVertexPositionSet() );
 	
 	if( ! rule.GetEnablePosition() ){
 		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
@@ -972,6 +1019,9 @@ const aeRuleForeignState &rule ){
 	}
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
+	}
+	if( rule.GetEnableVertexPositionSet() ){
+		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
 	if( rule.GetSourceCoordinateFrame() == deAnimatorRuleForeignState::ecfBoneLocal ){
@@ -991,6 +1041,7 @@ const aeRuleForeignState &rule ){
 	pSaveControllerTarget( writer, animator, rule.GetTargetPosition(), "position" );
 	pSaveControllerTarget( writer, animator, rule.GetTargetOrientation(), "orientation" );
 	pSaveControllerTarget( writer, animator, rule.GetTargetSize(), "size" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetVertexPositionSet(), "vertexPositionSet" );
 	
 	writer.WriteClosingTag( "ruleForeignState" );
 }
@@ -1054,6 +1105,9 @@ const aeRuleMirror &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
+	if( rule.GetEnableVertexPositionSet() ){
+		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
+	}
 	
 	writer.WriteClosingTag( "ruleMirror" );
 }
@@ -1072,6 +1126,9 @@ const aeRuleGroup &rule ){
 	}
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
+	}
+	if( rule.GetEnableVertexPositionSet() ){
+		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
 	const int count = rule.GetRules().GetCount();
@@ -1131,6 +1188,9 @@ const aeRuleSubAnimator &rule ){
 	}
 	if( ! rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
+	}
+	if( ! rule.GetEnableVertexPositionSet() ){
+		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
 	writer.WriteClosingTag( "ruleSubAnimator" );
@@ -1274,6 +1334,9 @@ const aeRuleLimit &rule ){
 	writer.WriteAttributeFloat( "z", rule.GetMaximumScaling().z );
 	writer.WriteOpeningTagEnd( true );
 	
+	writer.WriteDataTagFloat( "minimumVertexPositionSet", rule.GetMinimumVertexPositionSet() );
+	writer.WriteDataTagFloat( "maximumVertexPositionSet", rule.GetMaximumVertexPositionSet() );
+	
 	if( rule.GetCoordinateFrame() == deAnimatorRuleLimit::ecfBoneLocal ){
 		writer.WriteDataTagString( "cframe", "local" );
 		
@@ -1284,7 +1347,8 @@ const aeRuleLimit &rule ){
 		writer.WriteDataTagString( "cframe", "target" );
 	}
 	
-	writer.WriteDataTagString( "targetBone", rule.GetTargetBone().GetString() );
+	writer.WriteDataTagString( "targetBone", rule.GetTargetBone() );
+	writer.WriteDataTagString( "targetVertexPositionSet", rule.GetTargetVertexPositionSet() );
 	
 	if( rule.GetEnablePositionXMin() || rule.GetEnablePositionYMin() || rule.GetEnablePositionZMin() ){
 		writer.WriteOpeningTagStart( "enablePosMin" );
@@ -1370,6 +1434,13 @@ const aeRuleLimit &rule ){
 		writer.WriteOpeningTagEnd( true );
 	}
 	
+	if( rule.GetEnableVertexPositionSetMin() ){
+		writer.WriteDataTagFloat( "enableVertexPositionSetMin", rule.GetEnableVertexPositionSetMin() );
+	}
+	if( rule.GetEnableVertexPositionSetMax() ){
+		writer.WriteDataTagFloat( "enableVertexPositionSetMax", rule.GetEnableVertexPositionSetMax() );
+	}
+	
 	writer.WriteClosingTag( "ruleLimit" );
 }
 
@@ -1446,6 +1517,9 @@ void aeLSAnimator::pLoadAnimator( decXmlElementTag *root, aeAnimator &animator )
 				
 			}else if( strcmp( tag->GetName(), "bone" ) == 0 ){
 				animator.AddBone( GetCDataString( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "vertexPositionSet" ) == 0 ){
+				animator.AddVertexPositionSet( GetCDataString( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "controller" ) == 0 ){
 				pLoadController( tag, animator );
@@ -1853,6 +1927,13 @@ void aeLSAnimator::pLoadLink( decXmlElementTag *root, aeAnimator &animator ){
 			link->SetBoneMinimum( GetAttributeFloat( *tag, "min" ) );
 			link->SetBoneMaximum( GetAttributeFloat( *tag, "max" ) );
 			
+		}else if( tag->GetName() == "vertexPositionSet" ){
+			link->SetVertexPositionSet( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "vertexPositionSetLimits" ){
+			link->SetVertexPositionSetMinimum( GetAttributeFloat( *tag, "min" ) );
+			link->SetVertexPositionSetMaximum( GetAttributeFloat( *tag, "max" ) );
+			
 		}else if( tag->GetName() == "wrapY" ){
 			link->SetWrapY( GetCDataBool( *tag ) );
 			
@@ -1934,6 +2015,9 @@ aeRule *aeLSAnimator::pLoadRuleAnimation( decXmlElementTag *root, aeAnimator &an
 				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 					rule->SetEnableSize( GetCDataBool( *tag ) );
 					
+				}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+					rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
+					
 				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 					name = pGetAttributeString( tag, "name" );
 					
@@ -1994,6 +2078,9 @@ aeRule *aeLSAnimator::pLoadRuleAnimationDifference( decXmlElementTag *root, aeAn
 					
 				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 					rule->SetEnableSize( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+					rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 					name = pGetAttributeString( tag, "name" );
@@ -2056,6 +2143,9 @@ aeRule *aeLSAnimator::pLoadRuleAnimationSelect( decXmlElementTag *root, aeAnimat
 			
 		}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 			rule->SetEnableSize( GetCDataBool( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+			rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 			
 		}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 			name = pGetAttributeString( tag, "name" );
@@ -2261,6 +2351,12 @@ aeRule *aeLSAnimator::pLoadRuleStateManipulator( decXmlElementTag *root, aeAnima
 					pLoadVector( tag, vector );
 					rule->SetMaximumSize( vector );
 					
+				}else if( strcmp( tag->GetName(), "vertexPositionSetMinimum" ) == 0 ){
+					rule->SetMinimumVertexPositionSet( GetCDataFloat( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "vertexPositionSetMaximum" ) == 0 ){
+					rule->SetMaximumVertexPositionSet( GetCDataFloat( *tag ) );
+					
 				}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
 					rule->SetEnablePosition( GetCDataBool( *tag ) );
 					
@@ -2269,6 +2365,9 @@ aeRule *aeLSAnimator::pLoadRuleStateManipulator( decXmlElementTag *root, aeAnima
 					
 				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 					rule->SetEnableSize( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+					rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 					name = pGetAttributeString( tag, "name" );
@@ -2284,6 +2383,9 @@ aeRule *aeLSAnimator::pLoadRuleStateManipulator( decXmlElementTag *root, aeAnima
 						
 					}else if( strcmp( name, "size" ) == 0 ){
 						pLoadControllerTarget( tag, animator, rule->GetTargetSize() );
+						
+					}else if( strcmp( name, "vertexPositionSet" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetVertexPositionSet() );
 						
 					}else{
 						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -2328,6 +2430,9 @@ aeRule *aeLSAnimator::pLoadRuleStateSnapshot( decXmlElementTag *root, aeAnimator
 					
 				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 					rule->SetEnableSize( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+					rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 					name = pGetAttributeString( tag, "name" );
@@ -2499,13 +2604,16 @@ aeRule *aeLSAnimator::pLoadRuleForeignState( decXmlElementTag *root, aeAnimator 
 		if( tag ){
 			if( ! pLoadRuleCommon( tag, animator, rule ) ){
 				if( strcmp( tag->GetName(), "scalePosition" ) == 0 ){
-					rule->SetScalePosition( GetCDataBool( *tag ) );
+					rule->SetScalePosition( GetCDataFloat( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "scaleOrientation" ) == 0 ){
-					rule->SetScaleOrientation( GetCDataBool( *tag ) );
+					rule->SetScaleOrientation( GetCDataFloat( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "scaleSize" ) == 0 ){
-					rule->SetScaleSize( GetCDataBool( *tag ) );
+					rule->SetScaleSize( GetCDataFloat( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "scaleVertexPositionSet" ) == 0 ){
+					rule->SetScaleVertexPositionSet( GetCDataFloat( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
 					rule->SetEnablePosition( GetCDataBool( *tag ) );
@@ -2516,8 +2624,14 @@ aeRule *aeLSAnimator::pLoadRuleForeignState( decXmlElementTag *root, aeAnimator 
 				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 					rule->SetEnableSize( GetCDataBool( *tag ) );
 					
+				}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+					rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
+					
 				}else if( strcmp( tag->GetName(), "foreignBone" ) == 0 ){
 					rule->SetForeignBone( GetCDataString( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "foreignVertexPositionSet" ) == 0 ){
+					rule->SetForeignVertexPositionSet( GetCDataString( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "srcCFrame" ) == 0 ){
 					name = GetCDataString( *tag );
@@ -2566,6 +2680,9 @@ aeRule *aeLSAnimator::pLoadRuleForeignState( decXmlElementTag *root, aeAnimator 
 					}else if( strcmp( name, "size" ) == 0 ){
 						pLoadControllerTarget( tag, animator, rule->GetTargetSize() );
 						
+					}else if( strcmp( name, "vertexPositionSet" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetVertexPositionSet() );
+						
 					}else{
 						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
 							root->GetName().GetString(), tag->GetLineNumber(),
@@ -2609,6 +2726,9 @@ aeRule *aeLSAnimator::pLoadRuleMirror( decXmlElementTag *root, aeAnimator &anima
 			
 		}else if( tag->GetName() == "enableSize" ){
 			rule->SetEnableSize( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "enableVertexPositionSet" ){
+			rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 			
 		}else if( tag->GetName() == "mirrorAxis" ){
 			const decString &name = GetCDataString( *tag );
@@ -2725,6 +2845,9 @@ aeRule *aeLSAnimator::pLoadRuleGroup( decXmlElementTag *root, aeAnimator &animat
 		}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 			rule->SetEnableSize( GetCDataBool( *tag ) );
 			
+		}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+			rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
+			
 		}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 			const char * const name = pGetAttributeString( tag, "name" );
 			
@@ -2803,6 +2926,9 @@ aeRule *aeLSAnimator::pLoadRuleSubAnimator( decXmlElementTag *root, aeAnimator &
 				
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+				rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				name = pGetAttributeString( tag, "name" );
@@ -2997,7 +3123,6 @@ aeRule *aeLSAnimator::pLoadRuleTrackTo( decXmlElementTag *root, aeAnimator &anim
 
 aeRule *aeLSAnimator::pLoadRuleLimit( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	decXmlCharacterData *cdata;
 	const aeRuleLimit::Ref rule( aeRuleLimit::Ref::New( new aeRuleLimit ) );
 	decXmlElementTag *tag;
 	decVector vector;
@@ -3037,6 +3162,12 @@ aeRule *aeLSAnimator::pLoadRuleLimit( decXmlElementTag *root, aeAnimator &animat
 					vector.SetZero();
 					pLoadVector( tag, vector );
 					rule->SetMaximumScaling( vector );
+					
+				}else if( strcmp( tag->GetName(), "minimumVertexPositionSet" ) == 0 ){
+					rule->SetMinimumVertexPositionSet( GetCDataFloat( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "maximumVertexPositionSet" ) == 0 ){
+					rule->SetMaximumVertexPositionSet( GetCDataFloat( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "cframe" ) == 0 ){
 					name = GetCDataString( *tag );
@@ -3087,15 +3218,17 @@ aeRule *aeLSAnimator::pLoadRuleLimit( decXmlElementTag *root, aeAnimator &animat
 					rule->SetEnableScalingYMax( pGetAttributeInt( tag, "y" ) != 0 );
 					rule->SetEnableScalingZMax( pGetAttributeInt( tag, "z" ) != 0 );
 					
-				}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
-					cdata = tag->GetFirstData();
+				}else if( strcmp( tag->GetName(), "enableVertexPositionSetMin" ) == 0 ){
+					rule->SetEnableVertexPositionSetMin( GetCDataBool( *tag ) );
 					
-					if( cdata ){
-						rule->SetTargetBone( cdata->GetData() );
-						
-					}else{
-						rule->SetTargetBone( "" );
-					}
+				}else if( strcmp( tag->GetName(), "enableVertexPositionSetMax" ) == 0 ){
+					rule->SetEnableVertexPositionSetMax( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
+					rule->SetTargetBone( GetCDataString( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "targetVertexPositionSet" ) == 0 ){
+					rule->SetTargetVertexPositionSet( GetCDataString( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 					name = pGetAttributeString( tag, "name" );
@@ -3171,6 +3304,10 @@ bool aeLSAnimator::pLoadRuleCommon( decXmlElementTag *tag, aeAnimator&, aeRule &
 		
 	}else if( strcmp( tag->GetName(), "bone" ) == 0 ){
 		rule.AddBone( GetCDataString( *tag ) );
+		return true;
+		
+	}else if( strcmp( tag->GetName(), "vertexPositionSet" ) == 0 ){
+		rule.AddVertexPositionSet( GetCDataString( *tag ) );
 		return true;
 	}
 	
