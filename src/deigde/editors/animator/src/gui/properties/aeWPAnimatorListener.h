@@ -54,6 +54,9 @@ public:
 	/** Animator changed. */
 	virtual void AnimatorChanged( aeAnimator *animator );
 	
+	/** Model changed. */
+	virtual void ModelChanged( aeAnimator *animator );
+	
 	/** Rig changed. */
 	virtual void RigChanged( aeAnimator *animator );
 	

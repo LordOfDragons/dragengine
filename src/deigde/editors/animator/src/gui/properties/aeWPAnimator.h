@@ -52,6 +52,11 @@ private:
 	igdeButtonReference pBtnBoneAdd;
 	igdeButtonReference pBtnBoneDel;
 	
+	igdeListBoxReference pListVertexPositionSets;
+	igdeComboBoxFilterReference pCBVertexPositionSets;
+	igdeButtonReference pBtnVertexPositionSetAdd;
+	igdeButtonReference pBtnVertexPositionSetDel;
+	
 	
 	
 public:
@@ -86,13 +91,22 @@ public:
 	void OnAnimatorPathChanged();
 	
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList();
 	
 	/** Rig bone combo box text. */
 	const decString &GetCBRigBoneText() const;
 	
 	/** Set rig bone combo box text. */
 	void SetCBRigBoneText( const char *text );
+	
+	/** Update rig vertex position set list. */
+	void UpdateModelVertexPositionSetList();
+	
+	/** Vertex position set combo box text. */
+	const decString &GetCBModelVertexPositionSetText() const;
+	
+	/** Set vertex position set combo box text. */
+	void SetCBModelVertexPositionSetText( const char *text );
 	/*@}*/
 };
 
