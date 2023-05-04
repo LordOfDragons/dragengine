@@ -174,6 +174,26 @@ void deClassAnimationBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *my
 	}
 }
 
+// protected func void addVertexPositionSet(String name)
+deClassAnimationBuilder::nfAddVertexPositionSet::nfAddVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addVertexPositionSet", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // name
+}
+void deClassAnimationBuilder::nfAddVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const char * const name = rt->GetValue( 0 )->GetString();
+	if( builder->GetAnimation()->GetVertexPositionSets().Has( name ) ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	builder->GetAnimation()->GetVertexPositionSets().Add( name );
+}
+
 // protected func void addMove( String name, float playTime )
 deClassAnimationBuilder::nfAddMove::nfAddMove( const sInitData &init ) :
 dsFunction( init.clsAnimationBuilder, "addMove", DSFT_FUNCTION,
@@ -404,6 +424,7 @@ void deClassAnimationBuilder::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBuild( init ) );
 	AddFunction( new nfBuildAnimation( init ) );
 	AddFunction( new nfAddBone( init ) );
+	AddFunction( new nfAddVertexPositionSet( init ) );
 	AddFunction( new nfAddMove( init ) );
 	AddFunction( new nfAddMove2( init ) );
 	AddFunction( new nfSetKeyframeListCount( init ) );

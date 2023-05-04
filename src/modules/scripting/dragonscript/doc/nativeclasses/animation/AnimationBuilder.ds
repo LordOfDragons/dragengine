@@ -75,6 +75,13 @@ abstract class AnimationBuilder
 	end
 	
 	/**
+	 * \brief Add vertex position set.
+	 * \version 1.17
+	 */
+	protected func void addVertexPositionSet(String name)
+	end
+	
+	/**
 	 * \brief Add move.
 	 */
 	protected func void addMove(String name, float playTime)

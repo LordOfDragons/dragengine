@@ -84,6 +84,7 @@ private:
 	DEF_NATFUNC( nfBuild );
 	DEF_NATFUNC( nfBuildAnimation );
 	DEF_NATFUNC( nfAddBone );
+	DEF_NATFUNC( nfAddVertexPositionSet );
 	DEF_NATFUNC( nfAddMove );
 	DEF_NATFUNC( nfAddMove2 );
 	DEF_NATFUNC( nfSetKeyframeListCount );
