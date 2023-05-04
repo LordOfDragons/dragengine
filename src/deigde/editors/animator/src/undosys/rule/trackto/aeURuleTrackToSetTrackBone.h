@@ -29,7 +29,7 @@ class aeRuleTrackTo;
 
 
 /**
- * @brief Undo Action Rule Track To Set Track Bone.
+ * Undo Action Rule Track To Set Track Bone.
  */
 class aeURuleTrackToSetTrackBone : public igdeUndo{
 private:
@@ -41,19 +41,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleTrackToSetTrackBone( aeRuleTrackTo *rule, const char *newName );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleTrackToSetTrackBone();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

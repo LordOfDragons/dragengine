@@ -33,7 +33,7 @@ class aeRuleForeignState;
 
 
 /**
- * @brief Undo set rule foreign state enable size.
+ * Undo set rule foreign state enable size.
  *
  * Undo to set enable size of a foreign state rule.
  */
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleFStaEnableSize( aeRuleForeignState *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaEnableSize();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

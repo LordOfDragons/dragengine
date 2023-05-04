@@ -29,7 +29,7 @@ class aeRuleBoneTransformator;
 
 
 /**
- * \brief Undo action rule bone transformator toggle enable rotation.
+ * Undo action rule bone transformator toggle enable rotation.
  */
 class aeURuleBTransSetEnableOrien : public igdeUndo{
 private:
@@ -38,19 +38,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleBTransSetEnableOrien( aeRuleBoneTransformator *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleBTransSetEnableOrien();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

@@ -33,7 +33,7 @@ class aeRuleForeignState;
 
 
 /**
- * @brief Undo set rule foreign state position scaling.
+ * Undo set rule foreign state position scaling.
  *
  * Undo to set the position scaling of a foreign state rule.
  */
@@ -47,19 +47,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleFStaPosition( aeRuleForeignState *rule, float newScale );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaPosition();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

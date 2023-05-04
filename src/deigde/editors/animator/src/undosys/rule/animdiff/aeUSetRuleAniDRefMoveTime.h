@@ -33,7 +33,7 @@ class aeRuleAnimationDifference;
 
 
 /**
- * @brief Undo set rule animation difference reference move time.
+ * Undo set rule animation difference reference move time.
  *
  * Undo to set the reference move time of a animation difference rule.
  */
@@ -47,19 +47,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleAniDRefMoveTime( aeRuleAnimationDifference *rule, float newTime );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleAniDRefMoveTime();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

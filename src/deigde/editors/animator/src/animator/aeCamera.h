@@ -34,7 +34,7 @@ class aeAnimator;
 
 
 /**
- * @brief Camera with attachment possibility.
+ * Camera with attachment possibility.
  *
  * Manages a camera including the wrapped engine camera. Provides also
  * some simple unproject methods to determine a ray shot into the world
@@ -67,10 +67,10 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** \brief Bone name. */
+	/** Bone name. */
 	inline const decString &GetBone() const{ return pBone; }
 	
-	/** \brief Set bone name. */
+	/** Set bone name. */
 	void SetBone( const char *bone );
 	
 	/** Retrieves the free position. */

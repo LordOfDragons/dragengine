@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Track To Rule Panel.
+ * Track To Rule Panel.
  */
 class aeWPAPanelRuleTrackTo : public aeWPAPanelRule{
 private:
@@ -41,11 +41,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAPanelRuleTrackTo( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleTrackTo();
 	/*@}*/
 	
@@ -54,13 +54,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update rig bone list. */
+	/** Update rig bone list. */
 	virtual void UpdateRigBoneList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	/*@}*/
 };

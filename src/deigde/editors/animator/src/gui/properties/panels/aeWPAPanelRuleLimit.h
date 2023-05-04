@@ -28,7 +28,7 @@
 
 
 /**
- * \brief Limit rule panel.
+ * Limit rule panel.
  */
 class aeWPAPanelRuleLimit : public aeWPAPanelRule{
 private:
@@ -64,11 +64,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new panel. */
+	/** Create new panel. */
 	aeWPAPanelRuleLimit( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleLimit();
 	/*@}*/
 	
@@ -77,10 +77,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update rig bone list. */
+	/** Update rig bone list. */
 	virtual void UpdateRigBoneList();
 	
-	/** \brief Updates the rule. */
+	/** Updates the rule. */
 	virtual void UpdateRule();
 	/*@}*/
 };

@@ -30,7 +30,7 @@ class aeRuleGroup;
 
 
 /**
- * \brief Undo rule group set use current state.
+ * Undo rule group set use current state.
  */
 class aeURuleGroupToggleUseCurrentState : public igdeUndo{
 private:
@@ -39,17 +39,17 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleGroupToggleUseCurrentState( aeRuleGroup *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleGroupToggleUseCurrentState();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	/** <brief Redo action. */
 	virtual void Redo();

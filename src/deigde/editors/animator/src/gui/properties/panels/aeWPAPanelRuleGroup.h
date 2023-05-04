@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Group rule panel.
+ * Group rule panel.
  */
 class aeWPAPanelRuleGroup : public aeWPAPanelRule{
 private:
@@ -42,11 +42,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAPanelRuleGroup( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleGroup();
 	/*@}*/
 	
@@ -55,10 +55,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	/*@}*/
 };

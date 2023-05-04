@@ -33,7 +33,7 @@ class aeRuleAnimationDifference;
 
 
 /**
- * @brief Undo set rule animation difference leading move name.
+ * Undo set rule animation difference leading move name.
  *
  * Undo to set the leading move name of a animation difference rule.
  */
@@ -47,19 +47,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleAniDLeadMoveName( aeRuleAnimationDifference *rule, const char *newName );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleAniDLeadMoveName();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

@@ -26,17 +26,17 @@
 
 
 /**
- * \brief DEIGDE Animator Editor.
+ * DEIGDE Animator Editor.
  */
 class aeIGDEModule : public igdeEditorModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create module. */
+	/** Create module. */
 	aeIGDEModule( igdeEnvironment &environment );
 	
 protected:
-	/** \brief Clean up module. */
+	/** Clean up module. */
 	virtual ~aeIGDEModule();
 	/*@}*/
 	
@@ -45,7 +45,7 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Start module. */
+	/** Start module. */
 	virtual void Start();
 	/*@}*/
 };

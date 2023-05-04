@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Animation Difference Rule Panel.
+ * Animation Difference Rule Panel.
  */
 class aeWPAPanelRuleAnimationDifference : public aeWPAPanelRule{
 private:
@@ -46,11 +46,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAPanelRuleAnimationDifference( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleAnimationDifference();
 	/*@}*/
 	
@@ -59,13 +59,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update animation move list. */
+	/** Update animation move list. */
 	virtual void UpdateAnimMoveList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	/*@}*/
 };

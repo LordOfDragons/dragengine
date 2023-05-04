@@ -46,30 +46,30 @@ class deLogger;
 
 
 /**
- * @brief Animator Locomotion.
+ * Animator Locomotion.
  *
  * Stores information about locomotion testing of an animator.
  */
 class aeAnimatorLocomotion{
 public:
-	/** \brief Locomotion type. */
+	/** Locomotion type. */
 	enum eLocomotionTypes{
 		/**
-		 * \brief Natural locomotion.
+		 * Natural locomotion.
 		 * \details Actor is oriented along moving direction while upper body
 		 *          and head are turned towards view direction with animation.
 		 */
 		eltNatural,
 		
 		/**
-		 * \brief FPS Locomotion.
+		 * FPS Locomotion.
 		 * \details Actor is oriented along view direction while lower body and
 		 *          feet are turned towards moving direction with animation.
 		 */
 		eltFPS,
 		
 		/**
-		 * \brief Vehicle locomotion.
+		 * Vehicle locomotion.
 		 * \details Similar to natural locomotion but without director input on
 		 *          the moving direction but turning the actor.
 		 */
@@ -78,64 +78,64 @@ public:
 	
 	/** Attributes controllers can be linked to. */
 	enum eAttributes{
-		/** \brief None. */
+		/** None. */
 		eaNone,
 		
-		/** \brief Elapsed time modified by play speed. */
+		/** Elapsed time modified by play speed. */
 		eaElapsedTime,
 		
-		/** \brief Look up and down. */
+		/** Look up and down. */
 		eaLookUpDown,
 		
-		/** \brief Look left and right. */
+		/** Look left and right. */
 		eaLookLeftRight,
 		
-		/** \brief Moving speed in m/s. */
+		/** Moving speed in m/s. */
 		eaMovingSpeed,
 		
-		/** \brief Moving direction. */
+		/** Moving direction. */
 		eaMovingDirection,
 		
-		/** \brief Relative moving speed in m/s. */
+		/** Relative moving speed in m/s. */
 		eaRelativeMovingSpeed,
 		
-		/** \brief Turning speed. */
+		/** Turning speed. */
 		eaTurningSpeed,
 		
-		/** \brief Stance. */
+		/** Stance. */
 		eaStance,
 		
-		/** \brief Displacement in meters. */
+		/** Displacement in meters. */
 		eaDisplacement,
 		
-		/** \brief Playback time turn-inplace. */
+		/** Playback time turn-inplace. */
 		eaTimeTurnIP,
 		
-		/** \brief Body Tilt Offset. */
+		/** Body Tilt Offset. */
 		eaBodyTiltOffset,
 		
-		/** \brief Body Tilt Up-Down. */
+		/** Body Tilt Up-Down. */
 		eaBodyTiltUpDown,
 		
-		/** \brief Body Tilt Right-Left. */
+		/** Body Tilt Right-Left. */
 		eaBodyTiltRightLeft,
 		
-		/** \brief Leg ground position. */
+		/** Leg ground position. */
 		eaLegGroundPosition,
 		
-		/** \brief Leg ground normal. */
+		/** Leg ground normal. */
 		eaLegGroundNormal,
 		
-		/** \brief Leg influence. */
+		/** Leg influence. */
 		eaLegInfluence,
 		
-		/** \brief Leg position. */
+		/** Leg position. */
 		eaLegPosition,
 		
-		/** \brief Leg orientation. */
+		/** Leg orientation. */
 		eaLegOrientation,
 		
-		/** \brief Relative displacement in meters. */
+		/** Relative displacement in meters. */
 		eaRelativeDisplacement
 	};
 	
@@ -305,9 +305,9 @@ public:
 	/** Retrieves the collider used for touch ground rules. */
 	inline deColliderVolume *GetTGCollider() const{ return pTGCollider; }
 	
-	/** \brief Locomotion type. */
+	/** Locomotion type. */
 	inline eLocomotionTypes GetLocomotionType() const{ return pLocomotionType; }
-	/** \brief Set locomotion type. */
+	/** Set locomotion type. */
 	void SetLocomotionType( eLocomotionTypes type );
 	
 	/** Retrieves the number of legs. */
@@ -325,52 +325,52 @@ public:
 	
 	
 	
-	/** \brief Look down limit in degrees. */
+	/** Look down limit in degrees. */
 	inline float GetLimitLookDown() const{ return pLimitLookDown; }
 	
-	/** \brief Set look down limit in degrees. */
+	/** Set look down limit in degrees. */
 	void SetLimitLookDown( float degrees );
 	
-	/** \brief Look up limit in degrees. */
+	/** Look up limit in degrees. */
 	inline float GetLimitLookUp() const{ return pLimitLookUp; }
 	
-	/** \brief Set look up limit in degrees. */
+	/** Set look up limit in degrees. */
 	void SetLimitLookUp( float degrees );
 	
-	/** \brief Look up down angle in degrees. */
+	/** Look up down angle in degrees. */
 	inline decSmoothFloat &GetLookUpDown(){ return pLookUpDown; }
 	inline const decSmoothFloat &GetLookUpDown() const{ return pLookUpDown; }
 	
-	/** \brief Set look up down angle in degrees clamped to range. */
+	/** Set look up down angle in degrees clamped to range. */
 	void SetLookUpDown( float degrees );
 	
-	/** \brief Set look up down goal angle in degrees clamped to range. */
+	/** Set look up down goal angle in degrees clamped to range. */
 	void SetLookUpDownGoal( float degrees );
 	
 	
 	
-	/** \brief Look left limit in degrees. */
+	/** Look left limit in degrees. */
 	inline float GetLimitLookLeft() const{ return pLimitLookLeft; }
 	
-	/** \brief Set look left limit in degrees. */
+	/** Set look left limit in degrees. */
 	void SetLimitLookRight( float degrees );
 	
-	/** \brief Look right limit in degrees. */
+	/** Look right limit in degrees. */
 	inline float GetLimitLookRight() const{ return pLimitLookRight; }
 	
-	/** \brief Set look right limit in degrees. */
+	/** Set look right limit in degrees. */
 	void SetLimitLookLeft( float degrees );
 	
-	/** \brief Look right angle in degrees. */
+	/** Look right angle in degrees. */
 	inline decSmoothFloat &GetLookLeftRight(){ return pLookLeftRight; }
 	inline const decSmoothFloat &GetLookLeftRight() const{ return pLookLeftRight; }
 	
 	
 	
-	/** \brief Adjustment speed for turning in place. */
+	/** Adjustment speed for turning in place. */
 	inline float GetAdjustTimeTurnIP() const{ return pAdjustTimeTurnIP; }
 	
-	/** \brief Set adjustment speed for turning in place. */
+	/** Set adjustment speed for turning in place. */
 	void SetAdjustTimeTurnIP( float adjustTime );
 	
 	
@@ -393,11 +393,11 @@ public:
 	/** Retrieves the orientation quaternion. */
 	inline const decQuaternion &GetOrientationQuaternion() const{ return pOrientQuat; }
 	
-	/** \brief Orientation angle in degrees. */
+	/** Orientation angle in degrees. */
 	inline decSmoothFloat &GetOrientation(){ return pOrientation; }
 	inline const decSmoothFloat &GetOrientation() const{ return pOrientation; }
 	
-	/** \brief Set orientation in degrees. */
+	/** Set orientation in degrees. */
 	void SetOrientation( float orientation );
 	
 	/** Retrieves the tilt offset in meters. */
@@ -413,14 +413,14 @@ public:
 	/** Sets the left-right tilt in degrees. */
 	void SetTiltLeftRight( float tilt );
 	
-	/** \brief Linear velocity. */
+	/** Linear velocity. */
 	inline decSmoothVector &GetLinearVelocity(){ return pLinearVelocity; }
 	inline const decSmoothVector &GetLinearVelocity() const{ return pLinearVelocity; }
 	
-	/** \brief Angular velocity. */
+	/** Angular velocity. */
 	inline const decVector &GetAngularVelocity() const{ return pAngularVelocity; }
 	
-	/** \brief Set linearvelocity. */
+	/** Set linearvelocity. */
 	void SetAngularVelocity( const decVector &velocity );
 	
 	/** Retrieves the turning velocity. */
@@ -428,27 +428,27 @@ public:
 	/** Sets the turning velocity. */
 	void SetTurnVelocity( float velocity );
 	
-	/** \brief Velocity orientation around world Y axis. */
+	/** Velocity orientation around world Y axis. */
 	inline float GetVelocityOrientation() const{ return pVelocityOrientation; }
 	
-	/** \brief Set velocity orientation around world Y axis. */
+	/** Set velocity orientation around world Y axis. */
 	void SetVelocityOrientation( float orientation );
 	
-	/** \brief Moving speed in meter per seconds. */
+	/** Moving speed in meter per seconds. */
 	inline float GetMovingSpeed() const{ return pMovingSpeed; }
 	
-	/** \brief Set moving speed in meter per seconds. */
+	/** Set moving speed in meter per seconds. */
 	void SetMovingSpeed( float speed );
 	
 	/**
-	 * \brief Relative moving speed in meter per seconds.
+	 * Relative moving speed in meter per seconds.
 	 * 
 	 * Moving backwards returns negative speed.
 	 */
 	inline float GetRelativeMovingSpeed() const{ return pRelativeMovingSpeed; }
 	
 	/**
-	 * \brief Set relative moving speed in meter per seconds.
+	 * Set relative moving speed in meter per seconds.
 	 * 
 	 * For moving backwards set negative speed.
 	 */
@@ -459,7 +459,7 @@ public:
 	/** Sets the moving direction in degrees relative to the view direction. */
 	void SetMovingDirection( float movingDirection );
 	
-	/** \brief Stance ranging from 0 for uprect to 1 crouching. */
+	/** Stance ranging from 0 for uprect to 1 crouching. */
 	inline decSmoothFloat &GetStance(){ return pStance; }
 	inline const decSmoothFloat &GetStance() const{ return pStance; }
 	
@@ -480,10 +480,10 @@ public:
 	/** Sets if the step right key is pressed. */
 	void SetKeyStepRight( bool pressed );
 	
-	/** \brief Key input direction. */
+	/** Key input direction. */
 	inline float GetKeyInputDirection() const{ return pKeyInputDirection; }
 	
-	/** \brief Set key input direction. */
+	/** Set key input direction. */
 	void SetKeyInputDirection( float direction );
 	
 	/** Determines if the crouching is switched on. */

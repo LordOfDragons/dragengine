@@ -65,7 +65,7 @@ class deLogger;
 
 
 /**
- * @brief Animator.
+ * Animator.
  *
  * Working object for an animator.
  */

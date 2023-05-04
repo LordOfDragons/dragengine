@@ -34,7 +34,7 @@ class aeRuleInverseKinematic;
 
 
 /**
- * @brief Undo set rule inverse kinematic goal position.
+ * Undo set rule inverse kinematic goal position.
  *
  * Undo to set the goal position of a inverse kinematic rule.
  */
@@ -48,19 +48,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleIKSetGoalPosition( aeRuleInverseKinematic *rule, const decVector &newPos );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleIKSetGoalPosition();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

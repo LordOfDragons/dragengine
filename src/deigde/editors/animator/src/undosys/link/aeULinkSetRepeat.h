@@ -29,7 +29,7 @@ class aeLink;
 
 
 /**
- * \brief Undo action set link repeat count.
+ * Undo action set link repeat count.
  */
 class aeULinkSetRepeat : public igdeUndo{
 private:
@@ -41,11 +41,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo action. */
+	/** Create undo action. */
 	aeULinkSetRepeat( aeLink *link, int newRepeat );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeULinkSetRepeat();
 	/*@}*/
 	
@@ -54,10 +54,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

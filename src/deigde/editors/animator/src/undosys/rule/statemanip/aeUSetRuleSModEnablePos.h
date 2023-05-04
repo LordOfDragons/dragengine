@@ -33,7 +33,7 @@ class aeRuleStateManipulator;
 
 
 /**
- * @brief Undo set rule state modifier enable position.
+ * Undo set rule state modifier enable position.
  *
  * Undo to set enable position of a state modifier rule.
  */
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleSModEnablePos( aeRuleStateManipulator *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleSModEnablePos();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

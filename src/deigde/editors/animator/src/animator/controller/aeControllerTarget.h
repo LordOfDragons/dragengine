@@ -31,7 +31,7 @@ class deAnimatorControllerTarget;
 
 
 /**
- * \brief Links for a controller target.
+ * Links for a controller target.
  */
 class aeControllerTarget{
 private:
@@ -40,41 +40,41 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new controller target. */
+	/** Create a new controller target. */
 	aeControllerTarget();
-	/** \brief Create a copy of a controller target. */
+	/** Create a copy of a controller target. */
 	aeControllerTarget( const aeControllerTarget &copy );
-	/** \brief Cleans up the controller target. */
+	/** Cleans up the controller target. */
 	~aeControllerTarget();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the number of links. */
+	/** Retrieves the number of links. */
 	int GetLinkCount() const;
-	/** \brief Retrieves the link at the given index. */
+	/** Retrieves the link at the given index. */
 	aeLink *GetLinkAt( int index ) const;
-	/** \brief Retrieves the index of the link or -1 if not found. */
+	/** Retrieves the index of the link or -1 if not found. */
 	int IndexOfLink( aeLink *link ) const;
-	/** \brief Determines if the link exists. */
+	/** Determines if the link exists. */
 	bool HasLink( aeLink *link ) const;
-	/** \brief Adds a new link. */
+	/** Adds a new link. */
 	void AddLink( aeLink *link );
-	/** \brief Removes a link. */
+	/** Removes a link. */
 	void RemoveLink( aeLink *link );
-	/** \brief Removes all links. */
+	/** Removes all links. */
 	void RemoveAllLinks();
 	
-	/** \brief Updates the given engine target. */
+	/** Updates the given engine target. */
 	void UpdateEngineTarget( aeAnimator *animator, deAnimatorControllerTarget &target ) const;
 	
-	/** \brief Add links to a list of links. */
+	/** Add links to a list of links. */
 	void AddLinksToList( aeLinkList &list );
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another controller target to this controller target. */
+	/** Copy another controller target to this controller target. */
 	aeControllerTarget &operator=( const aeControllerTarget &copy );
 	/*@}*/
 };

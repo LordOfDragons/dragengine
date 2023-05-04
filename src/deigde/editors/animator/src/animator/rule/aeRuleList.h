@@ -29,7 +29,7 @@ class aeRule;
 
 
 /**
- * \brief Rule List.
+ * Rule List.
  */
 class aeRuleList{
 private:
@@ -38,36 +38,36 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new rules list. */
+	/** Create a new rules list. */
 	aeRuleList();
-	/** \brief Create a copy of a rule list. */
+	/** Create a copy of a rule list. */
 	aeRuleList( const aeRuleList &copy );
-	/** \brief Clean up the rule list. */
+	/** Clean up the rule list. */
 	~aeRuleList();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the number of rules. */
+	/** Retrieve the number of rules. */
 	int GetCount() const;
-	/** \brief Retrieve the rule at the given position. */
+	/** Retrieve the rule at the given position. */
 	aeRule *GetAt( int index ) const;
-	/** \brief Retrieve the index of the given rule or -1 if not found. */
+	/** Retrieve the index of the given rule or -1 if not found. */
 	int IndexOf( aeRule *rule ) const;
-	/** \brief Determine if a rule exists. */
+	/** Determine if a rule exists. */
 	bool Has( aeRule *rule ) const;
-	/** \brief Add a rule. */
+	/** Add a rule. */
 	void Add( aeRule *rule );
-	/** \brief Insert a new rule. */
+	/** Insert a new rule. */
 	void Insert( aeRule *rule, int index );
-	/** \brief Move a rule to a new position. */
+	/** Move a rule to a new position. */
 	void Move( aeRule *rule, int index );
-	/** \brief Remove a rule. */
+	/** Remove a rule. */
 	void Remove( aeRule *rule );
-	/** \brief Remove all rules. */
+	/** Remove all rules. */
 	void RemoveAll();
 	
-	/** \brief Set the list from another list. */
+	/** Set the list from another list. */
 	aeRuleList &operator=( const aeRuleList &list );
 	/*@}*/
 };

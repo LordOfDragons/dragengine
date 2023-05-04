@@ -30,7 +30,7 @@ class aeRuleStateSnapshot;
 
 
 /**
- * \brief Undo action rule state snapshot set identifier.
+ * Undo action rule state snapshot set identifier.
  */
 class aeURuleSnapSetID : public igdeUndo{
 private:
@@ -44,11 +44,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo action. */
+	/** Create undo action. */
 	aeURuleSnapSetID( aeRuleStateSnapshot *rule, int newID );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleSnapSetID();
 	/*@}*/
 	
@@ -57,10 +57,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

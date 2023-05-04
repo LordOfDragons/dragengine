@@ -34,7 +34,7 @@ class aeAnimator;
 
 
 /**
- * \brief 3D view.
+ * 3D view.
  */
 class aeView3D : public igdeViewRenderWindow{
 private:
@@ -51,11 +51,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create view. */
+	/** Create view. */
 	aeView3D( aeWindowMain &windowMain );
 	
 protected:
-	/** \brief Clean up view. */
+	/** Clean up view. */
 	virtual ~aeView3D();
 	/*@}*/
 	
@@ -64,34 +64,34 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Reset view. */
+	/** Reset view. */
 	void ResetView();
 	
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Start locomotion testing. */
+	/** Start locomotion testing. */
 	void StartLocomotionTesting();
 	
-	/** \brief Stop locomotion testing. */
+	/** Stop locomotion testing. */
 	void StopLocomotionTesting();
 	
-	/** \brief Start wakeboarding. */
+	/** Start wakeboarding. */
 	void StartWakeboarding();
 	
-	/** \brief Stop wakeboarding. */
+	/** Stop wakeboarding. */
 	void StopWakeboarding();
 	
-	/** \brief Game like frame update. */
+	/** Game like frame update. */
 	virtual void OnFrameUpdate( float elapsed );
 	
-	/** \brief Create canvas. */
+	/** Create canvas. */
 	virtual void CreateCanvas();
 	/*@}*/
 };

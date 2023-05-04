@@ -29,7 +29,7 @@ class aeWPAnimator;
 
 
 /**
- * \brief Animator panel listener
+ * Animator panel listener
  */
 class aeWPAnimatorListener : public aeAnimatorNotifier{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	aeWPAnimatorListener( aeWPAnimator &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~aeWPAnimatorListener();
 	/*@}*/
 	
@@ -51,13 +51,13 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Animator changed. */
+	/** Animator changed. */
 	virtual void AnimatorChanged( aeAnimator *animator );
 	
-	/** \brief Rig changed. */
+	/** Rig changed. */
 	virtual void RigChanged( aeAnimator *animator );
 	
-	/** \brief Animation changed. */
+	/** Animation changed. */
 	virtual void AnimationChanged( aeAnimator *animator );
 	/*@}*/
 };

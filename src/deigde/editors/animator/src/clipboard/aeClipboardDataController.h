@@ -29,11 +29,11 @@
 
 
 /**
- * \brief Controller clipboard data.
+ * Controller clipboard data.
  */
 class aeClipboardDataController : public igdeClipboardData{
 public:
-	/** \brief Type name. */
+	/** Type name. */
 	static const char * const TYPE_NAME;
 	
 	
@@ -46,15 +46,15 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new clipboard data. */
+	/** Create a new clipboard data. */
 	aeClipboardDataController( aeController *controller );
 	
-	/** \brief Create a new clipboard data. */
+	/** Create a new clipboard data. */
 	aeClipboardDataController( const aeControllerList &controllers );
 	
 protected:
 	/**
-	 * \brief Clean up object.
+	 * Clean up object.
 	 * \note Subclasses should set their destructor protected too to avoid users
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
@@ -67,7 +67,7 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Controllers. */
+	/** Controllers. */
 	inline const aeControllerList &GetControllers() const{ return pControllers; }
 	/*@}*/
 };

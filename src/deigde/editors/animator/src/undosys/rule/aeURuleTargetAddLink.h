@@ -34,7 +34,7 @@ class aeControllerTarget;
 
 
 /**
- * @brief Undo Rule Target Add Link.
+ * Undo Rule Target Add Link.
  *
  * Adds a link to a rule target.
  */
@@ -48,19 +48,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleTargetAddLink( aeRule *rule, aeControllerTarget *target, aeLink *link );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleTargetAddLink();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

@@ -34,7 +34,7 @@ class aeRuleInverseKinematic;
 
 
 /**
- * @brief Undo set rule inverse kinematic local rotation.
+ * Undo set rule inverse kinematic local rotation.
  *
  * Undo to set the local rotation of a inverse kinematic rule.
  */
@@ -48,19 +48,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleIKSetLocalRotation( aeRuleInverseKinematic *rule, const decVector &newRot );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleIKSetLocalRotation();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

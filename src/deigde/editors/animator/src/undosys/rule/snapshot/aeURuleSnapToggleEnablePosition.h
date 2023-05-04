@@ -30,7 +30,7 @@ class aeRuleStateSnapshot;
 
 
 /**
- * @brief Undo rule state snapshot set enable position.
+ * Undo rule state snapshot set enable position.
  */
 class aeURuleSnapToggleEnablePosition : public igdeUndo{
 private:
@@ -39,19 +39,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleSnapToggleEnablePosition( aeRuleStateSnapshot *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleSnapToggleEnablePosition();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

@@ -33,7 +33,7 @@ class aeAttachment;
 
 
 /**
- * @brief Animator Notifier.
+ * Animator Notifier.
  *
  * Notifier for changes in a animator.
  */
@@ -64,7 +64,7 @@ public:
 	/** The environment object changed. */
 	virtual void EnvObjectChanged( aeAnimator *animator );
 	
-	/** \brief Rig changed. */
+	/** Rig changed. */
 	virtual void RigChanged( aeAnimator *animator );
 	
 	/** Animation changed. */
@@ -89,7 +89,7 @@ public:
 	virtual void ActiveLinkChanged( aeAnimator *animator, aeLink *link );
 	/** Link changed. */
 	virtual void LinkChanged( aeAnimator *animator, aeLink *link );
-	/** \brief Link name changed. */
+	/** Link name changed. */
 	virtual void LinkNameChanged( aeAnimator *animator, aeLink *link );
 	/** Link count or order changed. */
 	virtual void LinkStructureChanged( aeAnimator *animator );

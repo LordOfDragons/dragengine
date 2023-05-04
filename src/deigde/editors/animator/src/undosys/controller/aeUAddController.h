@@ -34,7 +34,7 @@ class aeAnimator;
 
 
 /**
- * @brief Undo Add Controller.
+ * Undo Add Controller.
  *
  * Undo object for adding a controller.
  */
@@ -46,19 +46,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUAddController( aeAnimator *animator, aeController *controller );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUAddController();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

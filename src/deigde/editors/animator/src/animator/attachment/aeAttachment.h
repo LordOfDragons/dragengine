@@ -36,19 +36,19 @@ class deEngine;
 
 
 /**
- * \brief Attach object.
+ * Attach object.
  */
 class aeAttachment : public deObject{
 public:
-	/** \brief Attach types. */
+	/** Attach types. */
 	enum eAttachTypes{
-		/** \brief No attaching. */
+		/** No attaching. */
 		eatNone,
 		
-		/** \brief Attach to bone. */
+		/** Attach to bone. */
 		eatBone,
 		
-		/** \brief Attach to rig. */
+		/** Attach to rig. */
 		eatRig
 	};
 	
@@ -64,10 +64,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create attachment. */
+	/** Create attachment. */
 	aeAttachment( igdeEnvironment *environment, const char *name = "Attachment" );
 	
-	/** \brief Clean up attachment. */
+	/** Clean up attachment. */
 	virtual ~aeAttachment();
 	/*@}*/
 	
@@ -75,49 +75,49 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent animator. */
+	/** Parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set parent animator. */
+	/** Set parent animator. */
 	void SetAnimator( aeAnimator *animator );
 	
 	
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Attach type. */
+	/** Attach type. */
 	inline eAttachTypes GetAttachType() const{ return pAttachType; }
 	
-	/** \brief Set attached type. */
+	/** Set attached type. */
 	void SetAttachType( eAttachTypes type );
 	
-	/** \brief Name of the bone to attach to. */
+	/** Name of the bone to attach to. */
 	inline const decString &GetBoneName() const{ return pBoneName; }
 	
-	/** \brief Set name of the bone to attach to. */
+	/** Set name of the bone to attach to. */
 	void SetBoneName( const char *name );
 	
 	
 	
-	/** \brief Update attachment. */
+	/** Update attachment. */
 	void Update( float elapsed );
 	
-	/** \brief Reset attachment physics state. */
+	/** Reset attachment physics state. */
 	void ResetPhysics();
 	
-	/** \brief Attach collider if possible. */
+	/** Attach collider if possible. */
 	void AttachCollider();
 	
-	/** \brief Dettach collider if attached. */
+	/** Dettach collider if attached. */
 	void DetachCollider();
 	
 	
 	
-	/** \brief Object wrapper. */
+	/** Object wrapper. */
 	inline igdeWObject *GetObjectWrapper() const{ return pObjectWrapper; }
 	/*@}*/
 	

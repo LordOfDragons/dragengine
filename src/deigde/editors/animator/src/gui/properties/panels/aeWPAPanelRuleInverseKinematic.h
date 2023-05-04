@@ -28,7 +28,7 @@
 
 
 /**
- * \brief Inverse kinematic rule panel.
+ * Inverse kinematic rule panel.
  */
 class aeWPAPanelRuleInverseKinematic : public aeWPAPanelRule{
 private:
@@ -49,11 +49,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new panel. */
+	/** Create new panel. */
 	aeWPAPanelRuleInverseKinematic( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleInverseKinematic();
 	/*@}*/
 	
@@ -62,13 +62,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update rig bone list. */
+	/** Update rig bone list. */
 	virtual void UpdateRigBoneList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	/*@}*/
 };

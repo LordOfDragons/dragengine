@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Animation Rule Panel.
+ * Animation Rule Panel.
  */
 class aeWPAPanelRuleAnimation : public aeWPAPanelRule{
 private:
@@ -41,11 +41,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAPanelRuleAnimation( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleAnimation();
 	/*@}*/
 	
@@ -54,13 +54,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update animation move list. */
+	/** Update animation move list. */
 	virtual void UpdateAnimMoveList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	/*@}*/
 };

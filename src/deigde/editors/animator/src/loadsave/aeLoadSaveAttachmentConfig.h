@@ -38,7 +38,7 @@ class decXmlElementTag;
 
 
 /**
- * \brief Load/Save Attachment Configuration.
+ * Load/Save Attachment Configuration.
  * 
  */
 class aeLoadSaveAttachmentConfig : public igdeBaseXML{
@@ -49,7 +49,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create load/save. */
+	/** Create load/save. */
 	aeLoadSaveAttachmentConfig( deLogger *logger, const char *loggerSource );
 	/*@}*/
 	
@@ -57,16 +57,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Pattern. */
+	/** Pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
-	/** \brief Load attachment configuration from file. */
+	/** Load attachment configuration from file. */
 	void LoadAttachmentConfig( aeAnimator &animator, decBaseFileReader &reader );
 	
-	/** \brief Save attachment configuration to file. */
+	/** Save attachment configuration to file. */
 	void SaveAttachmentConfig( const aeAnimator &animator, decBaseFileWriter &writer );
 	/*@}*/
 	

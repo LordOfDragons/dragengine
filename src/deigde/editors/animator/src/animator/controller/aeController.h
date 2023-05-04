@@ -36,7 +36,7 @@ class deAnimatorController;
 
 
 /**
- * @brief Animator Controller.
+ * Animator Controller.
  *
  * Working object for an animator controller.
  */
@@ -63,10 +63,10 @@ private:
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create controller. */
+	/** Create controller. */
 	aeController( const char *name = "Controller" );
 	
-	/** \brief Create copy of controller. */
+	/** Create copy of controller. */
 	aeController( const aeController &copy );
 	
 	/** Cleans up the animator controller. */

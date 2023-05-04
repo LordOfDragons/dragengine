@@ -45,7 +45,7 @@ class aeAttachment;
 
 
 /**
- * \brief View property window.
+ * View property window.
  */
 class aeWPView : public igdeContainerScroll{
 private:
@@ -88,11 +88,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPView( aeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPView();
 	/*@}*/
 	
@@ -101,52 +101,52 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Attachment. */
+	/** Attachment. */
 	aeAttachment *GetAttachment() const;
 	
-	/** \brief Update path. */
+	/** Update path. */
 	void UpdatePath();
 	
-	/** \brief Update camera. */
+	/** Update camera. */
 	void UpdateCamera();
 	
-	/** \brief Update camera view. */
+	/** Update camera view. */
 	void UpdateCameraView();
 	
-	/** \brief Update view. */
+	/** Update view. */
 	void UpdateView();
 	
-	/** \brief Update sky. */
+	/** Update sky. */
 	void UpdateSky();
 	
-	/** \brief Update environment object. */
+	/** Update environment object. */
 	void UpdateEnvObject();
 	
-	/** \brief Update playback. */
+	/** Update playback. */
 	void UpdatePlayback();
 	
-	/** \brief Update bone list. */
+	/** Update bone list. */
 	void UpdateBoneList();
 	
-	/** \brief Update attachment list. */
+	/** Update attachment list. */
 	void UpdateAttachmentList();
 	
-	/** \brief Select active attachment. */
+	/** Select active attachment. */
 	void SelectActiveAttachment();
 	
-	/** \brief Update attachment. */
+	/** Update attachment. */
 	void UpdateAttachment();
 	
-	/** \brief Animator path changed. */
+	/** Animator path changed. */
 	void OnAnimatorPathChanged();
 	/*@}*/
 };

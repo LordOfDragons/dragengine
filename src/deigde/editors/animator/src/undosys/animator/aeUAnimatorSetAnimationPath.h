@@ -29,7 +29,7 @@ class aeAnimator;
 
 
 /**
- * \brief Undo action set animation path.
+ * Undo action set animation path.
  */
 class aeUAnimatorSetAnimationPath : public igdeUndo{
 private:
@@ -42,11 +42,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUAnimatorSetAnimationPath( aeAnimator *rule, const char *newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUAnimatorSetAnimationPath();
 	/*@}*/
 	
@@ -55,10 +55,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

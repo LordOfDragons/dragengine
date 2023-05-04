@@ -49,7 +49,7 @@ class igdeTreeItem;
 
 
 /**
- * \brief Base animator rule panel.
+ * Base animator rule panel.
  */
 class aeWPRule : public igdeContainerScroll{
 private:
@@ -80,11 +80,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPRule( aeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPRule();
 	/*@}*/
 	
@@ -93,46 +93,46 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Active rule. */
+	/** Active rule. */
 	aeRule *GetRule() const;
 	
-	/** \brief Update the controller list. */
+	/** Update the controller list. */
 	void UpdateControllerList();
 	
-	/** \brief Update the link list. */
+	/** Update the link list. */
 	void UpdateLinkList();
 	
-	/** \brief Update the rule tree. */
+	/** Update the rule tree. */
 	void UpdateRuleTree();
 	
-	/** \brief Update item in the rule tree. */
+	/** Update item in the rule tree. */
 	void UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule );
 	
-	/** \brief Select active rule. */
+	/** Select active rule. */
 	void SelectActiveRule();
 	
-	/** \brief Show panel matching active source. */
+	/** Show panel matching active source. */
 	void ShowActiveSourcePanel();
 	
-	/** \brief Update the active rule. */
+	/** Update the active rule. */
 	void UpdateRule();
 	
-	/** \brief Update the rule bone list. */
+	/** Update the rule bone list. */
 	void UpdateRuleBoneList();
 	
-	/** \brief Update the rule move list. */
+	/** Update the rule move list. */
 	void UpdateRuleMoveList();
 	
-	/** \brief Animator path changed. */
+	/** Animator path changed. */
 	void OnAnimatorPathChanged();
 	/*@}*/
 };

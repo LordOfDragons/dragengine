@@ -33,7 +33,7 @@ class aeController;
 
 
 /**
- * @brief Undo rule sub animator set connection controller.
+ * Undo rule sub animator set connection controller.
  *
  * Undo to set controller of a connection of a sub animator rule.
  */
@@ -48,19 +48,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleSASetConController( aeRuleSubAnimator *rule, int target, aeController *newController );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleSASetConController();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

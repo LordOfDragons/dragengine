@@ -33,7 +33,7 @@ class aeAnimator;
 
 
 /**
- * @brief Undo Link Add.
+ * Undo Link Add.
  *
  * Adds a link.
  */
@@ -45,19 +45,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeULinkAdd( aeAnimator *animator, aeLink *link );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeULinkAdd();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

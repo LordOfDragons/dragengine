@@ -34,7 +34,7 @@ class aeRuleInverseKinematic;
 
 
 /**
- * @brief Undo set rule inverse kinematic goal rotation.
+ * Undo set rule inverse kinematic goal rotation.
  *
  * Undo to set the goal rotation of a inverse kinematic rule.
  */
@@ -48,19 +48,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleIKSetGoalRotation( aeRuleInverseKinematic *rule, const decVector &newRot );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleIKSetGoalRotation();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

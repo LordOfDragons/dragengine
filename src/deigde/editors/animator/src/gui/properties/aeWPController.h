@@ -38,7 +38,7 @@ class aeWPControllerListener;
 
 
 /**
- * \brief Controller Panel.
+ * Controller Panel.
  */
 class aeWPController : public igdeContainerScroll{
 private:
@@ -65,11 +65,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPController( aeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPController();
 	/*@}*/
 	
@@ -78,28 +78,28 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Active controller. */
+	/** Active controller. */
 	aeController *GetController() const;
 	
-	/** \brief Update controller list. */
+	/** Update controller list. */
 	void UpdateControllerList();
 	
-	/** \brief Select active controller. */
+	/** Select active controller. */
 	void SelectActiveController();
 	
-	/** \brief Update controller. */
+	/** Update controller. */
 	void UpdateController();
 	
-	/** \brief Update controller value only. */
+	/** Update controller value only. */
 	void UpdateControllerValue();
 	/*@}*/
 };

@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Foreign State Rule Panel.
+ * Foreign State Rule Panel.
  */
 class aeWPAPanelRuleForeignState : public aeWPAPanelRule{
 private:
@@ -46,11 +46,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAPanelRuleForeignState( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleForeignState();
 	/*@}*/
 	
@@ -59,13 +59,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update rig bone list. */
+	/** Update rig bone list. */
 	virtual void UpdateRigBoneList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	/*@}*/
 };

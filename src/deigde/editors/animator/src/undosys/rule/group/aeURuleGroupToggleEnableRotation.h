@@ -30,7 +30,7 @@ class aeRuleGroup;
 
 
 /**
- * \brief Undo rule group set enable rotation.
+ * Undo rule group set enable rotation.
  */
 class aeURuleGroupToggleEnableRotation : public igdeUndo{
 private:
@@ -39,17 +39,17 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleGroupToggleEnableRotation( aeRuleGroup *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleGroupToggleEnableRotation();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	/** <brief Redo action. */
 	virtual void Redo();

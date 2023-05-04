@@ -43,7 +43,7 @@ class decCurveBezier;
 
 
 /**
- * @brief Sub Animator.
+ * Sub Animator.
  *
  * A sub animator to be used inside the actual animator to edit. Sub
  * animators are loaded from file or can be created manually.

@@ -29,7 +29,7 @@ class aeWPLink;
 
 
 /**
- * \brief Link panel listener
+ * Link panel listener
  */
 class aeWPLinkListener : public aeAnimatorNotifier{
 private:
@@ -40,11 +40,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	aeWPLinkListener( aeWPLink &panel );
 	
 protected:
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~aeWPLinkListener();
 	/*@}*/
 	
@@ -53,25 +53,25 @@ protected:
 public:
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Rig changed. */
+	/** Rig changed. */
 	virtual void RigChanged( aeAnimator *animator );
 	
-	/** \brief Controller name changed. */
+	/** Controller name changed. */
 	virtual void ControllerNameChanged( aeAnimator *animator, aeController *controller );
 	
-	/** \brief Controller count or order changed. */
+	/** Controller count or order changed. */
 	virtual void ControllerStructureChanged( aeAnimator *animator );
 	
-	/** \brief Active link changed. */
+	/** Active link changed. */
 	virtual void ActiveLinkChanged( aeAnimator *animator, aeLink *link );
 	
-	/** \brief Link changed. */
+	/** Link changed. */
 	virtual void LinkChanged( aeAnimator *animator, aeLink *link );
 	
-	/** \brief Link name changed. */
+	/** Link name changed. */
 	virtual void LinkNameChanged( aeAnimator *animator, aeLink *link );
 	
-	/** \brief Link count or order changed. */
+	/** Link count or order changed. */
 	virtual void LinkStructureChanged( aeAnimator *animator );
 	/*@}*/
 };

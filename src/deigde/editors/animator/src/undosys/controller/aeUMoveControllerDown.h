@@ -34,7 +34,7 @@ class aeAnimator;
 
 
 /**
- * @brief Undo Move Controller Up.
+ * Undo Move Controller Up.
  *
  * Undo object for moving a controller down.
  */
@@ -47,19 +47,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUMoveControllerDown( aeAnimator *animator, aeController *controller );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUMoveControllerDown();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

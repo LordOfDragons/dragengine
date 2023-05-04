@@ -29,7 +29,7 @@ class aeWindowMain;
 
 
 /**
- * \brief Main window listener.
+ * Main window listener.
  */
 class aeWindowMainListener : public aeAnimatorNotifier{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	aeWindowMainListener( aeWindowMain &windowMain );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~aeWindowMainListener();
 	/*@}*/
 	
@@ -51,40 +51,40 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Changed or saved state changed. */
+	/** Changed or saved state changed. */
 	virtual void StateChanged( aeAnimator *animator );
 	
-	/** \brief Undos changed. */
+	/** Undos changed. */
 	virtual void UndoChanged( aeAnimator *animator );
 	
-	/** \brief Animator changed. */
+	/** Animator changed. */
 	virtual void AnimatorChanged( aeAnimator *animator );
 	
-	/** \brief View changed. */
+	/** View changed. */
 	virtual void ViewChanged( aeAnimator *animator );
 	
-	/** \brief Model changed. */
+	/** Model changed. */
 	virtual void ModelChanged( aeAnimator *animator );
 	
-	/** \brief Animation changed. */
+	/** Animation changed. */
 	virtual void AnimationChanged( aeAnimator *animator );
 	
-	/** \brief Controller changed. */
+	/** Controller changed. */
 	virtual void ControllerChanged( aeAnimator *animator, aeController *controller );
 	
-	/** \brief Controller count or order changed. */
+	/** Controller count or order changed. */
 	virtual void ControllerStructureChanged( aeAnimator *animator );
 	
-	/** \brief Active rule changed. */
+	/** Active rule changed. */
 	virtual void ActiveRuleChanged( aeAnimator *animator, aeRule *rule );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged( aeAnimator *animator, aeRule *rule );
 	
-	/** \brief Rule name changed. */
+	/** Rule name changed. */
 	virtual void RuleNameChanged( aeAnimator *animator, aeRule *rule );
 	
-	/** \brief Rule count or order changed. */
+	/** Rule count or order changed. */
 	virtual void RuleStructureChanged( aeAnimator *animator );
 	/*@}*/
 };

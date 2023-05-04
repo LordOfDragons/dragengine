@@ -29,7 +29,7 @@
 
 
 /**
- * \brief State Manipulator Rule Panel.
+ * State Manipulator Rule Panel.
  */
 class aeWPAPanelRuleStateManipulator : public aeWPAPanelRule{
 private:
@@ -48,11 +48,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new panel. */
+	/** Create new panel. */
 	aeWPAPanelRuleStateManipulator( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleStateManipulator();
 	/*@}*/
 	
@@ -61,10 +61,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	/*@}*/
 };

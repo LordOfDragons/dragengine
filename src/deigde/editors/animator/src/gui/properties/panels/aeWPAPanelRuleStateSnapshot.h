@@ -26,7 +26,7 @@
 
 
 /**
- * \brief State Snapshot Rule Panel.
+ * State Snapshot Rule Panel.
  */
 class aeWPAPanelRuleStateSnapshot : public aeWPAPanelRule{
 private:
@@ -45,11 +45,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAPanelRuleStateSnapshot( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleStateSnapshot();
 	/*@}*/
 	
@@ -58,16 +58,16 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update animation move list. */
+	/** Update animation move list. */
 	virtual void UpdateAnimMoveList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Move combo box text. */
+	/** Move combo box text. */
 	const decString &GetCBMoveNameText() const;
 	
-	/** \brief Move time text field value. */
+	/** Move time text field value. */
 	float GetTextMoveTime() const;
 	/*@}*/
 };

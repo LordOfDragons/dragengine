@@ -29,7 +29,7 @@ class aeWPUndoHistory;
 
 
 /**
- * \brief History Panel Listener
+ * History Panel Listener
  */
 class aeWPUndoHistoryListener : public aeAnimatorNotifier{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	aeWPUndoHistoryListener( aeWPUndoHistory &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~aeWPUndoHistoryListener();
 	/*@}*/
 	
@@ -51,7 +51,7 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Undos changed. */
+	/** Undos changed. */
 	virtual void UndoChanged( aeAnimator *animator );
 	/*@}*/
 };

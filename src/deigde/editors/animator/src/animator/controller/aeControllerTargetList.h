@@ -29,7 +29,7 @@ class aeControllerTarget;
 
 
 /**
- * \brief Controller target List.
+ * Controller target List.
  */
 class aeControllerTargetList{
 private:
@@ -38,54 +38,54 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new controller target list. */
+	/** Create new controller target list. */
 	aeControllerTargetList();
 	
-	/** \brief Create copy of a controller target list. */
+	/** Create copy of a controller target list. */
 	aeControllerTargetList( const aeControllerTargetList &copy );
 	
-	/** \brief Clean up controller target list. */
+	/** Clean up controller target list. */
 	~aeControllerTargetList();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of controller targets. */
+	/** Number of controller targets. */
 	int GetCount() const;
 	
 	/**
-	 * \brief Controller target at index.
+	 * Controller target at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
 	aeControllerTarget *GetAt( int index ) const;
 	
 	/**
-	 * \brief Index of controller target or -1 if not present in the list.
+	 * Index of controller target or -1 if not present in the list.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
 	int IndexOf( aeControllerTarget *target ) const;
 	
 	/**
-	 * \brief Determine if a controller target is present in the list.
+	 * Determine if a controller target is present in the list.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
 	bool Has( aeControllerTarget *target ) const;
 	
 	/**
-	 * \brief Add controller target.
+	 * Add controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
 	void Add( aeControllerTarget *target );
 	
 	/**
-	 * \brief Insert controller target.
+	 * Insert controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
 	void Insert( aeControllerTarget *target, int index );
 	
 	/**
-	 * \brief Move controller target.
+	 * Move controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
@@ -93,19 +93,19 @@ public:
 	void Move( aeControllerTarget *target, int index );
 	
 	/**
-	 * \brief Remove controller target.
+	 * Remove controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em target is not present in the list.
 	 */
 	void Remove( aeControllerTarget *target );
 	
-	/** \brief Remove all controller targets. */
+	/** Remove all controller targets. */
 	void RemoveAll();
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy controller target list to this controller target list. */
+	/** Copy controller target list to this controller target list. */
 	aeControllerTargetList &operator=( const aeControllerTargetList &list );
 	/*@}*/
 };

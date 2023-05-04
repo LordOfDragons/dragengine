@@ -33,7 +33,7 @@ class aeRuleStateSnapshot;
 
 
 /**
- * @brief Undo set rule state snapshot local.
+ * Undo set rule state snapshot local.
  *
  * Undo to set local of a state snapshot rule.
  */
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleSnapUseLast( aeRuleStateSnapshot *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleSnapUseLast();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

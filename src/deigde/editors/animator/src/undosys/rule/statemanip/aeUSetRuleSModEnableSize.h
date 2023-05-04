@@ -33,7 +33,7 @@ class aeRuleStateManipulator;
 
 
 /**
- * @brief Undo set rule state modifier enable size.
+ * Undo set rule state modifier enable size.
  *
  * Undo to set enable size of a state modifier rule.
  */
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleSModEnableSize( aeRuleStateManipulator *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleSModEnableSize();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	
