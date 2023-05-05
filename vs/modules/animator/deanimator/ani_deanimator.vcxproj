@@ -62,6 +62,13 @@
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleTrackTo.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\task\dearTaskApplyRules.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\visitors\dearClosestHit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPS.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPSList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentVPSState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationVPSState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationVPS.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSStateList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimation.h" />
@@ -99,6 +106,13 @@
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleTrackTo.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\task\dearTaskApplyRules.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\visitors\dearClosestHit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPS.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPSList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentVPSState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationVPSState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationVPS.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSStateList.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">

@@ -120,6 +120,27 @@
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPSList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentVPSState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationVPSState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationVPS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSStateList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimation.h">
@@ -225,6 +246,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPSList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentVPSState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationVPSState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationVPS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSStateList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
