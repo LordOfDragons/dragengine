@@ -33,6 +33,7 @@
 #include "../../../undosys/rule/snapshot/aeURuleSnapToggleEnablePosition.h"
 #include "../../../undosys/rule/snapshot/aeURuleSnapToggleEnableRotation.h"
 #include "../../../undosys/rule/snapshot/aeURuleSnapToggleEnableSize.h"
+#include "../../../undosys/rule/snapshot/aeURuleSnapToggleEnableVertexPositionSet.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
@@ -206,6 +207,22 @@ public:
 	}
 };
 
+class cActionEnableVertexPositionSet : public cBaseAction{
+public:
+	cActionEnableVertexPositionSet( aeWPAPanelRuleStateSnapshot &panel ) : cBaseAction( panel,
+		"Enable vertex position set manipulation", nullptr,
+		"Determines if vertex position set is modified or kept as it is" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleStateSnapshot *rule ){
+		return new aeURuleSnapToggleEnableVertexPositionSet( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleStateSnapshot &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetEnableVertexPositionSet() );
+	}
+};
+
 class cActionSnapshot : public cBaseAction{
 public:
 	cActionSnapshot( aeWPAPanelRuleStateSnapshot &panel ) : cBaseAction( panel, "State", NULL,
@@ -273,6 +290,7 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertStateSnapshot )
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
+	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
 	
 	helper.FormLine( groupBox, "Snapshot:", "Store snapshot (runtime simulation)", formLine );
 	helper.Button( formLine, pBtnSnapshot, new cActionSnapshot( *this ), true );
@@ -333,6 +351,7 @@ void aeWPAPanelRuleStateSnapshot::UpdateRule(){
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();
 	pChkEnableSize->GetAction()->Update();
+	pChkEnableVertexPositionSet->GetAction()->Update();
 	pBtnSnapshot->GetAction()->Update();
 	pBtnGetFrame->GetAction()->Update();
 }

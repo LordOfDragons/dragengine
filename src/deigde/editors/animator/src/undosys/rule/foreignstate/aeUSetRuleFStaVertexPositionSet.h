@@ -19,40 +19,40 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _AEURULELIMITSETTARGETVERTEXPOSITIONSET_H_
-#define _AEURULELIMITSETTARGETVERTEXPOSITIONSET_H_
+#ifndef _AEUSETRULEFSTAVERTEXPOSITIONSET_H_
+#define _AEUSETRULEFSTAVERTEXPOSITIONSET_H_
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleLimit;
+class aeRuleForeignState;
 
 
 /**
- * Undo action rule set target vertex position set.
+ * Undo set rule foreign state vertex position set.
  */
-class aeURuleLimitSetTargetVertexPositionSet : public igdeUndo{
+class aeUSetRuleFStaVertexPositionSet : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleForeignState *pRule;
 	
-	decString pOldVertexPositionSet;
-	decString pNewVertexPositionSet;
+	decString pOldName;
+	decString pNewName;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new undo object. */
-	aeURuleLimitSetTargetVertexPositionSet( aeRuleLimit *rule, const char *newVertexPositionSet );
+	/** Create undo. */
+	aeUSetRuleFStaVertexPositionSet( aeRuleForeignState *rule, const char *newName );
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetTargetVertexPositionSet();
+	virtual ~aeUSetRuleFStaVertexPositionSet();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** Undo action. */
+	/** Undo. */
 	virtual void Undo();
-	/** Redo action. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

@@ -120,7 +120,6 @@ private:
 	DEF_NATFUNC( nfSetMaximumVertexPositionSet );
 	DEF_NATFUNC( nfSetCoordinateFrame );
 	DEF_NATFUNC( nfSetTargetBone );
-	DEF_NATFUNC( nfSetTargetVertexPositionSet );
 	
 	DEF_NATFUNC( nfTargetAddLink );
 	DEF_NATFUNC( nfTargetRemoveAllLinks );

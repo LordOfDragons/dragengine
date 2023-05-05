@@ -433,22 +433,6 @@ void deClassARLimit::nfSetTargetBone::RunFunction( dsRunTime *rt, dsValue *mysel
 	}
 }
 
-// public func void setTargetVertexPositionSet(String name)
-deClassARLimit::nfSetTargetVertexPositionSet::nfSetTargetVertexPositionSet( const sInitData &init ) :
-dsFunction( init.clsARLimit, "setTargetVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // name
-}
-void deClassARLimit::nfSetTargetVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
-	
-	nd.rule->SetTargetVertexPositionSet( rt->GetValue( 0 )->GetString() );
-	
-	if( nd.animator ){
-		nd.animator->NotifyRulesChanged();
-	}
-}
-
-
 
 
 // public func void targetAddLink( ARLimitTarget target, int link )
@@ -579,7 +563,6 @@ void deClassARLimit::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetMaximumVertexPositionSet( init ) );
 	AddFunction( new nfSetCoordinateFrame( init ) );
 	AddFunction( new nfSetTargetBone( init ) );
-	AddFunction( new nfSetTargetVertexPositionSet( init ) );
 	
 	AddFunction( new nfTargetAddLink( init ) );
 	AddFunction( new nfTargetRemoveAllLinks( init ) );

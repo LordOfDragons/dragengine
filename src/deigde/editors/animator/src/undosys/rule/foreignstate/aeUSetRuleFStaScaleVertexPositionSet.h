@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine IGDE Animator Editor
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,49 +19,45 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _AEWPAPANELRULEGROUP_H_
-#define _AEWPAPANELRULEGROUP_H_
+#ifndef _AEUSETRULEFSTASCALEVERTEXPOSITIONSET_H_
+#define _AEUSETRULEFSTASCALEVERTEXPOSITIONSET_H_
 
-#include "aeWPAPanelRule.h"
+#include <deigde/undo/igdeUndo.h>
 
+class aeRuleForeignState;
 
 
 /**
- * Group rule panel.
+ * Undo set rule foreign state vertex position set scaling.
  */
-class aeWPAPanelRuleGroup : public aeWPAPanelRule{
+class aeUSetRuleFStaScaleVertexPositionSet : public igdeUndo{
 private:
-	igdeComboBoxReference pCBApplicationType;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
-	igdeCheckBoxReference pChkUseCurrentState;
+	aeRuleForeignState *pRule;
 	
-	
+	float pOldScale;
+	float pNewScale;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create panel. */
-	aeWPAPanelRuleGroup( aeWPRule &wpRule );
-	
+	/** Create undo. */
+	aeUSetRuleFStaScaleVertexPositionSet( aeRuleForeignState *rule, float newScale );
 protected:
-	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleGroup();
+	/** Clean up undo. */
+	virtual ~aeUSetRuleFStaScaleVertexPositionSet();
 	/*@}*/
-	
-	
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** Update rule. */
-	virtual void UpdateRule();
-	
-	/** Update target list. */
-	virtual void UpdateTargetList();
+	/** Undo. */
+	virtual void Undo();
+	/** Redo. */
+	virtual void Redo();
 	/*@}*/
+	
+private:
+	void pCleanUp();
 };
 
 #endif

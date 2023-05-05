@@ -129,6 +129,9 @@ public:
 	/** Update the rule bone list. */
 	void UpdateRuleBoneList();
 	
+	/** Update the rule vertex position set list. */
+	void UpdateRuleVertexPositionSetList();
+	
 	/** Update the rule move list. */
 	void UpdateRuleMoveList();
 	

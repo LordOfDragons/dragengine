@@ -51,6 +51,9 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
+	/** Model changed. */
+	virtual void ModelChanged( aeAnimator *animator );
+	
 	/** Rig changed. */
 	virtual void RigChanged( aeAnimator *animator );
 	

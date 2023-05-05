@@ -35,6 +35,7 @@
 #include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnablePosition.h"
 #include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnableRotation.h"
 #include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnableSize.h"
+#include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnableVertexPositionSet.h"
 #include "../../../animatoreditor.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -246,6 +247,22 @@ public:
 	}
 };
 
+class cActionEnableVertexPositionSet : public cBaseAction{
+public:
+	cActionEnableVertexPositionSet( aeWPAPanelRuleAnimationDifference &panel ) : cBaseAction( panel,
+		"Enable vertex position set manipulation", nullptr,
+		"Determines if vertex position set is modified or kept as it is" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimationDifference *rule ){
+		return new aeURuleAnimDiffToggleEnableVertexPositionSet( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleAnimationDifference &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetEnableVertexPositionSet() );
+	}
+};
+
 }
 
 
@@ -282,6 +299,7 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertAnimationDifference )
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
+	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
 }
 
 aeWPAPanelRuleAnimationDifference::~aeWPAPanelRuleAnimationDifference(){
@@ -350,6 +368,7 @@ void aeWPAPanelRuleAnimationDifference::UpdateRule(){
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();
 	pChkEnableSize->GetAction()->Update();
+	pChkEnableVertexPositionSet->GetAction()->Update();
 }
 
 void aeWPAPanelRuleAnimationDifference::UpdateTargetList(){

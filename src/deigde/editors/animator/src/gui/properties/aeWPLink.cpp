@@ -41,6 +41,9 @@
 #include "../../undosys/link/aeULinkSetBoneParameter.h"
 #include "../../undosys/link/aeULinkSetBoneMinimum.h"
 #include "../../undosys/link/aeULinkSetBoneMaximum.h"
+#include "../../undosys/link/aeULinkSetVertexPositionSet.h"
+#include "../../undosys/link/aeULinkSetVertexPositionSetMinimum.h"
+#include "../../undosys/link/aeULinkSetVertexPositionSetMaximum.h"
 #include "../../undosys/link/aeULinkToggleWrapY.h"
 #include "../../undosys/link/aeULinkPaste.h"
 
@@ -73,8 +76,11 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigBone.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 
 
 
@@ -464,6 +470,97 @@ public:
 };
 
 
+class cComboVertexPositionSet : public igdeComboBoxListener{
+	aeWPLink &pPanel;
+	bool &pPreventUpdate;
+	
+public:
+	cComboVertexPositionSet( aeWPLink &panel, bool &preventUpdate ) :
+		pPanel( panel ), pPreventUpdate( preventUpdate ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ){
+		if( pPreventUpdate ){
+			return;
+		}
+		
+		const decString &vps = comboBox->GetText();
+		aeLink * const link = pPanel.GetLink();
+		if( ! link || link->GetVertexPositionSet() == vps ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkSetVertexPositionSet( link, vps ) );
+		if( undo ){
+			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+
+class cTextVertexPositionSet : public igdeTextFieldListener{
+	aeWPLink &pPanel;
+	
+public:
+	cTextVertexPositionSet( aeWPLink &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		const decString value( textField->GetText() );
+		aeLink * const link = pPanel.GetLink();
+		if( ! link || link->GetVertexPositionSet() == value ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkSetVertexPositionSet( link, value ) );
+		if( undo ){
+			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+
+class cTextVertexPositionSetMinimum : public igdeTextFieldListener{
+	aeWPLink &pPanel;
+	
+public:
+	cTextVertexPositionSetMinimum( aeWPLink &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		const float value = textField->GetFloat();
+		aeLink * const link = pPanel.GetLink();
+		if( ! link || fabsf( link->GetVertexPositionSetMinimum() - value ) < FLOAT_SAFE_EPSILON ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkSetVertexPositionSetMinimum( link, value ) );
+		if( undo ){
+			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+
+class cTextVertexPositionSetMaximum : public igdeTextFieldListener{
+	aeWPLink &pPanel;
+	
+public:
+	cTextVertexPositionSetMaximum( aeWPLink &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		const float value = textField->GetFloat();
+		aeLink * const link = pPanel.GetLink();
+		if( ! link || fabsf( link->GetVertexPositionSetMaximum() - value ) < FLOAT_SAFE_EPSILON ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkSetVertexPositionSetMaximum( link, value ) );
+		if( undo ){
+			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+
+
 class cCheckWrapY : public cBaseAction{
 public:
 	cCheckWrapY( aeWPLink &panel ) : cBaseAction( panel, "Wrap Y", nullptr,
@@ -544,6 +641,16 @@ pPreventUpdate( false )
 	helper.EditFloat( groupBox, "Bone Maximum Value:", "Maximum bone value",
 		pEditBoneMaximum, new cTextBoneMaximum( *this ) );
 	
+	helper.ComboBoxFilter( groupBox, "Vertex Position Set:", true,
+		"Set vertex position set to use as input or empty string to not use",
+		pCBVertexPositionSet, new cComboVertexPositionSet( *this, pPreventUpdate ) );
+	pCBVertexPositionSet->SetDefaultSorter();
+	
+	helper.EditFloat( groupBox, "VPS Minimum Value:", "Minimum vertex position set value",
+		pEditVertexPositionSetMinimum, new cTextVertexPositionSetMinimum( *this ) );
+	helper.EditFloat( groupBox, "VPS Maximum Value:", "Maximum vertex position set value",
+		pEditVertexPositionSetMaximum, new cTextVertexPositionSetMaximum( *this ) );
+	
 	helper.CheckBox( groupBox, pChkWrapY, new cCheckWrapY( *this ), true );
 	
 	
@@ -588,6 +695,7 @@ void aeWPLink::SetAnimator( aeAnimator *animator ){
 	}
 	
 	UpdateRigBoneList();
+	UpdateModelVertexPositionSetList();
 	UpdateControllerList();
 	UpdateLinkList();
 }
@@ -636,6 +744,9 @@ void aeWPLink::UpdateLink(){
 		pCBBoneParameter->SetSelectionWithData( ( void* )( intptr_t )link->GetBoneParameter() );
 		pEditBoneMinimum->SetFloat( link->GetBoneMinimum() );
 		pEditBoneMaximum->SetFloat( link->GetBoneMaximum() );
+		pCBVertexPositionSet->SetText( link->GetVertexPositionSet() );
+		pEditVertexPositionSetMinimum->SetFloat( link->GetVertexPositionSetMinimum() );
+		pEditVertexPositionSetMaximum->SetFloat( link->GetVertexPositionSetMaximum() );
 		pEditCurve->SetCurve( link->GetCurve() );
 		
 	}else{
@@ -646,6 +757,9 @@ void aeWPLink::UpdateLink(){
 		pCBBoneParameter->SetSelectionWithData( ( void* )( intptr_t )deAnimatorLink::ebpPositionZ );
 		pEditBoneMinimum->ClearText();
 		pEditBoneMaximum->ClearText();
+		pCBVertexPositionSet->ClearText();
+		pEditVertexPositionSetMinimum->ClearText();
+		pEditVertexPositionSetMaximum->ClearText();
 		pEditCurve->ClearCurve();
 	}
 	
@@ -657,6 +771,9 @@ void aeWPLink::UpdateLink(){
 	pCBBoneParameter->SetEnabled( enabled );
 	pEditBoneMinimum->SetEnabled( enabled );
 	pEditBoneMaximum->SetEnabled( enabled );
+	pCBVertexPositionSet->SetEnabled( enabled );
+	pEditVertexPositionSetMinimum->SetEnabled( enabled );
+	pEditVertexPositionSetMaximum->SetEnabled( enabled );
 	pEditCurve->SetEnabled( enabled );
 	
 	pChkWrapY->GetAction()->Update();
@@ -683,6 +800,36 @@ void aeWPLink::UpdateRigBoneList(){
 		
 		pCBBone->StoreFilterItems();
 		pCBBone->SetText( selection );
+		pPreventUpdate = false;
+		
+	}catch( const deException & ){
+		pPreventUpdate = false;
+		throw;
+	}
+}
+
+void aeWPLink::UpdateModelVertexPositionSetList(){
+	const decString selection( pCBVertexPositionSet->GetText() );
+	
+	pPreventUpdate = true;
+	try{
+		pCBVertexPositionSet->RemoveAllItems();
+		
+		if( pAnimator ){
+			const deComponent * const component = pAnimator->GetEngineComponent();
+			const deModel * const model = component ? component->GetModel() : nullptr;
+			if( model ){
+				const int count = model->GetVertexPositionSetCount();
+				int i;
+				for( i=0; i<count; i++ ){
+					pCBVertexPositionSet->AddItem( model->GetVertexPositionSetAt( i )->GetName() );
+				}
+			}
+			pCBVertexPositionSet->SortItems();
+		}
+		
+		pCBVertexPositionSet->StoreFilterItems();
+		pCBVertexPositionSet->SetText( selection );
 		pPreventUpdate = false;
 		
 	}catch( const deException & ){

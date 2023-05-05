@@ -59,6 +59,9 @@ private:
 	igdeComboBoxReference pCBBoneParameter;
 	igdeTextFieldReference pEditBoneMinimum;
 	igdeTextFieldReference pEditBoneMaximum;
+	igdeComboBoxFilterReference pCBVertexPositionSet;
+	igdeTextFieldReference pEditVertexPositionSetMinimum;
+	igdeTextFieldReference pEditVertexPositionSetMaximum;
 	igdeCheckBoxReference pChkWrapY;
 	
 	bool pPreventUpdate;
@@ -104,6 +107,9 @@ public:
 	
 	/** Update rig bone list. */
 	void UpdateRigBoneList();
+	
+	/** Update model vertex position set list. */
+	void UpdateModelVertexPositionSetList();
 	
 	/** Update controller list. */
 	void UpdateControllerList();

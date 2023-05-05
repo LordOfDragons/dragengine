@@ -206,6 +206,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaRotation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSize.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSrcCFrame.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaScaleVertexPositionSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupAddRule.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupMoveRuleDown.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupMoveRuleUp.cpp" />
@@ -307,7 +309,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMax.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMin.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetTargetVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMax.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMin.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableVertexPositionSet.cpp" />
@@ -485,6 +486,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaRotation.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSize.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSrcCFrame.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaScaleVertexPositionSet.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaVertexPositionSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupAddRule.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupMoveRuleDown.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupMoveRuleUp.h" />
@@ -586,7 +589,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableVertexPositionSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMax.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMin.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetTargetVertexPositionSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMax.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMin.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableVertexPositionSet.h" />

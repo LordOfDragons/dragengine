@@ -209,10 +209,6 @@ void deAnimatorRuleLimit::SetTargetBone( const char *boneName ){
 	pTargetBone = boneName;
 }
 
-void deAnimatorRuleLimit::SetTargetVertexPositionSet( const char *vertexPositionSet ){
-	pTargetVertexPositionSet = vertexPositionSet;
-}
-
 
 
 // Visiting

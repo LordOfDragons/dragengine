@@ -48,6 +48,14 @@ aeWPRuleListener::~aeWPRuleListener(){
 // Notifications
 //////////////////
 
+void aeWPRuleListener::ModelChanged( aeAnimator *animator ){
+	if( pPanel.GetAnimator() != animator ){
+		return;
+	}
+	
+	pPanel.UpdateRuleVertexPositionSetList();
+}
+
 void aeWPRuleListener::RigChanged( aeAnimator *animator ){
 	if( pPanel.GetAnimator() != animator ){
 		return;

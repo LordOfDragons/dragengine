@@ -62,6 +62,11 @@ private:
 	igdeButtonReference pBtnBoneAdd;
 	igdeButtonReference pBtnBoneDel;
 	
+	igdeListBoxReference pListVertexPositionSets;
+	igdeComboBoxFilterReference pCBVertexPositionSets;
+	igdeButtonReference pBtnVertexPositionSetAdd;
+	igdeButtonReference pBtnVertexPositionSetDel;
+	
 	igdeComboBoxReference pCBTarget;
 	igdeListBoxReference pListLinks;
 	igdeComboBoxFilterReference pCBLinks;
@@ -128,6 +133,9 @@ public:
 	/** Update rig bone list. */
 	virtual void UpdateRigBoneList();
 	
+	/** Update model vertex position set list. */
+	virtual void UpdateModelVertexPositionSetList();
+	
 	/** Update animation move list. */
 	virtual void UpdateAnimMoveList();
 	
@@ -148,6 +156,15 @@ public:
 	
 	/** Selected bone list or NULL. */
 	const char *GetListBoneSelection() const;
+	
+	/** Vertex position set combo box text. */
+	const decString &GetCBVertexPositionSetText() const;
+	
+	/** Set vertex position set combo box text. */
+	void SetCBVertexPositionSetText( const char *text );
+	
+	/** Selected vertex position set list or NULL. */
+	const char *GetListVertexPositionSetSelection() const;
 	
 	/** Link combo box selection. */
 	aeLink *GetCBLinkSelection() const;

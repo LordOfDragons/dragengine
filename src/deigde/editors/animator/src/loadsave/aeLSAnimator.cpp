@@ -1348,7 +1348,6 @@ const aeRuleLimit &rule ){
 	}
 	
 	writer.WriteDataTagString( "targetBone", rule.GetTargetBone() );
-	writer.WriteDataTagString( "targetVertexPositionSet", rule.GetTargetVertexPositionSet() );
 	
 	if( rule.GetEnablePositionXMin() || rule.GetEnablePositionYMin() || rule.GetEnablePositionZMin() ){
 		writer.WriteOpeningTagStart( "enablePosMin" );
@@ -3226,9 +3225,6 @@ aeRule *aeLSAnimator::pLoadRuleLimit( decXmlElementTag *root, aeAnimator &animat
 					
 				}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
 					rule->SetTargetBone( GetCDataString( *tag ) );
-					
-				}else if( strcmp( tag->GetName(), "targetVertexPositionSet" ) == 0 ){
-					rule->SetTargetVertexPositionSet( GetCDataString( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 					name = pGetAttributeString( tag, "name" );

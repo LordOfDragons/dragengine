@@ -36,6 +36,7 @@
 #include "../../../undosys/rule/mirror/aeURuleMirrorSetEnablePosition.h"
 #include "../../../undosys/rule/mirror/aeURuleMirrorSetEnableRotation.h"
 #include "../../../undosys/rule/mirror/aeURuleMirrorSetEnableSize.h"
+#include "../../../undosys/rule/mirror/aeURuleMirrorSetEnableVertexPositionSet.h"
 #include "../../../undosys/rule/mirror/aeURuleMirrorSetMatchName.h"
 #include "../../../undosys/rule/mirror/aeURuleMirrorSetMirrorBone.h"
 
@@ -366,6 +367,22 @@ public:
 	}
 };
 
+class cActionEnableVertexPositionSet : public cBaseAction{
+public:
+	cActionEnableVertexPositionSet( aeWPAPanelRuleMirror &panel ) : cBaseAction( panel,
+		"Enable vertex position set manipulation", nullptr,
+		"Determines if the vertex position set is modified or kept as it is" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
+		return new aeURuleMirrorSetEnableVertexPositionSet( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleMirror &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetEnableVertexPositionSet() );
+	}
+};
+
 }
 
 
@@ -398,6 +415,7 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertMirror )
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
+	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
 	
 	helper.ListBox( groupBox, "Pairs:", 3, "Match bone pairs by name.",
 		pListMatchName, new cListMatchNames( *this ) );
@@ -497,4 +515,5 @@ void aeWPAPanelRuleMirror::UpdateRule(){
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();
 	pChkEnableSize->GetAction()->Update();
+	pChkEnableVertexPositionSet->GetAction()->Update();
 }

@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _AEUSETRULESMODMAXVERTEXPOSITIONSET_H_
-#define _AEUSETRULESMODMAXVERTEXPOSITIONSET_H_
+#ifndef _AEUSETRULESMODMINVERTEXPOSITIONSET_H_
+#define _AEUSETRULESMODMINVERTEXPOSITIONSET_H_
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>

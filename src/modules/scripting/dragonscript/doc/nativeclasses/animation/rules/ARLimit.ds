@@ -114,13 +114,6 @@ class ARLimit extends AnimatorRule
 	public func void setTargetBone(String boneName)
 	end
 	
-	/**
-	 * \brief Set target vertex position set or empty string if not set.
-	 * \version 1.17
-	 */
-	public func void setTargetVertexPositionSet(String vertexPositionSet)
-	end
-	
 	
 	
 	/**

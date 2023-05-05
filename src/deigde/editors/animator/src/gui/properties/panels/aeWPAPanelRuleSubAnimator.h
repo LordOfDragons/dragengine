@@ -41,6 +41,7 @@ private:
 	igdeCheckBoxReference pChkEnablePosition;
 	igdeCheckBoxReference pChkEnableRotation;
 	igdeCheckBoxReference pChkEnableSize;
+	igdeCheckBoxReference pChkEnableVertexPositionSet;
 	bool pPreventUpdate;
 	
 	

@@ -19,36 +19,34 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "aeURuleLimitSetTargetVertexPositionSet.h"
-#include "../../../animator/rule/aeRuleLimit.h"
+#include "aeUSetRuleFStaVertexPositionSet.h"
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 #include <dragengine/common/exceptions.h>
 
 
-
-// Class aeURuleLimitSetTargetVertexPositionSet
-/////////////////////////////////////////////////
+// Class aeUSetRuleFStaVertexPositionSet
+//////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetTargetVertexPositionSet::aeURuleLimitSetTargetVertexPositionSet(
-	aeRuleLimit *rule, const char *newVertexPositionSet )
+aeUSetRuleFStaVertexPositionSet::aeUSetRuleFStaVertexPositionSet(
+	aeRuleForeignState *rule, const char *newName ) :
+pRule( nullptr ),
+pNewName( newName )
 {
 	DEASSERT_NOTNULL( rule )
 	
-	pRule = nullptr;
+	pOldName = rule->GetForeignVertexPositionSet();
 	
-	pOldVertexPositionSet = rule->GetTargetVertexPositionSet();
-	pNewVertexPositionSet = newVertexPositionSet;
-	
-	SetShortInfo( "Limit set target vertex position set" );
+	SetShortInfo( "Set foreign state rule vertex position set" );
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
-aeURuleLimitSetTargetVertexPositionSet::~aeURuleLimitSetTargetVertexPositionSet(){
+aeUSetRuleFStaVertexPositionSet::~aeUSetRuleFStaVertexPositionSet(){
 	if( pRule ){
 		pRule->FreeReference();
 	}
@@ -59,10 +57,10 @@ aeURuleLimitSetTargetVertexPositionSet::~aeURuleLimitSetTargetVertexPositionSet(
 // Management
 ///////////////
 
-void aeURuleLimitSetTargetVertexPositionSet::Undo(){
-	pRule->SetTargetVertexPositionSet( pOldVertexPositionSet );
+void aeUSetRuleFStaVertexPositionSet::Undo(){
+	pRule->SetForeignVertexPositionSet( pOldName );
 }
 
-void aeURuleLimitSetTargetVertexPositionSet::Redo(){
-	pRule->SetTargetVertexPositionSet( pNewVertexPositionSet );
+void aeUSetRuleFStaVertexPositionSet::Redo(){
+	pRule->SetForeignVertexPositionSet( pNewName );
 }

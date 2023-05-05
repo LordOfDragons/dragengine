@@ -87,7 +87,6 @@ private:
 	bool pEnableVertexPositionSetMax;
 	
 	decString pTargetBone;
-	decString pTargetVertexPositionSet;
 	
 	
 	
@@ -289,12 +288,6 @@ public:
 	
 	/** \brief Set name of the target bone. */
 	void SetTargetBone( const char *boneName );
-	
-	/** \brief Name of the target vertex position set. */
-	inline const decString &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
-	
-	/** \brief Set name of the target vertex position set. */
-	void SetTargetVertexPositionSet( const char *vertexPositionSet );
 	/*@}*/
 	
 	

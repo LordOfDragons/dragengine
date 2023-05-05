@@ -43,7 +43,6 @@ class ADRuleLimit extends ADRule
 	private var float pMaximumVertexPositionSet
 	private var ARLimitCFrame pCoordFrame
 	private var String pTargetBone
-	private var String pTargetVertexPositionSet
 	
 	private var bool pEnablePosXMin
 	private var bool pEnablePosXMax
@@ -83,7 +82,6 @@ class ADRuleLimit extends ADRule
 		pMaximumVertexPositionSet = 1
 		pCoordFrame = ARLimitCFrame.component
 		pTargetBone = ""
-		pTargetVertexPositionSet = ""
 		
 		pEnablePosXMin = false
 		pEnablePosXMax = false
@@ -123,7 +121,6 @@ class ADRuleLimit extends ADRule
 		pMaximumVertexPositionSet = rule.pMaximumVertexPositionSet
 		pCoordFrame = rule.pCoordFrame
 		pTargetBone = rule.pTargetBone
-		pTargetVertexPositionSet = rule.pTargetVertexPositionSet
 		
 		pEnablePosXMin = rule.pEnablePosXMin
 		pEnablePosXMax = rule.pEnablePosXMax
@@ -283,25 +280,6 @@ class ADRuleLimit extends ADRule
 			throw ENullPointer.new("name")
 		end
 		pTargetBone = name
-	end
-	
-	/**
-	 * \brief Target vertex position set name.
-	 * \version 1.17
-	 */
-	public func String getTargetVertexPositionSet()
-		return pTargetVertexPositionSet
-	end
-	
-	/**
-	 * \brief Set target vertex position set name.
-	 * \version 1.17
-	 */
-	public func void setTargetVertexPositionSet(String name)
-		if name == null
-			throw ENullPointer.new("name")
-		end
-		pTargetVertexPositionSet = name
 	end
 	
 	
@@ -546,7 +524,6 @@ class ADRuleLimit extends ADRule
 		rule.setMaximumVertexPositionSet(pMaximumVertexPositionSet)
 		rule.setCoordinateFrame(pCoordFrame)
 		rule.setTargetBone(pTargetBone)
-		rule.setTargetVertexPositionSet(pTargetVertexPositionSet)
 		rule.setEnablePosMin(pEnablePosXMin, pEnablePosYMin, pEnablePosZMin)
 		rule.setEnablePosMax(pEnablePosXMax, pEnablePosYMax, pEnablePosZMax)
 		rule.setEnableRotMin(pEnableRotXMin, pEnableRotYMin, pEnableRotZMin)

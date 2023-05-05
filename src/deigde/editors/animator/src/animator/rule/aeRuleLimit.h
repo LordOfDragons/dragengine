@@ -72,7 +72,6 @@ private:
 	bool pEnableVertexPositionSetMax;
 	
 	decString pTargetBone;
-	decString pTargetVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -225,12 +224,6 @@ public:
 	
 	/** Set the name of the target bone. */
 	void SetTargetBone( const char *boneName );
-	
-	/** Target vertex position set. */
-	inline const decString &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
-	
-	/** Set target vertex position set. */
-	void SetTargetVertexPositionSet( const char *vertexPositionSet );
 	
 	/** Creates an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();

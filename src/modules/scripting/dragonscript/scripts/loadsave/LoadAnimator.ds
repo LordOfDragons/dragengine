@@ -1000,9 +1000,6 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("targetBone")
 				rule.setTargetBone(element.getFirstCData())
 				
-			elif tagName.equals("targetVertexPositionSet")
-				rule.setTargetVertexPositionSet(element.getFirstCData())
-				
 			elif tagName.equals("target")
 				var ARLimitTarget target = ARLimitTarget.named(element.getAttributeNamed("name"))
 				if target != null

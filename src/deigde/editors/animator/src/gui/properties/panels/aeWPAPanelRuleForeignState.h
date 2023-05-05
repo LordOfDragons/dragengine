@@ -32,14 +32,17 @@
 class aeWPAPanelRuleForeignState : public aeWPAPanelRule{
 private:
 	igdeComboBoxFilterReference pCBBone;
+	igdeComboBoxFilterReference pCBVertexPositionSet;
 	igdeComboBoxReference pCBSrcCFrame;
 	igdeComboBoxReference pCBDestCFrame;
 	igdeTextFieldReference pEditPosition;
 	igdeTextFieldReference pEditRotation;
 	igdeTextFieldReference pEditSize;
+	igdeTextFieldReference pEditVertexPositionSet;
 	igdeCheckBoxReference pChkEnablePosition;
 	igdeCheckBoxReference pChkEnableRotation;
 	igdeCheckBoxReference pChkEnableSize;
+	igdeCheckBoxReference pChkEnableVertexPositionSet;
 	
 	
 	
@@ -61,6 +64,9 @@ public:
 	/*@{*/
 	/** Update rig bone list. */
 	virtual void UpdateRigBoneList();
+	
+	/** Update model vertex position set list. */
+	virtual void UpdateModelVertexPositionSetList();
 	
 	/** Update rule. */
 	virtual void UpdateRule();

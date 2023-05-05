@@ -1414,9 +1414,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleLimit( const decXmlElementTag &root,
 			}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
 				rule->SetTargetBone( GetCDataString( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "targetVertexPositionSet" ) == 0 ){
-				rule->SetTargetVertexPositionSet( GetCDataString( *tag ) );
-				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				const char * const name = GetAttributeString( *tag, "name" );
 				
