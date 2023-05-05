@@ -88,7 +88,7 @@ dearRuleTrackTo::~dearRuleTrackTo(){
 // Management
 ///////////////
 
-void dearRuleTrackTo::Apply( dearBoneStateList &stalist ){
+void dearRuleTrackTo::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;

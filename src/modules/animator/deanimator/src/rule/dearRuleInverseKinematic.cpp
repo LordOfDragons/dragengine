@@ -114,7 +114,7 @@ dearRuleInverseKinematic::~dearRuleInverseKinematic(){
 // Management
 ///////////////
 
-void dearRuleInverseKinematic::Apply( dearBoneStateList &stalist ){
+void dearRuleInverseKinematic::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;

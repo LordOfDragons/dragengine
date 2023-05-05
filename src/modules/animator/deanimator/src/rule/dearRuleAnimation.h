@@ -24,6 +24,7 @@
 
 #include "dearRule.h"
 #include "../dearMapAnimationBones.h"
+#include "../dearMapAnimationVPS.h"
 
 class dearAnimationMove;
 class deAnimatorRuleAnimation;
@@ -31,28 +32,30 @@ class deAnimatorRuleAnimation;
 
 
 /**
- * \brief Animator animation rule.
+ * Animator animation rule.
  */
 class dearRuleAnimation : public dearRule{
 private:
 	const deAnimatorRuleAnimation &pAnimation;
 	dearAnimationMove *pMove;
 	dearMapAnimationBones pMapAnimationBones;
+	dearMapAnimationVPS pMapAnimationVPS;
 	
 	dearControllerTarget pTargetMoveTime;
 	
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pEnableVPS;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleAnimation( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleAnimation &rule );
 	
-	/** \brief Clean up rule. */
+	/** Clean up rule. */
 	virtual ~dearRuleAnimation();
 	/*@}*/
 	
@@ -60,10 +63,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	

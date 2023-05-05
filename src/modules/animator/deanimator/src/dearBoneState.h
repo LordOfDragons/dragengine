@@ -26,7 +26,6 @@
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
 class dearComponentBoneState;
-class dearComponentBoneState;
 class dearAnimationState;
 class deComponentBone;
 class deRigBone;
@@ -34,7 +33,7 @@ class deRigBone;
 
 
 /**
- * @brief Bone state class.
+ * Bone state class.
  * Stores the state of a bone driven by an animator. Contains also
  * the mappings of the bone to an animation if present.
  */
@@ -60,7 +59,7 @@ private:
 	bool pDirty;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new bone state object. */
 	dearBoneState();
@@ -68,7 +67,7 @@ public:
 	~dearBoneState();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the rig bone or NULL if not linked. */
 	inline deRigBone *GetRigBone() const{ return pRigBone; }
@@ -148,52 +147,52 @@ public:
 	void UpdateMatricesKeepGlobal();
 	/** Updates the local parameters from the global matrix. */
 	void UpdateFromGlobalMatrix();
-	/** \brief Calculate local matric from global matrix. */
+	/** Calculate local matric from global matrix. */
 	decMatrix CalcLocalFromGlobal( const decMatrix &globalMatrix ) const;
 	/** Resets the matrices to identity. */
 	void ResetMatrices();
 	
-	/** \brief Copy another state to this state. */
+	/** Copy another state to this state. */
 	void SetFrom( const dearBoneState &state );
 	
-	/** \brief Copy component bone state to this state. */
+	/** Copy component bone state to this state. */
 	void SetFrom( const deComponentBone &bone );
 	
-	/** \brief Copy component bone state to this state. */
+	/** Copy component bone state to this state. */
 	void SetFrom( const dearComponentBoneState &state );
 	
-	/** \brief Update state by blending it with an empty state. */
+	/** Update state by blending it with an empty state. */
 	void BlendWithDefault( deAnimatorRule::eBlendModes blendMode, float blendFactor,
 		bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const dearBoneState &state, deAnimatorRule::eBlendModes blendMode,
 		float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const dearAnimationState &state, deAnimatorRule::eBlendModes blendMode,
 		float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const deComponentBone &bone, deAnimatorRule::eBlendModes blendMode,
 		float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const dearComponentBoneState &state, deAnimatorRule::eBlendModes blendMode,
 		float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const decVector &position, const decQuaternion &orientation,
 		deAnimatorRule::eBlendModes blendMode, float blendFactor,
 		bool enablePosition, bool enableOrientation );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const decVector &position, const decQuaternion &orientation,
 		const decVector &scale, deAnimatorRule::eBlendModes blendMode, float blendFactor,
 		bool enablePosition, bool enableOrientation, bool enableScale );
 	/*@}*/
 	
-	/** @name Child states */
+	/** \name Child states */
 	/*@{*/
 	/** Retrieves the number of child states. */
 	inline int GetChildStateCount() const{ return pChildStateCount; }

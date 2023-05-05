@@ -1,7 +1,7 @@
 /* 
- * Drag[en]gine Game Engine
+ * Drag[en]gine Animator Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,37 +19,31 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEBASEANIMATORCOMPONENT_H_
-#define _DEBASEANIMATORCOMPONENT_H_
-
-#include "../../../dragengine_export.h"
+#include "dearAnimationVPSState.h"
 
 
+// Class dearAnimationVPSState
+////////////////////////////////
 
-/**
- * \brief Animator module component peer.
- */
-class DE_DLL_EXPORT deBaseAnimatorComponent{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** \brief Create new peer. */
-	deBaseAnimatorComponent();
-	
-	/** \brief Clean up peer. */
-	virtual ~deBaseAnimatorComponent();
-	/*@}*/
-	
-	
-	
-	/** \name Management */
-	/*@{*/
-	/** \brief Model changed. */
-	virtual void ModelChanged();
-	
-	/** \brief Rig changed. */
-	virtual void RigChanged();
-	/*@}*/
-};
+// Constructors and Destructors
+/////////////////////////////////
 
-#endif
+dearAnimationVPSState::dearAnimationVPSState() :
+pWeight( 0.0f ){
+}
+
+dearAnimationVPSState::~dearAnimationVPSState(){
+}
+
+
+
+// Management
+///////////////
+
+void dearAnimationVPSState::SetWeight( float weight ){
+	pWeight = weight;
+}
+
+void dearAnimationVPSState::Reset(){
+	pWeight = 0.0f;
+}

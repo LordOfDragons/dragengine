@@ -29,11 +29,15 @@
 
 
 /**
- * \brief Mirror rule.
+ * Mirror rule.
  */
 class dearRuleMirror : public dearRule{
 private:
 	struct sBonePair{
+		int first;
+		int second;
+	};
+	struct sVPSPair{
 		int first;
 		int second;
 	};
@@ -42,24 +46,29 @@ private:
 	
 	int pMirrorBone;
 	decMatrix pMirrorMatrix;
+	
 	sBonePair *pBonePairs;
 	int pBonePairCount;
+	
+	sVPSPair *pVPSPairs;
+	int pVPSPairCount;
 	
 	const deAnimatorRuleMirror::eMirrorAxis pMirrorAxis;
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pEnableVPS;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleMirror( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleMirror &rule );
 	
-	/** \brief Clean up rule. */
+	/** Clean up rule. */
 	virtual ~dearRuleMirror();
 	/*@}*/
 	
@@ -67,10 +76,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	
@@ -78,6 +87,7 @@ public:
 	
 private:
 	void pUpdateBones();
+	void pUpdateVPS();
 };
 
 #endif

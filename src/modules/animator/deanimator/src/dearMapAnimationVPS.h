@@ -1,7 +1,7 @@
 /* 
- * Drag[en]gine Game Engine
+ * Drag[en]gine Animator Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,36 +19,52 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEBASEANIMATORCOMPONENT_H_
-#define _DEBASEANIMATORCOMPONENT_H_
+#ifndef _DEMAPANIMATIONVPS_H_
+#define _DEMAPANIMATIONVPS_H_
 
-#include "../../../dragengine_export.h"
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
+class deAnimation;
+class dearRule;
+class dearVPSStateList;
 
 
 /**
- * \brief Animator module component peer.
+ * Map from rule vertex position set index to animation vertex position set indices.
  */
-class DE_DLL_EXPORT deBaseAnimatorComponent{
+class dearMapAnimationVPS{
+private:
+	int *pIndices;
+	int pCount;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new peer. */
-	deBaseAnimatorComponent();
+	/** Create map. */
+	dearMapAnimationVPS();
 	
-	/** \brief Clean up peer. */
-	virtual ~deBaseAnimatorComponent();
+	/** Clean up map. */
+	~dearMapAnimationVPS();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Model changed. */
-	virtual void ModelChanged();
+	/** Count of entries. */
+	inline int GetCount() const{ return pCount; }
 	
-	/** \brief Rig changed. */
-	virtual void RigChanged();
+	/** Clear map. */
+	void Clear();
+	
+	/** Init map. */
+	void Init( const dearRule &rule );
+	
+	/** Animation vertex position set index for rule vertex position set index or -1. */
+	int GetAt( int ruleVPSIndex ) const;
 	/*@}*/
 };
 

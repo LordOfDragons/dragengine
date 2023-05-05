@@ -198,6 +198,9 @@ void deComponent::SetModel( deModel *model ){
 	if( pPeerAudio ){
 		pPeerAudio->ModelChanged();
 	}
+	if( pPeerAnimator ){
+		pPeerAnimator->ModelChanged();
+	}
 	
 	InvalidateMesh();
 	InvalidateExtends();
@@ -313,6 +316,9 @@ void deComponent::SetModelAndSkin( deModel *model, deSkin *skin ){
 		if( pPeerAudio ){
 			pPeerAudio->ModelAndSkinChanged();
 		}
+		if( pPeerAnimator ){
+			pPeerAnimator->ModelChanged();
+		}
 		
 	}else if( modelChanged ){
 		if( pPeerGraphic ){
@@ -323,6 +329,9 @@ void deComponent::SetModelAndSkin( deModel *model, deSkin *skin ){
 		}
 		if( pPeerAudio ){
 			pPeerAudio->ModelChanged();
+		}
+		if( pPeerAnimator ){
+			pPeerAnimator->ModelChanged();
 		}
 		
 	}else if( skinChanged ){

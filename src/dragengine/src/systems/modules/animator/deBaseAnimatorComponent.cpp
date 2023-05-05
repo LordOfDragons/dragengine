@@ -40,5 +40,8 @@ deBaseAnimatorComponent::~deBaseAnimatorComponent(){
 // Management
 ///////////////
 
+void deBaseAnimatorComponent::ModelChanged(){
+}
+
 void deBaseAnimatorComponent::RigChanged(){
 }

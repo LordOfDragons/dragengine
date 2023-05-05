@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Component bone state.
+ * Component bone state.
  */
 class dearComponentBoneState{
 private:
@@ -42,10 +42,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create component bone state. */
+	/** Create component bone state. */
 	dearComponentBoneState();
 	
-	/** \brief Clean up component bone state. */
+	/** Clean up component bone state. */
 	~dearComponentBoneState();
 	/*@}*/
 	
@@ -53,42 +53,42 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Position. */
+	/** Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position. */
+	/** Set position. */
 	void SetPosition( const decVector &position );
 	
-	/** \brief Rotation . */
+	/** Rotation . */
 	inline const decQuaternion &GetRotation() const{ return pRotation; }
 	
-	/** \brief Set rotation. */
+	/** Set rotation. */
 	void SetRotation( const decQuaternion &rotation );
 	
-	/** \brief Scale. */
+	/** Scale. */
 	inline const decVector &GetScale() const{ return pScale; }
 	
-	/** \brief Set scale. */
+	/** Set scale. */
 	void SetScale( const decVector &scale );
 	
 	
 	
-	/** \brief Parent state used to prepare the matrices or \em NULL. */
+	/** Parent state used to prepare the matrices or \em NULL. */
 	inline dearComponentBoneState *GetParent() const{ return pParent; }
 	
-	/** \brief Set parent state used to prepare the matrices or \em NULL. */
+	/** Set parent state used to prepare the matrices or \em NULL. */
 	void SetParent( dearComponentBoneState *parent );
 	
-	/** \brief Original matrix required to prepate matrix. */
+	/** Original matrix required to prepate matrix. */
 	inline const decMatrix &GetOriginalMatrix() const{ return pOriginalMatrix; }
 	
-	/** \brief Set original matrix required to prepare matrix. */
+	/** Set original matrix required to prepare matrix. */
 	void SetOriginalMatrix( const decMatrix &matrix );
 	
-	/** \brief Prepared matrix. */
+	/** Prepared matrix. */
 	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
-	/** \brief Set prepared matrix. */
+	/** Set prepared matrix. */
 	void SetMatrix( const decMatrix &matrix );
 	/*@}*/
 };

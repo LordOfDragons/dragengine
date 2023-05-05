@@ -1,7 +1,7 @@
 /* 
- * Drag[en]gine Game Engine
+ * Drag[en]gine Animator Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,36 +19,38 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEBASEANIMATORCOMPONENT_H_
-#define _DEBASEANIMATORCOMPONENT_H_
+#ifndef _DEARCOMPONENTVPSSTATE_H_
+#define _DEARCOMPONENTVPSSTATE_H_
 
-#include "../../../dragengine_export.h"
+#include <dragengine/common/math/decMath.h>
 
 
-
-/**
- * \brief Animator module component peer.
- */
-class DE_DLL_EXPORT deBaseAnimatorComponent{
+/** Component vertex position set state. */
+class dearComponentVPSState{
+private:
+	float pWeight;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new peer. */
-	deBaseAnimatorComponent();
+	/** Create component vertex position set state. */
+	dearComponentVPSState();
 	
-	/** \brief Clean up peer. */
-	virtual ~deBaseAnimatorComponent();
+	/** Clean up component vertex position set state. */
+	~dearComponentVPSState();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Model changed. */
-	virtual void ModelChanged();
+	/** Weight. */
+	inline float GetWeight() const{ return pWeight; }
 	
-	/** \brief Rig changed. */
-	virtual void RigChanged();
+	/** Set weight. */
+	void SetWeight( float weight );
 	/*@}*/
 };
 

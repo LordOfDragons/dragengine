@@ -25,12 +25,13 @@
 #include "dearRule.h"
 
 class dearAnimationState;
+class dearAnimationVPSState;
 class deAnimatorRuleStateSnapshot;
 
 
 
 /**
- * \brief State snapshot rule.
+ * State snapshot rule.
  */
 class dearRuleStateSnapshot : public dearRule{
 private:
@@ -39,9 +40,13 @@ private:
 	dearAnimationState *pAnimStates;
 	int pAnimStateCount;
 	
+	dearAnimationVPSState *pAnimVPSStates;
+	int pAnimVPSStateCount;
+	
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pEnableVPS;
 	const bool pUseLastState;
 	const int pID;
 	
@@ -50,11 +55,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleStateSnapshot( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleStateSnapshot &rule );
 	
-	/** \brief Clean up animator. */
+	/** Clean up animator. */
 	virtual ~dearRuleStateSnapshot();
 	/*@}*/
 	
@@ -63,26 +68,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Capture animator state.
+	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
 	virtual void CaptureStateInto( int identifier );
 	
 	/**
-	 * \brief Store animation frame.
+	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
 	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
 	
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	
 private:
 	void pUpdateStates();
+	void pUpdateVPSStates();
 };
 
 #endif

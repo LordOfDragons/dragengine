@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine Animator Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,50 +19,56 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEARANIMATIONKEYFRAMELIST_H_
-#define _DEARANIMATIONKEYFRAMELIST_H_
+#ifndef _DEARANIMATIONKEYFRAMEVPSLIST_H_
+#define _DEARANIMATIONKEYFRAMEVPSLIST_H_
 
 #include <dragengine/common/math/decMath.h>
 
-class deAnimationKeyframeList;
-class dearAnimationKeyframe;
+class deAnimationKeyframeVertexPositionSetList;
+class dearAnimationKeyframeVPS;
 
 
 
 /**
- * Animation move keyframe list.
+ * Animation move vertex position set keyframe list.
  */
-class dearAnimationKeyframeList{
+class dearAnimationKeyframeVPSList{
 private:
-	dearAnimationKeyframe *pKeyframes;
+	dearAnimationKeyframeVPS *pKeyframes;
 	int pKeyframeCount;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new animation move keyframe list. */
-	dearAnimationKeyframeList( const deAnimationKeyframeList &list );
-	/** Cleans up the animation move keyframe list. */
-	~dearAnimationKeyframeList();
+	/** Create keyframe list. */
+	dearAnimationKeyframeVPSList( const deAnimationKeyframeVertexPositionSetList &list );
+	
+	/** Clean up keyframe list. */
+	~dearAnimationKeyframeVPSList();
 	/*@}*/
+	
+	
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of keyframes. */
+	/** Count of keyframes. */
 	inline int GetCount() const{ return pKeyframeCount; }
-	/** Retrieves a keyframe by index. */
-	dearAnimationKeyframe &GetAt( int index ) const;
-	/**
-	 * Retrieves the keyframe with the range containing the provided
-	 *        time in seconds or NULL if there are no keyframes.
-	 */
-	dearAnimationKeyframe *GetWithTime( float time ) const;
+	
+	/** Keyframe at index. */
+	dearAnimationKeyframeVPS &GetAt( int index ) const;
+	
+	/** Keyframe with range containing time in seconds or nullptr if absent. */
+	dearAnimationKeyframeVPS *GetWithTime( float time ) const;
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();
 	
-	void pCreateKeyframes( const deAnimationKeyframeList &list );
+	void pCreateKeyframes( const deAnimationKeyframeVertexPositionSetList &list );
 };
 
 #endif

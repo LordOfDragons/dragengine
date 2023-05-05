@@ -31,7 +31,7 @@
 
 
 /**
- * @brief Animation state class.
+ * Animation state class.
  * Stores the state of an animation frame.
  */
 class dearAnimationState{
@@ -41,7 +41,7 @@ private:
 	decVector pSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new bone state object. */
 	dearAnimationState();
@@ -49,7 +49,7 @@ public:
 	~dearAnimationState();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the position. */
 	inline const decVector &GetPosition() const{ return pPosition; }

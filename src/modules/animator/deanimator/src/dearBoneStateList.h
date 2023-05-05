@@ -38,7 +38,7 @@ class deAnimator;
 
 
 /**
- * @brief Bone State List.
+ * Bone State List.
  *
  * List of bone states.
  */
@@ -49,7 +49,7 @@ private:
 	int pStateSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	dearBoneStateList();
@@ -57,7 +57,7 @@ public:
 	~dearBoneStateList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of states. */
 	inline int GetStateCount() const{ return pStateCount; }
@@ -71,7 +71,7 @@ public:
 	/** Creates a copy of this list. */
 	dearBoneStateList *CreateCopy() const;
 	
-	/** \brief Copy another state list to this list. */
+	/** Copy another state list to this list. */
 	void SetFrom( const dearBoneStateList &stateList );
 	
 	/** Updates the states. */
@@ -82,16 +82,16 @@ public:
 	/** Updates the mappings. */
 	void UpdateMappings( const deAnimator &animator );
 	
-	/** \brief Apply states to an engine component. */
+	/** Apply states to an engine component. */
 	void ApplyToComponent( deComponent *component ) const;
 	
-	/** \brief Apply states to an engine component. */
+	/** Apply states to an engine component. */
 	void ApplyToComponent( deComponent *component, deAnimatorRule::eBlendModes blendMode, float blendFactor ) const;
 	
-	/** \brief Apply states to an animator module component. */
+	/** Apply states to an animator module component. */
 	void ApplyToComponent( dearComponent &component ) const;
 	
-	/** \brief Apply states to an animator module component. */
+	/** Apply states to an animator module component. */
 	void ApplyToComponent( dearComponent &component, deAnimatorRule::eBlendModes blendMode, float blendFactor ) const;
 	/*@}*/
 };

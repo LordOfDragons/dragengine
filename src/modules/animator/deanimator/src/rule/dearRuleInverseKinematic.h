@@ -30,7 +30,7 @@ class deAnimatorRuleInverseKinematic;
 
 
 /**
- * \brief Inverse kinematic rule.
+ * Inverse kinematic rule.
  */
 class dearRuleInverseKinematic : public dearRule{
 private:
@@ -63,11 +63,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleInverseKinematic( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleInverseKinematic &rule );
 	
-	/** \brief Clean up rule. */
+	/** Clean up rule. */
 	virtual ~dearRuleInverseKinematic();
 	/*@}*/
 	
@@ -75,15 +75,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Solver bone index. */
+	/** Solver bone index. */
 	inline int GetSolverBone() const{ return pSolverBone; }
 	
 	
 	
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	

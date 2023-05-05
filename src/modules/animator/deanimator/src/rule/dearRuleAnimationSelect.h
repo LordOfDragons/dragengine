@@ -24,7 +24,7 @@
 
 #include "dearRule.h"
 #include "../dearMapAnimationBones.h"
-#include "../dearMapAnimationBones.h"
+#include "../dearMapAnimationVPS.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 
@@ -34,12 +34,13 @@ class deAnimatorRuleAnimationSelect;
 
 
 /**
- * \brief Select animation rule.
+ * Select animation rule.
  */
 class dearRuleAnimationSelect : public dearRule{
 private:
 	const deAnimatorRuleAnimationSelect &pAnimationSelect;
 	dearMapAnimationBones pMapAnimationBones;
+	dearMapAnimationVPS pMapAnimationVPS;
 	
 	decObjectList pMoves;
 	
@@ -49,17 +50,18 @@ private:
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pEnableVPS;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleAnimationSelect( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleAnimationSelect &rule );
 	
-	/** \brief Clean up animator. */
+	/** Clean up animator. */
 	virtual ~dearRuleAnimationSelect();
 	/*@}*/
 	
@@ -67,10 +69,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	
