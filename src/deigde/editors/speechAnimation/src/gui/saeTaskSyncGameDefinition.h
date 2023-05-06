@@ -29,7 +29,7 @@ class saeWindowMain;
 
 
 /**
- * \brief Synchronize game definition task.
+ * Synchronize game definition task.
  */
 class saeTaskSyncGameDefinition : public igdeStepableTask{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create task. */
+	/** Create task. */
 	saeTaskSyncGameDefinition( saeWindowMain &windowMain );
 	
-	/** \brief Clean up task. */
+	/** Clean up task. */
 	virtual ~saeTaskSyncGameDefinition();
 	/*@}*/
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Run next step of task.
+	 * Run next step of task.
 	 * 
 	 * The step should consume a small amount of time to allow the GUI to stay responsive.
 	 * In case of an error an exception has to be thrown which aborts the task.

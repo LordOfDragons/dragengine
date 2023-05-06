@@ -29,7 +29,7 @@ class saeWord;
 
 
 /**
- * \brief Speech animation word list.
+ * Speech animation word list.
  */
 class saeWordList{
 private:
@@ -40,13 +40,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create word list. */
+	/** Create word list. */
 	saeWordList();
 	
-	/** \brief Create copy of word list. */
+	/** Create copy of word list. */
 	saeWordList( const saeWordList &list );
 	
-	/** \brief Clean up word list. */
+	/** Clean up word list. */
 	~saeWordList();
 	/*@}*/
 	
@@ -54,37 +54,37 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of words. */
+	/** Number of words. */
 	int GetCount() const;
 	
-	/** \brief Word at index. */
+	/** Word at index. */
 	saeWord *GetAt( int index ) const;
 	
-	/** \brief Named word or NULL if absent. */
+	/** Named word or NULL if absent. */
 	saeWord *GetNamed( const char *name ) const;
 	
-	/** \brief Index of word or -1 if absent. */
+	/** Index of word or -1 if absent. */
 	int IndexOf( saeWord *word ) const;
 	
-	/** \brief Index of named word or -1 if absent. */
+	/** Index of named word or -1 if absent. */
 	int IndexOfNamed( const char *name ) const;
 	
-	/** \brief Word is present. */
+	/** Word is present. */
 	bool Has( saeWord *word ) const;
 	
-	/** \brief Named word is present. */
+	/** Named word is present. */
 	bool HasNamed( const char *name ) const;
 	
-	/** \brief Add word. */
+	/** Add word. */
 	void Add( saeWord *word );
 	
-	/** \brief Remove word. */
+	/** Remove word. */
 	void Remove( saeWord *word );
 	
-	/** \brief Remove all words. */
+	/** Remove all words. */
 	void RemoveAll();
 	
-	/** \brief Set list. */
+	/** Set list. */
 	saeWordList &operator=( const saeWordList &list );
 	/*@}*/
 };

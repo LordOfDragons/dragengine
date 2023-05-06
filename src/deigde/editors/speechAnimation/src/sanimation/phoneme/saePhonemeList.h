@@ -29,7 +29,7 @@ class saePhoneme;
 
 
 /**
- * \brief Speech Animation Phoneme List.
+ * Speech Animation Phoneme List.
  */
 class saePhonemeList{
 private:

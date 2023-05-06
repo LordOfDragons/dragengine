@@ -29,7 +29,7 @@ class saePhoneme;
 
 
 /**
- * \brief Undo Action Phoneme Set Sample Text.
+ * Undo Action Phoneme Set Sample Text.
  */
 class saeUPhonemeSetSampleText : public igdeUndo{
 private:
@@ -43,11 +43,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	saeUPhonemeSetSampleText( saePhoneme *phoneme, const char *newText );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~saeUPhonemeSetSampleText();
 	/*@}*/
 	
@@ -56,10 +56,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

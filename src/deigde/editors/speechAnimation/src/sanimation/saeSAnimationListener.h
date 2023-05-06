@@ -31,7 +31,7 @@ class saeWord;
 
 
 /**
- * \brief Speech Animation Listener.
+ * Speech Animation Listener.
  */
 class saeSAnimationListener : public deObject{
 public:

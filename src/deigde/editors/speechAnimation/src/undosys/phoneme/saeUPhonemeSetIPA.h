@@ -29,7 +29,7 @@ class saePhoneme;
 
 
 /**
- * \brief Undo Action Phoneme Set IPA.
+ * Undo Action Phoneme Set IPA.
  */
 class saeUPhonemeSetIPA : public igdeUndo{
 private:
@@ -43,11 +43,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	saeUPhonemeSetIPA( saePhoneme *phoneme, int newIPA );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~saeUPhonemeSetIPA();
 	/*@}*/
 	
@@ -56,10 +56,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

@@ -30,7 +30,7 @@ class saeSAnimation;
 
 
 /**
- * \brief Speech Animation Phoneme.
+ * Speech Animation Phoneme.
  */
 class saePhoneme : public deObject{
 private:
@@ -46,10 +46,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create phoneme. */
+	/** Create phoneme. */
 	saePhoneme();
 	
-	/** \brief Create phoneme. */
+	/** Create phoneme. */
 	saePhoneme( int ipa );
 	
 	/** Cleans up the phoneme. */

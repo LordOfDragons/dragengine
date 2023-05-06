@@ -29,7 +29,7 @@ class saeWindowMain;
 
 
 /**
- * \brief Window Main Listener.
+ * Window Main Listener.
  */
 class saeWindowMainListener : public saeSAnimationListener{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	saeWindowMainListener( saeWindowMain &window );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~saeWindowMainListener();
 	/*@}*/
 	
@@ -51,32 +51,32 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Changed or saved state changed. */
+	/** Changed or saved state changed. */
 	virtual void StateChanged( saeSAnimation *sanimation );
 	
-	/** \brief Undo changed. */
+	/** Undo changed. */
 	virtual void UndoChanged( saeSAnimation *sanimation );
 	
-	/** \brief View properties changed. */
+	/** View properties changed. */
 	virtual void ViewChanged( saeSAnimation *sanimation );
 	
-	/** \brief Speech animation changed. */
+	/** Speech animation changed. */
 	virtual void SAnimationChanged( saeSAnimation *sanimation );
 	
 	
 	
-	/** \brief Phoneme count or order changed. */
+	/** Phoneme count or order changed. */
 	virtual void PhonemeStructureChanged( saeSAnimation *sanimation );
 	
-	/** \brief Active phoneme changed. */
+	/** Active phoneme changed. */
 	virtual void ActivePhonemeChanged( saeSAnimation *sanimation );
 	
 	
 	
-	/** \brief Word count or order changed. */
+	/** Word count or order changed. */
 	virtual void WordStructureChanged( saeSAnimation *sanimation );
 	
-	/** \brief Active word changed. */
+	/** Active word changed. */
 	virtual void ActiveWordChanged( saeSAnimation *sanimation );
 	/*@}*/
 };

@@ -43,7 +43,7 @@ class igdeStepableTask;
 
 
 /**
- * \brief Main Editor Window.
+ * Main Editor Window.
  */
 class saeWindowMain : public igdeEditorWindow{
 private:
@@ -91,11 +91,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create window. */
+	/** Create window. */
 	saeWindowMain( saeIGDEModule &module );
 	
 protected:
-	/** \brief Cleanup window. */
+	/** Cleanup window. */
 	virtual ~saeWindowMain();
 	/*@}*/
 	
@@ -104,21 +104,21 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Ask user if it is okay to quit the application. */
+	/** Ask user if it is okay to quit the application. */
 	bool QuitRequest();
 	
-	/** \brief Reset views. */
+	/** Reset views. */
 	void ResetViews();
 	
 	
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline saeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
-	/** \brief Clipboard. */
+	/** Clipboard. */
 	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	
-	/** \brief Load save system. */
+	/** Load save system. */
 	inline saeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** Properties window. */
@@ -126,43 +126,43 @@ public:
 	
 	
 	
-	/** \brief Speech animation. */
+	/** Speech animation. */
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
-	/** \brief Set speech animation. */
+	/** Set speech animation. */
 	void SetSAnimation( saeSAnimation *sanimation );
 	
-	/** \brief Create new speech animation. */
+	/** Create new speech animation. */
 	void CreateNewSAnimation();
 	
-	/** \brief Save speech animation to file. */
+	/** Save speech animation to file. */
 	void SaveSAnimation( const char *filename );
 	
 	
 	
-	/** \brief Game engine is about to be started. */
+	/** Game engine is about to be started. */
 	virtual void OnBeforeEngineStart();
 	
-	/** \brief Game engine has been started. */
+	/** Game engine has been started. */
 	virtual void OnAfterEngineStart();
 	
-	/** \brief Game engine is about to be stopped. */
+	/** Game engine is about to be stopped. */
 	virtual void OnBeforeEngineStop();
 	
-	/** \brief Game engine has been stopped. */
+	/** Game engine has been stopped. */
 	virtual void OnAfterEngineStop();
 	
-	/** \brief Module has been activated. */
+	/** Module has been activated. */
 	virtual void OnActivate();
 	
-	/** \brief Module has been deactivated. */
+	/** Module has been deactivated. */
 	virtual void OnDeactivate();
 	
-	/** \brief Game like frame update. */
+	/** Game like frame update. */
 	virtual void OnFrameUpdate( float elapsed );
 	
 	/**
-	 * \brief Retrieves a list of changed documents.
+	 * Retrieves a list of changed documents.
 	 * 
 	 * This list is requested by the IGDE if a game project is closed due to creating or
 	 * loading a new one or because the application is about to be closed. Editors modules
@@ -173,12 +173,12 @@ public:
 	virtual void GetChangedDocuments( decStringList &list );
 	
 	/**
-	 * \brief Requests a document to be loaded.
+	 * Requests a document to be loaded.
 	 */
 	virtual void LoadDocument( const char *filename );
 	
 	/**
-	 * \brief Requests a document to be saved.
+	 * Requests a document to be saved.
 	 * 
 	 * The document has to be saved if changed. If not changed this call can be ignored.
 	 * This call is usually made after a previous call to \ref GetUnsavedDocuments.
@@ -188,12 +188,12 @@ public:
 	virtual bool SaveDocument( const char *filename );
 	
 	/**
-	 * \brief Recent files changed.
+	 * Recent files changed.
 	 */
 	virtual void RecentFilesChanged();
 	
 	/**
-	 * \brief The game project has changed.
+	 * The game project has changed.
 	 * 
 	 * Notification send to the editor modules after a new game project has been set.
 	 * The editor module has to discard all open documents and all references held of
@@ -203,7 +203,7 @@ public:
 	virtual void OnGameProjectChanged();
 	
 	/**
-	 * \brief Project game definition changed.
+	 * Project game definition changed.
 	 * 
 	 * Called after an editor changed the game definition. The old game definition used so
 	 * far is replaced by a new game definition. The module has to update everything

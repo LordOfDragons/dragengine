@@ -41,11 +41,11 @@ class saeSAnimationListener;
 
 
 /**
- * \brief Editable Sky.
+ * Editable Sky.
  */
 class saeSAnimation : public igdeEditableEntity{
 public:
-	/** \brief Type holding strong reference. */
+	/** Type holding strong reference. */
 	typedef deTObjectReference<saeSAnimation> Ref;
 	
 	

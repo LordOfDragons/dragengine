@@ -34,7 +34,7 @@ class igdeGameDefinition;
 
 
 /**
- * \brief Load/Save System.
+ * Load/Save System.
  */
 class saeLoadSaveSystem{
 private:

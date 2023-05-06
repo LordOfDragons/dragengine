@@ -29,7 +29,7 @@ class saePhoneme;
 
 
 /**
- * \brief Undo Action Phoneme Set Move Name.
+ * Undo Action Phoneme Set Move Name.
  */
 class saeUPhonemeSetMoveName : public igdeUndo{
 private:
@@ -43,11 +43,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	saeUPhonemeSetMoveName( saePhoneme *phoneme, const char *newName );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~saeUPhonemeSetMoveName();
 	/*@}*/
 	
@@ -56,10 +56,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

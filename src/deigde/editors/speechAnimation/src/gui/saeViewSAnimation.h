@@ -34,7 +34,7 @@ class saeSAnimation;
 
 
 /**
- * \brief Speech Animation View.
+ * Speech Animation View.
  */
 class saeViewSAnimation : public igdeViewRenderWindow{
 private:
@@ -50,11 +50,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create speech animation view. */
+	/** Create speech animation view. */
 	saeViewSAnimation( saeWindowMain &windowMain );
 	
 protected:
-	/** \brief Clean up speech animation view. */
+	/** Clean up speech animation view. */
 	virtual ~saeViewSAnimation();
 	/*@}*/
 	
@@ -63,19 +63,19 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Reset view. */
+	/** Reset view. */
 	void ResetView();
 	
-	/** \brief Speech animation. */
+	/** Speech animation. */
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
-	/** \brief Set speech animation. */
+	/** Set speech animation. */
 	void SetSAnimation( saeSAnimation *sanimation );
 	
-	/** \brief Game like frame update. */
+	/** Game like frame update. */
 	virtual void OnFrameUpdate( float elapsed );
 	
-	/** \brief Create canvas. */
+	/** Create canvas. */
 	virtual void CreateCanvas();
 	/*@}*/
 };

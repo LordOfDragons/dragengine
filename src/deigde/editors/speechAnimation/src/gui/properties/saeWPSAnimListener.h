@@ -29,7 +29,7 @@ class saeWPSAnim;
 
 
 /**
- * \brief Speech Animation panel listener.
+ * Speech Animation panel listener.
  */
 class saeWPSAnimListener : public saeSAnimationListener{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	saeWPSAnimListener( saeWPSAnim &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~saeWPSAnimListener();
 	/*@}*/
 	
@@ -51,28 +51,28 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Speech animation changed. */
+	/** Speech animation changed. */
 	virtual void SAnimationChanged( saeSAnimation *sanimation );
 	
-	/** \brief Phoneme count or order changed. */
+	/** Phoneme count or order changed. */
 	virtual void PhonemeStructureChanged( saeSAnimation *sanimation );
 	
-	/** \brief Phoneme changed. */
+	/** Phoneme changed. */
 	virtual void PhonemeChanged( saeSAnimation *sanimation, saePhoneme *phoneme );
 	
-	/** \brief Active phoneme changed. */
+	/** Active phoneme changed. */
 	virtual void ActivePhonemeChanged( saeSAnimation *sanimation );
 	
-	/** \brief Word count or order changed. */
+	/** Word count or order changed. */
 	virtual void WordStructureChanged( saeSAnimation *sanimation );
 	
-	/** \brief Word name changed. */
+	/** Word name changed. */
 	virtual void WordNameChanged( saeSAnimation *sanimation, saeWord *word );
 	
-	/** \brief Word changed. */
+	/** Word changed. */
 	virtual void WordChanged( saeSAnimation *sanimation, saeWord *word );
 	
-	/** \brief Active word changed. */
+	/** Active word changed. */
 	virtual void ActiveWordChanged( saeSAnimation *sanimation );
 	/*@}*/
 };
