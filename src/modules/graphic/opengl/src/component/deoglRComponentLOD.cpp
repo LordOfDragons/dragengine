@@ -35,6 +35,7 @@
 #include "../memory/deoglMemoryManager.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
+#include "../model/deoglModelLODVertPosSet.h"
 #include "../model/texture/deoglModelTexture.h"
 #include "../model/face/deoglModelFace.h"
 #include "../rendering/deoglRenderGeometry.h"
@@ -320,18 +321,59 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int pointCount = modelLOD.GetVertexCount();
 	
-	if( pointCount > 0 && modelLOD.GetVBOBlockWithWeight() ){
-		deoglRenderThread &renderThread = pComponent.GetRenderThread();
-		
-		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWithWeight();
-		vboBlock.Prepare();
-		
-		pEnsureVBO();
-		
-		renderThread.GetRenderers().GetGeometry().ApproxTransformVNT(
-			vboBlock.GetVBO()->GetVAO()->GetVAO(), vboBlock.GetVBO()->GetVBO(),
-			pSSBOWeightMatrices, pVBO, vboBlock.GetOffset(), pointCount );
+	if( pointCount == 0 || ! modelLOD.GetVBOBlockWithWeight() ){
+		return;
 	}
+	
+	deoglRenderThread &renderThread = pComponent.GetRenderThread();
+	deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWithWeight();
+	vboBlock.Prepare();
+	
+	pEnsureVBO();
+	
+	deoglRenderGeometry &renderGeometry = renderThread.GetRenderers().GetGeometry();
+	const float * const vpsWeights = pComponent.GetVertexPositionSets();
+	const int vpsCount = pComponent.GetVertexPositionSetCount();
+	const GLuint vaoModelData = vboBlock.GetVBO()->GetVAO()->GetVAO();
+	const GLuint vboModelData = vboBlock.GetVBO()->GetVBO();
+	deoglRenderGeometry::sVertexPositionSetParams *params = nullptr;
+	bool inplace = false;
+	
+	int useVpsCount = 0;
+	if( vpsCount > 0 ){
+		params = renderGeometry.GetVertexPositionSetParams( vpsCount );
+		
+		int i;
+		for( i=0; i<vpsCount; i++ ){
+			if( vpsWeights[ i ] < 0.001f ){
+				continue;
+			}
+			
+			const deoglModelLODVertPosSet &vps = modelLOD.GetVertexPositionSetAt( i );
+			if( vps.GetPositionCount() == 0 ){
+				continue;
+			}
+			
+			deoglRenderGeometry::sVertexPositionSetParams &param = params[ useVpsCount++ ];
+			param.firstPoint = vps.GetVBOOffset();
+			param.pointCount = vps.GetPositionCount();
+			param.weight = vpsWeights[ i ];
+		}
+	}
+	
+	if( useVpsCount > 0 ){
+		deoglSharedVBOBlock &vboBlockVps = *modelLOD.GetVBOBlockVertPosSet();
+		vboBlockVps.Prepare();
+		
+		const GLuint vboVPSData = vboBlockVps.GetVBO()->GetVBO();
+		
+		renderGeometry.CopyVNT( vaoModelData, vboModelData, pVBO, vboBlock.GetOffset(), pointCount );
+		renderGeometry.VPSTransformVNT( vaoModelData, vboVPSData, params, useVpsCount, pVBO );
+		inplace = true;
+	}
+	
+	renderGeometry.ApproxTransformVNT( vaoModelData, vboModelData, pSSBOWeightMatrices,
+		pVBO, vboBlock.GetOffset(), pointCount, inplace );
 }
 
 

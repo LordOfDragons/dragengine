@@ -139,6 +139,9 @@ pOutlineTextureCount( 0 ),
 pDirtyDecals( true ),
 pDirtyDecalsRenderRenderables( true ),
 
+pVertexPositionSetWeights( nullptr ),
+pVertexPositionSetCount( 0 ),
+
 pCSOctreeIndex( 0 ),
 
 pWorldMarkedRemove( false ),
@@ -686,6 +689,28 @@ void deoglRComponent::UpdateBoneMatrices( deComponent &component ){
 			boneMatrix.a33 = matrix.a33;
 			boneMatrix.a34 = matrix.a34;
 		}
+	}
+}
+
+void deoglRComponent::UpdateVertexPositionSets( const deComponent &component ){
+	const int count = component.GetVertexPositionSetCount();
+	int i;
+	
+	if( count != pVertexPositionSetCount ){
+		if( pVertexPositionSetWeights ){
+			delete [] pVertexPositionSetWeights;
+			pVertexPositionSetWeights = nullptr;
+			pVertexPositionSetCount = 0;
+		}
+		
+		if( count > 0 ){
+			pVertexPositionSetWeights = new float[ count ];
+			pVertexPositionSetCount = count;
+		}
+	}
+	
+	for( i=0; i<count; i++ ){
+		pVertexPositionSetWeights[ i ] = component.GetVertexPositionSetWeightAt( i );
 	}
 }
 
@@ -1751,6 +1776,9 @@ void deoglRComponent::pCleanUp(){
 	if( pSkinState ){
 		delete pSkinState;
 	}
+	if( pVertexPositionSetWeights ){
+		delete [] pVertexPositionSetWeights;
+	}
 	
 	pRenderThread.GetUniqueKey().Return( pUniqueKey );
 }
@@ -1927,7 +1955,10 @@ void deoglRComponent::pUpdateRenderMode(){
 	
 	const deoglModelLOD &modelLOD = pModel->GetLODAt( 0 );
 	
-	if( modelLOD.GetWeightsEntryCount() > 0 && pModel->GetBoneCount() > 0 ){
+	if( pModel->GetVPSNames().GetCount() > 0 ){
+		SetRenderMode( ermDynamic );
+		
+	}else if( modelLOD.GetWeightsEntryCount() > 0 && pModel->GetBoneCount() > 0 ){
 		if( pBoneMatrixCount == 0 ){
 			SetRenderMode( ermStatic );
 			
@@ -2031,13 +2062,10 @@ void deoglRComponent::pPrepareModelVBOs(){
 			deoglModelLOD &modelLOD = pModel->GetLODAt( i );
 			
 			modelLOD.PrepareVBOBlock();
+			modelLOD.PrepareVBOBlockVertPosSet();
 			
 			switch( pRenderThread.GetChoices().GetGPUTransformVertices() ){
 			case deoglRTChoices::egputvAccurate:
-				modelLOD.PrepareVBOBlockPositionWeight();
-				modelLOD.PrepareVBOBlockCalcNormalTangent();
-				modelLOD.PrepareVBOBlockWriteSkinnedVBO();
-				break;
 				
 			case deoglRTChoices::egputvApproximate:
 				modelLOD.PrepareVBOBlockWithWeight();

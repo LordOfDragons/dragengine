@@ -23,9 +23,17 @@ UBOLAYOUT_BIND(0) readonly buffer ModelData {
 	sModelData pModelData[];
 };
 
-UBOLAYOUT_BIND(1) writeonly restrict buffer TransformedData {
-	sTransformedData pTransformedData[];
-};
+#ifdef TRANSFORM_INPLACE
+	UBOLAYOUT_BIND(1) restrict buffer TransformedData {
+		sTransformedData pTransformedData[];
+	};
+	#define pFetchData pTransformedData
+#else
+	UBOLAYOUT_BIND(1) writeonly restrict buffer TransformedData {
+		sTransformedData pTransformedData[];
+	};
+	#define pFetchData pModelData
+#endif
 
 UBOLAYOUT_BIND(2) readonly buffer WeightsMatrix {
 	mat4x3 pWeightMatrix[];
@@ -48,17 +56,19 @@ void main( void ){
 	
 	// if there is no weight write out all positions untransformed
 	if( weights == -1 ){
-		pTransformedData[ to ].position = pModelData[ from ].position;
-		pTransformedData[ to ].realNormal = pModelData[ from ].realNormal;
-		pTransformedData[ to ].normal = pModelData[ from ].normal;
-		pTransformedData[ to ].tangent = pModelData[ from ].tangent;
+		#ifndef TRANSFORM_INPLACE
+			pTransformedData[ to ].position = pModelData[ from ].position;
+			pTransformedData[ to ].realNormal = pModelData[ from ].realNormal;
+			pTransformedData[ to ].normal = pModelData[ from ].normal;
+			pTransformedData[ to ].tangent = pModelData[ from ].tangent;
+		#endif
 		return;
 	}
 	
 	mat4x3 matrix = pWeightMatrix[ weights ];
 	
 	// transform the position. this is correct and accurate
-	pTransformedData[ to ].position = matrix * vec4( pModelData[ from ].position, 1 );
+	pTransformedData[ to ].position = matrix * vec4( pFetchData[ from ].position, 1 );
 	
 	// transform the normal and tangent. this is not correct and only an approximation
 	// 
@@ -70,13 +80,15 @@ void main( void ){
 	//      threshold value to protect against dangerously small vectors.
 	mat3 matrixNormal = mat3( matrix );
 	
-	vec3 v = matrixNormal * pModelData[ from ].realNormal;
+	vec3 v = matrixNormal * pFetchData[ from ].realNormal;
 	pTransformedData[ to ].realNormal = dot( v, v ) > 0.00001 ? v : vec3( 0, 1, 0 );
 	
-	v = matrixNormal * pModelData[ from ].normal;
+	v = matrixNormal * pFetchData[ from ].normal;
 	pTransformedData[ to ].normal = dot( v, v ) > 0.00001 ? v : vec3( 0, 1, 0 );
 	
-	v = matrixNormal * vec3( pModelData[ from ].tangent );
+	v = matrixNormal * vec3( pFetchData[ from ].tangent );
 	pTransformedData[ to ].tangent.xyz = dot( v, v ) > 0.00001 ? v : vec3( 1, 0, 0 );
-	pTransformedData[ to ].tangent.w = pModelData[ from ].tangent.w;
+	#ifndef TRANSFORM_INPLACE
+		pTransformedData[ to ].tangent.w = pFetchData[ from ].tangent.w;
+	#endif
 }

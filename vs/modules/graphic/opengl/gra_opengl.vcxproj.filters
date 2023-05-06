@@ -594,6 +594,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODTexCoordSet.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVertPosSet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2407,6 +2410,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODTexCoordSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVertPosSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.cpp">

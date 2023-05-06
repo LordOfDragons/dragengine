@@ -627,6 +627,28 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	pSharedVBOListByType[ esvbolModelWriteSkinnedVBO ] =
 		pSharedVBOListList->GetWith( layoutModelWriteSkinnedVBO, GL_STATIC_DRAW );
 	
+	// model vertex position set vbo. contains position and index for each point.
+	// 
+	// name          | offset | type   | components
+	// --------------+--------+--------+---------------
+	// position      |      0 | float  | position
+	// index         |     12 | uint   | index
+	deoglVBOLayout layoutModelVertexPositionSetVBO;
+	layoutModelVertexPositionSetVBO.SetAttributeCount( 2 );
+	layoutModelVertexPositionSetVBO.SetStride( 16 );
+	layoutModelVertexPositionSetVBO.SetIndexType( deoglVBOLayout::eitNone );
+	
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 0 ).SetComponentCount( 3 );
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 0 ).SetDataType( deoglVBOAttribute::edtFloat );
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 0 ).SetOffset( 0 );
+	
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 1 ).SetComponentCount( 1 );
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 1 ).SetDataType( deoglVBOAttribute::edtUInt );
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 1 ).SetOffset( 12 );
+	
+	pSharedVBOListByType[ esvbolModelVertexPositionSets ] =
+		pSharedVBOListList->GetWith( layoutModelVertexPositionSetVBO, GL_STATIC_DRAW );
+	
 	// static occlusion mesh: esvbolStaticOcclusionMesh
 	// 
 	// name       | offset | type   | components

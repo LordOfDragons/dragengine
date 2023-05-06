@@ -165,6 +165,9 @@ private:
 	
 	deoglLightList pLightList;
 	
+	float *pVertexPositionSetWeights;
+	int pVertexPositionSetCount;
+	
 	unsigned int pUniqueKey;
 	
 	decObjectOrderedSet pListeners;
@@ -387,6 +390,17 @@ public:
 	
 	/** Update the bone matrices if required. */
 	void UpdateBoneMatrices( deComponent &component );
+	
+	
+	
+	/** Vertex position sets. */
+	inline float *GetVertexPositionSets() const{ return pVertexPositionSetWeights; }
+	
+	/** Vertex position set count. */
+	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	
+	/** Update vertex position sets. */
+	void UpdateVertexPositionSets( const deComponent &component );
 	
 	
 	

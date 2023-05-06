@@ -98,17 +98,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderGeometry::deoglRenderGeometry( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
+deoglRenderGeometry::deoglRenderGeometry( deoglRenderThread &renderThread ) :
+deoglRenderBase( renderThread ),
+pVertexPositionSetParams( nullptr ),
+pVertexPositionSetParamSize( 0 )
+{
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
-		// approximate transform vertices, normals and tangents
 		pipconf.Reset();
 		pipconf.SetType( deoglPipelineConfiguration::etCompute );
+		
+		// copy vertices, normals and tangents
+		pipconf.SetShader( renderThread, "DefRen Copy VNT", defines );
+		pPipelineCopyVNT = pipelineManager.GetWith( pipconf );
+		
+		// transform vertices using vertex position set
+		pipconf.SetShader( renderThread, "DefRen VPS Transform VNT", defines );
+		pPipelineVPSTransformVNT = pipelineManager.GetWith( pipconf );
+		
+		// approximate transform vertices, normals and tangents
 		pipconf.SetShader( renderThread, "DefRen Approx Transform VNT", defines );
 		pPipelineApproxTransformVNT = pipelineManager.GetWith( pipconf );
+		
+		defines.SetDefines( "TRANSFORM_INPLACE" );
+		pipconf.SetShader( renderThread, "DefRen Approx Transform VNT", defines );
+		pPipelineApproxTransformVNTInplace = pipelineManager.GetWith( pipconf );
+		defines.RemoveDefines( "TRANSFORM_INPLACE" );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -778,20 +796,89 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 
 
 
+void deoglRenderGeometry::CopyVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO &transformed,
+int firstPoint, int pointCount ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.CopyVNT" );
+	
+	pPipelineCopyVNT->Activate();
+	
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, vbo ) );
+	transformed.Activate();
+	
+	pPipelineCopyVNT->GetGlShader().SetParameterUInt( 0, firstPoint, pointCount );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( pointCount - 1 ) / 64 + 1, 1, 1 ) );
+	
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0) );
+	transformed.Deactivate();
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( vao ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+}
+
+deoglRenderGeometry::sVertexPositionSetParams *deoglRenderGeometry::GetVertexPositionSetParams( int count ){
+	DEASSERT_TRUE( count > 0 )
+	
+	if( count > pVertexPositionSetParamSize ){
+		sVertexPositionSetParams * const newArray = new sVertexPositionSetParams[ count ];
+		delete [] pVertexPositionSetParams;
+		pVertexPositionSetParams = newArray;
+		pVertexPositionSetParamSize = count;
+	}
+	
+	return pVertexPositionSetParams;
+}
+
+void deoglRenderGeometry::VPSTransformVNT( GLuint vaoModelData, GLuint vboVertexPositionSetData,
+const sVertexPositionSetParams *params, int paramCount, const deoglSPBlockSSBO &transformed ){
+	DEASSERT_NOTNULL( params )
+	DEASSERT_TRUE( paramCount > 0 )
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.VPSTransformVNT" );
+	
+	pPipelineVPSTransformVNT->Activate();
+	
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, vboVertexPositionSetData ) );
+	transformed.Activate();
+	
+	deoglShaderCompiled &shader = pPipelineVPSTransformVNT->GetGlShader();
+	
+	int i;
+	for( i=0; i<paramCount; i++ ){
+		shader.SetParameterUInt( 0, params[ i ].firstPoint, params[ i ].pointCount );
+		shader.SetParameterFloat( 1, params[ i ].weight );
+		
+		OGL_CHECK( renderThread, pglDispatchCompute( ( params[ i ].pointCount - 1 ) / 64 + 1, 1, 1 ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+	}
+	
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0) );
+	transformed.Deactivate();
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( vaoModelData ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+}
+
 void deoglRenderGeometry::ApproxTransformVNT( GLuint vao, GLuint vbo,
-const deoglSPBlockSSBO *weightMatrices, const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount ){
+const deoglSPBlockSSBO *weightMatrices, const deoglSPBlockSSBO &transformed,
+int firstPoint, int pointCount, bool inplace ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.ApproxTransformVNT" );
 	
-	pPipelineApproxTransformVNT->Activate();
+	const deoglPipeline &pipeline = inplace ? *pPipelineApproxTransformVNTInplace : *pPipelineApproxTransformVNT;
+	pipeline.Activate();
 	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, vbo) );
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, vbo ) );
 	transformed.Activate();
 	if( weightMatrices ){
 		weightMatrices->Activate();
 	}
 	
-	pPipelineApproxTransformVNT->GetGlShader().SetParameterUInt( 0, firstPoint, pointCount );
+	pipeline.GetGlShader().SetParameterUInt( 0, firstPoint, pointCount );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( pointCount - 1 ) / 64 + 1, 1, 1 ) );
 	
@@ -812,4 +899,7 @@ const deoglSPBlockSSBO *weightMatrices, const deoglSPBlockSSBO &transformed, int
 //////////////////////
 
 void deoglRenderGeometry::pCleanUp(){
+	if( pVertexPositionSetParams ){
+		delete [] pVertexPositionSetParams;
+	}
 }

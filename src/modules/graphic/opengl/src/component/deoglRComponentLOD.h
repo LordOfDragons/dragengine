@@ -203,6 +203,9 @@ public:
 	/** Write weight matrices to the SSBO. */
 	void WriteWeightMatricesSSBO();
 	
+	/** Build vertex position set params. */
+	void BuildVertexPositionSetParams();
+	
 	/** Update VBO on the GPU using the fast but approximate method. */
 	void UpdateVBOOnGPUApproximate();
 	

@@ -66,6 +66,9 @@ public:
 		/** List for model write skinned vertices. */
 		esvbolModelWriteSkinnedVBO,
 		
+		/** List for model vertex position sets. */
+		esvbolModelVertexPositionSets,
+		
 		/** List for static occlusion meshes. */
 		esvbolStaticOcclusionMesh,
 		

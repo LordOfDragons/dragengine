@@ -226,6 +226,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModel.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLOD.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODTexCoordSet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVertPosSet.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglRModel.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFace.h" />
@@ -835,6 +836,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLOD.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODTexCoordSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVertPosSet.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglRModel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFace.cpp" />
