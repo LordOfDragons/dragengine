@@ -141,6 +141,7 @@ float blendFactor, bool enableWeight ){
 				pWeight = pWeight * ( 1.0f - blendFactor ) + weight * blendFactor;
 			}
 		}
+		break;
 		
 	case deAnimatorRule::ebmOverlay:
 		// overlay new state over the old state

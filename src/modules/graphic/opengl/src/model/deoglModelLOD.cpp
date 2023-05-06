@@ -1454,7 +1454,8 @@ void deoglModelLOD::pBuildArrays( const deModel &engModel ){
 		}
 	}
 	
-	// add vertex position sets
+	// add vertex position sets. since vertices stored for rendering are points grouping various
+	// parameters a single vertex position set position typically maps to multiple points
 	if( modelVertPosSetCount > 0 ){
 		pVertPosSets = new deoglModelLODVertPosSet[ modelVertPosSetCount ];
 		pVertPosSetCount = modelVertPosSetCount;
@@ -1468,10 +1469,23 @@ void deoglModelLOD::pBuildArrays( const deModel &engModel ){
 			const int positionCount = modelVps.GetPositionCount();
 			deoglModelLODVertPosSet &vps = pVertPosSets[ i ];
 			
-			vps.SetVBOOffset( pVertPosSetPosCount );
-			vps.SetPositionCount( positionCount );
+			// determine the count of points affected by all positions
+			int pointCount = 0;
+			for( j=0; j<positionCount; j++ ){
+				const int vertex = modelVpsPos[ j ].GetVertex();
+				
+				for( k=0; k<pVertexCount; k++ ){
+					if( pVertices[ k ].position == vertex ){
+						pointCount++;
+					}
+				}
+			}
 			
-			deoglModelLODVertPosSet::sPosition * const positions = vps.GetPositions();
+			// store positions for all affected points
+			vps.SetVBOOffset( pVertPosSetPosCount );
+			vps.SetPositionCount( pointCount );
+			
+			deoglModelLODVertPosSet::sPosition *vpsPosition = vps.GetPositions();
 			const deModelLodVertexPositionSetPosition *modelVpsBasePos = nullptr;
 			int basePositionCount = 0;
 			
@@ -1482,29 +1496,40 @@ void deoglModelLOD::pBuildArrays( const deModel &engModel ){
 			}
 			
 			for( j=0; j<positionCount; j++ ){
-				const int index = modelVpsPos[ j ].GetVertex();
-				positions[ j ].index = index;
-				positions[ j ].position = modelVpsPos[ j ].GetPosition();
+				const int vertex = modelVpsPos[ j ].GetVertex();
+				
+				// calculate position which is either relative to the base position or relative
+				// to another vertex position set position
+				decVector position( modelVpsPos[ j ].GetPosition() );
 				
 				if( modelVpsBasePos ){
 					for( k=0; k<basePositionCount; k++ ){
 						const deModelLodVertexPositionSetPosition &basePos = modelVpsBasePos[ k ];
-						if( basePos.GetVertex() == index ){
-							positions[ j ].position -= basePos.GetPosition();
+						if( basePos.GetVertex() == vertex ){
+							position -= basePos.GetPosition();
 							break;
 						}
 					}
 					
 					if( k == basePositionCount ){
-						positions[ j ].position -= modelVertices[ index ].GetPosition();
+						position -= modelVertices[ vertex ].GetPosition();
 					}
 					
 				}else{
-					positions[ j ].position -= modelVertices[ index ].GetPosition();
+					position -= modelVertices[ vertex ].GetPosition();
+				}
+				
+				// add position for all affected points
+				for( k=0; k<pVertexCount; k++ ){
+					if( pVertices[ k ].position == vertex ){
+						vpsPosition->index = k;
+						vpsPosition->position = position;
+						vpsPosition++;
+					}
 				}
 			}
 			
-			pVertPosSetPosCount += positionCount;
+			pVertPosSetPosCount += pointCount;
 		}
 	}
 	
@@ -1565,6 +1590,17 @@ void deoglModelLOD::pOptimizeVertexCache(){
 				faces[ i ].SetVertex1( optimizerVertices[ faces[ i ].GetVertex1() ].reorderedIndex );
 				faces[ i ].SetVertex2( optimizerVertices[ faces[ i ].GetVertex2() ].reorderedIndex );
 				faces[ i ].SetVertex3( optimizerVertices[ faces[ i ].GetVertex3() ].reorderedIndex );
+			}
+		}
+		
+		for( i=0; i<pVertPosSetCount; i++ ){
+			deoglModelLODVertPosSet &vps = pVertPosSets[ i ];
+			deoglModelLODVertPosSet::sPosition * const positions = vps.GetPositions();
+			const int posCount = vps.GetPositionCount();
+			int j;
+			
+			for( j=0; j<posCount; j++ ){
+				positions[ j ].index = optimizerVertices[ positions[ j ].index ].reorderedIndex;
 			}
 		}
 		

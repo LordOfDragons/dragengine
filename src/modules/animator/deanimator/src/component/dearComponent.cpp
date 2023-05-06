@@ -51,6 +51,8 @@ pBoneStateCount( 0 ),
 pVPSStates( nullptr ),
 pVPSStateCount( 0 )
 {
+	ModelChanged();
+	RigChanged();
 }
 
 dearComponent::~dearComponent(){

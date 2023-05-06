@@ -337,6 +337,7 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 	const GLuint vaoModelData = vboBlock.GetVBO()->GetVAO()->GetVAO();
 	const GLuint vboModelData = vboBlock.GetVBO()->GetVBO();
 	deoglRenderGeometry::sVertexPositionSetParams *params = nullptr;
+	int firstPoint = vboBlock.GetOffset();
 	bool inplace = false;
 	
 	int useVpsCount = 0;
@@ -367,13 +368,15 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 		
 		const GLuint vboVPSData = vboBlockVps.GetVBO()->GetVBO();
 		
-		renderGeometry.CopyVNT( vaoModelData, vboModelData, pVBO, vboBlock.GetOffset(), pointCount );
+		renderGeometry.CopyVNT( vaoModelData, vboModelData, pVBO, firstPoint, pointCount );
 		renderGeometry.VPSTransformVNT( vaoModelData, vboVPSData, params, useVpsCount, pVBO );
+		
 		inplace = true;
+		firstPoint = 0;
 	}
 	
 	renderGeometry.ApproxTransformVNT( vaoModelData, vboModelData, pSSBOWeightMatrices,
-		pVBO, vboBlock.GetOffset(), pointCount, inplace );
+		pVBO, firstPoint, pointCount, inplace );
 }
 
 

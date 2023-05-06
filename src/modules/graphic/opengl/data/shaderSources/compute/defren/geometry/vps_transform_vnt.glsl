@@ -36,6 +36,5 @@ void main( void ){
 	uint vpsIndex = pParams.x + gl_GlobalInvocationID.x;
 	uint vertexIndex = pVertexPositionSetData[ vpsIndex ].vertex;
 	
-	pTransformedData[ vertexIndex ].position = mix( pTransformedData[ vertexIndex ].position,
-		pVertexPositionSetData[ vpsIndex ].position, pWeight );
+	pTransformedData[ vertexIndex ].position += pVertexPositionSetData[ vpsIndex ].position * pWeight;
 }

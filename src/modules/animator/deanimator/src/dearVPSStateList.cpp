@@ -236,7 +236,7 @@ deAnimatorRule::eBlendModes blendMode, float blendFactor ) const{
 }
 
 void dearVPSStateList::ApplyToComponent( dearComponent &component ) const{
-	dearComponentVPSState *vpsStates = component.GetVPSStates();
+	dearComponentVPSState * const vpsStates = component.GetVPSStates();
 	const int vpsStateCount = component.GetVPSStateCount();
 	int i;
 	

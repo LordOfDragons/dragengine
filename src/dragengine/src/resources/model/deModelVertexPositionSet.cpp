@@ -47,4 +47,6 @@ deModelVertexPositionSet::~deModelVertexPositionSet(){
 
 void deModelVertexPositionSet::SetBaseSet( int baseSet ){
 	DEASSERT_TRUE( baseSet >= -1 )
+	
+	pBaseSet = baseSet;
 }
