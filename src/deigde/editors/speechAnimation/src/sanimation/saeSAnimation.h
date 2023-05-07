@@ -29,6 +29,7 @@
 
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/animator/deAnimatorReference.h>
 #include <dragengine/resources/animator/deAnimatorInstanceReference.h>
 #include <dragengine/resources/component/deComponentReference.h>
@@ -76,6 +77,7 @@ private:
 	decString pAnimationPath;
 	
 	decString pNeutralMoveName;
+	decStringSet pNeutralVertexPositionSets;
 	
 	saePhonemeList pPhonemeList;
 	saePhoneme *pActivePhoneme;
@@ -103,8 +105,13 @@ public:
 	/*@{*/
 	/** Retrieves the engine world. */
 	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	
 	/** Retrieves the animator. */
 	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	
+	/** Component. */
+	inline const deComponentReference &GetEngineComponent() const{ return pEngComponent; }
+	
 	/** Retrieves the sky. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the camera. */
@@ -132,10 +139,17 @@ public:
 	/** Sets the rig path. */
 	void SetAnimationPath( const char *path );
 	
-	/** Retrieves the neutral move name. */
+	/** Neutral move name. */
 	inline const decString &GetNeutralMoveName() const{ return pNeutralMoveName; }
-	/** Sets the neutral move name. */
+	
+	/** Set neutral move name. */
 	void SetNeutralMoveName( const char *name );
+	
+	/** Neutral vertex position sets. */
+	inline const decStringSet &GetNeutralVertexPositionSets() const{ return pNeutralVertexPositionSets; }
+	
+	/** Set neutral vertex position sets. */
+	void SetNeutralVertexPositionSets( const decStringSet &sets );
 	
 	/** Retrieves the display mode. */
 	inline eDisplayModes GetDisplayMode() const{ return pDisplayMode; }

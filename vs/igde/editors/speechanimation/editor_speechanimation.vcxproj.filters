@@ -112,6 +112,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -125,6 +128,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.cpp">
@@ -225,6 +231,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -238,6 +247,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.h">

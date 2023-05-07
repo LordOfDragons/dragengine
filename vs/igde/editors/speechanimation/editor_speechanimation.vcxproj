@@ -70,11 +70,13 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeAdd.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetMoveName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetSampleText.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetAnimPath.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -109,11 +111,13 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeAdd.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeRemove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetMoveName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetSampleText.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetAnimPath.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

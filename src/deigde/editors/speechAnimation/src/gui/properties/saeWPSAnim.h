@@ -26,6 +26,7 @@
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
+#include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -54,11 +55,17 @@ private:
 	igdeEditPathReference pEditAnimPath;
 	igdeComboBoxFilterReference pCBNeutralMove;
 	
+	igdeListBoxReference pListNeutralVertexPositionSets;
+	igdeComboBoxFilterReference pCBNeutralVertexPositionSets;
+	igdeButtonReference pBtnNeutralVertexPositionSetAdd;
+	igdeButtonReference pBtnNeutralVertexPositionSetDel;
+	
 	igdeComboBoxReference pCBPhoneme;
 	igdeTextFieldReference pEditPhonemeIPA;
 	igdeTextFieldReference pEditPhonemeSampleText;
 	igdeTextFieldReference pEditPhonemeLength;
 	igdeComboBoxFilterReference pCBPhonemeMove;
+	igdeComboBoxFilterReference pCBPhonemeVertexPositionSet;
 	
 	igdeComboBoxFilterReference pCBWord;
 	igdeTextFieldReference pEditWordName;
@@ -103,6 +110,15 @@ public:
 	/** Update neutral move list. */
 	void UpdateNeutralMoveList();
 	
+	/** Update neutral vertex position set list. */
+	void UpdateNeutralVertexPositionSetList();
+	
+	/** Neutral vertex position set combo box text. */
+	const decString &GetCBNeutralVertexPositionSetText() const;
+	
+	/** Set neutral vertex position set combo box text. */
+	void SetCBNeutralVertexPositionSetText( const char *text );
+	
 	
 	
 	/** Active phoneme or NULL. */
@@ -119,6 +135,9 @@ public:
 	
 	/** Update phoneme move list. */
 	void UpdatePhonemeMoveList();
+	
+	/** Update phoneme vertex position set list. */
+	void UpdatePhonemeVertexPositionSetList();
 	
 	
 	

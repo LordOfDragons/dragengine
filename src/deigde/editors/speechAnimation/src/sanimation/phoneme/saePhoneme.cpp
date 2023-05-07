@@ -37,32 +37,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-saePhoneme::saePhoneme(){
-	pSAnimation = NULL;
-	pEngController = -1;
-	
-	pIPA = 0;
-	pLength = 0.2f;
-	pMoveName = "viseme";
-	pActive = false;
+saePhoneme::saePhoneme() :
+pSAnimation( nullptr ),
+pEngController( -1 ),
+pIPA( 0 ),
+pMoveName( "viseme" ),
+pLength( 0.2f ),
+pActive( false ){
 }
 
 saePhoneme::saePhoneme( int ipa ) :
-pSAnimation( NULL ),
+pSAnimation( nullptr ),
 pEngController( -1 ),
-
 pIPA( ipa ),
 pMoveName( "viseme" ),
 pLength( 0.2f ),
 pActive( false )
 {
-	if( ipa < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( ipa >= 0 )
 }
 
 saePhoneme::~saePhoneme(){
-	SetSAnimation( NULL );
+	SetSAnimation( nullptr );
 }
 
 
@@ -78,49 +74,63 @@ void saePhoneme::SetEngineController( int controller ){
 	pEngController = controller;
 }
 
-
-
 void saePhoneme::SetIPA( int ipa ){
-	if( ipa != pIPA ){
-		pIPA = ipa;
-		
-		if( pSAnimation ){
-			pSAnimation->NotifyPhonemeChanged( this );
-		}
+	if( ipa == pIPA ){
+		return;
+	}
+	
+	pIPA = ipa;
+	
+	if( pSAnimation ){
+		pSAnimation->NotifyPhonemeChanged( this );
 	}
 }
 
 void saePhoneme::SetLength( float length ){
-	if( fabsf( length - pLength ) > 1e-6f ){
-		pLength = length;
-		
-		if( pSAnimation ){
-			pSAnimation->NotifyPhonemeChanged( this );
-		}
+	if( fabsf( length - pLength ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pLength = length;
+	
+	if( pSAnimation ){
+		pSAnimation->NotifyPhonemeChanged( this );
 	}
 }
 
 void saePhoneme::SetSampleText( const char *sampleText ){
-	if( ! sampleText ) DETHROW( deeInvalidParam );
+	if( pSampleText == sampleText ){
+		return;
+	}
 	
-	if( ! pSampleText.Equals( sampleText ) ){
-		pSampleText = sampleText;
-		
-		if( pSAnimation ){
-			pSAnimation->NotifyPhonemeChanged( this );
-		}
+	pSampleText = sampleText;
+	
+	if( pSAnimation ){
+		pSAnimation->NotifyPhonemeChanged( this );
 	}
 }
 
 void saePhoneme::SetMoveName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
+	if( pMoveName == name ){
+		return;
+	}
 	
-	if( ! pMoveName.Equals( name ) ){
-		pMoveName = name;
-		
-		if( pSAnimation ){
-			pSAnimation->NotifyPhonemeChanged( this );
-		}
+	pMoveName = name;
+	
+	if( pSAnimation ){
+		pSAnimation->NotifyPhonemeChanged( this );
+	}
+}
+
+void saePhoneme::SetVertexPositionSet( const char *name ){
+	if( pVertexPositionSet == name ){
+		return;
+	}
+	
+	pVertexPositionSet = name;
+	
+	if( pSAnimation ){
+		pSAnimation->NotifyPhonemeChanged( this );
 	}
 }
 

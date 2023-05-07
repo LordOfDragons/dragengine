@@ -54,6 +54,9 @@ public:
 	/** Speech animation changed. */
 	virtual void SAnimationChanged( saeSAnimation *sanimation );
 	
+	/** Model changed. */
+	virtual void ModelChanged( saeSAnimation *sanimation );
+	
 	/** Phoneme count or order changed. */
 	virtual void PhonemeStructureChanged( saeSAnimation *sanimation );
 	

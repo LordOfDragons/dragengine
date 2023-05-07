@@ -26,17 +26,19 @@
 #include <dragengine/common/string/decString.h>
 
 
-
 /**
- * \brief Speech Animation Phoneme.
+ * Speech Animation Phoneme.
  */
 class ceSAPhoneme : public deObject{
 private:
 	int pIPA;
 	float pLength;
 	decString pMoveName;
+	decString pVertexPositionSet;
 	decString pSampleText;
 	int pEngController;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -49,23 +51,37 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the IPA symbol. */
+	/** IPA symbol. */
 	inline int GetIPA() const{ return pIPA; }
-	/** Retrieves the length of the phoneme. */
+	
+	/** Length of phoneme. */
 	inline float GetLength() const{ return pLength; }
-	/** Sets the length of the phoneme. */
+	
+	/** Set length of phoneme. */
 	void SetLength( float length );
-	/** Retrieves the move name. */
+	
+	/** Move name. */
 	inline const decString &GetMoveName() const{ return pMoveName; }
-	/** Sets the move name. */
+	
+	/** Set move name. */
 	void SetMoveName( const char *name );
-	/** Retrieves the sample text. */
+	
+	/** Vertex position set. */
+	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
+	
+	/** Set vertex position set. */
+	void SetVertexPositionSet( const char *vertexPositionSet );
+	
+	/** Sample text. */
 	inline const decString &GetSampleText() const{ return pSampleText; }
-	/** Sets the sample text. */
+	
+	/** Set sample text. */
 	void SetSampleText( const char *sampleText );
-	/** Retrieves the engine controller or -1 if not used. */
+	
+	/** Engine controller or -1 if not used. */
 	inline int GetEngineController() const{ return pEngController; }
-	/** Sets the engine controller or -1 if not used. */
+	
+	/** Set engine controller or -1 if not used. */
 	void SetEngineController( int controller );
 	/*@}*/
 };
