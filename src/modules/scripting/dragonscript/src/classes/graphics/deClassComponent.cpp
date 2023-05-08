@@ -819,7 +819,7 @@ void deClassComponent::nfVertexPositionSetGetNameAt::RunFunction( dsRunTime *rt,
 
 // public func float vertexPositionSetGetWeightAt(int index)
 deClassComponent::nfVertexPositionSetGetWeightAt::nfVertexPositionSetGetWeightAt( const sInitData &init ) :
-dsFunction( init.clsCom, "vertexPositionSetGetWeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+dsFunction( init.clsCom, "vertexPositionSetGetWeightAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
 	p_AddParameter( init.clsInt ); // index
 }
 void deClassComponent::nfVertexPositionSetGetWeightAt::RunFunction( dsRunTime *rt, dsValue *myself ){
@@ -829,7 +829,7 @@ void deClassComponent::nfVertexPositionSetGetWeightAt::RunFunction( dsRunTime *r
 
 // public func float vertexPositionSetGetWeightNamed(String name)
 deClassComponent::nfVertexPositionSetGetWeightNamed::nfVertexPositionSetGetWeightNamed( const sInitData &init ) :
-dsFunction( init.clsCom, "vertexPositionSetGetWeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+dsFunction( init.clsCom, "vertexPositionSetGetWeightNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
 	p_AddParameter( init.clsStr ); // name
 }
 void deClassComponent::nfVertexPositionSetGetWeightNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
@@ -843,7 +843,7 @@ void deClassComponent::nfVertexPositionSetGetWeightNamed::RunFunction( dsRunTime
 
 // public func void vertexPositionSetSetWeightAt(int index, float weight)
 deClassComponent::nfVertexPositionSetSetWeightAt::nfVertexPositionSetSetWeightAt( const sInitData &init ) :
-dsFunction( init.clsCom, "vertexPositionSetSetWeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+dsFunction( init.clsCom, "vertexPositionSetSetWeightAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInt ); // index
 	p_AddParameter( init.clsFlt ); // weight
 }
@@ -855,7 +855,7 @@ void deClassComponent::nfVertexPositionSetSetWeightAt::RunFunction( dsRunTime *r
 
 // public func void vertexPositionSetSetWeightNamed(String name, float weight)
 deClassComponent::nfVertexPositionSetSetWeightNamed::nfVertexPositionSetSetWeightNamed( const sInitData &init ) :
-dsFunction( init.clsCom, "vertexPositionSetSetWeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+dsFunction( init.clsCom, "vertexPositionSetSetWeightNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsStr ); // name
 	p_AddParameter( init.clsFlt ); // weight
 }
