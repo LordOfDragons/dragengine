@@ -156,8 +156,12 @@ pMapLipXrToDeCount( 0 )
 			pSetLipMapping( 30, deInputDevice::efeTongueRoll, XR_LIP_EXPRESSION_TONGUE_ROLL_HTC );
 			pSetLipMapping( 31, deInputDevice::efeTongueLongStep1, XR_LIP_EXPRESSION_TONGUE_LONGSTEP1_HTC );
 			pSetLipMapping( 32, deInputDevice::efeTongueLongStep2, XR_LIP_EXPRESSION_TONGUE_LONGSTEP2_HTC );
+			pSetLipMapping( 33, deInputDevice::efeTongueMorphUpRight, XR_LIP_EXPRESSION_TONGUE_UPRIGHT_MORPH_HTC );
+			pSetLipMapping( 34, deInputDevice::efeTongueMorphUpLeft, XR_LIP_EXPRESSION_TONGUE_UPLEFT_MORPH_HTC );
+			pSetLipMapping( 35, deInputDevice::efeTongueMorphDownRight, XR_LIP_EXPRESSION_TONGUE_DOWNRIGHT_MORPH_HTC );
+			pSetLipMapping( 36, deInputDevice::efeTongueMorphDownLeft, XR_LIP_EXPRESSION_TONGUE_DOWNLEFT_MORPH_HTC );
 			
-			pMapLipXrToDeCount = 33;
+			pMapLipXrToDeCount = 37;
 			instance.GetOxr().LogInfo("FaceTracker: Lip Tracker Created");
 		}
 		

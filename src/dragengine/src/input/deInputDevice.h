@@ -274,14 +274,18 @@ public:
 		efeTongueDown,
 		efeTongueRoll,
 		efeTongueLongStep1,
-		efeTongueLongStep2
+		efeTongueLongStep2,
+		efeTongueMorphUpRight,
+		efeTongueMorphUpLeft,
+		efeTongueMorphDownRight,
+		efeTongueMorphDownLeft
 	};
 	
 	/**
 	 * \brief Convenience value count of face expressions.
 	 * \version 1.12
 	 */
-	static const int FaceExpressionCount = 77;
+	static const int FaceExpressionCount = 51;
 	
 	
 	
