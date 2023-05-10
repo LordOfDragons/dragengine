@@ -1,0 +1,326 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Gui
+
+
+/**
+ * \brief Shared implementation of ListModel.
+ * \version 1.17
+ * 
+ * ListModel implementation allowing to use another ListModel instance as shared model.
+ * This allows to use the same ListModel across multiple SharedListModel but with different
+ * selection state. This reduces coding effort and improves UI performance.
+ * 
+ * The typical use case is to use a globally accessible DefaultListModel storing the data
+ * you want to display in different parts of the UI using ComboBox or ListBox. Then for
+ * each ComboBox and ListBox use an instance of SharedListModel linked to the global
+ * DefaultListModel. Now you can changed the global DefaultListModel and all ComboBox
+ * and ListBox linked to it by SharedListModel are updated automatically while keeping
+ * their unique selection state.
+ */
+class SharedListModel implements ListModel
+	/** Shared model listener. Required to solve cycling dependency problems. */
+	private class SharedModelListener implements ListModelListener
+		private var WeakReference pOwner
+		
+		public func new(SharedListModel owner)
+			pOwner = WeakReference.new(owner)
+		end
+		
+		public func void elementsAdded(ListModel listModel, int fromIndex, int toIndex)
+			(pOwner.get() cast SharedListModel).notifyElementsAdded(fromIndex, toIndex)
+		end
+		
+		public func void elementsRemoved(ListModel listModel, int fromIndex, int toIndex)
+			(pOwner.get() cast SharedListModel).notifyElementsRemoved(fromIndex, toIndex)
+		end
+		
+		public func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
+			(pOwner.get() cast SharedListModel).notifyContentChanged(fromIndex, toIndex)
+		end
+		
+		public func void selectionChanged(ListModel listModel)
+		end
+	end
+	
+	
+	
+	private var ListModel pModel
+	private var SharedModelListener pSharedModelListener
+	private var Array pListeners
+	private var int pSelected
+	private var Object pSelectedObject
+	private var bool pAutoSelect
+	
+	
+	
+	/** \brief Create shared list model linked to ListModel. */
+	public func new(ListModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		
+		pListeners = Array.new()
+		pSelected = -1
+		pAutoSelect = true
+		
+		pSharedModelListener = SharedModelListener.new(this)
+		model.addListener(pSharedModelListener)
+		pModel = model
+		
+		if model.getCount() > 0
+			pSelected = 0
+			pSelectedObject = model.getAt(0)
+		end
+	end
+	
+	/** \brief Destroy shared list model. */
+	public func void destructor()
+		if pModel != null
+			pModel.removeListener(pSharedModelListener)
+		end
+	end
+	
+	
+	
+	/** \brief Linked model. */
+	public func ListModel getModel()
+		return pModel
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener(ListModelListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pListeners.add(listener)
+	end
+	
+	/** \brief Remove listener. */
+	public func void removeListener(ListModelListener listener)
+		pListeners.remove(listener)
+	end
+	
+	
+	
+	/** \brief Count of elements. */
+	public func int getCount()
+		return pModel.getCount()
+	end
+	
+	/**
+	 * \brief Element at index.
+	 * \throws EOutOfBounds \em index is less than 0 or larger than or equal to getCount().
+	 */
+	public func Object getAt(int index)
+		return pModel.getAt(index)
+	end
+	
+	/** \brief Index of element or -1 if absent. */
+	public func int indexOf(Object element)
+		return pModel.indexOf(element)
+	end
+	
+	/** \brief Element is present. */
+	public func bool has(Object element)
+		return pModel.has(element)
+	end
+	
+	/** \brief Index of the selected element or -1 if there is no selected element. */
+	public func int getSelected()
+		return pSelected
+	end
+	
+	/** \brief Set index of selected element or -1 if none is no selected element. */
+	public func void setSelected(int index)
+		if index < -1 or index >= pModel.getCount()
+			throw EInvalidParam.new()
+		end
+		
+		if index == pSelected
+			return
+		end
+		
+		pSelected = index
+		
+		if index != -1
+			pSelectedObject = pModel.getAt(index)
+			
+		else
+			pSelectedObject = null
+		end
+		
+		pListeners.forEach(block ListModelListener each
+			each.selectionChanged(this)
+		end)
+	end
+	
+	/**
+	 * \brief Get selected element or null.
+	 * 
+	 * If getSelected() is -1 returns null. If getSelected() is not -1 this method
+	 * behaves the same as calling getAt(getSelected()).
+	 */
+	public func Object getSelectedElement()
+		return pSelectedObject
+	end
+	
+	/**
+	 * \brief Set selected element.
+	 * 
+	 * Behaves the same as calling setSelected(indexOf(element)).
+	 */
+	public func void setSelectedElement(Object element)
+		var int index = pModel.indexOf(element)
+		
+		if index == pSelected
+			return
+		end
+		
+		pSelected = index
+		pSelectedObject = element
+		
+		pListeners.forEach(block ListModelListener each
+			each.selectionChanged(this)
+		end)
+	end
+	
+	/**
+	 * \brief Automatically select items.
+	 * 
+	 * If no item is selected and an item is added it is selected. If selected item is
+	 * removed selects the next suitible item if the list is not empty.
+	 */
+	public func bool getAutoSelect()
+		return pAutoSelect
+	end
+	
+	/**
+	 * \brief Set to automatically select items.
+	 * 
+	 * If no item is selected and an item is added it is selected. If selected item is
+	 * removed selects the next suitible item if the list is not empty.
+	 * 
+	 * If auto select is set to true while no item is selected the first item in the
+	 * list is selected if the list is not empty.
+	 */
+	public func void setAutoSelect(bool autoSelect)
+		if autoSelect == pAutoSelect
+			return
+		end
+		
+		pAutoSelect = autoSelect
+		
+		if autoSelect and pSelected == -1 and pModel.getCount() > 0
+			setSelected(0)
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Notify all that the content of the model in the given range changed.
+	 * \param indexFrom Index of first element that changed
+	 * \param indexTo Index of last element that changed
+	 */
+	public func void notifyContentChanged(int indexFrom, int indexTo)
+		var bool notifySelectedChanged
+		
+		if pSelected != -1
+			var int oldSelection = pSelected
+			
+			pSelected = indexOf(pSelectedObject)
+			if pSelected == -1
+				pSelectedObject = null
+			end
+			
+			notifySelectedChanged = pSelected != oldSelection
+		end
+		
+		pListeners.forEach(block ListModelListener each
+			each.contentChanged(this, indexFrom, indexTo)
+		end)
+		
+		if notifySelectedChanged
+			pListeners.forEach(block ListModelListener each
+				each.selectionChanged(this)
+			end)
+		end
+	end
+	
+	/**
+	 * \brief Notify all elements have been added.
+	 * \param indexFrom Index of first added element.
+	 * \param indexTo Index of last added element.
+	 */
+	public func void notifyElementsAdded(int indexFrom, int indexTo)
+		pListeners.forEach(block ListModelListener each
+			each.elementsAdded(this, indexFrom, indexTo)
+		end)
+		
+		if pSelected == -1 and pAutoSelect
+			setSelected(indexFrom)
+		end
+	end
+	
+	/**
+	 * \brief Notify all elements have been removed.
+	 * \param indexFrom Index of first removed element.
+	 * \param indexTo Index of last removed element.
+	 */
+	public func void notifyElementsRemoved(int indexFrom, int indexTo)
+		var bool notifySelectedChanged
+		
+		if pSelected > indexTo
+			pSelected -= indexTo - indexFrom + 1
+			
+		elif pSelected >= indexFrom
+			if pAutoSelect
+				pSelected = DEMath.min(indexFrom, pModel.getCount() - 1)
+				
+			else
+				pSelected = -1
+			end
+			
+			if pSelected != -1
+				pSelectedObject = pModel.getAt(pSelected)
+				
+			else
+				pSelectedObject = null
+			end
+			
+			notifySelectedChanged = true
+		end
+		
+		pListeners.forEach(block ListModelListener each
+			each.elementsRemoved(this, indexFrom, indexTo)
+		end)
+		
+		if notifySelectedChanged
+			pListeners.forEach(block ListModelListener each
+				each.selectionChanged(this)
+			end)
+		end
+	end
+end
