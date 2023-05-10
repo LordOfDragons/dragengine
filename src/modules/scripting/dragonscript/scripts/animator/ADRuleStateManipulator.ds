@@ -56,8 +56,8 @@ class ADRuleStateManipulator extends ADRule
 		pMaxRot = Vector.new()
 		pMinSize = Vector.new(1, 1, 1)
 		pMaxSize = Vector.new(1, 1, 1)
-		pMinVertexPositionSet = 1
-		pMaxVertexPositionSet = 1
+		pMinVertexPositionSet = 0
+		pMaxVertexPositionSet = 0
 		pEnablePos = false
 		pEnableOrient = true
 		pEnableSize = false
