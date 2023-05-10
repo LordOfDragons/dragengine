@@ -39,7 +39,7 @@
 
 deAnimatorRuleStateManipulator::deAnimatorRuleStateManipulator() :
 pMinVertexPositionSet( 0.0f ),
-pMaxVertexPositionSet( 1.0f ),
+pMaxVertexPositionSet( 0.0f ),
 pEnableVertexPositionSet( true )
 {
 	pMinSize.Set( 1.0f, 1.0f, 1.0f );
