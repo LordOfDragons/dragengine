@@ -136,12 +136,6 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	}
 	
 	pUseDirectStateAccess = HASEXT( ext_ARB_direct_state_access );
-	
-	#ifdef OS_W32
-	pNVidiaOnWindows = ext.GetVendor() == deoglExtensions::evNVidia;
-	#else
-	pNVidiaOnWindows = false;
-	#endif
 
 	// temporary until working properly
 	if( /* HASEXT( ext_ARB_shader_atomic_counter_ops ) && */ pUseSSBORender ){
@@ -186,9 +180,9 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	l.LogInfoFormat( "- Use Inverse Depth: %s", pUseInverseDepth ? "Yes" : "No" );
 	l.LogInfoFormat( "- Use Direct State Access: %s", pUseDirectStateAccess ? "Yes" : "No" );
 
-	if( pNVidiaOnWindows ){
-		l.LogInfo( "- nVidia on Windows: Force disable DSA on SSBO due to driver bug!" );
-	}
+	#ifdef OS_W32
+		l.LogInfo( "- Windows: Force disable DSA on SSBO (driver misbehavior)" );
+	#endif
 }
 
 deoglRTChoices::~deoglRTChoices(){

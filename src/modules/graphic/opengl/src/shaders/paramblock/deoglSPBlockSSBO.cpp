@@ -46,9 +46,12 @@
 deoglSPBlockSSBO::deoglSPBlockSSBO( deoglRenderThread &renderThread, eType type ) :
 deoglShaderParameterBlock( renderThread ),
 pType( type ),
-pUseDSA( renderThread.HasChoices()
-	&& renderThread.GetChoices().GetUseDirectStateAccess()
-	&& ! renderThread.GetChoices().GetNVidiaOnWindows() ),
+#ifdef OS_W32
+pUseDSA(false),
+#else
+pUseDSA(renderThread.HasChoices()
+	&& renderThread.GetChoices().GetUseDirectStateAccess()),
+#endif
 pSSBO( 0 ),
 pSSBOLocal( 0 ),
 pBindingPoint( 0 ),
