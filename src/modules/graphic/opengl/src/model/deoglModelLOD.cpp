@@ -715,8 +715,6 @@ void deoglModelLOD::LoadFromCache( decBaseFileReader &reader ){
 		pVertPosSets = new deoglModelLODVertPosSet[ count ];
 		pVertPosSetCount = count;
 		
-		pVertPosSetPosCount = reader.ReadInt();
-		
 		for( i=0; i<count; i++ ){
 			deoglModelLODVertPosSet &vps = pVertPosSets[ i ];
 			
@@ -729,12 +727,13 @@ void deoglModelLOD::LoadFromCache( decBaseFileReader &reader ){
 				int j;
 				
 				for( j=0; j<positionCount; j++ ){
-					positions[ j ].index = reader.ReadUInt();
+					positions[ j ].index = reader.ReadInt();
 					positions[ j ].position = reader.ReadVector();
 				}
 			}
 		}
 	}
+	pVertPosSetPosCount = reader.ReadInt();
 	
 	pDoubleSided = ( reader.ReadByte() == 1 );
 	pDecal = ( reader.ReadByte() == 1 );
@@ -822,7 +821,6 @@ void deoglModelLOD::SaveToCache( decBaseFileWriter &writer ){
 		const deoglModelLODVertPosSet &vps = pVertPosSets[ i ];
 		
 		writer.WriteInt( vps.GetVBOOffset() );
-		writer.WriteInt( pVertPosSetPosCount );
 		
 		const deoglModelLODVertPosSet::sPosition * const positions = vps.GetPositions();
 		const int positionCount = vps.GetPositionCount();
@@ -834,6 +832,7 @@ void deoglModelLOD::SaveToCache( decBaseFileWriter &writer ){
 			writer.WriteVector( positions[ j ].position );
 		}
 	}
+	writer.WriteInt( pVertPosSetPosCount );
 	
 	writer.WriteByte( pDoubleSided ? 1 : 0 );
 	writer.WriteByte( pDecal ? 1 : 0 );
