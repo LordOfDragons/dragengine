@@ -214,6 +214,7 @@ class SpeechAnimation
 			var ARStateManipulator rule = ARStateManipulator.new()
 			rule.addVertexPositionSet(vertexPositionSet)
 			rule.setEnableOrientation(false)
+			rule.setMaximumVertexPositionSet(1)
 			rule.targetAddLink(ARStateManipulatorTarget.vertexPositionSet, index)
 			pAnimator.addRule(rule)
 		end)

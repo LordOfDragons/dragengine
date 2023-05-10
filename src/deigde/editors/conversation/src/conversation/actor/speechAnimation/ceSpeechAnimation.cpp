@@ -194,6 +194,7 @@ void ceSpeechAnimation::CreateAnimator(){
 					deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
 				rule->GetListVertexPositionSets().Add( phoneme.GetVertexPositionSet() );
 				rule->SetEnableRotation( false );
+				rule->SetMaximumVertexPositionSet( 1.0f );
 				rule->GetTargetVertexPositionSet().AddLink( linkIndex );
 				pEngAnimator->AddRule( rule );
 				
