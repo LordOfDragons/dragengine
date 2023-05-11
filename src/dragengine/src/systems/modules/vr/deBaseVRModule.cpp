@@ -38,6 +38,14 @@ deBaseVRModule::~deBaseVRModule(){
 // Management
 ///////////////
 
+void deBaseVRModule::RequestFeatureEyeGazeTracking( eFeatureSupportLevel level ){
+	DEASSERT_TRUE( level != efslRequired )
+}
+
+void deBaseVRModule::RequestFeatureFacialTracking( eFeatureSupportLevel level ){
+	DEASSERT_TRUE( level != efslRequired )
+}
+
 bool deBaseVRModule::SupportsPassthrough(){
 	return false;
 }

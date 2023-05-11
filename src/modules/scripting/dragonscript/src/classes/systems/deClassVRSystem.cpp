@@ -23,8 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <libdscript/exceptions.h>
-
 #include "deClassVRSystem.h"
 #include "../deClassModuleParameter.h"
 #include "../graphics/deClassCamera.h"
@@ -39,6 +37,9 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 
+#include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassEnumeration.h>
+
 
 
 // Native functions
@@ -52,6 +53,38 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
 void deClassVRSystem::nfRuntimeUsable::RunFunction( dsRunTime *rt, dsValue* ){
 	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
 	rt->PushBool( ds.GetGameEngine()->GetVRSystem()->RuntimeUsable() );
+}
+
+// public static func void requestFeatureEyeGazeTracking(VRFeatureSupportLevel level)
+deClassVRSystem::nfRequestFeatureEyeGazeTracking::nfRequestFeatureEyeGazeTracking( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "requestFeatureEyeGazeTracking", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsVRFeatureSupportLevel ); // level
+}
+void deClassVRSystem::nfRequestFeatureEyeGazeTracking::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
+	
+	const deBaseVRModule::eFeatureSupportLevel level = ( deBaseVRModule::eFeatureSupportLevel )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 1 )->GetRealObject() );
+	
+	ds.GetGameEngine()->GetVRSystem()->RequestFeatureEyeGazeTracking( level );
+}
+
+// public static func void requestFeatureFacialTracking(VRFeatureSupportLevel level)
+deClassVRSystem::nfRequestFeatureFacialTracking::nfRequestFeatureFacialTracking( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "requestFeatureFacialTracking", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsVRFeatureSupportLevel ); // level
+}
+void deClassVRSystem::nfRequestFeatureFacialTracking::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
+	
+	const deBaseVRModule::eFeatureSupportLevel level = ( deBaseVRModule::eFeatureSupportLevel )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 1 )->GetRealObject() );
+	
+	ds.GetGameEngine()->GetVRSystem()->RequestFeatureFacialTracking( level );
 }
 
 // public static func void startRuntime
@@ -452,6 +485,8 @@ deClassVRSystem::~deClassVRSystem(){
 ///////////////
 
 void deClassVRSystem::CreateClassMembers( dsEngine *engine ){
+	pClsVRFeatureSupportLevel = engine->GetClass( "Dragengine.VRFeatureSupportLevel" );
+	
 	sInitData init;
 	
 	init.clsVRSystem = this;
@@ -463,8 +498,11 @@ void deClassVRSystem::CreateClassMembers( dsEngine *engine ){
 	init.clsModPar = pDS.GetClassModuleParameter();
 	init.clsInputDevice = pDS.GetClassInputDevice();
 	init.clsCamera = pDS.GetClassCamera();
+	init.clsVRFeatureSupportLevel = pClsVRFeatureSupportLevel;
 	
 	AddFunction( new nfRuntimeUsable( init ) );
+	AddFunction( new nfRequestFeatureEyeGazeTracking( init ) );
+	AddFunction( new nfRequestFeatureFacialTracking( init ) );
 	AddFunction( new nfStartRuntime( init ) );
 	AddFunction( new nfStopRuntime( init ) );
 	AddFunction( new nfIsRuntimeRunning( init ) );

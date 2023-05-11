@@ -138,6 +138,17 @@ pSupportsPassthrough( false )
 		oxr.LogInfoFormat( "Supports face mouth tracking: %s", pSupportsFaceLipTracking ? "yes" : "no" );
 		oxr.LogInfoFormat( "Supports passthrough: %s", pSupportsPassthrough ? "yes" : "no" );
 		
+		// required features check
+		if( oxr.GetRequestFeatureEyeGazeTracking() == deBaseVRModule::efslRequired && ! pSupportsEyeGazeTracking ){
+			DETHROW_INFO( deeInvalidParam, "Requires eye gaze tracking but required extension is absent" );
+		}
+		
+		if( oxr.GetRequestFeatureFacialTracking() == deBaseVRModule::efslRequired ){
+			if( ! pSupportsFaceEyeTracking && ! pSupportsFaceLipTracking ){
+				DETHROW_INFO( deeInvalidParam, "Requires facial tracking but required extensions are absent" );
+			}
+		}
+		
 		// get view configuration properties
 		uint32_t viewConfigCount;
 		OXR_CHECK( instance.xrEnumerateViewConfigurations( instance.GetInstance(),

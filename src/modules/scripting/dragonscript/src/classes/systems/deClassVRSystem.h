@@ -37,6 +37,8 @@ class deClassVRSystem : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
 	
+	dsClass *pClsVRFeatureSupportLevel;
+	
 	decObjectList pCachedDevices;
 	bool pCacheDirty;
 	
@@ -73,6 +75,8 @@ public:
 	
 	/** Frame update. */
 	void OnFrameUpdate();
+	
+	inline dsClass *GetClassVRFeatureSupportLevel() const{ return pClsVRFeatureSupportLevel; }
 	/*@}*/
 	
 	
@@ -92,6 +96,7 @@ private:
 		dsClass *clsModPar;
 		dsClass *clsInputDevice;
 		dsClass *clsCamera;
+		dsClass *clsVRFeatureSupportLevel;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -101,6 +106,8 @@ private:
 	}
 	
 	DEF_NATFUNC( nfRuntimeUsable );
+	DEF_NATFUNC( nfRequestFeatureEyeGazeTracking );
+	DEF_NATFUNC( nfRequestFeatureFacialTracking );
 	DEF_NATFUNC( nfStartRuntime );
 	DEF_NATFUNC( nfStopRuntime );
 	DEF_NATFUNC( nfIsRuntimeRunning );

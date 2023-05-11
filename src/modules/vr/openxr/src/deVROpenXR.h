@@ -111,6 +111,9 @@ private:
 	deoxrSystem::eSystem pLastDetectedSystem;
 	deoxrThreadSync *pThreadSync;
 	
+	eFeatureSupportLevel pRequestFeatureEyeGazeTracking;
+	eFeatureSupportLevel pRequestFeatureFacialTracking;
+	
 	
 	
 public:
@@ -192,6 +195,10 @@ public:
 	
 	/** Direct mutex access for special use. */
 	inline deMutex &GetMutexOpenXR(){ return pMutexOpenXR; }
+	
+	/** Requested feature levels. */
+	inline eFeatureSupportLevel GetRequestFeatureEyeGazeTracking() const{ return pRequestFeatureEyeGazeTracking; }
+	inline eFeatureSupportLevel GetRequestFeatureFacialTracking() const{ return pRequestFeatureFacialTracking; }
 	/*@}*/
 	
 	
@@ -219,6 +226,12 @@ public:
 	 * Returns true if a call to StartRuntime() is likely to succeed or not.
 	 */
 	virtual bool RuntimeUsable();
+	
+	/** Set feature request level for eye gaze tracking. */
+	virtual void RequestRequestFeatureEyeGazeTracking( eFeatureSupportLevel level );
+	
+	/** Set feature request level for facial tracking. */
+	virtual void RequestFeatureFacialTracking( eFeatureSupportLevel level );
 	
 	/**
 	 * Start VR.

@@ -100,7 +100,9 @@ pShutdownRequested( false ),
 pPreventDeletion( false ),
 pRestartSession( false ),
 pLastDetectedSystem( deoxrSystem::esUnknown ),
-pThreadSync( nullptr )
+pThreadSync( nullptr ),
+pRequestFeatureEyeGazeTracking( efslDisabled ),
+pRequestFeatureFacialTracking( efslDisabled )
 {
 	memset( pActions, 0, sizeof( pActions ) );
 }
@@ -307,6 +309,14 @@ void deVROpenXR::CleanUp(){
 
 bool deVROpenXR::RuntimeUsable(){
 	return true; //pInstance;
+}
+
+void deVROpenXR::RequestRequestFeatureEyeGazeTracking( eFeatureSupportLevel level ){
+	pRequestFeatureEyeGazeTracking = level;
+}
+
+void deVROpenXR::RequestFeatureFacialTracking( eFeatureSupportLevel level ){
+	pRequestFeatureFacialTracking = level;
 }
 
 void deVROpenXR::StartRuntime(){
