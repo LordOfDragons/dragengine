@@ -469,8 +469,8 @@ void deClassVRSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue* ){
 deClassVRSystem::deClassVRSystem( deScriptingDragonScript &ds ) :
 dsClass( "VRSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
 pDS( ds ),
-pCacheDirty( true ),
-pClsVRFeatureSupportLevel( nullptr )
+pClsVRFeatureSupportLevel( nullptr ),
+pCacheDirty( true )
 {
 	GetParserInfo()->SetParent( DENS_DRAGENGINE );
 	GetParserInfo()->SetBase( "Object" );
