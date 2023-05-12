@@ -162,7 +162,8 @@ deoxrInstance::~deoxrInstance(){
 ///////////////
 
 bool deoxrInstance::SupportsExtension( eExtension extension ) const{
-	return pSupportsExtension[ extension ].version != 0;
+	return pSupportsExtension[ extension ].enableIfSupported
+		&& pSupportsExtension[ extension ].version != 0;
 }
 
 uint32_t deoxrInstance::ExtensionVersion( eExtension extension ) const{
@@ -170,7 +171,8 @@ uint32_t deoxrInstance::ExtensionVersion( eExtension extension ) const{
 }
 
 bool deoxrInstance::SupportsLayer( eLayer layer ) const{
-	return pSupportsLayer[ layer ].layerVersion != 0;
+	return pSupportsLayer[ layer ].enableIfSupported
+		&& pSupportsLayer[ layer ].layerVersion != 0;
 }
 
 uint32_t deoxrInstance::LayerVersion( eLayer layer ) const{
@@ -409,6 +411,11 @@ void deoxrInstance::pDetectLayers(){
 void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	pOxr.LogInfo( "Create OpenXR Instance" );
 	
+	pOxr.LogInfoFormat( "Request Feature Eye Gaze Tracking: %d",
+		pOxr.GetRequestFeatureEyeGazeTracking() );
+	pOxr.LogInfoFormat( "Request Feature Facial Tracking: %d",
+		pOxr.GetRequestFeatureFacialTracking() );
+
 	pSupportsLayer[ layerLunarCoreValidation ].enableIfSupported = enableValidationLayers;
 	pSupportsLayer[ layerApiDump ].enableIfSupported = false; //enableValidationLayers;
 	

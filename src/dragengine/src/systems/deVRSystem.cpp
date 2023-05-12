@@ -73,31 +73,19 @@ bool deVRSystem::RuntimeUsable(){
 }
 
 void deVRSystem::RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level ){
-	if( GetIsRunning() ){
+	if( ! GetIsRunning() ){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
-	}
-	
-	if( level == pRequestFeatureEyeGazeTracking ){
-		return;
 	}
 	
 	pRequestFeatureEyeGazeTracking = level;
-	
-	pActiveModule->RequestFeatureEyeGazeTracking( level );
 }
 
 void deVRSystem::RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level ){
-	if( GetIsRunning() ){
+	if( ! GetIsRunning() ){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
-	if( level == pRequestFeatureFacialTracking ){
-		return;
-	}
-	
 	pRequestFeatureFacialTracking = level;
-	
-	pActiveModule->RequestFeatureFacialTracking( level );
 }
 
 void deVRSystem::StartRuntime(){

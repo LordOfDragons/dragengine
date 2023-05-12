@@ -120,7 +120,7 @@ public:
 	 * If the VR module does not support eye gaze tracking and sFeatureSupport::efslRequired
 	 * is specified an exception is thrown.
 	 */
-	void RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level );
+	virtual void RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level );
 	
 	/**
 	 * \brief Set feature request level for facial tracking.
@@ -140,7 +140,7 @@ public:
 	 * If the VR module does not support facial tracking and sFeatureSupport::efslRequired
 	 * is specified an exception is thrown.
 	 */
-	void RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level );
+	virtual void RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level );
 	
 	/**
 	 * \brief Start VR.

@@ -228,7 +228,7 @@ public:
 	virtual bool RuntimeUsable();
 	
 	/** Set feature request level for eye gaze tracking. */
-	virtual void RequestRequestFeatureEyeGazeTracking( eFeatureSupportLevel level );
+	virtual void RequestFeatureEyeGazeTracking( eFeatureSupportLevel level );
 	
 	/** Set feature request level for facial tracking. */
 	virtual void RequestFeatureFacialTracking( eFeatureSupportLevel level );

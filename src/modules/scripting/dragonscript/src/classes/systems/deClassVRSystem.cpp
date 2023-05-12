@@ -58,7 +58,7 @@ void deClassVRSystem::nfRuntimeUsable::RunFunction( dsRunTime *rt, dsValue* ){
 // public static func void requestFeatureEyeGazeTracking(VRFeatureSupportLevel level)
 deClassVRSystem::nfRequestFeatureEyeGazeTracking::nfRequestFeatureEyeGazeTracking( const sInitData &init ) :
 dsFunction( init.clsInputDevice, "requestFeatureEyeGazeTracking", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 	p_AddParameter( init.clsVRFeatureSupportLevel ); // level
 }
 void deClassVRSystem::nfRequestFeatureEyeGazeTracking::RunFunction( dsRunTime *rt, dsValue* ){
@@ -66,7 +66,7 @@ void deClassVRSystem::nfRequestFeatureEyeGazeTracking::RunFunction( dsRunTime *r
 	
 	const deBaseVRModule::eFeatureSupportLevel level = ( deBaseVRModule::eFeatureSupportLevel )
 		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
-			*rt->GetValue( 1 )->GetRealObject() );
+			*rt->GetValue( 0 )->GetRealObject() );
 	
 	ds.GetGameEngine()->GetVRSystem()->RequestFeatureEyeGazeTracking( level );
 }
@@ -74,7 +74,7 @@ void deClassVRSystem::nfRequestFeatureEyeGazeTracking::RunFunction( dsRunTime *r
 // public static func void requestFeatureFacialTracking(VRFeatureSupportLevel level)
 deClassVRSystem::nfRequestFeatureFacialTracking::nfRequestFeatureFacialTracking( const sInitData &init ) :
 dsFunction( init.clsInputDevice, "requestFeatureFacialTracking", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 	p_AddParameter( init.clsVRFeatureSupportLevel ); // level
 }
 void deClassVRSystem::nfRequestFeatureFacialTracking::RunFunction( dsRunTime *rt, dsValue* ){
@@ -82,7 +82,7 @@ void deClassVRSystem::nfRequestFeatureFacialTracking::RunFunction( dsRunTime *rt
 	
 	const deBaseVRModule::eFeatureSupportLevel level = ( deBaseVRModule::eFeatureSupportLevel )
 		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
-			*rt->GetValue( 1 )->GetRealObject() );
+			*rt->GetValue( 0 )->GetRealObject() );
 	
 	ds.GetGameEngine()->GetVRSystem()->RequestFeatureFacialTracking( level );
 }
@@ -469,7 +469,8 @@ void deClassVRSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue* ){
 deClassVRSystem::deClassVRSystem( deScriptingDragonScript &ds ) :
 dsClass( "VRSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
 pDS( ds ),
-pCacheDirty( true )
+pCacheDirty( true ),
+pClsVRFeatureSupportLevel( nullptr )
 {
 	GetParserInfo()->SetParent( DENS_DRAGENGINE );
 	GetParserInfo()->SetBase( "Object" );

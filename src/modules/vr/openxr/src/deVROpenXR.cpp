@@ -311,7 +311,7 @@ bool deVROpenXR::RuntimeUsable(){
 	return true; //pInstance;
 }
 
-void deVROpenXR::RequestRequestFeatureEyeGazeTracking( eFeatureSupportLevel level ){
+void deVROpenXR::RequestFeatureEyeGazeTracking( eFeatureSupportLevel level ){
 	pRequestFeatureEyeGazeTracking = level;
 }
 
