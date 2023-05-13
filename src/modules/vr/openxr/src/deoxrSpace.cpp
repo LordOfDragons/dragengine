@@ -163,8 +163,8 @@ decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocit
 	}
 }
 
-void deoxrSpace::LocateSpaceEye( const deoxrSpace &space, XrTime time, decVector &position,
-decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocity ) const{
+void deoxrSpace::LocateSpaceEye( XrTime time, decVector &position, decQuaternion &orientation,
+	decVector &linearVelocity, decVector &angularVelocity ) const{
 	const deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
 	XrEyeGazeSampleTimeEXT eyeGazeSampleTime;
@@ -182,16 +182,30 @@ decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocit
 	location.pose.orientation.w = 1.0f;
 	location.next = &velocity;
 	
-	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) ) ){
+	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, pSession.GetSpaceLocal()->pSpace, time, &location ) ) ){
 		return;
 	}
 	
 	if( ( location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT ) != 0 ){
+		const decVector converted( deoxrUtils::Convert( location.pose.position ) );
+
+		// while blinking the eyes can not be tracked. VIVE does not clear the valid bit
+		// which is incorrect since this causes the eyes to turn inside the head while
+		// blinking. in the case of VIVE this situation returns (0,0,0) as position
+		// and (0,0,0,-1) as orientation. if this is found we keep the last position
+		// and orientation to not mess up the application
+		if( location.pose.position.x == 0.0f && location.pose.position.y == 0.0f
+		&& location.pose.position.z == 0.0f && location.pose.orientation.x == 0.0f
+		&& location.pose.orientation.y == 0.0f && location.pose.orientation.z == 0.0f ){
+			return;
+		}
+
 		position = deoxrUtils::Convert( location.pose.position );
 	}
 	
 	if( ( location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT ) != 0 ){
-		orientation = deoxrUtils::Convert( location.pose.orientation );
+		orientation = deoxrUtils::Convert( location.pose.orientation )
+			* decQuaternion::CreateFromEulerY( 180.0f * DEG2RAD );
 	}
 	
 	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_LINEAR_VALID_BIT ) != 0 ){

@@ -29,6 +29,7 @@
 #include "deoxrDeviceComponent.h"
 #include "deoxrDeviceManager.h"
 #include "../deVROpenXR.h"
+#include "../deoxrUtils.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -483,15 +484,20 @@ void deoxrDevice::TrackStates(){
 
 		if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
 		&& state.isActive ){
-			deoxrSpace *space = session.GetSpace();
+			if( pType == deInputDevice::edtVREyeTracker ){
+				// according to specification eye gaze pose is similar to local pose. actually drivers
+				// seem to ignore view space and always return pose in local space. we enforce local
+				// space to make sure all kinds of drivers return the same result
+				
+				// using local space requires locating space without converting coordinate system
+				pSpacePose->LocateSpaceEye( session.GetPredictedDisplayTime(),
+					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
 
-			/*if( pType == deInputDevice::edtVREyeTracker ){
-				space = session.GetSpaceLocal();
-			}*/
+			}else{
+				pSpacePose->LocateSpace( session.GetSpace(), session.GetPredictedDisplayTime(),
+					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
+			}
 
-			pSpacePose->LocateSpace( *space, session.GetPredictedDisplayTime(),
-				pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
-			
 			pPoseDevice.SetPosition( pPosePosition );
 			pPoseDevice.SetOrientation( pPoseOrientation );
 			pPoseDevice.SetLinearVelocity( pPoseLinearVelocity );
