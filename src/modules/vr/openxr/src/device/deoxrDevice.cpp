@@ -49,8 +49,10 @@
 ////////////////////////////
 
 deoxrDevice::deoxrDevice( deVROpenXR &oxr, const deoxrDeviceProfile &profile ) :
+pIndex( -1 ),
 pOxr( oxr ),
 pProfile( profile ),
+pType( deInputDevice::edtGeneric ),
 pBoneConfiguration( deInputDevice::ebcNone ),
 pNameNumber( -1 ){
 }
@@ -440,6 +442,9 @@ void deoxrDevice::GetInfo( deInputDevice &info ) const{
 	for( i=0; i<feedbackCount; i++ ){
 		( ( deoxrDeviceFeedback* )pFeedbacks.GetAt( i ) )->GetInfo( info.GetFeedbackAt( i ) );
 	}
+
+	info.SetSupportsFaceEyeExpressions( pFaceTracker );
+	info.SetSupportsFaceMouthExpressions( pFaceTracker );
 }
 
 void deoxrDevice::UpdateParameters(){

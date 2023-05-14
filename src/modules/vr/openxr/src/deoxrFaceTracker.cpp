@@ -47,6 +47,9 @@ pMapEyeXrToDeCount( 0 ),
 pMapLipXrToDe( nullptr ),
 pMapLipXrToDeCount( 0 )
 {
+	memset( &pEyeExpressionInfo, 0, sizeof( pEyeExpressionInfo ) );
+	memset( &pLipExpressionInfo, 0, sizeof( pLipExpressionInfo ) );
+
 	deoxrInstance &instance = session.GetSystem().GetInstance();
 	
 	try{
@@ -69,7 +72,6 @@ pMapLipXrToDeCount( 0 )
 			memset( pEyeWeights, 0, sizeof( float ) * XR_FACIAL_EXPRESSION_EYE_COUNT_HTC );
 			
 			// initialize structures used to fetch weights
-			memset( &pEyeExpressionInfo, 0, sizeof( pEyeExpressionInfo ) );
 			pEyeExpressionInfo.type = XR_TYPE_FACIAL_EXPRESSIONS_HTC;
 			pEyeExpressionInfo.expressionWeightings = pEyeWeights;
 			pEyeExpressionInfo.expressionCount = XR_FACIAL_EXPRESSION_EYE_COUNT_HTC;
@@ -112,13 +114,12 @@ pMapLipXrToDeCount( 0 )
 			memset( pLipWeights, 0, sizeof( float ) * XR_FACIAL_EXPRESSION_LIP_COUNT_HTC );
 			
 			// initialize structures used to fetch weights
-			memset( &pLipExpressionInfo, 0, sizeof( pLipExpressionInfo ) );
 			pLipExpressionInfo.type = XR_TYPE_FACIAL_EXPRESSIONS_HTC;
 			pLipExpressionInfo.expressionWeightings = pLipWeights;
 			pLipExpressionInfo.expressionCount = XR_FACIAL_EXPRESSION_LIP_COUNT_HTC;
 			
 			// create mapping table.
-			pMapLipXrToDe = new sMapping[ 33 ];
+			pMapLipXrToDe = new sMapping[ 37 ];
 			
 			pSetLipMapping( 0, deInputDevice::efeJawRight, XR_LIP_EXPRESSION_JAW_RIGHT_HTC );
 			pSetLipMapping( 1, deInputDevice::efeJawLeft, XR_LIP_EXPRESSION_JAW_LEFT_HTC );
