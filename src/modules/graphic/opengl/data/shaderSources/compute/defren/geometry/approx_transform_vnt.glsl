@@ -52,6 +52,14 @@ void main( void ){
 	// get parameters
 	uint from = pParams.x + gl_GlobalInvocationID.x;
 	uint to = gl_GlobalInvocationID.x;
+	uint fetchFrom;
+
+	#ifdef TRANSFORM_INPLACE
+		fetchFrom = to;
+	#else
+		fetchFrom = from;
+	#endif
+
 	int weights = pModelData[ from ].weights;
 	
 	// if there is no weight write out all positions untransformed
@@ -68,7 +76,7 @@ void main( void ){
 	mat4x3 matrix = pWeightMatrix[ weights ];
 	
 	// transform the position. this is correct and accurate
-	pTransformedData[ to ].position = matrix * vec4( pFetchData[ from ].position, 1 );
+	pTransformedData[ to ].position = matrix * vec4( pFetchData[ fetchFrom ].position, 1 );
 	
 	// transform the normal and tangent. this is not correct and only an approximation
 	// 
@@ -80,15 +88,15 @@ void main( void ){
 	//      threshold value to protect against dangerously small vectors.
 	mat3 matrixNormal = mat3( matrix );
 	
-	vec3 v = matrixNormal * pFetchData[ from ].realNormal;
+	vec3 v = matrixNormal * pFetchData[ fetchFrom ].realNormal;
 	pTransformedData[ to ].realNormal = dot( v, v ) > 0.00001 ? v : vec3( 0, 1, 0 );
 	
-	v = matrixNormal * pFetchData[ from ].normal;
+	v = matrixNormal * pFetchData[ fetchFrom ].normal;
 	pTransformedData[ to ].normal = dot( v, v ) > 0.00001 ? v : vec3( 0, 1, 0 );
 	
-	v = matrixNormal * vec3( pFetchData[ from ].tangent );
+	v = matrixNormal * vec3( pFetchData[ fetchFrom ].tangent );
 	pTransformedData[ to ].tangent.xyz = dot( v, v ) > 0.00001 ? v : vec3( 1, 0, 0 );
 	#ifndef TRANSFORM_INPLACE
-		pTransformedData[ to ].tangent.w = pFetchData[ from ].tangent.w;
+		pTransformedData[ to ].tangent.w = pFetchData[ fetchFrom ].tangent.w;
 	#endif
 }

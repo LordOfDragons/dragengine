@@ -372,7 +372,6 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 		renderGeometry.VPSTransformVNT( vaoModelData, vboVPSData, params, useVpsCount, pVBO );
 		
 		inplace = true;
-		firstPoint = 0;
 	}
 	
 	renderGeometry.ApproxTransformVNT( vaoModelData, vboModelData, pSSBOWeightMatrices,

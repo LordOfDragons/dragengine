@@ -809,6 +809,7 @@ int firstPoint, int pointCount ){
 	pPipelineCopyVNT->GetGlShader().SetParameterUInt( 0, firstPoint, pointCount );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( pointCount - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0) );
 	transformed.Deactivate();
