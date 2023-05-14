@@ -49,8 +49,8 @@
 ////////////////////////////
 
 deoxrDevice::deoxrDevice( deVROpenXR &oxr, const deoxrDeviceProfile &profile ) :
-pIndex( -1 ),
 pOxr( oxr ),
+pIndex( -1 ),
 pProfile( profile ),
 pType( deInputDevice::edtGeneric ),
 pBoneConfiguration( deInputDevice::ebcNone ),
