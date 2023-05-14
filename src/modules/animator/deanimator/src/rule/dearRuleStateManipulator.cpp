@@ -73,6 +73,7 @@ pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableRotation() ),
 pEnableScale( rule.GetEnableSize() ),
 pEnableVPS( rule.GetEnableVertexPositionSet() ),
+pEnableBones( pEnablePosition || pEnableOrientation || pEnableScale ),
 
 pMinPosition( rule.GetMinimumPosition() ),
 pMaxPosition( rule.GetMaximumPosition() ),
@@ -117,19 +118,21 @@ DEBUG_RESET_TIMERS;
 	decVector position;
 	float weight = 0.0f;
 	
-	if( pEnablePosition ){
-		const float valuePosition = decMath::clamp( pTargetPosition.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-		position = pMinPosition * ( 1.0f - valuePosition ) + pMaxPosition * valuePosition;
-	}
+	if( pEnableBones ){
+		if( pEnablePosition ){
+			const float valuePosition = decMath::clamp( pTargetPosition.GetValue( instance, 0.0f ), 0.0f, 1.0f );
+			position = pMinPosition * ( 1.0f - valuePosition ) + pMaxPosition * valuePosition;
+		}
 	
-	if( pEnableOrientation ){
-		const float valueRotation = decMath::clamp( pTargetRotation.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-		orientation.SetFromEuler( pMinRotation * ( 1.0f - valueRotation ) + pMaxRotation * valueRotation );
-	}
+		if( pEnableOrientation ){
+			const float valueRotation = decMath::clamp( pTargetRotation.GetValue( instance, 0.0f ), 0.0f, 1.0f );
+			orientation.SetFromEuler( pMinRotation * ( 1.0f - valueRotation ) + pMaxRotation * valueRotation );
+		}
 	
-	if( pEnableScale ){
-		const float valueScale = decMath::clamp( pTargetSize.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-		scale = pMinSize * ( 1.0f - valueScale ) + pMaxSize * valueScale;
+		if( pEnableScale ){
+			const float valueScale = decMath::clamp( pTargetSize.GetValue( instance, 0.0f ), 0.0f, 1.0f );
+			scale = pMinSize * ( 1.0f - valueScale ) + pMaxSize * valueScale;
+		}
 	}
 	
 	if( pEnableVPS ){
@@ -138,23 +141,27 @@ DEBUG_RESET_TIMERS;
 	}
 	
 	// apply states
-	for( i=0; i<boneCount; i++ ){
-		const int animatorBone = GetBoneMappingFor( i );
-		if( animatorBone == -1 ){
-			continue;
-		}
+	if( pEnableBones ){
+		for( i=0; i<boneCount; i++ ){
+			const int animatorBone = GetBoneMappingFor( i );
+			if( animatorBone == -1 ){
+				continue;
+			}
 		
-		stalist.GetStateAt( animatorBone )->BlendWith( position, orientation, scale,
-			blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableScale );
+			stalist.GetStateAt( animatorBone )->BlendWith( position, orientation, scale,
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableScale );
+		}
 	}
 	
-	for( i=0; i<vpsCount; i++ ){
-		const int animatorVps = GetVPSMappingFor( i );
-		if( animatorVps == -1 ){
-			continue;
-		}
+	if( pEnableVPS ){
+		for( i=0; i<vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps == -1 ){
+				continue;
+			}
 		
-		vpsstalist.GetStateAt( animatorVps ).BlendWith( weight, blendMode, blendFactor, pEnableVPS );
+			vpsstalist.GetStateAt( animatorVps ).BlendWith( weight, blendMode, blendFactor, pEnableVPS );
+		}
 	}
 DEBUG_PRINT_TIMER;
 }

@@ -45,6 +45,7 @@ private:
 	const bool pEnableOrientation;
 	const bool pEnableScale;
 	const bool pEnableVPS;
+	const bool pEnableBones;
 	const decVector pMinPosition;
 	const decVector pMaxPosition;
 	const decVector pMinRotation;
