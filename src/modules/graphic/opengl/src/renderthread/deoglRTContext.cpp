@@ -523,6 +523,10 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 				break;
 			}
 		}
+		if( LOWORD( lParam ) != HTCLIENT ){
+			return DefWindowProc( hwnd, message, wParam, lParam );
+		}
+
 		SetCursor( NULL );
 		}return TRUE;
 		
