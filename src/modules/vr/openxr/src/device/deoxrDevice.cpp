@@ -488,7 +488,7 @@ void deoxrDevice::TrackStates(){
 		}
 
 		if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
-		&& state.isActive ){
+		&& state.isActive == XR_TRUE ){
 			if( pType == deInputDevice::edtVREyeTracker ){
 				// according to specification eye gaze pose is similar to local pose. actually drivers
 				// seem to ignore view space and always return pose in local space. we enforce local
