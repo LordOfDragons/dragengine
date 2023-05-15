@@ -873,6 +873,7 @@ void deVROpenXR::pRealShutdown(){
 	LogInfo( "Shutdown runtime" );
 	
 	pDeviceProfiles.ClearActions();
+	pDevices.CheckNotifyAttachedDetached();
 	
 	pPassthrough = nullptr;
 	pSession = nullptr;
