@@ -242,6 +242,12 @@ void deoxrFaceTracker::pCleanUp(){
 	if( pFaceExpressions ){
 		delete [] pFaceExpressions;
 	}
+	if( pEyeWeights ){
+		delete [] pEyeWeights;
+	}
+	if( pLipWeights ){
+		delete [] pLipWeights;
+	}
 }
 
 void deoxrFaceTracker::pSetEyeMapping( int index, deInputDevice::eFaceExpressions to, XrEyeExpressionHTC from ){

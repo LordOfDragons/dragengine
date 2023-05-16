@@ -233,6 +233,7 @@ void deoxrSwapchain::pGetImages(){
 // 					oxr.GetGraphicApiOpenGL(), images[ i ].image ) );
 			}
 			pImageCount = ( int )count;
+			delete [] images;
 			
 		}catch( const deException & ){
 			delete [] images;
