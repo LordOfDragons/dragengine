@@ -31,6 +31,13 @@ pin Dragengine.Gui.Layouts
  * 
  * Widgets are resized to fill the entire panel with only the active
  * Widget set visible. Switching is provided using a RangeModel.
+ * 
+ * \par Version 1.17
+ * 
+ * By default the minimum size of the layout lines up with the largest minimum size of all
+ * widgets. This ensures the container does not change size when the selected child widget
+ * changes. Since version 1.17 this behavior can be changed to matche the minimum size of
+ * the selected widget instead. This allows to make compact SwitchPanel layouts.
  */
 class SwitchPanel extends Panel implements RangeModelListener
 	/** \brief Switch panel action listener. */
@@ -188,6 +195,36 @@ class SwitchPanel extends Panel implements RangeModelListener
 		
 		model.setAll(0, getWidgetCount() - 1, 1, 0, 1)
 		model.addListener(this)
+	end
+	
+	
+	
+	/**
+	 * \brief Compact mode.
+	 * \version 1.17
+	 * 
+	 * If compact mode is used the minimum size of the layout matches the minimum size of the
+	 * selected child widget instead of the largest minimum size of all child widgets.
+	 */
+	public func bool getCompact()
+		return (getLayout() cast TabLayout).getCompact()
+	end
+	
+	/**
+	 * \brief Set compact mode.
+	 * \version 1.17
+	 * 
+	 * If compact mode is used the minimum size of the layout matches the minimum size of the
+	 * selected child widget instead of the largest minimum size of all child widgets.
+	 */
+	public func void setCompact(bool compact)
+		var TabLayout layout = getLayout() cast TabLayout
+		if compact == layout.getCompact()
+			return
+		end
+		
+		layout.setCompact(compact)
+		doLayout()
 	end
 	
 	
