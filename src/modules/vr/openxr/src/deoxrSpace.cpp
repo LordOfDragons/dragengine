@@ -185,9 +185,15 @@ void deoxrSpace::LocateSpaceEye( XrTime time, decVector &position, decQuaternion
 	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, pSession.GetSpaceLocal()->pSpace, time, &location ) ) ){
 		return;
 	}
+
+	// OpenXR does not specify this explicitely but from the data obtained by a VIVE
+	// HMD the coordinate system used is relative to the eye camera not the head.
+	// this thus requires a Y-rotation by 180 degrees to allow users to work with
+	// coordinates in the same coordinate system as the HMD device uses
+	const decQuaternion rotate( decQuaternion::CreateFromEulerY( 180.0f * DEG2RAD ) );
 	
 	if( ( location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT ) != 0 ){
-		const decVector converted( deoxrUtils::Convert( location.pose.position ) );
+		const decVector converted( rotate * deoxrUtils::Convert( location.pose.position ) );
 
 		// while blinking the eyes can not be tracked. VIVE does not clear the valid bit
 		// which is incorrect since this causes the eyes to turn inside the head while
@@ -204,16 +210,17 @@ void deoxrSpace::LocateSpaceEye( XrTime time, decVector &position, decQuaternion
 	}
 	
 	if( ( location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT ) != 0 ){
-		orientation = deoxrUtils::Convert( location.pose.orientation )
-			* decQuaternion::CreateFromEulerY( 180.0f * DEG2RAD );
+		orientation = deoxrUtils::Convert( location.pose.orientation ) * rotate;
 	}
 	
 	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_LINEAR_VALID_BIT ) != 0 ){
-		linearVelocity = deoxrUtils::Convert( velocity.linearVelocity );
+		linearVelocity = rotate * deoxrUtils::Convert( velocity.linearVelocity );
 	}
 	
 	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_ANGULAR_VALID_BIT ) != 0 ){
 		angularVelocity = deoxrUtils::Convert( velocity.angularVelocity );
+		angularVelocity.y = -angularVelocity.y;
+		angularVelocity.z = 0.0f;
 	}
 }
 
