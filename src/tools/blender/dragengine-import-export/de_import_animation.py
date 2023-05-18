@@ -41,7 +41,7 @@ from .de_math import vector_by_matrix, matrixToEuler, vecLength, vecSub, quatDot
 from .de_configuration import Configuration
 from .de_resources import Mesh, Armature
 from .de_porting import registerClass, matmul
-from .de_helpers import ActionFCurvesBuilder
+from .de_helpers import ActionFCurvesBuilder, FCurveBuilder
 
 
 
@@ -387,7 +387,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
                 moveBones.append(moveBone)
             
             # read vertex position sets
-            # moveVpSets = []
+            moveVpSets = []
 
             for importVps in self.importVpSets:
                 flags = struct.unpack("<B", f.read(1))[0]
@@ -401,7 +401,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
                 moveVps.hasWeight = False
 
                 if hasKeyFrames:
-                    # moveVps.hasWeight = hasVarWeight
+                    moveVps.hasWeight = hasVarWeight
 
                     if hasVarWeight:
                         countKeyframes = playTimeFrames
@@ -410,7 +410,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
 
                         for j in range(countKeyframes):
                             kfFrame = struct.unpack("<H", f.read(2))[0]
-                            keyframe = Armature.Keyframe(kfFrame + 1, 0.0)
+                            keyframe = Armature.KeyframeVps(kfFrame + 1, 0.0)
 
                             if hasVarWeight:
                                 if shortFormat:
@@ -424,12 +424,13 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
                                 print("- vertex position set", importVps["name"], "keyframe",
                                     float(kfFrame) * self.timeScale, "weight", keyframe.weight)
 
-                moveVps.append(moveVps)
+                moveVpSets.append(moveVps)
 
             # import if selected
             arm = self.armature.armature
             
             if self.import_mode == '0' or moveName == self.import_move:
+                # create action
                 action = bpy.data.actions.new("imported " + moveName)
                 action.dragengine_export = False
                 action.dragengine_exportname = "" # moveName
@@ -444,6 +445,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
                 pose = self.armature.object.pose
                 agroups = action.groups
                 
+                # import bones
                 for moveBone in moveBones:
                     if not moveBone.keyframes:
                         continue
@@ -498,8 +500,37 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
                             poseBone.keyframe_insert(data_path="scale", frame=keyframe.time, group=boneName)
                     """
 
-            # vertex position sets not supported
-
+                if self.mesh:
+                    # create shape key action
+                    action = bpy.data.actions.new("imported " + moveName + ".shapeKey")
+                    
+                    shapeKeys = self.mesh.mesh.shape_keys
+                    if not shapeKeys.animation_data:
+                        shapeKeys.animation_data_create()
+                    
+                    shapeKeys.animation_data.action = action
+                    bpy.ops.object.mode_set(mode='OBJECT')
+                    
+                    pose = self.armature.object.pose
+                    
+                    # vertex position sets
+                    for moveVps in moveVpSets:
+                        if not moveVps.keyframes:
+                            continue
+                        
+                        vpsName = moveVps.vps["name"]
+                        print("- vps '{}'".format(vpsName))
+                        
+                        # create fcurves using build
+                        fcurve = FCurveBuilder(action, "key_blocks[\"{}\"].value".format(vpsName), 0, "")
+                        
+                        if moveVps.hasWeight:
+                            for keyframe in moveVps.keyframes:
+                                fcurve.add(keyframe.time, keyframe.weight)
+                        else:
+                            fcurve.add(0, 0.0)
+                        fcurve.build()
+            
             # next round
             progressCounter = progressCounter + 1
             

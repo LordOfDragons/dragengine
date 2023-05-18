@@ -62,6 +62,11 @@ class Armature:
 			self.pos = pos
 			self.rot = rot
 			self.scale = scale
+	
+	class KeyframeVps:
+		def __init__(self, time, weight):
+			self.time = time
+			self.weight = weight
 		
 		def __repr__(self):
 			return "[time=%i pos=%s rot=%s scale=%s]" % (self.time, str(self.pos), str(self.rot), str(self.scale))
@@ -75,6 +80,13 @@ class Armature:
 			self.times = []
 			self.keyframes = []
 			self.used = False
+	
+	class MoveVps:
+		def __init__(self, vps):
+			self.vps = vps
+			self.times = []
+			self.keyframes = []
+			self.hasWeight = False
 	
 	class Move:
 		def __init__(self, action):
