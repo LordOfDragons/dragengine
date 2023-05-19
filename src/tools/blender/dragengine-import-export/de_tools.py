@@ -28,6 +28,7 @@ from .de_tool_aogen import OBJECT_OT_ToolAOGeneration
 from .de_tool_channellayout import OBJECT_OT_DEToolSortActionChannels
 from .de_tool_collapsevertices import TypeDETVertex
 from .de_tool_copyvertex import TypeDETCVVertex
+from .de_tool_transferallshapekeys import OBJECT_OT_ToolTransferAllShapeKeys
 from .de_tool_mirrorvertices import OBJECT_OT_ToolMirrorVertices
 from .de_tool_removeemptyvertexgroups import OBJECT_OT_ToolRemoveEmptyVertexGroups
 from .de_tool_eclassproperty import OBJECT_OT_DEToolEClassProperty
@@ -211,12 +212,25 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		# copy vertices
 		layout.row(align=True).label(text="Copy Vertices (Shape Key):")
 		col = layout.column(align=True)
+		
 		row = col.row(align=True)
 		row.operator(operator="dragengine.copyvertices_copy", text="Copy")
-		row.operator(operator="dragengine.copyvertices_paste",
-		             text="Paste").mirror = False
-		row.operator(operator="dragengine.copyvertices_paste",
-		             text="Paste", icon="MOD_MIRROR").mirror = True
+		op = row.operator(operator="dragengine.copyvertices_paste", text="Paste")
+		op.mirror = False
+		
+		row = col.row(align=True)
+		op = row.operator(operator="dragengine.copyvertices_paste",
+		                  text="Paste", icon="MOD_MIRROR")
+		op.mirror = True
+		op.topology = False
+		op = row.operator(operator="dragengine.copyvertices_paste",
+		                  text="Topology", icon="MOD_MIRROR")
+		op.mirror = True
+		op.topology = True
+		
+		row = col.row(align=True)
+		op = row.operator(operator="dragengine.transferallshapekeys",
+		                  text="Transfer All")
 		
 		# unwrap
 		layout.row(align=True).label(text="Unwrap:")

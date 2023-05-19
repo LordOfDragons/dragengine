@@ -91,6 +91,11 @@ class OBJECT_OT_ToolCopyVerticesPaste(bpy.types.Operator):
         description="Mirror vertices",
         default=False)
 
+    topology: bpy.props.BoolProperty(
+        name="Tologoty",
+        description="Mirror vertices with topology",
+        default=False)
+
     @classmethod
     def poll(cls, context):
         obj = context.active_object
@@ -107,7 +112,7 @@ class OBJECT_OT_ToolCopyVerticesPaste(bpy.types.Operator):
             shapeKey.data[s.index].co = s.co
 
         if self.mirror:
-            bpy.ops.object.shape_key_mirror(use_topology=False)
+            bpy.ops.object.shape_key_mirror(use_topology=self.topology)
 
         bpy.ops.object.mode_set(mode='EDIT')
         return {'FINISHED'}
