@@ -213,7 +213,10 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		col = layout.column(align=True)
 		row = col.row(align=True)
 		row.operator(operator="dragengine.copyvertices_copy", text="Copy")
-		row.operator(operator="dragengine.copyvertices_paste", text="Paste")
+		row.operator(operator="dragengine.copyvertices_paste",
+		             text="Paste").mirror = False
+		row.operator(operator="dragengine.copyvertices_paste",
+		             text="Paste", icon="MOD_MIRROR").mirror = True
 		
 		# unwrap
 		layout.row(align=True).label(text="Unwrap:")
