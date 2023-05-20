@@ -301,6 +301,22 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 		this.updateRenderWidgets()
 	end
 	
+	/**
+	 * \brief Count of visible rows.
+	 * \version 1.17
+	 */
+	public func int getpVisibleRowCount()
+		return pVisibleRows
+	end
+	
+	/**
+	 * \brief Count of visible columns.
+	 * \version 1.17
+	 */
+	public func int getpVisibleColumnCount()
+		return pVisibleColumns
+	end
+	
 	
 	
 	/** \brief Index of the first visible element. */

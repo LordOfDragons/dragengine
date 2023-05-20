@@ -1619,7 +1619,9 @@ class Widget
 	 * to the parent if allowed.
 	 */
 	public func void onButtonPress(MouseEvent event)
-		grabFocus()
+		if event.getSource() == this
+			grabFocus()
+		end
 		sendEventToListeners(event, true)
 	end
 	
@@ -1757,7 +1759,9 @@ class Widget
 	 * to parent if allowed.
 	 */
 	public func void onGamepadAxisMoved(GamepadEvent event)
-		grabFocus()
+		if event.getSource() == this
+			grabFocus()
+		end
 		sendEventToListeners(event, true)
 	end
 	
@@ -1765,9 +1769,12 @@ class Widget
 	 * \brief Gamepad button has been pressed.
 	 * 
 	 * Default behaviour sends event to all gamepad listeners or propagates event
-	 * to parent if allowed. grabFocus() is not called automatically.
+	 * to parent if allowed.
 	 */
 	public func void onGamepadButtonPressed(GamepadEvent event)
+		if event.getSource() == this
+			grabFocus()
+		end
 		sendEventToListeners(event, true)
 	end
 	
@@ -1778,7 +1785,6 @@ class Widget
 	 * to parent if allowed.
 	 */
 	public func void onGamepadButtonReleased(GamepadEvent event)
-		grabFocus()
 		sendEventToListeners(event, true)
 	end
 	

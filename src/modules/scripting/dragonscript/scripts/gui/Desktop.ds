@@ -254,6 +254,41 @@ class Desktop extends Container
 		end
 	end
 	
+	/**
+	 * \brief Widget accepting input at position.
+	 * \version 1.17
+	 */
+	public func Widget widgetAcceptingInputAt(Point position)
+		if pDragWindow != null
+			
+		else
+			var int i, count = getWidgetCount()
+			var Window window
+			var Widget widget
+			
+			for i = count - 1 downto 0
+				window = getWidget(i) cast Window
+				if not window.getVisible()
+					continue
+				end
+				if not window.getEnabled()
+					break
+				end
+				
+				widget = window.getWidgetAt(pMouseLocation - window.getPosition())
+				if widget == null
+					continue
+				end
+				
+				return widget
+				break
+			end
+		end
+		
+		return null
+	end
+	
+	
 	
 	/** \brief Decoration whose state is tracked or \em null. */
 	protected func Window getTrackDecoration()
@@ -918,7 +953,7 @@ class Desktop extends Container
 	/** Notification that a mouse button has been pressed. */
 	public func void onButtonPress(MouseEvent event)
 		if event.getSource() != this
-			return // if some lazy bum send his message up to the parent ignore it
+			return // message from child bubbling up
 		end
 		
 		setMouseLocation(pMouseLocation + event.getPosition())
