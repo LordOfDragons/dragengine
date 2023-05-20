@@ -281,7 +281,6 @@ class Desktop extends Container
 				end
 				
 				return widget
-				break
 			end
 		end
 		
