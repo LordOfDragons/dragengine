@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<canvasCreator type='Combined'>
+	<canvasCreator parameter='outerCanvas' extend='hover.ccreator.xml'/>
+	<canvasCreator parameter='innerCanvas' type='ImageBorder'>
+		<image parameter='sideLeft'>focused/side_left.png</image>
+		<image parameter='sideTop'>focused/side_top.png</image>
+		<image parameter='sideRight'>focused/side_right.png</image>
+		<image parameter='sideBottom'>focused/side_bottom.png</image>
+		<image parameter='cornerTopLeft'>focused/corner_top_left.png</image>
+		<image parameter='cornerTopRight'>focused/corner_top_right.png</image>
+		<image parameter='cornerBottomLeft'>focused/corner_bottom_left.png</image>
+		<image parameter='cornerBottomRight'>focused/corner_bottom_right.png</image>
+	</canvasCreator>
+</canvasCreator>
