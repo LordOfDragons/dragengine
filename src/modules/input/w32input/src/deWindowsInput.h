@@ -66,6 +66,8 @@ private:
 	bool pSystemAutoRepeatEnabled;
 	bool pAutoRepeatEnabled;
 	
+	int pKeyModifiers;
+
 	dewiDeviceManager *pDevices;
 	
 	
