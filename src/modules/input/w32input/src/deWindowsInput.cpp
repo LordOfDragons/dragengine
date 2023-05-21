@@ -102,10 +102,10 @@ pOldAccelDenom( 0 ),
 pOldThreshold( 0 ),
 pKeyStates( NULL ),
 
-pKeyModifiers( 0 ),
-
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
+
+pKeyModifiers( 0 ),
 
 pDevices( NULL )
 {
