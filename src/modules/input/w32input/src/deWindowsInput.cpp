@@ -102,6 +102,8 @@ pOldAccelDenom( 0 ),
 pOldThreshold( 0 ),
 pKeyStates( NULL ),
 
+pKeyModifiers( 0 ),
+
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
 
@@ -143,7 +145,8 @@ bool deWindowsInput::Init(){
 	}
 	
 	memset( pKeyStates, '\0', sizeof( BYTE ) * 256 );
-	
+	pKeyModifiers = 0;
+
 	pIsListening = true;
 	
 	// determine if keyboard auto-repeat is enabled
@@ -349,8 +352,10 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		}
 		
 		const int scanCode = W32_GET_SCANCODE( message.lParam );
-		const int modifiers = 0; // how to get them?
-		GetKeyboardState( &keyStates[ 0 ] );
+		if( ! GetKeyboardState( &keyStates[ 0 ] ) ){
+			break;
+		}
+
 		result = ToAsciiEx( ( UINT )wParam, scanCode, &keyStates[ 0 ],
 			&keyChar, 0, GetKeyboardLayout( 0 ) );
 		int wichar = 0;
@@ -363,8 +368,25 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		dewiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
 		deviceButton.SetPressed( true );
 		
+		switch( deviceButton.GetKeyCode() ){
+		case deInputEvent::ekcShift:
+			pKeyModifiers |= deInputEvent::esmShift;
+			break;
+
+		case deInputEvent::ekcControl:
+			pKeyModifiers |= deInputEvent::esmControl;
+			break;
+
+		case deInputEvent::ekcAlt:
+			pKeyModifiers |= deInputEvent::esmAlt;
+			break;
+
+		default:
+			break;
+		}
+
 		pAddKeyPress( pDevices->GetKeyboard()->GetIndex(), button, wichar,
-			deviceButton.GetKeyCode(), modifiers, message.time );
+			deviceButton.GetKeyCode(), pKeyModifiers, message.time );
 		}break;
 		
 	case WM_KEYUP:{
@@ -375,8 +397,10 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		}
 		
 		const int scanCode = W32_GET_SCANCODE( message.lParam );
-		const int modifiers = 0; // how to get them?
-		GetKeyboardState( &keyStates[ 0 ] );
+		if( ! GetKeyboardState( &keyStates[ 0 ] ) ){
+			break;
+		}
+
 		result = ToAsciiEx( ( UINT )wParam, scanCode, &keyStates[ 0 ],
 			&keyChar, 0, GetKeyboardLayout( 0 ) );
 		int wichar = 0;
@@ -387,8 +411,25 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		dewiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
 		deviceButton.SetPressed( false );
 		
+		switch( deviceButton.GetKeyCode() ){
+		case deInputEvent::ekcShift:
+			pKeyModifiers &= ~deInputEvent::esmShift;
+			break;
+
+		case deInputEvent::ekcControl:
+			pKeyModifiers &= ~deInputEvent::esmControl;
+			break;
+
+		case deInputEvent::ekcAlt:
+			pKeyModifiers &= ~deInputEvent::esmAlt;
+			break;
+
+		default:
+			break;
+		}
+
 		pAddKeyRelease( pDevices->GetKeyboard()->GetIndex(), button, wichar,
-			deviceButton.GetKeyCode(), modifiers, message.time );
+			deviceButton.GetKeyCode(), pKeyModifiers, message.time );
 		}break;
 		
 	case WM_LBUTTONDOWN:
