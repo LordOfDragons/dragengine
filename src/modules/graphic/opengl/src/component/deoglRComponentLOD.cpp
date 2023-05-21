@@ -340,11 +340,10 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 	int firstPoint = vboBlock.GetOffset();
 	bool inplace = false;
 	
-	int useVpsCount = 0;
+	int i, useVpsCount = 0;
 	if( vpsCount > 0 ){
 		params = renderGeometry.GetVertexPositionSetParams( vpsCount );
 		
-		int i;
 		for( i=0; i<vpsCount; i++ ){
 			if( vpsWeights[ i ] < 0.001f ){
 				continue;
@@ -365,6 +364,11 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 	if( useVpsCount > 0 ){
 		deoglSharedVBOBlock &vboBlockVps = *modelLOD.GetVBOBlockVertPosSet();
 		vboBlockVps.Prepare();
+		
+		const int blockOffset = vboBlockVps.GetOffset();
+		for( i=0; i<useVpsCount; i++ ){
+			params[ i ].firstPoint += blockOffset;
+		}
 		
 		const GLuint vboVPSData = vboBlockVps.GetVBO()->GetVBO();
 		
