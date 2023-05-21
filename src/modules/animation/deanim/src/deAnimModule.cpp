@@ -678,10 +678,10 @@ void deAnimModule::pReadMoveVertexPositionSets( decBaseFileReader &reader, deAni
 		
 		try{
 			info.vertexPositionSetFlags = reader.ReadByte();
-			info.hasVarWeight = ( info.boneFlags & FLAG_KFVPS_HAS_VAR_WEIGHT ) == FLAG_KFVPS_HAS_VAR_WEIGHT;
-			info.fewKeyframes = ( info.boneFlags & FLAG_KFVPS_HAS_FEW_KEYFRAMES ) == FLAG_KFVPS_HAS_FEW_KEYFRAMES;
-			info.ignoreSet = ( info.boneFlags & FLAG_KFVPS_IGNORE_SET ) == FLAG_KFVPS_IGNORE_SET;
-			info.formatFloat = ( info.boneFlags & FLAG_KFVPS_FORMAT_FLOAT ) == FLAG_KFVPS_FORMAT_FLOAT;
+			info.hasVarWeight = ( info.vertexPositionSetFlags & FLAG_KFVPS_HAS_VAR_WEIGHT ) == FLAG_KFVPS_HAS_VAR_WEIGHT;
+			info.fewKeyframes = ( info.vertexPositionSetFlags & FLAG_KFVPS_HAS_FEW_KEYFRAMES ) == FLAG_KFVPS_HAS_FEW_KEYFRAMES;
+			info.ignoreSet = ( info.vertexPositionSetFlags & FLAG_KFVPS_IGNORE_SET ) == FLAG_KFVPS_IGNORE_SET;
+			info.formatFloat = ( info.vertexPositionSetFlags & FLAG_KFVPS_FORMAT_FLOAT ) == FLAG_KFVPS_FORMAT_FLOAT;
 			
 			if( ! info.ignoreSet && info.hasVarWeight ){
 				pReadKeyframes( reader, *list, info );
