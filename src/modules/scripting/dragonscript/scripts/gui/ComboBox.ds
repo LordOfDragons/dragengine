@@ -109,6 +109,7 @@ class ComboBox extends Container implements ListModelListener
 	 */
 	class ComboPopup extends WindowPopup
 		private var ComboBox pComboBox
+		private var ListBox pListBox
 		
 		public func new(ComboBox comboBox)
 			pComboBox = comboBox
@@ -116,8 +117,25 @@ class ComboBox extends Container implements ListModelListener
 		end
 		
 		public func void dispose()
+			if pListBox != null
+				// disposing of pListBox removes listeners but only if model has been created
+				// by pListBox. hence we need to remove combox from listener here but only if
+				// model still exists. this catches the situation of the listbox being disposed
+				// early. this should actually not be possible but better safe than sorry
+				var ListModel model = pListBox.getModel()
+				if model != null
+					model.removeListener(pComboBox)
+				end
+				pListBox = null
+			end
+			
 			super.dispose()
+			
 			pComboBox = null
+		end
+		
+		public func void setListBox(ListBox listBox)
+			pListBox = listBox
 		end
 		
 		public func bool requiresPopdown(MouseEvent event)
@@ -250,6 +268,7 @@ class ComboBox extends Container implements ListModelListener
 		
 		pDropDown = ComboPopup.new(this)
 		pDropDown.addWidget(ScrollPanel.new(pListBox))
+		pDropDown.setListBox(pListBox)
 		
 		pSpacer = Panel.new()
 		pSpacer.setMinimumSize(Point.new(50, 0))
@@ -297,23 +316,12 @@ class ComboBox extends Container implements ListModelListener
 		pWidgetButtonDropDown = null
 		pWidgetButtonDropDownContainer = null
 		
-		if pListBox != null
-			// pDropDown disposing of pListBox removes listeners but only if model has
-			// been created by pListBox. hence we need to remove ourself from listener
-			// here but only if the model still exists. this catches the situation of
-			// the listbox being disposed early. this should actually not be possible
-			// but better safe than sorry
-			var ListModel model = pListBox.getModel()
-			if model != null
-				model.removeListener(this)
-			end
-			pListBox = null
-		end
-		
 		if pDropDown != null
 			pDropDown.close()
 			pDropDown = null
 		end
+		
+		pListBox = null
 		
 		super.dispose()
 	end

@@ -136,7 +136,6 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 *          stop editing call since the widget is hidden in this case.
 	 */
 	public func void startEditing()
-		// selection not implemented yet on TextField
 		setCursorPosition(getModel().getText().getLength())
 		setSelectionAll()
 		grabFocus()
