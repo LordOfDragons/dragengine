@@ -670,7 +670,7 @@ class ComboBox extends Container implements ListModelListener
 			pListBox.setSelectedElement(newSelection)
 		end
 		
-		super.onMouseWheel(event)
+		// do not send event up the chain
 	end
 	
 	/** \brief Key pressed. */
