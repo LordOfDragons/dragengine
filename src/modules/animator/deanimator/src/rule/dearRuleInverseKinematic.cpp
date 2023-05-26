@@ -311,8 +311,10 @@ DEBUG_RESET_TIMERS;
 				gradient = tipVector % planeNormal;
 				const float gradientLen = gradient.Length();
 				if( gradientLen > 1e-5f ){
-					// angle = atanf( targetNormal * ( gradient / gradientLen ), tipVectorLen );
-					angle = ( targetNormal * ( gradient / gradientLen ) ) / tipVectorLen;
+					const float y = ( gradient / gradientLen ) * targetNormal;
+					const float x = ( tipVector / tipVectorLen ) * ( goalPosition - bonePosition );
+					angle = atan2f( y, x );
+					// angle = y / x;
 					
 				}else{
 					angle = 0.0f;
