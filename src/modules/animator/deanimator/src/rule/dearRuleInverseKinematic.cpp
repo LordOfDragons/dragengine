@@ -160,7 +160,7 @@ DEBUG_RESET_TIMERS;
 		float curDist, oldDist, angle;
 		//float dot, oneTan = tanf( DEG2RAD );
 		//float correctionFactor = 0.2f;
-		float planeNormalLen;
+		float planeNormalLen, tipVectorLen;
 		float tipDistSquared, goalDistSquared;
 		int s, maxStepCount = 500;
 		bool hasIKLimits = false;
@@ -276,7 +276,8 @@ DEBUG_RESET_TIMERS;
 				// determine tip vector and length. if the length is close to 0 the bone in question
 				// is skipped since a 0 length bone corrupts the ik solving calculations
 				tipVector = tipPosition - bonePosition;
-				if( tipVector.IsZero( 1e-5f ) ){
+				tipVectorLen = tipVector.Length();
+				if( tipVectorLen < 1e-5f ){
 					continue;
 				}
 				
@@ -310,7 +311,8 @@ DEBUG_RESET_TIMERS;
 				gradient = tipVector % planeNormal;
 				const float gradientLen = gradient.Length();
 				if( gradientLen > 1e-5f ){
-					angle = targetNormal * ( gradient / gradientLen );
+					// angle = atanf( targetNormal * ( gradient / gradientLen ), tipVectorLen );
+					angle = ( targetNormal * ( gradient / gradientLen ) ) / tipVectorLen;
 					
 				}else{
 					angle = 0.0f;
@@ -435,8 +437,10 @@ DEBUG_planenormal[ i ] = planeNormal;
 DEBUG_rotationdist[ i ] = rotationDistance;
 DEBUG_targetnormallen[ i ] = targetNormalLen;
 DEBUG_angle[ i ] = angle / DEG2RAD;
+*/
 				// update the tip position for the next bone in the chain
 				tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
+/*
 DEBUG_tipposition2[ i ] = tipPosition;
 */
 			}
@@ -454,7 +458,7 @@ DEBUG_tipposition2[ i ] = tipPosition;
 			}
 			
 			// calculate the new tip position for the next run
-			tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
+			// tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
 			
 			// check if another round is required
 			oldDist = curDist;
