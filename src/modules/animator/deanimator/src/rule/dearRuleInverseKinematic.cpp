@@ -252,14 +252,26 @@ DEBUG_RESET_TIMERS;
 		tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
 		curDist = ( tipPosition - goalPosition ).Length();
 		
+		// const float weightFactor = 1.0f / ( float )pChainCount;
+		
+		// NOTE according to papers best is to start first with the bone closest to the target
+		// then working the way down to the base. during each rotation constraints can be
+		// taken into consideration (clamping for example). in the case of a non-reachable
+		// state (singularity) some random rotation can be used to try to get out of the
+		// locked situation. such a singularity happens if the end point can not be moved any
+		// closer to the desired point during one chain loop and the point is not yet at the
+		// end point. this solution is prone to broken limbs due to ik flipping.
+		// -> reducing angle after MAX_ROT claming to 10% reduces broken limbs
+		// => for( i=pChainCount-1; i>=0; i-- )
+		// 
+		// using the opposite direction though (from base to tip) reduces the flipping since
+		// the chain is preferred to be moved by the base first to reach the goal. this though
+		// causes limits to explode the calculation.
+		// -> reducing MAX_ROT to 10% is not helping
+		// -> reducing angle after MAX_ROT claming to 10% is helping
+		// => for( i=0; i<pChainCount; i++ )
+		
 		for( s=0; s<maxStepCount; s++ ){
-			// NOTE according to papers best is to start first with the bone closest to the target
-			// then working the way down to the base. during each rotation constraints can be
-			// taken into consideration (clamping for example). in the case of a non-reachable
-			// state (singularity) some random rotation can be used to try to get out of the
-			// locked situation. such a singularity happens if the end point can not be moved any
-			// closer to the desired point during one chain loop and the point is not yet at the
-			// end point.
 			
 			// update inverse global matrices
 			if( hasIKLimits ){
@@ -269,7 +281,7 @@ DEBUG_RESET_TIMERS;
 			}
 			
 			// adjust all bones in the chain to approach closer to the target
-			//for( i=0; i<pChainCount; i++ ){
+			// for( i=0; i<pChainCount; i++ ){
 			for( i=pChainCount-1; i>=0; i-- ){
 				bonePosition = pChain[ i ].GetGlobalMatrix().GetPosition();
 				
@@ -323,7 +335,8 @@ DEBUG_RESET_TIMERS;
 				if( angle > MAX_ROT ){
 					angle = MAX_ROT;
 				}
-				// angle *= 0.95f; // slight reduction of the rotation to avoid jittering
+				
+				angle *= 0.1f; // reduce to improve sticking to starting pose
 				
 				rotationMatrix.SetRotationAxis( planeNormal, angle );
 				
@@ -347,10 +360,12 @@ DEBUG_RESET_TIMERS;
 						boneLocalRotOrg = globMat.QuickMultiplyRotation( tempRotMat );
 					}
 					
-					decQuaternion quatRotated( boneLocalRot.ToQuaternion() * pChain[ i ].GetLimitZeroQuat() );
+					decQuaternion quatRotated( boneLocalRot.Normalized().ToQuaternion()
+						* pChain[ i ].GetLimitZeroQuat() );
 					
 					if( pChain[ i ].HasDampening() ){
-						const decQuaternion quatCurrent( boneLocalRotOrg.ToQuaternion() * pChain[ i ].GetLimitZeroQuat() );
+						const decQuaternion quatCurrent( boneLocalRotOrg.Normalized().ToQuaternion()
+							* pChain[ i ].GetLimitZeroQuat() );
 						decVector eulerDiff( ( quatRotated * quatCurrent.Conjugate() ).GetEulerAngles() );
 						
 						const decVector &dampening = pChain[ i ].GetDampening();
@@ -404,7 +419,8 @@ DEBUG_RESET_TIMERS;
 						}
 					}
 					
-					quatRotated = decQuaternion::CreateFromEuler( rotation ) * pChain[ i ].GetLimitZeroQuatInv();
+					quatRotated = decQuaternion::CreateFromEuler( rotation )
+						* pChain[ i ].GetLimitZeroQuatInv();
 					
 					// create new rotation matrix
 					if( i == 0 ){
@@ -419,6 +435,8 @@ DEBUG_RESET_TIMERS;
 								pChain[ i ].GetBoneStateIndex() )->GetRigLocalMatrix() )
 							.QuickMultiplyRotation( pChain[ i - 1 ].GetGlobalMatrix() );
 					}
+					
+					rotationMatrix.Normalize();
 				}
 				
 				// rotate chains from the current link to the tip
@@ -440,7 +458,7 @@ DEBUG_rotationdist[ i ] = rotationDistance;
 DEBUG_targetnormallen[ i ] = targetNormalLen;
 DEBUG_angle[ i ] = angle / DEG2RAD;
 */
-				// update the tip position for the next bone in the chain
+				// update the tip position for the next bone in the chain.
 				tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
 /*
 DEBUG_tipposition2[ i ] = tipPosition;
