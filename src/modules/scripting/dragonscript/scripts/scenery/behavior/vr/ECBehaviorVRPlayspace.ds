@@ -43,7 +43,7 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Playspace position or orientation changed. */
-		func void playspaceGeometryChanged( Instance instance )
+		func void playspaceGeometryChanged(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
@@ -53,14 +53,14 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 		end
 		
 		/** \brief Playspace position or orientation changed. */
-		public func void playspaceGeometryChanged( Instance instance )
+		public func void playspaceGeometryChanged(Instance instance)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
@@ -68,16 +68,16 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 		private var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		public func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
@@ -91,73 +91,73 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 		
 		
 		/** \brief Create instance. */
-		public func new( ECBehaviorVRPlayspace ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pListeners = Array.new()
+		public func new(ECBehaviorVRPlayspace ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of instance. */
 		public func void dispose()
-			this.pListeners = null
+			pListeners = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init( StubElement stub )
-			this.pECBehavior.createListeners( this )
+		public func void init(StubElement stub)
+			pECBehavior.createListeners(this)
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorVRPlayspace getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Position. */
 		public func DVector getPosition()
-			return this.getElement().getPosition()
+			return getElement().getPosition()
 		end
 		
 		/** \brief Orientation. */
 		public func Quaternion getOrientation()
-			return this.getElement().getOrientation()
+			return getElement().getOrientation()
 		end
 		
 		/** \brief Matrix. */
 		public func DMatrix getMatrix()
-			return this.getElement().getElementMatrix()
+			return getElement().getElementMatrix().normalize()
 		end
 		
 		/** \brief Inverse matrix. */
 		public func DMatrix getInverseMatrix()
-			return this.getElement().getInverseElementMatrix()
+			return getElement().getInverseElementMatrix().normalize()
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		public func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Element position or orientation changed. */
 		public func void geometryChanged()
-			this.pListeners.forEach( block Listener each
-				each.playspaceGeometryChanged( this )
-			end )
+			pListeners.forEach(block Listener each
+				each.playspaceGeometryChanged(this)
+			end)
 		end
 	end
 	
@@ -168,30 +168,30 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	public func new(BehaviorElementClass eclass) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pListenerFactories = Array.new()
+		pListenerFactories = Array.new()
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pListenerFactories = null
+		pListenerFactories = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	public func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -199,27 +199,27 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -230,10 +230,10 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRPlayspace.
 	 */
-	static public func ECBehaviorVRPlayspace getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorVRPlayspace each
+	static public func ECBehaviorVRPlayspace getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRPlayspace each
 			return true
-		end ) cast ECBehaviorVRPlayspace
+		end) cast ECBehaviorVRPlayspace
 	end
 	
 	/**
@@ -242,16 +242,16 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorVRPlayspace.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end
