@@ -128,12 +128,12 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 		
 		/** \brief Matrix. */
 		public func DMatrix getMatrix()
-			return getElement().getElementMatrix().normalize()
+			return getElement().getElementMatrix()
 		end
 		
 		/** \brief Inverse matrix. */
 		public func DMatrix getInverseMatrix()
-			return getElement().getInverseElementMatrix().normalize()
+			return getElement().getInverseElementMatrix()
 		end
 		
 		
