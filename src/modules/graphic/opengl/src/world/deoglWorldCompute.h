@@ -109,11 +109,13 @@ private:
 	int pFullUpdateLimit;
 	float pFullUpdateFactor;
 	int pUpdateElementCount;
+	bool pForceFullUpdate;
 	
 	decObjectList pUpdateElementGeometries;
 	int pFullUpdateGeometryLimit;
 	float pFullUpdateGeometryFactor;
 	int pUpdateElementGeometryCount;
+	bool pForceFullUpdateGeometry;
 	
 	sClearGeometries *pClearGeometries;
 	int pClearGeometriesCount;
