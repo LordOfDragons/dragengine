@@ -35,13 +35,11 @@
  */
 class deoglMemoryConsumption{
 public:
-	deoglMemoryConsumptionTexture texture1D;
 	deoglMemoryConsumptionTexture texture2D;
 	deoglMemoryConsumptionTexture texture3D;
 	deoglMemoryConsumptionTexture textureArray;
 	deoglMemoryConsumptionTexture textureCube;
 	
-	deoglMemoryConsumptionTexture texture1DRenderable;
 	deoglMemoryConsumptionTexture texture2DRenderable;
 	deoglMemoryConsumptionTexture texture3DRenderable;
 	deoglMemoryConsumptionTexture textureArrayRenderable;

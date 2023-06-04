@@ -71,32 +71,41 @@ class ECBehaviorComposed extends DefaultECBehavior
 		private var StubWithProperties pProperties
 		
 		/** \brief Create child element definition. */
-		public func new( String classname )
+		public func new(String classname)
 			if classname == null
 				throw EInvalidParam.new()
 			end
-			this.pClassname = classname
-			this.pProperties = StubWithProperties.new()
+			pClassname = classname
+			pProperties = StubWithProperties.new()
+		end
+		
+		/**
+		 * \brief Create copy of child element definition.
+		 * \version 1.17
+		 */
+		public func new(ChildElement child)
+			pClassname = child.pClassname
+			pProperties = StubWithProperties.new(child.pProperties)
 		end
 		
 		/** \brief Class name. */
 		public func String getClassname()
-			return this.pClassname
+			return pClassname
 		end
 		
 		/** \brief Element class or null if not resolved or failed to resolve. */
 		public func ElementClass getElementClass()
-			return this.pElementClass
+			return pElementClass
 		end
 		
 		/** \brief Set element class or null if not resolved or failed to resolve. */
-		public func void setElementClass( ElementClass elementClass )
-			this.pElementClass = elementClass
+		public func void setElementClass(ElementClass elementClass)
+			pElementClass = elementClass
 		end
 		
 		/** \brief Properties. */
 		public func StubWithProperties getProperties()
-			return this.pProperties
+			return pProperties
 		end
 	end
 	
@@ -114,98 +123,108 @@ class ECBehaviorComposed extends DefaultECBehavior
 		
 		
 		/** \brief Create property. */
-		public func new( String name, ElementClassList eclassList ) super( name )
+		public func new(String name, ElementClassList eclassList) super(name)
 			if eclassList == null
 				throw EInvalidParam.new()
 			end
-			this.pElementClassList = eclassList
-			this.pAllowedElementClasses = Array.new()
-			this.pChildren = Array.new()
+			pElementClassList = eclassList
+			pAllowedElementClasses = Array.new()
+			pChildren = Array.new()
 		end
 		
 		/** \brief Dispose of element class property to break reference loops. */
 		public func void dispose()
-			this.pElementClassList = null
-			this.pAllowedElementClasses = null
-			this.pChildren = null
+			pElementClassList = null
+			pAllowedElementClasses = null
+			pChildren = null
 		end
 		
 		
 		/** \brief Element class manager to look up element class in. */
 		public func ElementClassList getElementClassList()
-			return this.pElementClassList
+			return pElementClassList
 		end
 		
 		/** \brief Allowed element classes as Array of ElementClass. */
 		public func Array getAllowedElementClasses()
-			return this.pAllowedElementClasses
+			return pAllowedElementClasses
 		end
 		
 		/** \brief Children as Array of ChildElement. */
 		public func Array getChildren()
-			return this.pChildren
+			return pChildren
 		end
 		
 		/** \brief Property has been preloaded. */
 		public func bool getHasPreloaded()
-			return this.pHasPreloaded
+			return pHasPreloaded
 		end
 		
 		
 		/** \brief Set value of property from XML decoded value. */
-		public func void setValue( Object value )
-			this.pChildren.removeAll()
+		public func void setValue(Object value)
+			pChildren.removeAll()
 			
-			( value cast Array ).forEach( block Dictionary entries
-				var ChildElement child = ChildElement.new( entries.getAt( "class" ) cast String )
+			(value cast Array).forEach(block Dictionary entries
+				var ChildElement child = ChildElement.new(entries.getAt("class") cast String)
 				
-				var Dictionary valueProperties = entries.getAt( "properties", null ) cast Dictionary
+				var Dictionary valueProperties = entries.getAt("properties", null) cast Dictionary
 				if valueProperties != null
-					valueProperties.forEach( block String key, String value
-						child.getProperties().setPropertyValueFor( key, value )
-					end )
+					valueProperties.forEach(block String key, String value
+						child.getProperties().setPropertyValueFor(key, value)
+					end)
 				end
 				
-				this.pChildren.add( child )
-			end )
+				pChildren.add(child)
+			end)
+		end
+		
+		/**
+		 * \brief Copy value from another element class property of the same type.
+		 * \version 1.17
+		 */
+		public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+			pChildren = (property cast ECPChildren).pChildren.map(block ChildElement each
+				return ChildElement.new(each)
+			end)
 		end
 		
 		
 		/** \brief Preload resources if supported. */
-		public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-			if this.pHasPreloaded
+		public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+			if pHasPreloaded
 				return
 			end
 			
-			this.pHasPreloaded = true
-			this.pCounter = counter
+			pHasPreloaded = true
+			pCounter = counter
 			
-			this.pChildren.forEach( block ChildElement each
-				each.setElementClass( this.pElementClassList.getNamed( each.getClassname() ) )
-			end )
+			pChildren.forEach(block ChildElement each
+				each.setElementClass(pElementClassList.getNamed(each.getClassname()))
+			end)
 		end
 		
 		/**
 		* \brief Log preloading problems.
 		* \returns True if problems are present.
 		*/
-		public func bool logPreloadProblems( ElementClass elementClass, Console console )
-			return this.pChildren.inject( false, block bool hasProblems, ChildElement each
+		public func bool logPreloadProblems(ElementClass elementClass, Console console)
+			return pChildren.inject(false, block bool hasProblems, ChildElement each
 				if each.getElementClass() == null
-					console.addMessage( "Property " + elementClass.getClassname() + "." \
-						+ this.getName() + ": Unknown element class " + each.getClassname() )
+					console.addMessage("Property " + elementClass.getClassname() + "." \
+						+ getName() + ": Unknown element class " + each.getClassname())
 					return true
 				end
 				
-				if this.pAllowedElementClasses.getCount() > 0 \
-				and not this.pAllowedElementClasses.has( each.getElementClass() )
-					console.addMessage( "Property " + elementClass.getClassname() + "." \
-						+ this.getName() + ": Element class " + each.getClassname() + " not allowed" )
+				if pAllowedElementClasses.getCount() > 0 \
+				and not pAllowedElementClasses.has(each.getElementClass())
+					console.addMessage("Property " + elementClass.getClassname() + "." \
+						+ getName() + ": Element class " + each.getClassname() + " not allowed")
 					return true
 				end
 				
 				return hasProblems
-			end ) cast bool
+			end) cast bool
 		end
 	end
 	
@@ -218,84 +237,84 @@ class ECBehaviorComposed extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorComposed ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pChildrenCreated = false
+		public func new(ECBehaviorComposed ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pChildrenCreated = false
 		end
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorComposed getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		
 		/** \brief Children have been created. */
 		public func bool getChildrenCreated()
-			return this.pChildrenCreated
+			return pChildrenCreated
 		end
 		
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
-			if this.pChildrenCreated
+			if pChildrenCreated
 				return
 			end
 			
-			this.pChildrenCreated = true
-			this.createAndAddChildren()
+			pChildrenCreated = true
+			createAndAddChildren()
 		end
 		
 		/** \brief Create and add children. */
 		protected func void createAndAddChildren()
-			var MutableID idGenerator = this.pECBehavior.getIDGenerator()
-			var BehaviorElement element = this.getElement()
+			var MutableID idGenerator = pECBehavior.getIDGenerator()
+			var BehaviorElement element = getElement()
 			var GameWorld gameWorld = element.getGameWorld()
 			var UniqueID id = UniqueID.new()
 			var Element childElement
 			var StubElement stub
 			
-			this.pECBehavior.getChildren().getChildren().forEach( block ChildElement each
+			pECBehavior.getChildren().getChildren().forEach(block ChildElement each
 				if idGenerator != null
 					id = idGenerator.nextID()
 				end
-				stub = StubElement.new( each.getElementClass(), id, each.getProperties() )
+				stub = StubElement.new(each.getElementClass(), id, each.getProperties())
 				childElement = stub.createElement()
 				
 				try
-					gameWorld.addElement( childElement )
+					gameWorld.addElement(childElement)
 					if childElement castable BehaviorElement
-						( childElement cast BehaviorElement ).attachToParent( element )
+						(childElement cast BehaviorElement).attachToParent(element)
 					end
 					
 				catch Exception e
 					childElement.safeDispose()
 					throw
 				end
-			end )
+			end)
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
-				this.pChildrenCreated = flags.getAt( 0 )
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				pChildrenCreated = flags.getAt(0)
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** Writes the element to a file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 1 )
-			flags.setAt( 0, this.pChildrenCreated )
-			flags.writeToFile( writer )
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pChildrenCreated)
+			flags.writeToFile(writer)
 		end
 	end
 	
@@ -307,70 +326,70 @@ class ECBehaviorComposed extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) this( eclass, \
-	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator() )
+	public func new(BehaviorElementClass eclass) this(eclass, \
+	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator())
 	end
 	
-	public func new( BehaviorElementClass eclass, String id ) this( eclass, \
-	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator(), id )
+	public func new(BehaviorElementClass eclass, String id) this(eclass, \
+	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator(), id)
 	end
 	
-	public func new( BehaviorElementClass eclass, String id, String subID ) this( eclass, \
+	public func new(BehaviorElementClass eclass, String id, String subID) this(eclass, \
 	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator(), \
-	id, subID, subID + "." )
+	id, subID, subID + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id, String subID, String prefix ) \
-	this( eclass, BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator(), \
-	id, subID, prefix )
+	public func new(BehaviorElementClass eclass, String id, String subID, String prefix) \
+	this(eclass, BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator(), \
+	id, subID, prefix)
 	end
 	
-	public func new( BehaviorElementClass eclass, ElementClassList elementClassList, \
-	MutableID idGenerator ) this( eclass, elementClassList, idGenerator, "" )
+	public func new(BehaviorElementClass eclass, ElementClassList elementClassList, \
+	MutableID idGenerator) this(eclass, elementClassList, idGenerator, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ElementClassList elementClassList, \
-	MutableID idGenerator, String id ) this( eclass, elementClassList, idGenerator, \
-	id, id.empty() if "composed" else "composed(" + id + ")" )
+	public func new(BehaviorElementClass eclass, ElementClassList elementClassList, \
+	MutableID idGenerator, String id) this(eclass, elementClassList, idGenerator, \
+	id, id.empty() if "composed" else "composed(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, ElementClassList elementClassList, \
-	MutableID idGenerator, String id, String subID ) this( eclass, elementClassList, \
-	idGenerator, id, subID, subID + "." )
+	public func new(BehaviorElementClass eclass, ElementClassList elementClassList, \
+	MutableID idGenerator, String id, String subID) this(eclass, elementClassList, \
+	idGenerator, id, subID, subID + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, ElementClassList elementClassList, \
-	MutableID idGenerator, String id, String subID, String prefix ) super( eclass, id )
-		this.pIDGenerator = idGenerator
+	public func new(BehaviorElementClass eclass, ElementClassList elementClassList, \
+	MutableID idGenerator, String id, String subID, String prefix) super(eclass, id)
+		pIDGenerator = idGenerator
 		
-		this.pChildren = ECPChildren.new( prefix + "children", elementClassList )
-		eclass.addProperty( this.pChildren )
+		pChildren = ECPChildren.new(prefix + "children", elementClassList)
+		eclass.addProperty(pChildren)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	
 	
 	/** \brief Children. */
 	public func ECPChildren getChildren()
-		return this.pChildren
+		return pChildren
 	end
 	
 	/** \brief ID Generator. */
 	public func MutableID getIDGenerator()
-		return this.pIDGenerator
+		return pIDGenerator
 	end
 	
 	/** \brief Set ID Generator. */
-	public func void setIDGenerator( MutableID idGenerator )
-		this.pIDGenerator = idGenerator
+	public func void setIDGenerator(MutableID idGenerator)
+		pIDGenerator = idGenerator
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -381,10 +400,10 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorComposed getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorComposed each
+	static public func ECBehaviorComposed getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorComposed each
 			return true
-		end ) cast ECBehaviorComposed
+		end) cast ECBehaviorComposed
 	end
 	
 	/**
@@ -393,10 +412,10 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComposed with specific identifier.
 	 */
-	static public func ECBehaviorComposed getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorComposed each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorComposed
+	static public func ECBehaviorComposed getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorComposed each
+			return each.getID().equals(id)
+		end) cast ECBehaviorComposed
 	end
 	
 	/**
@@ -405,10 +424,10 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * Returns list contains ECBehaviorComposed behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorComposed each
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorComposed each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -420,10 +439,10 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * of type ECBehaviorComposed.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -432,10 +451,10 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorComposed.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -444,16 +463,16 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * Returns list contains ECBehaviorComposed.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

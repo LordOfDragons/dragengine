@@ -40,6 +40,7 @@
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -51,18 +52,16 @@
 
 deoglRTShader::deoglRTShader( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-
-pTexUnitsConfigList( NULL ),
-
-pShaderManager( NULL ),
-pSkinShaderManager( NULL ),
-pLightShaderManager( NULL ),
-pCurShaderProg( NULL ),
+pTexUnitsConfigList( nullptr ),
+pShaderManager( nullptr ),
+pSkinShaderManager( nullptr ),
+pLightShaderManager( nullptr ),
+pCurShaderProg( nullptr ),
 pDirtySSBOSkinTextures( true )
 {
 	int i;
 	for( i=0; i<ETSC_COUNT; i++ ){
-		pTexSamplerConfigs[ i ] = NULL;
+		pTexSamplerConfigs[ i ] = nullptr;
 	}
 	
 	try{
@@ -72,6 +71,7 @@ pDirtySSBOSkinTextures( true )
 		pShaderManager = new deoglShaderManager( renderThread );
 		pShaderManager->LoadUnitSourceCodes();
 		pShaderManager->LoadSources();
+		pShaderManager->ValidateCaches();
 		
 		pSkinShaderManager = new deoglSkinShaderManager( renderThread );
 		pLightShaderManager = new deoglLightShaderManager( renderThread );
@@ -166,16 +166,17 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 	pDirtySSBOSkinTextures = false;
 	
 	if( ! pSSBOSkinTextures ){
-		pSSBOSkinTextures.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+		pSSBOSkinTextures.TakeOver( new deoglSPBlockSSBO( pRenderThread, deoglSPBlockSSBO::etStream ) );
 		pSSBOSkinTextures->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 		pSSBOSkinTextures->SetParameterCount( 1 );
 		pSSBOSkinTextures->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 		pSSBOSkinTextures->MapToStd140();
-		pSSBOSkinTextures->SetBindingPoint( 2 );
 		pSSBOSkinTextures->SetElementCount( 1 );
 	}
 	
 	deoglRenderTaskSharedPool &pool = pRenderThread.GetRenderTaskSharedPool();
+	const deMutexGuard guard( pool.GetMutexSkinTextures() );
+	
 	const int pipelinesPerTexture = deoglSkinTexturePipelinesList::PipelineTypesCount
 		* deoglSkinTexturePipelines::TypeCount * deoglSkinTexturePipelines::ModifiersPerType;
 	const int count = pool.GetSkinTextureCount();
@@ -190,7 +191,7 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 	}
 	
 	const deoglSPBMapBuffer mapped( ssbo );
-	uint16_t *values = ( uint16_t* )ssbo.GetWriteBuffer();
+	uint16_t *values = ( uint16_t* )ssbo.GetMappedBuffer();
 	
 	for( i=0; i<count; i++ ){
 		const deoglSkinTexture * const texture = pool.GetSkinTextureAt( i );
@@ -210,7 +211,7 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 					const deoglSkinTexturePipeline * const stp = stps.GetWith( ( deoglSkinTexturePipelines::eTypes )k, l );
 					
 					if( stp ){
-						*( values++ ) = ( uint16_t )decMath::max( stp->GetPipeline()->GetRTSPipelineIndex(), 0 );
+						*( values++ ) = ( uint16_t )decMath::max( stp->GetPipeline()->GetRTSIndex(), 0 );
 						
 					}else{
 						*( values++ ) = 0;

@@ -34,7 +34,7 @@
  * stretched along the placement direction. Between the two widgets a grabber is displayed
  * allowing the user to change the size of the side widget.
  */
-class igdeContainerSplitted : public igdeContainer{
+class DE_DLL_EXPORT igdeContainerSplitted : public igdeContainer{
 public:
 	/** \brief Side widget placement. */
 	enum eSidePlacement{

@@ -546,7 +546,7 @@ public:
 		}
 		
 		const decPoint scrDir( GetDragOrigin() - ( pView.GetRenderAreaSize() / 2 ) );
-		pNullAngle = atan2f( -scrDir.y, scrDir.x );
+		pNullAngle = atan2f( ( float )-scrDir.y, ( float )scrDir.x );
 		
 		reURotateShape &undo = ( reURotateShape& )( igdeUndo& )pUndo;
 		undo.SetCenterPosition( center );
@@ -563,7 +563,7 @@ public:
 		// determine new rotation
 		const reConfiguration &configuration = pView.GetWindowMain().GetConfiguration();
 		const decPoint scrDir( GetDragPosition() - ( pView.GetRenderAreaSize() / 2 ) );
-		float angle = atan2f( -scrDir.y, scrDir.x ) - pNullAngle;
+		float angle = atan2f( ( float )-scrDir.y, ( float )scrDir.x ) - pNullAngle;
 		
 		if( GetShiftNow() ){
 			const float grid = configuration.GetRotSnapAngle() * DEG2RAD;

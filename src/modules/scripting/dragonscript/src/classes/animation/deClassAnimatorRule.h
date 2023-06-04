@@ -106,6 +106,10 @@ private:
 	DEF_NATFUNC( nfAddBone );
 	DEF_NATFUNC( nfRemoveAllBones );
 	DEF_NATFUNC( nfCopyBonesFrom );
+	
+	DEF_NATFUNC( nfAddVertexPositionSet );
+	DEF_NATFUNC( nfRemoveAllVertexPositionSets );
+	DEF_NATFUNC( nfCopyVertexPositionSetsFrom );
 #undef DEF_NATFUNC
 };
 

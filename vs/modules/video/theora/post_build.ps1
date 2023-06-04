@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\video\theora\$Version"
 
 Write-Host "Theora Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "vidtheora.dll"
+$Library = "$OutputDir\de_module\video\theora\vidtheora.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\video\theora\$Version"
 Write-Host "Theora Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "vidtheora.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\video\theora\vidtheora.pdb" -Destination $TargetDir

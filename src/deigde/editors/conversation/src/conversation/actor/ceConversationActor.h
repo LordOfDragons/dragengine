@@ -53,6 +53,11 @@ class deSound;
  * \brief Conversation actor.
  */
 class ceConversationActor : public deObject{
+public:
+	typedef deTObjectReference<ceConversationActor> Ref;
+	
+	
+	
 private:
 	struct sGesture{
 		ceGesture *gesture;

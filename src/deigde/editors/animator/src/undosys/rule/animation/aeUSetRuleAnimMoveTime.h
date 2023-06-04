@@ -33,7 +33,7 @@ class aeRuleAnimation;
 
 
 /**
- * @brief Undo set rule animation move time.
+ * Undo set rule animation move time.
  *
  * Undo to set the move time of a animation rule.
  */
@@ -47,19 +47,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleAnimMoveTime( aeRuleAnimation *rule, float newTime );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleAnimMoveTime();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

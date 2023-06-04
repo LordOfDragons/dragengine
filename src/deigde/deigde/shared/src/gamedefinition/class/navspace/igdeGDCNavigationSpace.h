@@ -33,7 +33,7 @@
 /**
  * \brief Game definition class navigation space.
  */
-class igdeGDCNavigationSpace : public deObject{
+class DE_DLL_EXPORT igdeGDCNavigationSpace : public deObject{
 public:
 	/** \brief Properties. */
 	enum eProperties{

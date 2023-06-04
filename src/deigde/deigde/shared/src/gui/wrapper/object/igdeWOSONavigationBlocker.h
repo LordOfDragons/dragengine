@@ -35,7 +35,7 @@ class igdeGDCNavigationBlocker;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSONavigationBlocker : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSONavigationBlocker : public igdeWOSubObject{
 private:
 	const igdeGDCNavigationBlocker &pGDNavigationBlocker;
 	deNavigationBlockerReference pNavigationBlocker;

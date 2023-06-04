@@ -30,7 +30,7 @@ class deDEAnimator;
 
 
 /**
- * @brief Closest Hit Visitor.
+ * Closest Hit Visitor.
  *
  * Stores the closest hit found while visitor collisions.
  */
@@ -42,7 +42,7 @@ private:
 	bool pHasHit;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	dearClosestHit();
@@ -50,7 +50,7 @@ public:
 	virtual ~dearClosestHit();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Resets the visitor. */
 	void Reset();
@@ -67,7 +67,7 @@ public:
 	void SetListener( deBaseScriptingCollider *listener );
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/**
 	 * Determines the response for a given collision. If you specified ertCustom

@@ -396,10 +396,6 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 				pCmdMemoryInfo( command, answer );
 				result = true;
 				
-			}else if( command.MatchesArgumentAt( 0, "dm_debug_snapshot" ) ){
-				pCmdDebugSnapshot( command, answer );
-				result = true;
-				
 			}else if( command.MatchesArgumentAt( 0, "dm_show_light_full_box" ) ){
 				pCmdShowLightFullBox( command, answer );
 				result = true;
@@ -519,7 +515,6 @@ void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &, decUnicodeStr
 	answer.AppendFromUTF8( "dm_capabilities => Displays hardware capabilities.\n" );
 	answer.AppendFromUTF8( "dm_debug_enable_light_depth_stencil => Enable depth and stencil test using depth copy for lighting passes.\n" );
 	answer.AppendFromUTF8( "dm_debug_renderplan [1|0] => Display render plan debug information.\n" );
-	answer.AppendFromUTF8( "dm_debug_snapshot [num] => Creates a debug snapshot of something given by num.\n" );
 	answer.AppendFromUTF8( "dm_enable_envmap_fresnel [1|0] => Enable environment map fresnel.\n" );
 	answer.AppendFromUTF8( "dm_height_terrain => Show LOD levels and bounding boxes of the height terrain.\n" );
 	answer.AppendFromUTF8( "dm_highlight_transparent_objects [1|0] => Highlight transparent objects.\n" );
@@ -955,32 +950,6 @@ void deoglDeveloperMode::pCmdMemoryInfo( const decUnicodeArgumentList &, decUnic
 		
 	}else{
 		answer.SetFromUTF8( "GL_ATI_meminfo not supported.\n" );
-	}
-}
-
-void deoglDeveloperMode::pCmdDebugSnapshot( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() != 2 ){
-		answer.SetFromUTF8( "dm_debug_snapshot <num>\n" );
-		answer.AppendFromUTF8( "where <num> can be:\n" );
-		answer.AppendFromUTF8( "1 => Render Task ( solid ).\n" );
-		answer.AppendFromUTF8( "2 => Environment Map.\n" );
-		answer.AppendFromUTF8( "10 => Transparency Counter Pass.\n" );
-		answer.AppendFromUTF8( "20 => Transparency Passes.\n" );
-		answer.AppendFromUTF8( "50 => Tone Mapping.\n" );
-		answer.AppendFromUTF8( "60 => Reflection.\n" );
-		answer.AppendFromUTF8( "90 => Light Sky.\n" );
-		answer.AppendFromUTF8( "101 => Print World Render Tasks (depth, geometry).\n" );
-		answer.AppendFromUTF8( "110 => Light Sky.\n" );
-		answer.AppendFromUTF8( "8888 => Special.\n" );
-		
-	}else{
-		deoglConfiguration &config = pRenderThread.GetConfiguration();
-		decString text;
-		
-		config.SetDebugSnapshot( command.GetArgumentAt( 1 )->ToInt() );
-		
-		text.Format( "dm_debug_shapshot %i\n", config.GetDebugSnapshot() );
-		answer.SetFromUTF8( text.GetString() );
 	}
 }
 

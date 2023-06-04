@@ -41,7 +41,7 @@ class deException;
 /**
  * \brief Editor window.
  */
-class igdeEditorWindow : public igdeContainerBox{
+class DE_DLL_EXPORT igdeEditorWindow : public igdeContainerBox{
 private:
 	igdeEditorModule &pEditorModule;
 	bool pActiveModule;

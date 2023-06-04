@@ -49,6 +49,12 @@ private:
 	const deoglPipeline *pPipelineAOBlur2Stereo;
 	const deoglPipeline *pPipelineDebugAO;
 	
+	// const deoglPipeline *pPipelineSSAO;
+	const deoglPipeline *pPipelineSSAOBlur1;
+	const deoglPipeline *pPipelineSSAOBlur2;
+	const deoglPipeline *pPipelineSSAOUpscale;
+	const deoglPipeline *pPipelineSSAOUpscaleStereo;
+	
 	const deoglPipeline *pPipelineSSSSS;
 	const deoglPipeline *pPipelineSSSSSStereo;
 	
@@ -61,7 +67,9 @@ private:
 	deoglRenderLightParticles *pRenderLightParticles;
 	deoglRenderGI *pRenderGI;
 	
+	deoglSPBSingleUse::Ref pShadowPBSingleUse;
 	deoglSPBlockUBO::Ref pShadowPB;
+	deoglSPBSingleUse::Ref pOccMapPBSingleUse;
 	deoglSPBlockUBO::Ref pOccMapPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
@@ -108,8 +116,14 @@ public:
 	
 	
 	
+	/** Get a new shadow render parameter block. */
+	const deoglSPBlockUBO::Ref &NextShadowPB();
+	
 	/** Shadow render parameter block. */
 	inline const deoglSPBlockUBO::Ref &GetShadowPB() const{ return pShadowPB; }
+	
+	/** Get a new occmap render parameter block. */
+	const deoglSPBlockUBO::Ref &NextOccMapPB();
 	
 	/** Occmap render parameter block. */
 	inline const deoglSPBlockUBO::Ref &GetOccMapPB() const{ return pOccMapPB; }

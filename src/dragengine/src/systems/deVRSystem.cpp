@@ -26,7 +26,6 @@
 #include "deVRSystem.h"
 #include "deModuleSystem.h"
 #include "modules/deLoadableModule.h"
-#include "modules/vr/deBaseVRModule.h"
 #include "../deEngine.h"
 #include "../common/exceptions.h"
 #include "../input/deInputEvent.h"
@@ -45,6 +44,8 @@ deVRSystem::deVRSystem( deEngine *engine ) :
 deBaseSystem( engine, "VR", deModuleSystem::emtVR ),
 pActiveModule( nullptr ),
 pEventQueue( 100 ),
+pRequestFeatureEyeGazeTracking( deBaseVRModule::efslDisabled ),
+pRequestFeatureFacialTracking( deBaseVRModule::efslDisabled ),
 pEnablePassthrough( false ),
 pPassthroughTransparency( 1.0f ){
 }
@@ -71,10 +72,29 @@ bool deVRSystem::RuntimeUsable(){
 	return pActiveModule->RuntimeUsable();
 }
 
+void deVRSystem::RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level ){
+	if( ! GetIsRunning() ){
+		DETHROW_INFO( deeInvalidAction, "Module not running" );
+	}
+	
+	pRequestFeatureEyeGazeTracking = level;
+}
+
+void deVRSystem::RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level ){
+	if( ! GetIsRunning() ){
+		DETHROW_INFO( deeInvalidAction, "Module not running" );
+	}
+	
+	pRequestFeatureFacialTracking = level;
+}
+
 void deVRSystem::StartRuntime(){
 	if( ! GetIsRunning() ){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
+	
+	pActiveModule->RequestFeatureEyeGazeTracking( pRequestFeatureEyeGazeTracking );
+	pActiveModule->RequestFeatureFacialTracking( pRequestFeatureFacialTracking );
 	
 	pActiveModule->StartRuntime();
 	

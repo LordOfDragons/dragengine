@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\network\basic\$Version"
 
 Write-Host "Basic Network Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "netbasicnetwork.dll"
+$Library = "$OutputDir\de_module\network\basic\netbasicnetwork.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\network\basic\$Version"
 Write-Host "Basic Network Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "netbasicnetwork.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\network\basic\netbasicnetwork.pdb" -Destination $TargetDir

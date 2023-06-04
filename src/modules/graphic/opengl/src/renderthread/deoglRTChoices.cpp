@@ -19,16 +19,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <dragengine/dragengine_configuration.h>
 
 #include "deoglRenderThread.h"
 #include "deoglRTChoices.h"
 #include "deoglRTLogger.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../extensions/deoglExtensions.h"
-#include "../extensions/deoglExtResult.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -94,9 +91,6 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 		( HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer ) )
 		&& HASEXT( ext_ARB_shader_draw_parameters );
 	
-	// render cube using geometry shader (required)
-	pRenderCubeGS = caps.GetClearEntireCubeMap().Working();
-	
 	// transform component vertices on the GPU
 	#ifdef OS_ANDROID
 		// NOTE android OpenGL ES 3.0 does not support texture buffer objects (TBO). as a replacement
@@ -141,15 +135,19 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 		pClearDepthValueReversed = ( GLfloat )0.0f;
 	}
 	
+	pUseDirectStateAccess = HASEXT( ext_ARB_direct_state_access );
+
 	// temporary until working properly
-	if( HASEXT( ext_ARB_shader_atomic_counter_ops ) ){
-		pUseComputeRenderTask = false;
+	if( /* HASEXT( ext_ARB_shader_atomic_counter_ops ) && */ pUseSSBORender ){
+		pUseComputeRenderTask = true;
 		
 	}else{
 		pUseComputeRenderTask = false;
 	}
 	
 	#undef HASEXT
+	
+	
 	
 	// log choices
 	deoglRTLogger &l = renderThread.GetLogger();
@@ -180,6 +178,11 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	l.LogInfoFormat( "- Render Stereo Vertex Shader Layer: %s", pRenderStereoVSLayer ? "Yes" : "No" );
 	l.LogInfoFormat( "- Render Fullscreen Quad Stereo Vertex Shader Layer: %s", pRenderFSQuadStereoVSLayer ? "Yes" : "No" );
 	l.LogInfoFormat( "- Use Inverse Depth: %s", pUseInverseDepth ? "Yes" : "No" );
+	l.LogInfoFormat( "- Use Direct State Access: %s", pUseDirectStateAccess ? "Yes" : "No" );
+
+	#ifdef OS_W32
+		l.LogInfo( "- Windows: Force disable DSA on SSBO (driver misbehavior)" );
+	#endif
 }
 
 deoglRTChoices::~deoglRTChoices(){

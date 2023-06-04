@@ -33,7 +33,7 @@ class decBaseFileReader;
 /**
  * \brief Load texture property list.
  */
-class igdeXMLLoadTexturePropertyList : public igdeBaseXML{
+class DE_DLL_EXPORT igdeXMLLoadTexturePropertyList : public igdeBaseXML{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

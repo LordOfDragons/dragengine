@@ -25,6 +25,8 @@
 #include "dearRuleStateManipulator.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
@@ -65,17 +67,22 @@ dearRule( instance, animator, firstLink, rule ),
 pTargetPosition( rule.GetTargetPosition(), firstLink ),
 pTargetRotation( rule.GetTargetRotation(), firstLink ),
 pTargetSize( rule.GetTargetSize(), firstLink ),
+pTargetVPS( rule.GetTargetVertexPositionSet(), firstLink ),
 
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableRotation() ),
 pEnableScale( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() ),
+pEnableBones( pEnablePosition || pEnableOrientation || pEnableScale ),
 
 pMinPosition( rule.GetMinimumPosition() ),
 pMaxPosition( rule.GetMaximumPosition() ),
 pMinRotation( rule.GetMinimumRotation() ),
 pMaxRotation( rule.GetMaximumRotation() ),
 pMinSize( rule.GetMinimumSize() ),
-pMaxSize( rule.GetMaximumSize() )
+pMaxSize( rule.GetMaximumSize() ),
+pMinVPS( rule.GetMinimumVertexPositionSet() ),
+pMaxVPS( rule.GetMaximumVertexPositionSet() )
 {
 	RuleChanged();
 }
@@ -88,7 +95,7 @@ dearRuleStateManipulator::~dearRuleStateManipulator(){
 // Management
 ///////////////
 
-void dearRuleStateManipulator::Apply( dearBoneStateList &stalist ){
+void dearRuleStateManipulator::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;
@@ -102,37 +109,59 @@ DEBUG_RESET_TIMERS;
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	const dearAnimatorInstance &instance = GetInstance();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	// retrieve the blend factors
 	decVector scale( 1.0f, 1.0f, 1.0f );
 	decQuaternion orientation;
 	decVector position;
+	float weight = 0.0f;
 	
-	if( pEnablePosition ){
-		const float valuePosition = decMath::clamp( pTargetPosition.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-		position = pMinPosition * ( 1.0f - valuePosition ) + pMaxPosition * valuePosition;
+	if( pEnableBones ){
+		if( pEnablePosition ){
+			const float valuePosition = decMath::clamp( pTargetPosition.GetValue( instance, 0.0f ), 0.0f, 1.0f );
+			position = pMinPosition * ( 1.0f - valuePosition ) + pMaxPosition * valuePosition;
+		}
+	
+		if( pEnableOrientation ){
+			const float valueRotation = decMath::clamp( pTargetRotation.GetValue( instance, 0.0f ), 0.0f, 1.0f );
+			orientation.SetFromEuler( pMinRotation * ( 1.0f - valueRotation ) + pMaxRotation * valueRotation );
+		}
+	
+		if( pEnableScale ){
+			const float valueScale = decMath::clamp( pTargetSize.GetValue( instance, 0.0f ), 0.0f, 1.0f );
+			scale = pMinSize * ( 1.0f - valueScale ) + pMaxSize * valueScale;
+		}
 	}
 	
-	if( pEnableOrientation ){
-		const float valueRotation = decMath::clamp( pTargetRotation.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-		orientation.SetFromEuler( pMinRotation * ( 1.0f - valueRotation ) + pMaxRotation * valueRotation );
-	}
-	
-	if( pEnableScale ){
-		const float valueScale = decMath::clamp( pTargetSize.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-		scale = pMinSize * ( 1.0f - valueScale ) + pMaxSize * valueScale;
+	if( pEnableVPS ){
+		const float valueWeight = decMath::clamp( pTargetVPS.GetValue( instance, 0.0f ), 0.0f, 1.0f );
+		weight = pMinVPS * ( 1.0f - valueWeight ) + pMaxVPS * valueWeight;
 	}
 	
 	// apply states
-	for( i=0; i<boneCount; i++ ){
-		const int animatorBone = GetBoneMappingFor( i );
-		if( animatorBone == -1 ){
-			continue;
-		}
+	if( pEnableBones ){
+		for( i=0; i<boneCount; i++ ){
+			const int animatorBone = GetBoneMappingFor( i );
+			if( animatorBone == -1 ){
+				continue;
+			}
 		
-		stalist.GetStateAt( animatorBone )->BlendWith( position, orientation, scale,
-			blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableScale );
+			stalist.GetStateAt( animatorBone )->BlendWith( position, orientation, scale,
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableScale );
+		}
+	}
+	
+	if( pEnableVPS ){
+		for( i=0; i<vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps == -1 ){
+				continue;
+			}
+		
+			vpsstalist.GetStateAt( animatorVps ).BlendWith( weight, blendMode, blendFactor, pEnableVPS );
+		}
 	}
 DEBUG_PRINT_TIMER;
 }

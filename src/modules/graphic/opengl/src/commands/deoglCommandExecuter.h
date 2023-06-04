@@ -50,7 +50,6 @@ private:
 	void pRenderWindow( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pVisual( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pFBOInfos( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pQuickDebug( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pFixNaN( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pAnswerBoolValue( decUnicodeString &answer, const char *name, bool value );

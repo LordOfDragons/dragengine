@@ -185,13 +185,25 @@ void igdeXMLGameDefinition::pParseGameDefinition( const decXmlElementTag &root, 
 			gamedef.GetSkyManager()->SetDefaultPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "findPathClasses" ){
-			gamedef.GetClassManager()->GetAutoFindPath().Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			decStringList &autoPath = gamedef.GetClassManager()->GetAutoFindPath();
+			if( cdata && ! autoPath.Has( cdata ) ){
+				autoPath.Add( cdata );
+			}
 			
 		}else if( tagName == "findPathSkins" ){
-			gamedef.GetSkinManager()->GetAutoFindPath().Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			decStringList &autoPath = gamedef.GetSkinManager()->GetAutoFindPath();
+			if( cdata && ! autoPath.Has( cdata ) ){
+				autoPath.Add( cdata );
+			}
 			
 		}else if( tagName == "findPathSkies" ){
-			gamedef.GetSkyManager()->GetAutoFindPath().Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			decStringList &autoPath = gamedef.GetSkyManager()->GetAutoFindPath();
+			if( cdata && ! autoPath.Has( cdata ) ){
+				autoPath.Add( cdata );
+			}
 			
 		}else if( tagName == "class" ){
 			pParseClass( *tag, gamedef );

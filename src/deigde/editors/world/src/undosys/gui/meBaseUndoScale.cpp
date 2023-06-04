@@ -94,8 +94,8 @@ void meBaseUndoScale::Update(){
 	*/
 	
 	// set information
-	char info[ 150 ];
-	sprintf( ( char* )&info, "factors(%g,%g,%g;%g) pivot(%g,%g,%g)",
+	decString info;
+	info.Format( "factors(%g,%g,%g;%g) pivot(%g,%g,%g)",
 		pFactors.x, pFactors.y, pFactors.z, pUniformFactor, pPivot.x, pPivot.y, pPivot.z );
 	SetLongInfo( info );
 }

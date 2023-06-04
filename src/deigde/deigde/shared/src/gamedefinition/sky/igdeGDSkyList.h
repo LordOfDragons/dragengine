@@ -31,7 +31,7 @@ class igdeGDSky;
 /**
  * \brief Game definition sky list.
  */
-class igdeGDSkyList{
+class DE_DLL_EXPORT igdeGDSkyList{
 private:
 	decObjectOrderedSet pSkies;
 	

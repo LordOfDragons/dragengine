@@ -33,7 +33,7 @@ class aeRuleForeignState;
 
 
 /**
- * @brief Undo set rule foreign state enable position.
+ * Undo set rule foreign state enable position.
  *
  * Undo to set enable position of a foreign state rule.
  */
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleFStaEnablePos( aeRuleForeignState *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaEnablePos();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

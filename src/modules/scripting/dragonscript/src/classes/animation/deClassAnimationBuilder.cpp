@@ -37,6 +37,8 @@
 #include <dragengine/resources/animation/deAnimationBuilder.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
 #include <dragengine/resources/animation/deAnimationKeyframeList.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
 #include <dragengine/resources/animation/deAnimationReference.h>
@@ -172,6 +174,26 @@ void deClassAnimationBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *my
 	}
 }
 
+// protected func void addVertexPositionSet(String name)
+deClassAnimationBuilder::nfAddVertexPositionSet::nfAddVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addVertexPositionSet", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // name
+}
+void deClassAnimationBuilder::nfAddVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const char * const name = rt->GetValue( 0 )->GetString();
+	if( builder->GetAnimation()->GetVertexPositionSets().Has( name ) ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	builder->GetAnimation()->GetVertexPositionSets().Add( name );
+}
+
 // protected func void addMove( String name, float playTime )
 deClassAnimationBuilder::nfAddMove::nfAddMove( const sInitData &init ) :
 dsFunction( init.clsAnimationBuilder, "addMove", DSFT_FUNCTION,
@@ -296,6 +318,67 @@ void deClassAnimationBuilder::nfAddKeyframe::RunFunction( dsRunTime *rt, dsValue
 	}
 }
 
+// protected func void setVertexPositionSetKeyframeListCount(int move, int count)
+deClassAnimationBuilder::nfSetVertexPositionSetKeyframeListCount::nfSetVertexPositionSetKeyframeListCount( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "setVertexPositionSetKeyframeListCount", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInteger ); // move
+	p_AddParameter( init.clsInteger ); // count
+}
+void deClassAnimationBuilder::nfSetVertexPositionSetKeyframeListCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	deAnimationMove &move = *builder->GetAnimation()->GetMove( rt->GetValue( 0 )->GetInt() );
+	const int count = rt->GetValue( 1 )->GetInt();
+	
+	deAnimationKeyframeVertexPositionSetList *kflist = nullptr;
+	try{
+		while( move.GetVertexPositionSetKeyframeListCount() < count ){
+			kflist = new deAnimationKeyframeVertexPositionSetList;
+			move.AddVertexPositionSetKeyframeList( kflist );
+			kflist = nullptr;
+		}
+		
+	}catch( ... ){
+		delete kflist;
+		throw;
+	}
+}
+
+// protected func void addVertexPositionSetKeyframe(int move, int keyFrameList, float time, float weight)
+deClassAnimationBuilder::nfAddVertexPositionSetKeyframe::nfAddVertexPositionSetKeyframe( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addVertexPositionSetKeyframe", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInteger ); // move
+	p_AddParameter( init.clsInteger ); // keyFrameList
+	p_AddParameter( init.clsFloat ); // time
+	p_AddParameter( init.clsFloat ); // weight
+}
+void deClassAnimationBuilder::nfAddVertexPositionSetKeyframe::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	deAnimationMove &move = *builder->GetAnimation()->GetMove( rt->GetValue( 0 )->GetInt() );
+	deAnimationKeyframeVertexPositionSetList &kflist =
+		*move.GetVertexPositionSetKeyframeList( rt->GetValue( 1 )->GetInt() );
+	
+	deAnimationKeyframeVertexPositionSet * const keyframe = new deAnimationKeyframeVertexPositionSet;
+	try{
+		keyframe->SetTime( rt->GetValue( 2 )->GetFloat() );
+		keyframe->SetWeight( rt->GetValue( 3 )->GetFloat() );
+		kflist.AddKeyframe( keyframe );
+		
+	}catch( ... ){
+		delete keyframe;
+		throw;
+	}
+}
+
 
 
 // Class deClassAnimationBuilder
@@ -341,8 +424,11 @@ void deClassAnimationBuilder::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBuild( init ) );
 	AddFunction( new nfBuildAnimation( init ) );
 	AddFunction( new nfAddBone( init ) );
+	AddFunction( new nfAddVertexPositionSet( init ) );
 	AddFunction( new nfAddMove( init ) );
 	AddFunction( new nfAddMove2( init ) );
 	AddFunction( new nfSetKeyframeListCount( init ) );
 	AddFunction( new nfAddKeyframe( init ) );
+	AddFunction( new nfSetVertexPositionSetKeyframeListCount( init ) );
+	AddFunction( new nfAddVertexPositionSetKeyframe( init ) );
 }

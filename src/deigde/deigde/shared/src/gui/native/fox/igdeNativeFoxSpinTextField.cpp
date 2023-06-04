@@ -150,7 +150,7 @@ igdeFont *igdeNativeFoxSpinTextField::SpinTextFieldFont( const igdeSpinTextField
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::spinTextFieldFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::spinTextFieldFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::spinTextFieldFontSize ) ){
@@ -158,7 +158,7 @@ igdeFont *igdeNativeFoxSpinTextField::SpinTextFieldFont( const igdeSpinTextField
 			igdeGuiThemePropertyNames::spinTextFieldFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

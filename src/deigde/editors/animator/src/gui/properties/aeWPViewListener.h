@@ -29,7 +29,7 @@ class aeWPView;
 
 
 /**
- * \brief View panel listener.
+ * View panel listener.
  */
 class aeWPViewListener : public aeAnimatorNotifier{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	aeWPViewListener( aeWPView &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~aeWPViewListener();
 	/*@}*/
 	
@@ -51,43 +51,43 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Rig changed. */
+	/** Rig changed. */
 	virtual void RigChanged( aeAnimator *animator );
 	
-	/** \brief Animator changed. */
+	/** Animator changed. */
 	virtual void AnimatorChanged( aeAnimator *animator );
 	
-	/** \brief Model changed. */
+	/** Model changed. */
 	virtual void ModelChanged( aeAnimator *animator );
 	
-	/** \brief The environment component changed. */
+	/** The environment component changed. */
 	virtual void EnvObjectChanged( aeAnimator *animator );
 	
-	/** \brief Sky changed. */
+	/** Sky changed. */
 	virtual void SkyChanged( aeAnimator *animator );
 	
-	/** \brief Animation changed. */
+	/** Animation changed. */
 	virtual void AnimationChanged( aeAnimator *animator );
 	
-	/** \brief Playback changed. */
+	/** Playback changed. */
 	virtual void PlaybackChanged( aeAnimator *animator );
 	
-	/** \brief View changed. */
+	/** View changed. */
 	virtual void ViewChanged( aeAnimator *animator );
 	
-	/** \brief Camera changed. */
+	/** Camera changed. */
 	virtual void CameraChanged( aeAnimator *animator );
 	
-	/** \brief Camera view changed. */
+	/** Camera view changed. */
 	virtual void CameraViewChanged( aeAnimator *animator );
 	
-	/** \brief Active attachment changed. */
+	/** Active attachment changed. */
 	virtual void ActiveAttachmentChanged( aeAnimator *animator, aeAttachment *attachment );
 	
-	/** \brief Attachment changed. */
+	/** Attachment changed. */
 	virtual void AttachmentChanged( aeAnimator *animator, aeAttachment *attachment );
 	
-	/** \brief Attachment count changed added. */
+	/** Attachment count changed added. */
 	virtual void AttachmentStructureChanged( aeAnimator *animator );
 	/*@}*/
 };

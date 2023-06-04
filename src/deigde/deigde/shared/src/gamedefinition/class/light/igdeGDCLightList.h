@@ -31,7 +31,7 @@ class igdeGDCLight;
 /**
  * \brief Game Definition Class Light List.
  */
-class igdeGDCLightList{
+class DE_DLL_EXPORT igdeGDCLightList{
 private:
 	decObjectOrderedSet pLights;
 	

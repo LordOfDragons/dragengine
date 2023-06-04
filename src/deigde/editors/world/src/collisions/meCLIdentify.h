@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine IGDE World Editor
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,25 +19,16 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _MECLIDENTIFY_H_
 #define _MECLIDENTIFY_H_
 
-// includes
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 #include <dragengine/common/math/decMath.h>
 
-
-
-// predefinitions
 class meWorld;
 class meObject;
 class meDecal;
 class deCollider;
-
 
 
 /**
@@ -45,30 +36,56 @@ class deCollider;
  */
 class meCLIdentify : public deBaseScriptingCollider{
 private:
-	meWorld *pWorld;
+	meWorld &pWorld;
 	meObject *pObject;
 	meDecal *pDecal;
+	float pBestDistance;
+	
+	
 	
 public:
-	// constructor, destructor
-	meCLIdentify( meWorld *world );
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create visitor. */
+	meCLIdentify( meWorld &world );
+	
+	/** Clean up visitor. */
 	virtual ~meCLIdentify();
+	/*@}*/
 	
-	// management
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** Reset visitor. */
 	void Reset();
-	inline meObject *GetObject() const{ return pObject; }
-	inline meDecal *GetDecal() const{ return pDecal; }
-	bool HasObject() const;
-	bool HasDecal() const;
 	
-	// notifications
+	/** Identified object or nullptr. */
+	inline meObject *GetObject() const{ return pObject; }
+	
+	/** Identified decal or nullptr. */
+	inline meDecal *GetDecal() const{ return pDecal; }
+	
+	/** Has identified object. */
+	bool HasObject() const;
+	
+	/** Has identified decal. */
+	bool HasDecal() const;
+	/*@}*/
+	
+	
+	
+	/** \name Notifications */
+	/*@{*/
 	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
 	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
 	virtual void ColliderChanged( deCollider *owner );
+	/*@}*/
+	
+	
 	
 private:
 	meObject *pGetObjectForCollider( deCollider *collider ) const;
 };
 
-// end of include only once
 #endif

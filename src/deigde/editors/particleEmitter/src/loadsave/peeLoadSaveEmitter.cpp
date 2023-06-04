@@ -285,7 +285,7 @@ void peeLoadSaveEmitter::pWriteType( decXmlWriter &writer, const peeEmitter &emi
 		writer.WriteTextString( type.GetTrailController( vControllers[ i ].controller ) );
 		writer.WriteClosingTag( "trailController", false );
 	}
-	writer.WriteDataTagInt( "physicsSize", type.GetPhysicsSize() );
+	writer.WriteDataTagFloat( "physicsSize", type.GetPhysicsSize() );
 	
 	switch( type.GetCollisionResponse() ){
 	case deParticleEmitterType::ecrDestroy:

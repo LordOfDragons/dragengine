@@ -19,7 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// includes
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,7 +26,6 @@
 #include "deAnimationKeyframe.h"
 #include "../../common/file/decBaseFileReader.h"
 #include "../../common/exceptions.h"
-
 
 
 // class deAnimationKeyframe
@@ -50,12 +48,7 @@ deAnimationKeyframe::~deAnimationKeyframe(){
 ///////////////
 
 void deAnimationKeyframe::SetTime( float time ){
-	if( time < 0.0f ){
-		pTime = 0.0f;
-		
-	}else{
-		pTime = time;
-	}
+	pTime = decMath::max( time, 0.0f );
 }
 
 void deAnimationKeyframe::SetPosition( const decVector &position ){

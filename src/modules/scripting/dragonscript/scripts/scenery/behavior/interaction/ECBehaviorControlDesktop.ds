@@ -175,7 +175,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 			var DMatrix matrix = getElement().getElementMatrix()
 			if not pBone.empty()
 				matrix = pRenderableDesktop.getDynamicSkin().getComponent() \
-					.getComponent().getBoneMatrix(pBone).toDMatrix() * matrix
+					.getComponent().getBoneMatrix(pBone).normalize().toDMatrix() * matrix
 			end
 			return matrix
 		end

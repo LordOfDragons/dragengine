@@ -261,9 +261,6 @@ pSharedSPBElement( nullptr )
 	}
 	
 	pUpdateRenderTaskFilters();
-	
-	pRTSIndex = renderThread.GetRenderTaskSharedPool().AssignSkinTexture( this );
-	renderThread.GetShader().InvalidateSSBOSkinTextures();
 }
 
 deoglSkinTexture::~deoglSkinTexture(){
@@ -274,6 +271,15 @@ deoglSkinTexture::~deoglSkinTexture(){
 
 // Management
 ///////////////
+
+void deoglSkinTexture::AssignRTSIndex(){
+	if( pRTSIndex != -1 ){
+		return;
+	}
+	
+	pRTSIndex = pRenderThread.GetRenderTaskSharedPool().AssignSkinTexture( this );
+	pRenderThread.GetShader().InvalidateSSBOSkinTextures();
+}
 
 void deoglSkinTexture::BuildChannels( deoglRSkin &skin, const deSkinTexture &texture ){
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
@@ -886,7 +892,6 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 	// try to load caches using the calculated cache ids
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheTextures = caches.GetSkinTextures();
-	deoglPixelBufferMipMap *pixelBufferMipMap = NULL;
 	decBaseFileReader *reader = NULL;
 	char *verifyData = NULL;
 	int i;
@@ -1024,10 +1029,11 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 				continue;
 			}
 			
-			pixelBufferMipMap = new deoglPixelBufferMipMap( pbformat, width, height, depth, maxMipMapLevel );
+			const deoglPixelBufferMipMap::Ref pixelBufferMipMap( deoglPixelBufferMipMap::Ref::New(
+				new deoglPixelBufferMipMap( pbformat, width, height, depth, maxMipMapLevel ) ) );
 			
 			for( j=0; j<pixBufCount; j++ ){
-				deoglPixelBuffer &pixelBuffer = *pixelBufferMipMap->GetPixelBuffer( j );
+				deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer( j );
 				reader->Read( pixelBuffer.GetPointer(), pixelBuffer.GetImageSize() );
 			}
 			
@@ -1036,7 +1042,6 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 			}
 			
 			pChannels[ i ]->SetPixelBufferMipMap( pixelBufferMipMap );
-			pixelBufferMipMap = NULL;
 			
 			// done
 			reader->FreeReference();

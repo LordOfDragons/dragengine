@@ -38,18 +38,10 @@
 
 
 
-// Events
-///////////
-
-FXDEFMAP( igdeNativeFoxSwitcher ) igdeNativeFoxSwitcherMap[] = {
-};
-
-
-
 // Class igdeNativeFoxSwitcher
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxSwitcher, FXSwitcher, igdeNativeFoxSwitcherMap, ARRAYNUMBER( igdeNativeFoxSwitcherMap ) )
+FXIMPLEMENT( igdeNativeFoxSwitcher, FXSwitcher, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

@@ -920,7 +920,8 @@ gdeProperty *gdeWPPropertyList::GetProperty() const{
 
 decString gdeWPPropertyList::GetOption() const{
 	const gdeProperty * const property = GetProperty();
-	return property && pListOptions->GetSelectedItem() ? pListOptions->GetSelectedItem()->GetText() : "";
+	return property && pListOptions->GetSelectedItem()
+		? pListOptions->GetSelectedItem()->GetText() : decString();
 }
 
 int gdeWPPropertyList::GetCustomPatternIndex() const{
@@ -974,7 +975,7 @@ void gdeWPPropertyList::UpdateProperty(){
 			property->GetDefaultValue(), *property );
 		
 		const decString selectedOption( pListOptions->GetSelectedItem()
-			? pListOptions->GetSelectedItem()->GetText() : "" );
+			? pListOptions->GetSelectedItem()->GetText() : decString() );
 		const decStringList &options = property->GetOptions();
 		const int optionCount = options.GetCount();
 		int i;

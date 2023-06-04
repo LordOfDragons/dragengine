@@ -12,8 +12,8 @@
 #define OS_W32_VS 1
 #endif
 
-#ifndef OS_W32_APPSTORE
-#define OS_W32_APPSTORE 1
+#ifdef OS_W32_APPSTORE
+#undef OS_W32_APPSTORE
 #endif
 
 #if defined WINAPI_FAMILY && WINAPI_FAMILY == WINAPI_FAMILY_APP

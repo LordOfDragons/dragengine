@@ -216,9 +216,7 @@ void ceWindowMain::SetConversation( ceConversation *conversation ){
 }
 
 void ceWindowMain::CreateNewConversation(){
-	deObjectReference conversation;
-	conversation.TakeOver( new ceConversation( &GetEnvironment() ) );
-	SetConversation( ( ceConversation* )( deObject* )conversation );
+	SetConversation( ceConversation::Ref::New( new ceConversation( &GetEnvironment() ) ) );
 }
 
 void ceWindowMain::SaveConversation( const char *filename ){
@@ -303,9 +301,7 @@ void ceWindowMain::LoadDocument( const char *filename ){
 		}
 	}
 	
-	deObjectReference conversation;
-	conversation.TakeOver( pLoadSaveSystem->LoadConversation( filename ) );
-	SetConversation( ( ceConversation* )( deObject* )conversation );
+	SetConversation( ceConversation::Ref::New( pLoadSaveSystem->LoadConversation( filename ) ) );
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -427,9 +423,7 @@ public:
 			return;
 		}
 		
-		deObjectReference conversation;
-		conversation.TakeOver( pWindow.GetLoadSaveSystem().LoadConversation( filename ) );
-		pWindow.SetConversation( ( ceConversation* )( deObject* )conversation );
+		pWindow.SetConversation( ceConversation::Ref::New( pWindow.GetLoadSaveSystem().LoadConversation( filename ) ) );
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };
@@ -577,10 +571,10 @@ public:
 			pWindow.GetLoadSaveSystem().LoadCTA( filename, *activeActor );
 			
 		}else{
-			deObjectReference actor;
-			actor.TakeOver( new ceConversationActor( pWindow.GetEnvironment() ) );
-			pWindow.GetLoadSaveSystem().LoadCTA( filename, ( ceConversationActor& )( deObject& )actor );
-			conversation->AddActor( ( ceConversationActor* )( deObject* )actor );
+			const ceConversationActor::Ref actor( ceConversationActor::Ref::New(
+				new ceConversationActor( pWindow.GetEnvironment() ) ) );
+			pWindow.GetLoadSaveSystem().LoadCTA( filename, actor );
+			conversation->AddActor( actor );
 		}
 		return NULL;
 	}

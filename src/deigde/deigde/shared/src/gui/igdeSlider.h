@@ -34,7 +34,7 @@ class igdeSliderListener;
 /**
  * \brief IGDE UI Slider.
  */
-class igdeSlider : public igdeWidget{
+class DE_DLL_EXPORT igdeSlider : public igdeWidget{
 public:
 	/** \brief Orientation. */
 	enum eOrientation{

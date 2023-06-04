@@ -20,7 +20,6 @@
  */
 
 #include <math.h>
-#include <unistd.h>
 
 #include "seWPAPanelSourceWave.h"
 #include "../../seWPSource.h"
@@ -108,8 +107,9 @@ public:
 	cTextMinFrequency( seWPAPanelSourceWave &panel ) : cBaseTextFieldListener( panel ){ }
 	
 	virtual igdeUndo * OnChanged( igdeTextField *textField, seSourceWave *source ){
-		const int value = textField->GetInteger();
-		return value != source->GetMinFrequency() ? new seUSourceWaveSetMinFrequency( source, value ) : NULL;
+		const float value = ( float )textField->GetInteger();
+		return fabsf( value - source->GetMinFrequency() ) < FLOAT_SAFE_EPSILON
+			? new seUSourceWaveSetMinFrequency( source, value ) : NULL;
 	}
 };
 
@@ -118,8 +118,9 @@ public:
 	cTextMaxFrequency( seWPAPanelSourceWave &panel ) : cBaseTextFieldListener( panel ){ }
 	
 	virtual igdeUndo * OnChanged( igdeTextField *textField, seSourceWave *source ){
-		const int value = textField->GetInteger();
-		return value != source->GetMaxFrequency() ? new seUSourceWaveSetMaxFrequency( source, value ) : NULL;
+		const float value = ( float )textField->GetInteger();
+		return fabsf( value - source->GetMaxFrequency() ) < FLOAT_SAFE_EPSILON
+			? new seUSourceWaveSetMaxFrequency( source, value ) : NULL;
 	}
 };
 
@@ -169,8 +170,8 @@ void seWPAPanelSourceWave::UpdateSource(){
 	const seSourceWave * const source = ( seSourceWave* )GetSource();
 	if( source ){
 		pCBType->SetSelectionWithData( ( void* )( intptr_t )source->GetWaveType() );
-		pEditMinFrequency->SetInteger( source->GetMinFrequency() );
-		pEditMaxFrequency->SetInteger( source->GetMaxFrequency() );
+		pEditMinFrequency->SetInteger( ( int )( source->GetMinFrequency() + 0.1f ) );
+		pEditMaxFrequency->SetInteger( ( int )( source->GetMaxFrequency() + 0.1f ) );
 		
 	}else{
 		pCBType->SetSelectionWithData( ( void* )( intptr_t )deSynthesizerSourceWave::ewtSine );

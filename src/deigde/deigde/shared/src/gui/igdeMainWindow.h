@@ -36,7 +36,7 @@ class igdeApplication;
 /**
  * \brief Main window.
  */
-class igdeMainWindow : public igdeWindow{
+class DE_DLL_EXPORT igdeMainWindow : public igdeWindow{
 public:
 	/** \brief Window state. */
 	enum eWindowStates{

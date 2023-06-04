@@ -180,7 +180,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexturePipelines::
 	}
 	
 	deoglRenderThread &renderThread = pSector.GetHeightTerrain().GetRenderThread();
-	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
 		GetWithRef( type ).GetShader();
 	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
@@ -353,7 +353,7 @@ void deoglHTSTexture::pPrepareParamBlock(){
 		pParamBlock = nullptr;
 		
 		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+			deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
@@ -372,7 +372,7 @@ void deoglHTSTexture::pPrepareParamBlock(){
 	
 	if( pDirtyParamBlock ){
 		if( pParamBlock ){
-			UpdateInstanceParamBlock( pParamBlock, pUseSkinTexture->GetPipelines().
+			UpdateInstanceParamBlock( pParamBlock, *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader() );
 		}

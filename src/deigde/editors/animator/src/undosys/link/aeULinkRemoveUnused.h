@@ -31,7 +31,7 @@ class aeAnimator;
 
 
 /**
- * \brief Undo action remove unused links.
+ * Undo action remove unused links.
  */
 class aeULinkRemoveUnused : public igdeUndo{
 private:
@@ -43,11 +43,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo action. */
+	/** Create undo action. */
 	aeULinkRemoveUnused( aeAnimator *animator );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeULinkRemoveUnused();
 	/*@}*/
 	
@@ -56,13 +56,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Has links. */
+	/** Has links. */
 	inline bool HasLinks() const{ return pLinks.GetCount() > 0; }
 	
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

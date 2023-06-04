@@ -1225,11 +1225,13 @@ void deoglShaderParameterBlock::pSetMapped( char *data, int element, int count )
 }
 
 void deoglShaderParameterBlock::pClearMapped(){
-	if( ! pMapped ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pMapped = NULL;
+	DEASSERT_NOTNULL( pMapped )
+	pMapped = nullptr;
+}
+
+void deoglShaderParameterBlock::pSetOffsetPadding( int padding ){
+	pOffsetPadding = padding;
+	pUpdateBufferSize();
 }
 
 void deoglShaderParameterBlock::pSetElementStride( int stride ){

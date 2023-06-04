@@ -13,7 +13,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\scripting\dragonscript\$Version"
 
 Write-Host "DragonScript Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "scrdscript.dll"
+$Library = "$OutputDir\de_module\scripting\dragonscript\scrdscript.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -42,9 +42,22 @@ Write-Host "DragonScript Module: Copy Runtime to '$RuntimeTargetDir'"
 Copy-Files -SourceDir "$RuntimeDir\dsinstall" -Pattern "*" -TargetDir $RuntimeTargetDir
 
 
+# igde
+$DataTargetDir = "$OutputDir\$PathDistIGDEShares"
+Write-Host "DragonScript Module: Copy IGDE Data to '$DataTargetDir'"
+
+$PathModuleShared = "%{DE_SHARE_PATH}\modules\scripting\dragonscript\$Version\data"
+
+Copy-Files -SourceDir "$SourceDir\..\igde\gamedefs"`
+    -TargetDir "$DataTargetDir\gamedefs" -Pattern "*.degd"`
+    -Replace1Key "%{PATH_MODULE_SHARED}" -Replace1Value "$PathModuleShared"
+
+Copy-Files -SourceDir "$SourceDir\..\igde\templates" -TargetDir "$DataTargetDir\templates" -Pattern "*"
+
+
 # debug
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\scripting\dragonscript\$Version"
 Write-Host "DragonScript Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "scrdscript.pdb") -Destination $TargetDir
-Install-Files "$RuntimeDir\pdb" -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\scripting\dragonscript\scrdscript.pdb" -Destination $TargetDir
+Install-Files "$RuntimeDir\pdb\libdscript.pdb" -Destination $TargetDir

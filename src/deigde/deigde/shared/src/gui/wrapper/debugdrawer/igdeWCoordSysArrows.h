@@ -33,7 +33,7 @@
  * color to indicate the coordinate axis it refers to. The coordinate system
  * is given by a position and orientation.
  */
-class igdeWCoordSysArrows{
+class DE_DLL_EXPORT igdeWCoordSysArrows{
 private:
 	igdeWDebugDrawerShape pDDSAxisX;
 	igdeWDebugDrawerShape pDDSAxisY;

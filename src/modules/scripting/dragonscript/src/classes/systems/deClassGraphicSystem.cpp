@@ -28,6 +28,8 @@
 #include "../deClassModuleParameter.h"
 #include "../canvas/deClassCanvasView.h"
 #include "../math/deClassPoint.h"
+#include "../math/deClassDVector.h"
+#include "../math/deClassQuaternion.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -223,10 +225,26 @@ void deClassGraphicSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
 	rt->PushInt( ds.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->GetFPSRate() );
 }
 
+// public static func void setVRDebugPanelPosition( DVector position, Orientation orientation )
+deClassGraphicSystem::nfSetVRDebugPanelPosition::nfSetVRDebugPanelPosition( const sInitData &init ) :
+dsFunction( init.clsGraSys, "setVRDebugPanelPosition", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsDVector ); // position
+	p_AddParameter( init.clsQuaternion ); // orientation
+}
+void deClassGraphicSystem::nfSetVRDebugPanelPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deScriptingDragonScript &ds = ( ( deClassGraphicSystem* )GetOwnerClass() )->GetDS();
+	
+	const decDVector &position = ds.GetClassDVector()->GetDVector( rt->GetValue( 0 )->GetRealObject() );
+	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion( rt->GetValue( 1 )->GetRealObject() );
+	
+	ds.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->SetVRDebugPanelPosition( position, orientation );
+}
+
 
 
 // class deClassGraphicSystem
-////////////////////////////////
+///////////////////////////////
 // constructor
 deClassGraphicSystem::deClassGraphicSystem( deScriptingDragonScript &ds ) :
 dsClass("GraphicSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
@@ -253,6 +271,8 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 	init.clsModPar = pDS.GetClassModuleParameter();
 	init.clsCView = pDS.GetClassCanvasView();
 	init.clsPoint = pDS.GetClassPoint();
+	init.clsDVector = pDS.GetClassDVector();
+	init.clsQuaternion = pDS.GetClassQuaternion();
 	
 	// add functions
 	AddFunction( new nfGetWindowWidth( init ) );
@@ -261,11 +281,12 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfSetWindowGeometry( init ) );
 	AddFunction( new nfSetWindowTitle( init ) );
 	AddFunction( new nfGetPrimaryCanvas( init ) );
-	AddFunction(new nfGetParameterCount(init));
-	AddFunction(new nfGetParameterInfo(init));
-	AddFunction(new nfGetParameterInfo2(init));
-	AddFunction(new nfGetParameterValue(init));
-	AddFunction(new nfSetParameterValue(init));
+	AddFunction( new nfGetParameterCount( init ) );
+	AddFunction( new nfGetParameterInfo( init ) ) ;
+	AddFunction( new nfGetParameterInfo2( init ) );
+	AddFunction( new nfGetParameterValue( init ) );
+	AddFunction( new nfSetParameterValue( init ) );
 	AddFunction( new nfSendCommand( init ) );
 	AddFunction( new nfGetFPSRate( init ) );
+	AddFunction( new nfSetVRDebugPanelPosition( init ) );
 }

@@ -198,8 +198,8 @@ class MaterialSound
 	/**
 	 * \brief Play sound using collision as parameter source.
 	 * 
-	 * Plays sound at collision position using collision impulse as power.
-	 * Uses GameWorld.playSoundOnce() or GameWorld.playSynthesizerOnce().
+	 * Plays sound at collision position using collision impulse as power. Uses
+	 * GWBehaviorOneShotSpeaker.playSoundOnce() or GWBehaviorOneShotSpeaker.playSynthesizerOnce().
 	 * 
 	 * To control the speaker used to play the sound use createSpeaker() instead.
 	 */
@@ -221,7 +221,7 @@ class MaterialSound
 				return
 			end
 			
-			world.playSoundOnce( this.randomSound(), position, \
+			world.getBehaviorOneShotSpeaker().playSoundOnce( this.randomSound(), position, \
 				DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinVolume, this.pMaxVolume ), \
 				DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinRange, this.pMaxRange ) )
 			
@@ -240,7 +240,7 @@ class MaterialSound
 				controller.setCurveConstant( DEMath.random() )
 			end
 			
-			world.playSynthesizerOnce( instance, position, \
+			world.getBehaviorOneShotSpeaker().playSynthesizerOnce( instance, position, \
 				DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinVolume, this.pMaxVolume ), \
 				DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinRange, this.pMaxRange ) )
 		end

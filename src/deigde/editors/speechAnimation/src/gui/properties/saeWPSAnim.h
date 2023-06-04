@@ -26,6 +26,7 @@
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
+#include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -39,7 +40,7 @@ class saeWord;
 
 
 /**
- * \brief Speech Animation property window.
+ * Speech Animation property window.
  */
 class saeWPSAnim : public igdeContainerScroll{
 private:
@@ -54,11 +55,17 @@ private:
 	igdeEditPathReference pEditAnimPath;
 	igdeComboBoxFilterReference pCBNeutralMove;
 	
+	igdeListBoxReference pListNeutralVertexPositionSets;
+	igdeComboBoxFilterReference pCBNeutralVertexPositionSets;
+	igdeButtonReference pBtnNeutralVertexPositionSetAdd;
+	igdeButtonReference pBtnNeutralVertexPositionSetDel;
+	
 	igdeComboBoxReference pCBPhoneme;
 	igdeTextFieldReference pEditPhonemeIPA;
 	igdeTextFieldReference pEditPhonemeSampleText;
 	igdeTextFieldReference pEditPhonemeLength;
 	igdeComboBoxFilterReference pCBPhonemeMove;
+	igdeComboBoxFilterReference pCBPhonemeVertexPositionSet;
 	
 	igdeComboBoxFilterReference pCBWord;
 	igdeTextFieldReference pEditWordName;
@@ -70,11 +77,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	saeWPSAnim( saeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~saeWPSAnim();
 	/*@}*/
 	
@@ -83,55 +90,67 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Speech animation. */
+	/** Speech animation. */
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
-	/** \brief Set speech animation. */
+	/** Set speech animation. */
 	void SetSAnimation( saeSAnimation *sanimation );
 	
-	/** \brief Speech animation path changed. */
+	/** Speech animation path changed. */
 	void OnSAnimationPathChanged();
 	
 	
 	
-	/** \brief Update speech animation. */
+	/** Update speech animation. */
 	void UpdateSAnimation();
 	
-	/** \brief Update neutral move list. */
+	/** Update neutral move list. */
 	void UpdateNeutralMoveList();
 	
+	/** Update neutral vertex position set list. */
+	void UpdateNeutralVertexPositionSetList();
+	
+	/** Neutral vertex position set combo box text. */
+	const decString &GetCBNeutralVertexPositionSetText() const;
+	
+	/** Set neutral vertex position set combo box text. */
+	void SetCBNeutralVertexPositionSetText( const char *text );
 	
 	
-	/** \brief Active phoneme or NULL. */
+	
+	/** Active phoneme or NULL. */
 	saePhoneme *GetActivePhoneme() const;
 	
-	/** \brief Update phoneme list. */
+	/** Update phoneme list. */
 	void UpdatePhonemeList();
 	
-	/** \brief Change selection to active phoneme. */
+	/** Change selection to active phoneme. */
 	void SelectActivePhoneme();
 	
-	/** \brief Update phoneme. */
+	/** Update phoneme. */
 	void UpdatePhoneme();
 	
-	/** \brief Update phoneme move list. */
+	/** Update phoneme move list. */
 	void UpdatePhonemeMoveList();
 	
+	/** Update phoneme vertex position set list. */
+	void UpdatePhonemeVertexPositionSetList();
 	
 	
-	/** \brief Active word or NULL. */
+	
+	/** Active word or NULL. */
 	saeWord *GetActiveWord() const;
 	
-	/** \brief Update word list. */
+	/** Update word list. */
 	void UpdateWordList();
 	
-	/** \brief Change selection to active word. */
+	/** Change selection to active word. */
 	void SelectActiveWord();
 	
-	/** \brief Update word. */
+	/** Update word. */
 	void UpdateWord();
 	/*@}*/
 };

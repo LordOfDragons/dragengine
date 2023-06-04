@@ -55,10 +55,7 @@ pin Dragengine.Preloading
  * long list of colors.
  */
 class ECPColorList extends ElementClassProperty
-	/** \brief Coded used to decode color string. */
 	private var CodecPropertyString pCodec
-	
-	/** \brief Array of Color. */
 	private var Array pColorList
 	
 	
@@ -139,6 +136,14 @@ class ECPColorList extends ElementClassProperty
 	/** \brief Set value of property from XML decoded value. */
 	public func void setValue(Object value)
 		setColorsFromString(value cast String)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pColorList = Array.new((property cast ECPColorList).pColorList)
 	end
 	
 	

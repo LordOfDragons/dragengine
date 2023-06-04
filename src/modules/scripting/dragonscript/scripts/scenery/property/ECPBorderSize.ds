@@ -38,27 +38,35 @@ class ECPBorderSize extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, BorderSize value ) super( name )
-		this.pValue = value
+	public func new(String name, BorderSize value) super(name)
+		pValue = value
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func BorderSize getBorderSize()
-		return this.pValue
+		return pValue
 	end
 	
 	/** \brief Set value. */
-	public func void setBorderSize( BorderSize area )
-		this.pValue = area
+	public func void setBorderSize(BorderSize area)
+		pValue = area
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValue = value cast BorderSize
+	public func void setValue(Object value)
+		pValue = value cast BorderSize
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pValue = (property cast ECPBorderSize).pValue
 	end
 	
 	
@@ -74,25 +82,25 @@ class ECPBorderSize extends ElementClassProperty
 	 * - "size": BorderSize.new(size)
 	 * - "left top right bottom": BorderSize.new(left, top, right, bottom)
 	 */
-	public func BorderSize getBorderSize( StubWithProperties stub, CodecPropertyString codec )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func BorderSize getBorderSize(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pValue
+			return pValue
 		end
 		
-		var Array list = codec.decodeFixedIntList( value, 4 )
+		var Array list = codec.decodeFixedIntList(value, 4)
 		
 		if list.getCount() == 1
 			// size
-			return BorderSize.new( ( list.getAt( 0 ) cast String ).toInt() )
+			return BorderSize.new((list.getAt(0) cast String).toInt())
 			
 		else
 			// left top right bottom
-			return BorderSize.new( \
-				( list.getAt( 0 ) cast String ).toInt(), \
-				( list.getAt( 1 ) cast String ).toInt(), \
-				( list.getAt( 2 ) cast String ).toInt(), \
-				( list.getAt( 3 ) cast String ).toInt() )
+			return BorderSize.new(\
+				(list.getAt(0) cast String).toInt(), \
+				(list.getAt(1) cast String).toInt(), \
+				(list.getAt(2) cast String).toInt(), \
+				(list.getAt(3) cast String).toInt())
 		end
 	end
 end

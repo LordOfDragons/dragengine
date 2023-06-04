@@ -60,7 +60,6 @@ void deoglPipelineState::Reset(){
 	pColorMask[ 3 ] = true;
 	pDepthMask = true;
 	pEnableScissorTest = false;
-	pEnableRasterizerDiscard = false;
 	pPolygonMode = GL_FILL;
 	pEnableCullFace = false;
 	pCullFace = GL_BACK;
@@ -93,7 +92,6 @@ void deoglPipelineState::Reset(){
 	OGL_CHECK( pRenderThread, glColorMask( pColorMask[ 0 ], pColorMask[ 1 ], pColorMask[ 2 ], pColorMask[ 3 ] ) );
 	OGL_CHECK( pRenderThread, glDepthMask( pDepthMask ) );
 	ENABLE_GL_STATE( pEnableScissorTest, GL_SCISSOR_TEST )
-	ENABLE_GL_STATE( pEnableRasterizerDiscard, GL_RASTERIZER_DISCARD )
 	OGL_CHECK( pRenderThread, glPolygonMode( GL_FRONT_AND_BACK, pPolygonMode ) );
 	ENABLE_GL_STATE( pEnableCullFace, GL_CULL_FACE )
 	OGL_CHECK( pRenderThread, glCullFace( pCullFace ) );
@@ -145,16 +143,6 @@ void deoglPipelineState::EnableScissorTest( bool enable ){
 	pEnableScissorTest = enable;
 	
 	ENABLE_GL_STATE( enable, GL_SCISSOR_TEST )
-}
-
-void deoglPipelineState::EnableRasterizerDiscard( bool enable ){
-	if( enable == pEnableRasterizerDiscard ){
-		return;
-	}
-	
-	pEnableRasterizerDiscard = enable;
-	
-	ENABLE_GL_STATE( enable, GL_RASTERIZER_DISCARD )
 }
 
 void deoglPipelineState::PolygonMode( GLenum mode ){

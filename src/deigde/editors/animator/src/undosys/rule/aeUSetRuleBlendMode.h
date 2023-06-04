@@ -31,7 +31,7 @@ class aeRule;
 
 
 /**
- * \brief Undo action rule set blend mode.
+ * Undo action rule set blend mode.
  */
 class aeUSetRuleBlendMode : public igdeUndo{
 private:
@@ -43,19 +43,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeUSetRuleBlendMode( aeRule *rule, deAnimatorRule::eBlendModes newMode );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleBlendMode();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 	

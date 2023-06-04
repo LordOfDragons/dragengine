@@ -43,7 +43,9 @@ function Copy-Files {
     param (
         [Parameter(Mandatory=$true)][string]$SourceDir,
         [Parameter(Mandatory=$true)][string]$TargetDir,
-        [Parameter(Mandatory=$true)][string]$Pattern
+        [Parameter(Mandatory=$true)][string]$Pattern,
+        [Parameter(Mandatory=$false)][string]$Replace1Key,
+        [Parameter(Mandatory=$false)][string]$Replace1Value
     )
 
     $SourceDir = Resolve-Path $SourceDir
@@ -62,7 +64,15 @@ function Copy-Files {
         if (!(Test-Path $ParentPath)) {
             New-Item -ItemType Directory $ParentPath | Out-Null
         }
-        Copy-Item -Path $_.FullName -Destination (Join-Path -Path $TargetDir -ChildPath $RelativePath) -Force
+        
+        if ($Replace1Key) {
+            $Content = Get-Content -Raw -Path $_.FullName
+            $Content = $Content -creplace "$Replace1Key","$Replace1Value"
+            Set-Content -Path "$TargetDir\$RelativePath" -Value $Content
+
+        }else{
+            Copy-Item -Path $_.FullName -Destination "$TargetDir\$RelativePath" -Force
+        }
     }
 }
 
@@ -78,7 +88,7 @@ function Copy-Manifest {
         [Parameter(Mandatory=$true)][string]$Path,
         [Parameter(Mandatory=$true)][string]$Destination,
         [Parameter(Mandatory=$true)][string]$Library,
-        [Parameter(Mandatory=$true)][string]$Version
+        [Parameter(Mandatory=$false)][string]$Version = "1.0"
     )
 
     $ItemLibrary = Get-Item -Path $Library
@@ -145,3 +155,31 @@ New-Variable -Name PathDistDEPdbData -Value "$PathDistDEPdbBase\Data" -Scope Glo
 New-Variable -Name PathDistDEPdbDataModules -Value "$PathDistDEPdbData\modules" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEPdbSystem -Value "$PathDistDEDebug\@System" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEPdbLauncherBin -Value "$PathDistDEPdbBase\Launchers\Bin" -Scope Global -Option ReadOnly -Force
+
+
+
+New-Variable -Name PathDistIGDE -Value "Distribute\Igde\Application" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEBase -Value "$PathDistIGDE\@ProgramFiles\DEIGDE" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEData -Value "$PathDistIGDEBase\Data" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEDataModules -Value "$PathDistIGDEData\modules" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEShares -Value "$PathDistIGDEBase\Share" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDESharesModules -Value "$PathDistIGDEShares\modules" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDESystem -Value "$PathDistIGDE\@System" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEBin -Value "$PathDistIGDEBase\Bin" -Scope Global -Option ReadOnly -Force
+
+New-Variable -Name PathDistIGDESdk -Value "Distribute\Igde\SDK" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDESdkBase -Value "$PathDistIGDESdk\@ProgramFiles\DEIGDE\SDK" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDESdkInc -Value "$PathDistIGDESdkBase\include" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDESdkLib -Value "$PathDistIGDESdkBase\lib" -Scope Global -Option ReadOnly -Force
+
+New-Variable -Name PathDistIGDEDebug -Value "Distribute\Igde\Debug" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEPdbBase -Value "$PathDistIGDEDebug\@ProgramFiles\DEIGDE" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEPdbData -Value "$PathDistIGDEPdbBase\Data" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEPdbDataModules -Value "$PathDistIGDEPdbData\modules" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEPdbSystem -Value "$PathDistIGDEDebug\@System" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEPdbBin -Value "$PathDistIGDEPdbBase\Bin" -Scope Global -Option ReadOnly -Force
+
+
+
+New-Variable -Name PathDistLive -Value "Distribute\Live" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistLivePdb -Value "$PathDistLive" -Scope Global -Option ReadOnly -Force

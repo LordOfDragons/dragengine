@@ -34,7 +34,7 @@ class igdeGDSkyController;
 /**
  * \brief Game sky.
  */
-class igdeGDSky : public deObject{
+class DE_DLL_EXPORT igdeGDSky : public deObject{
 private:
 	decString pPath;
 	decString pName;

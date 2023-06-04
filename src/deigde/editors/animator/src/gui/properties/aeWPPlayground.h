@@ -43,7 +43,7 @@ class aeWPPlaygroundListener;
 
 
 /**
- * \brief Playground Panel.
+ * Playground Panel.
  */
 class aeWPPlayground : public igdeContainerScroll{
 private:
@@ -95,11 +95,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPPlayground( aeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPPlayground();
 	/*@}*/
 	
@@ -108,34 +108,34 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Leg. */
+	/** Leg. */
 	aeAnimatorLocomotionLeg *GetLeg() const;
 	
-	/** \brief Number of controllers. */
+	/** Number of controllers. */
 	inline int GetControllerCount() const{ return pControllerCount; }
 	
-	/** \brief Controller at index. */
+	/** Controller at index. */
 	sController &GetControllerAt( int index ) const;
 	
-	/** \brief Rebuild controllers list. */
+	/** Rebuild controllers list. */
 	void RebuildControllers();
 	
-	/** \brief Update controller. */
+	/** Update controller. */
 	void UpdateController( aeController *controller );
 	
-	/** \brief Update controller value. */
+	/** Update controller value. */
 	void UpdateControllerValue( aeController *controller );
 	
-	/** \brief Update locomotion. */
+	/** Update locomotion. */
 	void UpdateLocomotion();
 	
-	/** \brief Update locomotion leg. */
+	/** Update locomotion leg. */
 	void UpdateLocomotionLeg();
 	/*@}*/
 };

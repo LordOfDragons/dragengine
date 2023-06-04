@@ -213,7 +213,7 @@ void aeSubAnimator::AddController( const char *name, float minimum, float maximu
 		
 		pEngAnimator->AddController( engController );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( engController ) delete engController;
 		throw;
 	}
@@ -236,7 +236,7 @@ void aeSubAnimator::AddLink( int controller, const decCurveBezier &curve ){
 		
 		pEngAnimator->AddLink( engLink );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( engLink ) delete engLink;
 		throw;
 	}
@@ -251,7 +251,7 @@ void aeSubAnimator::AddRuleSS(){
 		pEngAnimator->AddRule( engRule );
 		engRule->FreeReference();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( engRule ){
 			engRule->FreeReference();
 		}
@@ -281,7 +281,7 @@ const char *solverBone, int linkBlendFactor ){
 		pEngAnimator->AddRule( engRule );
 		engRule->FreeReference();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( engRule ){
 			engRule->FreeReference();
 		}

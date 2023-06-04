@@ -45,11 +45,18 @@ public:
 		deoxrGraphicApiOpenGL::Framebuffer::Ref openglFbo;
 	};
 	
+	/** Type. */
+	enum eType{
+		etColor,
+		etDepth
+	};
+	
 	
 	
 private:
 	deoxrSession &pSession;
 	
+	const eType pType;
 	decPoint pSize;
 	
 	XrSwapchain pSwapchain;
@@ -66,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create space. */
-	deoxrSwapchain( deoxrSession &session, const decPoint &size );
+	deoxrSwapchain( deoxrSession &session, const decPoint &size, eType type );
 	
 protected:
 	/** Clean up space. */
@@ -80,6 +87,9 @@ public:
 	/*@{*/
 	/** Session. */
 	inline deoxrSession &GetSession() const{ return pSession; }
+	
+	/** Type. */
+	inline eType GetType() const{ return pType; }
 	
 	/** Size. */
 	inline const decPoint &GetSize() const{ return pSize; }

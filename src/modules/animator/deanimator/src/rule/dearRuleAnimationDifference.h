@@ -24,6 +24,7 @@
 
 #include "dearRule.h"
 #include "../dearMapAnimationBones.h"
+#include "../dearMapAnimationVPS.h"
 
 class dearAnimationMove;
 class dearAnimationState;
@@ -32,18 +33,16 @@ class deAnimatorRuleAnimationDifference;
 
 
 /**
- * \brief Difference animation rule.
+ * Difference animation rule.
  */
 class dearRuleAnimationDifference : public dearRule{
 private:
 	const deAnimatorRuleAnimationDifference &pAnimationDifference;
 	dearMapAnimationBones pMapAnimationBones;
+	dearMapAnimationVPS pMapAnimationVPS;
 	
 	dearAnimationMove *pMove1;
 	dearAnimationMove *pMove2;
-	 //, pDirtyAnimState;
-//	dearAnimationState *pAnimStates;
-//	int pAnimStateCount;
 	
 	dearControllerTarget pTargetLeadingMoveTime;
 	dearControllerTarget pTargetReferenceMoveTime;
@@ -51,15 +50,16 @@ private:
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pEnableVPS;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleAnimationDifference( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleAnimationDifference &rule );
 	
-	/** \brief Clean up animator. */
+	/** Clean up animator. */
 	virtual ~dearRuleAnimationDifference();
 	/*@}*/
 	
@@ -67,16 +67,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	
 private:
 	void pUpdateMove();
-//	void pUpdateAnimStates();
 };
 
 #endif

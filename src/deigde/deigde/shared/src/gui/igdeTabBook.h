@@ -33,7 +33,7 @@
 /**
  * \brief IGDE UI Tab book.
  */
-class igdeTabBook : public igdeContainer{
+class DE_DLL_EXPORT igdeTabBook : public igdeContainer{
 private:
 	decObjectList pHeaders;
 	int pActivePanel;
@@ -102,7 +102,7 @@ public:
 	 * \brief Header.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	class cHeader : public deObject{
+	class DE_DLL_EXPORT cHeader : public deObject{
 	public:
 		decString text;
 		decString description;

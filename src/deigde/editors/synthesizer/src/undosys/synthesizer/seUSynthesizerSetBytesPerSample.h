@@ -36,8 +36,8 @@ class seUSynthesizerSetBytesPerSample : public igdeUndo{
 private:
 	seSynthesizer *pSynthesizer;
 	
-	float pOldBytesPerSample;
-	float pNewBytesPerSample;
+	int pOldBytesPerSample;
+	int pNewBytesPerSample;
 	
 	
 	
@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSynthesizerSetBytesPerSample( seSynthesizer *synthesizer, float newBytesPerSample );
+	seUSynthesizerSetBytesPerSample( seSynthesizer *synthesizer, int newBytesPerSample );
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -157,6 +157,8 @@ int main( int argcount, char **args ){
 
 #ifdef OS_W32
 static int WINAPI RealWinMain(){
+	(void)SetProcessDpiAwarenessContext( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 );
+
 	try{
 		decUnicodeArgumentList argsList;
 		argsList.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );

@@ -37,16 +37,6 @@ public:
 		ellDebug
 	};
 	
-	/** Occlusion Test Mode. */
-	enum eOcclusionTestModes{
-		/** No occlusion testing. */
-		eoctmNone,
-		/** VBO to texture occlusion testing. */
-		eoctmVBOToTexture,
-		/** Transform feedback occlusion testing. */
-		eoctmTransformFeedback
-	};
-	
 	/** Environment map method. */
 	enum eEnvironmentMapMethods{
 		/** Single pre-mixed environment map. */
@@ -82,6 +72,12 @@ public:
 		egiusMedium,
 		egiusHigh,
 		egiusVeryHigh
+	};
+	
+	enum eVSyncMode{
+		evsmOff,
+		evsmOn,
+		evsmAdaptive
 	};
 	
 	
@@ -177,11 +173,6 @@ private:
 	bool pBugNo2ComponentFBOTex;
 	
 	bool pDebugNoCulling;
-	eOcclusionTestModes pOcclusionTestMode;
-	
-	int pQuickDebug;
-	
-	int pDebugSnapshot;
 	
 	bool pDisableCubeMapLinearFiltering;
 	
@@ -189,6 +180,8 @@ private:
 	
 	eGIQuality pGIQuality;
 	eGIUpdateSpeed pGIUpdateSpeed;
+	
+	eVSyncMode pVSyncMode;
 	
 	decStringSet pDisableExtensions;
 	
@@ -509,23 +502,10 @@ public:
 	/** Sets if 2-component fbo textures are disabled to counter an nVidia driver bug. */
 	void SetBugNo2ComponentFBOTex( bool bugNo2ComponentFBOTex );
 	
-	/** Retrieves the quick debug value. */
-	inline int GetQuickDebug() const{ return pQuickDebug; }
-	/** Sets the quick debug value. */
-	void SetQuickDebug( int value );
 	/** Determines if software culling is disabled. */
 	inline bool GetDebugNoCulling() const{ return pDebugNoCulling; }
 	/** Sets if software culling is disabled. */
 	void SetDebugNoCulling( bool noCulling );
-	/** Retrieves the occlusion test mode. */
-	inline eOcclusionTestModes GetOcclusionTestMode() const{ return pOcclusionTestMode; }
-	/** Sets the occlusion test mode. */
-	void SetOcclusionTestMode( eOcclusionTestModes mode );
-	
-	/** Retrieves the debug snapshot value. */
-	inline int GetDebugSnapshot() const{ return pDebugSnapshot; }
-	/** Sets the debug snapshot value. */
-	void SetDebugSnapshot( int snapshot );
 	
 	/** Determines if linear filtering for cube mapping has to be disabled. */
 	inline bool GetDisableCubeMapLinearFiltering() const{ return pDisableCubeMapLinearFiltering; }
@@ -543,6 +523,9 @@ public:
 	
 	inline eGIUpdateSpeed GetGIUpdateSpeed() const{ return pGIUpdateSpeed; }
 	void SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed );
+	
+	inline eVSyncMode GetVSyncMode() const{ return pVSyncMode; }
+	void SetVSyncMode( eVSyncMode mode );
 	
 	/** OpenGL extensions to disable. */
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }

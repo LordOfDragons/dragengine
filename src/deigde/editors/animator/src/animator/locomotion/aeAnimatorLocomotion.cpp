@@ -659,7 +659,7 @@ void aeAnimatorLocomotion::SetUseLegPairCount( int pairCount ){
 		
 	}else{
 		pTSGroundPosition.Set( 0.0f, 0.0f, 0.0f );
-		pTSGroundExtents.Set( 0.6f, 0.8, 2.0f );
+		pTSGroundExtents.Set( 0.6f, 0.8f, 2.0f );
 		/*
 		pDDSCollider.SetVisible( false );
 		
@@ -1014,7 +1014,7 @@ void aeAnimatorLocomotion::Update( float elapsed ){
 void aeAnimatorLocomotion::PostPhysics(){
 	decQuaternion orientation( pCollider->GetOrientation() );
 	decDVector position( pCollider->GetPosition() );
-	const float testDistance = 0.6;
+	const float testDistance = 0.6f;
 	const float gap = 0.01f;
 	
 	// test the how far above the ground the ai collider is located by moving the ai collider

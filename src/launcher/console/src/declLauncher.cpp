@@ -69,7 +69,8 @@ pConfiguration( NULL ){
 	AddFileLogger( "delauncher-console" );
 	
 	// set launcher to use direct engine instance
-	SetEngineInstanceFactory( new delEngineInstanceDirect::Factory );
+	SetEngineInstanceFactory( delEngineInstanceDirect::Factory::Ref::New(
+		new delEngineInstanceDirect::Factory ) );
 }
 
 declLauncher::~declLauncher(){

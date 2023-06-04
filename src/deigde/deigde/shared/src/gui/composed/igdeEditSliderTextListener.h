@@ -32,7 +32,7 @@ class igdeEditSliderText;
 /**
  * \brief IGDE UI EditSliderText Listener.
  */
-class igdeEditSliderTextListener : public deObject{
+class DE_DLL_EXPORT igdeEditSliderTextListener : public deObject{
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

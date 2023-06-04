@@ -232,8 +232,6 @@ private:
 	void pCmdCapabilities( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
-	void pCmdDebugSnapshot( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	
 	void pCmdShowLightFullBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowLightBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowLightVolume( const decUnicodeArgumentList &command, decUnicodeString &answer );

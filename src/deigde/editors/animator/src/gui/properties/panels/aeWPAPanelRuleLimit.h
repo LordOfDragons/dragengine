@@ -24,11 +24,12 @@
 
 #include "aeWPAPanelRule.h"
 
+#include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 
 
 /**
- * \brief Limit rule panel.
+ * Limit rule panel.
  */
 class aeWPAPanelRuleLimit : public aeWPAPanelRule{
 private:
@@ -38,6 +39,8 @@ private:
 	igdeEditVectorReference pEditMaxRot;
 	igdeEditVectorReference pEditMinScale;
 	igdeEditVectorReference pEditMaxScale;
+	igdeTextFieldReference pEditMinVertexPositionSet;
+	igdeTextFieldReference pEditMaxVertexPositionSet;
 	igdeComboBoxReference pCBCoordFrame;
 	igdeCheckBoxReference pChkEnablePosXMin;
 	igdeCheckBoxReference pChkEnablePosXMax;
@@ -57,6 +60,8 @@ private:
 	igdeCheckBoxReference pChkEnableScaleYMax;
 	igdeCheckBoxReference pChkEnableScaleZMin;
 	igdeCheckBoxReference pChkEnableScaleZMax;
+	igdeCheckBoxReference pChkEnableVertexPositionSetMin;
+	igdeCheckBoxReference pChkEnableVertexPositionSetMax;
 	igdeComboBoxFilterReference pCBTargetBone;
 	
 	
@@ -64,11 +69,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new panel. */
+	/** Create new panel. */
 	aeWPAPanelRuleLimit( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleLimit();
 	/*@}*/
 	
@@ -77,10 +82,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update rig bone list. */
+	/** Update rig bone list. */
 	virtual void UpdateRigBoneList();
 	
-	/** \brief Updates the rule. */
+	/** Updates the rule. */
 	virtual void UpdateRule();
 	/*@}*/
 };

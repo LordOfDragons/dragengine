@@ -46,11 +46,18 @@ pFile( NULL )
 #ifdef OS_W32
 	wchar_t widePath[ MAX_PATH ];
 	deOSWindows::Utf8ToWide( filename, widePath, MAX_PATH );
-	#ifdef OS_W32_VS
-	_wfopen_s( &pFile, widePath, append ? L"ab" : L"wb" );
-	#else
+	
+#ifdef OS_W32_VS
+	pFile = _wfsopen( widePath, append ? L"ab" : L"wb", _SH_DENYNO );
+	if( ! pFile ){
+		errno_t result = 0;
+		_get_errno( &result );
+		DETHROW_INFO( deeFileNotFound, pFormatError( result ) );
+	}
+
+#else
 	pFile = _wfopen( widePath, append ? L"ab" : L"wb" );
-	#endif
+#endif
 	
 #else
 	pFile = fopen( filename, append ? "ab" : "wb" );
@@ -125,3 +132,19 @@ decBaseFileWriter::Ref decDiskFileWriter::Duplicate(){
 	}
 	return writer;
 }
+
+
+
+// Private Functions
+//////////////////////
+
+#ifdef OS_W32_VS
+decString decDiskFileWriter::pFormatError( errno_t error ) const{
+	char buffer[ 100 ];
+	strerror_s( buffer, sizeof( buffer ), error );
+
+	decString message;
+	message.Format( "%s: %s (%d)", pFilename, buffer, error );
+	return message;
+}
+#endif

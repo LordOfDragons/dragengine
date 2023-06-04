@@ -240,7 +240,7 @@ void meViewEditorRotate::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 		const decPoint screenPoint = decPoint( GetViewWidth() / 2, GetViewHeight() / 2 );
 		const decPoint screenDirection = GetDragOrigin() - screenPoint;
 		
-		pNullAngle = atan2f( -screenDirection.y, screenDirection.x );
+		pNullAngle = atan2f( ( float )-screenDirection.y, ( float )screenDirection.x );
 		
 		( ( meURotateObject& )( igdeUndo& )pUndoRotate ).SetPivot( center );
 		( ( meURotateObject& )( igdeUndo& )pUndoRotate ).SetAxis( axis );
@@ -267,7 +267,7 @@ void meViewEditorRotate::OnMouseMove( int x, int y, bool shift, bool control ){
 	
 	const decPoint screenPoint = decPoint( GetViewWidth() / 2, GetViewHeight() / 2 );
 	const decPoint screenDirection = GetDragCurrent() - screenPoint;
-	float angle = ( atan2f( -screenDirection.y, screenDirection.x ) - pNullAngle ) / DEG2RAD;
+	float angle = ( atan2f( ( float )-screenDirection.y, ( float )screenDirection.x ) - pNullAngle ) / DEG2RAD;
 	const meConfiguration &configuration = GetConfiguration();
 	decDVector axis;
 	

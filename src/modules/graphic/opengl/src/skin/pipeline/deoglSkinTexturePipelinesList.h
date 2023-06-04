@@ -24,6 +24,8 @@
 
 #include "deoglSkinTexturePipelines.h"
 
+class deoglShaderLoadingTimeout;
+
 
 /**
  * Skin texture pipelines list.
@@ -74,7 +76,7 @@ public:
 	deoglSkinTexturePipelines &GetAt( ePipelineTypes type ) const;
 	
 	/** Prepare all pipelines. */
-	void Prepare();
+	void Prepare( deoglShaderLoadingTimeout &timeout );
 	/*@}*/
 };
 

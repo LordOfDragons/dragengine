@@ -42,10 +42,10 @@ class decStringSet;
  * Shows a list of all tags allowing the user to enable/disable them by double clicking
  * or using the context menu.
  */
-class igdeToggleTags : public igdeContainerFlow, igdeActionListener{
+class DE_DLL_EXPORT igdeToggleTags : public igdeContainerFlow, igdeActionListener{
 protected:
 	/** \brief Action enable all tags. */
-	class cActionEnableAll : public igdeAction{
+	class DE_DLL_EXPORT cActionEnableAll : public igdeAction{
 	protected:
 		igdeToggleTags &pWidget;
 		
@@ -55,7 +55,7 @@ protected:
 	};
 	
 	/** \brief Action disable all tags. */
-	class cActionDisableAll : public igdeAction{
+	class DE_DLL_EXPORT cActionDisableAll : public igdeAction{
 	protected:
 		igdeToggleTags &pWidget;
 		

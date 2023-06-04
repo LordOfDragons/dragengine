@@ -35,7 +35,7 @@
  * 
  * Stores information about a column header.
  */
-class igdeListHeader : public deObject{
+class DE_DLL_EXPORT igdeListHeader : public deObject{
 private:
 	decString pTitle;
 	igdeIconReference pIcon;

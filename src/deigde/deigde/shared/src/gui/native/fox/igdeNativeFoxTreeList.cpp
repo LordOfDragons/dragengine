@@ -88,10 +88,12 @@ pFont( TreeListFont( powner, guitheme ) ),
 pTreeList( new FXTreeList( this, this, ID_TREELIST, LAYOUT_FILL | TreeListFlags( powner ) ) ),
 pResizer( NULL )
 {
+	#ifndef OS_W32_VS
 	(void)TreeListPadLeft;
 	(void)TreeListPadRight;
 	(void)TreeListPadTop;
 	(void)TreeListPadBottom;
+	#endif
 	
 	if( ! pOwner->GetVisible() ){
 		hide();
@@ -416,7 +418,7 @@ igdeFont *igdeNativeFoxTreeList::TreeListFont( const igdeTreeList &powner, const
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::treeListFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::treeListFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::treeListFontSize ) ){
@@ -424,7 +426,7 @@ igdeFont *igdeNativeFoxTreeList::TreeListFont( const igdeTreeList &powner, const
 			igdeGuiThemePropertyNames::treeListFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "deoglSkinShader.h"
 #include "deoglSkinShaderManager.h"
@@ -44,6 +45,7 @@
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/deoglShaderUnitSourceCode.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
 #include "../../shaders/paramblock/deoglSPBlockMemory.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBElement.h"
@@ -396,6 +398,17 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	deoglSkinShader::eiutInstOutlineEmissivityTint // eiutInstOutlineEmissivityTint ( vec3 )
 };
 
+// cache revision. if skin config or skin unit sources change in any way increment this
+// value to make sure existing caches are invalidate
+#define SHADER_CACHE_REVISION 1
+
+int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
+
+// MinGW bug workaround
+#if defined OS_W32 && defined __MINGW64__
+#undef PRIx64
+#define PRIx64 "I64x"
+#endif
 
 
 // Class deoglSkinShader
@@ -502,10 +515,12 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &render
 	spb->GetParameterAt( erutClearDepthValue ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	
 	spb->GetParameterAt( erutViewport ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutViewportImage ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // ivec4
 	spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
 	spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	
 	spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutRenderSizeCompute ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // uvec2
 	
 	spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	
@@ -525,6 +540,8 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &render
 	
 	spb->GetParameterAt( erutFSScreenCoordToTexCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	spb->GetParameterAt( erutFSTexCoordToScreenCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutFSFragCoordToTexCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutFSFragCoordToScreenCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	
 	spb->GetParameterAt( erutSSAOParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 	spb->GetParameterAt( erutSSAOParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
@@ -648,7 +665,8 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderTh
 }
 
 deoglSPBlockSSBO::Ref deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread ){
-	const deoglSPBlockSSBO::Ref ssbo( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( renderThread ) ) );
+	const deoglSPBlockSSBO::Ref ssbo( deoglSPBlockSSBO::Ref::New(
+		new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) ) );
 	ssbo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 	ssbo->SetCompact( false );
 	ssbo->SetParameterCount( vUBOInstParamMapCount );
@@ -682,7 +700,8 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinTextureUBO( deoglRenderThr
 }
 
 deoglSPBlockSSBO::Ref deoglSkinShader::CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread ){
-	const deoglSPBlockSSBO::Ref spb( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( renderThread ) ) );
+	const deoglSPBlockSSBO::Ref spb( deoglSPBlockSSBO::Ref::New(
+		new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) ) );
 	spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 	spb->SetCompact( false );
 	spb->SetParameterCount( ETUT_COUNT );
@@ -1357,7 +1376,6 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ){
 	}
 }
 
-int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
 
 void deoglSkinShader::SetTUCPerObjectEnvMap( deoglTexUnitConfig *units,
 deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap *envmapFade ){
@@ -1507,7 +1525,7 @@ deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap
 
 void deoglSkinShader::GenerateShader(){
 	//deoglSkinShaderManager &ssmgr = pRenderThread.GetShader().GetSkinShaderManager();
-	deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
+	const deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
 	
 	pShader = nullptr;
@@ -1515,8 +1533,6 @@ void deoglSkinShader::GenerateShader(){
 	
 	try{
 		pSources.TakeOver( new deoglShaderSources );
-		
-		pSources->SetVersion( "150" );
 		
 		GenerateDefines( defines );
 		GenerateVertexSC();
@@ -1584,8 +1600,48 @@ void deoglSkinShader::GenerateShader(){
 			}
 		}
 		
+		// cache id
+		decStringList cacheIdParts, cacheIdComponents;
+		decString cacheIdFormat;
+		
+		cacheIdFormat.Format( "skin%d", SHADER_CACHE_REVISION );
+		cacheIdParts.Add( cacheIdFormat );
+		
+		cacheIdFormat.Format( "%x,%x,%" PRIx64 ",%x", pConfig.GetKey1(),
+			pConfig.GetKey2(), pConfig.GetKey3(), pConfig.GetKey4() );
+		cacheIdParts.Add( cacheIdFormat );
+		
+		cacheIdComponents.Add( pSources->GetPathVertexSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathGeometrySourceCode() );
+		cacheIdComponents.Add( pSources->GetPathFragmentSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathTessellationControlSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathTessellationEvaluationSourceCode() );
+		cacheIdParts.Add( cacheIdComponents.Join( "," ) );
+		cacheIdComponents.RemoveAll();
+		
+		cacheIdParts.Add( defines.CalcCacheId() );
+		
+		int i;
+		char cacheIdBuffer[ EIUT_COUNT * 2 + 1 ];
+		for( i=0; i<ETT_COUNT; i++ ){
+			snprintf( &cacheIdBuffer[ i * 2 ], 5, "%02hhx", ( uint8_t )( pTextureTargets[ i ] + 1 ) );
+		}
+		cacheIdParts.Add( cacheIdBuffer );
+		
+		for( i=0; i<EIUT_COUNT; i++ ){
+			snprintf( &cacheIdBuffer[ i * 2 ], 5, "%02hhx", ( uint8_t )( pInstanceUniformTargets[ i ] + 1 ) );
+		}
+		cacheIdParts.Add( cacheIdBuffer );
+		
+		snprintf( cacheIdBuffer, sizeof( cacheIdBuffer ), "%x", 0
+			| ( pRenderThread.GetChoices().GetRealTransparentParticles() ? 0x1 : 0 )
+			| ( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ? 0x2 : 0 ) );
+		cacheIdParts.Add( cacheIdBuffer );
+		
+		pShader->SetCacheId( cacheIdParts.Join( ";" ) );
+		
 		// compile shader
-		pShader->SetCompiled( pRenderThread.GetShader().GetShaderManager().GetLanguage()->CompileShader( *pShader ) );
+		pShader->SetCompiled( smgr.GetLanguage()->CompileShader( *pShader ) );
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();
@@ -1825,8 +1881,14 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	if( pConfig.GetSharedSPB() ){ // affects only instance parameters
 		defines.SetDefines( "SHARED_SPB" );
-		if( bo.GetInstanceArraySizeUBO() > 0 ){
-			defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", bo.GetInstanceArraySizeUBO() );
+		
+		if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+			defines.SetDefines( "SPB_SSBO_INSTANCE_ARRAY" );
+			
+		}else{
+			if( bo.GetInstanceArraySizeUBO() > 0 ){
+				defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", bo.GetInstanceArraySizeUBO() );
+			}
 		}
 	}
 	
@@ -2090,7 +2152,6 @@ void deoglSkinShader::GenerateTessellationControlSC(){
 	
 	pSources->SetPathTessellationControlSourceCode( pRenderThread.GetShader().
 		GetSkinShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
-	pSources->SetVersion( "400" );
 }
 
 void deoglSkinShader::GenerateTessellationEvaluationSC(){
@@ -2114,7 +2175,6 @@ void deoglSkinShader::GenerateTessellationEvaluationSC(){
 	
 	pSources->SetPathTessellationEvaluationSourceCode( pRenderThread.GetShader().
 		GetSkinShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
-	pSources->SetVersion( "400" );
 }
 
 void deoglSkinShader::UpdateTextureTargets(){
@@ -2373,9 +2433,11 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pFlipCulling" ); // erutFlipCulling
 		parameterList.Add( "pClearDepthValue" ); // erutClearDepthValue
 		parameterList.Add( "pViewport" ); // erutViewport
+		parameterList.Add( "pViewportImage" ); // erutViewportImage
 		parameterList.Add( "pClipPlane" ); // erutClipPlane
 		parameterList.Add( "pScreenSpace" ); // erutScreenSpace
 		parameterList.Add( "pRenderSize" ); // erutRenderSize
+		parameterList.Add( "pRenderSizeCompute" ); // erutRenderSizeCompute
 		parameterList.Add( "pMipMapParams" ); // erutMipMapParams
 		parameterList.Add( "pDepthOffset" ); // erutDepthOffset
 		parameterList.Add( "pParticleLightHack" ); // erutParticleLightHack
@@ -2387,6 +2449,8 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pDepthSampleOffset" ); // erutDepthSampleOffset
 		parameterList.Add( "pFSScreenCoordToTexCoord" ); // erutFSScreenCoordToTexCoord
 		parameterList.Add( "pFSTexCoordToScreenCoord" ); // erutFSTexCoordToScreenCoord
+		parameterList.Add( "pFSFragCoordToTexCoord" ); // erutFSFragCoordToTexCoord
+		parameterList.Add( "pFSFragCoordToScreenCoord" ); // erutFSFragCoordToScreenCoord
 		parameterList.Add( "pSSAOParams1" ); // erutSSAOParams1
 		parameterList.Add( "pSSAOParams2" ); // erutSSAOParams2
 		parameterList.Add( "pSSAOParams3" ); // erutSSAOParams3

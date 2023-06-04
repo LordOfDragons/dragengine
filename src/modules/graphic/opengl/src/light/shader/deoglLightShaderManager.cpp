@@ -41,15 +41,15 @@
 
 static const char *vUnitSourceCodePath[ deoglLightShaderManager::EUSCP_COUNT ] = {
 	// euscpVertexLight
-	"v130/vertex/defren/light/light.glsl",
+	"vertex/defren/light/light.glsl",
 	// euscpVertexParticle
-	"v130/vertex/defren/light/particle.glsl",
+	"vertex/defren/light/particle.glsl",
 	// euscpGeometryParticle
-	"v130/geometry/defren/light/particle.glsl",
+	"geometry/defren/light/particle.glsl",
 	// euscpGeometryStereo
-	"v130/geometry/defren/light/stereo.glsl",
+	"geometry/defren/light/stereo.glsl",
 	// euscpFragmentLight
-	"v130/fragment/defren/light/light.glsl"
+	"fragment/defren/light/light.glsl"
 };
 
 
@@ -127,6 +127,8 @@ bool deoglLightShaderManager::HasShaderWith( deoglLightShaderConfig &configurati
 	const int count = pShaderList.GetCount();
 	int i;
 	
+	configuration.UpdateKey();
+	
 	for( i=0; i<count; i++ ){
 		const deoglLightShader &shader = *( ( deoglLightShader* )pShaderList.GetAt( i ) );
 		
@@ -142,6 +144,8 @@ deoglLightShader *deoglLightShaderManager::GetShaderWith( deoglLightShaderConfig
 	const int count = pShaderList.GetCount();
 	deoglLightShader *shader = NULL;
 	int i;
+	
+	configuration.UpdateKey();
 	
 	for( i=0; i<count; i++ ){
 		shader = ( deoglLightShader* )pShaderList.GetAt( i );

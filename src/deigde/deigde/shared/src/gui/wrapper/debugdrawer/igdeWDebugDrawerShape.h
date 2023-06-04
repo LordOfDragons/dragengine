@@ -49,7 +49,7 @@ class deOcclusionMesh;
  * drawer. Therefore make sure the debug drawer is held as long as a debug drawer
  * wrapper object is using the debug drawer.
  */
-class igdeWDebugDrawerShape{
+class DE_DLL_EXPORT igdeWDebugDrawerShape{
 private:
 	deDebugDrawer *pEngDebugDrawer;
 	deDebugDrawerShape *pEngDDShape;

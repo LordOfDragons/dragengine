@@ -42,7 +42,7 @@ class deVirtualFileSystem;
  * 
  * Provides support to create common dialogs for requesting input from the user.
  */
-class igdeCommonDialogs{
+class DE_DLL_EXPORT igdeCommonDialogs{
 public:
 	/** \brief Buttons to show. */
 	enum eButtonSet{

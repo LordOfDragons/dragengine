@@ -26,12 +26,10 @@
 #include "deoglCapsFmtSupport.h"
 #include "checks/deoglCapCheckATLUnbind.h"
 #include "checks/deoglCapCheckUBOIndirectMatrixAccess.h"
-#include "checks/deoglCapCheckRasterizerDiscard.h"
-#include "checks/deoglCapCheckClearEntireCubeMap.h"
 #include "checks/deoglCapCheckClearEntireArrayTexture.h"
-#include "checks/deoglCapCheckGeometryShaderLayer.h"
 #include "checks/deoglCapCheckUBODirectLinkDeadloop.h"
 #include "checks/deoglCapCheckFramebufferTextureSingle.h"
+#include "checks/deoglCapCheckStd430.h"
 #include "../deoglBasics.h"
 
 class deoglRenderThread;
@@ -70,15 +68,14 @@ private:
 	int pUBOOffsetAlignment;
 	int pGeometryShaderMaxVertices;
 	int pGeometryShaderMaxComponents;
+	int pNumProgramBinaryFormats;
 	
 	deoglCapCheckATLUnbind pATLUnbind;
 	deoglCapCheckUBOIndirectMatrixAccess pUBOIndirectMatrixAccess;
-	deoglCapCheckRasterizerDiscard pRasterizerDiscard;
-	deoglCapCheckClearEntireCubeMap pClearEntireCubeMap;
 	deoglCapCheckClearEntireArrayTexture pClearEntireArrayTexture;
-	deoglCapCheckGeometryShaderLayer pGeometryShaderLayer;
 	deoglCapCheckUBODirectLinkDeadloop pUBODirectLinkDeadloop;
 	deoglCapCheckFramebufferTextureSingle pFramebufferTextureSingle;
+	deoglCapCheckStd430 pStd430;
 	
 	
 	
@@ -156,6 +153,9 @@ public:
 	 */
 	inline int GetGeometryShaderMaxComponents() const{ return pGeometryShaderMaxComponents; }
 	
+	/** Count of binary shader formats the driver supports. */
+	inline int GetNumProgramBinaryFormats() const{ return pNumProgramBinaryFormats; }
+	
 	
 	
 	/** Array texture layer check. */
@@ -165,21 +165,9 @@ public:
 	inline const deoglCapCheckUBOIndirectMatrixAccess &GetUBOIndirectMatrixAccess() const{
 		return pUBOIndirectMatrixAccess; }
 	
-	/** Rasterizer discard. */
-	inline const deoglCapCheckRasterizerDiscard &GetRasterizerDiscard() const{
-		return pRasterizerDiscard; }
-	
-	/** Clear entire cube map. */
-	inline const deoglCapCheckClearEntireCubeMap &GetClearEntireCubeMap() const{
-		return pClearEntireCubeMap; }
-	
 	/** Cleare all layers in an array texture. */
 	inline const deoglCapCheckClearEntireArrayTexture &GetClearEntireArrayTexture() const{
 		return pClearEntireArrayTexture; }
-	
-	/** glLayer geometry shaders handling. */
-	inline const deoglCapCheckGeometryShaderLayer &GetGeometryShaderLayer() const{
-		return pGeometryShaderLayer; }
 	
 	/** UBO direct linking dead-loop. */
 	inline const deoglCapCheckUBODirectLinkDeadloop &GetUBODirectLinkDeadloop() const{
@@ -189,12 +177,17 @@ public:
 	inline const deoglCapCheckFramebufferTextureSingle &GetFramebufferTextureSingle() const{
 		return pFramebufferTextureSingle; }
 	
+	/** Std430 support. */
+	inline const deoglCapCheckStd430 &GetStd430() const{ return pStd430; }
+	
 	/** Tests the hardware for its capabilities. */
 	void DetectCapabilities();
 	
 	/** Full-Screen Quad VAO for internal testing only. */
 	inline GLuint GetFSQuadVAO() const{ return pFSQuadVAO; }
 	
+	/** Verify capabilities. */
+	bool Verify() const;
 	/*@}*/
 	
 private:

@@ -33,7 +33,7 @@
  * 
  * Stores the definition of a texture property.
  */
-class igdeTextureProperty{
+class DE_DLL_EXPORT igdeTextureProperty{
 public:
 	/** \brief Value types. */
 	enum ePropertyTypes{

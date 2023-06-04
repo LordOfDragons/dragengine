@@ -718,7 +718,7 @@ void meWPBrowser::SetWorld( meWorld *world ){
 
 void meWPBrowser::UpdateCategoryList(){
 	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
-	const decString selection( GetSelectedCategory() ? GetSelectedCategory()->GetFullPathString() : "" );
+	const decString selection( GetSelectedCategory() ? GetSelectedCategory()->GetFullPathString() : decString() );
 	
 	pTreeCategories->RemoveAllItems();
 	

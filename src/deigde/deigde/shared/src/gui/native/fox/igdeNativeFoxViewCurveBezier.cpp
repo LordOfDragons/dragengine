@@ -651,7 +651,7 @@ const igdeGuiTheme &guitheme ){
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::viewCurveBezierFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::viewCurveBezierFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::viewCurveBezierFontSize ) ){
@@ -659,7 +659,7 @@ const igdeGuiTheme &guitheme ){
 			igdeGuiThemePropertyNames::viewCurveBezierFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
@@ -1019,7 +1019,7 @@ long igdeNativeFoxViewCurveBezierView::onMouseMove( FXObject*, FXSelector, void 
 		return 1;
 		
 	case edmScaleView:
-		SetGridZoom( pDragOldZoom + decVector2( dragDiffX, dragDiffY ) / 100.0f );
+		SetGridZoom( pDragOldZoom + decVector2( ( float )dragDiffX, ( float )dragDiffY ) / 100.0f );
 		update();
 		return 1;
 		

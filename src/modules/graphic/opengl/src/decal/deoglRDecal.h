@@ -24,6 +24,7 @@
 
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
+#include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -56,7 +57,18 @@ class deoglDecalListener;
  * Render decal.
  */
 class deoglRDecal : public deObject{
-public:
+private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldComputeElement{
+		deoglRDecal &pDecal;
+	public:
+		WorldComputeElement( deoglRDecal &decal );
+		virtual void UpdateData( sDataElement &data ) const;
+		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+	};
+	
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	decVector pPosition;
@@ -86,6 +98,7 @@ public:
 	
 	deoglRComponent *pParentComponent;
 	bool pComponentMarkedRemove;
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	deoglSharedSPBElement *pSharedSPBElement;
 	deoglRenderTaskSharedInstance *pRTSInstance;
@@ -222,6 +235,7 @@ public:
 	
 	/** Parent component. */
 	inline deoglRComponent *GetParentComponent() const{ return pParentComponent; }
+	deoglRComponent &GetParentComponentRef() const;
 	
 	/**
 	 * Set parent component or \em NULL.
@@ -240,6 +254,15 @@ public:
 	 * \details For use by deoglComponent only. Non-thread safe.
 	 */
 	void SetComponentMarkedRemove( bool marked );
+	
+	/** Add to world compute. */
+	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute. */
+	void UpdateWorldCompute();
+	
+	/** Remove from world compute. */
+	void RemoveFromWorldCompute();
 	
 	
 	

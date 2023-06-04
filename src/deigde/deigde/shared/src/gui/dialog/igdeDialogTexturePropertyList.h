@@ -36,7 +36,7 @@ class igdeTexturePropertyList;
  * 
  * Dialog showing content of texture property list.
  */
-class igdeDialogTexturePropertyList : public igdeDialog{
+class DE_DLL_EXPORT igdeDialogTexturePropertyList : public igdeDialog{
 private:
 	igdeListBoxReference pListProperties;
 	igdeTextFieldReference pEditName;

@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\graphic\null\$Version"
 
 Write-Host "NullGraphic Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "granull.dll"
+$Library = "$OutputDir\de_module\graphic\null\granull.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\graphic\null\$Version"
 Write-Host "NullGraphic Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "granull.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\graphic\null\granull.pdb" -Destination $TargetDir

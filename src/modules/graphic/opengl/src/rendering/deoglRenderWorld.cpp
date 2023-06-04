@@ -181,7 +181,8 @@ pDebugInfo( renderThread )
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
-		pRenderPB.TakeOver( deoglSkinShader::CreateSPBRender( renderThread ) );
+		pRenderPBSingleUse.TakeOver( new deoglSPBSingleUse( renderThread,
+			deoglSkinShader::CreateSPBRender( renderThread ) ) );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -243,18 +244,6 @@ deoglRenderWorld::~deoglRenderWorld(){
 
 // Rendering
 //////////////
-
-#define DO_QUICK_DEBUG 1
-
-#ifdef DO_QUICK_DEBUG
-#define QUICK_DEBUG_START( lower, upper )    if( renderThread.GetConfiguration().GetQuickDebug() > upper || renderThread.GetConfiguration().GetQuickDebug() < lower ){
-#define QUICK_DEBUG_END                      }
-#else
-#define QUICK_DEBUG_START( lower, upper )
-#define QUICK_DEBUG_END
-#endif
-
-
 
 //#define ENABLE_DEBUG_ENTER_EXIT 1
 #ifdef OS_ANDROID
@@ -396,13 +385,14 @@ DEBUG_RESET_TIMER
 	}
 	
 	// solid pass
-	QUICK_DEBUG_START( 15, 19 )
 	//if( ! plan->GetFBOTarget() )
+	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+		plan.GetTasks()->FinishReadBackComputeRenderTasks( mask );
+	}
 	renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask, false );
 	if( debugMainPass ){
 		DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometry, true );
 	}
-	QUICK_DEBUG_END
 	
 	DBG_ENTER("RenderDepthMinMaxMipMap")
 	renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
@@ -424,7 +414,6 @@ DEBUG_RESET_TIMER
 		DebugTimer2Sample( plan, *pDebugInfo.infoReflection, true );
 	}
 	
-	QUICK_DEBUG_START( 13, 19 )
 	// plan transparency. this affects lighting thus it comes earlier than RenderTransparentPasses
 	if( plan.GetHasTransparency() ){
 		#ifdef OS_ANDROID
@@ -438,16 +427,6 @@ DEBUG_RESET_TIMER
 	
 	//if( ! plan->GetFBOTarget() )
 	if( ! plan.GetDisableLights() ){
-		if( ! mask && renderThread.GetConfiguration().GetDebugSnapshot() == 888 ){
-			deoglDebugSnapshot snapshot( renderThread );
-			snapshot.SetEnableDepth( true );
-			snapshot.SetEnableColor( true );
-			snapshot.SetEnableMaterialBuffers( true );
-			snapshot.SetName( "light/" );
-			snapshot.TakeSnapshot();
-			renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-		}
-		
 		if( ! mask ){
 			renderers.GetToneMap().LuminancePrepare( plan );
 // 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
@@ -467,7 +446,6 @@ DEBUG_RESET_TIMER
 			DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
 		}
 	}
-	QUICK_DEBUG_END
 	
 	if( deoglSkinShader::REFLECTION_TEST_MODE != 1 ){
 		DBG_ENTER("RenderGIEnvMaps")
@@ -483,18 +461,16 @@ DEBUG_RESET_TIMER
 	}
 	
 	// transparenc passes
-	QUICK_DEBUG_START( 12, 19 )
 // 	if( ! plan.GetFBOTarget() ){
 		renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask, false );
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoTransparent, true );
 		}
 // 	}
-	QUICK_DEBUG_END
 	
 	// xray pass
-	if( plan.GetTasks().GetSolidDepthXRayTask().GetPipelineCount() > 0
-	|| plan.GetTasks().GetSolidDepthOutlineXRayTask().GetPipelineCount() > 0
+	if( plan.GetTasks()->GetSolidDepthXRayTask().GetPipelineCount() > 0
+	|| plan.GetTasks()->GetSolidDepthOutlineXRayTask().GetPipelineCount() > 0
 	|| plan.GetHasXRayTransparency() ){
 		// - switch texture but not with secondary depth texture but with third depth texture.
 		//   required for depth textures to stay usable for upcoming render steps.
@@ -605,12 +581,10 @@ DEBUG_RESET_TIMER
 			RenderFullScreenQuadVAO( plan );
 			
 		}else{
-			//QUICK_DEBUG_START( 11, 19 )
 			DBG_ENTER("RenderToneMap")
 			renderers.GetToneMap().ToneMap( plan );
 			DBG_EXIT("RenderToneMap")
 			DebugTimer2Sample( plan, *pDebugInfo.infoToneMapping, true );
-			//QUICK_DEBUG_END
 		}
 		
 		// TODO due to the deferred rendering using transparency the depth buffer itself is
@@ -622,9 +596,7 @@ DEBUG_RESET_TIMER
 		
 		// render shadeless objects
 		/*
-		QUICK_DEBUG_START( 10, 19 )
 		pRenderShadelessPass( plan, mask );
-		QUICK_DEBUG_END
 		*/
 		
 		// post processing
@@ -656,18 +628,22 @@ DEBUG_RESET_TIMER
 		DebugTimer1Sample( plan, *pDebugInfo.infoWorld, true );
 		
 		// debug information
-		if( plan.GetDebugTiming() && ! plan.GetFBOTarget() && devMode.GetEnabled() ){ // only in canvas rendering and main pass
-			// measuring the time required for rendering developer mode is tricky. the reason is
-			// that we need to sample the time across this function call. the sampling is present
-			// only after the function call returns which draws the measurements. we can not
-			// simply delay the result and show it the next time since we also need to clear
-			// at some time. to solve this a temporary measurement container is used. before
-			// showing the result the temporary measurement is copied to the real measurement
-			// which is then displayed while the temporary one is clear
-			pDebugInfo.infoDeveloperMode->CopyResults( *pDebugInfo.infoDeveloperModeTemp );
-			pDebugInfo.infoDeveloperModeTemp->Clear();
-			renderers.GetDevMode().RenderDevMode( plan );
-			DebugTimer1Sample( plan, *pDebugInfo.infoDeveloperModeTemp, true );
+		if( plan.GetDebugTiming() && devMode.GetEnabled() ){
+			// only in canvas rendering and main pass or VR depending if VR is used
+			if( ( renderThread.GetVRCamera() && plan.GetRenderVR() != deoglRenderPlan::ervrNone )
+			|| ( ! renderThread.GetVRCamera() && ! plan.GetFBOTarget() ) ){
+				// measuring the time required for rendering developer mode is tricky. the reason is
+				// that we need to sample the time across this function call. the sampling is present
+				// only after the function call returns which draws the measurements. we can not
+				// simply delay the result and show it the next time since we also need to clear
+				// at some time. to solve this a temporary measurement container is used. before
+				// showing the result the temporary measurement is copied to the real measurement
+				// which is then displayed while the temporary one is clear
+				pDebugInfo.infoDeveloperMode->CopyResults( *pDebugInfo.infoDeveloperModeTemp );
+				pDebugInfo.infoDeveloperModeTemp->Clear();
+				renderers.GetDevMode().RenderDevMode( plan );
+				DebugTimer1Sample( plan, *pDebugInfo.infoDeveloperModeTemp, true );
+			}
 		}
 		
 		// swap one last time so the caller finds the final image to work with in GetPostProcessTexture
@@ -689,6 +665,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const decMatrix matrixSkyBody( matrixCamera.GetRotationMatrix() * matrixProjection );
+	const int height = defren.GetHeight();
+	const int width = defren.GetWidth();
 	float envMapLodLevel = 1.0f;
 	
 	// sharpness indicates the cone angle from 0 to 90 degrees. at 45 degrees a single cube map face is required
@@ -734,8 +712,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	// mip map params
 	int mipmapMaxLevel = 0;
 	{
-	int mipMapHeight = defren.GetHeight();
-	int mipMapWidth = defren.GetWidth();
+	int mipMapHeight = height;
+	int mipMapWidth = width;
 	while( mipMapWidth > 1 && mipMapHeight > 1 ){
 		mipMapWidth = decMath::max( mipMapWidth >> 1, 1 );
 		mipMapHeight = decMath::max( mipMapHeight >> 1, 1 );
@@ -743,8 +721,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	}
 	}
 	const float mipMapFactor = ( float )plan.GetProjectionMatrix().a11 * 0.5f;
-	const float mipMapPixelSizeU = mipMapFactor * defren.GetWidth();
-	const float mipMapPixelSizeV = mipMapFactor * defren.GetHeight();
+	const float mipMapPixelSizeU = mipMapFactor * width;
+	const float mipMapPixelSizeV = mipMapFactor * height;
 	const float mipMapMaxScale = ( float )( 1 << mipmapMaxLevel );
 	
 	// ssao
@@ -757,7 +735,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const float ssaoInfluenceRadius = config.GetSSAORadius();
 	const float ssaoRadiusLimit = config.GetSSAORadiusLimit();
 	const float ssaoRadiusFactor = ( float )plan.GetProjectionMatrix().a11 * 0.5f;
-	const int ssaoMaxSize = ( defren.GetWidth() > defren.GetHeight() ) ? defren.GetWidth() : defren.GetHeight();
+	const int ssaoMaxSize = ( width > height ) ? width : height;
 	const float ssaoMipMapMaxLevel = floorf( log2f( ( float )ssaoMaxSize ) - 3.0f );
 	const float ssaoMipMapBase = log2f( config.GetSSAOMipMapBase() );
 	
@@ -781,7 +759,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const float ssrRoughnessTapCountScale = ( float )ssrRoughnessTapMax / ssrRoughnessTapRange;
 	const int ssrStepCount = config.GetSSRStepCount();
 	const int ssrMaxRayLength = decMath::max( ssrStepCount, ( int )(
-		config.GetSSRMaxRayLength() * decMath::max( defren.GetWidth(), defren.GetHeight() ) ) );
+		config.GetSSRMaxRayLength() * decMath::max( width, height ) ) );
 	const int ssrSubStepCount = int( floorf( log2f( ( float )ssrMaxRayLength / ( float )ssrStepCount ) ) ) + 1;
 	decVector2 ssrMinMaxTCFactor;
 	
@@ -857,6 +835,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const bool condClipPlane = mask && mask->GetUseClipPlane();
 	
 	// fill parameter blocks
+	pRenderPB = ( deoglSPBlockUBO* )pRenderPBSingleUse->Next();
+	
 	deoglSPBlockUBO * const spbBlocks[ 1 ] = { pRenderPB };
 	
 	for( i=0; i<1; i++ ){
@@ -882,13 +862,15 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, renderThread.GetChoices().GetClearDepthValueRegular() );
 		
 		defren.SetShaderViewport( spb, deoglSkinShader::erutViewport, true );
+		spb.SetParameterDataIVec4( deoglSkinShader::erutViewportImage, 0, 0, width - 1, height - 1 );
 		spb.SetParameterDataArrayVec4( deoglSkinShader::erutClipPlane, 0, clipPlaneNormal, clipPlaneDistance );
 		spb.SetParameterDataArrayVec4( deoglSkinShader::erutClipPlane, 1, clipPlaneNormalStereo, clipPlaneDistanceStereo );
 		spb.SetParameterDataVec4( deoglSkinShader::erutScreenSpace,
 			defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		spb.SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
 		
-		spb.SetParameterDataVec2( deoglSkinShader::erutRenderSize, ( float )defren.GetWidth(), ( float )defren.GetHeight() );
+		spb.SetParameterDataVec2( deoglSkinShader::erutRenderSize, ( float )width, ( float )height );
+		spb.SetParameterDataUVec2( deoglSkinShader::erutRenderSizeCompute, width, height );
 		
 		spb.SetParameterDataVec4( deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV, ( float )mipmapMaxLevel, mipMapMaxScale );
 		
@@ -914,6 +896,12 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataVec4( deoglSkinShader::erutFSTexCoordToScreenCoord,
 			2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
 		defren.SetShaderParamFSQuad( spb, deoglSkinShader::erutFSScreenCoordToTexCoord );
+		spb.SetParameterDataVec4( deoglSkinShader::erutFSFragCoordToTexCoord,
+			defren.GetScalingU() / ( float )width, defren.GetScalingV() / ( float )height,
+			0.5f / ( float )width, 0.5f / ( float )height );
+		spb.SetParameterDataVec4( deoglSkinShader::erutFSFragCoordToScreenCoord,
+			2.0f / ( float )width, 2.0f / ( float )height,
+			1.0f / ( float )width - 1.0f, 1.0f / ( float )height - 1.0f );
 		
 		const float znear = plan.GetCameraImageDistance();
 		const float zfar = plan.GetCameraViewDistance();
@@ -946,8 +934,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
 		
 		spb.SetParameterDataVec2( deoglSkinShader::erutLumFragCoordScale,
-			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
-			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
+			( float )width / ( float )defren.GetTextureLuminance()->GetWidth(),
+			( float )height / ( float )defren.GetTextureLuminance()->GetHeight() );
 		
 		// global illumination
 		spb.SetParameterDataMat4x3( deoglSkinShader::erutGIRayMatrix, giMatrix );

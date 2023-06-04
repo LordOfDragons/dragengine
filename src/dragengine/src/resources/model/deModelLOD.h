@@ -28,6 +28,7 @@ class deModelWeight;
 class deModelVertex;
 class deModelFace;
 class deModelTextureCoordinatesSet;
+class deModelLodVertexPositionSet;
 
 
 /**
@@ -67,6 +68,9 @@ private:
 	
 	bool pHasLodError;
 	float pLodError;
+	
+	deModelLodVertexPositionSet *pVertexPositionSets;
+	int pVertexPositionSetCount;
 	
 	
 	
@@ -196,6 +200,23 @@ public:
 	
 	/** \brief Pointer to the texture coordinates sets. */
 	inline deModelTextureCoordinatesSet *GetTextureCoordinatesSets() const{ return pTextureCoordinatesSets; }
+	/*@}*/
+	
+	
+	
+	/** \name Vertex position sets. */
+	/*@{*/
+	/** \brief Count of vertex position sets. */
+	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	
+	/** \brief Set count of vertex position sets. */
+	void SetVertexPositionSetCount( int count );
+	
+	/** \brief Vertex position set at index. */
+	deModelLodVertexPositionSet &GetVertexPositionSetAt( int index ) const;
+	
+	/** \brief Pointer to the vertex position sets. */
+	inline deModelLodVertexPositionSet *GetVertexPositionSets() const{ return pVertexPositionSets; }
 	/*@}*/
 };
 

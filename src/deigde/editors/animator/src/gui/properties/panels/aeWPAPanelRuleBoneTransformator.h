@@ -29,7 +29,7 @@
 
 
 /**
- * \brief Bone transformator rule panel.
+ * Bone transformator rule panel.
  */
 class aeWPAPanelRuleBoneTransformator : public aeWPAPanelRule{
 private:
@@ -54,11 +54,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAPanelRuleBoneTransformator( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleBoneTransformator();
 	/*@}*/
 	
@@ -67,13 +67,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update rig bone list. */
+	/** Update rig bone list. */
 	virtual void UpdateRigBoneList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	/*@}*/
 };

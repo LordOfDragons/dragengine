@@ -38,6 +38,8 @@ private:
 	const deoglPipeline *pPipelineSolidColor3D;
 	const deoglPipeline *pPipelineShape;
 	const deoglPipeline *pPipelineShapeLine;
+	const deoglPipeline *pPipelineVRDebugPanel;
+	const deoglPipeline *pPipelineVRDebugPanelStereo;
 	
 	decVector2 pScalePosition;
 	decVector2 pOffsetPosition;
@@ -89,35 +91,40 @@ public:
 	void RenderHeightTerrainLODLevels( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
 	/** Display the number of transparency levels as a dot bar. */
 	void RenderTraspLevelCount( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	
 	/** Display render plan debug information. */
-	void RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	void RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const decPoint &viewport,
+		const decPoint &position, decPoint &size );
+	
 	/** Display memory information. */
-	void RenderMemoryInfo( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	void RenderMemoryInfo( deoglRenderPlan &plan, const decPoint &viewport,
+		const decPoint &position, decPoint &size );
 	
 	
 	
 	/** Show visible debug information. */
-	void RenderDebugInformation( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	void RenderDebugInformation( const decPoint &viewport, const decPoint &position,
+		decPoint &size, bool forceSolid );
 	
 	/** Log visible debug information. */
 	void LogDebugInformation();
 	void LogDebugInformation( const deoglDebugInformationList &list, const decString &prefix );
 	
 	/** Layout visible debug information for rendering. */
-	void LayoutDebugInformation( deoglRenderPlan &plan, const decPoint &position, decPoint &size,
+	void LayoutDebugInformation( const decPoint &viewport, const decPoint &position, decPoint &size,
 		const deoglDebugInformationList &list, int minWidth, int maxWidth, bool alignSidewards );
 	
 	void ChildMaxNameLen( const deoglDebugInformationList &list, int &maxNameWidth,
 		bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter ) const;
 	
 	/** Layout visible debug information for rendering. */
-	void LayoutDebugInformation( deoglRenderPlan &plan, int maxNameWidth,
+	void LayoutDebugInformation( const decPoint &viewport, int maxNameWidth,
 		deoglDebugInformation &debugInformation, int minWidth, int maxWidth,
 		bool siblingsHaveElapsedTime, bool siblingsHaveCounter );
 	
 	/** Show visible debug information. */
-	void RenderDebugInformation( deoglRenderPlan &plan, const decPoint &parentPosition,
-		const deoglDebugInformation &debugInformation );
+	void RenderDebugInformation( const decPoint &viewport, const decPoint &parentPosition,
+		const deoglDebugInformation &debugInformation, bool forceSolid );
 	/*@}*/
 	
 private:

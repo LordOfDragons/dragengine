@@ -33,7 +33,7 @@
 /**
  * \brief Game definition class navigation blocker.
  */
-class igdeGDCNavigationBlocker : public deObject{
+class DE_DLL_EXPORT igdeGDCNavigationBlocker : public deObject{
 public:
 	/** \brief Properties. */
 	enum eProperties{

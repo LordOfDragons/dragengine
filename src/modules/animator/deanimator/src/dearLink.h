@@ -33,7 +33,7 @@ class dearControllerStates;
 
 
 /**
- * \brief Animator link.
+ * Animator link.
  */
 class dearLink{
 private:
@@ -41,6 +41,7 @@ private:
 	deAnimatorLink pLink;
 	const decCurveBezierEvaluator pEvaluator;
 	int pBoneIndex;
+	int pVPSIndex;
 	const bool pWrapY;
 	
 	
@@ -48,11 +49,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create link. */
+	/** Create link. */
 	dearLink( dearAnimatorInstance &instance, const deAnimatorLink &link,
 		const decIntList &controllerMapping );
 	
-	/** \brief Clean up link. */
+	/** Clean up link. */
 	~dearLink();
 	/*@}*/
 	
@@ -60,27 +61,30 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Animator link. */
+	/** Animator link. */
 	inline const deAnimatorLink &GetLink() const{ return pLink; }
 	
-	/** \brief Link has valid controller. */
+	/** Link has valid controller. */
 	bool HasController() const;
 	
-	/** \brief Controller index relative to parent animator instance. */
+	/** Controller index relative to parent animator instance. */
 	int GetController() const;
 	
-	/** \brief Link has valid bone. */
+	/** Link has valid bone. */
 	bool HasBone() const;
 	
+	/** Link has valid vertex position set. */
+	bool HasVPS() const;
 	
 	
-	/** \brief Value of link. */
+	
+	/** Value of link. */
 	float GetValue( float defaultValue ) const;
 	
-	/** \brief Vector of link. */
+	/** Vector of link. */
 	void GetVector( decVector &vector ) const;
 	
-	/** \brief Quaternion of link. */
+	/** Quaternion of link. */
 	void GetQuaternion( decQuaternion &quaternion ) const;
 	/*@}*/
 };

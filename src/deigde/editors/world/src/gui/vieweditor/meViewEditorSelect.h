@@ -23,31 +23,40 @@
 #define _MEVIEWEDITORSELECT_H_
 
 #include "meViewEditorNavigation.h"
+#include "../meInfoBubble.h"
 
 #include <dragengine/resources/collider/deColliderReference.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
 
 class meCLSelect;
+class meCLClosestElement;
 
 
 
 /**
- * \brief View editor for selecting scene elements.
+ * View editor for selecting scene elements.
  */
 class meViewEditorSelect : public meViewEditorNavigation{
 private:
 	meCLSelect *pCLSelect;
+	meCLClosestElement *pCLClosest;
 	deColliderReference pColVol;
 	
-	deCanvasPaintReference pCanvasSelect;
+	deCanvasPaint::Ref pCanvasSelect;
+	
+	meInfoBubble::Ref pInfoBubble;
+	deCanvasText::Ref pInfoBubbleText;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create view editor. */
+	/** Create view editor. */
 	meViewEditorSelect( meView3D &view );
 	
-	/** \brief Clean up view editor. */
+	/** Clean up view editor. */
 	virtual ~meViewEditorSelect();
 	/*@}*/
 	
@@ -55,7 +64,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Update rectangular selection. */
+	/** Update rectangular selection. */
 	void UpdateRectSelection();
 	/*@}*/
 	
@@ -63,24 +72,31 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	/** \brief View size changed. */
+	/** View size changed. */
 	virtual void OnResize();
 	
-	/** \brief The left mouse button has been pressed. Return true if handled. */
+	/** The left mouse button has been pressed. Return true if handled. */
 	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
 	
-	/** \brief The left mouse button has been released. Return true if handled. */
+	/** The left mouse button has been released. Return true if handled. */
 	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
 	
-	/** \brief The mouse has been moved. Return true if handled. */
+	/** The right mouse button has been pressed. Return true if handled. */
+	virtual void OnRightMouseButtonPress( int x, int y, bool shift, bool control );
+	
+	/** The right mouse button has been released. Return true if handled. */
+	virtual void OnRightMouseButtonRelease( int x, int y, bool shift, bool control );
+	
+	/** The mouse has been moved. Return true if handled. */
 	virtual void OnMouseMove( int x, int y, bool shift, bool control );
 	
-	/** \brief The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
+	/** The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
 	virtual void OnMouseWheel( int steps, bool shift, bool control );
 	/*@}*/
 	
 private:
 	void pCleanUp();
+	void pUpdateInfoBubble( int x, int y );
 };
 
 #endif

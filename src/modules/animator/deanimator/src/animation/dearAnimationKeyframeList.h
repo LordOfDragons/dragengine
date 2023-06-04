@@ -30,7 +30,7 @@ class dearAnimationKeyframe;
 
 
 /**
- * \brief Animation move keyframe list.
+ * Animation move keyframe list.
  */
 class dearAnimationKeyframeList{
 private:
@@ -40,20 +40,20 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new animation move keyframe list. */
+	/** Creates a new animation move keyframe list. */
 	dearAnimationKeyframeList( const deAnimationKeyframeList &list );
-	/** \brief Cleans up the animation move keyframe list. */
+	/** Cleans up the animation move keyframe list. */
 	~dearAnimationKeyframeList();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the number of keyframes. */
+	/** Retrieves the number of keyframes. */
 	inline int GetCount() const{ return pKeyframeCount; }
-	/** \brief Retrieves a keyframe by index. */
+	/** Retrieves a keyframe by index. */
 	dearAnimationKeyframe &GetAt( int index ) const;
 	/**
-	 * \brief Retrieves the keyframe with the range containing the provided
+	 * Retrieves the keyframe with the range containing the provided
 	 *        time in seconds or NULL if there are no keyframes.
 	 */
 	dearAnimationKeyframe *GetWithTime( float time ) const;

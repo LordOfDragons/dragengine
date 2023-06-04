@@ -266,20 +266,29 @@ void deoalASpeaker::SetLayerMask( const decLayerMask &layerMask ){
 void deoalASpeaker::SetPlayState( deSpeaker::ePlayStates playState ){
 	// WARNING Called during synchronization time from main thread.
 	
-	pPlayState = playState;
+	if( playState == pPlayState ){
+		return;
+	}
 	
+	pPlayState = playState;
 	pDirtyPlayState = true;
 }
 
 void deoalASpeaker::SetLooping( bool looping ){
-	pLooping = looping;
+	if( looping == pLooping ){
+		return;
+	}
 	
+	pLooping = looping;
 	pDirtyLooping = true;
 }
 
 void deoalASpeaker::SetMuted( bool muted ){
-	pMuted = muted;
+	if( muted == pMuted ){
+		return;
+	}
 	
+	pMuted = muted;
 	pDirtyGain = true;
 }
 
@@ -627,8 +636,11 @@ void deoalASpeaker::UpdateOctreeNode(){
 
 
 void deoalASpeaker::SetPlaySpeed( float speed ){
-	pPlaySpeed = speed;
+	if( fabsf( speed - pPlaySpeed ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
 	
+	pPlaySpeed = speed;
 	pDirtyPlaySpeed = true;
 }
 
@@ -652,20 +664,29 @@ void deoalASpeaker::SetRange( float range ){
 }
 
 void deoalASpeaker::SetVolume( float volume ){
-	pVolume = volume;
+	if( fabsf( volume - pVolume ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
 	
+	pVolume = volume;
 	pDirtyGain = true;
 }
 
 void deoalASpeaker::SetAttenuationRolloff( float rolloff ){
-	pAttenuationRolloff = rolloff;
+	if( fabsf( rolloff - pAttenuationRolloff ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
 	
+	pAttenuationRolloff = rolloff;
 	pUpdateAttenuation();
 }
 
 void deoalASpeaker::SetAttenuationDistanceOffset( float distanceOffset ){
-	pAttenuationDistanceOffset = distanceOffset;
+	if( fabsf( distanceOffset - pAttenuationDistanceOffset ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
 	
+	pAttenuationDistanceOffset = distanceOffset;
 	pUpdateAttenuation();
 }
 
@@ -1183,7 +1204,7 @@ void deoalASpeaker::pVideoPlayerNext( bool underrun ){
 		return;
 	}
 	
-	// if we ran out of buffers we have to restart plpaying or playback stops
+	// if we ran out of buffers we have to restart playing or playback stops
 	if( restartPlaying ){
 		pPlayFinished = false;
 		pSource->Play();

@@ -54,14 +54,14 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		end
 		
 		/** \brief Create copy of state design. */
-		public func new( StateDesign stateDesign )
-			this.pCanvasCreator = stateDesign.pCanvasCreator
-			this.pBorderFactory = stateDesign.pBorderFactory
-			this.pFont = stateDesign.pFont
-			this.pTextColor = stateDesign.pTextColor
-			this.pPadding = stateDesign.pPadding
-			this.pMinimumSize = stateDesign.pMinimumSize
-			this.pMousePointerFactory = stateDesign.pMousePointerFactory
+		public func new(StateDesign stateDesign)
+			pCanvasCreator = stateDesign.pCanvasCreator
+			pBorderFactory = stateDesign.pBorderFactory
+			pFont = stateDesign.pFont
+			pTextColor = stateDesign.pTextColor
+			pPadding = stateDesign.pPadding
+			pMinimumSize = stateDesign.pMinimumSize
+			pMousePointerFactory = stateDesign.pMousePointerFactory
 		end
 		
 		/**
@@ -78,30 +78,30 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		 * | minimumSize | Point | setMinimumSize |
 		 * | mousePointer | MousePointerFactory | setMousePointerFactory |
 		 */
-		public func void setParameter( String name, Object value )
-			if name.equals( "canvas" )
-				this.setCanvasCreator( value cast CanvasCreator )
+		public func void setParameter(String name, Object value)
+			if name.equals("canvas")
+				setCanvasCreator(value cast CanvasCreator)
 				
-			elif name.equals( "border" )
-				this.setBorderFactory( value cast BorderFactory )
+			elif name.equals("border")
+				setBorderFactory(value cast BorderFactory)
 				
-			elif name.equals( "font" )
-				this.setFont( value cast Font )
+			elif name.equals("font")
+				setFont(value cast Font)
 				
-			elif name.equals( "textColor" )
-				this.setTextColor( value cast Color )
+			elif name.equals("textColor")
+				setTextColor(value cast Color)
 				
-			elif name.equals( "padding" )
-				this.setPadding( value cast BorderSize )
+			elif name.equals("padding")
+				setPadding(value cast BorderSize)
 				
-			elif name.equals( "minimumSize" )
-				this.setMinimumSize( value cast Point )
+			elif name.equals("minimumSize")
+				setMinimumSize(value cast Point)
 				
-			elif name.equals( "mousePointer" )
-				this.setMousePointerFactory( value cast MousePointerFactory )
+			elif name.equals("mousePointer")
+				setMousePointerFactory(value cast MousePointerFactory)
 				
 			else
-				throw EInvalidParam.new( "unknown state parameter: " + name )
+				throw EInvalidParam.new("unknown state parameter: " + name)
 			end
 		end
 		
@@ -109,79 +109,79 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		
 		/** \brief Canvas creator or null. */
 		public func CanvasCreator getCanvasCreator()
-			return this.pCanvasCreator
+			return pCanvasCreator
 		end
 		
 		/** \brief Set canvas creator or null. */
-		public func void setCanvasCreator( CanvasCreator creator )
-			this.pCanvasCreator = creator
+		public func void setCanvasCreator(CanvasCreator creator)
+			pCanvasCreator = creator
 		end
 		
 		/** \brief Border factory or null. */
 		public func BorderFactory getBorderFactory()
-			return this.pBorderFactory
+			return pBorderFactory
 		end
 		
 		/** \brief Set border factory or null. */
-		public func void setBorderFactory( BorderFactory borderFactory )
-			this.pBorderFactory = borderFactory
+		public func void setBorderFactory(BorderFactory borderFactory)
+			pBorderFactory = borderFactory
 		end
 		
 		/** \brief Font or null. */
 		public func Font getFont()
-			return this.pFont
+			return pFont
 		end
 		
 		/** \brief Set font or null. */
-		public func void setFont( Font font )
-			this.pFont = font
+		public func void setFont(Font font)
+			pFont = font
 		end
 		
 		/** \brief Text color or null. */
 		public func Color getTextColor()
-			return this.pTextColor
+			return pTextColor
 		end
 		
 		/** \brief Set text color or null. */
-		public func void setTextColor( Color color )
-			this.pTextColor = color
+		public func void setTextColor(Color color)
+			pTextColor = color
 		end
 		
 		/** \brief Padding or null. */
 		public func BorderSize getPadding()
-			return this.pPadding
+			return pPadding
 		end
 		
 		/** \brief Set padding or null. */
-		public func void setPadding( BorderSize padding )
-			this.pPadding = padding
+		public func void setPadding(BorderSize padding)
+			pPadding = padding
 		end
 		
 		/** \brief Minimum widget size or null. */
 		public func Point getMinimumSize()
-			return this.pMinimumSize
+			return pMinimumSize
 		end
 		
 		/** \brief Set minimum widget size or null. */
-		public func void setMinimumSize( Point size )
-			this.pMinimumSize = size
+		public func void setMinimumSize(Point size)
+			pMinimumSize = size
 		end
 		
 		/** \brief Mouse pointer factory or null. */
 		public func MousePointerFactory getMousePointerFactory()
-			return this.pMousePointerFactory
+			return pMousePointerFactory
 		end
 		
 		/** \brief Mouse pointer factory or null. */
-		public func void setMousePointerFactory( MousePointerFactory factory )
-			this.pMousePointerFactory = factory
+		public func void setMousePointerFactory(MousePointerFactory factory)
+			pMousePointerFactory = factory
 		end
 		
 		
 		
 		/** \brief Create copy of state. */
 		public func StateDesign copyDesign()
-			return StateDesign.new( this )
+			return StateDesign.new(this)
 		end
 		
 		/**
@@ -190,27 +190,27 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		 * Updates state with parameters of this state if defined. Used to find the first
 		 * defined parameter for a series of states acting as fallback for each other.
 		 */
-		public func void merge( StateDesign state )
-			if this.pCanvasCreator != null
-				state.pCanvasCreator = this.pCanvasCreator
+		public func void merge(StateDesign state)
+			if pCanvasCreator != null
+				state.pCanvasCreator = pCanvasCreator
 			end
-			if this.pBorderFactory != null
-				state.pBorderFactory = this.pBorderFactory
+			if pBorderFactory != null
+				state.pBorderFactory = pBorderFactory
 			end
-			if this.pPadding != null
-				state.pPadding = this.pPadding
+			if pPadding != null
+				state.pPadding = pPadding
 			end
-			if this.pFont != null
-				state.pFont = this.pFont
+			if pFont != null
+				state.pFont = pFont
 			end
-			if this.pTextColor != null
-				state.pTextColor = this.pTextColor
+			if pTextColor != null
+				state.pTextColor = pTextColor
 			end
-			if this.pMinimumSize != null
-				state.pMinimumSize = this.pMinimumSize
+			if pMinimumSize != null
+				state.pMinimumSize = pMinimumSize
 			end
-			if this.pMousePointerFactory != null
-				state.pMousePointerFactory = this.pMousePointerFactory
+			if pMousePointerFactory != null
+				state.pMousePointerFactory = pMousePointerFactory
 			end
 		end
 		
@@ -219,149 +219,140 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		 * 
 		 * This is typically called on a merged design to find the first defined parameters.
 		 */
-		public func void apply( Widget widget )
+		public func void apply(Widget widget)
 			if not widget.getProtectBackgroundCanvasCreator()
-				widget.setBackgroundCanvasCreator( this.pCanvasCreator )
+				widget.setBackgroundCanvasCreator(pCanvasCreator)
 			end
 			
 			if not widget.getProtectBorder()
-				if this.pBorderFactory != null
-					widget.setBorder( this.pBorderFactory.createBorder() )
+				if pBorderFactory != null
+					widget.setBorder(pBorderFactory.createBorder())
 					
 				else
-					widget.setBorder( null )
+					widget.setBorder(null)
 				end
 			end
 			
 			if not widget.getProtectPadding()
-				if this.pPadding != null
-					widget.setPadding( this.pPadding )
+				if pPadding != null
+					widget.setPadding(pPadding)
 					
 				else
-					widget.setPadding( BorderSize.new() )
+					widget.setPadding(BorderSize.new())
 				end
 			end
 			
 			if not widget.getProtectFont()
-				widget.setFont( this.pFont )
+				widget.setFont(pFont)
 			end
 			
 			if not widget.getProtectTextColor()
-				widget.setTextColor( this.pTextColor )
+				widget.setTextColor(pTextColor)
 			end
 			
 			if not widget.getProtectMinimumSize()
-				widget.setMinimumSize( this.pMinimumSize )
+				widget.setMinimumSize(pMinimumSize)
 			end
 			
 			if not widget.getProtectMousePointer()
-				widget.setMousePointer( this.pMousePointerFactory )
+				widget.setMousePointer(pMousePointerFactory)
 			end
 		end
 	end
 	
 	
 	
-	/** \brief Design for normal state. */
 	private var StateDesign pDesignNormal
-	
-	/** \brief Design for disabled state. */
 	private var StateDesign pDesignDisabled
-	
-	/** \brief Design for focused state. */
 	private var StateDesign pDesignFocused
-	
-	/** \brief Design for hover state. */
 	private var StateDesign pDesignHover
-	
-	/** \brief Design for focused hover state. */
 	private var StateDesign pDesignFocusedHover
 	
 	
 	
 	/** \brief Create new widget designer. */
 	public func new()
-		this.pDesignNormal = StateDesign.new()
-		this.pDesignDisabled = StateDesign.new()
-		this.pDesignFocused = StateDesign.new()
-		this.pDesignHover = StateDesign.new()
-		this.pDesignFocusedHover = StateDesign.new()
+		pDesignNormal = StateDesign.new()
+		pDesignDisabled = StateDesign.new()
+		pDesignFocused = StateDesign.new()
+		pDesignHover = StateDesign.new()
+		pDesignFocusedHover = StateDesign.new()
 	end
 	
 	/** \brief Create copy of widget designer. */
-	public func new( DefaultWidgetDesigner designer )
-		this.pDesignNormal = designer.pDesignNormal.copyDesign()
-		this.pDesignDisabled = designer.pDesignDisabled.copyDesign()
-		this.pDesignFocused = designer.pDesignFocused.copyDesign()
-		this.pDesignHover = designer.pDesignHover.copyDesign()
-		this.pDesignFocusedHover = designer.pDesignFocusedHover.copyDesign()
+	public func new(DefaultWidgetDesigner designer)
+		pDesignNormal = designer.pDesignNormal.copyDesign()
+		pDesignDisabled = designer.pDesignDisabled.copyDesign()
+		pDesignFocused = designer.pDesignFocused.copyDesign()
+		pDesignHover = designer.pDesignHover.copyDesign()
+		pDesignFocusedHover = designer.pDesignFocusedHover.copyDesign()
 	end
 	
 	
 	
 	/** \brief Design for normal state. */
 	public func StateDesign getDesignNormal()
-		return this.pDesignNormal
+		return pDesignNormal
 	end
 	
 	/** \brief Set design for normal state. */
-	protected func void setDesignNormal( StateDesign design )
+	protected func void setDesignNormal(StateDesign design)
 		if design == null
 			throw EInvalidParam.new()
 		end
-		this.pDesignNormal = design
+		pDesignNormal = design
 	end
 	
 	/** \brief Design for disabled state. */
 	public func StateDesign getDesignDisabled()
-		return this.pDesignDisabled
+		return pDesignDisabled
 	end
 	
 	/** \brief Set design for disabled state. */
-	protected func void setDesignDisabled( StateDesign design )
+	protected func void setDesignDisabled(StateDesign design)
 		if design == null
 			throw EInvalidParam.new()
 		end
-		this.pDesignDisabled = design
+		pDesignDisabled = design
 	end
 	
 	/** \brief Design for focused state. */
 	public func StateDesign getDesignFocused()
-		return this.pDesignFocused
+		return pDesignFocused
 	end
 	
 	/** \brief Set design for focused state. */
-	protected func void setDesignFocused( StateDesign design )
+	protected func void setDesignFocused(StateDesign design)
 		if design == null
 			throw EInvalidParam.new()
 		end
-		this.pDesignFocused = design
+		pDesignFocused = design
 	end
 	
 	/** \brief Design for hover state. */
 	public func StateDesign getDesignHover()
-		return this.pDesignHover
+		return pDesignHover
 	end
 	
 	/** \brief Set design for hover state. */
-	protected func void setDesignHover( StateDesign design )
+	protected func void setDesignHover(StateDesign design)
 		if design == null
 			throw EInvalidParam.new()
 		end
-		this.pDesignHover = design
+		pDesignHover = design
 	end
 	
 	/** \brief Design for focused hover state. */
 	public func StateDesign getDesignFocusedHover()
-		return this.pDesignFocusedHover
+		return pDesignFocusedHover
 	end
 	
 	/** \brief Set design for focused hover state. */
-	protected func void setDesignFocusedHover( StateDesign design )
+	protected func void setDesignFocusedHover(StateDesign design)
 		if design == null
 			throw EInvalidParam.new()
 		end
-		this.pDesignFocusedHover = design
+		pDesignFocusedHover = design
 	end
 	
 	
@@ -388,36 +379,36 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	 * | hover | Mouse pointer hover over widget or children thereof |
 	 * | focusedHover | Mouse pointer hover over widget or children thereof while focused |
 	 */
-	public func void setParameter( String name, Object value )
-		var int delimiter = name.find( '.' )
+	public func void setParameter(String name, Object value)
+		var int delimiter = name.find('.')
 		if delimiter == -1
-			throw EInvalidParam.new( "unknown parameter: " + name )
+			throw EInvalidParam.new("unknown parameter: " + name)
 		end
 		
-		var StateDesign stateDesign = this.getNamedStateDesign( name.substring( 0, delimiter ) )
+		var StateDesign stateDesign = getNamedStateDesign(name.substring(0, delimiter))
 		if stateDesign == null
-			throw EInvalidParam.new( "unknown state: " + name.substring( 0, delimiter ) )
+			throw EInvalidParam.new("unknown state: " + name.substring(0, delimiter))
 		end
 		
-		stateDesign.setParameter( name.substring( delimiter + 1 ), value )
+		stateDesign.setParameter(name.substring(delimiter + 1), value)
 	end
 	
 	/** \brief Get state for parameter name selector component or null if not found. */
-	protected func StateDesign getNamedStateDesign( String stateName )
-		if stateName.equals( "normal" )
-			return this.pDesignNormal
+	protected func StateDesign getNamedStateDesign(String stateName)
+		if stateName.equals("normal")
+			return pDesignNormal
 			
-		elif stateName.equals( "disabled" )
-			return this.pDesignDisabled
+		elif stateName.equals("disabled")
+			return pDesignDisabled
 			
-		elif stateName.equals( "focused" )
-			return this.pDesignFocused
+		elif stateName.equals("focused")
+			return pDesignFocused
 			
-		elif stateName.equals( "hover" )
-			return this.pDesignHover
+		elif stateName.equals("hover")
+			return pDesignHover
 			
-		elif stateName.equals( "focusedHover" )
-			return this.pDesignFocusedHover
+		elif stateName.equals("focusedHover")
+			return pDesignFocusedHover
 			
 		else
 			return null
@@ -426,14 +417,14 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	
 	/** \brief Create copy of designer. */
 	public func WidgetDesigner copyDesigner()
-		return DefaultWidgetDesigner.new( this )
+		return DefaultWidgetDesigner.new(this)
 	end
 	
 	
 	
 	/** \brief Design widget. */
-	public func void designWidget( Widget widget )
-		this.widgetStateFindDesign( widget ).apply( widget )
+	public func void designWidget(Widget widget)
+		widgetStateFindDesign(widget).apply(widget)
 	end
 	
 	/**
@@ -443,28 +434,28 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	 * returned state design can be a set state design or a merge of multiple state
 	 * designs using a fallback logic.
 	 */
-	protected func StateDesign widgetStateFindDesign( Widget widget )
-		var StateDesign design = this.pDesignNormal
+	protected func StateDesign widgetStateFindDesign(Widget widget)
+		var StateDesign design = pDesignNormal
 		
-		widget = this.getStateTrackWidget( widget )
+		widget = getStateTrackWidget(widget)
 		
 		if widget.isFullEnabled()
 			if widget.isMouseInside()
 				design = design.copyDesign()
-				this.pDesignHover.merge( design )
+				pDesignHover.merge(design)
 				
 				if widget.getHasFocus()
-					this.pDesignFocusedHover.merge( design )
+					pDesignFocusedHover.merge(design)
 				end
 				
 			elif widget.getHasFocus()
 				design = design.copyDesign()
-				this.pDesignFocused.merge( design )
+				pDesignFocused.merge(design)
 			end
 			
 		else
 			design = design.copyDesign()
-			this.pDesignDisabled.merge( design )
+			pDesignDisabled.merge(design)
 		end
 		
 		return design
@@ -477,7 +468,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	 * Finds the widget highest up in the parent widget chain with getStateChangeNotifyChildren()
 	 * set to true. If not found returns \em widget.
 	 */
-	public func Widget getStateTrackWidget( Widget widget )
+	public func Widget getStateTrackWidget(Widget widget)
 		var Container parent = widget.getParent()
 		
 		while true

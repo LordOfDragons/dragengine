@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Occlusion OccMap Down-Sample Stereo</name>
+	
+	<texture name='texSource' target='0'/>
+	
+	<parameter name='pLevel'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/passthrough.glsl</sourceCode>
+	<sourceCode unit='geometry'>geometry/generic/passthrough_stereo.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/occlusion/downsample.glsl</sourceCode>
+</shader>

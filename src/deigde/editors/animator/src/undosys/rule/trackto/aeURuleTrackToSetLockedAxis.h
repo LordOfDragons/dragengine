@@ -30,7 +30,7 @@ class aeRuleTrackTo;
 
 
 /**
- * @brief Undo Action Rule Track To Set Locked Axis.
+ * Undo Action Rule Track To Set Locked Axis.
  */
 class aeURuleTrackToSetLockedAxis : public igdeUndo{
 private:
@@ -42,19 +42,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleTrackToSetLockedAxis( aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eLockedAxis newAxis );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleTrackToSetLockedAxis();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

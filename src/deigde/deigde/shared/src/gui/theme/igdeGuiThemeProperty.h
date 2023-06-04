@@ -33,7 +33,7 @@
  * 
  * Value can be of type integer, floating point, point, color or string.
  */
-class igdeGuiThemeProperty : public deObject{
+class DE_DLL_EXPORT igdeGuiThemeProperty : public deObject{
 public:
 	/** \brief Type. */
 	enum eType{

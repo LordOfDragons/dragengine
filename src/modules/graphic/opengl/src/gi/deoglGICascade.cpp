@@ -667,15 +667,15 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const char *data ){
 
 void deoglGICascade::UpdateProbeExtendsFromShader( const char *data ){
 	struct sProbeExtend{
-		decVector minExtend;
-		decVector maxExtend;
+		decVector minExtend; float padding1;
+		decVector maxExtend; float padding2;
 	};
 	
 	INIT_SPECIAL_TIMING
 	const sProbeExtend * const extends = ( const sProbeExtend * )data;
 	int i;
 	
-	for( i=0; i<pRayCacheProbeCount; i++, data+=6 ){
+	for( i=0; i<pRayCacheProbeCount; i++ ){
 		sProbe &probe = pProbes[ pRayCacheProbes[ i ] ];
 		probe.minExtend = extends[ i ].minExtend;
 		probe.maxExtend = extends[ i ].maxExtend;

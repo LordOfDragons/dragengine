@@ -243,7 +243,7 @@ void ceWDSVAPreview::CreateCanvas(){
 	pCanvas.TakeOver( canvasManager.CreateCanvasView() );
 	
 	pCanvasPreview.TakeOver( canvasManager.CreateCanvasImage() );
-	pCanvasPreview->SetOrder( pCanvas->GetCanvasCount() );
+	pCanvasPreview->SetOrder( ( float )pCanvas->GetCanvasCount() );
 	pCanvas->AddCanvas( pCanvasPreview );
 }
 
@@ -317,7 +317,7 @@ void ceWDSVAPreview::UpdateVAPreviewImage(){
 				decoder.TakeOver( pWindow.GetEngine()->GetSoundManager()->CreateDecoder( sound ) );
 				decoder->ReadSamples( pPreviewSamples, bufferSize );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 				// nothing we can do. leave the values in chaos
 			}
 		}

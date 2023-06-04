@@ -1555,7 +1555,8 @@ const decString & ceWPConversation::GetPathImportConvo() const{
 }
 
 decString ceWPConversation::GetImportConvo() const{
-	return pListImportConvoPath->GetSelectedItem() ? pListImportConvoPath->GetSelectedItem()->GetText() : "";
+	return pListImportConvoPath->GetSelectedItem()
+		? pListImportConvoPath->GetSelectedItem()->GetText() : decString();
 }
 
 
@@ -1711,7 +1712,7 @@ void ceWPConversation::UpdateFPController(){
 	ceControllerValue * const controller = GetFacePoseController();
 	
 	if( controller ){
-		pEditFPControllerValue->SetInteger( controller->GetValue() );
+		pEditFPControllerValue->SetFloat( controller->GetValue() );
 		
 	}else{
 		pEditFPControllerValue->ClearText();

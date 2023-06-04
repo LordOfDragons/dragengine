@@ -32,7 +32,6 @@
 #include "../texture/texture2d/deoglTexture.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
-#include "../shaders/paramblock/deoglSPBlockReadBackSSBO.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -100,11 +99,9 @@ private:
 	bool pClearMaps;
 	deoglSPBlockSSBO::Ref pPBProbeDynamicStates;
 	deoglSPBlockSSBO::Ref pPBProbeOffsets;
-	deoglSPBlockReadBackSSBO::Ref pReadBackProbeOffsets;
 	bool pProbesHaveMoved;
 	
 	deoglSPBlockSSBO::Ref pPBProbeExtends;
-	deoglSPBlockReadBackSSBO::Ref pReadBackProbeExtends;
 	bool pProbesExtendsChanged;
 	
 	deoglGIInstances pInstances;

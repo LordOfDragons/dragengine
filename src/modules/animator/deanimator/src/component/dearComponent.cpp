@@ -24,6 +24,7 @@
 
 #include "dearComponent.h"
 #include "dearComponentBoneState.h"
+#include "dearComponentVPSState.h"
 #include "../deDEAnimator.h"
 #include "../dearBoneState.h"
 
@@ -44,12 +45,20 @@ dearComponent::dearComponent( deDEAnimator &module, deComponent &component ) :
 pModule( module ),
 pComponent( component ),
 
-pBoneStates( NULL ),
-pBoneStateCount( 0 )
+pBoneStates( nullptr ),
+pBoneStateCount( 0 ),
+
+pVPSStates( nullptr ),
+pVPSStateCount( 0 )
 {
+	ModelChanged();
+	RigChanged();
 }
 
 dearComponent::~dearComponent(){
+	if( pVPSStates ){
+		delete [] pVPSStates;
+	}
 	if( pBoneStates ){
 		delete [] pBoneStates;
 	}
@@ -61,10 +70,17 @@ dearComponent::~dearComponent(){
 ///////////////
 
 dearComponentBoneState &dearComponent::GetBoneStateAt( int index ) const{
-	if( index < 0 || index >= pBoneStateCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pBoneStateCount )
+	
 	return pBoneStates[ index ];
+}
+
+dearComponentVPSState &dearComponent::GetVPSStateAt( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pVPSStateCount )
+	
+	return pVPSStates[ index ];
 }
 
 void dearComponent::PrepareBones(){
@@ -88,11 +104,16 @@ void dearComponent::PrepareBones(){
 
 void dearComponent::UpdateFromComponent(){
 	int i;
+	
 	for( i=0; i<pBoneStateCount; i++ ){
 		const deComponentBone &bone = pComponent.GetBoneAt( i );
 		pBoneStates[ i ].SetPosition( bone.GetPosition() );
 		pBoneStates[ i ].SetRotation( bone.GetRotation() );
 		pBoneStates[ i ].SetScale( bone.GetScale() );
+	}
+	
+	for( i=0; i<pVPSStateCount; i++ ){
+		pVPSStates[ i ].SetWeight( pComponent.GetVertexPositionSetWeightAt( i ) );
 	}
 	
 	pMatrix = pComponent.GetMatrix();
@@ -111,6 +132,10 @@ void dearComponent::UpdateComponent(){
 		bone.SetRotation( pBoneStates[ i ].GetRotation() );
 		bone.SetScale( pBoneStates[ i ].GetScale() );
 	}
+	
+	for( i=0; i<pVPSStateCount; i++ ){
+		pComponent.SetVertexPositionSetWeightAt( i, pVPSStates[ i ].GetWeight() );
+	}
 }
 
 void dearComponent::UpdateComponentPrepareBones(){
@@ -125,6 +150,24 @@ void dearComponent::UpdateComponentPrepareBones(){
 
 
 
+void dearComponent::ModelChanged(){
+	const int vpsCount = pComponent.GetVertexPositionSetCount();
+	if( vpsCount == pVPSStateCount ){
+		return;
+	}
+	
+	if( pVPSStates ){
+		delete [] pVPSStates;
+		pVPSStates = nullptr;
+		pVPSStateCount = 0;
+	}
+	
+	if( vpsCount > 0 ){
+		pVPSStates = new dearComponentVPSState[ vpsCount ];
+		pVPSStateCount = vpsCount;
+	}
+}
+
 void dearComponent::RigChanged(){
 	const int boneCount = pComponent.GetBoneCount();
 	if( boneCount == pBoneStateCount ){
@@ -133,7 +176,7 @@ void dearComponent::RigChanged(){
 	
 	if( pBoneStates ){
 		delete [] pBoneStates;
-		pBoneStates = NULL;
+		pBoneStates = nullptr;
 		pBoneStateCount = 0;
 	}
 	

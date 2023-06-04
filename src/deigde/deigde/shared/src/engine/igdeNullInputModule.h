@@ -33,9 +33,9 @@
  * 
  * Provides an input module which does nothing as the input is handled by the map editor already.
  */
-class igdeNullInputModule : public deBaseInputModule{
+class DE_DLL_EXPORT igdeNullInputModule : public deBaseInputModule{
 public:
-	class cModule : public deInternalModule{
+	class DE_DLL_EXPORT cModule : public deInternalModule{
 	public:
 		cModule( deModuleSystem *system );
 		virtual ~cModule();

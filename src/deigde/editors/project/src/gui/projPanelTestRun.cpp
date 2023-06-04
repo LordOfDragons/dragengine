@@ -577,7 +577,7 @@ void projPanelTestRun::pUpdateLaunchProfiles(){
 
 void projPanelTestRun::pRemoveOldLines(){
 	const char * const logs = pEditLogs->GetText();
-	const int length = strlen( logs );
+	const int length = ( int )strlen( logs );
 	int count = pMaxLines;
 	int i;
 	

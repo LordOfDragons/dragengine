@@ -19,12 +19,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef OS_UNIX
 #include <unistd.h>
+#endif
 
 #include "projTestRunConstants.h"
 #include "projTestRunCommandThread.h"
@@ -72,7 +77,7 @@ void projTestRunCommandThread::Run(){
 		try{
 			command = ReadCommandFromPipe();
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			break;
 		}
 		

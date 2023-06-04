@@ -78,7 +78,7 @@ decVector meHTVRuleGeometry::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnv
 	if( slot < 0 || slot > 2 ) DETHROW( deeInvalidParam );
 	
 	if( slot == eosHeight ){
-		float height = evalEnv.GetPosition().y;
+		float height = ( float )evalEnv.GetPosition().y;
 		
 		return decVector( height, height, height );
 		

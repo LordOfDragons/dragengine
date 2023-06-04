@@ -32,7 +32,7 @@ class aeAnimatorLocomotion;
 
 
 /**
- * @brief Animator Locomotion TouchSensor Listener.
+ * Animator Locomotion TouchSensor Listener.
  *
  * Scripting module peer for collider of the the animator. Provides
  * typical Player AI type collision handling.
@@ -59,13 +59,13 @@ public:
 	/** @name Notifications */
 	/*@{*/
 	/**
-	 * \brief Notify scripting module peer collider entered touch sensor.
+	 * Notify scripting module peer collider entered touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
 	virtual void ColliderEntered( deCollider *collider );
 	
 	/**
-	 * \brief Notify scripting module peer collider left touch sensor.
+	 * Notify scripting module peer collider left touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
 	virtual void ColliderLeft( deCollider *collider );

@@ -188,6 +188,10 @@ void igdeLoadAnimator::pReadAnimator( const decXmlElementTag &root, const char *
 			animator.GetListBones().Add( GetCDataString( *tag ) );
 			animator.NotifyBonesChanged();
 			
+		}else if( strcmp( tag->GetName(), "vertexPositionSet" ) == 0 ){
+			animator.GetListVertexPositionSets().Add( GetCDataString( *tag ) );
+			animator.NotifyVertexPositionSetsChanged();
+			
 		}else if( strcmp( tag->GetName(), "controller" ) == 0 ){
 			pReadController( *tag, animator );
 			
@@ -307,6 +311,13 @@ void igdeLoadAnimator::pReadLink( const decXmlElementTag &root, deAnimator &anim
 			}else if( tag->GetName() == "boneLimits" ){
 				link->SetBoneValueRange( GetAttributeFloat( *tag, "min" ), GetAttributeFloat( *tag, "max" ) );
 				
+			}else if( tag->GetName() == "vertexPositionSet" ){
+				link->SetVertexPositionSet( GetCDataString( *tag ) );
+				
+			}else if( tag->GetName() == "vertexPositionSetLimits" ){
+				link->SetVertexPositionSetValueRange(
+					GetAttributeFloat( *tag, "min" ), GetAttributeFloat( *tag, "max" ) );
+				
 			}else if( tag->GetName() == "wrapY" ){
 				link->SetWrapY( GetCDataBool( *tag ) );
 			}
@@ -395,6 +406,9 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleAnimation( const decXmlElementTag &r
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
 				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+				rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				name = GetAttributeString( *tag, "name" );
 				
@@ -459,6 +473,9 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleAnimationDifference( const decXmlEle
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
 				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+				rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				name = GetAttributeString( *tag, "name" );
 				
@@ -517,6 +534,9 @@ deAnimator &animator ){
 				
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+				rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				name = GetAttributeString( *tag, "name" );
@@ -717,6 +737,12 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateManipulator( const decXmlElemen
 				ReadVector( *tag, vector );
 				rule->SetMaximumSize( vector );
 				
+			}else if( strcmp( tag->GetName(), "vertexPositionSetMinimum" ) == 0 ){
+				rule->SetMinimumVertexPositionSet( GetCDataFloat( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "vertexPositionSetMaximum" ) == 0 ){
+				rule->SetMaximumVertexPositionSet( GetCDataFloat( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
 				rule->SetEnablePosition( GetCDataBool( *tag ) );
 				
@@ -725,6 +751,9 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateManipulator( const decXmlElemen
 				
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+				rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				name = GetAttributeString( *tag, "name" );
@@ -740,6 +769,9 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateManipulator( const decXmlElemen
 					
 				}else if( strcmp( name, "size" ) == 0 ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetSize() );
+					
+				}else if( strcmp( name, "vertexPositionSet" ) == 0 ){
+					pReadControllerTarget( *tag, animator, rule->GetTargetVertexPositionSet() );
 					
 				}else{
 					LogErrorUnknownValue( *tag, name );
@@ -789,6 +821,9 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateSnapshot( const decXmlElementTa
 				
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+				rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				name = GetAttributeString( *tag, "name" );
@@ -931,13 +966,16 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState( const decXmlElementTag
 			}
 			
 			if( strcmp( tag->GetName(), "scalePosition" ) == 0 ){
-				rule->SetScalePosition( GetCDataBool( *tag ) );
+				rule->SetScalePosition( GetCDataFloat( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "scaleOrientation" ) == 0 ){
-				rule->SetScaleOrientation( GetCDataBool( *tag ) );
+				rule->SetScaleOrientation( GetCDataFloat( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "scaleSize" ) == 0 ){
-				rule->SetScaleSize( GetCDataBool( *tag ) );
+				rule->SetScaleSize( GetCDataFloat( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "scaleVertexPositionSet" ) == 0 ){
+				rule->SetScaleVertexPositionSet( GetCDataFloat( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
 				rule->SetEnablePosition( GetCDataBool( *tag ) );
@@ -948,8 +986,14 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState( const decXmlElementTag
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
 				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+				rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "foreignBone" ) == 0 ){
 				rule->SetForeignBone( GetCDataString( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "foreignVertexPositionSet" ) == 0 ){
+				rule->SetForeignVertexPositionSet( GetCDataString( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "srcCFrame" ) == 0 ){
 				name = tag->GetFirstData()->GetData();
@@ -992,6 +1036,9 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState( const decXmlElementTag
 				}else if( strcmp( name, "size" ) == 0 ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetSize() );
 					
+				}else if( strcmp( name, "vertexPositionSet" ) == 0 ){
+					pReadControllerTarget( *tag, animator, rule->GetTargetVertexPositionSet() );
+					
 				}else{
 					LogErrorUnknownValue( *tag, name );
 				}
@@ -1031,6 +1078,9 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleMirror( const decXmlElementTag &root
 			
 		}else if( tag->GetName() == "enableSize" ){
 			rule->SetEnableSize( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "enableVertexPositionSet" ){
+			rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
 			
 		}else if( tag->GetName() == "mirrorAxis" ){
 			const decString &name = tag->GetFirstData()->GetData();
@@ -1135,6 +1185,9 @@ const char *basePath, deAnimator &animator ){
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
 				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+				rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				const char * const name = GetAttributeString( *tag, "name" );
 				
@@ -1224,6 +1277,9 @@ const char *basePath, deAnimator &animator ){
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
 				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSet" ) == 0 ){
+				rule->SetEnableVertexPositionSet( GetCDataBool( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				name = GetAttributeString( *tag, "name" );
 				
@@ -1297,6 +1353,12 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleLimit( const decXmlElementTag &root,
 				ReadVector( *tag, vector );
 				rule->SetMaximumScaling( vector );
 				
+			}else if( strcmp( tag->GetName(), "minimumVertexPositionSet" ) == 0 ){
+				rule->SetMinimumVertexPositionSet( GetCDataFloat( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "maximumVertexPositionSet" ) == 0 ){
+				rule->SetMaximumVertexPositionSet( GetCDataFloat( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "cframe" ) == 0 ){
 				const char * const name = tag->GetFirstData()->GetData();
 				
@@ -1342,6 +1404,12 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleLimit( const decXmlElementTag &root,
 				rule->SetEnableScalingXMax( GetAttributeInt( *tag, "x" ) != 0 );
 				rule->SetEnableScalingYMax( GetAttributeInt( *tag, "y" ) != 0 );
 				rule->SetEnableScalingZMax( GetAttributeInt( *tag, "z" ) != 0 );
+				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSetMin" ) == 0 ){
+				rule->SetEnableVertexPositionSetMin( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "enableVertexPositionSetMax" ) == 0 ){
+				rule->SetEnableVertexPositionSetMax( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
 				rule->SetTargetBone( GetCDataString( *tag ) );
@@ -1542,12 +1610,17 @@ bool igdeLoadAnimator::pReadRuleCommon( const decXmlElementTag &root, deAnimator
 	}else if( strcmp( root.GetName(), "bone" ) == 0 ){
 		rule.GetListBones().Add( GetCDataString( root ) );
 		return true;
+		
+	}else if( strcmp( root.GetName(), "vertexPositionSet" ) == 0 ){
+		rule.GetListVertexPositionSets().Add( GetCDataString( root ) );
+		return true;
 	}
 	
 	return false;
 }
 
-void igdeLoadAnimator::pReadControllerTarget( const decXmlElementTag &root, deAnimator &animator, deAnimatorControllerTarget &target ){
+void igdeLoadAnimator::pReadControllerTarget( const decXmlElementTag &root,
+deAnimator &animator, deAnimatorControllerTarget &target ){
 	const int elementCount = root.GetElementCount();
 	int e;
 	

@@ -295,7 +295,7 @@ void meView3D::CreateCanvas(){
 		pCanvasFPSText.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
 		pCanvasFPSText->SetColor( decColor( 1.0f, 1.0f, 1.0f, 1.0f ) );
 		pCanvasFPSText->SetFont( pFontStats );
-		pCanvasFPSText->SetFontSize( pFontStats->GetLineHeight() );
+		pCanvasFPSText->SetFontSize( ( float )pFontStats->GetLineHeight() );
 		pCanvasFPSText->SetOrder( 1.0f );
 		pCanvasFPSText->SetPosition( decPoint( 1, 0 ) );
 		pCanvasFPSText->SetSize( pCanvasFPS->GetSize() - decPoint( 2, 0 ) );

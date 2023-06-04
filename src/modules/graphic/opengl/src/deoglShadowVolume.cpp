@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include "deoglBasics.h"
 #include "deoglShadowVolume.h"
-#include "extensions/deoglExtResult.h"
 #include "component/deoglMeshData.h"
 #include "dragengine/common/exceptions.h"
 

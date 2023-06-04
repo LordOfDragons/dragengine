@@ -40,7 +40,7 @@
  * skins the user is interested in. The cathegory is a unix path like
  * string in absolute form.
  */
-class igdeGDSkin : public deObject{
+class DE_DLL_EXPORT igdeGDSkin : public deObject{
 private:
 	decString pPath;
 	decString pName;

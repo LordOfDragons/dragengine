@@ -37,7 +37,7 @@ class igdeScrollBar;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeScrollBarReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeScrollBarReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

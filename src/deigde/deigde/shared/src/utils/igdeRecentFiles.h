@@ -36,7 +36,7 @@ class decXmlWriter;
 /**
  * \brief Recent files with support to synchronize an igdeMenuCascade.
  */
-class igdeRecentFiles{
+class DE_DLL_EXPORT igdeRecentFiles{
 private:
 	igdeEnvironment &pEnvironment;
 	igdeEditorWindow *pEditorWindow;

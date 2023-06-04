@@ -34,7 +34,7 @@ class igdeTriggerTargetList;
 /**
  * \brief Trigger Expression Component.
  */
-class igdeTriggerExpressionComponent : public deObject{
+class DE_DLL_EXPORT igdeTriggerExpressionComponent : public deObject{
 public:
 	/** \brief Component type. */
 	enum eComponentTypes{

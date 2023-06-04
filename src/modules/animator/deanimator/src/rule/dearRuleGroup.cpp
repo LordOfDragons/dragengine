@@ -26,6 +26,8 @@
 #include "dearCreateRuleVisitor.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/deEngine.h>
@@ -65,10 +67,14 @@ dearRuleGroup::dearRuleGroup( dearAnimatorInstance &instance, const dearAnimator
 dearRule( instance, animator, firstLink, rule ),
 
 pGroup( rule ),
-pStateList( NULL ),
-pStateList2( NULL ),
 
-pRules( NULL ),
+pStateList( nullptr ),
+pStateList2( nullptr ),
+
+pVPSStateList( nullptr ),
+pVPSStateList2( nullptr ),
+
+pRules( nullptr ),
 pRuleCount( 0 ),
 
 pTargetSelect( rule.GetTargetSelect(), firstLink ),
@@ -77,7 +83,8 @@ pApplicationType( rule.GetApplicationType() ),
 pUseCurrentState( rule.GetUseCurrentState() ),
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() )
+pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() )
 {
 	try{
 		pCreateRules( firstLink, controllerMapping );
@@ -122,13 +129,9 @@ bool dearRuleGroup::RebuildInstance() const{
 	return rebuild;
 }
 
-void dearRuleGroup::Apply( dearBoneStateList &stalist ){
+void dearRuleGroup::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
-	if( pRuleCount < 1 ){
-		return;
-	}
-	
-	if( ! GetEnabled() ){
+	if( pRuleCount < 1 || ! GetEnabled() ){
 		return;
 	}
 	
@@ -140,6 +143,7 @@ DEBUG_RESET_TIMERS;
 	dearAnimatorInstance &instance = GetInstance();
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	// controller affected values
@@ -174,15 +178,21 @@ DEBUG_RESET_TIMERS;
 				if( animatorBone == -1 ){
 					continue;
 				}
-				
-				const dearBoneState &stateFrom = *stalist.GetStateAt( animatorBone );
-				pStateList->GetStateAt( animatorBone )->SetFrom( stateFrom );
+				pStateList->GetStateAt( animatorBone )->SetFrom( *stalist.GetStateAt( animatorBone ) );
+			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				pVPSStateList->GetStateAt( animatorVps ).SetFrom( vpsstalist.GetStateAt( animatorVps ) );
 			}
 		}
 		
 		// apply rules
 		for( i=0; i<pRuleCount; i++ ){
-			pRules[ i ]->Apply( *pStateList );
+			pRules[ i ]->Apply( *pStateList, *pVPSStateList );
 		}
 		
 		// apply the state
@@ -192,11 +202,18 @@ DEBUG_RESET_TIMERS;
 				continue;
 			}
 			
-			const dearBoneState &stateFrom = *pStateList->GetStateAt( animatorBone );
-			dearBoneState &stateTo = *stalist.GetStateAt( animatorBone );
+			stalist.GetStateAt( animatorBone )->BlendWith( *pStateList->GetStateAt( animatorBone ),
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+		}
+		
+		for( i=0; i<vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps == -1 ){
+				continue;
+			}
 			
-			stateTo.BlendWith( stateFrom, blendMode, blendFactor,
-				pEnablePosition, pEnableOrientation, pEnableSize );
+			vpsstalist.GetStateAt( animatorVps ).BlendWith(
+				pVPSStateList->GetStateAt( animatorVps ), blendMode, blendFactor, pEnableVPS );
 		}
 		break;
 		
@@ -211,6 +228,14 @@ DEBUG_RESET_TIMERS;
 				}
 				stalist.GetStateAt( animatorBone )->BlendWithDefault( blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				vpsstalist.GetStateAt( animatorVps ).BlendWithDefault( blendMode, blendFactor, pEnableVPS );
 			}
 		}
 		
@@ -228,6 +253,19 @@ DEBUG_RESET_TIMERS;
 					pStateList2->GetStateAt( animatorBone )->SetFrom( stateFrom );
 				}
 			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				
+				const dearVPSState &stateFrom = vpsstalist.GetStateAt( animatorVps );
+				pVPSStateList->GetStateAt( animatorVps ).SetFrom( stateFrom );
+				if( pVPSStateList2 ){
+					pVPSStateList2->GetStateAt( animatorVps ).SetFrom( stateFrom );
+				}
+			}
 		}
 		
 		// apply the blend between the two selected rules
@@ -237,10 +275,10 @@ DEBUG_RESET_TIMERS;
 		//      state if rule->Apply(instance,statelist) is called. it is though required
 		//      to merge in our own blending. in case of blending being blend(1) this
 		//      shortcut though would work
-		pRules[ selectIndex ]->Apply( *pStateList );
+		pRules[ selectIndex ]->Apply( *pStateList, *pVPSStateList );
 		
 		if( selectIndex < pRuleCount - 1 ){
-			pRules[ selectIndex + 1 ]->Apply( *pStateList2 );
+			pRules[ selectIndex + 1 ]->Apply( *pStateList2, *pVPSStateList2 );
 			
 			for( i=0; i<boneCount; i++ ){
 				const int animatorBone = GetBoneMappingFor( i );
@@ -248,11 +286,20 @@ DEBUG_RESET_TIMERS;
 					continue;
 				}
 				
-				const dearBoneState &stateFrom = *pStateList2->GetStateAt( animatorBone );
-				dearBoneState &stateTo = *pStateList->GetStateAt( animatorBone );
+				pStateList->GetStateAt( animatorBone )->BlendWith(
+					*pStateList2->GetStateAt( animatorBone ), deAnimatorRule::ebmBlend,
+					selectBlend, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
 				
-				stateTo.BlendWith( stateFrom, deAnimatorRule::ebmBlend, selectBlend,
-					pEnablePosition, pEnableOrientation, pEnableSize );
+				pVPSStateList->GetStateAt( animatorVps ).BlendWith(
+					pVPSStateList2->GetStateAt( animatorVps ),
+					deAnimatorRule::ebmBlend, selectBlend, pEnableVPS );
 			}
 		}
 		
@@ -263,11 +310,18 @@ DEBUG_RESET_TIMERS;
 				continue;
 			}
 			
-			const dearBoneState &stateFrom = *pStateList->GetStateAt( animatorBone );
-			dearBoneState &stateTo = *stalist.GetStateAt( animatorBone );
+			stalist.GetStateAt( animatorBone )->BlendWith( *pStateList->GetStateAt( animatorBone ),
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+		}
+		
+		for( i=0; i<vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps == -1 ){
+				continue;
+			}
 			
-			stateTo.BlendWith( stateFrom, blendMode, blendFactor,
-				pEnablePosition, pEnableOrientation, pEnableSize );
+			vpsstalist.GetStateAt( animatorVps ).BlendWith(
+				pVPSStateList->GetStateAt( animatorVps ), blendMode, blendFactor, pEnableVPS );
 		}
 		break;
 	}
@@ -278,7 +332,6 @@ void dearRuleGroup::ControllerChanged( int controller ){
 	dearRule::ControllerChanged( controller );
 	
 	int i;
-	
 	for( i=0; i<pRuleCount; i++ ){
 		pRules[ i ]->ControllerChanged( controller );
 	}
@@ -290,13 +343,22 @@ void dearRuleGroup::RuleChanged(){
 	dearAnimatorInstance &instance = GetInstance();
 	
 	// free old state lists. they are potentially out of date
+	if( pVPSStateList2 ){
+		delete pVPSStateList2;
+		pVPSStateList2 = nullptr;
+	}
+	if( pVPSStateList ){
+		delete pVPSStateList;
+		pVPSStateList = nullptr;
+	}
+	
 	if( pStateList2 ){
 		delete pStateList2;
-		pStateList2 = NULL;
+		pStateList2 = nullptr;
 	}
 	if( pStateList ){
 		delete pStateList;
-		pStateList = NULL;
+		pStateList = nullptr;
 	}
 	
 	// update all child rules
@@ -307,8 +369,11 @@ void dearRuleGroup::RuleChanged(){
 	
 	// create copies of the current bone state list if required
 	pStateList = instance.GetBoneStateList().CreateCopy();
+	pVPSStateList = instance.GetVPSStateList().CreateCopy();
+	
 	if( pApplicationType == deAnimatorRuleGroup::eatSelect && pRuleCount > 1 ){
 		pStateList2 = instance.GetBoneStateList().CreateCopy();
+		pVPSStateList2 = instance.GetVPSStateList().CreateCopy();
 	}
 }
 

@@ -1,0 +1,55 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+
+
+/**
+ * \brief Interface for behaviors supporting preinitialization.
+ * \version 1.17
+ * 
+ * Preinitializing allows behaviors to modify StubElement before Element.init() is called.
+ * This can be used to alter the behavior initialization procss my modifying the stub
+ * properties or textures.
+ * 
+ * This function is only called for newly created elements. For loading elements
+ * preinitializing is not done since the preinitialized state has been already saved.
+ * 
+ * Usually preinitializing is done for elements to be added to a game world. It is thus
+ * possible to use game world stub properties to alter the initialization. This can be
+ * used to adjust the behavior depending on what game world they are created for. It is
+ * also possible preinitialization is done without the element to be added to a specific
+ * game world. In this case gameWorld is null. Behaviors added for preinitializing have
+ * to be able to handle gameWorld being null.
+ */
+public interface BehaviorPrepareStub
+	/**
+	 * \brief Prepare stub.
+	 * 
+	 * Called by BehaviorElementClass.createAndAddElement() with loading set to false and
+	 * BehaviorElementClass.loadAndAddElement() with loading set to true.
+	 */
+	func void prepareStub(StubElement stub, GameWorld gameWorld, bool loading)
+end

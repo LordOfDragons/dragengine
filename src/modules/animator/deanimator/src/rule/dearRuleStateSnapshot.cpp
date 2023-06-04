@@ -27,11 +27,16 @@
 #include "../dearAnimatorInstance.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimationState.h"
+#include "../dearAnimationVPSState.h"
 #include "../animation/dearAnimation.h"
 #include "../animation/dearAnimationMove.h"
-#include "../animation/dearAnimationKeyframeList.h"
 #include "../animation/dearAnimationKeyframe.h"
+#include "../animation/dearAnimationKeyframeList.h"
+#include "../animation/dearAnimationKeyframeVPS.h"
+#include "../animation/dearAnimationKeyframeVPSList.h"
 #include "../component/dearComponent.h"
 #include "../component/dearComponentBoneState.h"
 
@@ -42,6 +47,8 @@
 #include <dragengine/resources/animation/deAnimationMove.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
 #include <dragengine/resources/animation/deAnimationKeyframeList.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
@@ -79,12 +86,16 @@ const dearAnimator &animator, int firstLink, const deAnimatorRuleStateSnapshot &
 dearRule( instance, animator, firstLink, rule ),
 //pStateSnapshot( rule ),
 
-pAnimStates( NULL ),
+pAnimStates( nullptr ),
 pAnimStateCount( 0 ),
+
+pAnimVPSStates( nullptr ),
+pAnimVPSStateCount( 0 ),
 
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
 pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() ),
 pUseLastState( rule.GetUseLastState() ),
 pID( rule.GetID() )
 {
@@ -103,7 +114,7 @@ dearRuleStateSnapshot::~dearRuleStateSnapshot(){
 // Management
 ///////////////
 
-void dearRuleStateSnapshot::Apply( dearBoneStateList &stalist ){
+void dearRuleStateSnapshot::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;
@@ -117,6 +128,7 @@ DEBUG_RESET_TIMERS;
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	const dearAnimatorInstance &instance = GetInstance();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	if( pUseLastState ){
@@ -139,6 +151,22 @@ DEBUG_RESET_TIMERS;
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
 			}
 			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				
+				dearVPSState &state = vpsstalist.GetStateAt( animatorVps );
+				if( state.GetModelIndex() == -1 ){
+					continue;
+				}
+				
+				vpsstalist.GetStateAt( animatorVps ).BlendWith(
+					arcomponent->GetVPSStateAt( state.GetModelIndex() ),
+					blendMode, blendFactor, pEnableVPS );
+			}
+			
 		}else{
 			for( i=0; i<boneCount; i++ ){
 				const int animatorBone = GetBoneMappingFor( i );
@@ -148,6 +176,16 @@ DEBUG_RESET_TIMERS;
 				
 				stalist.GetStateAt( animatorBone )->BlendWithDefault( blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				
+				vpsstalist.GetStateAt( animatorVps ).BlendWithDefault(
+					blendMode, blendFactor, pEnableVPS );
 			}
 		}
 		
@@ -161,21 +199,29 @@ DEBUG_RESET_TIMERS;
 			stalist.GetStateAt( animatorBone )->BlendWith( pAnimStates[ i ],
 				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
 		}
+		
+		for( i=0; i<vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps == -1 ){
+				continue;
+			}
+			
+			vpsstalist.GetStateAt( animatorVps ).BlendWith( pAnimVPSStates[ i ],
+				blendMode, blendFactor, pEnableVPS );
+		}
 	}
 DEBUG_PRINT_TIMER;
 }
 
 void dearRuleStateSnapshot::CaptureStateInto( int identifier ){
-	if( pUseLastState ){
-		return;
-	}
-	if( pID != identifier ){
+	if( pUseLastState || pID != identifier ){
 		return;
 	}
 	
 	// the parent animator instance ensures this is called only after pending animator tasks
 	// have been finished. accessing the pAnimStates array here is thus safe
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	const dearAnimatorInstance &instance = GetInstance();
 	const dearComponent * const arcomponent = instance.GetComponent();
 	int i;
@@ -196,30 +242,41 @@ void dearRuleStateSnapshot::CaptureStateInto( int identifier ){
 			pAnimStates[ i ].SetSize( componentBone.GetScale() );
 		}
 		
+		for( i=0; i<vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps == -1 ){
+				pAnimVPSStates[ i ].Reset();
+				continue;
+			}
+			
+			pAnimVPSStates[ i ].SetWeight( component.GetVertexPositionSetWeightAt( animatorVps ) );
+		}
+		
 	}else{
 		for( i=0; i<boneCount; i++ ){
 			pAnimStates[ i ].Reset();
+		}
+		
+		for( i=0; i<vpsCount; i++ ){
+			pAnimVPSStates[ i ].Reset();
 		}
 	}
 }
 
 void dearRuleStateSnapshot::StoreFrameInto( int identifier, const char *moveName, float moveTime ){
-	if( ! moveName ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( moveName )
 	
-	if( pUseLastState ){
-		return;
-	}
-	if( pID != identifier ){
+	if( pUseLastState || pID != identifier ){
 		return;
 	}
 	
 	// the parent animator instance ensures this is called only after pending animator tasks
 	// have been finished. accessing the pAnimStates array here is thus safe
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	const dearAnimatorInstance &instance = GetInstance();
 	const dearBoneStateList &stateList = instance.GetBoneStateList();
+	const dearVPSStateList &vpsstateList = instance.GetVPSStateList();
 	int i;
 	
 	const dearAnimation * const animation = GetUseAnimation();
@@ -262,9 +319,41 @@ void dearRuleStateSnapshot::StoreFrameInto( int identifier, const char *moveName
 			pAnimStates[ i ].SetSize( keyframe->InterpolateScaling( time ) );
 		}
 		
+		for( i=0; i<vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps == -1 ){
+				continue;
+			}
+			
+			const int animationVps = engAnimation.GetVertexPositionSets().IndexOf(
+				vpsstateList.GetStateAt( animatorVps ).GetName() );
+			if( animationVps == -1 ){
+				pAnimVPSStates[ i ].Reset();
+				continue;
+			}
+			
+			// determine keyframe containing the move time
+			const dearAnimationKeyframeVPSList &kflist = *move->GetKeyframeVPSListAt( animationVps );
+			const dearAnimationKeyframeVPS * const keyframe = kflist.GetWithTime( moveTime );
+			
+			// if there are no keyframes use the default state
+			if( ! keyframe ){
+				pAnimVPSStates[ i ].Reset();
+				continue;
+			}
+			
+			// calculate bone data
+			const float time = moveTime - keyframe->GetTime();
+			pAnimVPSStates[ i ].SetWeight( keyframe->InterpolateWeight( time ) );
+		}
+		
 	}else{
 		for( i=0; i<boneCount; i++ ){
 			pAnimStates[ i ].Reset();
+		}
+		
+		for( i=0; i<vpsCount; i++ ){
+			pAnimVPSStates[ i ].Reset();
 		}
 	}
 }
@@ -274,6 +363,7 @@ void dearRuleStateSnapshot::RuleChanged(){
 	
 	if( ! pUseLastState ){
 		pUpdateStates();
+		pUpdateVPSStates();
 	}
 }
 
@@ -290,12 +380,30 @@ void dearRuleStateSnapshot::pUpdateStates(){
 	
 	if( pAnimStates ){
 		delete [] pAnimStates;
-		pAnimStates = NULL;
+		pAnimStates = nullptr;
 		pAnimStateCount = 0;
 	}
 	
 	if( boneCount > 0 ){
 		pAnimStates = new dearAnimationState[ boneCount ];
 		pAnimStateCount = boneCount;
+	}
+}
+
+void dearRuleStateSnapshot::pUpdateVPSStates(){
+	const int vpsCount = GetVPSMappingCount();
+	if( pAnimVPSStateCount == vpsCount ){
+		return;
+	}
+	
+	if( pAnimVPSStates ){
+		delete [] pAnimVPSStates;
+		pAnimVPSStates = nullptr;
+		pAnimVPSStateCount = 0;
+	}
+	
+	if( vpsCount > 0 ){
+		pAnimVPSStates = new dearAnimationVPSState[ vpsCount ];
+		pAnimVPSStateCount = vpsCount;
 	}
 }

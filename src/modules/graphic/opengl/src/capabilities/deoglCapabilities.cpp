@@ -62,15 +62,14 @@ pSSBOMaxBlocksCompute( 0 ),
 pUBOOffsetAlignment( 4 ),
 pGeometryShaderMaxVertices( 0 ),
 pGeometryShaderMaxComponents( 0 ),
+pNumProgramBinaryFormats( 0 ),
 
 pATLUnbind( *this ),
 pUBOIndirectMatrixAccess( *this ),
-pRasterizerDiscard( *this ),
-pClearEntireCubeMap( *this ),
 pClearEntireArrayTexture( *this ),
-pGeometryShaderLayer( *this ),
 pUBODirectLinkDeadloop( *this ),
-pFramebufferTextureSingle( *this )
+pFramebufferTextureSingle( *this ),
+pStd430( *this )
 {
 	const GLfloat fsquad[ 12 ] = {
 		0.0f, 1.0f,
@@ -200,6 +199,11 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS, &resultsInt[ 0 ] ) );
 		pGeometryShaderMaxComponents = ( int )resultsInt[ 0 ];
+			
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_get_program_binary ) ){
+			OGL_CHECK( pRenderThread, glGetIntegerv( GL_NUM_PROGRAM_BINARY_FORMATS, &resultsInt[ 0 ] ) );
+			pNumProgramBinaryFormats = ( int )resultsInt[ 0 ];
+		}
 		
 		// report capabilities
 		if( true ){
@@ -212,6 +216,7 @@ void deoglCapabilities::DetectCapabilities(){
 			logger.LogInfoFormat( "- UBO Buffer Offset Alignment = %d", pUBOOffsetAlignment );
 			logger.LogInfoFormat( "- TBO Maximum Size = %d", pTBOMaxSize );
 			logger.LogInfoFormat( "- SSBO Maximum Size = %d", pSSBOMaxSize );
+			logger.LogInfoFormat( "- Count program binary formats = %d", pNumProgramBinaryFormats );
 			logger.LogInfo( "- SSBO Maximum Blocks Shader:" );
 			logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
 			logger.LogInfoFormat( "  - Geometry = %d", pSSBOMaxBlocksGeometry );
@@ -240,11 +245,10 @@ void deoglCapabilities::DetectCapabilities(){
 		pFramebufferTextureSingle.Check( fbo );
 		
 		pUBOIndirectMatrixAccess.Check( fbo );
-		pRasterizerDiscard.Check( fbo );
-// 		pClearEntireCubeMap.Check( fbo ); // nVidia fails this although working
 		pClearEntireArrayTexture.Check( fbo );
-// 		pGeometryShaderLayer.Check( fbo ); // nVidia fails this although working
 		pUBODirectLinkDeadloop.Check( fbo );
+		
+		pStd430.Check();
 		
 		#ifdef OS_ANDROID
 		framebuffer = new deoglFramebuffer( pRenderThread, false );
@@ -309,6 +313,15 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		throw;
 	}
+}
+
+bool deoglCapabilities::Verify() const{
+	if( pStd430.Broken() ){
+		pRenderThread.GetLogger().LogError( "Std430 Layout Not Supported" );
+		return false;
+	}
+	
+	return true;
 }
 
 

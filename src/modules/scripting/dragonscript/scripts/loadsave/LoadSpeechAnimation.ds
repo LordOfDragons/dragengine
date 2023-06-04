@@ -157,6 +157,9 @@ class LoadSpeechAnimation extends BaseXmlLoader
 			elif tagName.equals("neutralMoveName")
 				spa.setNeutralMove(element.getFirstCData())
 				
+			elif tagName.equals("neutralVertexPositionSet")
+				spa.getNeutralVertexPositionSets().add(element.getFirstCData())
+				
 			elif tagName.equals("phoneme")
 				pReadPhoneme(element, spa)
 				
@@ -170,6 +173,7 @@ class LoadSpeechAnimation extends BaseXmlLoader
 	private func void pReadPhoneme(EasyXMLElement root, SpeechAnimation spa)
 		var int i, count = root.getElementCount()
 		var EasyXMLElement element
+		var String vertexPositionSet = ""
 		var String moveName = ""
 		var float length = 0.1
 		var String tagName
@@ -191,13 +195,16 @@ class LoadSpeechAnimation extends BaseXmlLoader
 				if tagName.equals("moveName")
 					moveName = element.getFirstCData()
 					
+				elif tagName.equals("vertexPositionSet")
+					vertexPositionSet = element.getFirstCData()
+					
 				elif tagName.equals("length")
 					length = element.getFirstCData().toFloat()
 				end
 			end
 		end
 		
-		spa.addPhoneme(SpeechAnimationPhoneme.new(ipa, length, moveName))
+		spa.addPhoneme(SpeechAnimationPhoneme.new(ipa, length, moveName, vertexPositionSet))
 	end
 	
 	/** Read word tag. */

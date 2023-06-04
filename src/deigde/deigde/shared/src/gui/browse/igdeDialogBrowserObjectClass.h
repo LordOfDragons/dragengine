@@ -31,7 +31,7 @@ class igdeGDClass;
 /**
  * \brief Dialog for user to browse object class.
  */
-class igdeDialogBrowserObjectClass : public igdeDialogBrowser{
+class DE_DLL_EXPORT igdeDialogBrowserObjectClass : public igdeDialogBrowser{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

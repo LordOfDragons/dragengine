@@ -241,15 +241,13 @@ void deoglDeveloperModeStats::CombinedTextures( const decUnicodeArgumentList &co
 }
 
 void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
-	int ss, shaderSourcesCount;
-	int sst, shaderSourcesTextureCount;
-	int ssp, shaderSourcesParameterCount;
+	const decObjectList smsources( pRenderThread.GetShader().GetShaderManager().GetSourcesAsList() );
+	int ss, sst, ssp;
 	decString text;
 	
-	shaderSourcesCount = shaderManager.GetSourcesCount();
+	const int shaderSourcesCount = smsources.GetCount();
 	for( ss=0; ss<shaderSourcesCount; ss++ ){
-		const deoglShaderSources &sources = *shaderManager.GetSourcesAt( ss );
+		const deoglShaderSources &sources = *( deoglShaderSources* )smsources.GetAt( ss );
 		const deoglShaderBindingList &textureList = sources.GetTextureList();
 		const decStringList &parameterList = sources.GetParameterList();
 		
@@ -271,7 +269,7 @@ void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &comma
 			answer.AppendFromUTF8( text.GetString() );
 		}
 		
-		shaderSourcesTextureCount = textureList.GetCount();
+		const int shaderSourcesTextureCount = textureList.GetCount();
 		text.Set( "   - Textures:" );
 		for( sst=0; sst<shaderSourcesTextureCount; sst++ ){
 			text.AppendFormat( "%s %s(%d)", sst == 0 ? "" : ",",
@@ -280,7 +278,7 @@ void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &comma
 		text.Append( "\n" );
 		answer.AppendFromUTF8( text.GetString() );
 		
-		shaderSourcesParameterCount = parameterList.GetCount();
+		const int shaderSourcesParameterCount = parameterList.GetCount();
 		text.Set( "   - Parameters:" );
 		for( ssp=0; ssp<shaderSourcesParameterCount; ssp++ ){
 			text.AppendFormat( "%s %s", ssp == 0 ? "" : ",", parameterList.GetAt( ssp ).GetString() );
@@ -322,7 +320,7 @@ void deoglDeveloperModeStats::ShaderPrograms( const decUnicodeArgumentList &comm
 }
 
 void deoglDeveloperModeStats::SkinShaders( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	const deoglSkinShaderManager &manager = pRenderThread.GetShader().GetSkinShaderManager();
+	deoglSkinShaderManager &manager = pRenderThread.GetShader().GetSkinShaderManager();
 	const int shaderCount = manager.GetShaderCount();
 	decString text, configString;
 	int i;

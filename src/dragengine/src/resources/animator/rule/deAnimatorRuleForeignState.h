@@ -59,21 +59,25 @@ public:
 	
 private:
 	decString pForeignBone;
+	decString pForeignVertexPositionSet;
 	eCoordinateFrames pSourceCoordinateFrame;
 	eCoordinateFrames pDestCoordinateFrame;
 	float pScalePosition;
 	float pScaleOrientation;
 	float pScaleSize;
+	float pScaleVertexPositionSet;
 	bool pModifyX;
 	bool pModifyY;
 	bool pModifyZ;
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 	deAnimatorControllerTarget pTargetPosition;
 	deAnimatorControllerTarget pTargetOrientation;
 	deAnimatorControllerTarget pTargetSize;
+	deAnimatorControllerTarget pTargetVertexPositionSets;
 	
 	
 	
@@ -102,6 +106,12 @@ public:
 	/** \brief Set name of the foreign bone. */
 	void SetForeignBone( const char *boneName );
 	
+	/** \brief Name of the foreign vertex position set. */
+	inline const decString &GetForeignVertexPositionSet() const{ return pForeignVertexPositionSet; }
+	
+	/** \brief Set name of the foreign vertex position set. */
+	void SetForeignVertexPositionSet( const char *vertexPositionSet );
+	
 	/** \brief Position scale factor. */
 	inline float GetScalePosition() const{ return pScalePosition; }
 	
@@ -119,6 +129,12 @@ public:
 	
 	/** \brief Set size scale factor. */
 	void SetScaleSize( float scaleSize );
+	
+	/** \brief Vertex position set scale factor. */
+	inline float GetScaleVertexPositionSet() const{ return pScaleVertexPositionSet; }
+	
+	/** \brief Set vertex position set scale factor. */
+	void SetScaleVertexPositionSet( float scale );
 	
 	/** \brief Source coordinate frame. */
 	inline eCoordinateFrames GetSourceCoordinateFrame() const{ return pSourceCoordinateFrame; }
@@ -186,6 +202,12 @@ public:
 	/** \brief Sets if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
+	/** \brief Vertex position sets are enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** \brief Set if vertex position sets are enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
+	
 	/** \brief Scale position target. */
 	inline deAnimatorControllerTarget &GetTargetPosition(){ return pTargetPosition; }
 	inline const deAnimatorControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
@@ -197,6 +219,10 @@ public:
 	/** \brief Scale size target. */
 	inline deAnimatorControllerTarget &GetTargetSize(){ return pTargetSize; }
 	inline const deAnimatorControllerTarget &GetTargetSize() const{ return pTargetSize; }
+	
+	/** \brief Scale vertex position set target. */
+	inline deAnimatorControllerTarget &GetTargetVertexPositionSet(){ return pTargetVertexPositionSets; }
+	inline const deAnimatorControllerTarget &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSets; }
 	/*@}*/
 	
 	

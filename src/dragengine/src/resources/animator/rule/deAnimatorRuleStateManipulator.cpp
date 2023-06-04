@@ -37,7 +37,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimatorRuleStateManipulator::deAnimatorRuleStateManipulator(){
+deAnimatorRuleStateManipulator::deAnimatorRuleStateManipulator() :
+pMinVertexPositionSet( 0.0f ),
+pMaxVertexPositionSet( 0.0f ),
+pEnableVertexPositionSet( true )
+{
 	pMinSize.Set( 1.0f, 1.0f, 1.0f );
 	pMaxSize.Set( 1.0f, 1.0f, 1.0f );
 	pEnablePosition = false;
@@ -77,6 +81,14 @@ void deAnimatorRuleStateManipulator::SetMaximumSize( const decVector &size ){
 	pMaxSize = size;
 }
 
+void deAnimatorRuleStateManipulator::SetMinimumVertexPositionSet( float weight ){
+	pMinVertexPositionSet = weight;
+}
+
+void deAnimatorRuleStateManipulator::SetMaximumVertexPositionSet( float weight ){
+	pMaxVertexPositionSet = weight;
+}
+
 void deAnimatorRuleStateManipulator::SetEnablePosition( bool enable ){
 	pEnablePosition = enable;
 }
@@ -87,6 +99,10 @@ void deAnimatorRuleStateManipulator::SetEnableRotation( bool enable ){
 
 void deAnimatorRuleStateManipulator::SetEnableSize( bool enable ){
 	pEnableSize = enable;
+}
+
+void deAnimatorRuleStateManipulator::SetEnableVertexPositionSet( bool enabled ){
+	pEnableVertexPositionSet = enabled;
 }
 
 

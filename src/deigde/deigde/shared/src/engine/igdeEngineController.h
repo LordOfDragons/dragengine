@@ -37,7 +37,7 @@ class igdeWidget;
  * \brief Engine Controller.
  * Handles a game engine instance.
  */
-class igdeEngineController{
+class DE_DLL_EXPORT igdeEngineController{
 public:
 	/** \brief List of systems. */
 	enum eSystems{
@@ -104,8 +104,8 @@ public:
 	/** \brief Unparent main render window. */
 	void UnparentMainRenderWindow();
 	
-	/** \brief Updates the engine using the given game definition. */
-	void UpdateEngine( const igdeGameProject &gameProject,
+	/** \brief Update engine virtual file system using game definition if present. */
+	void UpdateEngine( const igdeGameProject *gameProject,
 		const char *pathIGDEData, const char *pathIGDEModuleData );
 	
 	/** \brief Adds an internal module to the engine. */

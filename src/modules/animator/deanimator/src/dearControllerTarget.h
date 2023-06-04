@@ -30,7 +30,7 @@ class dearControllerStates;
 
 
 /**
- * \brief Animator controller target.
+ * Animator controller target.
  */
 class dearControllerTarget{
 private:
@@ -40,30 +40,30 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create controller target. */
+	/** Create controller target. */
 	dearControllerTarget( const deAnimatorControllerTarget &target, int firstLink );
 	
-	/** \brief Clean up controller target. */
+	/** Clean up controller target. */
 	~dearControllerTarget();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of links. */
+	/** Number of links. */
 	inline int GetLinkCount() const{ return pLinkCount; }
 	
-	/** \brief Link at index. */
+	/** Link at index. */
 	int GetLinkAt( int index ) const;
 	
 	
 	
-	/** \brief Value of target. */
+	/** Value of target. */
 	float GetValue( const dearAnimatorInstance &instance, float defaultValue ) const;
 	
-	/** \brief Vector of target. */
+	/** Vector of target. */
 	void GetVector( const dearAnimatorInstance &instance, decVector &vector ) const;
 	
-	/** \brief Quaternion of target. */
+	/** Quaternion of target. */
 	void GetQuaternion( const dearAnimatorInstance &instance, decQuaternion &quaternion ) const;
 	/*@}*/
 };

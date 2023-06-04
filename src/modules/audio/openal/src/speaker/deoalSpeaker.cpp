@@ -160,6 +160,7 @@ void deoalSpeaker::Synchronize(){
 			pVideoPlayer->Synchronize();
 		}
 		pDirtyVideoPlayer = false;
+		pDirtySpeaker = true;
 	}
 	
 	if( pDirtySpeaker ){
@@ -275,6 +276,7 @@ void deoalSpeaker::Synchronize(){
 
 void deoalSpeaker::VideoPlayerRequiresSync(){
 	pDirtyVideoPlayer = true;
+	pDirtySpeaker = true;
 	
 	pRequiresSync();
 }

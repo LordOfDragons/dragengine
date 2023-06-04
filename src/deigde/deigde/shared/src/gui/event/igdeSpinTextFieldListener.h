@@ -32,7 +32,7 @@ class igdeSpinTextField;
 /**
  * \brief IGDE UI SpinTextField Listener.
  */
-class igdeSpinTextFieldListener : public deObject{
+class DE_DLL_EXPORT igdeSpinTextFieldListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

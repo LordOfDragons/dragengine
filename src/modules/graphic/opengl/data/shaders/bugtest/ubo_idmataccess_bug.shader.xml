@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Test UBO Indirect Matrix Access Bug</name>
+	
+	<uniformBlock name='TestParameters' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/bugtest/ubo_idmataccess_bug.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/bugtest/ubo_idmataccess_bug.glsl</sourceCode>
+</shader>

@@ -38,7 +38,7 @@ class aeAnimator;
 
 
 /**
- * \brief Properties Panel.
+ * Properties Panel.
  */
 class aeWindowProperties : public igdeTabBook{
 private:
@@ -56,11 +56,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWindowProperties( aeWindowMain &windowMain );
 	
 protected:
-	/** \brief Clean up window. */
+	/** Clean up window. */
 	virtual ~aeWindowProperties();
 	/*@}*/
 	
@@ -69,13 +69,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Animator. */
+	/** Animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Animator path changed. */
+	/** Animator path changed. */
 	void OnAnimatorPathChanged();
 	/*@}*/
 };

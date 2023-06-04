@@ -49,6 +49,7 @@
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelBone.h>
 #include <dragengine/resources/model/deModelTexture.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 
 
 
@@ -58,7 +59,7 @@
 // Cache version in the range from 0 to 255. Increment each time the cache
 // format changed. If reaching 256 wrap around to 0. Important is only the
 // number changes to force discarding old caches
-#define CACHE_VERSION		4
+#define CACHE_VERSION 5
 
 
 
@@ -105,7 +106,6 @@ pSharedSPBListUBO( NULL )
 	try{
 		if( ! pIsCached ){
 			pInitLODs( model );
-			pInitExtends( model );
 			pSaveCached();
 		}
 		
@@ -122,6 +122,7 @@ pSharedSPBListUBO( NULL )
 		
 		pInitBoneNames( model );
 		pInitTextureNames( model );
+		pInitVPSNames( model );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -325,6 +326,14 @@ void deoglRModel::pInitTextureNames( const deModel &engModel ){
 	}
 }
 
+void deoglRModel::pInitVPSNames( const deModel &engModel ){
+	const int count = engModel.GetVertexPositionSetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		pVPSNames.Add( engModel.GetVertexPositionSetAt( i )->GetName() );
+	}
+}
+
 void deoglRModel::pInitLODs( const deModel &engModel ){
 	const int lodCount = engModel.GetLODCount();
 	
@@ -332,19 +341,32 @@ void deoglRModel::pInitLODs( const deModel &engModel ){
 	
 	pLODs = new deoglModelLOD*[ lodCount ];
 	
-	for( pLODCount=0; pLODCount<lodCount; pLODCount++ ){
+	if( lodCount == 0 ){
+		return;
+	}
+	
+	// init base lod
+	pLODs[ 0 ] = new deoglModelLOD( *this, pLODCount, engModel );
+	pDoubleSided = pLODs[ 0 ]->GetDoubleSided();
+	pLODCount = 1;
+	
+	// init extends. this has to come now and not after higher lods since error calculation
+	// requires creating octrees which in turn require the base lod extends
+	pInitExtends( engModel, *pLODs[ 0 ] );
+	
+	// init higher lod levels
+	for( ; pLODCount<lodCount; pLODCount++ ){
 		pLODs[ pLODCount ] = new deoglModelLOD( *this, pLODCount, engModel );
-		
 		if( pLODs[ pLODCount ]->GetDoubleSided() ){
 			pDoubleSided = true;
 		}
 	}
 }
 
-void deoglRModel::pInitExtends( const deModel &engModel ){
+void deoglRModel::pInitExtends( const deModel &engModel, const deoglModelLOD &baseLod ){
 	// extends of all points
-	const oglModelPosition * const positions = pLODs[ 0 ]->GetPositions();
-	const int positionCount = pLODs[ 0 ]->GetPositionCount();
+	const oglModelPosition * const positions = baseLod.GetPositions();
+	const int positionCount = baseLod.GetPositionCount();
 	int i;
 	
 	if( positionCount > 0 ){
@@ -375,10 +397,10 @@ void deoglRModel::pInitExtends( const deModel &engModel ){
 	pBoneExtends = new sExtends[ boneCount ];
 	pBoneCount = boneCount;
 	
-	const int weightsCount = pLODs[ 0 ]->GetWeightsCount();
+	const int weightsCount = baseLod.GetWeightsCount();
 	if( weightsCount > 0 ){
-		const int * const weightsCounts = pLODs[ 0 ]->GetWeightsCounts();
-		const oglModelWeight *weightEntries = pLODs[ 0 ]->GetWeightsEntries();
+		const int * const weightsCounts = baseLod.GetWeightsCounts();
+		const oglModelWeight *weightEntries = baseLod.GetWeightsEntries();
 		int * const dominatingBones = new int[ weightsCount ];
 		bool * const boneHasExtends = new bool[ boneCount ];
 		

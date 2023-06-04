@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Reflection EnvMap Mask</name>
+	
+	<parameter name='pMatrixMV'/> <!-- 0 -->
+	<parameter name='pMatrixP'/> <!-- 1 -->
+	<parameter name='pMatrixReflectionBox'/> <!-- 2 -->
+	<parameter name='pMatrixMaskBox'/> <!-- 3 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outMask' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/defren/reflection/envmapmask.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/reflection/envmapmask.glsl</sourceCode>
+</shader>

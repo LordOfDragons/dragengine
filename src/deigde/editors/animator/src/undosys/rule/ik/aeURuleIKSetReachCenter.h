@@ -31,7 +31,7 @@ class aeRuleInverseKinematic;
 
 
 /**
- * \brief Undo action rule inverse kinematic set reach center.
+ * Undo action rule inverse kinematic set reach center.
  */
 class aeURuleIKSetReachCenter : public igdeUndo{
 private:
@@ -44,23 +44,23 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create new undo action.
+	 * Create new undo action.
 	 * \throws deeInvalidParam \em rule is \em NULL.
 	 */
 	aeURuleIKSetReachCenter( aeRuleInverseKinematic *rule, const decVector &newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleIKSetReachCenter();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

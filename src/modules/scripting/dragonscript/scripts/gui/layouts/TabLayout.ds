@@ -31,39 +31,53 @@ pin Dragengine.Gui.Borders
  * Provides functions to switch between the child widgets easily.
  * 
  * Instances of this layout can not be shared by multiple widgets.
+ * 
+ * \par Version 1.17
+ * 
+ * By default the minimum size of the layout lines up with the largest minimum size of all
+ * widgets. This ensures the container does not change size when the selected child widget
+ * changes. Since version 1.17 this behavior can be changed to matche the minimum size of
+ * the selected widget instead. This allows to make compact SwitchPanel layouts.
  */
 class TabLayout implements Layout
-	/** \brief Index of visible child widget. */
 	private var int pTabIndex
+	private var bool pCompact
 	
 	
 	
 	/** \brief Create layout. */
 	public func new()
-		this.pTabIndex = 0
+	end
+	
+	/**
+	 * \brief Create layout.
+	 * \version 1.17
+	 */
+	public func new(bool compact)
+		pCompact = compact
 	end
 	
 	
 	
 	/** \brief Index of the current tab. */
 	public func int getTabIndex()
-		return this.pTabIndex
+		return pTabIndex
 	end
 	
 	/**
 	 * \brief Select first tab.
 	 * \throws EOutOfBounds \em container has no child widgets.
 	 */
-	public func void selectFirstTab( Container container )
-		this.selectTab( container, 0 )
+	public func void selectFirstTab(Container container)
+		selectTab(container, 0)
 	end
 	
 	/**
 	 * \brief Select last tab.
 	 * \throws EOutOfBounds \em container has no child widgets.
 	 */
-	public func void selectLastTab( Container container )
-		this.selectTab( container, container.getWidgetCount() - 1 )
+	public func void selectLastTab(Container container)
+		selectTab(container, container.getWidgetCount() - 1)
 	end
 	
 	/**
@@ -72,16 +86,16 @@ class TabLayout implements Layout
 	 * \throws EOutOfBounds \em index is less than 0
 	 * \throws EOutOfBounds \em index is larger than or equal to Container.getWidgetCount().
 	 */
-	public func void selectTab( Container container, int index )
+	public func void selectTab(Container container, int index)
 		if index < 0 or index >= container.getWidgetCount()
 			throw EOutOfBounds.new()
 		end
 		
-		if index == this.pTabIndex
+		if index == pTabIndex
 			return
 		end
 		
-		this.pTabIndex = index
+		pTabIndex = index
 		container.doLayout()
 	end
 	
@@ -89,26 +103,50 @@ class TabLayout implements Layout
 	 * \brief Select next tab wrapping around on the end.
 	 * \throws EOutOfBounds \em container has no child widgets.
 	 */
-	public func void selectNextTab( Container container )
+	public func void selectNextTab(Container container)
 		var int count = container.getWidgetCount()
 		if count == 0
 			throw EOutOfBounds.new()
 		end
 		
-		this.selectTab( container, ( this.pTabIndex + 1 ) % count )
+		selectTab(container, (pTabIndex + 1) % count)
 	end
 	
 	/**
 	 * \brief Select previous tab wrapping around on the beginning.
 	 * \throws EOutOfBounds \em container has no child widgets.
 	 */
-	public func void selectPreviousTab( Container container )
+	public func void selectPreviousTab(Container container)
 		var int count = container.getWidgetCount()
 		if count == 0
 			throw EOutOfBounds.new()
 		end
 		
-		this.selectTab( container, ( this.pTabIndex - 1 + count ) % count )
+		selectTab(container, (pTabIndex - 1 + count) % count)
+	end
+	
+	/**
+	 * \brief Compact mode.
+	 * \version 1.17
+	 * 
+	 * If compact mode is used the minimum size of the layout matches the minimum size of the
+	 * selected child widget instead of the largest minimum size of all child widgets.
+	 */
+	public func bool getCompact()
+		return pCompact
+	end
+	
+	/**
+	 * \brief Set compact mode.
+	 * \version 1.17
+	 * 
+	 * If compact mode is used the minimum size of the layout matches the minimum size of the
+	 * selected child widget instead of the largest minimum size of all child widgets.
+	 * 
+	 * Call Container.doLayout() after changing compact mode.
+	 */
+	public func void setCompact(bool compact)
+		pCompact = compact
 	end
 	
 	
@@ -116,50 +154,62 @@ class TabLayout implements Layout
 	/**
 	 * \brief Add widget to layout using settings.
 	 */
-	public func void addWidget( Widget widget, Object settings )
+	public func void addWidget(Widget widget, Object settings)
 	end
 	
 	/** \brief Remove widget from layout. */
-	public func void removeWidget( Widget widget )
+	public func void removeWidget(Widget widget)
 	end
 	
 	
 	
 	/** \brief Layout widgets in container. */
-	public func void doLayout( Container container )
-		var Widget child = container.getWidget( this.pTabIndex )
+	public func void doLayout(Container container)
+		var Widget child = container.getWidget(pTabIndex)
 		
 		var Point size = container.getContainerSize()
-		var Point position = Point.new( container.getPadding().getLeft(), container.getPadding().getTop() )
+		var Point position = Point.new(container.getPadding().getLeft(), container.getPadding().getTop())
 		
 		if child.getBorder() != null
 			var BorderSize borderSize = child.getBorder().getBorderSize()
-			position = position + Point.new( borderSize.getLeft(), borderSize.getTop() )
+			position = position + Point.new(borderSize.getLeft(), borderSize.getTop())
 			size = size - borderSize.getSize()
 		end
 		
-		child.setPosition( position )
-		child.setSize( size )
+		child.setPosition(position)
+		child.setSize(size)
 		
-		container.forEachWidget( block Widget each
-			each.setVisible( each == child )
-		end )
+		container.forEachWidget(block Widget each
+			each.setVisible(each == child)
+		end)
 	end
 	
 	
 	
 	/** \brief Minimal size needed for laying out child widgets. */
-	public func Point getMinimumSize( Container container )
-		return this.getMinimumSizeForWidth( container, container.getContainerWidth() )
+	public func Point getMinimumSize(Container container)
+		return getMinimumSizeForWidth(container, container.getContainerWidth())
 	end
 	
 	/** \brief Minimum size of layout using reference width and variable height. */
-	public func Point getMinimumSizeForWidth( Container container, int width )
-		var int refWidth = DEMath.max( 0, width - container.getPadding().getWidth() )
+	public func Point getMinimumSizeForWidth(Container container, int width)
+		var int refWidth = DEMath.max(0, width - container.getPadding().getWidth())
 		
-		var Point size = container.injectWidget( Point.new(), block Point size, Widget widget
-			return size.largest( widget.getMinimumSizeWithBorderForWidth( refWidth ) )
-		end ) cast Point
+		var Point size
+		
+		if pCompact
+			if pTabIndex != -1
+				size = container.getWidget(pTabIndex).getMinimumSizeWithBorderForWidth(refWidth)
+				
+			else
+				size = Point.new()
+			end
+			
+		else
+			size = container.injectWidget(Point.new(), block Point size, Widget widget
+				return size.largest(widget.getMinimumSizeWithBorderForWidth(refWidth))
+			end) cast Point
+		end
 		
 		if not size.isZero()
 			size = size + container.getPadding().getSize()
@@ -168,12 +218,24 @@ class TabLayout implements Layout
 	end
 	
 	/** \brief Minimum size of layout using reference widget height and variable width. */
-	public func Point getMinimumSizeForHeight( Container container, int height )
-		var int refHeight = DEMath.max( 0, height - container.getPadding().getHeight() )
+	public func Point getMinimumSizeForHeight(Container container, int height)
+		var int refHeight = DEMath.max(0, height - container.getPadding().getHeight())
 		
-		var Point size = container.injectWidget( Point.new(), block Point size, Widget widget
-			return size.largest( widget.getMinimumSizeWithBorderForHeight( refHeight ) )
-		end ) cast Point
+		var Point size
+		
+		if pCompact
+			if pTabIndex != -1
+				size = container.getWidget(pTabIndex).getMinimumSizeWithBorderForHeight(refHeight)
+				
+			else
+				size = Point.new()
+			end
+			
+		else
+			size = container.injectWidget(Point.new(), block Point size, Widget widget
+				return size.largest(widget.getMinimumSizeWithBorderForHeight(refHeight))
+			end) cast Point
+		end
 		
 		if not size.isZero()
 			size = size + container.getPadding().getSize()

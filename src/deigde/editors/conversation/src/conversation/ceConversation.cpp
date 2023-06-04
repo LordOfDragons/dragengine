@@ -98,29 +98,27 @@
 ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEntity( environment ){
 	deEngine * const engine = GetEngine();
 	
-	pEngWorld = NULL;
+	pSky = nullptr;
+	pEnvObject = nullptr;
 	
-	pSky = NULL;
-	pEnvObject = NULL;
+	pEngMicrophone = nullptr;
+	pEngSpeakerVAPreview = nullptr;
 	
-	pEngMicrophone = NULL;
-	pEngSpeakerVAPreview = NULL;
+	pActiveTarget = nullptr;
+	pActiveCameraShot = nullptr;
+	pActiveGesture = nullptr;
+	pActiveFacePose = nullptr;
+	pActiveFile = nullptr;
+	pActiveActor = nullptr;
+	pActiveCoordSystem = nullptr;
+	pActiveProp = nullptr;
 	
-	pActiveTarget = NULL;
-	pActiveCameraShot = NULL;
-	pActiveGesture = NULL;
-	pActiveFacePose = NULL;
-	pActiveFile = NULL;
-	pActiveActor = NULL;
-	pActiveCoordSystem = NULL;
-	pActiveProp = NULL;
-	
-	pCamera = NULL;
-	pCameraFree = NULL;
-	pTextBox = NULL;
-	pPlayerChoiceBox = NULL;
-	pInfoBox = NULL;
-	pPlayback = NULL;
+	pCamera = nullptr;
+	pCameraFree = nullptr;
+	pTextBox = nullptr;
+	pPlayerChoiceBox = nullptr;
+	pInfoBox = nullptr;
+	pPlayback = nullptr;
 	
 	pScreenRatio = 1.6f; // 16:10 wide screen
 	pShowRuleOfThirdsAid = false;
@@ -136,7 +134,7 @@ ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEnt
 		SetCTFIPath( "test.dectfi" );
 		
 		// create world
-		pEngWorld = engine->GetWorldManager()->CreateWorld();
+		pEngWorld.TakeOver( engine->GetWorldManager()->CreateWorld() );
 		pEngWorld->SetGravity( decVector( 0.0f, 0.0f, 0.0f ) );
 		pEngWorld->SetDisableLights( false );
 		pEngWorld->SetAmbientLight( decColor( 0.0f, 0.0f, 0.0f ) );
@@ -170,14 +168,14 @@ ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEnt
 		decLayerMask layerMaskAudio;
 		layerMaskAudio.SetBit( elmAudio );
 		
-		pEngMicrophone = engine->GetMicrophoneManager()->CreateMicrophone();
+		pEngMicrophone.TakeOver( engine->GetMicrophoneManager()->CreateMicrophone() );
 		pEngMicrophone->SetMuted( false );
 		pEngMicrophone->SetType( deMicrophone::emtPoint ); // directed in fact but that's for later
 		pEngMicrophone->SetLayerMask( layerMaskAudio );
 		pEngWorld->AddMicrophone( pEngMicrophone );
 		
 		// create voice audio preview speaker
-		pEngSpeakerVAPreview = engine->GetSpeakerManager()->CreateSpeaker();
+		pEngSpeakerVAPreview.TakeOver( engine->GetSpeakerManager()->CreateSpeaker() );
 		pEngSpeakerVAPreview->SetLooping( false );
 		pEngSpeakerVAPreview->SetMuted( false );
 		pEngSpeakerVAPreview->SetPlaySpeed( 1.0f );
@@ -231,12 +229,21 @@ ceConversation::~ceConversation(){
 ///////////////
 
 void ceConversation::Dispose(){
+	RemoveAllProps();
+	RemoveAllCoordSystems();
 	RemoveAllActors();
 	RemoveAllFiles();
 	RemoveAllFacePoses();
 	RemoveAllGestures();
 	RemoveAllCameraShots();
 	RemoveAllTargets();
+	
+	const int iccount = pImportedConversations.GetCount();
+	int i;
+	for( i=0; i<iccount; i++ ){
+		pImportedConversations.GetAt( i )->Dispose();
+	}
+	pImportedConversations.RemoveAll();
 	
 	GetUndoSystem()->RemoveAll();
 }
@@ -307,16 +314,20 @@ void ceConversation::SetImportConversationPath( const decStringList &list ){
 void ceConversation::UpdateImportedConversations( ceLoadSaveSystem &lssystem ){
 	// we reload all conversation to be on the save side. this is less efficient than keeping
 	// alread loaded conversations around but avoids potential problems if files changed
+	const int iccount = pImportedConversations.GetCount();
+	int i;
+	for( i=0; i<iccount; i++ ){
+		pImportedConversations.GetAt( i )->Dispose();
+	}
 	pImportedConversations.RemoveAll();
 	
 	const int count = pImportConversationPath.GetCount();
-	int i;
 	
 	for( i=0; i<count; i++ ){
-		const decString &path = pImportConversationPath.GetAt( i );
-		const decPath fullPath( decPath::AbsolutePathUnix( path, GetDirectoryPath() ) );
 		try{
-			pImportedConversations.Add( lssystem.LoadConversation( fullPath.GetPathUnix() ) );
+			pImportedConversations.Add( Ref::New( lssystem.LoadConversation(
+				decPath::AbsolutePathUnix( pImportConversationPath.GetAt( i ),
+					GetDirectoryPath() ).GetPathUnix() ) ) );
 			
 		}catch( const deException &e ){
 			GetLogger()->LogException( LOGSOURCE, e );
@@ -351,7 +362,7 @@ void ceConversation::RemoveTarget( ceTarget *target ){
 	
 	if( target == pActiveTarget ){
 		if( pTargetList.GetCount() == 1 ){
-			SetActiveTarget( NULL );
+			SetActiveTarget( nullptr );
 			
 		}else{
 			if( pTargetList.GetAt( 0 ) == target ){
@@ -363,7 +374,7 @@ void ceConversation::RemoveTarget( ceTarget *target ){
 		}
 	}
 	
-	target->SetConversation( NULL );
+	target->SetConversation( nullptr );
 	pTargetList.Remove( target );
 	NotifyTargetStructureChanged();
 }
@@ -372,10 +383,10 @@ void ceConversation::RemoveAllTargets(){
 	const int count = pTargetList.GetCount();
 	int i;
 	
-	SetActiveTarget( NULL );
+	SetActiveTarget( nullptr );
 	
 	for( i=0; i<count; i++ ){
-		pTargetList.GetAt( i )->SetConversation( NULL );
+		pTargetList.GetAt( i )->SetConversation( nullptr );
 	}
 	pTargetList.RemoveAll();
 	NotifyTargetStructureChanged();
@@ -412,7 +423,7 @@ ceTarget *ceConversation::GetTargetNamed( const char *name ) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 ceTargetList ceConversation::AllTargets() const{
@@ -456,7 +467,7 @@ void ceConversation::RemoveCameraShot( ceCameraShot *cameraShot ){
 	
 	if( cameraShot == pActiveCameraShot ){
 		if( pCameraShotList.GetCount() == 1 ){
-			SetActiveCameraShot( NULL );
+			SetActiveCameraShot( nullptr );
 			
 		}else{
 			if( pCameraShotList.GetAt( 0 ) == cameraShot ){
@@ -468,7 +479,7 @@ void ceConversation::RemoveCameraShot( ceCameraShot *cameraShot ){
 		}
 	}
 	
-	cameraShot->SetConversation( NULL );
+	cameraShot->SetConversation( nullptr );
 	pCameraShotList.Remove( cameraShot );
 	NotifyCameraShotStructureChanged();
 }
@@ -477,10 +488,10 @@ void ceConversation::RemoveAllCameraShots(){
 	const int count = pCameraShotList.GetCount();
 	int i;
 	
-	SetActiveCameraShot( NULL );
+	SetActiveCameraShot( nullptr );
 	
 	for( i=0; i<count; i++ ){
-		pCameraShotList.GetAt( i )->SetConversation( NULL );
+		pCameraShotList.GetAt( i )->SetConversation( nullptr );
 	}
 	pCameraShotList.RemoveAll();
 	NotifyCameraShotStructureChanged();
@@ -517,7 +528,7 @@ ceCameraShot *ceConversation::GetCameraShotNamed( const char *name ) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 ceCameraShotList ceConversation::AllCameraShots() const{
@@ -561,7 +572,7 @@ void ceConversation::RemoveGesture( ceGesture *gesture ){
 	
 	if( gesture == pActiveGesture ){
 		if( pGestureList.GetCount() == 1 ){
-			SetActiveGesture( NULL );
+			SetActiveGesture( nullptr );
 			
 		}else{
 			if( pGestureList.GetAt( 0 ) == gesture ){
@@ -573,7 +584,7 @@ void ceConversation::RemoveGesture( ceGesture *gesture ){
 		}
 	}
 	
-	gesture->SetConversation( NULL );
+	gesture->SetConversation( nullptr );
 	pGestureList.Remove( gesture );
 	NotifyGestureStructureChanged();
 }
@@ -582,10 +593,10 @@ void ceConversation::RemoveAllGestures(){
 	const int count = pGestureList.GetCount();
 	int i;
 	
-	SetActiveGesture( NULL );
+	SetActiveGesture( nullptr );
 	
 	for( i=0; i<count; i++ ){
-		pGestureList.GetAt( i )->SetConversation( NULL );
+		pGestureList.GetAt( i )->SetConversation( nullptr );
 	}
 	pGestureList.RemoveAll();
 	NotifyGestureStructureChanged();
@@ -622,7 +633,7 @@ ceGesture *ceConversation::GetGestureNamed( const char *name ) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 ceGestureList ceConversation::AllGestures() const{
@@ -666,7 +677,7 @@ void ceConversation::RemoveFacePose( ceFacePose *facePose ){
 	
 	if( facePose == pActiveFacePose ){
 		if( pFacePoseList.GetCount() == 1 ){
-			SetActiveFacePose( NULL );
+			SetActiveFacePose( nullptr );
 			
 		}else{
 			if( pFacePoseList.GetAt( 0 ) == facePose ){
@@ -678,7 +689,7 @@ void ceConversation::RemoveFacePose( ceFacePose *facePose ){
 		}
 	}
 	
-	facePose->SetConversation( NULL );
+	facePose->SetConversation( nullptr );
 	pFacePoseList.Remove( facePose );
 	NotifyFacePoseStructureChanged();
 }
@@ -687,10 +698,10 @@ void ceConversation::RemoveAllFacePoses(){
 	const int count = pFacePoseList.GetCount();
 	int i;
 	
-	SetActiveFacePose( NULL );
+	SetActiveFacePose( nullptr );
 	
 	for( i=0; i<count; i++ ){
-		pFacePoseList.GetAt( i )->SetConversation( NULL );
+		pFacePoseList.GetAt( i )->SetConversation( nullptr );
 	}
 	pFacePoseList.RemoveAll();
 	NotifyFacePoseStructureChanged();
@@ -727,7 +738,7 @@ ceFacePose *ceConversation::GetFacePoseNamed( const char *name ) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 ceFacePoseList ceConversation::AllFacePoses() const{
@@ -771,7 +782,7 @@ void ceConversation::RemoveFile( ceConversationFile *file ){
 	
 	if( file == pActiveFile ){
 		if( pFileList.GetCount() == 1 ){
-			SetActiveFile( NULL );
+			SetActiveFile( nullptr );
 			
 		}else{
 			if( pFileList.GetAt( 0 ) == file ){
@@ -783,7 +794,7 @@ void ceConversation::RemoveFile( ceConversationFile *file ){
 		}
 	}
 	
-	file->SetConversation( NULL );
+	file->SetConversation( nullptr );
 	pFileList.Remove( file );
 	NotifyFileStructureChanged();
 }
@@ -792,10 +803,10 @@ void ceConversation::RemoveAllFiles(){
 	const int count = pFileList.GetCount();
 	int i;
 	
-	SetActiveFile( NULL );
+	SetActiveFile( nullptr );
 	
 	for( i=0; i<count; i++ ){
-		pFileList.GetAt( i )->SetConversation( NULL );
+		pFileList.GetAt( i )->SetConversation( nullptr );
 	}
 	pFileList.RemoveAll();
 	NotifyFileStructureChanged();
@@ -834,7 +845,7 @@ ceConversationFile *ceConversation::GetFileWithID( const char *name ) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 ceConversationFileList ceConversation::AllFiles() const{
@@ -870,7 +881,7 @@ ceConversationTopic *ceConversation::GetTopicWithID( const char * fileName, cons
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 ceConversationTopicList ceConversation::AllTopics( const char *fileName ) const{
@@ -911,7 +922,7 @@ void ceConversation::RemoveActor( ceConversationActor *actor ){
 	
 	if( actor == pActiveActor ){
 		if( pActorList.GetCount() == 1 ){
-			SetActiveActor( NULL );
+			SetActiveActor( nullptr );
 			
 		}else{
 			if( pActorList.GetAt( 0 ) == actor ){
@@ -923,7 +934,7 @@ void ceConversation::RemoveActor( ceConversationActor *actor ){
 		}
 	}
 	
-	actor->SetConversation( NULL );
+	actor->SetConversation( nullptr );
 	pActorList.Remove( actor );
 	NotifyActorStructureChanged();
 }
@@ -932,17 +943,17 @@ void ceConversation::RemoveAllActors(){
 	const int count = pActorList.GetCount();
 	int i;
 	
-	SetActiveActor( NULL );
+	SetActiveActor( nullptr );
 	
 	for( i=0; i<count; i++ ){
-		pActorList.GetAt( i )->SetConversation( NULL );
+		pActorList.GetAt( i )->SetConversation( nullptr );
 	}
 	pActorList.RemoveAll();
 	NotifyActorStructureChanged();
 }
 
 bool ceConversation::HasActiveActor() const{
-	return pActiveActor != NULL;
+	return pActiveActor != nullptr;
 }
 
 void ceConversation::SetActiveActor( ceConversationActor *actor ){
@@ -983,7 +994,7 @@ void ceConversation::RemoveCoordSystem( ceCoordSystem *coordSystem ){
 	
 	if( coordSystem == pActiveCoordSystem ){
 		if( pCoordSystemList.GetCount() == 1 ){
-			SetActiveCoordSystem( NULL );
+			SetActiveCoordSystem( nullptr );
 			
 		}else{
 			if( pCoordSystemList.GetAt( 0 ) == coordSystem ){
@@ -995,7 +1006,7 @@ void ceConversation::RemoveCoordSystem( ceCoordSystem *coordSystem ){
 		}
 	}
 	
-	coordSystem->SetConversation( NULL );
+	coordSystem->SetConversation( nullptr );
 	pCoordSystemList.Remove( coordSystem );
 	NotifyCoordSystemStructureChanged();
 }
@@ -1004,17 +1015,17 @@ void ceConversation::RemoveAllCoordSystems(){
 	const int count = pCoordSystemList.GetCount();
 	int i;
 	
-	SetActiveCoordSystem( NULL );
+	SetActiveCoordSystem( nullptr );
 	
 	for( i=0; i<count; i++ ){
-		pCoordSystemList.GetAt( i )->SetConversation( NULL );
+		pCoordSystemList.GetAt( i )->SetConversation( nullptr );
 	}
 	pCoordSystemList.RemoveAll();
 	NotifyCoordSystemStructureChanged();
 }
 
 bool ceConversation::HasActiveCoordSystem() const{
-	return pActiveCoordSystem != NULL;
+	return pActiveCoordSystem != nullptr;
 }
 
 void ceConversation::SetActiveCoordSystem( ceCoordSystem *coordSystem ){
@@ -1055,7 +1066,7 @@ void ceConversation::RemoveProp( ceProp *prop ){
 	
 	if( prop == pActiveProp ){
 		if( pPropList.GetCount() == 1 ){
-			SetActiveProp( NULL );
+			SetActiveProp( nullptr );
 			
 		}else{
 			if( pPropList.GetAt( 0 ) == prop ){
@@ -1067,7 +1078,7 @@ void ceConversation::RemoveProp( ceProp *prop ){
 		}
 	}
 	
-	prop->SetConversation( NULL );
+	prop->SetConversation( nullptr );
 	pPropList.Remove( prop );
 	NotifyPropStructureChanged();
 }
@@ -1076,17 +1087,17 @@ void ceConversation::RemoveAllProps(){
 	const int count = pPropList.GetCount();
 	int i;
 	
-	SetActiveProp( NULL );
+	SetActiveProp( nullptr );
 	
 	for( i=0; i<count; i++ ){
-		pPropList.GetAt( i )->SetConversation( NULL );
+		pPropList.GetAt( i )->SetConversation( nullptr );
 	}
 	pPropList.RemoveAll();
 	NotifyPropStructureChanged();
 }
 
 bool ceConversation::HasActiveProp() const{
-	return pActiveProp != NULL;
+	return pActiveProp != nullptr;
 }
 
 void ceConversation::SetActiveProp( ceProp *prop ){
@@ -1673,29 +1684,21 @@ void ceConversation::pCleanUp(){
 	}
 	RemoveAllProps();
 	
-	if( pEngSpeakerVAPreview ){
-		if( pEngMicrophone ){
-			pEngMicrophone->RemoveSpeaker( pEngSpeakerVAPreview );
-		}
-		pEngSpeakerVAPreview->FreeReference();
+	if( pEngSpeakerVAPreview && pEngMicrophone ){
+		pEngMicrophone->RemoveSpeaker( pEngSpeakerVAPreview );
 	}
 	if( pEngMicrophone ){
 		if( GetEngine()->GetAudioSystem()->GetActiveMicrophone() == pEngMicrophone ){
-			GetEngine()->GetAudioSystem()->SetActiveMicrophone( NULL );
+			GetEngine()->GetAudioSystem()->SetActiveMicrophone( nullptr );
 		}
-		
 		if( pEngWorld ){
 			pEngWorld->RemoveMicrophone( pEngMicrophone );
 		}
-		pEngMicrophone->FreeReference();
 	}
 	if( pCameraFree ){
 		delete pCameraFree;
 	}
 	if( pCamera ){
 		delete pCamera;
-	}
-	if( pEngWorld ){
-		pEngWorld->FreeReference();
 	}
 }

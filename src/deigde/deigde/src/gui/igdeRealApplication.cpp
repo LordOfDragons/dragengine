@@ -22,6 +22,7 @@
 #include "igdeRealApplication.h"
 #include "igdeWindowMain.h"
 
+#include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeWidgetReference.h>
 
 #include <dragengine/common/exceptions.h>
@@ -50,9 +51,7 @@ igdeRealApplication::~igdeRealApplication(){
 
 igdeWindowMain &igdeRealApplication::GetWindowMain() const{
 	igdeMainWindow * const mainWindow = GetMainWindow();
-	if( ! mainWindow ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( mainWindow )
 	return *( ( igdeWindowMain* )mainWindow );
 }
 
@@ -76,7 +75,22 @@ bool igdeRealApplication::Initialize( const decUnicodeStringList &arguments ){
 		}
 		
 	}catch( const deException &e ){
-		GetWindowMain().DisplayException( e );
+		// it is possible creating the window already failed so we have to check
+		if( GetMainWindow() ){
+			GetWindowMain().DisplayException( e );
+			
+		}else{
+			// if is even possible the logger could not be created so check this too
+			if( pEnvironment.GetLogger() ){
+				pEnvironment.GetLogger()->LogException( "IGDE", e );
+				
+			}else{
+				e.PrintError();
+			}
+			
+			igdeCommonDialogs::ErrorFormat( nullptr, "Failed starting IGDE",
+				"Please see logs for details:\n%s", e.FormatOutput().Join( "\n" ).GetString() );
+		}
 		return false;
 	}
 	

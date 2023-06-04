@@ -161,14 +161,14 @@ void deClassVideo::nfGetFrameCount::RunFunction( dsRunTime *rt, dsValue *myself 
 	rt->PushInt( video.GetFrameCount() );
 }
 
-// public func int getFrameRate()
+// public func float getFrameRate()
 deClassVideo::nfGetFrameRate::nfGetFrameRate(const sInitData &init) : dsFunction( init.clsVid,
-"getFrameRate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+"getFrameRate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
 }
 void deClassVideo::nfGetFrameRate::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deVideo &video = *( ( ( sVidNatDat* )p_GetNativeData( myself ) )->video );
 	
-	rt->PushInt( video.GetFrameRate() );
+	rt->PushFloat( video.GetFrameRate() );
 }
 
 // public func float getPlayTime()

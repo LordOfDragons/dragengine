@@ -86,7 +86,7 @@ if envModule['with_debug']:
 appendLibrary(envModule, parent_targets['shared_vulkan'], libs)
 
 # fetch values in expanded form for later use
-versionString = '1.16'
+versionString = '1.17'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -106,9 +106,8 @@ headers = []
 globFiles(envModule, 'src', '*.h', headers)
 globFiles(envModule, 'squish', '*.h', headers)
 
-sharedStuff = []
-globFiles(envModule, 'shaders', '*.shader.xml', sharedStuff)
-globFiles(envModule, 'shaderSources', '*.glsl', sharedStuff)
+data = []
+globFiles(envModule, 'data', '*', data)
 
 if envModule['OSMacOS']:
 	globFiles(envModule, 'src', '*.mm', sources)
@@ -147,10 +146,10 @@ Depends(updateManifest, 'SConscript')
 install.append(envModule.Install(pathModule, updateManifest))
 archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
-for s in sharedStuff:
-	filename = os.path.join(pathShares, s)
-	install.append(envModule.InstallAs(filename, s))
-	archive[filename] = envModule.File(s).srcnode()
+for f in data:
+	filename = os.path.join(pathShares, f[5:])
+	install.append(envModule.InstallAs(filename, f))
+	archive[filename] = envModule.File(f).srcnode()
 
 targetInstall = envModule.Alias('gra_opengl', install)
 
@@ -163,7 +162,7 @@ buildClocBare = BuildCLOC(envModule,
 	'{}/clocreport.csv'.format(srcdir), ['doc'])
 Depends(buildClocBare, sources)
 Depends(buildClocBare, headers)
-Depends(buildClocBare, sharedStuff)
+Depends(buildClocBare, data)
 buildCloc = envModule.Alias('gra_opengl_cloc', buildClocBare)
 
 # add the targets to the targets list

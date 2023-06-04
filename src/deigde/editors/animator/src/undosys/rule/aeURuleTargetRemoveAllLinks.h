@@ -31,7 +31,7 @@ class aeControllerTarget;
 
 
 /**
- * \brief Undo action rule target remove all links.
+ * Undo action rule target remove all links.
  */
 class aeURuleTargetRemoveAllLinks : public igdeUndo{
 private:
@@ -45,11 +45,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleTargetRemoveAllLinks( aeRule *rule, aeControllerTarget *target, const aeLinkList &links );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleTargetRemoveAllLinks();
 	/*@}*/
 	
@@ -58,10 +58,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

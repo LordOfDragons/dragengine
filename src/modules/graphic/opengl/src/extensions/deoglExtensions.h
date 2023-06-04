@@ -39,13 +39,15 @@ public:
 	enum eVendors{
 		/** ATI / AMD. */
 		evATI,
+
 		/** nVidia. */
 		evNVidia,
+
 		/** Something else. */
-		evUnknown,
-		/** Count of entries. */
-		EV_COUNT
+		evUnknown
 	};
+
+	static const int VendorCount = evUnknown + 1;
 	
 	/** OpenGL Versions. */
 	enum eVersions{
@@ -334,6 +336,9 @@ public:
 		ext_ARB_shader_atomic_counters,
 		ext_ARB_shader_atomic_counter_ops,
 		ext_ARB_gpu_shader_fp64,
+		ext_ARB_direct_state_access,
+		ext_ARB_clear_buffer_object,
+		ext_ARB_buffer_storage,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,
@@ -369,10 +374,16 @@ public:
 		
 		ext_KHR_debug,
 		
+		ext_GLX_EXT_swap_control,
+		ext_GLX_EXT_swap_control_tear,
+		
+		ext_WGL_EXT_swap_control,
+		ext_WGL_EXT_swap_control_tear,
+		
 		/** Dummy entry containing the number of extensions. */
 		EXT_COUNT
 	};
-
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -382,7 +393,7 @@ private:
 	decString pStrGLVersion;
 	decStringList pStrListExtensions;
 	
-	int pVendor;
+	eVendors pVendor;
 	int pGLVersionMajor;
 	int pGLVersionMinor;
 	eVersions pGLVersion;
@@ -421,18 +432,21 @@ public:
 	void Initialize();
 	/** Prints a summary of the findings. */
 	void PrintSummary();
+	
 	/** Returns true if all required extensions are present. */
-	bool VerifyPresence();
+	bool VerifyPresence() const;
 	
 	/** Retrieves the vendor string. */
 	inline const decString &GetStringVendor() const{ return pStrVendor; }
+
 	/** Retrieves the opengl version string. */
 	inline const decString &GetStringGLVersion() const{ return pStrGLVersion; }
+
 	/** Retrieves the list of extension strings supported by the hardware. */
 	inline const decStringList &GetStringListExtensions() const{ return pStrListExtensions; }
 	
 	/** Retrieves the vendor. */
-	inline int GetVendor() const{ return pVendor; }
+	inline eVendors GetVendor() const{ return pVendor; }
 	
 	/** OpenGL major version. */
 	inline int GetGLVersionMajor() const{ return pGLVersionMajor; }
@@ -499,6 +513,9 @@ private:
 		const char *funcNameExtension1, const char *funcNameExtension2, int extensionIndex );
 	void pGetOptionalFunctionExt( void **funcPointer, const char *funcName, int extensionIndex );
 	void pGetOptionalFunctionArbExt( void **funcPointer, const char *funcName, int extensionIndex );
+	
+	bool pVerifyExtensionPresent( eExtensions extension ) const;
+	bool pVerifyExtensionPresent( eExtensions extension1, eExtensions extension2 ) const;
 };
 
 #endif

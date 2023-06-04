@@ -34,7 +34,7 @@ class igdeWidget;
 /**
  * \brief IGDE UI Mouse/Key Listener.
  */
-class igdeMouseKeyListener : public deObject{
+class DE_DLL_EXPORT igdeMouseKeyListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

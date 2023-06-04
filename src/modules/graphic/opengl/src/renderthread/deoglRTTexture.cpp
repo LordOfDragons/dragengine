@@ -33,7 +33,6 @@
 #include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
 #include "../texture/deoglImageStageManager.h"
 #include "../texture/deoglTextureStageManager.h"
-#include "../texture/texture1d/deoglRenderableTexture1DManager.h"
 #include "../texture/texture2d/deoglRenderableColorTextureManager.h"
 #include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
 
@@ -55,7 +54,6 @@ pRenColorTexMgr( NULL ),
 pRenDepthTexMgr( NULL ),
 pRenColorCubeMgr( NULL ),
 pRenDepthCubeMgr( NULL ),
-pRenTex1DMgr( NULL ),
 pRenColorArrTexMgr( NULL ),
 pRenDepthArrTexMgr( NULL ),
 pOcclusionMapPool( NULL )
@@ -69,7 +67,6 @@ pOcclusionMapPool( NULL )
 		pRenDepthTexMgr = new deoglRenderableDepthTextureManager( renderThread );
 		pRenColorCubeMgr = new deoglRenderableColorCubeMapManager( renderThread );
 		pRenDepthCubeMgr = new deoglRenderableDepthCubeMapManager( renderThread );
-		pRenTex1DMgr = new deoglRenderableTexture1DManager( renderThread );
 		pRenColorArrTexMgr = new deoglRenderableColorArrayTextureManager( renderThread );
 		pRenDepthArrTexMgr = new deoglRenderableDepthArrayTextureManager( renderThread );
 		
@@ -105,9 +102,6 @@ void deoglRTTexture::pCleanUp(){
 	}
 	if( pRenDepthArrTexMgr ){
 		delete pRenDepthArrTexMgr;
-	}
-	if( pRenTex1DMgr ){
-		delete pRenTex1DMgr;
 	}
 	if( pRenColorCubeMgr ){
 		delete pRenColorCubeMgr;

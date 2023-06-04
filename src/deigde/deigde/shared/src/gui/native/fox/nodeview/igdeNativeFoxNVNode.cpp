@@ -222,7 +222,7 @@ igdeFont *igdeNativeFoxNVNode::NVNodeFont( const igdeNVNode &powner, const igdeG
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::nodeViewNodeFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::nodeViewNodeFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::nodeViewNodeFontSize ) ){
@@ -230,7 +230,7 @@ igdeFont *igdeNativeFoxNVNode::NVNodeFont( const igdeNVNode &powner, const igdeG
 			igdeGuiThemePropertyNames::nodeViewNodeFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

@@ -34,7 +34,7 @@ class aeRuleStateManipulator;
 
 
 /**
- * @brief Undo set rule state modifier maximum.
+ * Undo set rule state modifier maximum.
  *
  * Undo to set the maximum size of a state modifier rule.
  */
@@ -48,19 +48,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleSModMaxSize( aeRuleStateManipulator *rule, const decVector &newMax );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleSModMaxSize();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

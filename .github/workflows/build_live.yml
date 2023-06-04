@@ -49,6 +49,7 @@ jobs:
           unzip dragengine-${{ inputs.releaseVersion }}-windows64.zip -d source/windows/dragengine
           cp -a source/windows/dragengine/@ProgramFiles/Dragengine/Data build/windows64
           cp -a source/windows/dragengine/@ProgramFiles/Dragengine/Share build/windows64
+          cp -a source/windows/dragengine/@ProgramFiles/Dragengine/Launchers/Bin/fox*.dll build/windows64
           cp -a source/windows/dragengine/@System/dragengine.dll build
           cp -a source/windows/dragengine/@System/delauncher.dll build
           mkdir -p source/windows/special
@@ -58,7 +59,8 @@ jobs:
       
       - name: Build Archive
         run: |
-          sudo apt install zip
+          sudo apt -y update
+          sudo apt -y install zip
           cd build
           zip -r ../dragengine-live-${{ inputs.releaseVersion }}.zip *
         

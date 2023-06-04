@@ -100,10 +100,10 @@ class igdeWidget;
  * 
  * Simplifies common tasks.
  */
-class igdeUIHelper{
+class DE_DLL_EXPORT igdeUIHelper{
 public:
 	/** \brief Column header configuration. */
-	struct sColumnHeader{
+	struct DE_DLL_EXPORT sColumnHeader{
 		/** \brief Title. */
 		const char *title;
 		

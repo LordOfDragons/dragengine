@@ -23,6 +23,7 @@
 #define _DEOGLSHADERUNITSOURCECODE_H_
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/deObject.h>
 
 class decBaseFileReader;
 
@@ -35,23 +36,32 @@ class decBaseFileReader;
  * using a set of defines. Each shader unit source object is identified
  * by the file path relative to the shader unit source code directory.
  */
-class deoglShaderUnitSourceCode{
+class deoglShaderUnitSourceCode : public deObject{
+public:
+	typedef deTObjectReference<deoglShaderUnitSourceCode> Ref;
+	
+	
+	
 private:
-	decString pFilePath;
+	const decString pFilePath;
 	decString pSourceCode;
 	
-
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new source code object reading source code from a file. */
 	deoglShaderUnitSourceCode( const char *filePath, decBaseFileReader &fileReader );
-
+	
+protected:
 	/** Cleans up the source code object. */
-	~deoglShaderUnitSourceCode();
+	virtual ~deoglShaderUnitSourceCode();
 	/*@}*/
 	
-
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the file path. */

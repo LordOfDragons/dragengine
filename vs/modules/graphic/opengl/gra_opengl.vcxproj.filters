@@ -144,16 +144,10 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireArrayTexture.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireCubeMap.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckFramebufferTextureSingle.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckGeometryShaderLayer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckRasterizerDiscard.h">
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckStd430.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBODirectLinkDeadloop.h">
@@ -237,6 +231,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentWCElement.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentLOD.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -310,6 +307,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglResources.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedFileWrite.h">
@@ -405,6 +405,12 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtResult.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglXExtResult.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglWExtResult.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\egl2ext.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -412,6 +418,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\glext.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\glxext.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\macosfix.h">
@@ -585,6 +594,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODTexCoordSet.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVertPosSet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -670,12 +682,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOcclusionReduction.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOccTestMode.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPQuickDebug.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPShowLightCB.h">
@@ -1041,6 +1047,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskParticles.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglComputeRenderTask.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTask.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1101,6 +1110,12 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThread.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThreadTask.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRenderThread.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1152,6 +1167,12 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompilingInfo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1191,9 +1212,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockReadBackSSBO.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1203,7 +1221,13 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBufferRead.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBSingleUse.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.h">
@@ -1593,15 +1617,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texsamplerconfig\deoglTexSamplerConfig.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1D.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1DManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglTexture1D.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTexture.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1714,6 +1729,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglQuickSorter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglFence.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctree.h">
@@ -1845,6 +1863,12 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglMath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPVSyncMode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\ChangeLog">
@@ -1965,16 +1989,10 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireArrayTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireCubeMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckFramebufferTextureSingle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckGeometryShaderLayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckRasterizerDiscard.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckStd430.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBODirectLinkDeadloop.cpp">
@@ -2055,6 +2073,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentWCElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentLOD.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2125,6 +2146,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglResources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedFileWrite.cpp">
@@ -2215,6 +2239,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtResult.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglXExtResult.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglWExtResult.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\macosfix.cpp">
@@ -2382,6 +2412,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODTexCoordSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVertPosSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2467,12 +2500,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOcclusionReduction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOccTestMode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPQuickDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPShowLightCB.cpp">
@@ -2835,6 +2862,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskParticles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglComputeRenderTask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2895,6 +2925,12 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglLoaderThreadTask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRenderThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2946,6 +2982,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2956,6 +2995,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompilingInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderPreprocessor.cpp">
@@ -2985,9 +3027,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockReadBackSSBO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2997,7 +3036,13 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBufferRead.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBSingleUse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.cpp">
@@ -3387,15 +3432,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texsamplerconfig\deoglTexSamplerConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1DManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglTexture1D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3508,6 +3544,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglQuickSorter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglFence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctree.cpp">
@@ -3637,6 +3676,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPVSyncMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

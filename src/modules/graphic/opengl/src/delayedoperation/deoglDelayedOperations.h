@@ -38,6 +38,7 @@ class deoglSkinTexture;
 class deoglDelayedFileWrite;
 class deoglDelayedSaveImage;
 class deoglShaderProgram;
+class deoglShaderLoadingTimeout;
 
 
 
@@ -55,13 +56,15 @@ class deoglDelayedOperations{
 public:
 	enum eOpenGLObjectType{
 		eoglotBuffer,
+		eoglotBuffererPersistUnmap,
 		eoglotTexture,
 		eoglotVertexArray,
 		eoglotFramebuffer,
 		eoglotQuery,
 		eoglotSampler,
 		eoglotProgram,
-		eoglotShader
+		eoglotShader,
+		eoglotSync
 	};
 	
 	
@@ -70,10 +73,18 @@ private:
 	struct sOpenGLObject{
 		eOpenGLObjectType type;
 		GLuint name;
+		GLsync sync;
 		
 		inline void Set( eOpenGLObjectType ptype, GLuint pname ){
 			type = ptype;
 			name = pname;
+			sync = nullptr;
+		}
+		
+		inline void Set( eOpenGLObjectType ptype, GLsync psync ){
+			type = ptype;
+			name = 0;
+			sync = psync;
 		}
 	};
 	
@@ -230,7 +241,9 @@ public:
 	
 	/** Add OpenGL object deletion if not 0 (thread-safe). */
 	void DeleteOpenGLObject( eOpenGLObjectType type, GLuint name );
+	void DeleteOpenGLObject( eOpenGLObjectType type, GLsync sync );
 	inline void DeleteOpenGLBuffer( GLuint name ){ DeleteOpenGLObject( eoglotBuffer, name ); }
+	inline void DeleteOpenGLBufferPersistUnmap( GLuint name ){ DeleteOpenGLObject( eoglotBuffererPersistUnmap, name ); }
 	inline void DeleteOpenGLTexture( GLuint name ){ DeleteOpenGLObject( eoglotTexture, name ); }
 	inline void DeleteOpenGLVertexArray( GLuint name ){ DeleteOpenGLObject( eoglotVertexArray, name ); }
 	inline void DeleteOpenGLFramebuffer( GLuint name ){ DeleteOpenGLObject( eoglotFramebuffer, name ); }
@@ -238,6 +251,7 @@ public:
 	inline void DeleteOpenGLSampler( GLuint name ){ DeleteOpenGLObject( eoglotSampler, name ); }
 	inline void DeleteOpenGLProgram( GLuint name ){ DeleteOpenGLObject( eoglotProgram, name ); }
 	inline void DeleteOpenGLShader( GLuint name ){ DeleteOpenGLObject( eoglotShader, name ); }
+	inline void DeleteOpenGLSync( GLsync sync ){ DeleteOpenGLObject( eoglotSync, sync ); }
 	/*@}*/
 	
 	

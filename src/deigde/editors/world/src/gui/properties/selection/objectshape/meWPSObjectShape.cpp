@@ -344,7 +344,7 @@ void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
 		try{
 			codec.DecodeShapeList( activeObject->GetProperties().GetAt( activeProperty ), shapeList );
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			shapeList.RemoveAll();
 		}
 		
@@ -555,7 +555,7 @@ void meWPSObjectShape::OnShapeChanged(){
 		
 		undo.TakeOver( new meUObjectShapeReplace( object, activeProperty, shapeIndex, *shape ) );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( shape ){
 			delete shape;
 		}

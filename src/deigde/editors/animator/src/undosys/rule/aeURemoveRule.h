@@ -34,7 +34,7 @@ class aeAnimator;
 
 
 /**
- * @brief Undo Remove Rule.
+ * Undo Remove Rule.
  *
  * Undo object for removing a rule.
  */
@@ -47,19 +47,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURemoveRule( aeAnimator *animator, aeRule *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURemoveRule();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

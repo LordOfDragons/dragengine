@@ -22,6 +22,7 @@
 #ifndef _IGDEACTIONLISTENER_H_
 #define _IGDEACTIONLISTENER_H_
 
+#include <dragengine/dragengine_export.h>
 
 class igdeAction;
 
@@ -33,7 +34,7 @@ class igdeAction;
  * action parameters change. Action listeners are stored as pointer so the subclass
  * has to keep a reference to the action instance.
  */
-class igdeActionListener{
+class DE_DLL_EXPORT igdeActionListener{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

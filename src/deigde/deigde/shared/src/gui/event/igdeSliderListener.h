@@ -32,7 +32,7 @@ class igdeSlider;
 /**
  * \brief IGDE UI Slider Listener.
  */
-class igdeSliderListener : public deObject{
+class DE_DLL_EXPORT igdeSliderListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

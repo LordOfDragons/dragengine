@@ -57,19 +57,20 @@ const char *deoglSTPipelinesHeightMap1::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesHeightMap1::pPreparePipelines( const ChannelInfo &cinfo ){
+void deoglSTPipelinesHeightMap1::pPreparePipelines( const ChannelInfo &cinfo,
+deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig baseShaderConfig;
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmHeightMap );
 	
-	pPrepareGeometry( baseShaderConfig, cinfo );
-	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
-	pPrepareAllDepth( baseShaderConfig, cinfo );
-	pPrepareAllCounter( baseShaderConfig, cinfo );
-	// pPrepareMask( baseShaderConfig, cinfo );
-	pPrepareAllShadow( baseShaderConfig, cinfo );
-	// pPrepareEnvMap( baseShaderConfig, cinfo );
-	// pPrepareLuminance( baseShaderConfig, cinfo );
-	// pPrepareGIMaterial( baseShaderConfig, cinfo );
+	pPrepareGeometry( baseShaderConfig, cinfo, timeout );
+	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, timeout );
+	pPrepareAllDepth( baseShaderConfig, cinfo, timeout );
+	pPrepareAllCounter( baseShaderConfig, cinfo, timeout );
+	// pPrepareMask( baseShaderConfig, cinfo, timeout );
+	pPrepareAllShadow( baseShaderConfig, cinfo, timeout );
+	// pPrepareEnvMap( baseShaderConfig, cinfo, timeout );
+	// pPrepareLuminance( baseShaderConfig, cinfo, timeout );
+	// pPrepareGIMaterial( baseShaderConfig, cinfo, timeout );
 }
 
 void deoglSTPipelinesHeightMap1::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){
@@ -79,6 +80,6 @@ void deoglSTPipelinesHeightMap1::pPipelineConfigGeometry( deoglPipelineConfigura
 }
 
 void deoglSTPipelinesHeightMap1::pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &,
-deoglSkinShaderConfig &, const ChannelInfo & ){
+deoglSkinShaderConfig &, const ChannelInfo &, deoglShaderLoadingTimeout & ){
 	// not supported
 }

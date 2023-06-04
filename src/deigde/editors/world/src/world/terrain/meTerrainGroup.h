@@ -23,7 +23,7 @@
 #ifndef _METERRAINGROUP_H_
 #define _METERRAINGROUP_H_
 
-// includes
+#include <dragengine/common/string/decString.h>
 
 // predefinitions
 class meObject;
@@ -32,7 +32,7 @@ class meObject;
 // class meTerrainGroup
 class meTerrainGroup{
 private:
-	char *pName;
+	decString pName;
 	meObject **pObjects;
 	int pObjectCount, pObjectSize;
 public:
@@ -40,7 +40,7 @@ public:
 	meTerrainGroup( const char *name );
 	~meTerrainGroup();
 	// management
-	inline const char *GetName() const{ return ( const char * )pName; }
+	inline const decString &GetName() const{ return pName; }
 	void SetName( const char *name );
 	// object management
 	inline int GetObjectCount() const{ return pObjectCount; }

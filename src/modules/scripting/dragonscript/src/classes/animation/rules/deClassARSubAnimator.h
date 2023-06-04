@@ -109,6 +109,7 @@ private:
 	DEF_NATFUNC( nfSetEnablePosition );
 	DEF_NATFUNC( nfSetEnableOrientation );
 	DEF_NATFUNC( nfSetEnableSize );
+	DEF_NATFUNC( nfSetEnableVertexPositionSet );
 #undef DEF_NATFUNC
 };
 

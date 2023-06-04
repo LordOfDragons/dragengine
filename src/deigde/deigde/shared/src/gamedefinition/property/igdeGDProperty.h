@@ -38,7 +38,7 @@ class igdeFilePatternList;
  * Describes a game definition property. Contains the type of the property
  * as well as a detailed description of the property and the possible values.
  */
-class igdeGDProperty : public deObject{
+class DE_DLL_EXPORT igdeGDProperty : public deObject{
 public:
 	/** \brief Property type. */
 	enum ePropertyTypes{

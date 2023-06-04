@@ -29,7 +29,7 @@ class saeWPView;
 
 
 /**
- * \brief View panel listener.
+ * View panel listener.
  */
 class saeWPViewListener : public saeSAnimationListener{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	saeWPViewListener( saeWPView &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~saeWPViewListener();
 	/*@}*/
 	
@@ -51,16 +51,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Speech animation changed. */
+	/** Speech animation changed. */
 	virtual void SAnimationChanged( saeSAnimation *sanimation );
 	
-	/** \brief Model changed. */
+	/** Model changed. */
 	virtual void ModelChanged( saeSAnimation *sanimation );
 	
-	/** \brief Sky changed. */
+	/** Sky changed. */
 	virtual void SkyChanged( saeSAnimation *sanimation );
 	
-	/** \brief Camera changed. */
+	/** Camera changed. */
 	virtual void CameraChanged( saeSAnimation *sanimation );
 	/*@}*/
 };

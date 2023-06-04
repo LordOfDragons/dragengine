@@ -32,7 +32,7 @@
 /**
  * \brief IGDE UI StatusBar.
  */
-class igdeStatusBar : public igdeContainer{
+class DE_DLL_EXPORT igdeStatusBar : public igdeContainer{
 private:
 	decString pText;
 	

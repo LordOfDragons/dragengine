@@ -40,6 +40,7 @@ class deoglRenderTaskParticles;
  */
 class deoglRenderWorld : public deoglRenderBase{
 private:
+	deoglSPBSingleUse::Ref pRenderPBSingleUse;
 	deoglSPBlockUBO::Ref pRenderPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;

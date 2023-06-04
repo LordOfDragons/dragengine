@@ -68,7 +68,7 @@
 #define random rand
 #endif
 
-const btScalar vRandomFactor = 1.0 / ( btScalar )RAND_MAX;
+const btScalar vRandomFactor = 1.0f / ( btScalar )RAND_MAX;
 
 // Class debpParticleEmitterInstanceType
 //////////////////////////////////////////
@@ -467,7 +467,7 @@ void debpParticleEmitterInstanceType::UpdateGraphicParticles(){
 			
 			velocity = srcParticle.linearVelocity.length();
 			if( velocity > 1e-5 ){
-				factor = 127.0 / velocity;
+				factor = 127.0f / velocity;
 				destParticle.linearDirectionX = ( signed char )decMath::clamp( ( int )( srcParticle.linearVelocity.x() * factor ), -127, 127 );
 				destParticle.linearDirectionY = ( signed char )decMath::clamp( ( int )( srcParticle.linearVelocity.y() * factor ), -127, 127 );
 				destParticle.linearDirectionZ = ( signed char )decMath::clamp( ( int )( srcParticle.linearVelocity.z() * factor ), -127, 127 );
@@ -677,8 +677,8 @@ void debpParticleEmitterInstanceType::CastSingleParticle( float distance, float 
 void debpParticleEmitterInstanceType::CastBeamParticle( float distance ){
 	const debpParticleEmitter * const emitter = pInstance->GetParticleEmitter();
 	const debpParticleEmitterType &type = emitter->GetTypeAt( pType );
-	const float particleCount = type.EvaluateCastParameter( *pInstance->GetInstance(),
-		debpParticleEmitterType::escParticleCount, deParticleEmitterType::epParticleCount );
+	const int particleCount = ( int )( type.EvaluateCastParameter( *pInstance->GetInstance(),
+		debpParticleEmitterType::escParticleCount, deParticleEmitterType::epParticleCount ) + 0.5f );
 	
 	// kill the previous beam if existing
 	KillAllParticles();
@@ -1143,7 +1143,7 @@ void debpParticleEmitterInstanceType::ParticleSetProgressParams( sParticle &part
 		if( world ){
 			if( localGravity < 0.99999 ){
 				const decVector &worldGravity = world->GetWorld().GetGravity();
-				const btScalar blend2 = 1.0 - localGravity;
+				const btScalar blend2 = 1.0f - localGravity;
 				
 				particle.gravity.setX( particle.gravity.getX() * localGravity + ( btScalar )worldGravity.x * blend2 );
 				particle.gravity.setY( particle.gravity.getY() * localGravity + ( btScalar )worldGravity.y * blend2 );
@@ -1164,9 +1164,9 @@ void debpParticleEmitterInstanceType::ParticleSetProgressParams( sParticle &part
 	if( particle.brown > 1e-5f ){
 		btVector3 brownMotion;
 		
-		brownMotion.setX( ( btScalar )random() * vRandomFactor * 2.0 - 1.0 );
-		brownMotion.setY( ( btScalar )random() * vRandomFactor * 2.0 - 1.0 );
-		brownMotion.setZ( ( btScalar )random() * vRandomFactor * 2.0 - 1.0 );
+		brownMotion.setX( ( btScalar )random() * vRandomFactor * ( btScalar )2 - ( btScalar )1 );
+		brownMotion.setY( ( btScalar )random() * vRandomFactor * ( btScalar )2 - ( btScalar )1 );
+		brownMotion.setZ( ( btScalar )random() * vRandomFactor * ( btScalar )2 - ( btScalar )1 );
 		
 		particle.force += brownMotion * ( btScalar )( particle.brown * particle.mass );
 	}
@@ -1178,10 +1178,10 @@ bool debpParticleEmitterInstanceType::ParticleSimulate( sParticle &particle, flo
 	
 	// apply air drag
 	if( particle.drag > 1e-10f ){
-		const btScalar factor1 = 1.0 - ( btScalar )( particle.drag * 
+		const btScalar factor1 = ( btScalar )1 - ( btScalar )( particle.drag * 
 			particle.linearVelocity.dot( particle.linearVelocity ) * elapsed / particle.mass );
 		
-		if( factor1 > 0.0 ){
+		if( factor1 > ( btScalar )0 ){
 			particle.linearVelocity *= factor1;
 			
 		}else{
@@ -1191,9 +1191,9 @@ bool debpParticleEmitterInstanceType::ParticleSimulate( sParticle &particle, flo
 	
 	// damp velocities
 	if( particle.damp > 1e-5f ){
-		const btScalar factor1 = 1.0 - ( btScalar )particle.damp;// * btElapsed;
+		const btScalar factor1 = ( btScalar )1 - ( btScalar )particle.damp;// * btElapsed;
 		
-		if( factor1 > 0.0 ){
+		if( factor1 > ( btScalar )0 ){
 			particle.linearVelocity *= factor1;
 			particle.angularVelocity *= factor1;
 			
@@ -1318,8 +1318,8 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision( sParticle &particle
 		
 		if( collisionResponse != deParticleEmitterType::ecrDestroy || doEmitParticles ){
 			particle.position += displacement * rayResult.m_closestHitFraction;
-			particle.position += rayResult.m_hitNormalWorld * 0.0001; // prevent falling through
-			displacement *= 1.0 - rayResult.m_closestHitFraction;
+			particle.position += rayResult.m_hitNormalWorld * ( btScalar )0.0001; // prevent falling through
+			displacement *= ( btScalar )1 - rayResult.m_closestHitFraction;
 		}
 		
 		if( collisionResponse == deParticleEmitterType::ecrCustom ){
@@ -1371,7 +1371,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision( sParticle &particle
 		}
 		
 		if( collisionResponse == deParticleEmitterType::ecrPhysical || doEmitParticles ){
-			displacement -= rayResult.m_hitNormalWorld * ( rayResult.m_hitNormalWorld.dot( displacement ) * 2.0 );
+			displacement -= rayResult.m_hitNormalWorld * ( rayResult.m_hitNormalWorld.dot( displacement ) * ( btScalar )2 );
 			// TODO roughness
 			displacement *= particle.elasticity;
 		}
@@ -1392,7 +1392,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision( sParticle &particle
 				emitInstance->SetEnableCasting( true );
 				
 				// set position and orientation
-				const btVector3 emitPosition = rayResult.m_hitPointWorld + rayResult.m_hitNormalWorld * 0.001;
+				const btVector3 emitPosition = rayResult.m_hitPointWorld + rayResult.m_hitNormalWorld * ( btScalar )0.001;
 				emitInstance->SetPosition( decDVector( emitPosition.getX(), emitPosition.getY(), emitPosition.getZ() ) );
 				emitInstance->SetReferencePosition( emitInstance->GetPosition() );
 				btVector3 emitNormal;

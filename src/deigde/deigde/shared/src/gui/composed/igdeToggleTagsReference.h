@@ -37,7 +37,7 @@ class igdeToggleTags;
  *       it as tagser and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeToggleTagsReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeToggleTagsReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

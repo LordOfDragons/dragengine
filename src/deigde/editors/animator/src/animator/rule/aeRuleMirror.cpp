@@ -76,7 +76,8 @@ aeRule( deAnimatorRuleVisitorIdentify::ertMirror ),
 pMirrorAxis( deAnimatorRuleMirror::emaX ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false )
+pEnableSize( false ),
+pEnableVertexPositionSet( true )
 {
 	SetName( "Mirror" );
 }
@@ -88,7 +89,8 @@ pMirrorBone( copy.pMirrorBone ),
 pMatchNames( copy.pMatchNames ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
-pEnableSize( copy.pEnableSize ){
+pEnableSize( copy.pEnableSize ),
+pEnableVertexPositionSet( copy.pEnableVertexPositionSet ){
 }
 
 aeRuleMirror::~aeRuleMirror(){
@@ -140,6 +142,15 @@ void aeRuleMirror::SetEnableSize( bool enable ){
 	
 	if( GetEngineRule() ){
 		( ( deAnimatorRuleMirror* )GetEngineRule() )->SetEnableSize( enable );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleMirror::SetEnableVertexPositionSet( bool enable ){
+	pEnableVertexPositionSet = enable;
+	
+	if( GetEngineRule() ){
+		( ( deAnimatorRuleMirror* )GetEngineRule() )->SetEnableVertexPositionSet( enable );
 		NotifyRuleChanged();
 	}
 }
@@ -209,6 +220,7 @@ deAnimatorRule *aeRuleMirror::CreateEngineRule(){
 	engRule->SetEnablePosition( pEnablePosition );
 	engRule->SetEnableOrientation( pEnableOrientation );
 	engRule->SetEnableSize( pEnableSize );
+	engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
 	
 	const int count = pMatchNames.GetCount();
 	int i;
@@ -239,6 +251,7 @@ aeRuleMirror &aeRuleMirror::operator=( const aeRuleMirror &copy ){
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
 	aeRule::operator=( copy );
 	return *this;
 }

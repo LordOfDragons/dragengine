@@ -107,7 +107,7 @@ void deoxrDPEyeGazeInteraction::pAddDevice() {
 	pDevice->SetID( id );
 	
 	pDevice->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(),
-		pDevice->GetActionPose(), deoxrPath(), GetDeviceRotation() ) ) );
+		pDevice->GetActionPose(), pDevice->GetSubactionPath(), GetDeviceRotation() ) ) );
 	
 	GetInstance().GetOxr().GetDevices().Add( pDevice );
 }

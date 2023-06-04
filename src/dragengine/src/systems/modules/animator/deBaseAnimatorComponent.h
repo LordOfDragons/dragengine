@@ -44,6 +44,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Model changed. */
+	virtual void ModelChanged();
+	
 	/** \brief Rig changed. */
 	virtual void RigChanged();
 	/*@}*/

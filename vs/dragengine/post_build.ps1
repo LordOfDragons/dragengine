@@ -19,7 +19,7 @@ Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
 $TargetDir = "$OutputDir\$PathDistDESystem"
 
 Write-Host "Drag[en]gine App: Copy Library to '$TargetDir'"
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "dragengine.dll") -Destination $TargetDir
+Install-Files -Path "$OutputDir\dragengine\dragengine.dll" -Destination $TargetDir
 
 
 # sdk
@@ -35,12 +35,12 @@ Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
 $TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDESdkLib
 Write-Host "Drag[en]gine SDK: Copy Libraries to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "dragengine.lib") -Destination $TargetDir
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "dragengine.exp") -Destination $TargetDir
+Install-Files -Path "$OutputDir\dragengine\dragengine.lib" -Destination $TargetDir
+Install-Files -Path "$OutputDir\dragengine\dragengine.exp" -Destination $TargetDir
 
 
 # debug
 $TargetDir = "$OutputDir\$PathDistDEPdbSystem"
 Write-Host "Drag[en]gine Debug: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path "$OutputDir\dragengine.pdb" -Destination $TargetDir
+Install-Files -Path "$OutputDir\dragengine\dragengine.pdb" -Destination $TargetDir

@@ -31,7 +31,7 @@
 /**
  * \brief Game Definition Billboard.
  */
-class igdeGDCBillboard : public deObject{
+class DE_DLL_EXPORT igdeGDCBillboard : public deObject{
 public:
 	/** \brief Properties. */
 	enum eProperties{

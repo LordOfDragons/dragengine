@@ -30,7 +30,7 @@
 
 
 /**
- * \brief Group animator rule.
+ * Group animator rule.
  */
 class aeRuleGroup : public aeRule{
 public:
@@ -42,6 +42,7 @@ private:
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 	bool pUseCurrentState;
 	deAnimatorRuleGroup::eApplicationTypes pApplicationType;
@@ -53,87 +54,95 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new group rule. */
+	/** Create a new group rule. */
 	aeRuleGroup();
-	/** \brief Create a copy of a group rule. */
+	/** Create a copy of a group rule. */
 	aeRuleGroup( const aeRuleGroup &copy );
-	/** \brief Clean up the group rule. */
+	/** Clean up the group rule. */
 	virtual ~aeRuleGroup();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Rules. */
+	/** Rules. */
 	inline const aeRuleList &GetRules() const{ return pRules; }
-	/** \brief Add a new rule. */
+	/** Add a new rule. */
 	void AddRule( aeRule *rule );
-	/** \brief Insert a new rule. */
+	/** Insert a new rule. */
 	void InsertRuleAt( aeRule *rule, int index );
-	/** \brief Move a rule to a new position. */
+	/** Move a rule to a new position. */
 	void MoveRuleTo( aeRule *rule, int index );
-	/** \brief Remove the given rule. */
+	/** Remove the given rule. */
 	void RemoveRule( aeRule *rule );
-	/** \brief Remove all rules. */
+	/** Remove all rules. */
 	void RemoveAllRules();
 	
-	/** \brief Determine if position manipulation is enabled. */
+	/** Determine if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	/** \brief Set if position manipulation is enabled. */
+	/** Set if position manipulation is enabled. */
 	void SetEnablePosition( bool enabled );
-	/** \brief Determine if orientation manipulation is enabled. */
+	/** Determine if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	/** \brief Set if orientation manipulation is enabled. */
+	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation( bool enabled );
-	/** \brief Determine if size manipulation is enabled. */
+	
+	/** Determine if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
-	/** \brief Set if size manipulation is enabled. */
+	
+	/** Set if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
-	/** \brief Use current animation state instead of empty state. */
+	/** Vertex position set manipulation is enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** Set if vertex position set manipulation is enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
+	
+	/** Use current animation state instead of empty state. */
 	inline bool GetUseCurrentState() const{ return pUseCurrentState; }
 	
-	/** \brief Set if current animation state is used instead of empty state. */
+	/** Set if current animation state is used instead of empty state. */
 	void SetUseCurrentState( bool useCurrentState );
 	
-	/** \brief Retrieve the rule application type. */
+	/** Retrieve the rule application type. */
 	inline deAnimatorRuleGroup::eApplicationTypes GetApplicationType() const{ return pApplicationType; }
-	/** \brief Set the rule application type. */
+	/** Set the rule application type. */
 	void SetApplicationType( deAnimatorRuleGroup::eApplicationTypes type );
 	
-	/** \brief Retrieve the select target. */
+	/** Retrieve the select target. */
 	inline aeControllerTarget &GetTargetSelect(){ return pTargetSelect; }
 	inline const aeControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
-	/** \brief Create an engine animator rule. */
+	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();
-	/** \brief Update targets. */
+	/** Update targets. */
 	virtual void UpdateTargets();
-	/** \brief Retrieve the number of targets using a given link. */
+	/** Retrieve the number of targets using a given link. */
 	virtual int CountLinkUsage( aeLink *link ) const;
-	/** \brief Removes a link from all targets using it. */
+	/** Removes a link from all targets using it. */
 	virtual void RemoveLinkFromTargets( aeLink *link );
-	/** \brief Removes all links from all targets. */
+	/** Removes all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
-	/** \brief Tree list expanded state. */
+	/** Tree list expanded state. */
 	inline bool GetTreeListExpanded() const{ return pTreeListExpanded; }
 	
-	/** \brief Set tree list expanded state. */
+	/** Set tree list expanded state. */
 	void SetTreeListExpanded( bool expanded );
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const;
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	
-	/** \brief Parent animator changed. */
+	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copies another group rule to this group rule. */
+	/** Copies another group rule to this group rule. */
 	virtual aeRuleGroup &operator=( const aeRuleGroup &copy );
 	/*@}*/
 	

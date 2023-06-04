@@ -52,13 +52,13 @@
 
 namespace{
 
-class cActionAdd : public igdeAction {
+class cActionAppend : public igdeAction {
 	gdeWPPatternList &pPanel;
 	igdeEditPathReference &pEditPath;
 	igdeListBoxReference &pListBox;
 	
 public:
-	cActionAdd( gdeWPPatternList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
+	cActionAppend ( gdeWPPatternList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
 	igdeAction( "Add", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add pattern" ),
 	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
 	
@@ -153,7 +153,7 @@ igdeContainerFlow( helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContaine
 pPatternList( NULL ),
 pUndoSystem( NULL )
 {
-	pActionAdd.TakeOver( new cActionAdd( *this, pEditPath, pListBox ) );
+	pActionAdd.TakeOver( new cActionAppend ( *this, pEditPath, pListBox ) );
 	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
 	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
 	

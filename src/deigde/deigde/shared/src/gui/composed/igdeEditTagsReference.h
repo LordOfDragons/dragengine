@@ -37,7 +37,7 @@ class igdeEditTags;
  *       it as tagser and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeEditTagsReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeEditTagsReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

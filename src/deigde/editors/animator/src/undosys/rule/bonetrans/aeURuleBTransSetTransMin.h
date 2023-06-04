@@ -32,7 +32,7 @@ class aeRuleBoneTransformator;
 
 
 /**
- * \brief Undo action rule bone transformator set minimum translation.
+ * Undo action rule bone transformator set minimum translation.
  */
 class aeURuleBTransSetTransMin : public igdeUndo{
 private:
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleBTransSetTransMin( aeRuleBoneTransformator *rule, const decVector &newMin );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleBTransSetTransMin();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 	

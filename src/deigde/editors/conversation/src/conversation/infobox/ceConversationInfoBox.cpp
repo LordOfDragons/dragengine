@@ -227,7 +227,7 @@ void ceConversationInfoBox::UpdateCanvas(){
 				canvasText = canvasManager.CreateCanvasText();
 				canvasText->SetColor( pTextColor );
 				canvasText->SetFont( pEngFont );
-				canvasText->SetFontSize( pTextSize );
+				canvasText->SetFontSize( ( float )pTextSize );
 				canvasText->SetText( text );
 				canvasText->SetOrder( ( float )( 1 + i ) );
 				canvasText->SetPosition( decPoint( ( pWidth - lineWidth ) / 2, y ) );

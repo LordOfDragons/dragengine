@@ -33,7 +33,7 @@
  * fill the available space. Optionally the first or last widget size along the axis can
  * be stretched to fill the remaining space.
  */
-class igdeContainerFlow : public igdeContainer{
+class DE_DLL_EXPORT igdeContainerFlow : public igdeContainer{
 public:
 	/** \brief Layout axis for subclasses. */
 	enum eAxis{

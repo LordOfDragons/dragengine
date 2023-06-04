@@ -45,7 +45,8 @@ pMove2Time( 0.0f ),
 pUseSameMove( false ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false ){
+pEnableSize( false ),
+pEnableVertexPositionSet( true ){
 }
 
 deAnimatorRuleAnimationDifference::~deAnimatorRuleAnimationDifference(){
@@ -57,8 +58,6 @@ deAnimatorRuleAnimationDifference::~deAnimatorRuleAnimationDifference(){
 ///////////////
 
 void deAnimatorRuleAnimationDifference::SetLeadingMoveName( const char *moveName ){
-	if( ! moveName ) DETHROW( deeInvalidParam );
-	
 	pMove1Name = moveName;
 }
 
@@ -67,8 +66,6 @@ void deAnimatorRuleAnimationDifference::SetLeadingMoveTime( float moveTime ){
 }
 
 void deAnimatorRuleAnimationDifference::SetReferenceMoveName( const char *moveName ){
-	if( ! moveName ) DETHROW( deeInvalidParam );
-	
 	pMove2Name = moveName;
 }
 
@@ -90,6 +87,10 @@ void deAnimatorRuleAnimationDifference::SetEnableOrientation( bool enabled ){
 
 void deAnimatorRuleAnimationDifference::SetEnableSize( bool enabled ){
 	pEnableSize = enabled;
+}
+
+void deAnimatorRuleAnimationDifference::SetEnableVertexPositionSet( bool enabled ){
+	pEnableVertexPositionSet = enabled;
 }
 
 

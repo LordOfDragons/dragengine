@@ -32,7 +32,7 @@
 /**
  * \brief Game Definition Class Component Texture.
  */
-class igdeGDCCTexture : public deObject{
+class DE_DLL_EXPORT igdeGDCCTexture : public deObject{
 private:
 	decString pName;
 	decString pPathSkin;

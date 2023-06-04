@@ -37,7 +37,7 @@ class igdeTreeList;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeTreeListReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeTreeListReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

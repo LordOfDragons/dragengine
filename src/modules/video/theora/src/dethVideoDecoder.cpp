@@ -61,7 +61,6 @@ pReader( NULL )
 		
 		pWidth = infos.GetWidth();
 		pHeight = infos.GetHeight();
-		pPixelFormat = infos.GetPixelFormat();
 		pFrameCount = infos.GetFrameCount();
 		pFrameRate = infos.GetFrameRate();
 		pClrConvMat = infos.GetColorConversionMatrix();
@@ -89,7 +88,7 @@ pReader( NULL )
 		/*
 		const char *pfstrs[] = { "4:4:4", "4:2:2", "4:2:0", "-" };
 		module.LogInfoFormat( "Decoder: width=%i height=%i pixelFormat=%i "
-			"frameCount=%i frameRate=%i frameWidth=%i frameHeight=%i pictureX=%i "
+			"frameCount=%i frameRate=%g frameWidth=%i frameHeight=%i pictureX=%i "
 			"pictureY=%i internalPixelFormat=%s",
 				pWidth, pHeight, pPixelFormat, pFrameCount, pFrameRate, pFrameWidth,
 				pFrameHeight, pPictureX, pPictureY, pfstrs[ pInternalPixelFormat ] );
@@ -124,7 +123,7 @@ void dethVideoDecoder::SetPosition( int position ){
 	pReader->SeekFrame( position );
 }
 
-bool dethVideoDecoder::DecodeFrame( void *buffer1, int size1, void *buffer2, int size2 ){
+bool dethVideoDecoder::DecodeFrame( void *buffer, int ){
 	th_ycbcr_buffer tbuffer;
 	if( ! pReader->GetStream()->GetDecodedFrame( tbuffer ) ){
 		return false;
@@ -170,7 +169,7 @@ bool dethVideoDecoder::DecodeFrame( void *buffer1, int size1, void *buffer2, int
 	strideY = tbuffer[ 0 ].stride;
 	strideCb = tbuffer[ 1 ].stride;
 	strideCr = tbuffer[ 2 ].stride;
-	ptrDest = ( sRGB8* )buffer1;
+	ptrDest = ( sRGB8* )buffer;
 	
 	if( pInternalPixelFormat == epf444 ){
 		for( y=0; y<pHeight; y++ ){
@@ -188,7 +187,7 @@ bool dethVideoDecoder::DecodeFrame( void *buffer1, int size1, void *buffer2, int
 			}
 		}
 		
-		//ConvertColors( buffer1 );
+		//ConvertColors( buffer );
 		
 		return true;
 		
@@ -209,7 +208,7 @@ bool dethVideoDecoder::DecodeFrame( void *buffer1, int size1, void *buffer2, int
 			}
 		}
 		
-		//ConvertColors( buffer1 );
+		//ConvertColors( buffer );
 		
 		return true;
 		
@@ -231,7 +230,7 @@ bool dethVideoDecoder::DecodeFrame( void *buffer1, int size1, void *buffer2, int
 			}
 		}
 		
-		//ConvertColors( buffer1 );
+		//ConvertColors( buffer );
 		
 		return true;
 	}

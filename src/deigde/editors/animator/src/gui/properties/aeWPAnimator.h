@@ -36,7 +36,7 @@ class aeWPAnimatorListener;
 
 
 /**
- * \brief Animator panel.
+ * Animator panel.
  */
 class aeWPAnimator : public igdeContainerScroll{
 private:
@@ -52,16 +52,21 @@ private:
 	igdeButtonReference pBtnBoneAdd;
 	igdeButtonReference pBtnBoneDel;
 	
+	igdeListBoxReference pListVertexPositionSets;
+	igdeComboBoxFilterReference pCBVertexPositionSets;
+	igdeButtonReference pBtnVertexPositionSetAdd;
+	igdeButtonReference pBtnVertexPositionSetDel;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAnimator( aeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAnimator();
 	/*@}*/
 	
@@ -70,29 +75,38 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Update animator. */
+	/** Update animator. */
 	void UpdateAnimator();
 	
-	/** \brief Animator path changed. */
+	/** Animator path changed. */
 	void OnAnimatorPathChanged();
 	
-	/** \brief Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	/** Update rig bone list. */
+	void UpdateRigBoneList();
 	
-	/** \brief Rig bone combo box text. */
+	/** Rig bone combo box text. */
 	const decString &GetCBRigBoneText() const;
 	
-	/** \brief Set rig bone combo box text. */
+	/** Set rig bone combo box text. */
 	void SetCBRigBoneText( const char *text );
+	
+	/** Update rig vertex position set list. */
+	void UpdateModelVertexPositionSetList();
+	
+	/** Vertex position set combo box text. */
+	const decString &GetCBModelVertexPositionSetText() const;
+	
+	/** Set vertex position set combo box text. */
+	void SetCBModelVertexPositionSetText( const char *text );
 	/*@}*/
 };
 

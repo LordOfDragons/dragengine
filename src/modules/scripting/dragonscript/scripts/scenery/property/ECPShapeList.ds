@@ -35,58 +35,63 @@ pin Dragengine.Preloading
  * using an encoded string decoded using CodecPropertyString.
  */
 class ECPShapeList extends ElementClassProperty
-	/** \brief Coded used to decode shape string. */
 	private var CodecPropertyString pCodec
-	
-	/** \brief ShapeList. */
 	private var ShapeList pShapeList
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name, CodecPropertyString codec ) super( name )
-		this.pCodec = codec
-		this.pShapeList = ShapeList.new()
+	public func new(String name, CodecPropertyString codec) super(name)
+		pCodec = codec
+		pShapeList = ShapeList.new()
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, CodecPropertyString codec, ShapeList shapeList ) super( name )
-		this.pCodec = codec
-		this.pShapeList = shapeList
+	public func new(String name, CodecPropertyString codec, ShapeList shapeList) super(name)
+		pCodec = codec
+		pShapeList = shapeList
 	end
 	
 	
 	
 	/** \brief Coded used to decode shape string. */
 	public func CodecPropertyString getCodec()
-		return this.pCodec
+		return pCodec
 	end
 	
 	/** \brief Shape list. */
 	public func ShapeList getShapeList()
-		return this.pShapeList
+		return pShapeList
 	end
 	
 	/** \brief Set shape. */
-	public func void setShapeList( ShapeList shape )
-		this.pShapeList = shape
+	public func void setShapeList(ShapeList shape)
+		pShapeList = shape
 	end
 	
 	/** \brief Shape list string. */
 	public func String getShapeListString()
-		return this.pCodec.encodeShapeList( this.pShapeList )
+		return pCodec.encodeShapeList(pShapeList)
 	end
 	
 	/** \brief Set shape list from shape string. */
-	public func void setShapeListFromString( String string )
-		this.pShapeList = this.pCodec.decodeShapeList( string )
+	public func void setShapeListFromString(String string)
+		pShapeList = pCodec.decodeShapeList(string)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.setShapeListFromString( value cast String )
+	public func void setValue(Object value)
+		setShapeListFromString(value cast String)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pShapeList = ShapeList.new((property cast ECPShapeList).pShapeList)
 	end
 	
 	
@@ -99,8 +104,8 @@ class ECPShapeList extends ElementClassProperty
 	 * 
 	 * Uses the stored property name as stub property name.
 	 */
-	public func ShapeList getShapeList( StubWithProperties stub )
-		return this.getShapeList( stub, this.getName() )
+	public func ShapeList getShapeList(StubWithProperties stub)
+		return getShapeList(stub, getName())
 	end
 	
 	/**
@@ -109,13 +114,13 @@ class ECPShapeList extends ElementClassProperty
 	 * If named stub property is not present the stored shape list is returned. If the named
 	 * stub property is present it is decoded using the stored decoder and the result returned.
 	 */
-	public func ShapeList getShapeList( StubWithProperties stub, String name )
-		var String value = stub.getPropertyValueFor( name, null )
+	public func ShapeList getShapeList(StubWithProperties stub, String name)
+		var String value = stub.getPropertyValueFor(name, null)
 		if value != null
-			return this.pCodec.decodeShapeList( value )
+			return pCodec.decodeShapeList(value)
 			
 		else
-			return this.pShapeList
+			return pShapeList
 		end
 	end
 end

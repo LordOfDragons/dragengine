@@ -27,6 +27,7 @@
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../debug/deoglDebugTraceGroup.h"
+#include "../extensions/deoglExtensions.h"
 #include "../rendering/deoglRenderCanvasContext.h"
 #include "../rendering/deoglRenderCanvas.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -37,6 +38,7 @@
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! OS_MACOS
 #include <dragengine/app/deOSUnix.h>
+#include "../extensions/deoglXExtResult.h"
 #endif
 
 #ifdef ANDROID
@@ -58,6 +60,7 @@
 #ifdef  OS_W32
 #include <stdint.h>
 #include <dragengine/app/deOSWindows.h>
+#include "../extensions/deoglWExtResult.h"
 #endif
 
 #ifdef  OS_MACOS
@@ -210,6 +213,7 @@ pWindow( NULL ),
 pHostWindow( NULL ),
 pWindow( NULL ),
 pWindowDC( NULL ),
+pWindowIcon( NULL ),
 #endif
 
 #ifdef OS_MACOS
@@ -225,7 +229,10 @@ pPaint( true ),
 pRCanvasView( NULL ),
 
 pSwapBuffers( false ),
-pNotifySizeChanged( false )
+pNotifySizeChanged( false ),
+
+pVSyncMode( deoglConfiguration::evsmAdaptive ),
+pInitSwapInterval( true )
 {
 	LEAK_CHECK_CREATE( renderThread, RenderWindow );
 }
@@ -273,6 +280,14 @@ void deoglRRenderWindow::SetHostWindow( NSWindow *window ){
 void deoglRRenderWindow::SetHostWindow( HWND window ){
 	pHostWindow = window;
 };
+
+decPoint deoglRRenderWindow::GetInnerSize() const{
+	DEASSERT_NOTNULL( pWindow )
+	
+	RECT rect;
+	DEASSERT_TRUE( GetClientRect( pWindow, &rect ) )
+	return decPoint( ( int )( rect.right - rect.left ), ( int )( rect.bottom - rect.top ) );
+}
 #endif
 
 void deoglRRenderWindow::SetSize( int width, int height ){
@@ -553,6 +568,8 @@ void deoglRRenderWindow::SwapBuffers(){
 	const deoglDebugTraceGroup debugTrace( pRenderThread, "Window.SwapBuffers" );
 	
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	pUpdateVSync();
+	
 	// [XERR] BadMatch (invalid parameter attributes): request_code(155) minor_code(11)
 	// 155=GLX, 11=glXSwapBuffers
 	// 
@@ -589,6 +606,8 @@ void deoglRRenderWindow::SwapBuffers(){
 #endif
 	
 #ifdef OS_W32
+	pUpdateVSync();
+	
 	if( ! ::SwapBuffers( pWindowDC ) ){
 		pRenderThread.GetLogger().LogErrorFormat( "SwapBuffers failed (%s:%i): error=0x%lx\n",
 			__FILE__, __LINE__, GetLastError() );
@@ -617,8 +636,11 @@ void deoglRRenderWindow::Render(){
 	glDisable( GL_DITHER );
 	
 	// prepare canvas
+	deoglRCanvas * const debugOverlayCanvas = ! pRenderThread.GetVRCamera()
+		? pRenderThread.GetCanvasDebugOverlay() : nullptr;
+	
 	deoglRCanvas * const inputOverlayCanvas = pRenderThread.GetCanvasInputOverlay();
-	deoglRCanvas * const debugOverlayCanvas = pRenderThread.GetCanvasDebugOverlay();
+	deoglRCanvas * const overlayCanvas = pRenderThread.GetCanvasOverlay();
 	bool isMainWindow = true; // a problem only if more than one render window exists
 	
 	pRCanvasView->PrepareForRender( nullptr );
@@ -632,22 +654,16 @@ void deoglRRenderWindow::Render(){
 			debugOverlayCanvas->PrepareForRender( nullptr );
 			debugOverlayCanvas->PrepareForRenderRender( nullptr );
 		}
+		if( overlayCanvas ){
+			overlayCanvas->PrepareForRender( nullptr );
+			overlayCanvas->PrepareForRenderRender( nullptr );
+		}
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsPrepare();
 	
 	// create render taget if required
 	const decPoint size( pWidth, pHeight );
-	/*
-	if( ! pRenderTarget ){
-		pRenderTarget.TakeOver( new deoglRenderTarget( pRenderThread, size, 3, 8 ) );
-		
-	}else if ( pRenderTarget->GetSize() != size ){
-		pRenderTarget->SetSize( size );
-	}
-	
-	pRenderTarget->PrepareFramebuffer();
-	*/
 	
 	// render canvas
 	pRenderThread.GetFramebuffer().Activate( nullptr /*pRenderTarget->GetFBO()*/ );
@@ -664,18 +680,14 @@ void deoglRRenderWindow::Render(){
 		if( debugOverlayCanvas ){
 			debugOverlayCanvas->Render( context );
 		}
+		if( overlayCanvas ){
+			overlayCanvas->Render( context );
+		}
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsRender();
 	
 	debugTrace.Close();
-	
-	// blit to back buffer
-	/*
-	pRenderThread.GetFramebuffer().Activate( nullptr );
-	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO() ) );
-	OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, size.x, size.y, 0, 0, size.x, size.y, GL_COLOR_BUFFER_BIT, GL_NEAREST ) );
-	*/
 	
 	// capture if any capture canvas are pending
 	Capture();
@@ -1005,6 +1017,21 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 	SetWindowPos( pWindow, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE
 		| SWP_NOZORDER | SWP_NOOWNERZORDER );
 	
+	if( pFullScreen ){
+		// if fullscreen force the window position to fill the entire work area. relying on WS_MAXIMIZE
+		// is unfortunately not working reliably so we resize and move the window on our own to be sure
+		RECT rect;
+		DEASSERT_TRUE( SystemParametersInfoA( SPI_GETWORKAREA, 0, &rect, 0 ) )
+		
+		pWidth = rect.right - rect.left;
+		pHeight = rect.bottom - rect.top;
+		pNotifySizeChanged = true;
+		//pRenderThread.GetLogger().LogInfoFormat("Window.FullScreen: %d %d %d %d", rect.left, rect.top, pWidth, pHeight );
+		
+		SetWindowPos( pWindow, NULL, rect.left, rect.top, pWidth, pHeight,
+			SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER );
+	}
+
 	/*
 	if( pWindow ){
 		SetWindowPos( pWindow, NULL, 0, 0, pWidth, pHeight,
@@ -1312,3 +1339,77 @@ void deoglRRenderWindow::pCreateNullCursor(){
 	XFreeGC( display, gc );
 }
 #endif
+
+void deoglRRenderWindow::pUpdateVSync(){
+	// check if VSync has to be enabled or disabled
+	const deoglConfiguration::eVSyncMode vsyncMode = pRenderThread.GetConfiguration().GetVSyncMode();
+	
+	if( vsyncMode != pVSyncMode ){
+		pVSyncMode = vsyncMode;
+		pInitSwapInterval = true;
+	}
+	
+	// apply changes if required
+	if( ! pInitSwapInterval ){
+		return;
+	}
+	
+	pInitSwapInterval = false;
+	
+	#ifndef OS_BEOS
+	const deoglExtensions &ext = pRenderThread.GetExtensions();
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	#endif
+	
+#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	if( ext.GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control ) ){
+		switch( pVSyncMode ){
+		case deoglConfiguration::evsmAdaptive:
+			if( ext.GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control_tear ) ){
+				logger.LogInfo( "RenderWindow: Enable Adaptive V-Sync" );
+				OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, -1 ) );
+				
+			}else{
+				logger.LogInfo( "RenderWindow: Enable V-Sync" );
+				OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, 1 ) );
+			}
+			break;
+			
+		case deoglConfiguration::evsmOn:
+			logger.LogInfo( "RenderWindow: Enable V-Sync" );
+			OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, 1 ) );
+			break;
+			
+		case deoglConfiguration::evsmOff:
+			logger.LogInfo( "RenderWindow: Disable VSync" );
+			OGL_CHECK( pRenderThread, pglXSwapInterval( pRenderThread.GetContext().GetDisplay(), pWindow, 0 ) );
+		}
+	}
+#endif
+	
+#ifdef OS_W32
+	if( ext.GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control ) ){
+		switch( pVSyncMode ){
+		case deoglConfiguration::evsmAdaptive:
+			if( ext.GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control_tear ) ){
+				logger.LogInfo( "RenderWindow: Enable Adaptive V-Sync" );
+				DEASSERT_TRUE( pwglSwapInterval( -1 ) )
+				
+			}else{
+				logger.LogInfo( "RenderWindow: Enable V-Sync" );
+				DEASSERT_TRUE( pwglSwapInterval( 1 ) )
+			}
+			break;
+			
+		case deoglConfiguration::evsmOn:
+			logger.LogInfo( "RenderWindow: Enable V-Sync" );
+			DEASSERT_TRUE( pwglSwapInterval( 1 ) )
+			break;
+			
+		case deoglConfiguration::evsmOff:
+			logger.LogInfo( "RenderWindow: Disable VSync" );
+			DEASSERT_TRUE( pwglSwapInterval( 0 ) )
+		}
+	}
+#endif
+}

@@ -162,7 +162,7 @@ deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::GetPipelineWith( c
 	DEASSERT_NOTNULL( pipeline )
 	
 	deoglPersistentRenderTaskPipeline *rtpipeline;
-	return pPipelinesMap.GetAt( pipeline, pipeline->GetRTSPipelineIndex(), ( void** )&rtpipeline ) ? rtpipeline : nullptr;
+	return pPipelinesMap.GetAt( pipeline, pipeline->GetRTSIndex(), ( void** )&rtpipeline ) ? rtpipeline : nullptr;
 }
 
 deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::AddPipeline( const deoglPipeline *pipeline ){
@@ -177,14 +177,14 @@ deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::AddPipeline( const
 	pPipelines.Add( &rtpipeline->GetLLTask() );
 	rtpipeline->SetParentTask( this );
 	rtpipeline->SetPipeline( pipeline );
-	pPipelinesMap.SetAt( pipeline, pipeline->GetRTSPipelineIndex(), rtpipeline );
+	pPipelinesMap.SetAt( pipeline, pipeline->GetRTSIndex(), rtpipeline );
 	return rtpipeline;
 }
 
 void deoglPersistentRenderTask::RemovePipeline( deoglPersistentRenderTaskPipeline *pipeline ){
 	DEASSERT_NOTNULL( pipeline )
 	
-	pPipelinesMap.Remove( pipeline->GetPipeline(), pipeline->GetPipeline()->GetRTSPipelineIndex() );
+	pPipelinesMap.Remove( pipeline->GetPipeline(), pipeline->GetPipeline()->GetRTSIndex() );
 	pPipelines.Remove( &pipeline->GetLLTask() );
 	pPool.ReturnPipeline( pipeline );
 }
@@ -331,8 +331,10 @@ void deoglPersistentRenderTask::pAssignSPBInstances( deoglRenderThread &renderTh
 					
 					if( ! paramBlock || firstIndex + instance.GetSubInstanceCount() > pSPBInstanceMaxEntries ){
 						if( paramBlock ){
-							paramBlock->SetElementCount( componentsPerIndex
-								* decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 ) );
+							const int ecount = componentsPerIndex * decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 );
+							if( ecount > paramBlock->GetElementCount() ){
+								paramBlock->SetElementCount( ecount );
+							}
 						}
 						
 						if( paramBlockCount == pSPBInstances.GetCount() ){
@@ -355,8 +357,10 @@ void deoglPersistentRenderTask::pAssignSPBInstances( deoglRenderThread &renderTh
 	}
 	
 	if( paramBlock ){
-		paramBlock->SetElementCount( componentsPerIndex
-			* decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 ) );
+		const int ecount = componentsPerIndex * decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 );
+		if( ecount > paramBlock->GetElementCount() ){
+			paramBlock->SetElementCount( ecount );
+		}
 	}
 }
 

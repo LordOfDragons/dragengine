@@ -419,7 +419,7 @@ void igdeGDPreviewManager::pSaveToFile( deImage *image, const decString &typedir
 	try{
 		engine.GetImageManager()->SaveImage( vfs, image, path.GetPathUnix() );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pEnvironment.GetLogger()->LogWarnFormat( LOGSOURCE,
 			"Can not save preview image to cache file '%s'", path.GetPathUnix().GetString() );
 	}

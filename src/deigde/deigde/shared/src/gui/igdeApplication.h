@@ -46,7 +46,7 @@ class igdeWindow;
 /**
  * \brief IGDE UI Application.
  */
-class igdeApplication{
+class DE_DLL_EXPORT igdeApplication{
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

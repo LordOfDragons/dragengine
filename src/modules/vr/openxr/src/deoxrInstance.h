@@ -72,10 +72,11 @@ public:
 		extHTCViveFocus3ControllerInteraction, // <! XR_HTC_vive_focus3_controller_interaction
 		extHUAWEIControllerInteraction, // <! XR_HUAWEI_controller_interaction
 		extMSFTHandInteraction, // <! XR_MSFT_hand_interaction
-		extEXTDebugUtils //<! XR_EXT_debug_utils
+		extEXTDebugUtils, //<! XR_EXT_debug_utils
+		extKHRCompositionLayerDepth //<! XR_KHR_composition_layer_depth
 	};
 	
-	static const int ExtensionCount = extEXTDebugUtils + 1;
+	static const int ExtensionCount = extKHRCompositionLayerDepth + 1;
 	
 	/** Layers. */
 	enum eLayer{

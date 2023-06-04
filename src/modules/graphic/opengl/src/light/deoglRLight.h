@@ -37,7 +37,6 @@
 class deoglCollideList;
 class deoglLightShaderConfig;
 class deoglLightVolume;
-class deoglOcclusionQuery;
 class deoglOcclusionTest;
 class deoglOptimizerLight;
 class deoglRCanvasView;
@@ -69,7 +68,7 @@ private:
 		deoglRLight &pLight;
 	public:
 		WorldComputeElement( deoglRLight &light );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateData( sDataElement &data ) const;
 	};
 	
 	
@@ -139,8 +138,6 @@ private:
 	deoglLightVolume *pLightVolume;
 	decShapeBox *pLightVolumeCropBox;
 	bool pDirtyConvexVolumeList;
-	
-	deoglOcclusionQuery *pOcclusionQuery;
 	
 	decVector2 pTrackAngles;
 	
@@ -550,15 +547,6 @@ public:
 	 *          component is removed if listed.
 	 */
 	void TestComponent( deoglRComponent *oglComponent );
-	/*@}*/
-	
-	
-	
-	/** \name Culling */
-	/*@{*/
-	/** Occlusion query. */
-	deoglOcclusionQuery &GetOcclusionQuery();
-	inline bool HasOcclusionQuery() const{ return pOcclusionQuery != NULL; }
 	/*@}*/
 	
 	

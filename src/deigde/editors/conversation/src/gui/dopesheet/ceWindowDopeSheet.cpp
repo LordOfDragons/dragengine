@@ -616,27 +616,27 @@ void ceWindowDopeSheet::CreateDopeSheetCanvas( igdeViewRenderWindow &view ){
 	pCanvasPanelDopeSheet.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasPanelDopeSheet->SetFillColor( colorBorder );
 	pCanvasPanelDopeSheet->SetThickness( 0 );
-	pCanvasPanelDopeSheet->SetOrder( content.GetCanvasCount() );
+	pCanvasPanelDopeSheet->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasPanelDopeSheet );
 	
 	pCanvasPanelVAPreview.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasPanelVAPreview->SetFillColor( colorBackground );
 	pCanvasPanelVAPreview->SetThickness( 0 );
-	pCanvasPanelVAPreview->SetOrder( content.GetCanvasCount() );
+	pCanvasPanelVAPreview->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasPanelVAPreview );
 	
 	pCanvasPanelVAPreviewLine.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasPanelVAPreviewLine->SetFillColor( colorBorder );
 	pCanvasPanelVAPreviewLine->SetThickness( 0 );
-	pCanvasPanelVAPreviewLine->SetOrder( content.GetCanvasCount() );
+	pCanvasPanelVAPreviewLine->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasPanelVAPreviewLine );
 	
 	pCanvasTimeLines.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasTimeLines->SetOrder( content.GetCanvasCount() );
+	pCanvasTimeLines->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasTimeLines );
 	
 	pCanvasTimeLineLabels.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasTimeLineLabels->SetOrder( content.GetCanvasCount() );
+	pCanvasTimeLineLabels->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasTimeLineLabels );
 	
 	const int laneCount = pLanes.GetCount();
@@ -645,7 +645,7 @@ void ceWindowDopeSheet::CreateDopeSheetCanvas( igdeViewRenderWindow &view ){
 		ceWDSLane &lane = *( ( ceWDSLane* )pLanes.GetAt( i ) );
 		lane.CreateCanvas();
 		if( lane.GetCanvas() ){
-			lane.GetCanvas()->SetOrder( content.GetCanvasCount() );
+			lane.GetCanvas()->SetOrder( ( float )content.GetCanvasCount() );
 			view.AddCanvas( lane.GetCanvas() );
 		}
 	}
@@ -653,7 +653,7 @@ void ceWindowDopeSheet::CreateDopeSheetCanvas( igdeViewRenderWindow &view ){
 	pCanvasVAPreviewTime.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasVAPreviewTime->SetFillColor( colorPreviewTime );
 	pCanvasVAPreviewTime->SetThickness( 0 );
-	pCanvasVAPreviewTime->SetOrder( content.GetCanvasCount() );
+	pCanvasVAPreviewTime->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasVAPreviewTime );
 	
 	ResizeDopeSheetCanvas();
@@ -734,7 +734,7 @@ void ceWindowDopeSheet::pGetFontText(){
 	GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::textFieldFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSize ) ){
@@ -742,7 +742,7 @@ void ceWindowDopeSheet::pGetFontText(){
 			igdeGuiThemePropertyNames::textFieldFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
@@ -817,23 +817,23 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 			deCanvasTextReference canvas;
 			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
 			canvas->SetFont( font );
-			canvas->SetFontSize( font->GetLineHeight() );
+			canvas->SetFontSize( ( float )font->GetLineHeight() );
 			canvas->SetColor( GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetForeground ) );
 			pTimeLineLabels.Add( ( deCanvasText* )canvas );
 		}
 		
 		deCanvasPaint * const canvasLine = ( deCanvasPaint* )pTimeLines.GetAt( i - timeFirst );
-		canvasLine->SetPosition( decPoint( GetXForTime( i ), 0 ) );
+		canvasLine->SetPosition( decPoint( GetXForTime( ( float )i ), 0 ) );
 		canvasLine->SetSize( decPoint( 1, sizeDopeSheet.y ) );
-		canvasLine->SetOrder( pCanvasTimeLines->GetCanvasCount() );
+		canvasLine->SetOrder( ( float )pCanvasTimeLines->GetCanvasCount() );
 		pCanvasTimeLines->AddCanvas( canvasLine );
 		
 		deCanvasText * const canvasText = ( deCanvasText* )pTimeLineLabels.GetAt( i - timeFirst );
 		text.Format( "%ds", i );
 		canvasText->SetText( text );
 		canvasText->SetPosition( canvasLine->GetPosition() + decPoint( 2, 2 ) );
-		canvasText->SetSize( decPoint( 80, canvasText->GetFontSize() ) ); // TODO add method to get text size
-		canvasText->SetOrder( pCanvasTimeLines->GetCanvasCount() );
+		canvasText->SetSize( decPoint( 80, ( int )canvasText->GetFontSize() ) ); // TODO add method to get text size
+		canvasText->SetOrder( ( float )pCanvasTimeLines->GetCanvasCount() );
 		pCanvasTimeLines->AddCanvas( canvasText );
 	}
 }

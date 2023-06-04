@@ -31,60 +31,69 @@ pin Dragengine.Utils
  * \brief List of rect area values class property for use with XML loading.
  */
 class ECPRectAreaList extends ElementClassProperty
-	/** \brief List of rect areas (Array of RectArea). */
 	private var Array pRectAreas
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pRectAreas = Array.new()
+	public func new(String name) super(name)
+		pRectAreas = Array.new()
 	end
 	
 	
 	
 	/** \brief Number of rect areas. */
 	public func int getCount()
-		return this.pRectAreas.getCount()
+		return pRectAreas.getCount()
 	end
 	
 	/** \brief RectArea at index. */
-	public func RectArea getAt( int index )
-		return this.pRectAreas.getAt( index ) cast RectArea
+	public func RectArea getAt(int index)
+		return pRectAreas.getAt(index) cast RectArea
 	end
 	
 	/** \brief Get random react area or \em null if no react areas are present. */
 	public func RectArea getRandom()
-		if this.pRectAreas.getCount() == 0
+		if pRectAreas.getCount() == 0
 			return null
 			
 		else
-			return this.pRectAreas.random() cast RectArea
+			return pRectAreas.random() cast RectArea
 		end
 	end
 	
 	/** \brief For each react area with block with RectArea as parameter. */
-	public func void forEach( Block ablock )
-		this.pRectAreas.forEach( ablock )
+	public func void forEach(Block ablock)
+		pRectAreas.forEach(ablock)
 	end
 	
 	/** \brief Remove all react areas. */
 	public func void removeAll()
-		this.pRectAreas.removeAll()
+		pRectAreas.removeAll()
 	end
 	
 	/** \brief Add react area. */
-	public func void add( RectArea area )
-		this.pRectAreas.add( area )
+	public func void add(RectArea area)
+		pRectAreas.add(area)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pRectAreas.removeAll()
-		( value cast Array ).forEach( block RectArea each
-			this.pRectAreas.add( each )
-		end )
+	public func void setValue(Object value)
+		pRectAreas.removeAll()
+		(value cast Array).forEach(block RectArea each
+			pRectAreas.add(each)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pRectAreas = (property cast ECPRectAreaList).pRectAreas.map(block RectArea each
+			return RectArea.new(each)
+		end)
 	end
 end

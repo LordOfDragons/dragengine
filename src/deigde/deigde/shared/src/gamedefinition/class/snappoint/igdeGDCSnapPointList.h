@@ -31,7 +31,7 @@ class igdeGDCSnapPoint;
 /**
  * \brief Object class snap point list.
  */
-class igdeGDCSnapPointList{
+class DE_DLL_EXPORT igdeGDCSnapPointList{
 private:
 	decObjectOrderedSet pSnapPoints;
 	

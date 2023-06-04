@@ -27,17 +27,17 @@
 
 
 /**
- * \brief Undo action remove all rule bones.
+ * Undo action remove all rule bones.
  */
 class aeUSetRuleRemoveAllBones : public aeUSetRuleBones{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeUSetRuleRemoveAllBones( aeRule *rule );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleRemoveAllBones();
 	/*@}*/
 };

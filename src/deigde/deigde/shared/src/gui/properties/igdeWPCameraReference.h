@@ -37,7 +37,7 @@ class igdeWPCamera;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeWPCameraReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeWPCameraReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

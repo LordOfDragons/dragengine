@@ -34,7 +34,7 @@ class decBaseFileWriter;
 /**
  * \brief Load and save height terrain navigation space file.
  */
-class igdeLoadSaveHTNavSpace{
+class DE_DLL_EXPORT igdeLoadSaveHTNavSpace{
 private:
 	igdeEnvironment &pEnvironment;
 	decString pLoggingSource;

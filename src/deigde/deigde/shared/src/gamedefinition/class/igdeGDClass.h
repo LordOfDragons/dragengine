@@ -58,7 +58,7 @@ class deImage;
  *
  * Stores the definition of a class in a game definition.
  */
-class igdeGDClass : public deObject{
+class DE_DLL_EXPORT igdeGDClass : public deObject{
 public:
 	/** \brief Scale modes. */
 	enum eScaleModes{

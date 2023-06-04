@@ -22,9 +22,12 @@
 #ifndef _PROJTESTRUNPROCESS_H_
 #define _PROJTESTRUNPROCESS_H_
 
-#include <unistd.h>
+#include <dragengine/dragengine_configuration.h>
+
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
+#else
+#include <unistd.h>
 #endif
 
 #include <dragengine/common/string/decStringSet.h>
@@ -177,7 +180,7 @@ public:
 	int ReadUShortFromPipe();
 	
 	/** \brief Read float from pipe. */
-	int ReadFloatFromPipe();
+	float ReadFloatFromPipe();
 	
 	/** \brief Read string from pipe using uint16_t as length. */
 	decString ReadString16FromPipe();

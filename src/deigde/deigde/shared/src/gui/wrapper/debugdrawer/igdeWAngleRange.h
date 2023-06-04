@@ -34,7 +34,7 @@
  * lower and upper angle bounds choosable. The limits are measured as rotations
  * around the Z axis.
  */
-class igdeWAngleRange{
+class DE_DLL_EXPORT igdeWAngleRange{
 private:
 	igdeWDebugDrawerShape pDDSDisk;
 	

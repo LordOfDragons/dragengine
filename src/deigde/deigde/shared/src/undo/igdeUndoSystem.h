@@ -37,7 +37,7 @@ class igdeEditableEntity;
  * consumption. The default maximum number of entries is 100 and the maximum number of
  * memory consumption 0. The limits are ignored if the respective value is set to 0.
  */
-class igdeUndoSystem{
+class DE_DLL_EXPORT igdeUndoSystem{
 private:
 	igdeEditableEntity *pEditableEntity;
 	

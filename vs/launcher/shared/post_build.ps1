@@ -19,7 +19,7 @@ Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
 $TargetDir = "$OutputDir\$PathDistDESystem"
 
 Write-Host "DELauncherShared App: Copy Library to '$TargetDir'"
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "delauncher.dll") -Destination $TargetDir
+Install-Files -Path "$OutputDir\launcher\shared\delauncher.dll" -Destination $TargetDir
 
 <# enable one data is present otherwise this code fails
 $TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDELauncherShares
@@ -42,12 +42,12 @@ Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
 $TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDESdkLib
 Write-Host "DELauncherShared SDK: Copy Libraries to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "delauncher.lib") -Destination $TargetDir
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "delauncher.exp") -Destination $TargetDir
+Install-Files -Path "$OutputDir\launcher\shared\delauncher.lib" -Destination $TargetDir
+Install-Files -Path "$OutputDir\launcher\shared\delauncher.exp" -Destination $TargetDir
 
 
 # debug
 $TargetDir = "$OutputDir\$PathDistDEPdbSystem"
 Write-Host "DELauncherShared Debug: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path "$OutputDir\delauncher.pdb" -Destination $TargetDir
+Install-Files -Path "$OutputDir\launcher\shared\delauncher.pdb" -Destination $TargetDir

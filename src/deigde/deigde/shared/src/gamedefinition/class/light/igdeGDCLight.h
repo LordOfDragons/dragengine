@@ -32,7 +32,7 @@
 /**
  * \brief Game definition class light.
  */
-class igdeGDCLight : public deObject{
+class DE_DLL_EXPORT igdeGDCLight : public deObject{
 public:
 	/** \brief Properties. */
 	enum eProperties{

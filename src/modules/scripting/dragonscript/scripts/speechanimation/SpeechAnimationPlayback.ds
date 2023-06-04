@@ -19,14 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 namespace Dragengine.SpeechAnimations
 
 pin Dragengine.Gui
 pin Dragengine.Scenery
 pin Dragengine.Utils
 pin Dragengine.LoadSave
-
 
 
 /**
@@ -37,16 +35,16 @@ class SpeechAnimationPlayback
 		private var int pController
 		private var float pDuration
 		
-		public func new( int controller, float duration )
-			this.pController = controller
-			this.pDuration = duration
+		public func new(int controller, float duration)
+			pController = controller
+			pDuration = duration
 		end
 		
 		public func int getController()
-			return this.pController
+			return pController
 		end
 		public func float getDuration()
-			return this.pDuration
+			return pDuration
 		end
 	end
 	
@@ -66,85 +64,85 @@ class SpeechAnimationPlayback
 	
 	/** Creates a new speech animation playback. */
 	public func new()
-		this.pAnimatorInstance = AnimatorInstance.new()
-		this.pPhonemes = Array.new()
-		this.pDuration = 0.0
-		this.pPosition = 0
-		this.pElapsed = 0.0
-		this.pSpeaking = false
-		this.pControllers = Array.new()
-		this.pRequiresApply = false
+		pAnimatorInstance = AnimatorInstance.new()
+		pPhonemes = Array.new()
+		pDuration = 0
+		pPosition = 0
+		pElapsed = 0
+		pSpeaking = false
+		pControllers = Array.new()
+		pRequiresApply = false
 	end
 	
 	
 	
 	/** Retrieves the animator instance. */
 	public func AnimatorInstance getAnimatorInstance()
-		return this.pAnimatorInstance
+		return pAnimatorInstance
 	end
 	
 	/** Retrieves the speech animation or null if not assigned. */
 	public func SpeechAnimation getSpeechAnimation()
-		return this.pSpeechAnimation
+		return pSpeechAnimation
 	end
 	
 	/** Sets the speech animation or null if not assigned. */
-	public func void setSpeechAnimation( SpeechAnimation speechAnimation )
-		this.pControllers.removeAll()
-		this.pAnimatorInstance.setAnimator( null )
-		this.pSpeechAnimation = speechAnimation
+	public func void setSpeechAnimation(SpeechAnimation speechAnimation)
+		pControllers.removeAll()
+		pAnimatorInstance.setAnimator(null)
+		pSpeechAnimation = speechAnimation
 		
 		if speechAnimation == null
 			return
 		end
 		
-		this.pAnimatorInstance.setAnimator( speechAnimation.getAnimator() )
+		pAnimatorInstance.setAnimator(speechAnimation.getAnimator())
 		
-		var int i, count = this.pAnimatorInstance.getControllerCount()
+		var int i, count = pAnimatorInstance.getControllerCount()
 		for i = 0 to count
-			this.pControllers.add( this.pAnimatorInstance.getControllerAt( i ) )
+			pControllers.add(pAnimatorInstance.getControllerAt(i))
 		end
 	end
 	
 	/** Retrieves the duration of the speaking. */
 	public func float getDuration()
-		return this.pDuration
+		return pDuration
 	end
 	
 	/** Retrieves the elapsed time. */
 	public func float getElapsed()
-		return this.pElapsed
+		return pElapsed
 	end
 	
 	/** Determines if the playback is still running. */
 	public func bool getSpeaking()
-		return this.pSpeaking
+		return pSpeaking
 	end
 	
 	
 	
 	/** Remove all phonemes. */
 	public func void removeAllPhonemes()
-		this.pPhonemes.removeAll()
-		this.pDuration = 0.0
-		this.pPosition = -1
-		this.pElapsed = 0.0
-		this.pSpeaking = false
+		pPhonemes.removeAll()
+		pDuration = 0
+		pPosition = -1
+		pElapsed = 0
+		pSpeaking = false
 	end
 	
 	/** Adds a speak phoneme. */
-	public func void addPhoneme( SpeechAnimationPhoneme phoneme, float duration )
+	public func void addPhoneme(SpeechAnimationPhoneme phoneme, float duration)
 		if phoneme == null
-			this.pPhonemes.add( Phoneme.new( -1, duration ) )
+			pPhonemes.add(Phoneme.new(-1, duration))
 			
 		else
-			this.pPhonemes.add( Phoneme.new( phoneme.getController(), duration ) )
+			pPhonemes.add(Phoneme.new(phoneme.getController(), duration))
 		end
 		
-		this.pDuration += duration
-		this.pPosition = -1
-		this.pElapsed = 0.0
-		this.pSpeaking = true
+		pDuration += duration
+		pPosition = -1
+		pElapsed = 0
+		pSpeaking = true
 	end
 	
 	
@@ -155,43 +153,42 @@ class SpeechAnimationPlayback
 	 * This updates the playback and updates animator instances if required. This does not
 	 * apply the animation yet to allow proper use of state capturing.
 	 */
-	public func void update( float elapsed )
-		if not this.pSpeaking
+	public func void update(float elapsed)
+		if not pSpeaking
 			return
 		end
 		
-		var int controllerCount = this.pAnimatorInstance.getControllerCount()
-		var int phonemeCount = this.pPhonemes.getCount()
+		var int controllerCount = pAnimatorInstance.getControllerCount()
+		var int phonemeCount = pPhonemes.getCount()
 		var float wordGapDuration = 0.1
 		var float windUpDuration = 0.1
 		var float pauseDuration = 0.1
-		var float blendFactor = 1.0
+		var float blendFactor = 1
 		var int controller1 = -1
 		var int controller2 = -1
-		var Phoneme phoneme1
-		var Phoneme phoneme2
+		var Phoneme phoneme1, phoneme2
 		var float phonemeDuration
 		var int i
 		
 		// determine which phoneme to display and the blending
-		this.pElapsed += elapsed
+		pElapsed += elapsed
 		
 		while true
 			phoneme1 = null
 			phoneme2 = null
 			
-			if this.pPosition >= 0 and this.pPosition < phonemeCount
-				phoneme1 = this.pPhonemes.getAt( this.pPosition ) cast Phoneme
+			if pPosition >= 0 and pPosition < phonemeCount
+				phoneme1 = pPhonemes.getAt(pPosition) cast Phoneme
 			end
 			
-			if this.pPosition + 1 < phonemeCount
-				phoneme2 = this.pPhonemes.getAt( this.pPosition + 1 ) cast Phoneme
+			if pPosition + 1 < phonemeCount
+				phoneme2 = pPhonemes.getAt(pPosition + 1) cast Phoneme
 			end
 			
-			if this.pPosition == -1
+			if pPosition == -1
 				phonemeDuration = windUpDuration
 				
-			elif this.pPosition == phonemeCount
+			elif pPosition == phonemeCount
 				phonemeDuration = wordGapDuration
 				
 			elif phoneme1 != null
@@ -201,8 +198,8 @@ class SpeechAnimationPlayback
 				phonemeDuration = pauseDuration
 			end
 			
-			if this.pElapsed < phonemeDuration
-				blendFactor = 1.0 - DEMath.smoothStep( this.pElapsed, 0.0, phonemeDuration )
+			if pElapsed < phonemeDuration
+				blendFactor = 1.0 - DEMath.smoothStep(pElapsed, 0.0, phonemeDuration)
 				
 				if phoneme1 != null
 					controller1 = phoneme1.getController()
@@ -213,43 +210,54 @@ class SpeechAnimationPlayback
 				
 				if controller1 == controller2
 					controller2 = -1
-					blendFactor = 1.0
+					blendFactor = 1
 				end
 				
 				break
 			end
 			
-			if this.pPosition < phonemeCount
-				this.pPosition++
+			if pPosition < phonemeCount
+				pPosition++
 				
 			else
-				this.pSpeaking = false
+				pSpeaking = false
 				controller1 = -1
 				controller2 = -1
 				break
 			end
 			
-			this.pElapsed -= phonemeDuration
+			pElapsed -= phonemeDuration
 		end
 		
 		// update the controllers
-		var float value
-		
-		for i = 0 to controllerCount
-			if i == controller1
-				value = blendFactor
-				
-			elif i == controller2
-				value = 1.0 - blendFactor
-				
-			else
-				value = 0.0
-			end
+		if controller1 != -1 and controller2 != -1
+			pAnimatorInstance.setBlendFactor(1)
 			
-			( this.pControllers.getAt( i ) cast AnimatorController ).setValue( value )
+		elif controller1 != -1
+			pAnimatorInstance.setBlendFactor(blendFactor)
+			blendFactor = 1
+			
+		elif controller2 != -1
+			pAnimatorInstance.setBlendFactor(1.0 - blendFactor)
+			blendFactor = 1
+			
+		else
+			pAnimatorInstance.setBlendFactor(0)
 		end
 		
-		this.pRequiresApply = true
+		pControllers.forEach(block int index, AnimatorController each
+			if index == controller1
+				each.setValue(blendFactor)
+				
+			elif index == controller2
+				each.setValue(1.0 - blendFactor)
+				
+			else
+				each.setValue(0)
+			end
+		end)
+		
+		pRequiresApply = true
 	end
 	
 	/**
@@ -258,56 +266,56 @@ class SpeechAnimationPlayback
 	 * Called after update() to apply animation. Can do nothing if no change has been done.
 	 */
 	public func void applyAnimation()
-		if not this.pRequiresApply
+		if not pRequiresApply
 			return
 		end
 		
-		this.pRequiresApply = false
-		this.pAnimatorInstance.apply()
+		pRequiresApply = false
+		pAnimatorInstance.apply()
 	end
 	
 	
 	
 	/** Reads the element from a file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			var int controller
 			var float duration
 			
-			this.pSpeaking = env.readBool( reader )
+			pSpeaking = env.readBool(reader)
 			
 			var int i, count = reader.readUShort()
-			this.pPhonemes.removeAll()
+			pPhonemes.removeAll()
 			for i = 0 to count
 				controller = reader.readUShort() - 1
 				duration = reader.readFloat()
-				this.pPhonemes.add( Phoneme.new( controller, duration ) )
+				pPhonemes.add(Phoneme.new(controller, duration))
 			end
 			
-			this.pDuration = reader.readFloat()
-			this.pPosition = reader.readShort()
-			this.pElapsed = reader.readFloat()
+			pDuration = reader.readFloat()
+			pPosition = reader.readShort()
+			pElapsed = reader.readFloat()
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** Writes the element to a file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		env.writeBool( writer, this.pSpeaking )
+		env.writeBool(writer, pSpeaking)
 		
-		writer.writeUShort( this.pPhonemes.getCount() )
-		this.pPhonemes.forEach( block Phoneme each
-			writer.writeUShort( each.getController() + 1 )
-			writer.writeFloat( each.getDuration() )
-		end )
+		writer.writeUShort(pPhonemes.getCount())
+		pPhonemes.forEach(block Phoneme each
+			writer.writeUShort(each.getController() + 1)
+			writer.writeFloat(each.getDuration())
+		end)
 		
-		writer.writeFloat( this.pDuration )
-		writer.writeShort( this.pPosition )
-		writer.writeFloat( this.pElapsed )
+		writer.writeFloat(pDuration)
+		writer.writeShort(pPosition)
+		writer.writeFloat(pElapsed)
 	end
 end

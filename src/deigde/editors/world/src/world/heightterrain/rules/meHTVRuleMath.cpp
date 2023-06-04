@@ -128,16 +128,16 @@ float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment 
 		return tanf( valueA * DEG2RAD );
 		
 	case eopArcSine:
-		return asin( valueA ) / DEG2RAD;
+		return asinf( valueA ) / DEG2RAD;
 		
 	case eopArcCosine:
-		return acos( valueA ) / DEG2RAD;
+		return acosf( valueA ) / DEG2RAD;
 		
 	case eopArcTangent:
-		return atan( valueA ) / DEG2RAD;
+		return atanf( valueA ) / DEG2RAD;
 		
 	case eopPower:
-		return pow( valueA, valueB );
+		return powf( valueA, valueB );
 		
 	case eopExponential:
 		return expf( valueA );

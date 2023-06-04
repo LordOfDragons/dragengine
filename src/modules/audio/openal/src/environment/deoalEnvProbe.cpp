@@ -407,7 +407,16 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 	
 	// create probe if required
 	if( createProbe ){
-		deoalEnvProbeListenerCached *replaceCached = NULL;
+		// GetEnvProbe can cause ray-tracing to be done
+		
+		// GetEnvProbe can cause Invalidate() to be called which in turn causes
+		// pRemoveAllListeners to be called. this would remove the listener we use to listen.
+		// to avoid this GetEnvProbe() has to be called before the pListeners array is accessed
+		deoalEnvProbe * const listenProbe = microphone
+			? microphone->GetEnvProbe() : soundLevelMeter->GetEnvProbe();
+		
+		// now it is safe to access pListeners
+		deoalEnvProbeListenerCached *replaceCached = nullptr;
 		
 		if( count == 100 ){
 			replaceCached = ( deoalEnvProbeListenerCached* )pListeners.GetAt( 0 );
@@ -443,25 +452,16 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 		replaceCached->SetPosition( localPosition );
 		replaceCached->SetLastUsed( pListenerTracking );
 		
-		// NOTE GetEnvProbe can cause ray-tracing to be done
-		deoalEnvProbe *listenProbe;
-		
-		if( microphone ){
-			listenProbe = microphone->GetEnvProbe();
-			if( listenProbe ){
+		if( listenProbe ){
+			if( microphone ){
 				pAudioThread.GetRTParallelEnvProbe().Listen( *this, listenProbe, *replaceCached,
 					world, &microphone->GetRTWorldBVH(), microphone->GetLayerMask(), position );
+				
+			}else{
+				pAudioThread.GetRTParallelEnvProbe().Listen( *this, listenProbe, *replaceCached,
+					world, nullptr, soundLevelMeter->GetLayerMask(), position );
 			}
 			
-		}else{
-			listenProbe = soundLevelMeter->GetEnvProbe();
-			if( listenProbe ){
-				pAudioThread.GetRTParallelEnvProbe().Listen( *this, listenProbe, *replaceCached,
-					world, NULL, soundLevelMeter->GetLayerMask(), position );
-			}
-		}
-		
-		if( listenProbe ){
 			// copy the extends from the listener. this is required since these extends are
 			// only calculated during TraceSoundRays(). it is not enough to find all ray
 			// segments leading from source to listener because geometry changes outside

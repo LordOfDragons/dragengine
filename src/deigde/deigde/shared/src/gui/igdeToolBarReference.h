@@ -37,7 +37,7 @@ class igdeToolBar;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeToolBarReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeToolBarReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

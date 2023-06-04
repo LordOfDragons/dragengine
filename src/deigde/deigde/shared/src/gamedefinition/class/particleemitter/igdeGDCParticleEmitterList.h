@@ -31,7 +31,7 @@ class igdeGDCParticleEmitter;
 /**
  * \brief Game Definition Class Particle Emitter List.
  */
-class igdeGDCParticleEmitterList{
+class DE_DLL_EXPORT igdeGDCParticleEmitterList{
 private:
 	decObjectOrderedSet pEmitters;
 	

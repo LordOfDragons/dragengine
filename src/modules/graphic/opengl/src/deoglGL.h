@@ -24,11 +24,6 @@
 
 #include <dragengine/dragengine_configuration.h>
 
-#ifdef OS_W32
-	// required by visual studio
-	#include "include_windows.h"
-#endif
-
 #ifdef ANDROID
 	#undef __glext_h_
 	#define __glext_h_ 1
@@ -64,6 +59,10 @@
 	#undef __glext_h_
 
 #else
+	#ifdef OS_W32_VS
+		#include "include_windows.h"
+	#endif
+	
 	// there are tons of broken gl.h and glext.h out in the wild. we have to prevent them from
 	// messing everything up since we have our own glext.h which actually deserves the name.
 	// for this we define tokens where platforms are known containing incorrect definitions

@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\animator\deanimator\$Version"
 
 Write-Host "DEAnimator Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "anideanimator.dll"
+$Library = "$OutputDir\de_module\animator\deanimator\anideanimator.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\animator\deanimator\$Version"
 Write-Host "DEAnimator Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "anideanimator.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\animator\deanimator\anideanimator.pdb" -Destination $TargetDir

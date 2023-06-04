@@ -85,10 +85,12 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extHTCViveFocus3ControllerInteraction ].name = XR_HTC_VIVE_FOCUS3_CONTROLLER_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extHUAWEIControllerInteraction ].name = XR_HUAWEI_CONTROLLER_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extMSFTHandInteraction ].name = XR_MSFT_HAND_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[ extKHRCompositionLayerDepth ].name = XR_KHR_COMPOSITION_LAYER_DEPTH_EXTENSION_NAME;
 	
 	pSupportsExtension[ extKHROpenglEnable ].enableIfSupported = true;
 	pSupportsExtension[ extKHRVisibilityMask ].enableIfSupported = true;
-	pSupportsExtension[ extEXTEyeGazeInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extEXTEyeGazeInteraction ].enableIfSupported =
+		oxr.GetRequestFeatureEyeGazeTracking() != deBaseVRModule::efslDisabled;
 	pSupportsExtension[ extEXTHandJointsMotionRange ].enableIfSupported = true;
 	pSupportsExtension[ extEXTHandTracking ].enableIfSupported = true;
 // 	pSupportsExtension[ extEXTPerformanceSettings ].enableIfSupported = true;
@@ -106,7 +108,8 @@ pInstance( XR_NULL_HANDLE )
 // 	pSupportsExtension[ extFBRenderModel ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBSpaceWarp ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBTriangleMesh ].enableIfSupported = true;
-	pSupportsExtension[ extHTCFacialTracking ].enableIfSupported = true;
+	pSupportsExtension[ extHTCFacialTracking ].enableIfSupported =
+		oxr.GetRequestFeatureFacialTracking() != deBaseVRModule::efslDisabled;
 	pSupportsExtension[ extHTCXViveTrackerInteraction ].enableIfSupported = true;
 // 	extMNDHeadless: do not enable. this causes HMD to not work anymore
 	pSupportsExtension[ extEXTDebugUtils ].enableIfSupported = true;
@@ -116,11 +119,12 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extHTCViveFocus3ControllerInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extHUAWEIControllerInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extMSFTHandInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extKHRCompositionLayerDepth ].enableIfSupported = true;
 	
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
 	pSupportsLayer[ layerApiDump ].name = "XR_APILAYER_LUNARG_api_dump";
-	
+
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION( name ) name = XR_NULL_HANDLE;
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( name, extension ) name = XR_NULL_HANDLE;
 	
@@ -158,7 +162,8 @@ deoxrInstance::~deoxrInstance(){
 ///////////////
 
 bool deoxrInstance::SupportsExtension( eExtension extension ) const{
-	return pSupportsExtension[ extension ].version != 0;
+	return pSupportsExtension[ extension ].enableIfSupported
+		&& pSupportsExtension[ extension ].version != 0;
 }
 
 uint32_t deoxrInstance::ExtensionVersion( eExtension extension ) const{
@@ -166,7 +171,8 @@ uint32_t deoxrInstance::ExtensionVersion( eExtension extension ) const{
 }
 
 bool deoxrInstance::SupportsLayer( eLayer layer ) const{
-	return pSupportsLayer[ layer ].layerVersion != 0;
+	return pSupportsLayer[ layer ].enableIfSupported
+		&& pSupportsLayer[ layer ].layerVersion != 0;
 }
 
 uint32_t deoxrInstance::LayerVersion( eLayer layer ) const{
@@ -377,9 +383,9 @@ void deoxrInstance::pDetectLayers(){
 			if( pSupportsLayer[ i ].layerVersion ){
 				pOxr.LogInfoFormat( "- %s: %d (%d.%d.%d)",
 					pSupportsLayer[ i ].name, pSupportsLayer[ i ].layerVersion,
-					XR_VERSION_MAJOR( pSupportsLayer[ i ].layerVersion ),
-					XR_VERSION_MINOR( pSupportsLayer[ i ].layerVersion ),
-					XR_VERSION_PATCH( pSupportsLayer[ i ].layerVersion ) );
+					XR_VERSION_MAJOR( pSupportsLayer[ i ].version ),
+					XR_VERSION_MINOR( pSupportsLayer[ i ].version ),
+					XR_VERSION_PATCH( pSupportsLayer[ i ].version ) );
 			}
 		}
 		
@@ -405,6 +411,11 @@ void deoxrInstance::pDetectLayers(){
 void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	pOxr.LogInfo( "Create OpenXR Instance" );
 	
+	pOxr.LogInfoFormat( "Request Feature Eye Gaze Tracking: %d",
+		pOxr.GetRequestFeatureEyeGazeTracking() );
+	pOxr.LogInfoFormat( "Request Feature Facial Tracking: %d",
+		pOxr.GetRequestFeatureFacialTracking() );
+
 	pSupportsLayer[ layerLunarCoreValidation ].enableIfSupported = enableValidationLayers;
 	pSupportsLayer[ layerApiDump ].enableIfSupported = false; //enableValidationLayers;
 	
@@ -444,8 +455,10 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	const char *layers[ LayerCount ];
 	uint32_t i, layerCount = 0;
 	
+	memset( layers, 0, sizeof( layers ) );
+
 	for( i=0; i<LayerCount; i++ ){
-		if( pSupportsLayer[ i ].version && pSupportsLayer[ i ].enableIfSupported ){
+		if( pSupportsLayer[ i ].layerVersion && pSupportsLayer[ i ].enableIfSupported ){
 			layers[ layerCount++ ] = pSupportsLayer[ i ].name;
 		}
 	}

@@ -34,7 +34,7 @@ class deComponent;
 
 
 /**
- * @brief Animation Wakeboard.
+ * Animation Wakeboard.
  *
  * Animation wakeboard.
  */

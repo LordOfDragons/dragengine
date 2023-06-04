@@ -522,8 +522,7 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 	}
 	
 	const deoxrHandTracker::Ref handTracker( deoxrHandTracker::Ref::New(
-		new deoxrHandTracker( session, leftHand ? XR_HAND_LEFT_EXT : XR_HAND_RIGHT_EXT,
-			device.GetSpacePose() ? *device.GetSpacePose() : *session.GetSpace() ) ) );
+		new deoxrHandTracker( session, device, leftHand ? XR_HAND_LEFT_EXT : XR_HAND_RIGHT_EXT ) ) );
 	
 	device.SetHandTracker( handTracker );
 	device.SetBoneConfiguration( deInputDevice::ebcHand );

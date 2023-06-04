@@ -33,7 +33,7 @@
  * 
  * Shows popup sub menu.
  */
-class igdeMenuCascade : public igdeContainer{
+class DE_DLL_EXPORT igdeMenuCascade : public igdeContainer{
 private:
 	decString pText;
 	decString pDescription;

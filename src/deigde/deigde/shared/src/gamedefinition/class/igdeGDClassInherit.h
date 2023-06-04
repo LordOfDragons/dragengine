@@ -34,7 +34,7 @@ class igdeGDClassManager;
 /**
  * \brief Inherit from another game definition class.
  */
-class igdeGDClassInherit : public deObject{
+class DE_DLL_EXPORT igdeGDClassInherit : public deObject{
 private:
 	decString pName;
 	igdeGDClassReference pClass;

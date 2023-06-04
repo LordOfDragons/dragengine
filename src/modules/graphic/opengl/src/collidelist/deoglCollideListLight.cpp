@@ -46,10 +46,14 @@ deoglCollideListLight::deoglCollideListLight() :
 pLight( NULL ),
 pCulled( false ),
 pCameraInside( false ),
-pCameraInsideOccQueryBox( true ){
+pCameraInsideOccQueryBox( true ),
+pOcclusionQuery( nullptr ){
 }
 
 deoglCollideListLight::~deoglCollideListLight(){
+	if( pOcclusionQuery ){
+		delete pOcclusionQuery;
+	}
 }
 
 
@@ -172,22 +176,25 @@ void deoglCollideListLight::OcclusionTestInvisible(){
 }
 
 deoglOcclusionQuery &deoglCollideListLight::GetOcclusionQuery(){
-	DEASSERT_NOTNULL( pLight )
-	return pLight->GetOcclusionQuery(); // temporary. move to this class later on
+	if( ! pOcclusionQuery ){
+		DEASSERT_NOTNULL( pLight )
+		pOcclusionQuery = new deoglOcclusionQuery( pLight->GetRenderThread() );
+	}
+	return *pOcclusionQuery;
 }
 
 bool deoglCollideListLight::IsHiddenByOccQuery() const{
 	DEASSERT_NOTNULL( pLight )
 	
-// 	if( ! pCameraInside && pLight->HasOcclusionQuery() ){
-	if( ! pCameraInsideOccQueryBox && pLight->HasOcclusionQuery() ){
+// 	if( ! pCameraInside && pOcclusionQuery ){
+	if( ! pCameraInsideOccQueryBox && pOcclusionQuery ){
 		// check if the query result exists already
 		//if( pOcclusionQuery->HasResult() ){
 			// retrieve the result. later on we are going to store this value
 			// somewhere so we do not have to trip down to the driver to get
 			// the result since lights can be queried multiple times if they
 			// should be drawn. might be improved once upon time.
-			return ! pLight->GetOcclusionQuery().GetResultAny();
+			return ! pOcclusionQuery->GetResultAny();
 		//}
 	}
 	return false;

@@ -23,11 +23,13 @@
 #define _DEANIMATION_H_
 
 #include "../deFileResource.h"
+#include "../../common/string/decStringList.h"
 
 class deBaseAnimatorAnimation;
 class deEngine;
 class deAnimationManager;
 class deAnimationBone;
+class deAnimationVertexPositionSet;
 class deAnimationMove;
 class deModel;
 class deBaseAnimatorAnimation;
@@ -55,9 +57,14 @@ public:
 	
 private:
 	deAnimationBone **pBones;
+	int pBoneCount;
+	int pBoneSize;
+	
+	decStringList pVertexPositionSets;
+	
 	deAnimationMove **pMoves;
-	int pBoneCount, pBoneSize;
-	int pMoveCount, pMoveSize;
+	int pMoveCount;
+	int pMoveSize;
 	
 	deBaseAnimatorAnimation *pPeerAnimator;
 	
@@ -105,6 +112,16 @@ public:
 	
 	/** \brief Adds a new bone */
 	void AddBone( deAnimationBone *bone );
+	/*@}*/
+	
+	
+	
+	/**
+	 * \brief Vertex position sets.
+	 * \version 1.17
+	 */
+	inline decStringList &GetVertexPositionSets(){ return pVertexPositionSets; }
+	inline const decStringList &GetVertexPositionSets() const{ return pVertexPositionSets; }
 	/*@}*/
 	
 	

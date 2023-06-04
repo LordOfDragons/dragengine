@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\rig\derig\$Version"
 
 Write-Host "DERig Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "rigderig.dll"
+$Library = "$OutputDir\de_module\rig\derig\rigderig.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\rig\derig\$Version"
 Write-Host "DERig Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "rigderig.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\rig\derig\rigderig.pdb" -Destination $TargetDir

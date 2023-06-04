@@ -43,6 +43,7 @@ class deInputEvent;
 class deoxrLoader;
 class deoxrAction;
 class deoxrSwapchain;
+class deoxrThreadSync;
 
 
 /**
@@ -108,6 +109,10 @@ private:
 	bool pPreventDeletion;
 	bool pRestartSession;
 	deoxrSystem::eSystem pLastDetectedSystem;
+	deoxrThreadSync *pThreadSync;
+	
+	eFeatureSupportLevel pRequestFeatureEyeGazeTracking;
+	eFeatureSupportLevel pRequestFeatureFacialTracking;
 	
 	
 	
@@ -187,6 +192,13 @@ public:
 	
 	/** Last detected system. */
 	inline deoxrSystem::eSystem GetLastDetectedSystem() const{ return pLastDetectedSystem; }
+	
+	/** Direct mutex access for special use. */
+	inline deMutex &GetMutexOpenXR(){ return pMutexOpenXR; }
+	
+	/** Requested feature levels. */
+	inline eFeatureSupportLevel GetRequestFeatureEyeGazeTracking() const{ return pRequestFeatureEyeGazeTracking; }
+	inline eFeatureSupportLevel GetRequestFeatureFacialTracking() const{ return pRequestFeatureFacialTracking; }
 	/*@}*/
 	
 	
@@ -214,6 +226,12 @@ public:
 	 * Returns true if a call to StartRuntime() is likely to succeed or not.
 	 */
 	virtual bool RuntimeUsable();
+	
+	/** Set feature request level for eye gaze tracking. */
+	virtual void RequestFeatureEyeGazeTracking( eFeatureSupportLevel level );
+	
+	/** Set feature request level for facial tracking. */
+	virtual void RequestFeatureFacialTracking( eFeatureSupportLevel level );
 	
 	/**
 	 * Start VR.
@@ -346,8 +364,11 @@ public:
 	/** Get eye view render texture coordinates. */
 	virtual void GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo );
 	
-	/** Begin frame. */
-	virtual void BeginFrame();
+	/** Start begin frame. */
+	virtual void StartBeginFrame();
+	
+	/** Wait for begin frame to be finished. */
+	virtual void WaitBeginFrameFinished();
 	
 	/** Acquire eye view image to render into. */
 	virtual int AcquireEyeViewImage( eEye eye );
@@ -371,6 +392,7 @@ private:
 	void pDestroyActionSet();
 	void pCreateDeviceProfiles();
 	void pSuggestBindings();
+	bool pBeginFrame();
 };
 
 #endif

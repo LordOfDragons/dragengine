@@ -6,22 +6,27 @@
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 
 # application
-$Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
+$Version = Get-Version -Path "$SourceDir\..\SConscript"
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistIgdeEditors\font\$Version"
+$TargetDir = "$OutputDir\$PathDistIGDEDataModules\font"
 
 Write-Host "Font Editor: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "font.dll"
+$Library = "$OutputDir\igde_editor\font\font.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
-Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
-    -Destination (Join-Path -Path $TargetDir -ChildPath "module.xml")`
+Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml"`
     -Library $Library -Version $Version
 
 
+$DataTargetDir = "$OutputDir\$PathDistIGDESharesModules\font"
+Write-Host "Font Editor: Copy Data to '$DataTargetDir'"
+
+Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir "$DataTargetDir" -Pattern "*"
+
+
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
+$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules\font"
 Write-Host "Font Editor: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "font.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\igde_editor\font\font.pdb" -Destination $TargetDir

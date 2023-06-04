@@ -118,6 +118,17 @@ class ECPSoundList extends ElementClassProperty implements ResourceListener
 		end)
 	end
 	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		var String basePath = elementClass.getBasePath()
+		pPath = (property cast ECPSoundList).pPath.map(block String each
+			return not each.empty() if File.absolutePath(each, basePath).getPath() else null
+		end)
+	end
+	
 	
 	
 	/** \brief Preload resources if supported. */

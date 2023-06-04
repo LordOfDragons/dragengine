@@ -53,7 +53,7 @@ class igdeEditPropertyValueListener;
  * Shows widgets suitable to edit the value in a specific format. The format is chosen while
  * setting the value and is kept until a new value is set.
  */
-class igdeEditPropertyValue : public igdeContainerFlow{
+class DE_DLL_EXPORT igdeEditPropertyValue : public igdeContainerFlow{
 private:
 	decString pValue;
 	const igdeGDProperty *pGDProperty;

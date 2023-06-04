@@ -25,6 +25,7 @@
 #include "deoglRenderLightBase.h"
 
 class deoglCollideList;
+class deoglComputeRenderTask;
 class deoglLightShader;
 class deoglRenderableDepthArrayTexture;
 class deoglRenderPlan;
@@ -108,6 +109,9 @@ public:
 	
 	/** Render GI shadow map. */
 	void RenderGIShadowMap( deoglShadowMapper &shadowMapper, deoglRenderTask &renderTask,
+		int shadowMapSize, bool clearBackFaceFragments );
+	
+	void RenderGIShadowMap( deoglShadowMapper &shadowMapper, deoglComputeRenderTask &renderTask,
 		int shadowMapSize, bool clearBackFaceFragments );
 	
 	/** Update light shader parameter block. */

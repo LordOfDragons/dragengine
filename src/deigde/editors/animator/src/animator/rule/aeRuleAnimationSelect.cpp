@@ -43,7 +43,8 @@ aeRuleAnimationSelect::aeRuleAnimationSelect() :
 aeRule( deAnimatorRuleVisitorIdentify::ertAnimationSelect ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false )
+pEnableSize( false ),
+pEnableVertexPositionSet( true )
 {
 	SetName( "Animation Select" );
 }
@@ -54,6 +55,7 @@ pMoves( copy.pMoves ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
 pEnableSize( copy.pEnableSize ),
+pEnableVertexPositionSet( copy.pEnableVertexPositionSet ),
 pTargetMoveTime( copy.pTargetMoveTime ),
 pTargetSelect( copy.pTargetSelect ){
 }
@@ -107,6 +109,17 @@ void aeRuleAnimationSelect::SetEnableSize( bool enabled ){
 		
 		if( GetEngineRule() ){
 			( ( deAnimatorRuleAnimationSelect* )GetEngineRule() )->SetEnableSize( enabled );
+			NotifyRuleChanged();
+		}
+	}
+}
+
+void aeRuleAnimationSelect::SetEnableVertexPositionSet( bool enabled ){
+	if( enabled != pEnableVertexPositionSet ){
+		pEnableVertexPositionSet = enabled;
+		
+		if( GetEngineRule() ){
+			( ( deAnimatorRuleAnimationSelect* )GetEngineRule() )->SetEnableVertexPositionSet( enabled );
 			NotifyRuleChanged();
 		}
 	}
@@ -175,6 +188,7 @@ deAnimatorRule *aeRuleAnimationSelect::CreateEngineRule(){
 		engRule->SetEnablePosition( pEnablePosition );
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
+		engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
 		
 		pTargetMoveTime.UpdateEngineTarget( GetAnimator(), engRule->GetTargetMoveTime() );
 		pTargetSelect.UpdateEngineTarget( GetAnimator(), engRule->GetTargetSelect() );
@@ -211,6 +225,7 @@ aeRuleAnimationSelect &aeRuleAnimationSelect::operator=( const aeRuleAnimationSe
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
 	pTargetMoveTime = copy.pTargetMoveTime;
 	pTargetSelect = copy.pTargetSelect;
 	aeRule::operator=( copy );

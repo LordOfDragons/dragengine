@@ -30,7 +30,7 @@ class aeRule;
 
 
 /**
- * \brief Undo action remove rule bones.
+ * Undo action remove rule bones.
  */
 class aeUSetRuleRemoveBone : public igdeUndo{
 private:
@@ -42,11 +42,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeUSetRuleRemoveBone( aeRule *rule, const char *pattern );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleRemoveBone();
 	/*@}*/
 	
@@ -55,13 +55,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Has bones. */
+	/** Has bones. */
 	bool HasBones() const;
 	
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

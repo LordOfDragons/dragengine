@@ -98,7 +98,7 @@ void deoglCapCheckFramebufferTextureSingle::Check( GLuint fbo ){
 		OGL_CHECK( renderThread, glPixelStorei( GL_UNPACK_ALIGNMENT, 4 ) );
 		
 		// bind test texture to fbo
-		glGetError();
+		oglClearError();
 		pglFramebufferTexture( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0 );
 		
 		if( glGetError() == GL_NO_ERROR ){

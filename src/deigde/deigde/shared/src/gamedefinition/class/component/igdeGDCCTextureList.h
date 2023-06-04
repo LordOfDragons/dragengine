@@ -31,7 +31,7 @@ class igdeGDCCTexture;
 /**
  * \brief Game Definition Class Component Texture List.
  */
-class igdeGDCCTextureList{
+class DE_DLL_EXPORT igdeGDCCTextureList{
 private:
 	decObjectOrderedSet pTextures;
 	

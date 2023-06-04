@@ -44,7 +44,8 @@ pUseLastState( true ),
 pID( 0 ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false )
+pEnableSize( false ),
+pEnableVertexPositionSet( true )
 {
 	SetName( "State Snapshot" );
 }
@@ -55,7 +56,8 @@ pUseLastState( copy.pUseLastState ),
 pID( copy.pID ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
-pEnableSize( copy.pEnableSize ){
+pEnableSize( copy.pEnableSize ),
+pEnableVertexPositionSet( copy.pEnableVertexPositionSet ){
 }
 
 aeRuleStateSnapshot::~aeRuleStateSnapshot(){
@@ -125,6 +127,17 @@ void aeRuleStateSnapshot::SetEnableSize( bool enabled ){
 	}
 }
 
+void aeRuleStateSnapshot::SetEnableVertexPositionSet( bool enabled ){
+	if( enabled != pEnableVertexPositionSet ){
+		pEnableVertexPositionSet = enabled;
+		
+		if( GetEngineRule() ){
+			( ( deAnimatorRuleStateSnapshot* )GetEngineRule() )->SetEnableVertexPositionSet( enabled );
+			NotifyRuleChanged();
+		}
+	}
+}
+
 
 
 deAnimatorRule *aeRuleStateSnapshot::CreateEngineRule(){
@@ -141,6 +154,7 @@ deAnimatorRule *aeRuleStateSnapshot::CreateEngineRule(){
 		engRule->SetEnablePosition( pEnablePosition );
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
+		engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
 		
 	}catch( const deException & ){
 		if( engRule ){
@@ -174,6 +188,7 @@ aeRuleStateSnapshot &aeRuleStateSnapshot::operator=( const aeRuleStateSnapshot &
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
 	aeRule::operator=( copy );
 	return *this;
 }

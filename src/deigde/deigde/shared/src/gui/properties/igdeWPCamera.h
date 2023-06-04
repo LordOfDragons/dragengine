@@ -48,7 +48,7 @@ class igdeCamera;
  * camera is not held in any way. The application is responsible to ensure the wrapper
  * camera exists as long as it is assigned to this widget.
  */
-class igdeWPCamera : public igdeContainerFlow, igdeActionListener{
+class DE_DLL_EXPORT igdeWPCamera : public igdeContainerFlow, igdeActionListener{
 private:
 	igdeCamera *pCamera;
 	

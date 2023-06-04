@@ -476,15 +476,16 @@ deoglRenderBase( renderThread )
 		
 		
 		
-		pRenderParamBlock.TakeOver( new deoglSPBlockUBO( renderThread ) );
-		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
-		pRenderParamBlock->SetParameterCount( 4 );
-		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
-		pRenderParamBlock->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
-		pRenderParamBlock->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
-		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
-		pRenderParamBlock->MapToStd140();
-		pRenderParamBlock->SetBindingPoint( 1 );
+		deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+		ubo->SetRowMajor( ! indirectMatrixAccessBug );
+		ubo->SetParameterCount( 4 );
+		ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
+		ubo->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
+		ubo->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
+		ubo->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
+		ubo->MapToStd140();
+		ubo->SetBindingPoint( 1 );
+		pRenderParamBlockSingleUse.TakeOver( new deoglSPBSingleUse( renderThread, ubo ) );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -507,19 +508,20 @@ deoglRenderBase( renderThread )
 		}
 		
 		
-		pEnvMapsParamBlock.TakeOver( new deoglSPBlockUBO( renderThread ) );
-		pEnvMapsParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
-		pEnvMapsParamBlock->SetParameterCount( 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapMatrixInfluence ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapMatrixReflBox ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapInfluenceBorder ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapInfluenceScale ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapPosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapRoughness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapPriority ).SetAll( deoglSPBParameter::evtInt, 1, 1, 8 );
-		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-		pEnvMapsParamBlock->MapToStd140();
-		pEnvMapsParamBlock->SetBindingPoint( 1 );
+		ubo.TakeOver( new deoglSPBlockUBO( renderThread ) );
+		ubo->SetRowMajor( ! indirectMatrixAccessBug );
+		ubo->SetParameterCount( 8 );
+		ubo->GetParameterAt( spbarEnvMapMatrixInfluence ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
+		ubo->GetParameterAt( spbarEnvMapMatrixReflBox ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
+		ubo->GetParameterAt( spbarEnvMapInfluenceBorder ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapInfluenceScale ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapPosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapRoughness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapPriority ).SetAll( deoglSPBParameter::evtInt, 1, 1, 8 );
+		ubo->GetParameterAt( spbarEnvMapCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+		ubo->MapToStd140();
+		ubo->SetBindingPoint( 1 );
+		pEnvMapsParamBlockSingleUse.TakeOver( new deoglSPBSingleUse( renderThread, ubo ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -1049,9 +1051,6 @@ void deoglRenderReflection::RenderReflections( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.RenderReflections" );
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		return;
-	}
 	
 	deoglEnvMapSlotManager &envMapSlotMgr = renderThread.GetEnvMapSlotManager();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -1111,11 +1110,6 @@ void deoglRenderReflection::RenderReflections( deoglRenderPlan &plan ){
 	
 	RenderFullScreenQuadVAO( plan );
 	DEBUG_PRINT_TIMER( "Reflection: Render" );
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 60 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), "refl_reflection" );
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 }
 
 void deoglRenderReflection::UpdateEnvMapSlots( deoglRenderPlan &plan ){
@@ -1131,10 +1125,6 @@ void deoglRenderReflection::UpdateEnvMapSlots( deoglRenderPlan &plan ){
 		envMapSlotMgr.AddEnvironmentMap( list.GetAt( envMapIndex ) );
 	}
 	envMapSlotMgr.UpdateUsedSlots();
-	
-	if( GetRenderThread().GetConfiguration().GetDebugSnapshot() == 60 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *envMapSlotMgr.GetArrayTexture(), "refl_envmapslotmgr" );
-	}
 }
 
 void deoglRenderReflection::UpdateRenderParameterBlock( deoglRenderPlan &plan ){
@@ -1142,8 +1132,10 @@ void deoglRenderReflection::UpdateRenderParameterBlock( deoglRenderPlan &plan ){
 	const deoglEnvMapSlotManager &envMapSlotMgr = renderThread.GetEnvMapSlotManager();
 	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
 	const int count = decMath::min( envMapSlotMgr.GetUsedSlotCount(), 100 );
-	const deoglSPBMapBuffer mapped( pRenderParamBlock );
 	int i;
+	
+	pRenderParamBlock = ( deoglSPBlockUBO* )pRenderParamBlockSingleUse->Next();
+	const deoglSPBMapBuffer mapped( pRenderParamBlock );
 	
 	// we use a blend zone of width 1m
 	pRenderParamBlock->SetParameterDataVec2( spbr2BlendFactors,
@@ -1180,9 +1172,6 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.RenderDepthMinMaxMipMap" );
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		return;
-	}
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -1199,11 +1188,6 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		pPipelineMinMaxMipMapInitial->Activate();
 		
 		renderThread.GetFramebuffer().Activate( depthMinMap.GetFBOAt( 0 ) );
-		
-		/*if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion(
-				*defren.GetDepthTexture1(), 0, "depth_minmax_original", deoglDebugSaveTexture::ecDepthBuffer );
-		}*/
 		
 		height = depthMinMap.GetHeight();
 		width = depthMinMap.GetWidth();
@@ -1238,28 +1222,6 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Downsample Pass" );
-		}
-		
-		if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
-			decString text;
-			
-			height = depthMinMap.GetHeight();
-			width = depthMinMap.GetWidth();
-			
-			text.Format( "depth_minmax_level0_%ix%i", width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion(
-				*depthMinMap.GetTexture(), 0, text.GetString(), renderThread.GetChoices().GetUseInverseDepth() ?
-					deoglDebugSaveTexture::ecDepthBufferInverse : deoglDebugSaveTexture::ecNoConversion );
-			
-			for( i=1; i<mipMapLevelCount; i++ ){
-				width = decMath::max( width >> 1, 1 );
-				height = decMath::max( height >> 1, 1 );
-				
-				text.Format( "depth_minmax_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion(
-					*depthMinMap.GetTexture(), i, text.GetString(), renderThread.GetChoices().GetUseInverseDepth() ?
-						deoglDebugSaveTexture::ecDepthBufferInverse : deoglDebugSaveTexture::ecNoConversion	);
-			}
 		}
 		
 		
@@ -1305,15 +1267,6 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Min Pass" );
-			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
-				decString text;
-				text.Format( "depth_minmax_min_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
-					*depthMinMap.GetTextureMin(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
-				if( i > 0 ){
-					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMin(), GetSamplerClampNearest() );
-				}
-			}
 		}
 			
 		// create maximum texture
@@ -1355,15 +1308,6 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Max Pass" );
-			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
-				decString text;
-				text.Format( "depth_minmax_max_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
-					*depthMinMap.GetTextureMax(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
-				if( i > 0 ){
-					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMax(), GetSamplerClampNearest() );
-				}
-			}
 		}
 		
 		
@@ -1390,12 +1334,6 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		
 		RenderFullScreenQuadVAO();
 		DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Initial Pass" );
-		if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
-			decString text;
-			text.Format( "depth_minmax_level0_%ix%i", width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
-				*depthMinMap.GetTexture(), 0, text.GetString(), deoglDebugSaveTexture::edtDepth );
-		}
 		
 		// downsample up to the max level. the first level has been done already by the initial pass
 		pPipelineMinMaxMipMapDownsample->Activate();
@@ -1425,18 +1363,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Downsample Pass" );
-			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
-				decString text;
-				text.Format( "depth_minmax_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
-					*depthMinMap.GetTexture(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
-				tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
-			}
 		}
-	}
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
 }
 
@@ -1446,8 +1373,6 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglShaderCompiled *shader;
-	int height = defren.GetHeight();
-	int width = defren.GetWidth();
 	
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyColorStereo : *pPipelineCopyColor;
 	pipeline.Activate();
@@ -1469,37 +1394,6 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	// reflections do not sample near the border and since it should simply cut off the superflous pixel if
 	// one is present
 //	defren.GetTextureTemporary1()->CreateMipMaps();
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 64 ){
-		decString text;
-		int level = 0;
-		
-		width = defren.GetWidth();
-		height = defren.GetHeight();
-		level = 0;
-		
-		text.Format( "refl_ssr_copycolor_level0_%ix%i", width, height );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(), 0,
-			text.GetString(), deoglDebugSaveTexture::ecColorLinear2sRGB );
-		
-		while( width > 1 && height > 1 ){
-			width >>= 1;
-			if( width < 1 ){
-				width = 1;
-			}
-			height >>= 1;
-			if( height < 1 ){
-				height = 1;
-			}
-			level++;
-			
-			text.Format( "refl_ssr_copycolor_level%i_%ix%i", level, width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(), level,
-				text.GetString(), deoglDebugSaveTexture::ecColorLinear2sRGB );
-		}
-		
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 }
 
 void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
@@ -1759,6 +1653,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	const deoglCubeMap *envMapCubes[ 8 ] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
 	const float envMapRoughnessBase = ( float )PI * 0.5f;
 	
+	pEnvMapsParamBlock = ( deoglSPBlockUBO* )pEnvMapsParamBlockSingleUse->Next();
 	{
 		const deoglSPBMapBuffer mapped( pEnvMapsParamBlock );
 		for( i=0; envMapCount<8 && i<plan.GetEnvMapCount(); i++ ){

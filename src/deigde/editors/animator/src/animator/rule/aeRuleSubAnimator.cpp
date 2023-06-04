@@ -65,7 +65,8 @@ aeRule( deAnimatorRuleVisitorIdentify::ertSubAnimator ),
 pSubAnimator( NULL ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( true )
+pEnableSize( true ),
+pEnableVertexPositionSet( true )
 {
 	SetName( "Sub Animator" );
 }
@@ -77,6 +78,7 @@ pSubAnimator( NULL ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
 pEnableSize( copy.pEnableSize ),
+pEnableVertexPositionSet( copy.pEnableVertexPositionSet ),
 pConnections( copy.pConnections )
 {
 	pSubAnimator = copy.pSubAnimator;
@@ -189,6 +191,12 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				
 				engLink->SetCurve( link.GetCurve() );
 				engLink->SetRepeat( link.GetRepeat() );
+				engLink->SetBone( link.GetBone() );
+				engLink->SetBoneParameter( link.GetBoneParameter() );
+				engLink->SetBoneValueRange( link.GetBoneMinimum(), link.GetBoneMaximum() );
+				engLink->SetVertexPositionSet( link.GetVertexPositionSet() );
+				engLink->SetVertexPositionSetValueRange(
+					link.GetVertexPositionSetMinimum(), link.GetVertexPositionSetMaximum() );
 				
 				pSubAnimator->AddLink( engLink );
 				engLink = NULL;
@@ -302,6 +310,16 @@ void aeRuleSubAnimator::SetEnableSize( bool enabled ){
 	}
 }
 
+void aeRuleSubAnimator::SetEnableVertexPositionSet( bool enabled ){
+	if( enabled != pEnableVertexPositionSet ){
+		pEnableVertexPositionSet = enabled;
+		
+		if( GetEngineRule() ){
+			( ( deAnimatorRuleSubAnimator* )GetEngineRule() )->SetEnableVertexPositionSet( enabled );
+			NotifyRuleChanged();
+		}
+	}
+}
 
 
 
@@ -320,6 +338,7 @@ deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
 		engRule->SetEnablePosition( pEnablePosition );
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
+		engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
 		
 	}catch( const deException & ){
 		if( engRule ){
@@ -353,6 +372,7 @@ aeRuleSubAnimator &aeRuleSubAnimator::operator=( const aeRuleSubAnimator &copy )
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
 	
 	if( pSubAnimator ){
 		pSubAnimator->FreeReference();

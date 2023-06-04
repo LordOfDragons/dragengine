@@ -58,7 +58,6 @@ pFeedbackInterleaved( true ){
 deoglShaderSources::deoglShaderSources( deLogger &logger, decBaseFileReader &reader ) :
 pFeedbackInterleaved( true )
 {
-	pVersion = "120";
 	pFilename = reader.GetFilename();
 	
 	decXmlDocumentReference xmlDoc;
@@ -83,10 +82,6 @@ deoglShaderSources::~deoglShaderSources(){
 
 // Management
 ///////////////
-
-void deoglShaderSources::SetVersion( const char *version ){
-	pVersion = version;
-}
 
 void deoglShaderSources::SetFeedbackInterleaved( bool interleaved ){
 	pFeedbackInterleaved = interleaved;
@@ -187,15 +182,6 @@ void deoglShaderSources::pParseShader( deLogger &logger, const decXmlElementTag 
 				logger.LogErrorFormat( LOGGING_SOURCE, "shader.name(%i:%i): Zero-Length Shader Name not allowed!",
 					tag->GetLineNumber(), tag->GetPositionNumber() );
 				DETHROW( deeInvalidParam );
-			}
-			
-		}else if( strcmp( tag->GetName(), "version" ) == 0 ){
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( cdata ){
-				SetVersion( cdata->GetData() );
-				
-			}else{
-				SetVersion( "120" );
 			}
 			
 		}else if( strcmp( tag->GetName(), "texture" ) == 0 ){
@@ -346,33 +332,6 @@ void deoglShaderSources::pParseShader( deLogger &logger, const decXmlElementTag 
 				
 			}else{
 				logger.LogErrorFormat( LOGGING_SOURCE, "sourceCode(%i:%i): Invalid unit '%s'!",
-					tag->GetLineNumber(), tag->GetPositionNumber(), attrName.GetString() );
-				DETHROW( deeInvalidParam );
-			}
-			
-		}else if( strcmp( tag->GetName(), "program" ) == 0 ){ // DEPRECATED
-			const decXmlAttValue *attribute = pFindAttribute( *tag, "unit" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "program(%i:%i): Missing attribute 'unit'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			const decString &attrName = attribute->GetValue();
-			
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			const char * const cdataValue = cdata ? cdata->GetData().GetString() : "";
-			
-			if( attrName == "geometry" ){
-				SetInlineGeometrySourceCode( cdataValue );
-				
-			}else if( attrName == "vertex" ){
-				SetInlineVertexSourceCode( cdataValue );
-				
-			}else if( attrName == "fragment" ){
-				SetInlineFragmentSourceCode( cdataValue );
-				
-			}else{
-				logger.LogErrorFormat( LOGGING_SOURCE, "program(%i:%i): Invalid unit '%s'!",
 					tag->GetLineNumber(), tag->GetPositionNumber(), attrName.GetString() );
 				DETHROW( deeInvalidParam );
 			}

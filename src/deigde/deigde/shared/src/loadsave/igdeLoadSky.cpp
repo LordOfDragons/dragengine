@@ -298,7 +298,7 @@ deSkyLayer &layer, const char *basePath ){
 					layer.SetSkin( skin );
 					skin->FreeReference();
 					
-				}catch( const deException &e ){
+				}catch( const deException & ){
 					if( skin ){
 						skin->FreeReference();
 					}
@@ -454,7 +454,7 @@ deSkyLayerBody &body, const char *basePath ){
 					body.SetSkin( skin );
 					skin->FreeReference();
 					
-				}catch( const deException &e ){
+				}catch( const deException & ){
 					if( skin ){
 						skin->FreeReference();
 					}

@@ -40,7 +40,7 @@
  * is replaced with the entries from the copied list matching the filter string. If no copy
  * exists no filtering is done.
  */
-class igdeComboBoxFilter : public igdeComboBox{
+class DE_DLL_EXPORT igdeComboBoxFilter : public igdeComboBox{
 private:
 	decObjectList pFilterItems;
 	bool pFilterCaseInsensitive;

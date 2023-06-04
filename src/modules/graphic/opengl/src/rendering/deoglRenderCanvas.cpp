@@ -49,6 +49,7 @@
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTDefaultTextures.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -728,13 +729,16 @@ const deoglRCanvasRenderWorld &canvas ){
 		const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 		plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );
 		
+		// decTimer timer;
 		plan.PrepareRender( context.GetRenderPlanMask() );
+		// renderThread.GetLogger().LogInfoFormat("PrepareRender %d", (int)(timer.GetElapsedTime()*1e6f));
 		
 		defren.Resize( rwidth, rheight );
 #ifdef ENABLE_STEREO_RENDER_TEST
 		defren.Resize( rwidth, rheight, 2 );
 #endif
 		plan.Render();
+		// pRenderThread.GetLogger().LogInfoFormat("Render %d", (int)(timer.GetElapsedTime()*1e6f));
 	}
 	
 	// revert back to 2d rendering
@@ -754,7 +758,9 @@ const deoglRCanvasRenderWorld &canvas ){
 	
 	// render finalize pass into canvas space with all the bells and whistles
 	if( vr ){
-		tsmgr.EnableTexture( 0, *vr->GetLeftEye().GetRenderTarget()->GetTexture(), GetSamplerClampLinear() );
+		deoglRenderTarget * const rteye = vr->GetLeftEye().GetRenderTarget();
+		tsmgr.EnableTexture( 0, rteye ? *rteye->GetTexture()
+			: *pRenderThread.GetDefaultTextures().GetColor(), GetSamplerClampLinear() );
 		
 	}else{
 		tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), GetSamplerClampLinear() );

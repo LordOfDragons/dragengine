@@ -61,6 +61,8 @@ private:
 	decVector pMaxRotation;
 	decVector pMinScaling;
 	decVector pMaxScaling;
+	float pMinVertexPositionSet;
+	float pMaxVertexPositionSet;
 	
 	eCoordinateFrames pCoordinateFrame;
 	bool pEnablePositionXMin;
@@ -81,6 +83,8 @@ private:
 	bool pEnableScalingYMax;
 	bool pEnableScalingZMin;
 	bool pEnableScalingZMax;
+	bool pEnableVertexPositionSetMin;
+	bool pEnableVertexPositionSetMax;
 	
 	decString pTargetBone;
 	
@@ -140,6 +144,18 @@ public:
 	
 	/** \brief Set maximum scaling. */
 	void SetMaximumScaling( const decVector &scaling );
+	
+	/** \brief Minimum vertex position set. */
+	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
+	
+	/** \brief Set minimum vertex position set. */
+	void SetMinimumVertexPositionSet( float weight );
+	
+	/** \brief Maximum vertex position set. */
+	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
+	
+	/** \brief Set maximum vertex position set. */
+	void SetMaximumVertexPositionSet( float weight );
 	
 	/** \brief Transformation coordinate frame. */
 	inline eCoordinateFrames GetCoordinateFrame() const{ return pCoordinateFrame; }
@@ -254,6 +270,18 @@ public:
 	
 	/** \brief Sets if z scaling is limited against the maximum. */
 	void SetEnableScalingZMax( bool enabled );
+	
+	/** \brief Vertex position set is limited against the minimum. */
+	inline bool GetEnableVertexPositionSetMin() const{ return pEnableVertexPositionSetMin; }
+	
+	/** \brief Set if vertex position set is limited against the minimum. */
+	void SetEnableVertexPositionSetMin( bool enabled );
+	
+	/** \brief Vertex position set is limited against the maximum. */
+	inline bool GetEnableVertexPositionSetMax() const{ return pEnableVertexPositionSetMax; }
+	
+	/** \brief Set if vertex position set is limited against the maximum. */
+	void SetEnableVertexPositionSetMax( bool enabled );
 	
 	/** \brief Name of the target bone. */
 	inline const decString &GetTargetBone() const{ return pTargetBone; }

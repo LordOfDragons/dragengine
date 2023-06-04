@@ -30,7 +30,7 @@ class aeController;
 
 
 /**
- * \brief Undo action controller toggle frozen.
+ * Undo action controller toggle frozen.
  */
 class aeUControllerToggleFrozen : public igdeUndo{
 private:
@@ -41,11 +41,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUControllerToggleFrozen( aeController *controller );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUControllerToggleFrozen();
 	/*@}*/
 	
@@ -54,10 +54,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

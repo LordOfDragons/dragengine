@@ -35,8 +35,6 @@
  * on http://www.opengl.org/registry/ .
  */
 
-#include "../deoglBasics.h"
-
 // it is often the case that the glext header is already included by the gl header above.
 // this is bad for us since these gl headers usually do not have all the extensions that
 // the module can support. for this we need our own glext header which is the most
@@ -478,7 +476,6 @@ extern GLAPI PFNGLBINDFRAMEBUFFERPROC pglBindFramebuffer;
 extern GLAPI PFNGLDELETEFRAMEBUFFERSPROC pglDeleteFramebuffers;
 extern GLAPI PFNGLGENFRAMEBUFFERSPROC pglGenFramebuffers;
 extern GLAPI PFNGLCHECKFRAMEBUFFERSTATUSPROC pglCheckFramebufferStatus;
-extern GLAPI PFNGLFRAMEBUFFERTEXTURE1DPROC pglFramebufferTexture1D;
 extern GLAPI PFNGLFRAMEBUFFERTEXTURE2DPROC pglFramebufferTexture2D;
 extern GLAPI PFNGLFRAMEBUFFERTEXTURE3DPROC pglFramebufferTexture3D;
 extern GLAPI PFNGLFRAMEBUFFERRENDERBUFFERPROC pglFramebufferRenderbuffer;
@@ -787,6 +784,66 @@ extern GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTPROC pglMultiDrawElementsIndirect;
 
 
 
+// GL_ARB_clear_buffer_data : opengl version 4.3
+//////////////////////////////////////////////////
+
+extern GLAPI PFNGLCLEARBUFFERSUBDATAPROC pglClearBufferSubData;
+
+
+
+// GL_ARB_buffer_storage : opengl version 4.3
+///////////////////////////////////////////////
+
+extern GLAPI PFNGLBUFFERSTORAGEPROC pglBufferStorage;
+
+
+
+// GL_ARB_direct_state_access : opengl version 4.4
+////////////////////////////////////////////////////
+
+extern GLAPI PFNGLCREATEBUFFERSPROC pglCreateBuffers;
+extern GLAPI PFNGLNAMEDBUFFERSTORAGEPROC pglNamedBufferStorage;
+extern GLAPI PFNGLNAMEDBUFFERDATAPROC pglNamedBufferData;
+extern GLAPI PFNGLNAMEDBUFFERSUBDATAPROC pglNamedBufferSubData;
+extern GLAPI PFNGLCOPYNAMEDBUFFERSUBDATAPROC pglCopyNamedBufferSubData;
+extern GLAPI PFNGLCLEARNAMEDBUFFERDATAPROC pglClearNamedBufferData;
+extern GLAPI PFNGLCLEARNAMEDBUFFERSUBDATAPROC pglClearNamedBufferSubData;
+extern GLAPI PFNGLMAPNAMEDBUFFERPROC pglMapNamedBuffer;
+extern GLAPI PFNGLMAPNAMEDBUFFERRANGEPROC pglMapNamedBufferRange;
+extern GLAPI PFNGLUNMAPNAMEDBUFFERPROC pglUnmapNamedBuffer;
+extern GLAPI PFNGLCREATEFRAMEBUFFERSPROC pglCreateFramebuffers;
+extern GLAPI PFNGLNAMEDFRAMEBUFFERTEXTUREPROC pglNamedFramebufferTexture;
+extern GLAPI PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC pglNamedFramebufferTextureLayer;
+extern GLAPI PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC pglNamedFramebufferDrawBuffers;
+extern GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFVPROC pglClearNamedFramebufferfv;
+extern GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFIPROC pglClearNamedFramebufferfi;
+extern GLAPI PFNGLBLITNAMEDFRAMEBUFFERPROC pglBlitNamedFramebuffer;
+extern GLAPI PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC pglCheckNamedFramebufferStatus;
+extern GLAPI PFNGLCREATETEXTURESPROC pglCreateTextures;
+extern GLAPI PFNGLTEXTUREBUFFERPROC pglTextureBuffer;
+extern GLAPI PFNGLTEXTUREBUFFERRANGEPROC pglTextureBufferRange;
+extern GLAPI PFNGLTEXTURESTORAGE2DPROC pglTextureStorage2D;
+extern GLAPI PFNGLTEXTURESTORAGE3DPROC pglTextureStorage3D;
+extern GLAPI PFNGLTEXTURESUBIMAGE2DPROC pglTextureSubImage2D;
+extern GLAPI PFNGLTEXTURESUBIMAGE3DPROC pglTextureSubImage3D;
+extern GLAPI PFNGLCOMPRESSEDTEXTURESUBIMAGE2DPROC pglCompressedTextureSubImage2D;
+extern GLAPI PFNGLCOMPRESSEDTEXTURESUBIMAGE3DPROC pglCompressedTextureSubImage3D;
+extern GLAPI PFNGLCOPYTEXTURESUBIMAGE2DPROC pglCopyTextureSubImage2D;
+extern GLAPI PFNGLCOPYTEXTURESUBIMAGE3DPROC pglCopyTextureSubImage3D;
+extern GLAPI PFNGLTEXTUREPARAMETERIPROC pglTextureParameteri;
+extern GLAPI PFNGLGENERATETEXTUREMIPMAPPROC pglGenerateTextureMipmap;
+extern GLAPI PFNGLBINDTEXTUREUNITPROC pglBindTextureUnit;
+extern GLAPI PFNGLGETCOMPRESSEDTEXTUREIMAGEPROC pglGetCompressedTextureImage;
+extern GLAPI PFNGLGETTEXTURELEVELPARAMETERIVPROC pglGetTextureLevelParameteriv;
+extern GLAPI PFNGLCREATEVERTEXARRAYSPROC pglCreateVertexArrays;
+extern GLAPI PFNGLENABLEVERTEXARRAYATTRIBPROC pglEnableVertexArrayAttrib;
+extern GLAPI PFNGLVERTEXARRAYELEMENTBUFFERPROC pglVertexArrayElementBuffer;
+extern GLAPI PFNGLVERTEXARRAYVERTEXBUFFERSPROC pglVertexArrayVertexBuffers;
+extern GLAPI PFNGLVERTEXARRAYATTRIBBINDINGPROC pglVertexArrayAttribBinding;
+extern GLAPI PFNGLVERTEXARRAYBINDINGDIVISORPROC pglVertexArrayBindingDivisor;
+
+
+
 // GL_ARB_clip_control : opengl version 4.5
 /////////////////////////////////////////////
 
@@ -835,9 +892,9 @@ extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
 // GL_ARB_get_program_binary : no opengl version
 //////////////////////////////////////////////////
 
-// extern GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary;
-// extern GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary;
-// extern GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri;
+extern GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary;
+extern GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary;
+extern GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri;
 
 
 

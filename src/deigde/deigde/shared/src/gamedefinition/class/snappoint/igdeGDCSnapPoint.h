@@ -31,7 +31,7 @@
 /**
  * \brief Object class snap point.
  */
-class igdeGDCSnapPoint : public deObject{
+class DE_DLL_EXPORT igdeGDCSnapPoint : public deObject{
 private:
 	decString pName;
 	

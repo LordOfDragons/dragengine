@@ -39,7 +39,7 @@ class decXmlElementTag;
 
 
 /**
- * \brief Load/Save Speech Animation.
+ * Load/Save Speech Animation.
  */
 class saeLoadSaveSAnimation : public igdeBaseXML{
 private:

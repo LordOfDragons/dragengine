@@ -32,7 +32,7 @@
  * Menu entry changes "checked" state and calls OnAction() when user clicks menu
  * and the menu is enabled.
  */
-class igdeMenuCheck : public igdeMenuCommand{
+class DE_DLL_EXPORT igdeMenuCheck : public igdeMenuCommand{
 private:
 	bool pChecked;
 	

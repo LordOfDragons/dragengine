@@ -143,6 +143,9 @@ void ceSpeechAnimationXML::pReadSAnimation( const decXmlElementTag &root, const 
 			}else if( strcmp( tag->GetName(), "neutralMoveName" ) == 0 ){
 				sanimation.SetNeutralMoveName( GetCDataString( *tag ) );
 				
+			}else if( strcmp( tag->GetName(), "neutralVertexPositionSet" ) == 0 ){
+				sanimation.GetNeutralVertexPositionSets().Add( GetCDataString( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "phoneme" ) == 0 ){
 				pReadPhoneme( *tag, sanimation );
 				
@@ -179,6 +182,9 @@ void ceSpeechAnimationXML::pReadPhoneme( const decXmlElementTag &root, ceSpeechA
 					
 				}else if( strcmp( tag->GetName(), "moveName" ) == 0 ){
 					phoneme->SetMoveName( GetCDataString( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "vertexPositionSet" ) == 0 ){
+					phoneme->SetVertexPositionSet( GetCDataString( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "length" ) == 0 ){
 					phoneme->SetLength( GetCDataFloat( *tag ) );

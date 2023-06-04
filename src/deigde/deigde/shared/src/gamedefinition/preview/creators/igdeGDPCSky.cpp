@@ -73,7 +73,7 @@ igdeGDPCSky::~igdeGDPCSky(){
 ///////////////
 
 decString igdeGDPCSky::DebugPrefix(){
-	return decString( "GDPCSky(" ) + ( pGDSky ? pGDSky->GetName() : "?" ) + ")";
+	return decString( "GDPCSky(" ) + ( pGDSky ? pGDSky->GetName() : decString( "?" ) ) + ")";
 }
 
 void igdeGDPCSky::PrepareCanvasForRender(){

@@ -28,7 +28,7 @@
 /**
  * \brief IGDE UI Tool bar.
  */
-class igdeToolBar : public igdeContainer{
+class DE_DLL_EXPORT igdeToolBar : public igdeContainer{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

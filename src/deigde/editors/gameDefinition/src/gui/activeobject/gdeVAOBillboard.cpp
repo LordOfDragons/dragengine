@@ -103,7 +103,7 @@ void gdeVAOBillboard::GetExtends( decVector &minExtend, decVector &maxExtend ) c
 		return;
 	}
 	
-	const decDVector &position = pOCBillboard->GetPosition();
+	const decVector position( pOCBillboard->GetPosition() );
 	const decVector2 &size = pOCBillboard->GetSize();
 	const float width = size.x * 0.5f;
 	const float height = size.y * 0.5f;
@@ -155,8 +155,8 @@ void gdeVAOBillboard::pCreateBillboard(){
 		try{
 			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
 			
-		}catch( const deException &e ){
-			skin = environment.GetErrorSkin();
+		}catch( const deException & ){
+			skin = environment.GetStockSkin( igdeEnvironment::essError );
 		}
 	}
 	
@@ -210,7 +210,7 @@ void gdeVAOBillboard::pAttachBillboard(){
 		pCollider->AddAttachment( attachment );
 		attachment = NULL;
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( attachment ){
 			delete attachment;
 		}

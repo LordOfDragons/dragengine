@@ -33,7 +33,7 @@ class aeRuleInverseKinematic;
 
 
 /**
- * @brief Undo set rule inverse kinematic solver bone name.
+ * Undo set rule inverse kinematic solver bone name.
  *
  * Undo to set the bone name of a inverse kinematic rule.
  */
@@ -47,19 +47,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleIKSetSolverBone( aeRuleInverseKinematic *rule, const char *newName );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleIKSetSolverBone();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

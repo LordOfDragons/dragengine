@@ -29,7 +29,7 @@ class aeRuleInverseKinematic;
 
 
 /**
- * \brief Undo action rule inverse kinematic set reach range.
+ * Undo action rule inverse kinematic set reach range.
  */
 class aeURuleIKSetReachRange : public igdeUndo{
 private:
@@ -42,23 +42,23 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create new undo action.
+	 * Create new undo action.
 	 * \throws deeInvalidParam \em rule is \em NULL.
 	 */
 	aeURuleIKSetReachRange( aeRuleInverseKinematic *rule, float newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleIKSetReachRange();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

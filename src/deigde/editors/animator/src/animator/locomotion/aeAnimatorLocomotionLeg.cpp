@@ -471,7 +471,7 @@ void aeAnimatorLocomotionLeg::UpdateShapes(){
 		pDDSLocked.AddShape( shape );
 		shape = NULL;
 		
-		shape = new decShapeSphere( 0.05 );
+		shape = new decShapeSphere( 0.05f );
 		if( ! shape ) DETHROW( deeOutOfMemory );
 		pDDSPredict.AddShape( shape );
 		shape = NULL;

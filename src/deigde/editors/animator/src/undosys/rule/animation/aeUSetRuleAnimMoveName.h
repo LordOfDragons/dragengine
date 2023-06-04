@@ -33,7 +33,7 @@ class aeRuleAnimation;
 
 
 /**
- * @brief Undo set rule animation move name.
+ * Undo set rule animation move name.
  *
  * Undo to set the move name of a animation rule.
  */
@@ -47,19 +47,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleAnimMoveName( aeRuleAnimation *rule, const char *newName );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleAnimMoveName();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

@@ -37,7 +37,7 @@ class igdeGuiThemeProperty;
  * Stores parameters to alter the visual aspects of UI elements. Values can be of type
  * integer, floating point, point, color or string.
  */
-class igdeGuiTheme : public deObject{
+class DE_DLL_EXPORT igdeGuiTheme : public deObject{
 private:
 	decString pName;
 	decObjectDictionary pProperties;

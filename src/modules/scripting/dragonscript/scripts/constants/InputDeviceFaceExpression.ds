@@ -83,4 +83,8 @@ fixed class InputDeviceFaceExpression
 	public static fixed var int tongueRoll = 44
 	public static fixed var int tongueLongStep1 = 45
 	public static fixed var int tongueLongStep2 = 46
+	public static fixed var int tongueMorphUpRight = 47
+	public static fixed var int tongueMorphUpLeft = 48
+	public static fixed var int tongueMorphDownRight = 49
+	public static fixed var int tongueMorphDownLeft = 50
 end

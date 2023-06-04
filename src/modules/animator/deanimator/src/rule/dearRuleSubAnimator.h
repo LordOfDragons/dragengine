@@ -27,12 +27,11 @@
 
 class dearAnimator;
 class deAnimatorRuleSubAnimator;
-class dearBoneStateList;
 
 
 
 /**
- * \brief Sub-Animator rule.
+ * Sub-Animator rule.
  */
 class dearRuleSubAnimator : public dearRule{
 private:
@@ -45,21 +44,23 @@ private:
 	int pRuleCount;
 	
 	dearBoneStateList *pStateList;
+	dearVPSStateList *pVPSStateList;
 	
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pEnableVPS;
 	const bool pDirectUseStates;
 	const bool pHasSubAnimator;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleSubAnimator( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping );
 	
-	/** \brief Clean up animator. */
+	/** Clean up animator. */
 	virtual ~dearRuleSubAnimator();
 	/*@}*/
 	
@@ -68,24 +69,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Capture animator state.
+	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
 	virtual void CaptureStateInto( int identifier );
 	
 	/**
-	 * \brief Store animation frame.
+	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
 	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
 	
 	/**
-	 * \brief Check if a full rebuild of the animator instance is required.
+	 * Check if a full rebuild of the animator instance is required.
 	 */
 	virtual bool RebuildInstance() const;
 	
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	/*@}*/
 	
 private:

@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Trace Rays</name>
+	
+	<texture name='tboGIRayCastNodeBox' target='0'/>
+	<texture name='tboGIRayCastIndex' target='1'/>
+	<texture name='tboGIRayCastInstance' target='2'/>
+	<texture name='tboGIRayCastMatrix' target='3'/>
+	<texture name='tboGIRayCastFace' target='4'/>
+	<texture name='tboGIRayCastVertex' target='5'/>
+	<texture name='tboGIRayCastTexCoord' target='6'/>
+	<texture name='tboGIRayCastMaterial' target='7'/>
+	<texture name='tboGIRayCastMaterial2' target='8'/>
+	<texture name='tboGIRayCastMaterialDiffuse' target='9'/>
+	<texture name='tboGIRayCastMaterialReflectivity' target='10'/>
+	<texture name='tboGIRayCastMaterialEmissivity' target='11'/>
+	<texture name='texGIRayCastDistanceLimit' target='12'/>
+	
+	<texture name='texDistance' target='0'/>
+	<texture name='texPosition' target='0'/>
+	<texture name='texNormal' target='1'/>
+	<texture name='texDiffuse' target='2'/>
+	<texture name='texReflectivity' target='3'/>
+	<texture name='texLight' target='4'/>
+	
+	<uniformBlock name='GIParameters' target='1'/>
+	<uniformBlock name='GIProbeIndices' target='2'/>
+	<uniformBlock name='GIProbePositions' target='3'/>
+	<uniformBlock name='GIRayDirections' target='4'/>
+	
+	<sourceCode unit='compute'>compute/defren/gi/traceRays.glsl</sourceCode>
+</shader>

@@ -193,7 +193,7 @@ pAsyncLoadCounter( 0 )
 		pColliderFallback->SetUseLocalGravity( true );
 		decShapeList shapeList;
 		shapeList.Add( new decShapeBox( decVector( 0.1f, 0.1f, 0.1f ) ) );
-		( ( deColliderVolume& )( deCollider& )pColliderFallback ).SetShapes( shapeList );
+		pColliderFallback->SetShapes( shapeList );
 		pColliderFallback->SetMass( 5.0f );
 		
 		pListenerCollider = new igdeWObjectColliderListener( this );
@@ -432,6 +432,16 @@ void igdeWObject::SetCollisionFilterFallback( const decCollisionFilter &collisio
 	pSubObjectsUpdateCollisionFilter();
 }
 
+void igdeWObject::SetCollisionFilterInteract( const decCollisionFilter &collisionFilter ){
+	if( collisionFilter == pCollisionFilterInteract ){
+		return;
+	}
+	
+	pCollisionFilterInteract = collisionFilter;
+	
+	pSubObjectsUpdateCollisionFilter();
+}
+
 void igdeWObject::SetDynamicCollider( bool dynamic ){
 	if( dynamic == pDynamicCollider ){
 		return;
@@ -515,17 +525,7 @@ void igdeWObject::SetOutlineSkin( deSkin *skin ){
 }
 
 void igdeWObject::SetOutlineSkinSharedEditing(){
-	deSkinReference skin;
-	
-	try{
-		skin.TakeOver( pEnvironment.GetEngineController()->GetEngine()->GetSkinManager()->LoadSkin(
-			pEnvironment.GetFileSystemIGDE(), "/data/data/materials/editing/outlined.deskin", "/" ) );
-		
-	}catch( const deException &e ){
-		pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-	}
-	
-	SetOutlineSkin( skin );
+	SetOutlineSkin( pEnvironment.GetStockSkin( igdeEnvironment::essEditOutline ) );
 }
 
 void igdeWObject::SetOutlineColor( const decColor &color ){
@@ -598,7 +598,7 @@ void igdeWObject::AttachColliderRig( deColliderComponent *parentCollider ){
 		attachment->SetAttachType( deColliderAttachment::eatStatic );
 		parentCollider->AddAttachment( attachment );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( attachment ){
 			delete attachment;
 		}
@@ -636,7 +636,7 @@ const decVector &position, const decQuaternion &orientation ){
 			attachment->SetOrientation( orientation );
 			parentCollider->AddAttachment( attachment );
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( attachment ){
 				delete attachment;
 			}
@@ -677,11 +677,16 @@ void igdeWObject::DetachCollider(){
 }
 
 deCollider *igdeWObject::GetCollider() const{
-	return pColliderComponent ? pColliderComponent : pColliderFallback;
+	if( pColliderComponent ){
+		return pColliderComponent;
+		
+	}else{
+		return pColliderFallback;
+	}
 }
 
 deComponent *igdeWObject::GetComponent() const{
-	return pColliderComponent ? ( ( deColliderComponent& )( deCollider& )pColliderComponent ).GetComponent() : NULL;
+	return pColliderComponent ? pColliderComponent->GetComponent() : nullptr;
 }
 
 void igdeWObject::SetColliderUserPointer( void *userPointer ){
@@ -689,6 +694,12 @@ void igdeWObject::SetColliderUserPointer( void *userPointer ){
 		pEnvironment.SetColliderUserPointer( pColliderComponent, userPointer );
 	}
 	pEnvironment.SetColliderUserPointer( pColliderFallback, userPointer );
+	
+	const int count = pCollidersInteraction.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		pEnvironment.SetColliderUserPointer( ( deCollider* ) pCollidersInteraction.GetAt( i ), userPointer );
+	}
 }
 
 void igdeWObject::OnColliderChanged(){
@@ -738,20 +749,54 @@ void igdeWObject::SubObjectExtendsDirty(){
 
 void igdeWObject::SetInteractCollider( deColliderComponent *collider ){
 	if( pColliderComponent ){
-		pEnvironment.SetColliderDelegee( pColliderComponent, NULL );
-		pEnvironment.SetColliderUserPointer( pColliderComponent, NULL );
-		pColliderComponent = NULL;
+		pEnvironment.SetColliderDelegee( pColliderComponent, nullptr );
+		pEnvironment.SetColliderUserPointer( pColliderComponent, nullptr );
+		pColliderComponent = nullptr;
 		pColliderFallback->SetEnabled( pVisible && ! pPartiallyHidden );
+	}
+	
+	const int count = pCollidersInteraction.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		deCollider * const colliderInteract = ( deCollider* ) pCollidersInteraction.GetAt( i );
+		pEnvironment.SetColliderDelegee( colliderInteract, nullptr );
+		pEnvironment.SetColliderUserPointer( colliderInteract, nullptr );
 	}
 	
 	if( ! collider ){
 		return;
 	}
 	
+	void * const userPointer = pEnvironment.GetColliderUserPointer( pColliderFallback );
+	
 	pColliderFallback->SetEnabled( false );
 	pColliderComponent = collider;
 	pEnvironment.SetColliderDelegee( collider, pListenerCollider );
+	pEnvironment.SetColliderUserPointer( collider, userPointer );
+	
+	for( i=0; i<count; i++ ){
+		deCollider * const colliderInteract = ( deCollider* ) pCollidersInteraction.GetAt( i );
+		pEnvironment.SetColliderDelegee( colliderInteract, pListenerCollider );
+		pEnvironment.SetColliderUserPointer( colliderInteract, userPointer );
+	}
+}
+
+void igdeWObject::AddInteractionCollider( deCollider *collider ){
+	DEASSERT_NOTNULL( collider )
+	
+	pCollidersInteraction.Add( collider );
+	
+	pEnvironment.SetColliderDelegee( collider, pListenerCollider );
 	pEnvironment.SetColliderUserPointer( collider, pEnvironment.GetColliderUserPointer( pColliderFallback ) );
+}
+
+void igdeWObject::RemoveInteractionCollider( deCollider *collider ){
+	DEASSERT_NOTNULL( collider );
+	
+	pEnvironment.SetColliderDelegee( collider, nullptr );
+	pEnvironment.SetColliderUserPointer( collider, nullptr );
+	
+	pCollidersInteraction.Remove( collider );
 }
 
 
@@ -762,11 +807,17 @@ void igdeWObject::SetInteractCollider( deColliderComponent *collider ){
 void igdeWObject::pCleanUp(){
 	DetachCollider();
 	pDestroySubObjects();
-	   SetWorld( NULL );
+	SetWorld( nullptr );
+	
+	const int count = pCollidersInteraction.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		pEnvironment.SetColliderUserPointer( ( deCollider* ) pCollidersInteraction.GetAt( i ), nullptr );
+	}
 	
 	if( pColliderFallback ){
-		pEnvironment.SetColliderDelegee( pColliderFallback, NULL );
-		pColliderFallback = NULL;
+		pEnvironment.SetColliderDelegee( pColliderFallback, nullptr );
+		pColliderFallback = nullptr;
 	}
 	if( pListenerCollider ){
 		delete pListenerCollider;
@@ -1113,7 +1164,7 @@ void igdeWObject::pUpdateColliderShapes(){
 		shapeList.Add( new decShapeBox( decVector( 0.1f, 0.1f, 0.1f ) ) );
 	}
 	
-	( ( deColliderVolume& )( deCollider& )pColliderFallback ).SetShapes( shapeList );
+	pColliderFallback->SetShapes( shapeList );
 }
 
 void igdeWObject::pPrepareExtends(){

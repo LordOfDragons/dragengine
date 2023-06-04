@@ -47,7 +47,8 @@ pCachedFrameCount( 0 ),
 pCacheFrames( false )
 {
 	pDetermineCacheParams();
-	pRVideo = new deoglRVideo( ogl.GetRenderThread(), pVideo.GetWidth(), pVideo.GetHeight(), pCachedFrameCount );
+	pRVideo = new deoglRVideo( ogl.GetRenderThread(), pVideo.GetWidth(),
+		pVideo.GetHeight(), pVideo.GetComponentCount(), pCachedFrameCount );
 }
 
 deoglVideo::~deoglVideo(){

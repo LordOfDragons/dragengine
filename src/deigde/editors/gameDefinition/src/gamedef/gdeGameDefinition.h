@@ -193,9 +193,9 @@ private:
 	gdePropertyList pWorldProperties;
 	gdePropertyList pDecalProperties;
 	
-	decStringSet pAutoFindPathObjectClasses;
-	decStringSet pAutoFindPathSkins;
-	decStringSet pAutoFindPathSkies;
+	decStringList pAutoFindPathObjectClasses;
+	decStringList pAutoFindPathSkins;
+	decStringList pAutoFindPathSkies;
 	
 	eObjectTypes pSelectedObjectType;
 	
@@ -388,28 +388,28 @@ public:
 	
 	
 	/** Auto find path for object classes. */
-	inline const decStringSet &GetAutoFindPathObjectClasses() const{ return pAutoFindPathObjectClasses; }
+	inline const decStringList &GetAutoFindPathObjectClasses() const{ return pAutoFindPathObjectClasses; }
 	
 	/** Set auto find path for object classes. */
-	void SetAutoFindPathObjectClasses( const decStringSet &list );
+	void SetAutoFindPathObjectClasses( const decStringList &list );
 	
 	/** Notify listeners auto find path for object classes changed. */
 	void NotifyAutoFindPathObjectClassesChanged();
 	
 	/** Auto find path for skins. */
-	inline const decStringSet &GetAutoFindPathSkins() const{ return pAutoFindPathSkins; }
+	inline const decStringList &GetAutoFindPathSkins() const{ return pAutoFindPathSkins; }
 	
 	/** Set auto find path for skins. */
-	void SetAutoFindPathSkins( const decStringSet &list );
+	void SetAutoFindPathSkins( const decStringList &list );
 	
 	/** Notify listeners auto find path for skins changed. */
 	void NotifyAutoFindPathSkinsChanged();
 	
 	/** Auto find path for skies. */
-	inline const decStringSet &GetAutoFindPathSkies() const{ return pAutoFindPathSkies; }
+	inline const decStringList &GetAutoFindPathSkies() const{ return pAutoFindPathSkies; }
 	
 	/** Set auto find path for skies. */
-	void SetAutoFindPathSkies( const decStringSet &list );
+	void SetAutoFindPathSkies( const decStringList &list );
 	
 	/** Notify listeners auto find path for skies changed. */
 	void NotifyAutoFindPathSkiesChanged();

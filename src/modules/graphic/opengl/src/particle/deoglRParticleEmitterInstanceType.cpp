@@ -228,7 +228,7 @@ const deoglSPBlockUBO::Ref &deoglRParticleEmitterInstanceType::GetParamBlock(){
 		pParamBlock = nullptr;
 		
 		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = GetUseSkinPipelines().
+			deoglSkinShader &skinShader = *GetUseSkinPipelines().
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
@@ -246,7 +246,7 @@ const deoglSPBlockUBO::Ref &deoglRParticleEmitterInstanceType::GetParamBlock(){
 	
 	if( pDirtyParamBlock ){
 		if( pParamBlock ){
-			deoglSkinShader &skinShader = GetUseSkinPipelines().
+			deoglSkinShader &skinShader = *GetUseSkinPipelines().
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			UpdateInstanceParamBlock( pParamBlock, skinShader );
@@ -354,7 +354,7 @@ deoglSkinTexturePipelines::eTypes shaderType ) const{
 		return NULL;
 	}
 	
-	deoglSkinShader &skinShader = GetUseSkinPipelines().GetWithRef( shaderType ).GetShader();
+	deoglSkinShader &skinShader = *GetUseSkinPipelines().GetWithRef( shaderType ).GetShader();
 	deoglRenderThread &renderThread = pEmitterInstance.GetRenderThread();
 	deoglTexUnitsConfig *tuc = NULL;
 	

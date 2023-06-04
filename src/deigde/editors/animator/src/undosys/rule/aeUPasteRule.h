@@ -33,7 +33,7 @@ class aeAnimator;
 
 
 /**
- * \brief Undo action paste rule.
+ * Undo action paste rule.
  */
 class aeUPasteRule : public igdeUndo{
 private:
@@ -46,20 +46,20 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new undo object. */
+	/** Create a new undo object. */
 	aeUPasteRule( aeAnimator *animator, const aeRuleList &ruleList, int index );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUPasteRule();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 	

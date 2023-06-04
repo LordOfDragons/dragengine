@@ -31,7 +31,7 @@
 /**
  * \brief IGDE UI Text Style.
  */
-class igdeTextStyle : public deObject{
+class DE_DLL_EXPORT igdeTextStyle : public deObject{
 private:
 	decString pName;
 	decColor pColor;

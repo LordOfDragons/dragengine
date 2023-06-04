@@ -733,6 +733,7 @@ void debpPhysicsBody::pUpdateTransform(){
 	}
 	
 	pRigidBody->setCenterOfMassTransform( btTransform(
-		btQuaternion( pOrientation.x, pOrientation.y, pOrientation.z, pOrientation.w ),
-		btVector3( pPosition.x, pPosition.y, pPosition.z ) ) );
+		btQuaternion( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y,
+			( btScalar )pOrientation.z, ( btScalar )pOrientation.w ),
+		btVector3( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z ) ) );
 }

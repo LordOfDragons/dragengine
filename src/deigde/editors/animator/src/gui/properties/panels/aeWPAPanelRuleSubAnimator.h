@@ -31,7 +31,7 @@ class aeController;
 
 
 /**
- * \brief Sub Animator Rule Panel.
+ * Sub Animator Rule Panel.
  */
 class aeWPAPanelRuleSubAnimator : public aeWPAPanelRule{
 private:
@@ -41,6 +41,7 @@ private:
 	igdeCheckBoxReference pChkEnablePosition;
 	igdeCheckBoxReference pChkEnableRotation;
 	igdeCheckBoxReference pChkEnableSize;
+	igdeCheckBoxReference pChkEnableVertexPositionSet;
 	bool pPreventUpdate;
 	
 	
@@ -48,11 +49,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAPanelRuleSubAnimator( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleSubAnimator();
 	/*@}*/
 	
@@ -61,25 +62,25 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update connection target list. */
+	/** Update connection target list. */
 	void UpdateConnectionList();
 	
-	/** \brief Animator path changed. */
+	/** Animator path changed. */
 	virtual void OnAnimatorPathChanged();
 	
-	/** \brief Update controller list. */
+	/** Update controller list. */
 	virtual void UpdateControllerList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update connection. */
+	/** Update connection. */
 	virtual void UpdateConnection();
 	
-	/** \brief Selected combobox connection. */
+	/** Selected combobox connection. */
 	int GetCBConnection() const;
 	
-	/** \brief Selected combobox connection controller. */
+	/** Selected combobox connection controller. */
 	aeController *GetCBConnectionController() const;
 	/*@}*/
 };

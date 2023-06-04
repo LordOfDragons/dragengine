@@ -52,7 +52,7 @@ public:
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo );
+	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigGeometryDepthTest( deoglPipelineConfiguration &config );
@@ -64,10 +64,12 @@ protected:
 	virtual void pPipelineConfigShadowDistance( deoglPipelineConfiguration &config );
 	
 	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareShadowDistanceCube( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pSetTypeGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );

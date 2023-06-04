@@ -62,6 +62,7 @@ jobs:
       
       - name: Install required packages
         run: |
+          sudo apt -y update
           sudo apt -y install build-essential scons cmake autoconf libtool nasm \
             patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
             libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
@@ -74,12 +75,13 @@ jobs:
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
       
       - name: Build
-        # certain CMake based projects are problem children that like to get stuck
-        # in CMake on Ubuntu. build them first to avoid it loking up things
+        # CMake based projects are problem children that like to get stuck forever in CMake
+        # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
           scons -j 1 lib_openxr
           scons -j 1 lib_openvr
           scons -j 1 lib_libjpeg
+          scons -j 1 lib_libwebm
           scons -j 14 archive installer
       
       - name: Get current date

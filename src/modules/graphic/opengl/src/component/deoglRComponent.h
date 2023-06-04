@@ -80,17 +80,6 @@ public:
 	};
 	
 private:
-	/** World compute element. */
-	class WorldComputeElement: public deoglWorldComputeElement{
-		deoglRComponent &pComponent;
-	public:
-		WorldComputeElement( deoglRComponent &component );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
-		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
-	};
-	
-	
-	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRWorld *pParentWorld;
@@ -175,6 +164,9 @@ private:
 	bool pDirtyCulling;
 	
 	deoglLightList pLightList;
+	
+	float *pVertexPositionSetWeights;
+	int pVertexPositionSetCount;
 	
 	unsigned int pUniqueKey;
 	
@@ -401,6 +393,17 @@ public:
 	
 	
 	
+	/** Vertex position sets. */
+	inline float *GetVertexPositionSets() const{ return pVertexPositionSetWeights; }
+	
+	/** Vertex position set count. */
+	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	
+	/** Update vertex position sets. */
+	void UpdateVertexPositionSets( const deComponent &component );
+	
+	
+	
 	/** Point offset. */
 	int GetPointOffset( int lodLevel ) const;
 	
@@ -461,6 +464,9 @@ public:
 	
 	/** Reset render static. */
 	void ResetRenderStatic();
+	
+	/** GI static. */
+	bool IsGIStatic() const;
 	
 	/** Light list. */
 	inline deoglLightList &GetLightList(){ return pLightList; }

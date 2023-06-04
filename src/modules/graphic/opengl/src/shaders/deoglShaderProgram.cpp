@@ -24,12 +24,14 @@
 
 #include "deoglShaderCompiled.h"
 #include "deoglShaderProgram.h"
+#include "deoglShaderSources.h"
 #include "deoglShaderUnitSourceCode.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/string/decStringList.h>
 
 
 
@@ -90,6 +92,10 @@ deoglShaderProgram::~deoglShaderProgram(){
 
 // Management
 ///////////////
+
+void deoglShaderProgram::SetCacheId( const decString &id ){
+	pCacheId = id;
+}
 
 void deoglShaderProgram::SetComputeSourceCode( deoglShaderUnitSourceCode *sourceCode ){
 	pSCCompute = sourceCode;

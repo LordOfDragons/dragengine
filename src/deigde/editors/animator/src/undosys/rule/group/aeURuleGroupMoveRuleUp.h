@@ -31,7 +31,7 @@ class aeRuleGroup;
 
 
 /**
- * \brief Undo action rule group move rule up.
+ * Undo action rule group move rule up.
  */
 class aeURuleGroupMoveRuleUp : public igdeUndo{
 private:
@@ -42,19 +42,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleGroupMoveRuleUp( aeRuleGroup *group, aeRule *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleGroupMoveRuleUp();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 	

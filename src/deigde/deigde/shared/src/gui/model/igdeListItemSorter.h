@@ -38,7 +38,7 @@ class igdeListItem;
  * 
  * Default implementation sorts igdeListItem by text lexicographically.
  */
-class igdeListItemSorter : public deObject{
+class DE_DLL_EXPORT igdeListItemSorter : public deObject{
 private:
 	bool pAscending;
 	

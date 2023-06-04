@@ -34,6 +34,13 @@ class deoglRenderThread;
 #ifdef OGL_THREAD_CHECK
 	void dbgInitThreadCheck();
 	#define OGL_INIT_THREAD_CHECK dbgInitThreadCheck()
+	
+	void dbgInitLoaderThreadCheck();
+	#define OGL_INIT_LOADER_THREAD_CHECK dbgInitLoaderThreadCheck();
+	
+	void dbgExitLoaderThreadCheck();
+	#define OGL_EXIT_LOADER_THREAD_CHECK dbgExitLoaderThreadCheck();
+	
 	void dbgInitMainThreadCheck();
 	#define OGL_INIT_MAIN_THREAD_CHECK dbgInitMainThreadCheck()
 	
@@ -48,6 +55,8 @@ class deoglRenderThread;
 	
 #else
 	#define OGL_INIT_THREAD_CHECK
+	#define OGL_INIT_LOADER_THREAD_CHECK
+	#define OGL_EXIT_LOADER_THREAD_CHECK
 	#define OGL_INIT_MAIN_THREAD_CHECK
 	#define OGL_ON_MAIN_THREAD
 	#define OGL_ON_RENDER_THREAD
@@ -56,22 +65,13 @@ class deoglRenderThread;
 
 
 
-#ifdef WITH_DEBUG
-#define OGL_CHECKCOMMANDS 1
-#endif
+void oglClearError();
 
-#ifdef OGL_CHECKCOMMANDS
-	void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line );
-	#define OGL_CHECK( renderThread, cmd )		glGetError(); cmd; dbgCheckOglError( renderThread, __FILE__, __LINE__ )
-	#define OGLX_CHECK( renderThread, cmd )		if( ( cmd ) == False ) (renderThread).GetLogger().LogErrorFormat( "failed at %s:%i\n", __FILE__, __LINE__ )
-	#define OGL_IF_CHECK(cmd)			cmd
-	
-#else
-	#define OGL_CHECK(renderThread,cmd)			cmd
-	#define OGLX_CHECK(renderThread,cmd)		cmd
-	#define OGL_IF_CHECK(cmd)
-#endif
+void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line );
 
+#define OGL_CHECK(renderThread,cmd) oglClearError(); cmd; dbgCheckOglError(renderThread, __FILE__, __LINE__)
+#define OGLX_CHECK(renderThread,cmd) if((cmd) == False) (renderThread).GetLogger().LogErrorFormat("failed at %s:%i\n", __FILE__, __LINE__)
+#define OGL_IF_CHECK(cmd) cmd
 
 
 struct oglRGBA{
@@ -242,7 +242,10 @@ enum eRenderTaskFilters{
 	ertfHoles = 0x80,
 	ertfDecal = 0x100,
 	ertfDoubleSided = 0x200,
-	ertfXRay = 0x400
+	ertfXRay = 0x400,
+	ertfOcclusion = 0x800,
+	ertfShadow = 0x1000,
+	ertfCompactShadow = 0x2000
 };
 
 

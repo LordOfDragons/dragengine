@@ -36,13 +36,14 @@
 ////////////////////////////
 
 deVideo::deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
-	TIME_SYSTEM modificationTime, int width, int height, ePixelFormat pixelFormat,
-	int frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
+	TIME_SYSTEM modificationTime, int width, int height, int componentCount, int bitCount,
+	float frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
 	int bytesPerSample, int sampleCount, int sampleRate, int channelCount ) :
 deFileResource( manager, vfs, filename, modificationTime ),
 pWidth( width ),
 pHeight( height ),
-pPixelFormat( pixelFormat ),
+pComponentCount( componentCount ),
+pBitCount( bitCount ),
 pFrameCount( frameCount ),
 pFrameRate( frameRate ),
 pColorConversionMatrix( colorConversionMatrix ),
@@ -52,29 +53,34 @@ pSampleRate( sampleRate ),
 pChannelCount( channelCount ),
 pPeerGraphic( NULL )
 {
-	if( width < 1 || height < 1 || pixelFormat < epf444 || pixelFormat > epf4444
-	|| frameRate < 0 || frameCount < 0 || bytesPerSample < 0 || sampleCount < 0
-	|| sampleRate < 0 || channelCount < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( width >= 1 )
+	DEASSERT_TRUE( height >= 1 )
+	DEASSERT_TRUE( componentCount >= 1 && componentCount <= 4 )
+	DEASSERT_TRUE( bitCount == 8 )
+	DEASSERT_TRUE( frameRate > 0.0f )
+	DEASSERT_TRUE( frameCount >= 0 )
+	DEASSERT_TRUE( bytesPerSample == 1 || bytesPerSample == 2 )
+	DEASSERT_TRUE( sampleCount >= 0 )
+	DEASSERT_TRUE( sampleRate >= 8000 )
+	DEASSERT_TRUE( channelCount >= 1 )
 	
-	pPlayTime = ( float )( frameCount / frameRate )
-		+ ( float )( frameCount % frameRate ) / ( float )frameRate;
+	pPlayTime = ( float )frameCount / frameRate + fmodf( ( float )frameCount, frameRate ) / frameRate;
 }
 
 deVideo::deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
 	TIME_SYSTEM modificationTime ) :
 deFileResource( manager, vfs, filename, modificationTime ),
-pWidth( 0 ),
-pHeight( 0 ),
-pPixelFormat( epf444 ),
+pWidth( 1 ),
+pHeight( 1 ),
+pComponentCount( 3 ),
+pBitCount( 8 ),
 pFrameCount( 0 ),
-pFrameRate( 0 ),
+pFrameRate( 30.0f ),
 pPlayTime( 0.0f ),
-pBytesPerSample( 0 ),
+pBytesPerSample( 2 ),
 pSampleCount( 0 ),
-pSampleRate( 0 ),
-pChannelCount( 0 ),
+pSampleRate( 44100 ),
+pChannelCount( 1 ),
 pPeerGraphic( NULL ){
 }
 
@@ -106,23 +112,27 @@ void deVideo::SetPeerGraphic( deBaseGraphicVideo *peer ){
 // Special
 ////////////
 
-void deVideo::FinalizeConstruction( int width, int height, ePixelFormat pixelFormat,
-int frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
+void deVideo::FinalizeConstruction( int width, int height, int componentCount,
+int bitCount, float frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
 int bytesPerSample, int sampleCount, int sampleRate, int channelCount ){
-	if( width < 1 || height < 1 || pixelFormat < epf444 || pixelFormat > epf4444
-	|| frameRate < 0 || frameCount < 0 || bytesPerSample < 0 || sampleCount < 0
-	|| sampleRate < 0 || channelCount < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( width >= 1 )
+	DEASSERT_TRUE( height >= 1 )
+	DEASSERT_TRUE( componentCount >= 1 && componentCount <= 4 )
+	DEASSERT_TRUE( bitCount == 8 )
+	DEASSERT_TRUE( frameRate > 0.0f )
+	DEASSERT_TRUE( frameCount >= 0 )
+	DEASSERT_TRUE( bytesPerSample == 1 || bytesPerSample == 2 )
+	DEASSERT_TRUE( sampleCount >= 0 )
+	DEASSERT_TRUE( sampleRate >= 8000 )
+	DEASSERT_TRUE( channelCount >= 1 )
 	
 	pWidth = width;
 	pHeight = height;
-	pPixelFormat = pixelFormat;
+	pComponentCount = componentCount;
 	pFrameCount = frameCount;
 	pFrameRate = frameRate;
 	pColorConversionMatrix = colorConversionMatrix;
-	pPlayTime = ( float )( frameCount / frameRate )
-		+ ( float )( frameCount % frameRate ) / ( float )frameRate;
+	pPlayTime = ( float )frameCount / frameRate + fmodf( ( float )frameCount, frameRate ) / frameRate;
 	pBytesPerSample = bytesPerSample;
 	pSampleCount = sampleCount;
 	pSampleRate = sampleRate;

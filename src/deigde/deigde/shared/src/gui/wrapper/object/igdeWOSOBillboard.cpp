@@ -264,9 +264,9 @@ void igdeWOSOBillboard::pUpdateBillboard(){
 	const igdeWOSOBillboardResLoadComponent &rl =
 		( igdeWOSOBillboardResLoadComponent& )( igdeResourceLoaderListener& )pResLoad;
 	
-	deSkin *skin = rl.GetSkin();
+	deSkin::Ref skin( rl.GetSkin() );
 	if( ! skin && GetWrapper().GetGDClass() ){
-		skin = GetEnvironment().GetErrorSkin();
+		skin = GetEnvironment().GetStockSkin( igdeEnvironment::essError );
 	}
 	
 	if( ! skin ){

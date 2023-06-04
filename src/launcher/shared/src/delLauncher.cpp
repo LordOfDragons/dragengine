@@ -94,9 +94,7 @@ void delLauncher::AddFileLogger( const char *filetitle ){
 }
 
 void delLauncher::SetEngineInstanceFactory( delEngineInstance::Factory *factory ){
-	if( ! factory ){
-		DETHROW_INFO( deeNullPointer, "factory" );
-	}
+	DEASSERT_NOTNULL( factory )
 	pEngineInstanceFactory = factory;
 }
 
@@ -184,7 +182,7 @@ void delLauncher::pLocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DELAUNCHER_SYS_CONFIG", &value[ 0 ], sizeof( value ) ) ){
-		pPathConfigSystem = deOSWindows().WideToUtf8( value );
+		pPathConfigSystem = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DELAUNCHER_SYS_CONFIG" );
@@ -233,7 +231,7 @@ void delLauncher::pLocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DELAUNCHER_USER_CONFIG", &value[ 0 ], sizeof( value ) ) ){
-		pPathConfigUser = deOSWindows().WideToUtf8( value );
+		pPathConfigUser = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DELAUNCHER_USER_CONFIG" );
@@ -258,7 +256,7 @@ void delLauncher::pLocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DELAUNCHER_SHARES", &value[ 0 ], sizeof( value ) ) ){
-		pPathShares = deOSWindows().WideToUtf8( value );
+		pPathShares = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DELAUNCHER_SHARES" );
@@ -281,7 +279,7 @@ void delLauncher::pLocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DELAUNCHER_GAMES", &value[ 0 ], sizeof( value ) ) ){
-		pPathGames = deOSWindows().WideToUtf8( value );
+		pPathGames = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DELAUNCHER_GAMES" );
@@ -305,7 +303,7 @@ void delLauncher::pLocatePath(){
 	
 #ifdef OS_W32
 	if( GetEnvironmentVariable( L"DELAUNCHER_LOGS", &value[ 0 ], sizeof( value ) ) ){
-		pPathLogs = deOSWindows().WideToUtf8( value );
+		pPathLogs = deOSWindows::WideToUtf8( value );
 	}
 #else
 	value = getenv( "DELAUNCHER_LOGS" );

@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\crashrecovery\simplyquit\$Versio
 
 Write-Host "CRSimplyQuit Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "crsimplyquit.dll"
+$Library = "$OutputDir\de_module\crashrecovery\simplyquit\crsimplyquit.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\crashrecovery\simplyquit\$Version"
 Write-Host "CRSimplyQuit Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "crsimplyquit.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\crashrecovery\simplyquit\crsimplyquit.pdb" -Destination $TargetDir

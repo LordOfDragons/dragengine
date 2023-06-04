@@ -175,13 +175,23 @@ pIsGACOpenGL( false ),
 		// create spaces
 		pSpaceStage.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_STAGE ) );
 		pSpaceView.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_VIEW ) );
+		pSpaceLocal.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_LOCAL ) );
 		
 		// enumerate swapchain formats
 		pEnumSwapchainFormats();
 		
 		// create swap chains
-		pSwapchainLeftEye.TakeOver( new deoxrSwapchain( *this, pSystem.GetLeftEyeViewSize() ) );
-		pSwapchainRightEye.TakeOver( new deoxrSwapchain( *this, pSystem.GetRightEyeViewSize() ) );
+		pSwapchainLeftEye.TakeOver( new deoxrSwapchain(
+			*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etColor ) );
+		pSwapchainRightEye.TakeOver( new deoxrSwapchain(
+			*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etColor ) );
+		
+		if( pSystem.GetInstance().SupportsExtension( deoxrInstance::extKHRCompositionLayerDepth ) ){
+			// pSwapchainDepthLeftEye.TakeOver( new deoxrSwapchain(
+			// 	*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etDepth ) );
+			// pSwapchainDepthRightEye.TakeOver( new deoxrSwapchain(
+			// 	*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etDepth ) );
+		}
 		
 		if( pIsGACOpenGL ){
 			// WARNING SteamVR messes with the current context state causing all future OpenGL
@@ -417,6 +427,8 @@ void deoxrSession::EndFrame(){
 	XrCompositionLayerProjectionView views[ 2 ];
 	memset( &views, 0, sizeof( views ) );
 	
+	const void **nextLayer[ 2 ] = { &views[ 0 ].next, &views[ 1 ].next };
+	
 	views[ 0 ].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
 	views[ 0 ].subImage.swapchain = pSwapchainLeftEye->GetSwapchain();
 	views[ 0 ].subImage.imageRect.extent.width = pSwapchainLeftEye->GetSize().x;
@@ -434,6 +446,37 @@ void deoxrSession::EndFrame(){
 	views[ 1 ].subImage.imageRect.offset.y = 0;
 	views[ 1 ].pose = pRightEyePose;
 	views[ 1 ].fov = pRightEyeFov;
+	
+	if( pSwapchainDepthLeftEye && pSwapchainDepthRightEye ){
+		XrCompositionLayerDepthInfoKHR depth[ 2 ];
+		memset( &depth, 0, sizeof( depth ) );
+		
+		depth[ 0 ].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
+		depth[ 0 ].subImage.swapchain = pSwapchainDepthLeftEye->GetSwapchain();
+		depth[ 0 ].subImage.imageRect.extent.width = pSwapchainDepthLeftEye->GetSize().x;
+		depth[ 0 ].subImage.imageRect.extent.height = pSwapchainDepthLeftEye->GetSize().y;
+		depth[ 0 ].subImage.imageRect.offset.x = 0;
+		depth[ 0 ].subImage.imageRect.offset.y = 0;
+		depth[ 0 ].minDepth = 0.0f; // TODO get parameters from graphic module
+		depth[ 0 ].maxDepth = 1.0f;
+		depth[ 0 ].nearZ = 0.01f;
+		depth[ 0 ].farZ = 100.0f;
+		*nextLayer[ 0 ] = &depth[ 0 ];
+		nextLayer[ 0 ] = &depth[ 0 ].next;
+		
+		depth[ 1 ].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
+		depth[ 1 ].subImage.swapchain = pSwapchainDepthRightEye->GetSwapchain();
+		depth[ 1 ].subImage.imageRect.extent.width = pSwapchainDepthRightEye->GetSize().x;
+		depth[ 1 ].subImage.imageRect.extent.height = pSwapchainDepthRightEye->GetSize().y;
+		depth[ 1 ].subImage.imageRect.offset.x = 0;
+		depth[ 1 ].subImage.imageRect.offset.y = 0;
+		depth[ 1 ].minDepth = 0.0f; // TODO get parameters from graphic module
+		depth[ 1 ].maxDepth = 1.0f;
+		depth[ 1 ].nearZ = 0.01f;
+		depth[ 1 ].farZ = 100.0f;
+		*nextLayer[ 1 ] = &depth[ 1 ];
+		nextLayer[ 1 ] = &depth[ 1 ].next;
+	}
 	
 	const XrCompositionLayerBaseHeader *layers[ 2 ];
 	int layerCount = 0;
@@ -528,6 +571,16 @@ void deoxrSession::RestoreOpenGLCurrent(){
 	#endif
 }
 
+bool deoxrSession::HasSwapchainFormat( deoxrSession::eSwapchainFormats format ) const{
+	int i;
+	for( i=0; i<pSwapchainFormatCount; i++ ){
+		if( pSwapchainFormats[ i ] == format ){
+			return true;
+		}
+	}
+	return false;
+}
+
 
 
 // Private Functions
@@ -556,9 +609,13 @@ void deoxrSession::pCleanUp(){
 	
 	pAttachedActionSet = nullptr;
 	
+	pSwapchainDepthLeftEye = nullptr;
+	pSwapchainDepthRightEye = nullptr;
+	
 	pSwapchainLeftEye = nullptr;
 	pSwapchainRightEye = nullptr;
-	   pSpaceStage = nullptr;
+	
+	pSpaceStage = nullptr;
 	
 	if( pSession ){
 		pSystem.GetInstance().xrDestroySession( pSession );
@@ -583,22 +640,11 @@ void deoxrSession::pEnumSwapchainFormats(){
 	
 	pSwapchainFormats = new int64_t[ count ];
 	OXR_CHECK( instance.xrEnumerateSwapchainFormats( pSession, count, &count, pSwapchainFormats ) );
+	pSwapchainFormatCount = count;
 	
 	uint32_t i;
 	for( i=0; i<count; i++ ){
 		const int format = ( int )pSwapchainFormats[ i ];
 		instance.GetOxr().LogInfoFormat( "- %d (0x%x)", format, format );
 	}
-	
-	/*
-	Enumerate Swapchain Formats:
-	- 32859 (0x805b) => GL_RGBA16_EXT
-	- 34842 (0x881a) => GL_RGBA16F
-	- 34843 (0x881b) => GL_RGB16F
-	- 35905 (0x8c41) => GL_SRGB8_EXT
-	- 35907 (0x8c43) => GL_SRGB8_ALPHA8_EXT
-	- 33189 (0x81a5) => GL_DEPTH_COMPONENT16_SGIX
-	- 33190 (0x81a6) => GL_DEPTH_COMPONENT24_SGIX
-	- 33191 (0x81a7) => GL_DEPTH_COMPONENT32_SGIX
-	*/
 }

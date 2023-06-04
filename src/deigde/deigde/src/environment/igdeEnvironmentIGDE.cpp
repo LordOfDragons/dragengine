@@ -232,6 +232,14 @@ igdeIcon *igdeEnvironmentIGDE::GetStockIcon( eStockIcons icon ){
 	return pWindowMain->GetStockIcon( icon );
 }
 
+deSkin::Ref igdeEnvironmentIGDE::GetStockSkin( igdeEnvironment::eStockSkins skin ){
+	return pWindowMain->GetStockSkin( skin );
+}
+
+deRig::Ref igdeEnvironmentIGDE::GetStockRig( igdeEnvironment::eStockRigs rig ){
+	return pWindowMain->GetStockRig( rig );
+}
+
 deLogger *igdeEnvironmentIGDE::GetLogger(){
 	return pLogger;
 }
@@ -271,10 +279,6 @@ igdeUIHelper &igdeEnvironmentIGDE::GetUIHelper(){
 
 igdeUIHelper &igdeEnvironmentIGDE::GetUIHelperProperties(){
 	return pWindowMain->GetUIHelperProperties();
-}
-
-deSkin *igdeEnvironmentIGDE::GetErrorSkin(){
-	return pWindowMain->GetErrorSkin();
 }
 
 igdeGuiTheme *igdeEnvironmentIGDE::GetGuiThemeNamed( const char *name ){

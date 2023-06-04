@@ -33,7 +33,7 @@ class deModelManager;
 class deBaseGraphicModel;
 class deBasePhysicsModel;
 class deBaseAudioModel;
-
+class deModelVertexPositionSet;
 class deModelWeight;
 
 
@@ -64,6 +64,10 @@ private:
 	int pLODSize;
 	
 	decStringList pTextureCoordinatesSetList;
+	
+	deModelVertexPositionSet **pVertexPositionSets;
+	int pVertexPositionSetCount;
+	int pVertexPositionSetSize;
 	
 	deBaseGraphicModel *pPeerGraphic;
 	deBasePhysicsModel *pPeerPhysics;
@@ -161,6 +165,26 @@ public:
 	
 	/** \brief Adds a new LOD mesh. */
 	void AddLOD( deModelLOD *lod );
+	/*@}*/
+	
+	
+	
+	/** \name Vertex position set management */
+	/*@{*/
+	/** \brief Count of vertex position sets. */
+	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	
+	/** \brief Vertex position set at index. */
+	deModelVertexPositionSet *GetVertexPositionSetAt( int index ) const;
+	
+	/** \brief Index of named vertex position set with name or -1 if absent. */
+	int IndexOfVertexPositionSetNamed( const char *name ) const;
+	
+	/** \brief Named vertex position set is present. */
+	bool HasVertexPositionSetNamed( const char *name ) const;
+	
+	/** \brief Add vertex position set. */
+	void AddVertexPositionSet( deModelVertexPositionSet *set );
 	/*@}*/
 	
 	

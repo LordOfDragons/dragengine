@@ -39,6 +39,7 @@ private:
 	
 	deCacheHelper *pSkinTextures;
 	deCacheHelper *pModels;
+	deCacheHelper *pShaders;
 	
 	
 	
@@ -67,6 +68,9 @@ public:
 	
 	/** Model cache. */
 	inline deCacheHelper &GetModels() const{ return *pModels; }
+	
+	/** Shaders cache. */
+	inline deCacheHelper &GetShaders() const{ return *pShaders; }
 	
 	
 	

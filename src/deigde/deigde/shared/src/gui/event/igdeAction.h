@@ -46,7 +46,7 @@ class igdeActionListener;
  * the action itself and UI widgets can request an update avoiding the need to change action
  * parameters "Up Ahead" all the time. Certain ToolKits can take advantage of this feature.
  */
-class igdeAction : public deObject{
+class DE_DLL_EXPORT igdeAction : public deObject{
 private:
 	decString pText;
 	decString pDescription;

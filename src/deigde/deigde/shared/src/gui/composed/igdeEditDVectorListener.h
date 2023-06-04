@@ -32,7 +32,7 @@ class igdeEditDVector;
 /**
  * \brief IGDE UI EditDVector Listener.
  */
-class igdeEditDVectorListener : public deObject{
+class DE_DLL_EXPORT igdeEditDVectorListener : public deObject{
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

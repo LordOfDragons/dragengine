@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Test Geometry Shader Layer Bug</name>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/bugtest/gs_layer.glsl</sourceCode>
+	<sourceCode unit='geometry'>geometry/bugtest/gs_layer.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/bugtest/gs_layer.glsl</sourceCode>
+</shader>

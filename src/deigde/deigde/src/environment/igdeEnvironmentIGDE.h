@@ -71,6 +71,17 @@ public:
 	/** \brief Retrieves a stock icon. */
 	virtual igdeIcon *GetStockIcon( eStockIcons icon );
 	
+	/** \brief Stock rig. */
+	virtual deRig::Ref GetStockRig( eStockRigs rig );
+	
+	/**
+	 * \brief Stock skin.
+	 * 
+	 * Stock skins are only available after the engine controller has been started for the
+	 * first time. If not available nullptr is returned.
+	 */
+	virtual deSkin::Ref GetStockSkin( eStockSkins skin );
+	
 	/** \brief Retrieves the engine controller. */
 	virtual igdeEngineController *GetEngineController();
 	
@@ -127,9 +138,6 @@ public:
 	
 	/** \brief UI Helper for properties panels. */
 	virtual igdeUIHelper &GetUIHelperProperties();
-	
-	/** \brief Error skin. */
-	virtual deSkin *GetErrorSkin();
 	
 	
 	

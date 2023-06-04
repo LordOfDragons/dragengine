@@ -39,7 +39,7 @@ class deSkyLayerBody;
 /**
  * \brief Load sky file in the Drag[en]gine Sky format.
  */
-class igdeLoadSky : public igdeBaseXML{
+class DE_DLL_EXPORT igdeLoadSky : public igdeBaseXML{
 private:
 	igdeEnvironment &pEnvironment;
 	

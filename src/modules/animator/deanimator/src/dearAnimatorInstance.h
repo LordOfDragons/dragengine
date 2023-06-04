@@ -29,6 +29,7 @@
 #include <dragengine/common/collection/decThreadSafeObjectOrderedSet.h>
 
 #include "dearBoneStateList.h"
+#include "dearVPSStateList.h"
 #include "dearControllerStates.h"
 
 class dearComponent;
@@ -63,6 +64,7 @@ private:
 	bool pUseBlending;
 	bool pSkipApply;
 	bool pUseAllBones;
+	bool pUseAllVPS;
 	
 	unsigned int pAnimatorUpdateTracker;
 	
@@ -71,6 +73,9 @@ private:
 	
 	dearBoneStateList pBoneStateList;
 	decIntList pMappingRigToState;
+	
+	dearVPSStateList pVPSStateList;
+	decIntList pMappingModelToVPSState;
 	
 	dearControllerStates pControllerStates;
 	
@@ -115,6 +120,10 @@ public:
 	inline dearBoneStateList &GetBoneStateList(){ return pBoneStateList; }
 	inline const dearBoneStateList &GetBoneStateList() const{ return pBoneStateList; }
 	
+	/** VPS state list. */
+	inline dearVPSStateList &GetVPSStateList(){ return pVPSStateList; }
+	inline const dearVPSStateList &GetVPSStateList() const{ return pVPSStateList; }
+	
 	/** Controller states. */
 	inline const dearControllerStates &GetControllerStates() const{ return pControllerStates; }
 	
@@ -135,22 +144,20 @@ public:
 	
 	
 	/**
-	 * Apply rules to animator instance state.
-	 * \details This call is thread-safe. It can be used parallel or synchronous.
-	 *          The resulting bone state is not applied to anything. Call the
-	 *          appropriate ApplyStateTo* calls for this.
+	 * Apply rules to animator instance state. This call is thread-safe. It can be used parallel
+	 * or synchronous. The resulting bone state is not applied to anything. Call the appropriate
+	 * ApplyStateTo* calls for this.
 	 */
 	void ApplyRules();
 	
 	/**
-	 * Apply bone states to the bound animator module component if existing.
-	 * \details This call is asynchronous. It is used by task Run() call.
+	 * Apply bone states to the bound animator module component if existing. This call is
+	 * asynchronous. It is used by task Run() call.
 	 */
 	void ApplyStateToArComponent() const;
 	
 	/**
-	 * Stop task running apply rules in parallel.
-	 * \details Called by dearTaskApplyRules.Finished() only.
+	 * Stop task running apply rules in parallel. Called by dearTaskApplyRules.Finished() only.
 	 */
 	void StopTaskApplyRules();
 	
@@ -212,7 +219,7 @@ public:
 private:
 	void pCleanUp();
 	void pCheckRequireRebuild();
-	void pUpdateBoneMappings();
+	void pUpdateMappings();
 	void pCheckAnimatorChanged();
 	void pUpdateAnimator();
 	void pUpdateFakeRootBones();
@@ -232,9 +239,8 @@ private:
 	void pUpdateControllerStates();
 	
 	/**
-	 * Apply bone states to the bound engine component if existing.
-	 * \details This call is synchronous. It is used by synchronous calls or
-	 *          by the task Finished() call.
+	 * Apply bone states to the bound engine component if existing. This call is synchronous.
+	 * It is used by synchronous calls or by the task Finished() call.
 	 */
 	void pApplyStateToComponent() const;
 	

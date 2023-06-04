@@ -509,7 +509,7 @@ public:
 		
 		// query for the model
 		decString filename( pWindow.GetSkin() ? decPath::AbsolutePathUnix(
-			pWindow.GetSkin()->GetModelPath(), pWindow.GetSkin()->GetDirectoryPath() ).GetPathUnix() : "" );
+			pWindow.GetSkin()->GetModelPath(), pWindow.GetSkin()->GetDirectoryPath() ).GetPathUnix() : decString() );
 		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "New From Model", *environment.GetFileSystemGame(),
 			*environment.GetOpenFilePatternList( igdeEnvironment::efpltModel ), filename ) ){
 				return;
@@ -552,14 +552,14 @@ public:
 			refProperty.TakeOver( property = new seProperty( engine ) );
 			property->SetName( "reflectivity" );
 			property->SetValueType( seProperty::evtValue );
-			property->SetValue( 0.23 );
+			property->SetValue( 0.23f );
 			texture->AddProperty( property );
 			
 			// create roughness property with moderate roughness
 			refProperty.TakeOver( property = new seProperty( engine ) );
 			property->SetName( "roughness" );
 			property->SetValueType( seProperty::evtValue );
-			property->SetValue( 0.35 );
+			property->SetValue( 0.35f );
 			texture->AddProperty( property );
 			
 			// add texture

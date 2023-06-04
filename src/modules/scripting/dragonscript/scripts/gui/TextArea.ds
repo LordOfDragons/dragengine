@@ -548,6 +548,7 @@ class TextArea extends TextWidget implements RangeModelListener
 	/** Key pressed event. */
 	public func void onKeyPress(KeyEvent event)
 		var bool shift = (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
+		var bool control = (event.getModifiers() & InputEventModifier.control) == InputEventModifier.control
 		var String curText = getText()
 		var int line = getCursorLine()
 		var int first = pTextLayout.getLine(line).getFirstChar()
@@ -678,6 +679,30 @@ class TextArea extends TextWidget implements RangeModelListener
 			pCursorPos.setPosition(first + count)
 			pRefXPosDirty = true
 			update = true
+			
+		case InputEventKey.a
+			if control
+				if shift
+					if pSelectionStart == null
+						break
+					end
+					
+					pSelectionEnd = pSelectionStart = null
+					update = true
+					
+				else
+					if pSelectionStart != null and pSelectionStart.isAtStart() and pSelectionEnd.isAtEnd()
+						break
+					end
+					
+					pCursorPos.setPositionEnd()
+					setSelectionAll()
+					update = true
+				end
+				
+			else
+				super.onKeyPress(event)
+			end
 			
 		//case InputEventKey.enter
 			// we intercept enter to avoid launching a default button. later on a property can

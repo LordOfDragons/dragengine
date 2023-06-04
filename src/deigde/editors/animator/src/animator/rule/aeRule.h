@@ -57,6 +57,7 @@ private:
 	deAnimatorRuleVisitorIdentify::eRuleTypes pType;
 	
 	decStringSet pListBones;
+	decStringSet pListVertexPositionSets;
 	
 	deAnimatorRule::eBlendModes pBlendMode;
 	float pBlendFactor;
@@ -151,6 +152,8 @@ public:
 	virtual void OnParentAnimatorChanged();
 	/*@}*/
 	
+	
+	
 	/** \name Bone Management */
 	/*@{*/
 	/** Retrieve the list of bones. */
@@ -161,11 +164,35 @@ public:
 	
 	/** Add a bone. */
 	void AddBone( const char *bone );
+	
 	/** Remove the given bone. */
 	void RemoveBone( const char *bone );
+	
 	/** Remove all bones. */
 	void RemoveAllBones();
 	/*@}*/
+	
+	
+	
+	/** \name Vertex position set management */
+	/*@{*/
+	/** List of vertex position sets. */
+	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
+	
+	/** Set list of vertex position sets. */
+	void SetListVertexPositionSets( const decStringSet &sets );
+	
+	/** Add a vertex position set. */
+	void AddVertexPositionSet( const char *vertexPositionSet );
+	
+	/** Remove vertex position set. */
+	void RemoveVertexPositionSet( const char *vertexPositionSet );
+	
+	/** Remove all vertex position sets. */
+	void RemoveAllVertexPositionSets();
+	/*@}*/
+	
+	
 	
 	/** \name Operators */
 	/*@{*/

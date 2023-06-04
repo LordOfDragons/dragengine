@@ -50,6 +50,10 @@
 #include <dragengine/app/deOSWindows.h>
 #endif
 
+#ifdef OS_W32_VS
+#define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
+#endif
+
 
 
 // Definitions

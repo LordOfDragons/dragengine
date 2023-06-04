@@ -1581,7 +1581,7 @@ void meWPSObject::UpdateLight(){
 					igdeCodecPropertyString().DecodeColor( value, color, decColor( 1.0f, 1.0f, 1.0f ) );
 					pClrLight->SetColor( color );
 					
-				}catch( const deException &e ){
+				}catch( const deException & ){
 					GetLogger()->LogInfoFormat( "WorldEditor", "Invalid color value '%s'", value.GetString() );
 					pClrLight->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
 				}
@@ -1888,7 +1888,7 @@ void meWPSObject::SlideLightProperty( igdeGDCLight::eProperties property, const 
 			}
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pUndoSetProperty = NULL;
 		pUndoAddProperty = NULL;
 		throw;

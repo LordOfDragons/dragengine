@@ -52,7 +52,7 @@ class decPath;
  * preview manager holds a reference to the listener and frees it
  * once the listener is called.
  */
-class igdeGDPreviewManager {
+class DE_DLL_EXPORT igdeGDPreviewManager {
 private:
 	igdeEnvironment &pEnvironment;
 	

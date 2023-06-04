@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>VR Hidden Area</name>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/defren/vr/hiddenarea.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/vr/hiddenarea.glsl</sourceCode>
+</shader>

@@ -175,6 +175,10 @@ static const sSPBParameterDefinition vLightSPBParamDefs[ deoglLightShader::ELUT_
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 } // pLightSpotExponent ( float )
 };
 
+// cache revision. if skin config or skin unit sources change in any way increment this
+// value to make sure existing caches are invalidate
+#define SHADER_CACHE_REVISION 1
+
 
 
 // Class deoglLightShader
@@ -329,8 +333,6 @@ void deoglLightShader::GenerateShader(){
 	try{
 		pSources.TakeOver( new deoglShaderSources );
 		
-		pSources->SetVersion( "150" );
-		
 		GenerateDefines( defines );
 		GenerateVertexSC();
 		GenerateGeometrySC();
@@ -375,8 +377,28 @@ void deoglLightShader::GenerateShader(){
 			}
 		}
 		
+		// cache id
+		decStringList cacheIdParts, cacheIdComponents;
+		decString cacheIdFormat;
+		
+		cacheIdFormat.Format( "light%d", SHADER_CACHE_REVISION );
+		cacheIdParts.Add( cacheIdFormat );
+		
+		cacheIdFormat.Format( "%x,%x,%x", pConfig.GetKey1(), pConfig.GetKey2(), pConfig.GetKey3() );
+		cacheIdParts.Add( cacheIdFormat );
+		
+		cacheIdComponents.Add( pSources->GetPathVertexSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathGeometrySourceCode() );
+		cacheIdComponents.Add( pSources->GetPathFragmentSourceCode() );
+		cacheIdParts.Add( cacheIdComponents.Join( "," ) );
+		cacheIdComponents.RemoveAll();
+		
+		cacheIdParts.Add( defines.CalcCacheId() );
+		
+		pShader->SetCacheId( cacheIdParts.Join( ";" ) );
+		
 		// compile shader
-		pShader->SetCompiled( pRenderThread.GetShader().GetShaderManager().GetLanguage()->CompileShader( *pShader ) );
+		pShader->SetCompiled( smgr.GetLanguage()->CompileShader( pShader ) );
 		/*
 		if( pConfig.GetShaderMode() == deoglLightShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();

@@ -43,6 +43,8 @@ private:
 	bool pCameraInside;
 	bool pCameraInsideOccQueryBox;
 	
+	deoglOcclusionQuery *pOcclusionQuery;
+	
 	
 	
 public:
@@ -90,6 +92,9 @@ public:
 	
 	/** Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();
+	
+	/** Has occlusion query. */
+	inline bool HasOcclusionQuery() const{ return pOcclusionQuery != nullptr; }
 	
 	/** Occlusion query. */
 	deoglOcclusionQuery &GetOcclusionQuery();

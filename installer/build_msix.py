@@ -5,6 +5,9 @@ import os, sys, shutil, requests, zipfile, io, fnmatch
 def copyArchiveFiles(artifact, basePath):
 	with zipfile.ZipFile(artifact, mode='r') as z:
 		for n in z.namelist():
+			i = z.getinfo(n)
+			if i.is_dir():
+				continue
 			if n.startswith('@ProgramFiles/'):
 				path = 'VFS/ProgramFilesX64/' + n[14:]
 			elif n.startswith('@System/'):
@@ -60,7 +63,9 @@ os.makedirs(buildDir)
 
 # check for artifacts
 artifactDragengine = os.path.join(artifactDir, 'dragengine-{}-windows64.zip'.format(versionRelease))
+artifactDragengineDbg = os.path.join(artifactDir, 'dragengine-dbg-{}-windows64.zip'.format(versionRelease))
 artifactIgde = os.path.join(artifactDir, 'deigde-{}-windows64.zip'.format(versionRelease))
+artifactIgdeDbg = os.path.join(artifactDir, 'deigde-dbg-{}-windows64.zip'.format(versionRelease))
 
 if not os.path.exists(artifactDragengine) or not os.path.exists(artifactIgde):
 	print('Download GitHub Release Action run Artifacts "archives-windows"')
@@ -85,9 +90,22 @@ if os.system(cmdline):
 	print('failed')
 	sys.exit(1)
 
+baseName = 'dragengine-{}'.format(versionRelease)
+copyArchiveFiles(artifactDragengineDbg, os.path.join(buildDir, 'appxsym/dragengine'))
+shutil.make_archive(os.path.join(buildDir, baseName), 'zip', os.path.join(buildDir, 'appxsym/dragengine'))
+shutil.move(os.path.join(buildDir, '{}.zip'.format(baseName)), os.path.join(buildDir, '{}.appxsym'.format(baseName)))
+
+with zipfile.ZipFile(os.path.join(buildDir, '{}.msixupload'.format(baseName)), 'w') as z:
+	z.write(os.path.join(buildDir, '{}.msix'.format(baseName)), '{}.msix'.format(baseName))
+	z.write(os.path.join(buildDir, '{}.appxsym'.format(baseName)), '{}.appxsym'.format(baseName))
+
+
 # igde
+
 # copied until microsoft provides a solution for this problem
 copyArchiveFiles(artifactDragengine, os.path.join(buildDir, 'msix/deigde'))
+copyArchiveFiles(artifactDragengineDbg, os.path.join(buildDir, 'appxsym/deigde'))
+
 # end of microsoft hack
 copyArchiveFiles(artifactIgde, os.path.join(buildDir, 'msix/deigde'))
 copyDataFiles(os.path.join(srcDir, 'msix-data/deigde'), os.path.join(buildDir, 'msix/deigde'))
@@ -106,3 +124,12 @@ if os.system(cmdline):
 	print(cmdline)
 	print('failed')
 	sys.exit(1)
+
+baseName = 'deigde-{}'.format(versionRelease)
+copyArchiveFiles(artifactIgdeDbg, os.path.join(buildDir, 'appxsym/deigde'))
+shutil.make_archive(os.path.join(buildDir, baseName), 'zip', os.path.join(buildDir, 'appxsym/deigde'))
+shutil.move(os.path.join(buildDir, '{}.zip'.format(baseName)), os.path.join(buildDir, '{}.appxsym'.format(baseName)))
+
+with zipfile.ZipFile(os.path.join(buildDir, '{}.msixupload'.format(baseName)), 'w') as z:
+	z.write(os.path.join(buildDir, '{}.msix'.format(baseName)), '{}.msix'.format(baseName))
+	z.write(os.path.join(buildDir, '{}.appxsym'.format(baseName)), '{}.appxsym'.format(baseName))

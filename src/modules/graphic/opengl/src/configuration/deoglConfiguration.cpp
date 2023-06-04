@@ -130,11 +130,6 @@ pEnableRetainImageOptimization( true ),
 pBugNo2ComponentFBOTex( false ),
 
 pDebugNoCulling ( false ),
-pOcclusionTestMode( eoctmTransformFeedback ),
-
-pQuickDebug( 0 ),
-
-pDebugSnapshot( 0 ),
 
 pDisableCubeMapLinearFiltering( false ),
 
@@ -142,6 +137,8 @@ pMaxSPBIndexCount( 10000 ),
 
 pGIQuality( egiqHigh ),
 pGIUpdateSpeed( egiusMedium ),
+
+pVSyncMode( evsmAdaptive ),
 
 pVRRenderScale( 1.0f ),
 pVRForceFrameRate( 0 )
@@ -202,10 +199,13 @@ pVRForceFrameRate( 0 )
 	//pAsyncRendering = false;
 	#endif
 	
-	// rendeerdoc
-	#if 0
-	pDebugContext = true;
-	pDebugNoMessages = true;
+	// renderdoc
+	#if defined WITH_DEBUG && defined OS_UNIX
+	const char * const envRenderDocDebug = secure_getenv( "DE_OGL_RENDERDOC_DEBUG" );
+	if( envRenderDocDebug && strcmp( envRenderDocDebug, "1" ) == 0 ){
+		pDebugContext = true;
+		pDebugNoMessages = true;
+	}
 	#endif
 }
 
@@ -842,43 +842,11 @@ void deoglConfiguration::SetBugNo2ComponentFBOTex( bool bugNo2ComponentFBOTex ){
 
 
 
-void deoglConfiguration::SetQuickDebug( int value ){
-	if( value == pQuickDebug ){
-		return;
-	}
-	pQuickDebug = value;
-	pDirty = true;
-}
-
 void deoglConfiguration::SetDebugNoCulling( bool noCulling ){
 	if( noCulling == pDebugNoCulling ){
 		return;
 	}
 	pDebugNoCulling = noCulling;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetOcclusionTestMode( eOcclusionTestModes mode ){
-	if( mode < eoctmNone ){
-		mode = eoctmNone;
-		
-	}else if( mode > eoctmTransformFeedback ){
-		mode = eoctmTransformFeedback;
-	}
-	
-	if( mode == pOcclusionTestMode ){
-		return;
-	}
-	
-	pOcclusionTestMode = mode;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetDebugSnapshot( int snapshot ){
-	if( snapshot == pDebugSnapshot ){
-		return;
-	}
-	pDebugSnapshot = snapshot;
 	pDirty = true;
 }
 
@@ -917,6 +885,15 @@ void deoglConfiguration::SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed ){
 	}
 	
 	pGIUpdateSpeed = updateSpeed;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVSyncMode( eVSyncMode mode ){
+	if( mode == pVSyncMode ){
+		return;
+	}
+	
+	pVSyncMode = mode;
 	pDirty = true;
 }
 

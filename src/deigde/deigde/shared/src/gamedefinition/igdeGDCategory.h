@@ -38,7 +38,7 @@ class decPath;
  * Every category contains a name unique in the scope of the parent
  * category and an optional list of children cathegories.
  */
-class igdeGDCategory : public deObject{
+class DE_DLL_EXPORT igdeGDCategory : public deObject{
 private:
 	decString pName;
 	decString pDescription;

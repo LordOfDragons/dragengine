@@ -37,9 +37,6 @@
     <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethInfos.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethOggFile.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethStreamReader.cpp">
@@ -55,9 +52,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethInfos.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethOggFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethOggReader.cpp">

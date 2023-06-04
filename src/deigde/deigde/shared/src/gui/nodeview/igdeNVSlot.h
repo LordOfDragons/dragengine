@@ -39,7 +39,7 @@ class igdeNVLink;
  * Add widget to edit the default value using AddChild(). Depending on input type behaves
  * like igdeContainerFlow with X-Axis layout from left to right or reversed.
  */
-class igdeNVSlot : public igdeContainer{
+class DE_DLL_EXPORT igdeNVSlot : public igdeContainer{
 private:
 	decString pText;
 	decString pDescription;

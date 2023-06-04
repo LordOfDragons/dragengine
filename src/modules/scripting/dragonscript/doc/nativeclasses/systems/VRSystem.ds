@@ -31,6 +31,46 @@ fixed class VRSystem
 	end
 	
 	/**
+	 * \brief Set feature request level for eye gaze tracking.
+	 * \version 1.17
+	 * 
+	 * Tracking eye gaze features is consider a high privacy operation by most VR environments.
+	 * Enabling this feature usually requires the user to explicitely agree. Furthermore eye
+	 * gaze tracking is not required for the majority of games and applications. For these
+	 * reasons eye gaze tracking is disabled by default. To enable set the feature request
+	 * level to optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time StartRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support eye gaze tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	public func void requestFeatureEyeGazeTracking(VRFeatureSupportLevel level)
+	end
+	
+	/**
+	 * \brief Set feature request level for facial tracking.
+	 * \version 1.17
+	 * 
+	 * Facial tracking includes eye tracking and mouth tracking. Tracking facial features
+	 * is consider a high privacy operation by most VR environments. Enabling this feature
+	 * usually requires the user to explicitely agree. Furthermore facial tracking typically
+	 * is an expensive operation and can degrade performance. Last but not least facial
+	 * tracking is not required for the majority of games and applications. For this reason
+	 * facial tracking is disabled by default. To enable set the feature request level to
+	 * optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time StartRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support facial tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	public func void requestFeatureFacialTracking(VRFeatureSupportLevel level)
+	end
+	
+	/**
 	 * \brief Start VR.
 	 * 
 	 * VR systems typically are required to be activated before they can be used.

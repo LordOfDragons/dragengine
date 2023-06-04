@@ -40,7 +40,7 @@ class deSynthesizerEffect;
 /**
  * \brief Load synthesizer file in the Drag[en]gine Synthesizer format.
  */
-class igdeLoadSynthesizer : public igdeBaseXML{
+class DE_DLL_EXPORT igdeLoadSynthesizer : public igdeBaseXML{
 private:
 	igdeEnvironment &pEnvironment;
 	

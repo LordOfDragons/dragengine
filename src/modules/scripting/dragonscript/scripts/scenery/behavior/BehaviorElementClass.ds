@@ -46,34 +46,38 @@ pin Dragengine.Utils
  */
 class BehaviorElementClass extends ElementClass
 	private var Array pBehaviors
+	private var Array pPrepareStubBehaviors
 	
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new() this( "BehaviorElement", BaseGameApp.getApp().getLoaders() )
+	public func new() this("BehaviorElement", BaseGameApp.getApp().getLoaders())
 	end
 	
 	/** \brief Create element class. */
-	public func new( Loaders loaders ) this( "BehaviorElement", loaders )
+	public func new(Loaders loaders) this("BehaviorElement", loaders)
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders() )
+	public func new(String className) this(className, BaseGameApp.getApp().getLoaders())
 	end
 	
 	/** \brief Create element class. */
-	public func new( String className, Loaders loaders ) super( className )
-		this.pBehaviors = Array.new()
+	public func new(String className, Loaders loaders) super(className)
+		pBehaviors = Array.new()
+		pPrepareStubBehaviors = Array.new()
 	end
 	
 	/** \brief Dispose of element class. */
 	public func void dispose()
-		if this.pBehaviors != null
-			this.pBehaviors.forEachReverse( block ECBehavior each
+		if pBehaviors != null
+			pBehaviors.forEachReverse(block ECBehavior each
 				each.dispose()
-			end )
-			this.pBehaviors = null
+			end)
+			pBehaviors = null
 		end
+		
+		pPrepareStubBehaviors = null
 		
 		super.dispose()
 	end
@@ -82,12 +86,12 @@ class BehaviorElementClass extends ElementClass
 	
 	/** \brief Number of behaviors. */
 	public func int getBehaviorCount()
-		return this.pBehaviors.getCount()
+		return pBehaviors.getCount()
 	end
 	
 	/** \brief Behavior at index. */
-	public func ECBehavior getBehaviorAt( int index )
-		return this.pBehaviors.getAt( index ) cast ECBehavior
+	public func ECBehavior getBehaviorAt(int index)
+		return pBehaviors.getAt(index) cast ECBehavior
 	end
 	
 	/**
@@ -96,14 +100,14 @@ class BehaviorElementClass extends ElementClass
 	 * This is called by constructors of class implementing ECBehavior. Usually you do not
 	 * have to call this manually.
 	 */
-	public func void addBehavior( ECBehavior behavior )
-		if behavior == null or this.pBehaviors.has( behavior )
+	public func void addBehavior(ECBehavior behavior)
+		if behavior == null or pBehaviors.has(behavior)
 			throw EInvalidParam.new()
 		end
 		
-		var int instanceIndex = this.pBehaviors.getCount()
-		this.pBehaviors.add( behavior )
-		behavior.assignInstanceIndex( instanceIndex )
+		var int instanceIndex = pBehaviors.getCount()
+		pBehaviors.add(behavior)
+		behavior.assignInstanceIndex(instanceIndex)
 	end
 	
 	/**
@@ -112,8 +116,8 @@ class BehaviorElementClass extends ElementClass
 	 * Block is required to have one parameter of type ECBehavior or subclass thereof.
 	 * Block is called only for behaviors castable to block parameter type.
 	 */
-	public func void forEachBehavior( Block ablock )
-		this.pBehaviors.forEachCastable( ablock )
+	public func void forEachBehavior(Block ablock)
+		pBehaviors.forEachCastable(ablock)
 	end
 	
 	/**
@@ -123,8 +127,8 @@ class BehaviorElementClass extends ElementClass
 	 * true if the right behavior is found otherwise false. Block is called only for
 	 * behaviors castable to block parameter type.
 	 */
-	public func ECBehavior findBehavior( Block ablock )
-		return this.pBehaviors.findCastable( ablock ) cast ECBehavior
+	public func ECBehavior findBehavior(Block ablock)
+		return pBehaviors.findCastable(ablock) cast ECBehavior
 	end
 	
 	/**
@@ -135,8 +139,8 @@ class BehaviorElementClass extends ElementClass
 	 * true if the right behavior is found otherwise false. Block is called only for
 	 * behaviors castable to block parameter type.
 	 */
-	public func Array collectBehaviors( Block ablock )
-		return this.pBehaviors.collectCastable( ablock )
+	public func Array collectBehaviors(Block ablock)
+		return pBehaviors.collectCastable(ablock)
 	end
 	
 	
@@ -146,14 +150,73 @@ class BehaviorElementClass extends ElementClass
 	 * 
 	 * Block is required to have one parameter of type ECBehavior. For use by BehaviorElement.
 	 */
-	public func void forEachBehaviorDirect( Block ablock )
-		this.pBehaviors.forEach( ablock )
+	public func void forEachBehaviorDirect(Block ablock)
+		pBehaviors.forEach(ablock)
+	end
+	
+	
+	
+	/**
+	 * \brief Add behavior to be notified before initialization is done.
+	 * \version 1.17
+	 * 
+	 * Preinitializing allows behaviors to modify StubElement before Element.init() is called.
+	 * This can be used to alter the behavior initialization procss my modifying the stub
+	 * properties or textures.
+	 * 
+	 * This function is only called for newly created elements. For loading elements
+	 * preinitializing is not done since the preinitialized state has been already saved.
+	 * 
+	 * Usually preinitializing is done for elements to be added to a game world. It is thus
+	 * possible to use game world stub properties to alter the initialization. This can be
+	 * used to adjust the behavior depending on what game world they are created for. It is
+	 * also possible preinitialization is done without the element to be added to a specific
+	 * game world. In this case gameWorld is null. Behaviors added for preinitializing have
+	 * to be able to handle gameWorld being null.
+	 */
+	public func void addPrepareStubBehavior(BehaviorPrepareStub behavior)
+		if behavior == null
+			throw ENullPointer.new("behavior")
+		end
+		
+		pPrepareStubBehaviors.add(behavior)
 	end
 	
 	
 	
 	/** \brief Create element instance. */
 	protected func Element createElement()
-		return BehaviorElement.new( this )
+		return BehaviorElement.new(this)
+	end
+	
+	/**
+	 * \brief Create element from given stub and add it to game world.
+	 * 
+	 * Calls prepareStub() on behaviors supporting stub preparation. Then calls createElement(stub)
+	 * to obtain new element instance. If returned element is null no further processing is done.
+	 * Otherwise element is added to gameWorld.
+	 */
+	public func void createAndAddElement(StubElement stub, GameWorld gameWorld)
+		pPrepareStubBehaviors.forEach(block BehaviorPrepareStub each
+			each.prepareStub(stub, gameWorld, false)
+		end)
+		
+		super.createAndAddElement(stub, gameWorld)
+	end
+	
+	/**
+	 * \brief Load element from file reader and add it to game world.
+	 * 
+	 * Calls prepareStub() on behaviors supporting stub preparation. Then calls loadElement(stub)
+	 * to obtain new element instance. If returned element is null no further processing is done.
+	 * Otherwise element is added to gameWorld.
+	 */
+	public func void loadAndAddElement(PersistencyEnvironment env, StubElement stub, \
+	FileReader reader, GameWorld gameWorld)
+		pPrepareStubBehaviors.forEach(block BehaviorPrepareStub each
+			each.prepareStub(stub, gameWorld, true)
+		end)
+		
+		super.loadAndAddElement(env, stub, reader, gameWorld)
 	end
 end

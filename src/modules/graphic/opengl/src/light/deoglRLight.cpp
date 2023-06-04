@@ -97,9 +97,8 @@ deoglWorldComputeElement( eetLight, &light ),
 pLight( light ){
 }
 
-void deoglRLight::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, sDataElement &data ) const {
-	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
+void deoglRLight::WorldComputeElement::UpdateData( sDataElement &data ) const {
+	const decDVector &refpos = GetReferencePosition();
 	data.SetExtends( pLight.GetMinimumExtend() - refpos, pLight.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pLight.GetLayerMask() );
 	data.flags = ( uint32_t )deoglWorldCompute::eefLight;
@@ -166,8 +165,6 @@ pLLPrepareForRenderWorld( this )
 	pLightVolume = NULL;
 	pLightVolumeCropBox = NULL;
 	
-	pOcclusionQuery = NULL;
-	
 	pDirtyTouching = true;
 	pMarked = false;
 	pUpdateOnRemoveComponent = true;
@@ -199,9 +196,7 @@ void deoglRLight::SetParentWorld( deoglRWorld *parentWorld ){
 		return;
 	}
 	
-	if( pParentWorld && pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
-	}
+	pWorldComputeElement->RemoveFromCompute();
 	
 	pParentWorld = parentWorld;
 	
@@ -232,17 +227,15 @@ void deoglRLight::UpdateOctreeNode(){
 		pUpdateExtends(); // required or we might end up in the wrong octree
 		pParentWorld->GetOctree().InsertLightIntoTree( this );
 		
-		if( pWorldComputeElement->GetIndex() != -1 ){
-			pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+		if( pWorldComputeElement->GetWorldCompute() ){
+			pWorldComputeElement->ComputeUpdateElement();
 			
 		}else{
 			pParentWorld->GetCompute().AddElement( pWorldComputeElement );
 		}
 		
 	}else{
-		if( pWorldComputeElement->GetIndex() != -1 ){
-			pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
-		}
+		pWorldComputeElement->RemoveFromCompute();
 		if( pOctreeNode ){
 			pOctreeNode->RemoveLight( this );
 			pOctreeNode = NULL;
@@ -995,18 +988,6 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 
 
 
-// Culling
-////////////
-
-deoglOcclusionQuery &deoglRLight::GetOcclusionQuery(){
-	if( ! pOcclusionQuery ){
-		pOcclusionQuery = new deoglOcclusionQuery( pRenderThread );
-	}
-	return *pOcclusionQuery;
-}
-
-
-
 // Optimizations
 //////////////////
 
@@ -1107,9 +1088,6 @@ void deoglRLight::pCleanUp(){
 	}
 	if( pShadowCaster ){
 		delete pShadowCaster;
-	}
-	if( pOcclusionQuery ){
-		delete pOcclusionQuery;
 	}
 	if( pSkinState ){
 		delete pSkinState;

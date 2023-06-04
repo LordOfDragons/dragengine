@@ -32,7 +32,7 @@ class igdeTextArea;
 /**
  * \brief IGDE UI TextArea Listener.
  */
-class igdeTextAreaListener : public deObject{
+class DE_DLL_EXPORT igdeTextAreaListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

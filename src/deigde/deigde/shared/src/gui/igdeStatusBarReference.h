@@ -37,7 +37,7 @@ class igdeStatusBar;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeStatusBarReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeStatusBarReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

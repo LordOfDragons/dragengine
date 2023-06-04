@@ -182,7 +182,7 @@ igdeFont *igdeNativeFoxGroupBox::GroupBoxFont( const igdeGroupBox &powner, const
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::groupBoxFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::groupBoxFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::groupBoxFontSize ) ){
@@ -190,7 +190,7 @@ igdeFont *igdeNativeFoxGroupBox::GroupBoxFont( const igdeGroupBox &powner, const
 			igdeGuiThemePropertyNames::groupBoxFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

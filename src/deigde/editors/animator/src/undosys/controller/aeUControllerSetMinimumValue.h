@@ -30,7 +30,7 @@ class aeController;
 
 
 /**
- * \brief Undo action controller set minimum value.
+ * Undo action controller set minimum value.
  */
 class aeUControllerSetMinimumValue : public igdeUndo{
 private:
@@ -43,11 +43,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUControllerSetMinimumValue( aeController *controller, float newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUControllerSetMinimumValue();
 	/*@}*/
 	
@@ -56,10 +56,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

@@ -96,8 +96,8 @@ public:
 	 * Transform relative to another space with velocities. If time is not valid or data
 	 * is not present \em matrix, \em linearVelocity and \em angularVelocity are not changed.
 	 */
-	void LocateSpaceEye( const deoxrSpace &space, XrTime time, decVector &position,
-		decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocity ) const;
+	void LocateSpaceEye( XrTime time, decVector &position, decQuaternion &orientation,
+		decVector &linearVelocity, decVector &angularVelocity ) const;
 	/*@}*/
 	
 	

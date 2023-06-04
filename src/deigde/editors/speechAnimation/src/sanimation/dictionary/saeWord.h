@@ -31,7 +31,7 @@ class saeSAnimation;
 
 
 /**
- * \brief Speech Animation Word.
+ * Speech Animation Word.
  */
 class saeWord : public deObject{
 private:
@@ -45,13 +45,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create word. */
+	/** Create word. */
 	saeWord();
 	
-	/** \brief Create word. */
+	/** Create word. */
 	saeWord( const char *name );
 	
-	/** \brief Create word. */
+	/** Create word. */
 	saeWord( const char *name, const decUnicodeString &phonetics );
 	
 	/** Cleans up the word. */

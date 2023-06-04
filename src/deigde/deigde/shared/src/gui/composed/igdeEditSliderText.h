@@ -41,10 +41,10 @@ class igdeUIHelper;
  * Composed widget to edit value using slider or text field. The main widget is the slider
  * widget. The text field is synchronized to the slider.
  */
-class igdeEditSliderText : public igdeContainerFlow{
+class DE_DLL_EXPORT igdeEditSliderText : public igdeContainerFlow{
 protected:
 	/** \brief Slider listener. */
-	class cListenerSlider : public igdeSliderListener{
+	class DE_DLL_EXPORT cListenerSlider : public igdeSliderListener{
 	protected:
 		igdeEditSliderText &pSliderText;
 		
@@ -56,7 +56,7 @@ protected:
 	};
 	
 	/** \brief Text field listener. */
-	class cListenerTextField : public igdeTextFieldListener{
+	class DE_DLL_EXPORT cListenerTextField : public igdeTextFieldListener{
 	protected:
 		igdeEditSliderText &pSliderText;
 		

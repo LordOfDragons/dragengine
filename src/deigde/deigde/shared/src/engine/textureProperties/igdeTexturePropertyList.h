@@ -31,7 +31,7 @@ class igdeTextureProperty;
 /**
  * \brief Texture Property List.
  */
-class igdeTexturePropertyList{
+class DE_DLL_EXPORT igdeTexturePropertyList{
 private:
 	decPointerList pProperties;
 	

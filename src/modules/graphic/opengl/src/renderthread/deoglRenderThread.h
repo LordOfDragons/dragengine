@@ -70,6 +70,7 @@ class deoglRTRenderers;
 class deoglRTShader;
 class deoglRTTexture;
 class deoglRTChoices;
+class deoglLoaderThread;
 
 class deRenderWindow;
 
@@ -105,6 +106,7 @@ private:
 	bool pConfigChanged;
 	uint32_t pFrameCounter;
 	deoglRCamera *pVRCamera;
+	decDMatrix pVRDebugPanelMatrix;
 	
 	deoglConfiguration pConfiguration;
 	deoglRTLeakTracker pLeakTracker;
@@ -113,10 +115,12 @@ private:
 	decObjectOrderedSet pRCaptureCanvasList;
 	deoglRCanvasView *pCanvasInputOverlay;
 	deoglRCanvasView *pCanvasDebugOverlay;
+	deoglRCanvasView *pCanvasOverlay;
 	
 	deoglRTChoices *pChoices;
 	deoglRTBufferObject *pBufferObject;
 	deoglRTContext *pContext;
+	deoglLoaderThread *pLoaderThread;
 	deoglRTDebug *pDebug;
 	deoglRTDefaultTextures *pDefaultTextures;
 	deoglRTFramebuffer *pFramebuffer;
@@ -151,6 +155,7 @@ private:
 	decTimer pTimerRender;
 	decTimer pTimerFrameUpdate;
 	decTimer pTimerVRFrameUpdate;
+	float pLastFrameTime;
 	float pEstimatedRenderTime;
 	float pAccumulatedMainTime;
 	float pFrameTimeLimit;
@@ -172,6 +177,7 @@ private:
 	deoglDebugInformation::Ref pDebugInfoThreadRenderCapture;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderEnd;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderSwap;
+	deoglDebugInformation::Ref pDebugInfoVRRender;
 	
 	deoglDebugInformation::Ref pDebugInfoFrameLimiter;
 	deoglDebugInformation::Ref pDebugInfoFLEstimMain;
@@ -197,6 +203,7 @@ private:
 	float pDebugTimeThreadRenderWindowsRender;
 	float pDebugTimeThreadRenderCapture;
 	float pDebugTimeThreadRenderSwap;
+	float pDebugTimeVRRender;
 	int pDebugCountThreadWindows;
 	
 	// deprecated
@@ -245,7 +252,13 @@ public:
 	inline deoglRCamera *GetVRCamera() const{ return pVRCamera; }
 	
 	/** Set VR camera or nullptr. */
-	void SetVRCamera ( deoglRCamera *camera );
+	void SetVRCamera( deoglRCamera *camera );
+	
+	/** VR debug panel matrix. */
+	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }
+	
+	/** Set VR debug panel matrix. */
+	void SetVRDebugPanelMatrix( const decDMatrix &matrix );
 	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
@@ -256,22 +269,29 @@ public:
 	/** Rendr capture canvas list. */
 	inline decObjectOrderedSet &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
 	
-	/** Input overlay canvas view or \em NULL if not present. */
+	/** Input overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
-	/** Set input overlay canvas view or \em NULL if not present. */
+	/** Set input overlay canvas view or nullptr. */
 	void SetCanvasInputOverlay( deoglRCanvasView *canvas );
 	
-	/** Debug overlay canvas view or \em NULL if not present. */
+	/** Debug overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
-	/** Set debug overlay canvas view or \em NULL if not present. */
+	/** Set debug overlay canvas view or nullptr. */
 	void SetCanvasDebugOverlay( deoglRCanvasView *canvas );
+	
+	/** Overlay canvas view or nullptr. */
+	inline deoglRCanvasView *GetCanvasOverlay() const{ return pCanvasOverlay; }
+	
+	/** Set overlay canvas view or nullptr. */
+	void SetCanvasOverlay( deoglRCanvasView *canvas );
 	
 	
 	
 	/** Choices. */
 	inline const deoglRTChoices &GetChoices() const{ return *pChoices; }
+	inline bool HasChoices() const{ return pChoices != nullptr; }
 	
 	/** Buffer objects. */
 	inline deoglRTBufferObject &GetBufferObject() const{ return *pBufferObject; }
@@ -281,6 +301,9 @@ public:
 	
 	/** Context. */
 	inline deoglRTContext &GetContext() const{ return *pContext; }
+	
+	/** Loader thread. */
+	inline deoglLoaderThread &GetLoaderThread() const{ return *pLoaderThread; }
 	
 	/** Debug. */
 	inline deoglRTDebug &GetDebug() const{ return *pDebug; }
@@ -454,6 +477,9 @@ public:
 	/** Sample debug timer render thread render windows render. */
 	void SampleDebugTimerRenderThreadRenderWindowsRender();
 	
+	/** Sample debug timer VR render. */
+	void SampleDebugTimerVRRender();
+	
 	
 	
 	/** Developer mode debug information changed. */
@@ -492,7 +518,8 @@ private:
 	void pSwapBuffers();
 	void pBeginFrame();
 	void pRenderWindows();
-	void pVRBeginFrame();
+	void pVRStartBeginFrame();
+	void pVRWaitBeginFrameFinished();
 	void pVRRender();
 	void pVRSubmit();
 	void pVREndFrame();

@@ -30,7 +30,7 @@ class aeRuleAnimation;
 
 
 /**
- * @brief Undo rule animation set enable rotation.
+ * Undo rule animation set enable rotation.
  */
 class aeURuleAnimToggleEnableRotation : public igdeUndo{
 private:
@@ -39,19 +39,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleAnimToggleEnableRotation( aeRuleAnimation *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleAnimToggleEnableRotation();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

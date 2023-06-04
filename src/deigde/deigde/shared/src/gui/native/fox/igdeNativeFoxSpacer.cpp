@@ -37,9 +37,7 @@
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxSpacer ) igdeNativeFoxSpacerMap[] = { };
-
-FXIMPLEMENT( igdeNativeFoxSpacer, FXFrame, igdeNativeFoxSpacerMap, ARRAYNUMBER( igdeNativeFoxSpacerMap ) )
+FXIMPLEMENT( igdeNativeFoxSpacer, FXFrame, nullptr, 0 )
 
 
 

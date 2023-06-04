@@ -839,9 +839,8 @@ void deoalAudioThread::pProcessAudio(){
 		
 	}else{
 		pElapsed = pTimerElapsed.GetElapsedTime();
+		pTimeHistoryUpdate.Add( pElapsed );
 	}
-	
-	pTimeHistoryUpdate.Add( pElapsed );
 	
 	if( pDeactiveMicrophone ){
 		pDeactiveMicrophone->ProcessDeactivate();

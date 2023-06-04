@@ -13,6 +13,16 @@ Example projects can be found on Development Wiki or in this repository:
 
 [![Nightly](https://github.com/LordOfDragons/dragengine/actions/workflows/nightly.yml/badge.svg)](https://github.com/LordOfDragons/dragengine/actions/workflows/nightly.yml)
 
+# Game developer information
+
+The Drag[en]gine is based on a non-blackbox principle. In particular this means
+__for developing games using the Drag[en]gine you do not need to compile the game__
+__engine nor do you have to link against it__. If you just want to develop games
+using Drag[en]gine installing the pre-compiled release files is all you need.
+
+The source code repository is interesting only for people interested in the
+inner workings and those wanting to create engine modules or editor modules.
+
 # License Information
 
 The Drag\[en\]gine Game Engine is dual licensed under [L-GPL](https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -110,8 +120,9 @@ See the __debian__ branch for an example of how this is used.
 
 # Build Dependencies
 
+- Git Lfs
 - SCons 2.5.1+
-- Python 2.7+ or 3.5+
+- Python 3.5+
 - GCC 8+
 - CMake (for in-tree building of external software)
 - libtool (for in-tree building of external software)

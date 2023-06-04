@@ -52,9 +52,9 @@ class igdeWSky;
  * responsible to ensure the wrapper object exists as long as it is assigned to
  * this widget.
  */
-class igdeWPSky : public igdeContainerFlow, igdeActionListener{
+class DE_DLL_EXPORT igdeWPSky : public igdeContainerFlow, igdeActionListener{
 private:
-	class Controller : public deObject{
+	class DE_DLL_EXPORT Controller : public deObject{
 	public:
 		typedef deTObjectReference<Controller> Ref;
 		

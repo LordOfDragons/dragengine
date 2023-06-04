@@ -32,7 +32,7 @@ class saeSAnimation;
 
 
 /**
- * \brief Undo action add word list.
+ * Undo action add word list.
  */
 class saeUWordAddList : public igdeUndo{
 private:
@@ -44,11 +44,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	saeUWordAddList( saeSAnimation *sanimation, const saeWordList &words );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~saeUWordAddList();
 	/*@}*/
 	
@@ -57,10 +57,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

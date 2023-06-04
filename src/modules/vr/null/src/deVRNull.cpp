@@ -186,7 +186,10 @@ deImage *deVRNull::GetDistortionMap( eEye ){
 	return nullptr;
 }
 
-void deVRNull::BeginFrame(){
+void deVRNull::StartBeginFrame(){
+}
+
+void deVRNull::WaitBeginFrameFinished(){
 }
 
 void deVRNull::SubmitOpenGLTexture2D( eEye, void*, const decVector2 &, const decVector2 &, bool ){

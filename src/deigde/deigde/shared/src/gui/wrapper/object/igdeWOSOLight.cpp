@@ -327,9 +327,9 @@ void igdeWOSOLight::pUpdateLight(){
 		pGDLight.GetPropertyName( igdeGDCLight::epCastShadows ),
 		pGDLight.GetCastShadows() ) );
 	
-	deSkin *lightSkin = rl.GetLightSkin();
+	deSkin::Ref lightSkin( rl.GetLightSkin() );
 	if( ! lightSkin && rl.HasPathLightSkin() && GetWrapper().GetGDClass() ){
-		lightSkin = GetEnvironment().GetErrorSkin();
+		lightSkin = GetEnvironment().GetStockSkin( igdeEnvironment::essError );
 	}
 	pLight->SetLightSkin( lightSkin );
 	

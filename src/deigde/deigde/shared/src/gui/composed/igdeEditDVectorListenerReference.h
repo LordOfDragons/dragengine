@@ -37,7 +37,7 @@ class igdeEditDVectorListener;
  *       it as vectorer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeEditDVectorListenerReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeEditDVectorListenerReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

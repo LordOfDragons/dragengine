@@ -29,7 +29,7 @@ class aeWPPlayground;
 
 
 /**
- * \brief Playground Panel Listener
+ * Playground Panel Listener
  */
 class aeWPPlaygroundListener : public aeAnimatorNotifier{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	aeWPPlaygroundListener( aeWPPlayground &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~aeWPPlaygroundListener();
 	/*@}*/
 	
@@ -51,19 +51,19 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Locomotion changed. */
+	/** Locomotion changed. */
 	virtual void LocomotionChanged( aeAnimator *animator );
 	
 	/** Controller changed. */
 	virtual void ControllerChanged( aeAnimator *animator, aeController *controller );
 	
-	/** \brief Controller name changed. */
+	/** Controller name changed. */
 	virtual void ControllerNameChanged( aeAnimator *animator, aeController *controller );
 	
-	/** \brief Controller value changed. */
+	/** Controller value changed. */
 	virtual void ControllerValueChanged( aeAnimator *animator, aeController *controller );
 	
-	/** \brief Controller count or order changed. */
+	/** Controller count or order changed. */
 	virtual void ControllerStructureChanged( aeAnimator *animator );
 	/*@}*/
 };

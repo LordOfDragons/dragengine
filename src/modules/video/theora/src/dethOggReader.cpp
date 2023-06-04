@@ -112,60 +112,21 @@ void dethOggReader::ReadStreamHeaders( dethInfos &infos ){
 		infos.SetWidth( tinfo.pic_width );
 		infos.SetHeight( tinfo.pic_height );
 		infos.SetFrameCount( pStream ? pStream->GranuleToFrame( maxGranulePos ) + 1 : 0 );
-		infos.SetFrameRate( tinfo.fps_numerator / tinfo.fps_denominator );
+		infos.SetFrameRate( ( float )tinfo.fps_numerator / ( float )tinfo.fps_denominator );
 		
 		DefaultColorConversionMatrix( colorMatrix );
 		infos.SetColorConversionMatrix( colorMatrix );
 		
 		switch( tinfo.pixel_fmt ){
 		case TH_PF_420:
-			infos.SetPixelFormat( deVideo::epf420 );
-			break;
-			
 		case TH_PF_422:
-			infos.SetPixelFormat( deVideo::epf422 );
-			break;
-			
 		case TH_PF_444:
-			infos.SetPixelFormat( deVideo::epf444 );
+			infos.SetComponentCount( 3 );
 			break;
 			
 		default:
 			pModule.LogErrorFormat( "Unsupported Pixel Format %i", tinfo.pixel_fmt );
 		}
-		
-		infos.SetPixelFormat( deVideo::epf444 );
-		
-		/*
-		pModule.LogInfo( "header finished." );
-		
-		pModule.LogInfoFormat( "frame_width: %i", tinfo.frame_width );
-		pModule.LogInfoFormat( "frame_height: %i", tinfo.frame_height );
-		pModule.LogInfoFormat( "pic_width: %i", tinfo.pic_width );
-		pModule.LogInfoFormat( "pic_height: %i", tinfo.pic_height );
-		pModule.LogInfoFormat( "pic_x: %i", tinfo.pic_x );
-		pModule.LogInfoFormat( "pic_y: %i", tinfo.pic_y );
-		pModule.LogInfoFormat( "colorspace: %i", tinfo.colorspace );
-		pModule.LogInfoFormat( "pixel_fmt: %i", tinfo.pixel_fmt );
-		pModule.LogInfoFormat( "target_bitrate: %i", tinfo.target_bitrate );
-		pModule.LogInfoFormat( "quality: %i", tinfo.quality );
-		pModule.LogInfoFormat( "keyframe_granule_shift: %i", tinfo.keyframe_granule_shift );
-		pModule.LogInfoFormat( "version_major: %i", tinfo.version_major );
-		pModule.LogInfoFormat( "version_minor: %i", tinfo.version_minor );
-		pModule.LogInfoFormat( "version_subminor: %i", tinfo.version_subminor );
-		pModule.LogInfoFormat( "fps_numerator: %i", tinfo.fps_numerator );
-		pModule.LogInfoFormat( "fps_denominator: %i", tinfo.fps_denominator );
-		pModule.LogInfoFormat( "aspect_numerator: %i", tinfo.aspect_numerator );
-		pModule.LogInfoFormat( "aspect_denominator: %i", tinfo.aspect_denominator );
-		
-		const th_comment &tcomment = infos.GetComment();
-		pModule.LogInfoFormat( "comments: %i", tcomment.comments );
-		int c;
-		for( c=0; c<tcomment.comments; c++ ){
-			pModule.LogInfoFormat( "- comment %i: %s", c, tcomment.user_comments[ c ] );
-		}
-		pModule.LogInfoFormat( "vendor: %s", tcomment.vendor );
-		*/
 	}
 }
 
@@ -186,7 +147,6 @@ int dethOggReader::ReadFromFile( char *buffer, int size ){
 bool dethOggReader::ReadPage( ogg_page &page ){
 	int bufferSize = 4096;
 	char *buffer = NULL;
-	int totalBytes = 0;
 	int readBytes;
 	
 	try{
@@ -204,12 +164,9 @@ bool dethOggReader::ReadPage( ogg_page &page ){
 			if( ogg_sync_wrote( &pSyncState, readBytes ) != 0 ){
 				DETHROW( deeOutOfMemory );
 			}
-			
-			totalBytes += readBytes;
 		}
 		
 	}catch( const deException & ){
-		//e.PrintError();
 		throw;
 	}
 	
@@ -234,7 +191,6 @@ void dethOggReader::Rewind(){
 		ogg_packet packet;
 		ogg_page page;
 		
-		//pModule.LogInfo( "Rewind" );
 		// reset the sync and stream states
 		ogg_sync_reset( &pSyncState );
 		pStream->Reset();
@@ -276,8 +232,6 @@ void dethOggReader::SeekFrame( int frame ){
 		ogg_page page;
 		int result;
 		
-		//pModule.LogInfoFormat( "Decoder: seek=%i current=%i", frame, pCurFrame );
-		
 		// if the seek goes backwards restart from the beginning of the file
 		if( frame < pCurFrame ){
 			Rewind();
@@ -291,12 +245,6 @@ void dethOggReader::SeekFrame( int frame ){
 				if( result == 0 || result == TH_DUPFRAME ){
 					pCurFrame++;
 				}
-				
-				//pModule.LogInfoFormat( "Decoder: packet: granule=%i iframe=%i pframe=%i frame=%i curFrame=%i",
-				//	( int )granulePacket, pStream->GranuleToIFrame( granulePacket ),
-				//	pStream->GranuleToPFrame( granulePacket ), pStream->GranuleToFrame( granulePacket ), pCurFrame );
-				
-				//if( pStream->GranuleToFrame( granulePacket ) >= frame ) break;
 				
 			}else{
 				if( ! ReadPage( page, serial ) ) break;

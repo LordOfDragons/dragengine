@@ -38,7 +38,7 @@ class decPath;
  * 
  * Icons are immutable.
  */
-class igdeIcon : public deObject{
+class DE_DLL_EXPORT igdeIcon : public deObject{
 private:
 	void *pNativeIcon;
 	decPoint pSize;

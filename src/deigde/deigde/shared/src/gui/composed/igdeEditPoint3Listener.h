@@ -32,7 +32,7 @@ class igdeEditPoint3;
 /**
  * \brief IGDE UI EditPoint3 Listener.
  */
-class igdeEditPoint3Listener : public deObject{
+class DE_DLL_EXPORT igdeEditPoint3Listener : public deObject{
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

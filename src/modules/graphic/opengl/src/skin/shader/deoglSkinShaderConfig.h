@@ -22,6 +22,7 @@
 #ifndef _DEOGLSKINSHADERCONFIG_H_
 #define _DEOGLSKINSHADERCONFIG_H_
 
+#include <stdint.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -214,6 +215,11 @@ public:
 	bool pTextureRimEmissivity;
 	bool pTextureNonPbrAlbedo;
 	bool pTextureNonPbrMetalness;
+	
+	uint32_t pKey1;
+	uint32_t pKey2;
+	uint64_t pKey3;
+	uint32_t pKey4;
 	
 	
 	
@@ -750,6 +756,17 @@ public:
 	
 	inline bool GetTextureNonPbrMetalness() const{ return pTextureNonPbrMetalness; }
 	void SetTextureNonPbrMetalness( bool texture );
+	
+	
+	
+	/** Key. */
+	inline uint32_t GetKey1() const{ return pKey1; }
+	inline uint32_t GetKey2() const{ return pKey2; }
+	inline uint64_t GetKey3() const{ return pKey3; }
+	inline uint32_t GetKey4() const{ return pKey4; }
+	
+	/** Update key. */
+	void UpdateKey();
 	/*@}*/
 	
 	
@@ -767,7 +784,10 @@ public:
 	/** Set shader configuration from another shader configuration. */
 	deoglSkinShaderConfig &operator=( const deoglSkinShaderConfig &config );
 	
-	/** Shader configurations are equal. */
+	/**
+	 * Shader configurations are equal.
+	 * \warning Before comparing configurations make sure UpdateKey() has been called on both.
+	 */
 	bool operator==( const deoglSkinShaderConfig &config ) const;
 	/*@}*/
 };

@@ -32,37 +32,44 @@ pin Dragengine.Preloading
  * \brief String identifier value element class property for use with XML loading.
  */
 class ECPStringID extends ElementClassProperty
-	/** \brief Value. */
 	private var StringID pValue
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) this( name, null )
+	public func new(String name) this(name, null)
 	end
 	
 	/** \brief Create property. */
-	public func new( String name, StringID value ) super( name )
-		this.pValue = value
+	public func new(String name, StringID value) super(name)
+		pValue = value
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func StringID getValue()
-		return this.pValue
+		return pValue
 	end
 	
 	/** \brief Set value. */
-	public func void setValue( StringID value )
-		this.pValue = value
+	public func void setValue(StringID value)
+		pValue = value
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValue = StringID.new( value cast String )
+	public func void setValue(Object value)
+		pValue = StringID.new(value cast String)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pValue = (property cast ECPStringID).pValue
 	end
 	
 	
@@ -74,17 +81,17 @@ class ECPStringID extends ElementClassProperty
 	 * property is present and is empty string null is returned. otherwise the named stub
 	 * property value is returned.
 	 */
-	public func StringID getValue( StubWithProperties stub )
-		var String value = stub.getPropertyValueFor( this.getName(), null )
+	public func StringID getValue(StubWithProperties stub)
+		var String value = stub.getPropertyValueFor(getName(), null)
 		
 		if value == null
-			return this.pValue
+			return pValue
 			
 		elif value.empty()
 			return null
 			
 		else
-			return StringID.new( value )
+			return StringID.new(value)
 		end
 	end
 end

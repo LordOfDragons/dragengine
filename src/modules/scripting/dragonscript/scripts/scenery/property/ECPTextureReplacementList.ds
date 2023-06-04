@@ -113,6 +113,25 @@ class ECPTextureReplacementList extends ElementClassProperty implements Resource
 		end)
 	end
 	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		var String path, basePath = elementClass.getBasePath()
+		pList = TextureReplacementList.new()
+		(property cast ECPTextureReplacementList).pList.forEach(block TextureReplacement each
+			path = each.getPath()
+			if path != null and not path.empty()
+				path = File.absolutePath(path, basePath).getPath()
+			end
+			
+			each = TextureReplacement.new(each)
+			each.setPath(path)
+			pList.add(each)
+		end)
+	end
+	
 	
 	
 	/** \brief Preload resources if supported. */

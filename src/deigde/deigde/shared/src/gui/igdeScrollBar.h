@@ -34,7 +34,7 @@ class igdeScrollBarListener;
 /**
  * \brief IGDE UI ScrollBar.
  */
-class igdeScrollBar : public igdeWidget{
+class DE_DLL_EXPORT igdeScrollBar : public igdeWidget{
 public:
 	/** \brief Orientation. */
 	enum eOrientation{

@@ -29,6 +29,7 @@
 #include "deModelVertex.h"
 #include "deModelFace.h"
 #include "deModelTextureCoordinatesSet.h"
+#include "deModelLodVertexPositionSet.h"
 #include "../../common/exceptions.h"
 
 
@@ -41,7 +42,9 @@
 
 deModelLOD::deModelLOD() :
 pHasLodError( false ),
-pLodError( 0.01f )
+pLodError( 0.01f ),
+pVertexPositionSets( nullptr ),
+pVertexPositionSetCount( 0 )
 {
 	pWeights = NULL;
 	pWeightCount = 0;
@@ -63,6 +66,9 @@ pLodError( 0.01f )
 }
 
 deModelLOD::~deModelLOD(){
+	if( pVertexPositionSets ){
+		delete [] pVertexPositionSets;
+	}
 	if( pTextureCoordinatesSets ){
 		delete [] pTextureCoordinatesSets;
 	}
@@ -280,4 +286,35 @@ deModelTextureCoordinatesSet &deModelLOD::GetTextureCoordinatesSetAt( int index 
 	}
 	
 	return pTextureCoordinatesSets[ index ];
+}
+
+
+
+// Vertex position sets
+/////////////////////////
+
+void deModelLOD::SetVertexPositionSetCount( int count ){
+	DEASSERT_TRUE( count >= 0 )
+	
+	if( count == pVertexPositionSetCount ){
+		return;
+	}
+	
+	if( pVertexPositionSets ){
+		delete [] pVertexPositionSets;
+	}
+	pVertexPositionSets = nullptr;
+	pVertexPositionSetCount = 0;
+	
+	if( count > 0 ){
+		pVertexPositionSets = new deModelLodVertexPositionSet[ count ];
+		pVertexPositionSetCount = count;
+	}
+}
+
+deModelLodVertexPositionSet &deModelLOD::GetVertexPositionSetAt( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pVertexPositionSetCount )
+	
+	return pVertexPositionSets[ index ];
 }

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Depth Downsample Stereo</name>
+	
+	<texture name='texDepth' target='0'/>
+	
+	<parameter name='pTCClamp'/> <!-- 0 -->
+	<parameter name='pMipMapLevel'/> <!-- 1 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outDepth' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/fullscreenquad.glsl</sourceCode>
+	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/depth_downsample.glsl</sourceCode>
+</shader>

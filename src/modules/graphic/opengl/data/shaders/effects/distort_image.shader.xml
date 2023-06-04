@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Effect Distort Image</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name="texColor" target="0"/>
+	<texture name="texDistort" target="1"/>
+	
+	<parameter name="pDistortTransform"/>
+	
+	<attribute name="inPosition" target="0"/>
+	<attribute name='inLayer' target='1'/>
+	
+	<output name="outColor" target="0"/>
+	
+	<sourceCode unit="vertex">vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit="fragment">fragment/effect/distort_image.glsl</sourceCode>
+</shader>

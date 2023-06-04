@@ -32,53 +32,69 @@ pin Dragengine.Utils
  * Speech animation Phoneme.
  */
 class SpeechAnimationPhoneme
-	/** IPA symbol. */
 	private var int pIPA
-	/** Play length. */
 	private var float pLength
-	/** Name of the move. */
 	private var String pMoveName
-	/** Animator controller index. */
+	private var String pVertexPositionSet
 	private var int pController
 	
 	
 	
-	/** Creates a new speech animation phoneme. */
-	public func new( int ipa, float length, String moveName )
+	/** \brief Create speech animation phoneme. */
+	public func new(int ipa, float length, String moveName) this(ipa, length, moveName, "")
+	end
+	
+	/**
+	 * \brief Create speech animation phoneme.
+	 * \version 1.17
+	 */
+	public func new(int ipa, float length, String moveName, String vertexPositionSet)
 		if moveName == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("moveName")
+		end
+		if vertexPositionSet == null
+			throw ENullPointer.new("vertexPositionSet")
 		end
 		
-		this.pIPA = ipa
-		this.pLength = length
-		this.pMoveName = moveName
-		this.pController = -1
+		pIPA = ipa
+		pLength = length
+		pMoveName = moveName
+		pVertexPositionSet = vertexPositionSet
+		pController = -1
 	end
 	
 	
 	
-	/** Retrieves the ipa symbol. */
+	/** \brief IPA symbol. */
 	public func int getIPA()
-		return this.pIPA
+		return pIPA
 	end
 	
-	/** Retrieves the length. */
+	/** \brief Length. */
 	public func float getLength()
-		return this.pLength
+		return pLength
 	end
 	
-	/** Retrieves the move name. */
+	/** \brief Move name. */
 	public func String getMoveName()
-		return this.pMoveName
+		return pMoveName
 	end
 	
-	/** Retrieves the animator controller index or -1 if not assigned. */
+	/**
+	 * \brief Vertex position set.
+	 * \version 1.17
+	 */
+	public func String getVertexPositionSet()
+		return pVertexPositionSet
+	end
+	
+	/** \brief Animator controller index or -1 if not assigned. */
 	public func int getController()
-		return this.pController
+		return pController
 	end
 	
-	/** Sets the animator controller index or -1 if not assigned. */
-	public func void setController( int controller )
-		this.pController = controller
+	/** \brief Set animator controller index or -1 if not assigned. */
+	public func void setController(int controller)
+		pController = controller
 	end
 end

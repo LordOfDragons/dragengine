@@ -32,7 +32,7 @@
 /**
  * \brief Game Definition Class Environment Map Probe.
  */
-class igdeGDCEnvMapProbe : public deObject{
+class DE_DLL_EXPORT igdeGDCEnvMapProbe : public deObject{
 public:
 	/** \brief Properties. */
 	enum eProperties{

@@ -48,7 +48,8 @@
 dellLauncher::Launcher::Launcher() :
 delLauncher( "LauncherLive", "launcher" ){
 	AddFileLogger( "launcher" );
-	SetEngineInstanceFactory( new delEngineInstanceDirect::Factory );
+	SetEngineInstanceFactory( delEngineInstanceDirect::Factory::Ref::New(
+		new delEngineInstanceDirect::Factory ) );
 }
 
 dellLauncher::Launcher::~Launcher(){
@@ -102,6 +103,7 @@ void dellLauncher::Run(){
 	pWorkingDir.SetWorkingDirectory();
 	pUpdateEnvironment();
 	pLauncher = new Launcher;
+	pLauncher->SetEngineInstanceFactory( delEngineInstance::Factory::Ref::New( new delEngineInstanceDirect::Factory() ) );
 	
 	dellRunGame( *this ).Run();
 }
@@ -144,7 +146,7 @@ void dellLauncher::pUpdateEnvironment(){
 	const decPath pathGames( pWorkingDir ); //+ decPath::CreatePathUnix( "games" ) );
 	const decPath pathLogs( pWorkingDir + decPath::CreatePathUnix( "logs" ) );
 	
-	pPathConfigUser = pathBase + decPath::CreatePathUnix( "config/user/delauncher"  );
+	pPathConfigUser = pathBase + decPath::CreatePathUnix( "config/user/delauncher" );
 	
 	pEnvParamsStore.Add( decString( "DE_ENGINE_PATH=" ) + pathEngineLib.GetPathNative() );
 	pEnvParamsStore.Add( decString( "DE_SHARE_PATH=" ) + pathEngineShare.GetPathNative() );
@@ -165,9 +167,18 @@ void dellLauncher::pUpdateEnvironment(){
 	const int count = pEnvParamsStore.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-// 		printf( "setenv: '%s'\n", pEnvParamsStore.GetAt( i ).GetString() );
-		if( putenv( ( char* )pEnvParamsStore.GetAt( i ).GetString() ) ){
+		const decString &envParam = pEnvParamsStore.GetAt( i );
+// 		printf( "setenv: '%s'\n", envParam.GetString() );
+#ifdef OS_W32_VS
+		const int separator = envParam.Find( '=' );
+		if( ! SetEnvironmentVariableA( envParam.GetMiddle( 0, separator ).GetString(),
+		envParam.GetMiddle( separator + 1 ).GetString() ) ){
 			DETHROW( deeInvalidParam );
 		}
+#else
+		if( putenv( ( char* )envParam.GetString() ) ){
+			DETHROW( deeInvalidParam );
+		}
+#endif
 	}
 }

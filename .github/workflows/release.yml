@@ -31,7 +31,7 @@ jobs:
       artifactTools: tools-crossplatform
   
   build_windows:
-    uses: ./.github/workflows/build_windows.yml
+    uses: ./.github/workflows/build_windows_vs.yml
     with:
       branch: ${{ github.event.inputs.branch }}
       releaseVersion: ${{ github.event.inputs.version }}
@@ -93,7 +93,7 @@ jobs:
       artifactResults: testing-results
 
   upload:
-    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, testing]
+    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live, testing]
     runs-on: ubuntu-20.04
     
     steps:

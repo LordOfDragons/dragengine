@@ -33,7 +33,7 @@ class igdeTriggerListener;
 /**
  * \brief Trigger Target.
  */
-class igdeTriggerTarget : public deObject{
+class DE_DLL_EXPORT igdeTriggerTarget : public deObject{
 private:
 	decString pName;
 	bool pFired;

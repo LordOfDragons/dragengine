@@ -32,6 +32,7 @@ class deoglModelFace;
 class deoglModelTexture;
 class deoglModelOctree;
 class deoglModelLODTexCoordSet;
+class deoglModelLODVertPosSet;
 class deoglSharedVBOBlock;
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroupList;
@@ -103,11 +104,16 @@ public:
 	deoglModelLODTexCoordSet *pTexCoordSets;
 	int pTexCoordSetCount;
 	
+	deoglModelLODVertPosSet *pVertPosSets;
+	int pVertPosSetCount;
+	int pVertPosSetPosCount;
+	
 	deoglSharedVBOBlock *pVBOBlock;
 	deoglSharedVBOBlock *pVBOBlockPositionWeight;
 	deoglSharedVBOBlock *pVBOBlockCalcNormalTangent;
 	deoglSharedVBOBlock *pVBOBlockWriteSkinnedVBO;
 	deoglSharedVBOBlock *pVBOBlockWithWeight;
+	deoglSharedVBOBlock *pVBOBlockVertPosSet;
 	GLuint pIBO;
 	deoglVBOLayout::eIndexTypes pIBOType;
 	
@@ -145,17 +151,19 @@ public:
 	
 	/** Prepare VBO block. */
 	void PrepareVBOBlock();
-	void PrepareVBOBlockPositionWeight();
-	void PrepareVBOBlockCalcNormalTangent();
-	void PrepareVBOBlockWriteSkinnedVBO();
+	// void PrepareVBOBlockPositionWeight();
+	// void PrepareVBOBlockCalcNormalTangent();
+	// void PrepareVBOBlockWriteSkinnedVBO();
 	void PrepareVBOBlockWithWeight();
+	void PrepareVBOBlockVertPosSet();
 	
 	/** VBO block. */
 	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
-	inline deoglSharedVBOBlock *GetVBOBlockPositionWeight() const{ return pVBOBlockPositionWeight; }
-	inline deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent() const{ return pVBOBlockCalcNormalTangent; }
-	inline deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO() const{ return pVBOBlockWriteSkinnedVBO; }
+	// inline deoglSharedVBOBlock *GetVBOBlockPositionWeight() const{ return pVBOBlockPositionWeight; }
+	// inline deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent() const{ return pVBOBlockCalcNormalTangent; }
+	// inline deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO() const{ return pVBOBlockWriteSkinnedVBO; }
 	inline deoglSharedVBOBlock *GetVBOBlockWithWeight() const{ return pVBOBlockWithWeight; }
+	inline deoglSharedVBOBlock *GetVBOBlockVertPosSet() const{ return pVBOBlockVertPosSet; }
 	
 	/** Index buffer object. */
 	GLuint GetIBO();
@@ -227,6 +235,12 @@ public:
 	/** Retrieves the texture coordinate set at the given index. */
 	const deoglModelLODTexCoordSet &GetTextureCoordSetAt( int index ) const;
 	
+	/** Count of vertex position sets. */
+	inline int GetVertexPositionSetCount() const{ return pVertPosSetCount; }
+	
+	/** Vertex position set at index. */
+	const deoglModelLODVertPosSet &GetVertexPositionSetAt( int index ) const;
+	
 	/** Octree or \em NULL if there is none. */
 	inline deoglModelOctree *GetOctree() const{ return pOctree; }
 	
@@ -259,10 +273,11 @@ private:
 	void pCalcErrorMetrics( const deModel &engModel );
 	void pOptimizeVertexCache();
 	void pWriteVBOData();
-	void pWriteVBODataPositionWeight();
-	void pWriteVBODataCalcNormalTangent();
-	void pWriteVBODataWriteSkinnedVBO();
+	// void pWriteVBODataPositionWeight();
+	// void pWriteVBODataCalcNormalTangent();
+	// void pWriteVBODataWriteSkinnedVBO();
 	void pWriteVBODataWithWeight();
+	void pWriteVBOBlockVertPosSet();
 };
 
 #endif

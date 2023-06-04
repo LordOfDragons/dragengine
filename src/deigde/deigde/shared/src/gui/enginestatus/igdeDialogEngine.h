@@ -33,7 +33,7 @@ class igdeMainWindow;
 /**
  * \brief Engine control dialog.
  */
-class igdeDialogEngine : public igdeDialog{
+class DE_DLL_EXPORT igdeDialogEngine : public igdeDialog{
 private:
 	igdeMainWindow &pMainWindow;
 	igdeTabBookReference pTabPanels;

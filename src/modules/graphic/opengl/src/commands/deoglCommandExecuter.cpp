@@ -80,9 +80,6 @@ void deoglCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command
 		}else if( command.MatchesArgumentAt( 0, "fboInfos" ) ){
 			pFBOInfos( command, answer );
 			
-		}else if( command.MatchesArgumentAt( 0, "quickDebug" ) ){
-			pQuickDebug( command, answer );
-			
 		}else if( command.MatchesArgumentAt( 0, "fixNaN" ) ){
 			pFixNaN( command, answer );
 			
@@ -184,18 +181,6 @@ void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, dec
 		renderThread.Unfreeze();
 		throw;
 	}
-}
-
-void deoglCommandExecuter::pQuickDebug( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	deoglConfiguration &config = pOgl.GetConfiguration();
-	
-	if( command.GetArgumentCount() == 2 ){
-		config.SetQuickDebug( command.GetArgumentAt( 1 )->ToInt() );
-	}
-	
-	answer.SetFromUTF8( "Quick Debug = " );
-	answer += config.GetQuickDebug();
-	answer.AppendFromUTF8( "\n" );
 }
 
 void deoglCommandExecuter::pFixNaN( const decUnicodeArgumentList &command, decUnicodeString &answer ){

@@ -42,7 +42,7 @@ class igdeWSky;
 /**
  * \brief Create preview for game definition skin asynchronously.
  */
-class igdeGDPCSkin : public igdeGDPreviewCreator{
+class DE_DLL_EXPORT igdeGDPCSkin : public igdeGDPreviewCreator{
 private:
 	igdeGDSkin *pGDSkin;
 	

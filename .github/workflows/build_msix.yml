@@ -54,7 +54,9 @@ jobs:
           fi
       
       - name: Install required packages
-        run: sudo apt -y install scons
+        run: |
+          sudo apt -y update
+          sudo apt -y install scons
         
       - name: Get Archives
         uses: actions/download-artifact@v3
@@ -68,16 +70,16 @@ jobs:
         
       - name: Copy MSXI
         run: |
-          cp -a installer/build_msix/dragengine-${{ inputs.releaseVersion }}.msix dragengine-${{ inputs.releaseVersion }}.msix
-          cp -a installer/build_msix/deigde-${{ inputs.releaseVersion }}.msix deigde-${{ inputs.releaseVersion }}.msix
+          cp -a installer/build_msix/dragengine-${{ inputs.releaseVersion }}.msixupload dragengine-${{ inputs.releaseVersion }}.msixupload
+          cp -a installer/build_msix/deigde-${{ inputs.releaseVersion }}.msixupload deigde-${{ inputs.releaseVersion }}.msixupload
         
       - name: Store MSIX
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifactMsix }}
           path: |
-            dragengine-${{ inputs.releaseVersion }}.msix
-            deigde-${{ inputs.releaseVersion }}.msix
+            dragengine-${{ inputs.releaseVersion }}.msixupload
+            deigde-${{ inputs.releaseVersion }}.msixupload
             installer/build_msix/msix/dragengine/AppxManifest.xml
             installer/build_msix/msix/deigde/AppxManifest.xml
           if-no-files-found: error

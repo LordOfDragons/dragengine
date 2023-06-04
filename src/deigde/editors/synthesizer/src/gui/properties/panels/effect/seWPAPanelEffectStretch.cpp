@@ -20,7 +20,6 @@
  */
 
 #include <math.h>
-#include <unistd.h>
 
 #include "seWPAPanelEffectStretch.h"
 #include "../../seWPEffect.h"

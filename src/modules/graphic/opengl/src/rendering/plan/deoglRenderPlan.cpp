@@ -127,8 +127,6 @@ pLodLevelOffset( 0 ),
 pOcclusionMap( NULL ),
 pOcclusionTest( NULL ),
 pGIState( NULL ),
-pCompute( *this ),
-pTasks( *this ),
 pTaskFindContent( NULL )
 {
 	pCamera = NULL;
@@ -338,6 +336,16 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	
 	CleanUp(); // just to make sure everything is clean
 	
+	// we can not create these objects during construction time since they can create OpenGL
+	// objects and render plan objects are potentially created from inside main thread
+	if( ! pCompute ){
+		pCompute.TakeOver( new deoglRenderPlanCompute( *this ) );
+	}
+	if( ! pTasks ){
+		pTasks.TakeOver( new deoglRenderPlanTasks( *this ) );
+	}
+	
+	// the rest is safe
 	pDebugPrepare();
 	pPlanCamera();
 	SPECIAL_TIMER_PRINT("PrepareCamera")
@@ -357,13 +365,16 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	pPlanSkyLight();
 	pPlanShadowCasting();
 	
-	pStartFindContent(); // starts parallel tasks
+	pStartFindContent( mask ); // starts parallel tasks
 	SPECIAL_TIMER_PRINT("Planning")
 	
 	// these calls run in parallel with above started tasks
 	pWorld->PrepareForRender( *this, mask );
 	pRenderThread.GetShader().UpdateSSBOSkinTextures();
-	pCompute.UpdateElementGeometries();
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pCompute->UpdateElementGeometries();
+		pCompute->BuildRTOcclusion( mask );
+	}
 	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
@@ -416,6 +427,9 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// finish occlusion testing. we can not do this later since this usually removes a large
 	// quantity of elements. processing those below just to drop them later on is not helping
 	pFinishOcclusionTests( mask );
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pTasks->BuildComputeRenderTasks( mask );
+	}
 	SPECIAL_TIMER_PRINT("FinishOcclusionTests")
 	
 	// update dynamic skins and masked rendering if required
@@ -764,12 +778,15 @@ void deoglRenderPlan::pPlanShadowCasting(){
 	//printf( "shadow map size: rendersize=%i forced=%i shift=%i size=%i cube=%i sky=%i config=%i\n", renderSize, pForceShadowMapSize, shiftSize, pShadowMapSize, pShadowCubeSize, pShadowSkySize, shadowMapSize );
 }
 
-void deoglRenderPlan::pStartFindContent(){
+void deoglRenderPlan::pStartFindContent( const deoglRenderPlanMasked *mask ){
 	INIT_SPECIAL_TIMING
 	
+	// camera view
+	DEASSERT_NULL( pTaskFindContent )
+	
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pCompute.PrepareWorldCompute();
-		pCompute.PrepareBuffers();
+		pCompute->PrepareWorldCompute();
+		pCompute->PrepareBuffers();
 		
 		deoglRenderCompute &renderCompute = pRenderThread.GetRenderers().GetCompute();
 		
@@ -780,15 +797,6 @@ void deoglRenderPlan::pStartFindContent(){
 		renderCompute.FindContent( *this );
 	}
 	
-	// sky lights
-	int i;
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartFindContent();
-	}
-	
-	// camera view
-	DEASSERT_NULL( pTaskFindContent )
-	
 	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
@@ -798,27 +806,32 @@ void deoglRenderPlan::pStartFindContent(){
 		pTaskFindContent = new deoglRPTFindContent( *this );
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
 	}
+	
+	// sky lights
+	int i;
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartFindContent();
+	}
 }
 
-void deoglRenderPlan::pWaitFinishedFindContent(){
+void deoglRenderPlan::pWaitFinishedFindContent( const deoglRenderPlanMasked *mask ){
 	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pCompute.ReadVisibleElements();
 		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent( *this );
-		
-	}else{
-		if( ! pTaskFindContent ){
-			return;
-		}
-		
-	// 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) WaitFinishedFindContent(%p)", this, pTaskFindContent );
-		pTaskFindContent->GetSemaphore().Wait();
-		
-		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
-			*this, pTaskFindContent->GetElapsedTime() );
-		
-		pTaskFindContent->FreeReference();
-		pTaskFindContent = NULL;
+		return;
 	}
+	
+	if( ! pTaskFindContent ){
+		return;
+	}
+	
+// 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) WaitFinishedFindContent(%p)", this, pTaskFindContent );
+	pTaskFindContent->GetSemaphore().Wait();
+	
+	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
+		*this, pTaskFindContent->GetElapsedTime() );
+	
+	pTaskFindContent->FreeReference();
+	pTaskFindContent = NULL;
 }
 
 void deoglRenderPlan::pPlanGI(){
@@ -1221,8 +1234,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 
 void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask ){
 	INIT_SPECIAL_TIMING
-	
-	pWaitFinishedFindContent();
+	pWaitFinishedFindContent( mask );
 	SPECIAL_TIMER_PRINT("> WaitFinishFindContent")
 	
 	// debug information if demanded
@@ -1230,37 +1242,63 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 	
 	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
 		pSkyVisible = true;
+		return;
+	}
+	
+	// determine if height terrain and sky are visible
+	pCheckOutsideVisibility();
+	
+	// render occlusion tests if there is input data. results are read back in
+	// pFinishOcclusionTests to avoid stalling
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pCompute->ReadyRTOcclusion( mask );
+		SPECIAL_TIMER_PRINT("> ReadyRTOcclusion")
 		
-	}else{
-		// determine if height terrain and sky are visible
-		pCheckOutsideVisibility();
+		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
+		SPECIAL_TIMER_PRINT("> RenderTestsCamera")
 		
-		// render occlusion tests if there is input data. results are read back in
-		// pFinishOcclusionTests to avoid stalling
-		if( pOcclusionTest->GetInputDataCount() > 0
-		&& pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
-			pOcclusionTest->UpdateSSBO();
-			if( pDebug ){
-				pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
-			}
-			SPECIAL_TIMER_PRINT("> UpdateVBO")
-			
-			pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
-			SPECIAL_TIMER_PRINT("> Render")
+		int i;
+		for( i=0; i<pSkyLightCount; i++ ){
+			( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->RenderOcclusionTests();
 		}
+		SPECIAL_TIMER_PRINT("> SkyLightsRenderTests")
+		
+		for( i=0; i<pSkyLightCount; i++ ){
+			( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->BuildComputeRenderTasks();
+		}
+		SPECIAL_TIMER_PRINT("> SkyLightsBuildComputeRenderTasks")
+		
+		pCompute->ReadVisibleElements();
+		SPECIAL_TIMER_PRINT("> ReadVisibleElements")
+		
+		pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionQueries( *this, mask, true );
+		SPECIAL_TIMER_PRINT("> RenderOcclusionQueries")
+		
+	}else if( pOcclusionTest->GetInputDataCount() > 0 ){
+		pOcclusionTest->UpdateSSBO();
+		if( pDebug ){
+			pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
+		}
+		SPECIAL_TIMER_PRINT("> UpdateVBO")
+		
+		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
+		SPECIAL_TIMER_PRINT("> Render")
+		
+		pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionQueries( *this, mask, true );
+		SPECIAL_TIMER_PRINT("> RenderOcclusionQueries")
 	}
 }
 
 void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask ){
 	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
-		pTasks.StartBuildTasks( mask );
+		pTasks->StartBuildTasks( mask );
 		return;
 	}
 	INIT_SPECIAL_TIMING
 	
 	// occlusion tests have been rendered in pRenderOcclusionTests to avoid stalling
-	if( pOcclusionTest->GetInputDataCount() > 0
-	&& pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
+	// NOTE if compute render tasks are used this will be always 0 and skipped
+	if( pOcclusionTest->GetInputDataCount() > 0 ){
 		pOcclusionTest->UpdateResults();
 		SPECIAL_TIMER_PRINT("> UpdateResults")
 		
@@ -1280,7 +1318,7 @@ void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask )
 	
 	pDebugVisibleCulled();
 	
-	pTasks.StartBuildTasks( mask );
+	pTasks->StartBuildTasks( mask );
 }
 
 void deoglRenderPlan::pDebugPrepare(){
@@ -1458,9 +1496,11 @@ void deoglRenderPlan::CleanUp(){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->CleanUp();
 	}
 	
-	pTasks.CleanUp();
+	if( pTasks ){
+		pTasks->CleanUp();
+	}
 	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pWaitFinishedFindContent();
+		pWaitFinishedFindContent( nullptr );
 	}
 	
 	RemoveAllSkyInstances();

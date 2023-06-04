@@ -22,7 +22,10 @@
 #ifndef _DEOGLSPBLOCKSSBO_H_
 #define _DEOGLSPBLOCKSSBO_H_
 
+#include <stdint.h>
+
 #include "deoglShaderParameterBlock.h"
+#include "../../utils/deoglFence.h"
 
 
 /**
@@ -32,10 +35,39 @@ class deoglSPBlockSSBO : public deoglShaderParameterBlock{
 public:
 	typedef deTObjectReference<deoglSPBlockSSBO> Ref;
 	
+	/** Type. */
+	enum eType{
+		/**
+		 * CPU writes content once then uses it for GPU reading only.
+		 */
+		etStatic,
+		
+		/**
+		 * CPU writes content often (typically every frame update) while using
+		 * it for the GPU reading the content.
+		 */
+		etStream,
+		
+		/**
+		 * CPU reads content written by GPU. CPU does not read content.
+		 * GPU potentially reads content in other render steps.
+		 */
+		etRead,
+		
+		/**
+		 * GPU writes content and reads it in later render steps. CPU never writes
+		 * nor reads the content. Hence this is a pure GPU only buffer.
+		 */
+		etGpu
+	};
+	
 	
 	
 private:
+	const eType pType;
+	const bool pUseDSA;
 	GLuint pSSBO;
+	GLuint pSSBOLocal;
 	int pBindingPoint;
 	int pBindingPointUBO;
 	int pBindingPointAtomic;
@@ -44,7 +76,9 @@ private:
 	
 	char *pWriteBuffer;
 	int pWriteBufferCapacity;
-	bool pWriteBufferUsed;
+	
+	char *pPersistentMapped;
+	deoglFence::Ref pFenceTransfer;
 	
 	int pMemoryGPUSSBO;
 	
@@ -54,10 +88,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader storage buffer object. */
-	deoglSPBlockSSBO( deoglRenderThread &renderThread );
+	deoglSPBlockSSBO( deoglRenderThread &renderThread, eType type );
 	
 	/** Create copy of shader storage buffer object. */
 	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock );
+	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock, eType eype );
 	
 protected:
 	/** Clean up shader storage buffer object. */
@@ -69,6 +104,9 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** Type. */
+	inline eType GetType() const{ return pType; }
+	
 	/** Shader storage buffer object or 0 if not created yet. */
 	inline GLuint GetSSBO() const{ return pSSBO; }
 	
@@ -117,8 +155,14 @@ public:
 	/** Activate buffer as atomic buffer. */
 	void ActivateAtomic() const;
 	
+	/** Activate buffer as atomic buffer overriding binding point. */
+	void ActivateAtomic( int bindingPoint ) const;
+	
 	/** Deactivate buffer as atomic buffer. */
 	void DeactivateAtomic() const;
+	
+	/** Deactivate buffer as atomic buffer overriding binding point. */
+	void DeactivateAtomic( int bindingPoint ) const;
 	
 	/** Activate buffer as dispatch indirect. */
 	void ActivateDispatchIndirect() const;
@@ -148,20 +192,46 @@ public:
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
 	
+	/** Ensure buffer exists. */
+	virtual void EnsureBuffer();
+	
+	/** Clear buffer. */
+	void ClearDataUInt( uint32_t value );
+	void ClearDataUInt( int offset, int count, uint32_t value );
+	void ClearDataUInt( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
+	void ClearDataUInt( int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a );
+	
+	void ClearDataFloat( float value );
+	void ClearDataFloat( int offset, int count, float value );
+	void ClearDataFloat( float r, float g, float b, float a );
+	void ClearDataFloat( int offset, int count, float r, float g, float b, float a );
+	
+	/** Copy buffer data from SSBO into this SSBO. */
+	void CopyData( const deoglSPBlockSSBO &ssbo, int offset, int count, int ssboOffset );
+	
+	/** GPU finished writing data to SSBO. */
+	void GPUFinishedWriting();
+	
+	/** Asynchronously read data from GPU to CPU. */
+	void GPUReadToCPU();
+	void GPUReadToCPU( int elementCount );
+	
+	/** Map buffer for reading. */
+	void MapBufferRead();
+	void MapBufferRead( int element );
+	void MapBufferRead( int element, int count );
+	
+	/** Unmap buffer after reading. */
+	void UnmapBufferRead();
+	
 	/** Get platform alignment requirements. */
 	virtual int GetAlignmentRequirements() const;
 	
+	/** Create copy of shader parameter block. */
+	virtual deoglShaderParameterBlock *Copy() const;
+	
 	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();
-	
-	/** Read data from SSBO into write buffer. Returns write buffer memory pointer. */
-	char *ReadBuffer();
-	
-	/** Read partial data from SSBO into write buffer. Returns write buffer memory pointer. */
-	char *ReadBuffer( int elementCount );
-	
-	/** Direct access to write buffer. Use with care. Can be nullptr. */
-	inline char *GetWriteBuffer() const{ return pWriteBuffer; }
 	
 	
 	
@@ -181,6 +251,7 @@ protected:
 	
 private:
 	void pGrowWriteBuffer( int size );
+	void pEnsureSSBO();
 };
 
 #endif

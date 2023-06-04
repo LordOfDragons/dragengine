@@ -164,15 +164,14 @@ deClassVector2::nfNormalize::nfNormalize( const sInitData &init ) : dsFunction( 
 }
 void deClassVector2::nfNormalize::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decVector2 &vector = ( ( sVec2NatDat* )p_GetNativeData( myself ) )->vector;
-	deClassVector2 *clsVector2 = ( deClassVector2* )GetOwnerClass();
-	float len = vector.Length();
+	deClassVector2 &clsVector2 = *( deClassVector2* )GetOwnerClass();
+	const float len = vector.Length();
 	
-	if( fabsf( len ) < -1e-6 ){
-		clsVector2->PushVector2( rt, vector / len );
-		
-	}else{
+	if( len == 0.0f ){
 		DSTHROW( dueDivisionByZero );
 	}
+
+	clsVector2.PushVector2( rt, vector / len );
 }
 
 // public func Vector2 absolute()

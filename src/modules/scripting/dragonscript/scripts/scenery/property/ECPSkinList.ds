@@ -49,85 +49,96 @@ class ECPSkinList extends ElementClassProperty implements ResourceListener
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pPath = Array.new()
-		this.pSkins = Array.new()
+	public func new(String name) super(name)
+		pPath = Array.new()
+		pSkins = Array.new()
 	end
 	
 	
 	
 	/** \brief Remove all path. */
 	public func void removeAllPath()
-		this.pPath.removeAll()
+		pPath.removeAll()
 	end
 	
 	/** \brief Add a path. */
-	public func void addPath( String path )
-		this.pPath.add( path )
+	public func void addPath(String path)
+		pPath.add(path)
 	end
 	
 	
 	
 	/** \brief Number of skins. */
 	public func int getCount()
-		return this.pSkins.getCount()
+		return pSkins.getCount()
 	end
 	
 	/** \brief Skin at index. */
-	public func Skin getAt( int index )
-		return this.pSkins.getAt( index ) cast Skin
+	public func Skin getAt(int index)
+		return pSkins.getAt(index) cast Skin
 	end
 	
 	/** \brief Get random skin or \em null if no skins are present. */
 	public func Skin getRandom()
-		if this.pSkins.getCount() == 0
+		if pSkins.getCount() == 0
 			return null
 			
 		else
-			return this.pSkins.random() cast Skin
+			return pSkins.random() cast Skin
 		end
 	end
 	
 	/** \brief For each skin with block with Skin as parameter. */
-	public func void forEach( Block ablock )
-		this.pSkins.forEach( ablock )
+	public func void forEach(Block ablock)
+		pSkins.forEach(ablock)
 	end
 	
 	/** \brief Remove all skins. */
 	public func void removeAll()
-		this.pSkins.removeAll()
+		pSkins.removeAll()
 	end
 	
 	/** \brief Add skin. */
-	public func void add( Skin skin )
-		this.pSkins.add( skin )
+	public func void add(Skin skin)
+		pSkins.add(skin)
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath.removeAll()
-		( value cast Array ).forEach( block String each
-			this.pPath.add( each )
-		end )
+	public func void setValue(Object value)
+		pPath.removeAll()
+		(value cast Array).forEach(block String each
+			pPath.add(each)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		var String basePath = elementClass.getBasePath()
+		pPath = (property cast ECPSkinList).pPath.map(block String each
+			return not each.empty() if File.absolutePath(each, basePath).getPath() else null
+		end)
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
-		this.pCounter = counter
+		pHasPreloaded = true
+		pCounter = counter
 		
 		var String basePath = elementClass.getBasePath()
 		
@@ -135,56 +146,56 @@ class ECPSkinList extends ElementClassProperty implements ResourceListener
 		// the absolute path each time finishedLoading() is called since the resource
 		// has the absolute path not matching the relative path. it is save to do
 		// this replacement here once
-		this.pPath = this.pPath.map( block String each
-			return each.empty() if "" else File.absolutePath( each, basePath ).getPath()
-		end )
+		pPath = pPath.map(block String each
+			return each.empty() if "" else File.absolutePath(each, basePath).getPath()
+		end)
 		
-		this.pPath.forEach( block String each
-			this.pSkins.add( null )
+		pPath.forEach(block String each
+			pSkins.add(null)
 			if not each.empty()
-				Skin.loadAsynchron( each, this )
+				Skin.loadAsynchron(each, this)
 				counter.increase()
 			end
-		end )
+		end)
 	end
 	
 	/**
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pFailedLoading == null
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pFailedLoading == null
 			return false
 		end
 		
-		this.pFailedLoading.forEach( block String each
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Failed loading skin " + each )
-		end )
+		pFailedLoading.forEach(block String each
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Failed loading skin " + each)
+		end)
 		return true
 	end
 	
 	
 	
 	/** \brief Resource has finished loading. */
-	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
-		var int i, count = this.pPath.getCount()
+	public func void finishedLoading(String path, ResourceLoaderType resourceType, Object resource)
+		var int i, count = pPath.getCount()
 		for i = 0 to count
-			if this.pPath.getAt( i ).equals( path )
-				this.pSkins.setAt( i, resource )
+			if pPath.getAt(i).equals(path)
+				pSkins.setAt(i, resource)
 			end
 		end
 		
-		this.pCounter.decrease()
+		pCounter.decrease()
 	end
 	
 	/** \brief Resource failed loading. */
-	public func void failedLoading( String path, ResourceLoaderType resourceType )
-		if this.pFailedLoading == null
-			this.pFailedLoading = Array.new()
+	public func void failedLoading(String path, ResourceLoaderType resourceType)
+		if pFailedLoading == null
+			pFailedLoading = Array.new()
 		end
-		this.pFailedLoading.add( path )
+		pFailedLoading.add(path)
 		
-		this.pCounter.decrease()
+		pCounter.decrease()
 	end
 end

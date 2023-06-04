@@ -34,38 +34,45 @@ pin Dragengine.Preloading
  * Point is stored as Point instance.
  */
 class ECPPoint extends ElementClassProperty
-	/** \brief Point. */
 	private var Point pPoint
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pPoint = Point.new()
+	public func new(String name) super(name)
+		pPoint = Point.new()
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, Point point ) super( name )
-		this.pPoint = point
+	public func new(String name, Point point) super(name)
+		pPoint = point
 	end
 	
 	
 	
 	/** \brief Point. */
 	public func Point getPoint()
-		return this.pPoint
+		return pPoint
 	end
 	
 	/** \brief Set point. */
-	public func void setPoint( Point point )
-		this.pPoint = point
+	public func void setPoint(Point point)
+		pPoint = point
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.setPoint( value cast Point )
+	public func void setValue(Object value)
+		setPoint(value cast Point)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pPoint = (property cast ECPPoint).pPoint
 	end
 	
 	
@@ -79,13 +86,13 @@ class ECPPoint extends ElementClassProperty
 	 * The following property value formats are understood where "x" and "y" are integer values:
 	 * - "x y": Point.new(x, x)
 	 */
-	public func Point getPoint( StubWithProperties stub, CodecPropertyString codec )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Point getPoint(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pPoint
+			return pPoint
 			
 		else
-			return codec.decodePoint( value )
+			return codec.decodePoint(value)
 		end
 	end
 end

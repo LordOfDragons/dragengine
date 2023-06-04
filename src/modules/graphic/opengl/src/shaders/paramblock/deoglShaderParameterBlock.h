@@ -168,6 +168,9 @@ public:
 	/** Ensure buffer exists. Calls MapBuffer() then UnmapBuffer(). */
 	virtual void EnsureBuffer();
 	
+	/** Create copy of shader parameter block. */
+	virtual deoglShaderParameterBlock *Copy() const = 0;
+	
 	
 	
 	/** Clear mapped buffer to 0. */
@@ -486,6 +489,7 @@ protected:
 	void pSetMapped( char *data, int element );
 	void pSetMapped( char *data, int element, int count );
 	void pClearMapped();
+	void pSetOffsetPadding( int padding );
 	void pSetElementStride( int stride );
 	
 	virtual void pUpdateBufferSize();

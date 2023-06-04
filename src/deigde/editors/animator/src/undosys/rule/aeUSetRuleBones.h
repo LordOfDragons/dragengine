@@ -30,7 +30,7 @@ class aeRule;
 
 
 /**
- * \brief Undo set rule bones.
+ * Undo set rule bones.
  */
 class aeUSetRuleBones : public igdeUndo{
 protected:
@@ -44,21 +44,21 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleBones( aeRule *rule, const decStringSet &newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleBones();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

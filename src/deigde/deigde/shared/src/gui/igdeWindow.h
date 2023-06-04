@@ -37,7 +37,7 @@ class igdeWidget;
 /**
  * \brief IGDE UI Window.
  */
-class igdeWindow : public igdeContainer{
+class DE_DLL_EXPORT igdeWindow : public igdeContainer{
 private:
 	decString pTitle;
 	igdeIconReference pIcon;

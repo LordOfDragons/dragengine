@@ -82,7 +82,6 @@ void deoglRenderBase::AddBasicDefines( deoglShaderDefines &defines ){
 void deoglRenderBase::AddSharedSPBDefines( deoglShaderDefines &defines ){
 	const deoglRenderThread &renderThread = GetRenderThread();
 	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
-	decString value;
 	
 	defines.SetDefines( "SHARED_SPB" );
 	
@@ -90,26 +89,27 @@ void deoglRenderBase::AddSharedSPBDefines( deoglShaderDefines &defines ){
 		defines.SetDefines( "SHARED_SPB_USE_SSBO" );
 		
 		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
-			value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
-			defines.SetDefine( "SHARED_SPB_PADDING", value );
+			defines.SetDefine( "SHARED_SPB_PADDING", bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
 		}
 		
 	}else{
 		// NOTE UBO requires array size to be constant, SSBO does not
 		if( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() > 0 ){
-			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
-			defines.SetDefine( "SHARED_SPB_ARRAY_SIZE", value );
+			defines.SetDefine( "SHARED_SPB_ARRAY_SIZE", bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
 		}
 		
 		if( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() >= 16 ){
-			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
-			defines.SetDefine( "SHARED_SPB_PADDING", value );
+			defines.SetDefine( "SHARED_SPB_PADDING", bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
 		}
 	}
 	
-	if( bo.GetInstanceArraySizeUBO() > 0 ){
-		value.SetValue( bo.GetInstanceArraySizeUBO() );
-		defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
+	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+		defines.SetDefines( "SPB_SSBO_INSTANCE_ARRAY" );
+		
+	}else{
+		if( bo.GetInstanceArraySizeUBO() > 0 ){
+			defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", bo.GetInstanceArraySizeUBO() );
+		}
 	}
 }
 

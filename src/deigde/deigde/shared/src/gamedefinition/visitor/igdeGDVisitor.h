@@ -22,6 +22,8 @@
 #ifndef _IGDEGDVISITOR_H_
 #define _IGDEGDVISITOR_H_
 
+#include <dragengine/dragengine_export.h>
+
 class igdeGDClass;
 class igdeGDSkin;
 class igdeGDSky;
@@ -31,7 +33,7 @@ class igdeGDSky;
 /**
  * \brief Game Definition Visitor.
  */
-class igdeGDVisitor{
+class DE_DLL_EXPORT igdeGDVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

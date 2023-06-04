@@ -46,6 +46,9 @@ int deBaseGraphicModule::GetFPSRate(){
 	return 0;
 }
 
+void deBaseGraphicModule::SetVRDebugPanelPosition( const decDVector &, const decQuaternion & ){
+}
+
 void deBaseGraphicModule::GetGraphicApiConnection( sGraphicApiConnection &connection ){
 	memset( &connection, 0, sizeof( connection ) );
 }

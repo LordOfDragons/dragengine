@@ -28,7 +28,7 @@
 /**
  * \brief IGDE UI Switching Widgets.
  */
-class igdeSwitcher : public igdeContainer{
+class DE_DLL_EXPORT igdeSwitcher : public igdeContainer{
 private:
 	int pCurrent;
 	

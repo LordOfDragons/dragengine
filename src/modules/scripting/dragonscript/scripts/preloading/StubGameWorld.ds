@@ -45,29 +45,30 @@ class StubGameWorld extends StubWithProperties
 	
 	
 	/** \brief Create stub. */
-	public func new( GameWorld gameWorld, PreloadCounter parentCounter )
+	public func new(GameWorld gameWorld, PreloadCounter parentCounter)
 		if gameWorld == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pGameWorld = gameWorld
+		pGameWorld = gameWorld
+		gameWorld.setStub(this)
 		
-		this.pWorldDecals = Array.new()
-		this.pElements = Array.new()
-		this.pNavSpaces = Array.new()
+		pWorldDecals = Array.new()
+		pElements = Array.new()
+		pNavSpaces = Array.new()
 		
-		this.pCounter = PreloadCounter.new()
-		this.pCounter.setParent( parentCounter )
+		pCounter = PreloadCounter.new()
+		pCounter.setParent(parentCounter)
 	end
 	
 	/** \brief Create copy of stub. */
-	public func new( StubGameWorld stub ) super( stub )
-		this.pWorldDecals = stub.pWorldDecals.map( block StubWorldDecal each
-			return StubWorldDecal.new( each )
-		end )
-		this.pElements = stub.pElements.map( block StubElement each
-			return StubElement.new( each )
-		end )
+	public func new(StubGameWorld stub) super(stub)
+		pWorldDecals = stub.pWorldDecals.map(block StubWorldDecal each
+			return StubWorldDecal.new(each)
+		end)
+		pElements = stub.pElements.map(block StubElement each
+			return StubElement.new(each)
+		end)
 		// pNavSpaces can not copied. are they still useful or deprecated?
 	end
 	
@@ -75,98 +76,98 @@ class StubGameWorld extends StubWithProperties
 	
 	/** \brief Game world. */
 	public func GameWorld getGameWorld()
-		return this.pGameWorld
+		return pGameWorld
 	end
 	
 	
 	
 	/** \brief Number of world decal stubs. */
 	public func int getWorldDecalCount()
-		return this.pWorldDecals.getCount()
+		return pWorldDecals.getCount()
 	end
 	
 	/** \brief World decal stub at index. */
-	public func StubWorldDecal getWorldDecalAt( int index )
-		return this.pWorldDecals.getAt( index ) cast StubWorldDecal
+	public func StubWorldDecal getWorldDecalAt(int index)
+		return pWorldDecals.getAt(index) cast StubWorldDecal
 	end
 	
 	/** \brief Add world decal stub. */
-	public func void addWorldDecal( StubWorldDecal worldDecal )
+	public func void addWorldDecal(StubWorldDecal worldDecal)
 		if worldDecal == null
 			throw EInvalidParam.new()
 		end
-		this.pWorldDecals.add( worldDecal )
-		worldDecal.setCounter( this.pCounter )
+		pWorldDecals.add(worldDecal)
+		worldDecal.setCounter(pCounter)
 	end
 	
 	/** \brief Visit world decal stubs using block with StubWorldDecal as parameter. */
-	public func void forEachWorldDecal( Block ablock )
-		this.pWorldDecals.forEach( ablock )
+	public func void forEachWorldDecal(Block ablock)
+		pWorldDecals.forEach(ablock)
 	end
 	
 	/** \brief Preload world decal resources. */
 	public func void preloadWorldDecalResources()
-		this.pWorldDecals.forEach( block StubWorldDecal each
+		pWorldDecals.forEach(block StubWorldDecal each
 			each.preloadResources()
-		end )
+		end)
 	end
 	
 	/** \brief Load world decal resources. */
 	public func void loadWorldDecalResources()
-		this.pWorldDecals.forEach( block StubWorldDecal each
+		pWorldDecals.forEach(block StubWorldDecal each
 			each.loadResources()
-		end )
+		end)
 	end
 	
 	/** \brief Create world decals from stubs. */
-	public func void createWorldDecals( DecalBuilder builder, Console console )
-		this.pWorldDecals.forEach( block StubWorldDecal each
+	public func void createWorldDecals(DecalBuilder builder, Console console)
+		pWorldDecals.forEach(block StubWorldDecal each
 			try
-				each.createWorldDecal( this.pGameWorld, builder )
+				each.createWorldDecal(pGameWorld, builder)
 				
 			catch Exception e
-				console.addMessage( "Failed to createWorldDecal decal located at " + each.getPosition() )
+				console.addMessage("Failed to createWorldDecal decal located at " + each.getPosition())
 				throw
 			end
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Number of element stubs. */
 	public func int getElementCount()
-		return this.pElements.getCount()
+		return pElements.getCount()
 	end
 	
 	/** \brief Element stub at index. */
-	public func StubElement getElementAt( int index )
-		return this.pElements.getAt( index ) cast StubElement
+	public func StubElement getElementAt(int index)
+		return pElements.getAt(index) cast StubElement
 	end
 	
 	/** \brief Add element stub. */
-	public func void addElement( StubElement element )
+	public func void addElement(StubElement element)
 		if element == null
 			throw EInvalidParam.new()
 		end
-		this.pElements.add( element )
-		element.setCounter( this.pCounter )
+		pElements.add(element)
+		element.setCounter(pCounter)
 	end
 	
 	/** \brief Remove all elements. */
 	public func void removeAllElements()
-		this.pElements = Array.new()
+		pElements = Array.new()
 	end
 	
 	/** \brief Visit element stubs using block with StubElement as parameter. */
-	public func void forEachElement( Block ablock )
-		this.pElements.forEach( ablock )
+	public func void forEachElement(Block ablock)
+		pElements.forEach(ablock)
 	end
 	
 	/** \brief Add all element classes to the preload manager. */
-	public func void addElementClassesTo( PreloadManager preloadManager )
-		this.pElements.forEach( block StubElement each
-			preloadManager.addElementClass( each.getClass() )
-		end )
+	public func void addElementClassesTo(PreloadManager preloadManager)
+		pElements.forEach(block StubElement each
+			preloadManager.addElementClass(each.getClass())
+		end)
 	end
 	
 	/**
@@ -179,16 +180,16 @@ class StubGameWorld extends StubWithProperties
 	 * preloading their resources. Once finished call GameWorld.readDynamicElementDataFromFile()
 	 * to create the elements.
 	 */
-	public func void readElementStubsFromFile( PersistencyEnvironment env, FileReader reader, \
-	ElementClassList elementClassList )
+	public func void readElementStubsFromFile(PersistencyEnvironment env, FileReader reader, \
+	ElementClassList elementClassList)
 		var StubElement stub
 		
 		while true
-			stub = StubElement.readFromFile( reader, elementClassList )
+			stub = StubElement.readFromFile(reader, elementClassList)
 			if stub == null
 				break
 			end
-			this.addElement( stub )
+			addElement(stub)
 		end
 	end
 	
@@ -200,18 +201,18 @@ class StubGameWorld extends StubWithProperties
 	 * - createAndAddPersistableElements()
 	 * - loadAndAddPersistableElements()
 	 */
-	public func void createAndAddElements( Console console )
-		this.pElements.forEach( block StubElement each
+	public func void createAndAddElements(Console console)
+		pElements.forEach(block StubElement each
 			try
-				each.createAndAddElement( this.pGameWorld )
+				each.createAndAddElement(pGameWorld)
 				
 			catch Exception e
-				console.addMessage( "Failed to createAndAddElements object with class '" \
+				console.addMessage("Failed to createAndAddElements object with class '" \
 					+ each.getClass().getClassname() + "' with ID " + each.getID() \
-					+ " located at " + each.getPosition() )
+					+ " located at " + each.getPosition())
 				throw
 			end
-		end )
+		end)
 	end
 	
 	/**
@@ -220,20 +221,20 @@ class StubGameWorld extends StubWithProperties
 	 * Call for loading game worlds from file readers (save stated for example). For creating
 	 * new game worlds from world files use createAndAddElements().
 	 */
-	public func void createAndAddNonPersistableElements( Console console )
-		this.pElements.forEach( block StubElement each
+	public func void createAndAddNonPersistableElements(Console console)
+		pElements.forEach(block StubElement each
 			try
 				if not each.getClass().getPersistable()
-					each.createAndAddElement( this.pGameWorld )
+					each.createAndAddElement(pGameWorld)
 				end
 				
 			catch Exception e
-				console.addMessage( "Failed to createAndAddNonPersistableElements object with class '" \
+				console.addMessage("Failed to createAndAddNonPersistableElements object with class '" \
 					+ each.getClass().getClassname() + "' with ID " + each.getID() \
-					+ " located at " + each.getPosition() )
+					+ " located at " + each.getPosition())
 				throw
 			end
-		end )
+		end)
 	end
 	
 	/**
@@ -261,20 +262,20 @@ class StubGameWorld extends StubWithProperties
 	 * way. The most simple solution is to save the UniqueIDRemapper entry for the newly
 	 * added range of elements aside at the time you have to add the range.
 	 */
-	public func void createAndAddPersistableElements( Console console, UniqueIDRemapper.RemapEntry range )
-		this.pElements.forEach( block StubElement each
+	public func void createAndAddPersistableElements(Console console, UniqueIDRemapper.RemapEntry range)
+		pElements.forEach(block StubElement each
 			try
-				if each.getClass().getPersistable() and range.inRemappedRange( each.getID() )
-					each.createAndAddElement( this.pGameWorld )
+				if each.getClass().getPersistable() and range.inRemappedRange(each.getID())
+					each.createAndAddElement(pGameWorld)
 				end
 				
 			catch Exception e
-				console.addMessage( "Failed to createAndAddPersistableElements object with class '" \
+				console.addMessage("Failed to createAndAddPersistableElements object with class '" \
 					+ each.getClass().getClassname() + "' with ID " + each.getID() \
-					+ " located at " + each.getPosition() )
+					+ " located at " + each.getPosition())
 				throw
 			end
-		end )
+		end)
 	end
 	
 	/**
@@ -282,145 +283,145 @@ class StubGameWorld extends StubWithProperties
 	 * 
 	 * Call for loading game worlds from file readers (save stated for example).
 	 */
-	public func void loadAndAddPersistableElements( Console console, PersistencyEnvironment env, FileReader reader )
+	public func void loadAndAddPersistableElements(Console console, PersistencyEnvironment env, FileReader reader)
 		if env.getPersistency().getDebugEnableCanaryValue()
-			this.pElements.forEach( block StubElement each
+			pElements.forEach(block StubElement each
 				try
 					if each.getClass().getPersistable()
-						if not reader.readString( Persistency.debugCanaryValue_BEGIN.getLength() ) \
-						.equals( Persistency.debugCanaryValue_BEGIN )
-							env.getPersistency().getConsole().addMessage( each.getClass().getClassname() \
-								+ ": Canary value invalid at reader position " + reader.getPosition() )
+						if not reader.readString(Persistency.debugCanaryValue_BEGIN.getLength()) \
+						.equals(Persistency.debugCanaryValue_BEGIN)
+							env.getPersistency().getConsole().addMessage(each.getClass().getClassname() \
+								+ ": Canary value invalid at reader position " + reader.getPosition())
 							throw EInvalidParam.new()
 						end
 						
-						each.loadAndAddElement( env, reader, this.pGameWorld )
+						each.loadAndAddElement(env, reader, pGameWorld)
 						
-						if not reader.readString( Persistency.debugCanaryValue_END.getLength() ) \
-						.equals( Persistency.debugCanaryValue_END )
-							env.getPersistency().getConsole().addMessage( each.getClass().getClassname() \
-								+ ": Canary value invalid at reader position " + reader.getPosition() )
+						if not reader.readString(Persistency.debugCanaryValue_END.getLength()) \
+						.equals(Persistency.debugCanaryValue_END)
+							env.getPersistency().getConsole().addMessage(each.getClass().getClassname() \
+								+ ": Canary value invalid at reader position " + reader.getPosition())
 							throw EInvalidParam.new()
 						end
 					end
 					
 				catch Exception e
-					console.addMessage( "Failed to loadAndAddPersistableElements object with class '" \
+					console.addMessage("Failed to loadAndAddPersistableElements object with class '" \
 						+ each.getClass().getClassname() + "' with ID " + each.getID() \
-						+ " located at " + each.getPosition() )
+						+ " located at " + each.getPosition())
 					throw
 				end
-			end )
+			end)
 			
 		else
-			this.pElements.forEach( block StubElement each
+			pElements.forEach(block StubElement each
 				try
 					if each.getClass().getPersistable()
-						each.loadAndAddElement( env, reader, this.pGameWorld )
+						each.loadAndAddElement(env, reader, pGameWorld)
 					end
 					
 				catch Exception e
-					console.addMessage( "Failed to loadAndAddPersistableElements object with class '" \
+					console.addMessage("Failed to loadAndAddPersistableElements object with class '" \
 						+ each.getClass().getClassname() + "' with ID " + each.getID() \
-						+ " located at " + each.getPosition() )
+						+ " located at " + each.getPosition())
 					throw
 				end
-			end )
+			end)
 		end
 	end
 	
 	/** \brief Preload element resources. */
 	public func void preloadElementResources()
-		this.pElements.forEach( block StubElement each
+		pElements.forEach(block StubElement each
 			each.preloadResources()
-		end )
+		end)
 	end
 	
 	/** \brief Load element resources. */
 	public func void loadElementResources()
-		this.pElements.forEach( block StubElement each
+		pElements.forEach(block StubElement each
 			each.loadResources()
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Loading has finished. */
 	public func bool hasLoadingFinished()
-		return this.pCounter.isZero()
+		return pCounter.isZero()
 	end
 	
 	
 	
 	/** \brief Number of navigation spaces. */
 	public func int getNavigationSpaceCount()
-		return this.pNavSpaces.getCount()
+		return pNavSpaces.getCount()
 	end
 	
 	/** \brief Navigation space at index. */
-	public func NavigationSpace getNavigationSpaceAt( int index )
-		return this.pNavSpaces.getAt( index ) cast NavigationSpace
+	public func NavigationSpace getNavigationSpaceAt(int index)
+		return pNavSpaces.getAt(index) cast NavigationSpace
 	end
 	
 	/** \brief Add navigation space. */
-	public func void addNavigationSpace( NavigationSpace navspace )
+	public func void addNavigationSpace(NavigationSpace navspace)
 		if navspace == null
 			throw EInvalidParam.new()
 		end
-		this.pNavSpaces.add( navspace )
+		pNavSpaces.add(navspace)
 	end
 	
 	/** \brief Remove all navigation spaces. */
 	public func void removeAllNavigationSpaces()
-		this.pNavSpaces = Array.new()
+		pNavSpaces = Array.new()
 	end
 	
 	/** \brief Add navigation spaces to world. */
 	public func void worldAddNavigationSpaces()
-		this.pNavSpaces.forEach( block NavigationSpace each
-			this.pGameWorld.getWorld().addNavigationSpace( each )
-		end )
+		pNavSpaces.forEach(block NavigationSpace each
+			pGameWorld.getWorld().addNavigationSpace(each)
+		end)
 	end
 	
 	
 	
 	/** \brief Next object ID. */
 	public func UniqueID getNextObjectID()
-		return this.pNextObjectID
+		return pNextObjectID
 	end
 	
 	/** \brief Set next object ID. */
-	public func void setNextObjectID( UniqueID nextObjectID )
-		this.pNextObjectID = nextObjectID
+	public func void setNextObjectID(UniqueID nextObjectID)
+		pNextObjectID = nextObjectID
 	end
 	
 	/** \brief Remap object IDs. */
-	public func void remapObjectIDs( UniqueIDRemapper remapper )
-		this.pElements.forEach( block StubElement each
-			each.setID( remapper.remap( each.getID() ) )
+	public func void remapObjectIDs(UniqueIDRemapper remapper)
+		pElements.forEach(block StubElement each
+			each.setID(remapper.remap(each.getID()))
 			
 			if each.getAttachTo() != null
-				each.setAttachTo( remapper.remap( each.getAttachTo() ) )
+				each.setAttachTo(remapper.remap(each.getAttachTo()))
 			end
-		end )
+		end)
 	end
 	
 	/** \brief Range of new elements added since the last saving or null. */
 	public func  UniqueIDRemapper.RemapEntry getNewElementsRange()
-		return this.pNewElementsRange
+		return pNewElementsRange
 	end
 	
 	/** \brief Set range of new elements added since the last saving or null. */
-	public func void setNewElementsRange( UniqueIDRemapper.RemapEntry range )
-		this.pNewElementsRange = range
+	public func void setNewElementsRange(UniqueIDRemapper.RemapEntry range)
+		pNewElementsRange = range
 	end
 	
 	
 	
 	/** \brief Begin preloading resources. */
 	public func void beginPreloading()
-		this.preloadElementResources()
-		this.preloadWorldDecalResources()
+		preloadElementResources()
+		preloadWorldDecalResources()
 	end
 	
 	/**
@@ -431,8 +432,8 @@ class StubGameWorld extends StubWithProperties
 	 * required engine objects created. Once all this has been done true is returned.
 	 */
 	public func bool updatePreloading()
-		if this.pCounter.isZero()
-			this.worldAddNavigationSpaces()  // still required? deprecated?
+		if pCounter.isZero()
+			worldAddNavigationSpaces()  // still required? deprecated?
 			return true
 		end
 		
@@ -444,19 +445,19 @@ class StubGameWorld extends StubWithProperties
 	 * 
 	 * \returns true if all resources loaded successfully or false otherwise.
 	 */
-	public func bool verifyPreloading( Console console )
+	public func bool verifyPreloading(Console console)
 		var bool success = true
 		var int count
 		var int i
 		
-		count = this.pElements.getCount()
+		count = pElements.getCount()
 		for i = 0 to count
-			success &= ( this.pElements.getAt( i ) cast StubElement ).verifyPreloading( console )
+			success &= (pElements.getAt(i) cast StubElement).verifyPreloading(console)
 		end
 		
-		count = this.pWorldDecals.getCount()
+		count = pWorldDecals.getCount()
 		for i = 0 to count
-			success &= ( this.pWorldDecals.getAt( i ) cast StubWorldDecal ).verifyPreloading( console )
+			success &= (pWorldDecals.getAt(i) cast StubWorldDecal).verifyPreloading(console)
 		end
 		
 		return success
@@ -464,7 +465,7 @@ class StubGameWorld extends StubWithProperties
 	
 	/** \brief Loading resources. */
 	public func void loadResources()
-		this.loadElementResources()
-		this.loadWorldDecalResources()
+		loadElementResources()
+		loadWorldDecalResources()
 	end
 end

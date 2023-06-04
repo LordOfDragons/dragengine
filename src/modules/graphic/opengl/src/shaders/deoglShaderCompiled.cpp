@@ -48,9 +48,7 @@ pRenderThread( renderThread )
 	pHandleFP = 0;
 	
 	pHandleShader = pglCreateProgram();
-	if( ! pHandleShader ){
-		DETHROW( deeOutOfMemory );
-	}
+	DEASSERT_NOTNULL( pHandleShader )
 	
 	pParameters = NULL;
 	pParameterCount = 0;

@@ -33,7 +33,7 @@ class aeRuleForeignState;
 
 
 /**
- * @brief Undo set rule foreign state enable rotation.
+ * Undo set rule foreign state enable rotation.
  *
  * Undo to set enable rotation of a foreign state rule.
  */
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleFStaEnableRot( aeRuleForeignState *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaEnableRot();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

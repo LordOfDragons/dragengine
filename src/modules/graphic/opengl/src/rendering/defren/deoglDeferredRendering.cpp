@@ -30,7 +30,6 @@
 #include "../../debug/deoglDebugTraceGroup.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../extensions/deoglExtensions.h"
-#include "../../extensions/deoglExtResult.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglRestoreFramebuffer.h"
 #include "../../rendering/deoglRenderWorld.h"
@@ -292,6 +291,7 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 	struct sBillboardPoint{
 		oglVector3 position, normal, tangent;
 		oglVector2 texcoord;
+		GLint layer;
 	};
 	
 	sQuadPoint fsquad[ 36 ], *ptrFSQuad = fsquad;
@@ -308,13 +308,16 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 	
 	const oglVector3 billboardNormal = { 0.0f, 0.0f, 1.0f };
 	const oglVector3 billboardTangent = { 1.0f, 0.0f, 0.0f };
-	const sBillboardPoint billboard[ 6 ] = {
-		{ { -1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 0.0f } },
-		{ {  1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 0.0f } },
-		{ {  1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 1.0f } },
-		{ { -1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 1.0f } },
-		{ { -1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 0.0f } },
-		{ {  1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 1.0f } } };
+	
+	sBillboardPoint billboard[ 12 ], *ptrBillboard = billboard;
+	for( i=0; i<2; i++ ){
+		*( ptrBillboard++ ) = sBillboardPoint{ { -1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 0.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ {  1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 0.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ {  1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 1.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ { -1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 1.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ { -1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 0.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ {  1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 1.0f }, i };
+	}
 	
 	pWidth = 0;
 	pHeight = 0;
@@ -401,15 +404,17 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 		OGL_CHECK( renderThread, pglBindVertexArray( pVAOBillboard->GetVAO() ) );
 		
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )0 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )0 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 1 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )12 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )12 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 2 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )12 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )12 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 3 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 3, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )24 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 3, 3, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )24 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 4 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 4, 2, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )36 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 4, 2, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )36 ) );
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 5 ) );
+		OGL_CHECK( renderThread, pglVertexAttribIPointer( 5, 1, GL_INT, 48, ( const GLvoid * )44 ) );
 		
 		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
@@ -1214,7 +1219,7 @@ void deoglDeferredRendering::pCreateTextures(){
 	
 	// create diffuse texture
 	pTextureDiffuse = new deoglArrayTexture( pRenderThread );
-	pTextureDiffuse->SetFBOFormat( 4, false ); //4, true );
+	pTextureDiffuse->SetFBOFormat( 4, false );
 	pTextureDiffuse->SetDebugObjectLabel( "DefRen.Diffuse" );
 	
 	// create normal texture
@@ -1223,9 +1228,7 @@ void deoglDeferredRendering::pCreateTextures(){
 	// visibile. With RGB16 the jumping artifacts are not visible anymore. RB11B11F has even
 	// worse jumping artifacts.
 	pTextureNormal = new deoglArrayTexture( pRenderThread );
-	//pTextureNormal->SetFBOFormat( 3, false ); //4, true );
-	pTextureNormal->SetFBOFormat( 3, true ); //4, true );
-	//pTextureNormal->SetFormatFromCaps( deoglCapsFmtSupport::eutfRGB10A2 );
+	pTextureNormal->SetFBOFormat( 3, true );
 	pTextureNormal->SetDebugObjectLabel( "DefRen.Normal" );
 	
 	// create reflectivity texture

@@ -30,7 +30,7 @@ class aeController;
 
 
 /**
- * \brief Undo action controller set maximum value.
+ * Undo action controller set maximum value.
  */
 class aeUControllerSetMaximumValue : public igdeUndo{
 private:
@@ -43,11 +43,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUControllerSetMaximumValue( aeController *controller, float newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUControllerSetMaximumValue();
 	/*@}*/
 	
@@ -56,10 +56,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

@@ -30,7 +30,7 @@
 
 
 /**
- * \brief Animator rule limit.
+ * Animator rule limit.
  */
 class dearRuleLimit : public dearRule{
 private:
@@ -62,6 +62,10 @@ private:
 	const bool pEnableScalingZMax;
 	const bool pEnableScalingAny;
 	
+	const bool pEnableVPSMin;
+	const bool pEnableVPSMax;
+	const bool pEnableVPSAny;
+	
 	const bool pEnabledAny;
 	
 	const deAnimatorRuleLimit::eCoordinateFrames pCoordinateFrame;
@@ -71,15 +75,17 @@ private:
 	const decVector pMaxRotation;
 	const decVector pMinScaling;
 	const decVector pMaxScaling;
+	const float pMinVPS;
+	const float pMaxVPS;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleLimit( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleLimit &rule );
 	
-	/** \brief Clean up animator. */
+	/** Clean up animator. */
 	virtual ~dearRuleLimit();
 	/*@}*/
 	
@@ -87,15 +93,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Target bone index. */
+	/** Target bone index. */
 	inline int GetTargetBone() const{ return pTargetBone; }
 	
 	
 	
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	

@@ -28,7 +28,7 @@
 /**
  * \brief IGDE UI Spacer.
  */
-class igdeSpacer : public igdeWidget{
+class DE_DLL_EXPORT igdeSpacer : public igdeWidget{
 private:
 	decPoint pSize;
 	

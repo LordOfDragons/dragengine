@@ -25,7 +25,11 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/animation/deBaseAnimationModule.h>
 
+class deAnimationMove;
+class deAnimationKeyframeList;
 class deAnimationKeyframe;
+class deAnimationKeyframeVertexPositionSetList;
+class deAnimationKeyframeVertexPositionSet;
 
 
 /**
@@ -56,6 +60,31 @@ public:
 	
 	
 private:
+	struct sInfo{
+		int version;
+		int flags;
+		bool deprOldFormat;
+		
+		int boneCount;
+		int vertexPositionSetCount;
+		int moveCount;
+		
+		float timeFactor;
+		int playtimeFrames;
+		
+		int boneFlags;
+		bool hasVarPos;
+		bool hasVarRot;
+		bool hasVarScale;
+		bool fewKeyframes;
+		bool ignoreBone;
+		bool formatFloat;
+		
+		int vertexPositionSetFlags;
+		bool hasVarWeight;
+		bool ignoreSet;
+	};
+	
 	struct sConfig{
 		bool hasVarPos;
 		bool hasVarRot;
@@ -64,6 +93,24 @@ private:
 		bool ignoreBone;
 		bool formatFloat;
 	};
+	
+	struct sConfig2{
+		bool hasVarWeight;
+		bool fewKeyframes;
+		bool ignoreSet;
+		bool formatFloat;
+	};
+	
+	void pReadBones( decBaseFileReader &reader, deAnimation &animation, sInfo &info );
+	void pReadVertexPositionSets( decBaseFileReader &reader, deAnimation &animation, sInfo &info );
+	void pReadMoves( decBaseFileReader &reader, deAnimation &animation, sInfo &info );
+	void pReadMoveFps( decBaseFileReader &reader, deAnimationMove &move, sInfo &info );
+	void pReadMoveBones( decBaseFileReader &reader, deAnimationMove &move, sInfo &info );
+	void pReadKeyframes( decBaseFileReader &reader, deAnimationKeyframeList &list, sInfo &info );
+	void pReadKeyframe( decBaseFileReader &reader, deAnimationKeyframeList &list, sInfo &info, int frameNumber );
+	void pReadMoveVertexPositionSets( decBaseFileReader &reader, deAnimationMove &move, sInfo &info );
+	void pReadKeyframes( decBaseFileReader &reader, deAnimationKeyframeVertexPositionSetList &list, sInfo &info );
+	void pReadKeyframe( decBaseFileReader &reader, deAnimationKeyframeVertexPositionSetList &list, sInfo &info, int frameNumber );
 	
 	void pWriteKeyframeData( decBaseFileWriter &writer, const sConfig &config,
 		const deAnimationKeyframe &keyframe );
@@ -75,6 +122,15 @@ private:
 	void pWriteKeyframePosition( decBaseFileWriter &writer, const sConfig &config, const decVector &position );
 	void pWriteKeyframeRotation( decBaseFileWriter &writer, const sConfig &config, const decVector &rotation );
 	void pWriteKeyframeScale( decBaseFileWriter &writer, const sConfig &config, const decVector &scale );
+	
+	void pWriteKeyframeData( decBaseFileWriter &writer, const sConfig2 &config,
+		const deAnimationKeyframeVertexPositionSet &keyframe );
+	
+	void pWriteKeyframeDataInterpolate( decBaseFileWriter &writer, const sConfig2 &config,
+		const deAnimationKeyframeVertexPositionSet &keyframePrev,
+		const deAnimationKeyframeVertexPositionSet &keyframeNext, int frameSteps );
+	
+	void pWriteKeyframeWeight( decBaseFileWriter &writer, const sConfig2 &config, float weight );
 };
 
 #endif

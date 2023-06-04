@@ -26,17 +26,17 @@
 
 
 /**
- * \brief Undo action paste bones.
+ * Undo action paste bones.
  */
 class aeURulePasteBones : public aeUSetRuleBones{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURulePasteBones( aeRule *rule, const decStringSet &newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURulePasteBones();
 	/*@}*/
 };

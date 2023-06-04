@@ -31,7 +31,7 @@ class igdeGameDefinition;
 /**
  * \brief Game definition list.
  */
-class igdeGameDefinitionList{
+class DE_DLL_EXPORT igdeGameDefinitionList{
 private:
 	decObjectOrderedSet pGameDefinitions;
 	

@@ -59,15 +59,15 @@ pTestDecals( false ),
 pTestSnapPoints( false ),
 
 pHitDistance( 0.0f ),
-pHitHTSector( NULL ),
-pHitObject( NULL ),
-pHitDecal( NULL ),
-pHitSnapPoint( NULL ),
+pHitHTSector( nullptr ),
+pHitObject( nullptr ),
+pHitDecal( nullptr ),
+pHitSnapPoint( nullptr ),
 pHasHit( false ),
 
-pFilterObjects( NULL ),
+pFilterObjects( nullptr ),
 
-pIgnoreDecal( NULL ){
+pIgnoreDecal( nullptr ){
 }
 
 meCLClosestElement::~meCLClosestElement(){
@@ -112,10 +112,10 @@ void meCLClosestElement::Reset(){
 	pHitDistance = 0.0f;
 	pHitNormal.SetZero();
 	
-	pHitHTSector = NULL;
-	pHitObject = NULL;
-	pHitDecal = NULL;
-	pHitSnapPoint = NULL;
+	pHitHTSector = nullptr;
+	pHitObject = nullptr;
+	pHitDecal = nullptr;
+	pHitSnapPoint = nullptr;
 	
 	pHasHit = false;
 }

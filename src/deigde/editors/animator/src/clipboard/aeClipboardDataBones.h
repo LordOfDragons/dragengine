@@ -29,11 +29,11 @@
 
 
 /**
- * \brief Bones clipboard data.
+ * Bones clipboard data.
  */
 class aeClipboardDataBones : public igdeClipboardData{
 public:
-	/** \brief Type name. */
+	/** Type name. */
 	static const char * const TYPE_NAME;
 	
 	
@@ -46,12 +46,12 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new clipboard data. */
+	/** Create a new clipboard data. */
 	aeClipboardDataBones( const decStringSet &bones );
 	
 protected:
 	/**
-	 * \brief Clean up object.
+	 * Clean up object.
 	 * \note Subclasses should set their destructor protected too to avoid users
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
@@ -64,7 +64,7 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Boness. */
+	/** Boness. */
 	inline const decStringSet &GetBones() const{ return pBones; }
 	/*@}*/
 };

@@ -39,6 +39,7 @@ class ADRuleGroup extends ADRule
 	private var bool pEnablePosition
 	private var bool pEnableOrientation
 	private var bool pEnableSize
+	private var bool pEnableVertexPositionSet
 	
 	
 	
@@ -50,6 +51,7 @@ class ADRuleGroup extends ADRule
 		pEnablePosition = true
 		pEnableOrientation = true
 		pEnableSize = true
+		pEnableVertexPositionSet = true
 	end
 	
 	/**
@@ -63,6 +65,7 @@ class ADRuleGroup extends ADRule
 		pEnablePosition = rule.pEnablePosition
 		pEnableOrientation = rule.pEnableOrientation
 		pEnableSize = rule.pEnableSize
+		pEnableVertexPositionSet = rule.pEnableVertexPositionSet
 		
 		pRules = rule.pRules.map(block ADRule rule
 			return rule.copy(fromDef, toDef)
@@ -121,6 +124,22 @@ class ADRuleGroup extends ADRule
 		pEnableSize = enable
 	end
 	
+	/**
+	 * \brief Vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func bool getEnableVertexPositionSet()
+		return pEnableVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set if vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enable)
+		pEnableVertexPositionSet = enable
+	end
+	
 	
 	
 	/** \brief Count of rules. */
@@ -171,6 +190,7 @@ class ADRuleGroup extends ADRule
 		rule.setEnablePosition(pEnablePosition)
 		rule.setEnableOrientation(pEnableOrientation)
 		rule.setEnableSize(pEnableSize)
+		rule.setEnableVertexPositionSet(pEnableVertexPositionSet)
 		
 		rule.setApplicationType(pApplicationType)
 		rule.setUseCurrentState(pUseCurrentState)

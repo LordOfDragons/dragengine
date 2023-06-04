@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\vr\openxr\$Version"
 
 Write-Host "OpenXR Module: Copy Module to '$TargetDir'"
 
-$Library = "$OutputDir\vropenxr.dll"
+$Library = "$OutputDir\de_module\vr\openxr\vropenxr.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml" -Library $Library -Version $Version
@@ -28,4 +28,4 @@ Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml"
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\vr\openxr\$Version"
 Write-Host "OpenXR Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path "$OutputDir\vropenxr.pdb" -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\vr\openxr\vropenxr.pdb" -Destination $TargetDir

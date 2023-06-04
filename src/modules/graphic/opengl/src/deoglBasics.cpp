@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#include "deoglGL.h"
+#include "deoglBasics.h"
 
 #include "memory/deoglMemoryManager.h"
 #include "renderthread/deoglRenderThread.h"
@@ -18,10 +18,17 @@
 
 #ifdef OS_UNIX
 static pthread_t pRenderThreadPid = 0;
+static pthread_t pLoaderThreadPid = 0;
 static pthread_t pMainThreadPid = 0;
 
 void dbgInitThreadCheck(){
 	pRenderThreadPid = pthread_self();
+}
+void dbgInitLoaderThreadCheck(){
+	pLoaderThreadPid = pthread_self();
+}
+void dbgExitLoaderThreadCheck(){
+	pLoaderThreadPid = 0;
 }
 void dbgInitMainThreadCheck(){
 	pMainThreadPid = pthread_self();
@@ -30,10 +37,17 @@ void dbgInitMainThreadCheck(){
 
 #ifdef OS_W32
 static DWORD pRenderThreadPid = 0;
+static DWORD pLoaderThreadPid = 0;
 static DWORD pMainThreadPid = 0;
 
 void dbgInitThreadCheck(){
 	pRenderThreadPid = GetCurrentThreadId();
+}
+void dbgInitLoaderThreadCheck(){
+	pLoaderThreadPid = GetCurrentThreadId();
+}
+void dbgExitLoaderThreadCheck(){
+	pLoaderThreadPid = 0;
 }
 void dbgInitMainThreadCheck(){
 	pMainThreadPid = GetCurrentThreadId();
@@ -56,13 +70,15 @@ void dbgOnMainThreadCheck(){
 
 void dbgOnRenderThreadCheck(){
 	#ifdef OS_UNIX
-	if( pthread_self() != pRenderThreadPid ){
+	const pthread_t t = pthread_self();
+	if( t != pRenderThreadPid && t != pLoaderThreadPid ){
 		DETHROW( deeInvalidAction );
 	}
 	#endif
 	
 	#ifdef OS_W32
-	if( GetCurrentThreadId() != pRenderThreadPid ){
+	const DWORD t = GetCurrentThreadId();
+	if( t != pRenderThreadPid && t != pLoaderThreadPid ){
 		DETHROW( deeInvalidAction );
 	}
 	#endif
@@ -71,14 +87,14 @@ void dbgOnRenderThreadCheck(){
 void dbgOnMainOrRenderThreadCheck(){
 	#ifdef OS_UNIX
 	const pthread_t t = pthread_self();
-	if( t != pMainThreadPid && t != pRenderThreadPid ){
+	if( t != pMainThreadPid && t != pRenderThreadPid &&  t != pLoaderThreadPid ){
 		DETHROW( deeInvalidAction );
 	}
 	#endif
 	
 	#ifdef OS_W32
 	const DWORD t = GetCurrentThreadId();
-	if( t != pMainThreadPid && t != pRenderThreadPid ){
+	if( t != pMainThreadPid && t != pRenderThreadPid && t != pLoaderThreadPid ){
 		DETHROW( deeInvalidAction );
 	}
 	#endif
@@ -120,8 +136,6 @@ public:
 void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 	deoglMemoryConsumption &consumption = renderThread.GetMemoryManager().GetConsumption();
 	const deoglMemoryConsumptionSkin &conSkin = consumption.skin;
-	const deoglMemoryConsumptionTexture &conTex1D = consumption.texture1D;
-	const deoglMemoryConsumptionTexture &conTex1DRen = consumption.texture1DRenderable;
 	const deoglMemoryConsumptionTexture &conTex2D = consumption.texture2D;
 	const deoglMemoryConsumptionTexture &conTex2DRen = consumption.texture2DRenderable;
 	const deoglMemoryConsumptionTexture &conTex3D = consumption.texture3D;
@@ -135,7 +149,6 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 	renderThread.GetLogger().LogWarnFormat(
 		"%" OGLPFLLU "M:"
 		" skin(%d,%dM)"
-		" tex1D(%d,%dM|%d,%dM)"
 		" tex2D(%d,%dM|%d,%dM)"
 		" tex3D(%d,%dM|%d,%dM)"
 		" texArr(%d,%dM|%d,%dM)"
@@ -145,8 +158,7 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 		" ubo(%d,%dM)"
 		" tbo(%d,%dM)"
 		,
-		( conSkin.all.GetConsumption() + conTex1D.all.GetConsumption()
-		+ conTex1DRen.all.GetConsumption() + conTex2D.all.GetConsumption()
+		( conSkin.all.GetConsumption() + conTex2D.all.GetConsumption()
 		+ conTex2DRen.all.GetConsumption() + conTex3D.all.GetConsumption()
 		+ conTex3DRen.all.GetConsumption() + conTexArr.all.GetConsumption()
 		+ conTexArrRen.all.GetConsumption() + conTexCube.all.GetConsumption()
@@ -155,8 +167,6 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 		+ conBO.tbo.GetConsumption() + conBO.ssbo.GetConsumption() ) / 1000000ull,
 		
 		conSkin.all.GetCount(), conSkin.all.GetConsumptionMB(),
-		conTex1D.all.GetCount(), conTex1D.all.GetConsumptionMB(),
-		conTex1DRen.all.GetCount(), conTex1DRen.all.GetConsumptionMB(),
 		conTex2D.all.GetCount(), conTex2D.all.GetConsumptionMB(),
 		conTex2DRen.all.GetCount(), conTex2DRen.all.GetConsumptionMB(),
 		conTex3D.all.GetCount(), conTex3D.all.GetConsumptionMB(),
@@ -174,7 +184,11 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 	);
 }
 
-void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line ){
+void oglClearError(){
+	while( glGetError() != GL_NO_ERROR );
+}
+
+void dbgCheckOglError( deoglRenderThread&, const char *file, int line ){
 	const GLenum err = glGetError();
 	
 	switch( err ){
@@ -182,34 +196,27 @@ void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int li
 		break;
 		
 	case GL_INVALID_ENUM:
-		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_INVALID_ENUM" ) );
-		break;
+		throw deeInvalidParam( file, line, "GL_INVALID_ENUM" );
 		
 	case GL_INVALID_VALUE:
-		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_INVALID_VALUE" ) );
-		break;
+		throw deeInvalidParam( file, line, "GL_INVALID_VALUE" );
 		
 	case GL_INVALID_OPERATION:
-		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_INVALID_OPERATION" ) );
-		break;
+		throw deeInvalidParam( file, line, "GL_INVALID_OPERATION" );
 		
 	case GL_STACK_OVERFLOW:
-		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_STACK_OVERFLOW" ) );
-		break;
+		throw deeInvalidParam( file, line, "GL_STACK_OVERFLOW" );
 		
 	case GL_STACK_UNDERFLOW:
-		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_STACK_UNDERFLOW" ) );
-		break;
+		throw deeInvalidParam( file, line, "GL_STACK_UNDERFLOW" );
 		
 	case GL_OUT_OF_MEMORY:
-		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_OUT_OF_MEMORY" ) );
-		//dbgPrintMemoryUsage( renderThread );
-		break;
+		throw deeInvalidParam( file, line, "GL_OUT_OF_MEMORY" );
 		
 	default:{
 		decString message;
 		message.Format( "Error %x (%d)", err, err );
-		renderThread.GetLogger().LogException( deeInvalidParam( file, line, message ) );
+		throw deeInvalidParam( file, line, message );
 		}
 	}
 	

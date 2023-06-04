@@ -39,10 +39,10 @@ class igdeUIHelper;
  * 
  * Composed widget to edit decPoint.
  */
-class igdeEditPoint : public igdeContainerBoxAlternate{
+class DE_DLL_EXPORT igdeEditPoint : public igdeContainerBoxAlternate{
 protected:
 	/** \brief Text field listener. */
-	class cListener : public igdeTextFieldListener{
+	class DE_DLL_EXPORT cListener : public igdeTextFieldListener{
 	protected:
 		igdeEditPoint &pEditPoint;
 		igdeTextFieldReference pTextX;

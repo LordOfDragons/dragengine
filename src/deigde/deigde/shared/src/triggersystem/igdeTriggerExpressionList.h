@@ -31,7 +31,7 @@ class igdeTriggerExpression;
 /**
  * \brief Trigger Expression List.
  */
-class igdeTriggerExpressionList{
+class DE_DLL_EXPORT igdeTriggerExpressionList{
 private:
 	decObjectOrderedSet pExpressions;
 	

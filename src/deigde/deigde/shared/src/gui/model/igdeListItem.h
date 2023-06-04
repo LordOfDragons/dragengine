@@ -36,7 +36,7 @@
  * Stores a text and optional icon representing a list item an widgets able to show lists.
  * Optionally a data pointer can be assigned.
  */
-class igdeListItem : public deObject{
+class DE_DLL_EXPORT igdeListItem : public deObject{
 private:
 	decString pText;
 	decString pDescription;

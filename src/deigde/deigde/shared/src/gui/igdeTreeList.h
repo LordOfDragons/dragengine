@@ -41,7 +41,7 @@ class igdeTreeItemReference;
 /**
  * \brief IGDE UI TreeList.
  */
-class igdeTreeList : public igdeWidget{
+class DE_DLL_EXPORT igdeTreeList : public igdeWidget{
 private:
 	bool pEnabled;
 	igdeTreeItemReference pFirstChild;

@@ -42,7 +42,8 @@ pMoveName( "idle" ),
 pMoveTime( 0.0f ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false ){
+pEnableSize( false ),
+pEnableVertexPositionSet( true ){
 }
 
 deAnimatorRuleAnimation::~deAnimatorRuleAnimation(){
@@ -54,8 +55,6 @@ deAnimatorRuleAnimation::~deAnimatorRuleAnimation(){
 ///////////////
 
 void deAnimatorRuleAnimation::SetMoveName( const char *moveName ){
-	if( ! moveName ) DETHROW( deeInvalidParam );
-	
 	pMoveName = moveName;
 }
 
@@ -73,6 +72,10 @@ void deAnimatorRuleAnimation::SetEnableOrientation( bool enabled ){
 
 void deAnimatorRuleAnimation::SetEnableSize( bool enabled ){
 	pEnableSize = enabled;
+}
+
+void deAnimatorRuleAnimation::SetEnableVertexPositionSet( bool enabled ){
+	pEnableVertexPositionSet = enabled;
 }
 
 

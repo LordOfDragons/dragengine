@@ -57,16 +57,16 @@ public:
 	
 	
 	
-	/** \brief Load save attachment configuration. */
+	/** Load save attachment configuration. */
 	inline aeLoadSaveAttachmentConfig *GetLSAttConfig(){ return pLSAttConfig; }
 	
-	/** \brief Load attachment configuration from file. */
+	/** Load attachment configuration from file. */
 	void LoadAttConfig( const char *filename, aeAnimator &animator );
 	
-	/** \brief Save attachment configuration to file. */
+	/** Save attachment configuration to file. */
 	void SaveAttConfig( const char *filename, const aeAnimator &animator );
 	
-	/** \brief Attachment configuration file pattern list. */
+	/** Attachment configuration file pattern list. */
 	inline const igdeFilePatternList &GetAttConfigFilePatterns() const{ return pFPAttConfig; }
 	
 private:

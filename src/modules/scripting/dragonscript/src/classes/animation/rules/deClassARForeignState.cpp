@@ -198,6 +198,21 @@ void deClassARForeignState::nfSetEnableSize::RunFunction( dsRunTime *rt, dsValue
 	}
 }
 
+// public func void setEnableVertexPositionSet( bool enabled )
+deClassARForeignState::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARFSta, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARForeignState::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void targetAddLink( ARForeignStateTarget target, int link )
@@ -232,6 +247,10 @@ void deClassARForeignState::nfTargetAddLink::RunFunction( dsRunTime *rt, dsValue
 		
 	case deClassARForeignState::etSize:
 		nd.rule->GetTargetSize().AddLink( link );
+		break;
+		
+	case deClassARForeignState::etVertexPositionSet:
+		nd.rule->GetTargetVertexPositionSet().AddLink( link );
 		break;
 		
 	default:
@@ -273,6 +292,10 @@ void deClassARForeignState::nfTargetRemoveAllLinks::RunFunction( dsRunTime *rt, 
 		
 	case deClassARForeignState::etSize:
 		nd.rule->GetTargetSize().RemoveAllLinks();
+		break;
+		
+	case deClassARForeignState::etVertexPositionSet:
+		nd.rule->GetTargetVertexPositionSet().RemoveAllLinks();
 		break;
 		
 	default:
@@ -331,6 +354,21 @@ void deClassARForeignState::nfSetScaleSize::RunFunction( dsRunTime *rt, dsValue 
 	}
 }
 
+// public func void setScaleVertexPositionSet( float scaleVertexPositionSet )
+deClassARForeignState::nfSetScaleVertexPositionSet::nfSetScaleVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARFSta, "setScaleVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // scaleVertexPositionSet
+}
+void deClassARForeignState::nfSetScaleVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetScaleVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 // public func void setForeignBone( String boneName )
 deClassARForeignState::nfSetForeignBone::nfSetForeignBone( const sInitData &init ) : dsFunction( init.clsARFSta,
 "setForeignBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -341,6 +379,21 @@ void deClassARForeignState::nfSetForeignBone::RunFunction( dsRunTime *rt, dsValu
 	const char * const boneName = rt->GetValue( 0 )->GetString();
 	
 	nd.rule->SetForeignBone( boneName );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setForeignVertexPositionSet(String name)
+deClassARForeignState::nfSetForeignVertexPositionSet::nfSetForeignVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARFSta, "setForeignVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassARForeignState::nfSetForeignVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetForeignVertexPositionSet( rt->GetValue( 0 )->GetString() );
 	
 	if( nd.animator ){
 		nd.animator->NotifyRulesChanged();
@@ -439,7 +492,9 @@ void deClassARForeignState::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetScalePosition( init ) );
 	AddFunction( new nfSetScaleOrientation( init ) );
 	AddFunction( new nfSetScaleSize( init ) );
+	AddFunction( new nfSetScaleVertexPositionSet( init ) );
 	AddFunction( new nfSetForeignBone( init ) );
+	AddFunction( new nfSetForeignVertexPositionSet( init ) );
 	AddFunction( new nfSetSourceCoordinateFrame( init ) );
 	AddFunction( new nfSetDestinationCoordinateFrame( init ) );
 	AddFunction( new nfSetModifyX( init ) );
@@ -449,6 +504,7 @@ void deClassARForeignState::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnablePosition( init ) );
 	AddFunction( new nfSetEnableOrientation( init ) );
 	AddFunction( new nfSetEnableSize( init ) );
+	AddFunction( new nfSetEnableVertexPositionSet( init ) );
 	
 	AddFunction( new nfTargetAddLink( init ) );
 	AddFunction( new nfTargetRemoveAllLinks( init ) );

@@ -30,7 +30,7 @@ class saeSAnimation;
 
 
 /**
- * \brief Undo Action Remove Phoneme.
+ * Undo Action Remove Phoneme.
  */
 class saeUPhonemeRemove : public igdeUndo{
 private:
@@ -42,11 +42,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	saeUPhonemeRemove( saePhoneme *phoneme );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~saeUPhonemeRemove();
 	/*@}*/
 	
@@ -55,10 +55,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

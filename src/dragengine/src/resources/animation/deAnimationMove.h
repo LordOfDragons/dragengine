@@ -27,6 +27,7 @@
 
 class deAnimation;
 class deAnimationKeyframeList;
+class deAnimationKeyframeVertexPositionSetList;
 
 
 /**
@@ -38,8 +39,14 @@ private:
 	decString pName;
 	float pPlaytime;
 	float pFPS;
+	
 	deAnimationKeyframeList **pLists;
-	int pListCount, pListSize;
+	int pListCount;
+	int pListSize;
+	
+	deAnimationKeyframeVertexPositionSetList **pVertexPositionSetLists;
+	int pVertexPositionSetListCount;
+	int pVertexPositionSetListSize;
 	
 	
 	
@@ -93,6 +100,24 @@ public:
 	
 	/** \brief Adds a keyframe list */
 	void AddKeyframeList( deAnimationKeyframeList *list );
+	
+	/**
+	 * \brief Count of keyframe lists.
+	 * \version 1.17
+	 */
+	inline int GetVertexPositionSetKeyframeListCount() const{ return pVertexPositionSetListCount; }
+	
+	/**
+	 * \brief Keyframe at the given index.
+	 * \version 1.17
+	 */
+	deAnimationKeyframeVertexPositionSetList *GetVertexPositionSetKeyframeList( int index ) const;
+	
+	/**
+	 * \brief Adds a keyframe list.
+	 * \version 1.17
+	 */
+	void AddVertexPositionSetKeyframeList( deAnimationKeyframeVertexPositionSetList *list );
 	/*@}*/
 };
 

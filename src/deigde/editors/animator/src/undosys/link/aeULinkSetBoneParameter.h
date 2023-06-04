@@ -30,7 +30,7 @@ class aeLink;
 
 
 /**
- * \brief Undo action set bone parameter..
+ * Undo action set bone parameter..
  */
 class aeULinkSetBoneParameter : public igdeUndo{
 private:
@@ -42,11 +42,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo action. */
+	/** Create undo action. */
 	aeULinkSetBoneParameter( aeLink *link, deAnimatorLink::eBoneParameter newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeULinkSetBoneParameter();
 	/*@}*/
 	
@@ -55,10 +55,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

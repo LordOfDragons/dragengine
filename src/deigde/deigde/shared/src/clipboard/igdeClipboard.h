@@ -35,7 +35,7 @@ class igdeClipboardData;
  * can be stored as long as they have unique clipboard type names. The
  * application uses the clipboard type name to locate data it can paste.
  */
-class igdeClipboard {
+class DE_DLL_EXPORT igdeClipboard {
 private:
 	decObjectSet pData;
 	

@@ -1,5 +1,7 @@
 from SConsCommon import *
 from SConsPlatformAndroid import androidUpdateEnv
+import shlex
+
 
 # create environment
 tools = ARGUMENTS.get( 'tools', '' )
@@ -125,10 +127,10 @@ parent_env.Replace( MODULE_CPPFLAGS = [] )
 parent_env.Replace( MODULE_LINKFLAGS = [] )
 
 if 'CPPFLAGS' in os.environ:
-	parent_env.Append( CPPFLAGS = os.environ[ 'CPPFLAGS' ] )
+	parent_env.Append(CPPFLAGS = shlex.split(os.environ['CPPFLAGS']))
 
 if 'LDFLAGS' in os.environ:
-	parent_env.Append( LINKFLAGS = os.environ[ 'LDFLAGS' ] )
+	parent_env.Append(LINKFLAGS = shlex.split(os.environ['LDFLAGS']))
 
 if parent_env['OSPosix']:
 	parent_env.Append( CPPFLAGS = [ '-DOS_UNIX' ] )
@@ -194,6 +196,8 @@ params.Add( TernaryVariable( 'with_system_libopenhmd', 'Use System libopenhmd' )
 params.Add( TernaryVariable( 'with_system_fftw', 'Use System fftw' ) )
 params.Add( TernaryVariable( 'with_system_soundtouch', 'Use System soundtouch' ) )
 params.Add( TernaryVariable( 'with_system_libwebp', 'Use System libwebp' ) )
+params.Add( TernaryVariable( 'with_system_libwebm', 'Use System libwebm' ) )
+params.Add( TernaryVariable( 'with_system_libvpx', 'Use System libvpx' ) )
 
 params.Add( TernaryVariable( 'with_opengl', 'Use OpenGL' ) )
 params.Add( TernaryVariable( 'with_python', 'Use Python' ) )
@@ -217,6 +221,7 @@ params.Add( TernaryVariable( 'build_script_smalltalk', 'Build Smalltalk Script M
 params.Add( TernaryVariable( 'build_sound_ogg', 'Build OGG Vorbis Sound Module' ) )
 params.Add( TernaryVariable( 'build_video_theora', 'Build Theora Video Module' ) )
 params.Add( TernaryVariable( 'build_video_apng', 'Build Animated PNG Video Module' ) )
+params.Add( TernaryVariable( 'build_video_webm', 'Build WebM Video Module' ) )
 params.Add( TernaryVariable( 'build_guilauncher', 'Build GUI Launcher' ) )
 params.Add( TernaryVariable( 'build_launcher_android', 'Build Android Launcher' ) )
 params.Add( TernaryVariable( 'build_archive_delga', 'Build DELGA Archive Module' ) )
@@ -583,6 +588,9 @@ if parent_env['with_debug'] and parent_env['with_sanitize']:
 			"""
 			flags = ['-fsanitize=address']
 		
+		# newer asan can incorrectly flag warnings causing compilation to fail
+		flags.append('-Wno-error')
+		
 		parent_env.Append(SANITIZE_FLAGS = flags)
 
 # for modules hide everything except the entry point. for this the default visibility
@@ -753,7 +761,9 @@ extdirs.append( 'extern/libhidapi' )
 extdirs.append( 'extern/libopenhmd' )
 extdirs.append( 'extern/fftw' )
 extdirs.append( 'extern/soundtouch' )
+extdirs.append( 'extern/libvpx' )
 extdirs.append( 'extern/libwebp' )
+extdirs.append( 'extern/libwebm' )
 extdirs.append( 'extern/openxr' )
 
 for extdir in extdirs:
@@ -829,6 +839,7 @@ scdirs.append( 'src/modules/synthesizer/desynthesizer' )
 
 scdirs.append( 'src/modules/video/theora' )
 scdirs.append( 'src/modules/video/apng' )
+scdirs.append( 'src/modules/video/webm' )
 
 scdirs.append( 'src/modules/archive/delga' )
 

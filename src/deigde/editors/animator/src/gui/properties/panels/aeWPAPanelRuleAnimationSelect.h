@@ -28,7 +28,7 @@
 
 
 /**
- * \brief Animation select rule panel.
+ * Animation select rule panel.
  */
 class aeWPAPanelRuleAnimationSelect : public aeWPAPanelRule{
 private:
@@ -38,17 +38,18 @@ private:
 	igdeCheckBoxReference pChkEnablePosition;
 	igdeCheckBoxReference pChkEnableRotation;
 	igdeCheckBoxReference pChkEnableSize;
+	igdeCheckBoxReference pChkEnableVertexPositionSet;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new panel. */
+	/** Create new panel. */
 	aeWPAPanelRuleAnimationSelect( aeWPRule &wpRule );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRuleAnimationSelect();
 	/*@}*/
 	
@@ -57,19 +58,19 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Update animation move list. */
+	/** Update animation move list. */
 	virtual void UpdateAnimMoveList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	
-	/** \brief Combo box move text. */
+	/** Combo box move text. */
 	const decString &GetCBMovesText() const;
 	
-	/** \brief List box move selection. */
+	/** List box move selection. */
 	int GetListMovesSelection() const;
 	/*@}*/
 };

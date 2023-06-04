@@ -116,9 +116,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	int pRTSPipelineIndex;
-	
-	static int pNextRTSPipelineIndex;
+	int pRTSIndex;
 	
 	// opengl
 	const deoglPipelineConfiguration *pGlConfiguration;
@@ -163,10 +161,10 @@ public:
 	
 	
 	/** Render task shared pipeline index or -1. */
-	inline int GetRTSPipelineIndex() const{ return pRTSPipelineIndex; }
+	inline int GetRTSIndex() const{ return pRTSIndex; }
 	
-	/** Assign render task shader pipeline if not assigned yet. */
-	void AssignRTSPipelineIndex();
+	/** Set render task shader pipeline. */
+	void SetRTSIndex( int index );
 	
 	
 	

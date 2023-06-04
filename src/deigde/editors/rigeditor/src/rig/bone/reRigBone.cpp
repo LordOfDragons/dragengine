@@ -752,12 +752,12 @@ void reRigBone::pUpdateDDSCmpColor(){
 	pDDSCmp->SetVisible( pSelected );
 	
 	if( pActive ){
-		pDDSCmp->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0 ) );
-		pDDSCmp->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1 ) );
+		pDDSCmp->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+		pDDSCmp->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
 		
 	}else if( pSelected ){
-		pDDSCmp->SetEdgeColor( decColor( 0.6f, 1.0f, 1.0f, 1.0 ) );
-		pDDSCmp->SetFillColor( decColor( 0.6f, 1.0f, 1.0f, 0.1 ) );
+		pDDSCmp->SetEdgeColor( decColor( 0.6f, 1.0f, 1.0f, 1.0f ) );
+		pDDSCmp->SetFillColor( decColor( 0.6f, 1.0f, 1.0f, 0.1f ) );
 		
 	}else{
 		pDDSCmp->SetEdgeColor( decColor( 0.3f, 0.7f, 1.0f, 1.0f ) );
@@ -773,12 +773,12 @@ void reRigBone::pUpdateDDSBoneShape(){
 
 void reRigBone::pUpdateDDSBoneColor(){
 	if( pActive ){
-		pDDSBone->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0 ) );
-		pDDSBone->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1 ) );
+		pDDSBone->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+		pDDSBone->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
 		
 	}else if( pSelected ){
-		pDDSBone->SetEdgeColor( decColor( 0.6f, 1.0f, 1.0f, 1.0 ) );
-		pDDSBone->SetFillColor( decColor( 0.6f, 1.0f, 1.0f, 0.1 ) );
+		pDDSBone->SetEdgeColor( decColor( 0.6f, 1.0f, 1.0f, 1.0f ) );
+		pDDSBone->SetFillColor( decColor( 0.6f, 1.0f, 1.0f, 0.1f ) );
 		
 	}else{
 		pDDSBone->SetEdgeColor( decColor( 0.3f, 0.7f, 1.0f, 1.0f ) );

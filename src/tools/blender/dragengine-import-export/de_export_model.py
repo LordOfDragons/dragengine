@@ -197,6 +197,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			timer.logTime('mesh.initAddTexCoordSets')
 			self.progress.advance("Prepare texture coordinate sets")
 			
+			mesh.initAddVertPosSets(self.mesh if mesh != self.mesh else None)
+			timer.logTime('mesh.initAddVertPosSets')
+			self.progress.advance("Prepare vertex position sets")
+			
 			mesh.initAddVertices()
 			timer.logTime('mesh.initAddVertices')
 			self.progress.advance("Prepare vertices")
@@ -373,6 +377,8 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			return False
 		if not self.writeTexCoordSets(f):
 			return False
+		if not self.writeVertPosSets(f):
+			return False
 		
 		mesh = self.mesh
 		while mesh:
@@ -384,6 +390,8 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				return False
 			if not self.writeTexCoords(f, mesh):
 				return False
+			if not self.writeLodVertPosSet(f, mesh):
+				return False
 			if not self.writeFaces(f, mesh):
 				return False
 			mesh = mesh.lodMesh
@@ -394,13 +402,14 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		f.write(bytes("Drag[en]gine Model", 'UTF-8'))
 		flags = 0
 		
-		f.write(struct.pack("<HH", 5, flags)) # version, flags
+		f.write(struct.pack("<HH", 6, flags)) # version, flags
 		if self.armature:
 			f.write(struct.pack("<H", len(self.armature.bones)))
 		else:
 			f.write(struct.pack("<H", 0)) # bone count
 		f.write(struct.pack("<H", len(self.mesh.textures)))
 		f.write(struct.pack("<H", len(self.mesh.texCoordSets)))
+		f.write(struct.pack("<H", len(self.mesh.vertPosSets)))
 		f.write(struct.pack("<H", self.lodMeshCount))
 		return True
 	
@@ -473,6 +482,17 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		self.progress.advance("Writing texture coordinate sets")
 		return True
 	
+	# write vertex position sets
+	def writeVertPosSets(self, f):
+		if self.debugLevel > 0:
+			print("saving vertex position sets...")
+		for vps in self.mesh.vertPosSets:
+			f.write(struct.pack("<B", len(vps.name))) # length of name
+			f.write(bytes(vps.name, 'UTF-8')) # name
+			f.write(struct.pack("<H", vps.baseSet.index + 1 if vps.baseSet else 0))
+		self.progress.advance("Writing vertex position sets")
+		return True
+	
 	# write mesh
 	def writeMesh(self, f, mesh):
 		flags = 0
@@ -485,7 +505,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		if mesh.lodError != None:
 			f.write(struct.pack("<f", mesh.lodError))
 		
-		f.write(struct.pack(("i" if mesh.largeModel else "H")*6,
+		f.write(struct.pack("<" + ("i" if mesh.largeModel else "H")*6,
 			mesh.normalCount, mesh.tangentCount, len(mesh.weights),
 			len(mesh.vertices), mesh.realTriCount, mesh.realQuadCount))
 		return True
@@ -506,7 +526,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		if self.debugLevel > 0:
 			print("saving vertices...")
 		for vertex in mesh.vertices:
-			f.write(struct.pack("<i" if mesh.largeModel else "H", vertex.weights.index + 1))
+			f.write(struct.pack("<i" if mesh.largeModel else "<H", vertex.weights.index + 1))
 			# write position using [x,y,z]
 			wpos = vector_by_matrix(self.transformScalePosition, vertex.vertex.co)
 			f.write(struct.pack("<fff", wpos.x, wpos.y, wpos.z)) # position
@@ -520,17 +540,30 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		if self.debugLevel > 0:
 			print("saving texture coordinates...")
 		for tcs in mesh.texCoordSets:
-			f.write(struct.pack("<i" if mesh.largeModel else "H", len(tcs.texCoords)))
+			f.write(struct.pack("<i" if mesh.largeModel else "<H", len(tcs.texCoords)))
 			for texCoord in tcs.texCoords:
 				writeTexel(f, texCoord.uv)
 		self.progress.advance("Writing texture coordinates: '{}'".format(mesh.object.name))
+		return True
+	
+	# write vertex position sets
+	def writeLodVertPosSet(self, f, mesh):
+		if self.debugLevel > 0:
+			print("saving lod vertex position sets...")
+		for vps in mesh.vertPosSets:
+			f.write(struct.pack("<i" if mesh.largeModel else "<H", len(vps.positions)))
+			for position in vps.positions:
+				f.write(struct.pack("<i" if mesh.largeModel else "<H", position.vertex))
+				wpos = vector_by_matrix(self.transformScalePosition, position.position)
+				f.write(struct.pack("<fff", wpos.x, wpos.y, wpos.z))
+		self.progress.advance("Writing vertex position sets: '{}'".format(mesh.object.name))
 		return True
 	
 	# write faces
 	def writeFaces(self, f, mesh):
 		if self.debugLevel > 0:
 			print("saving faces...")
-		fmt = "iii" if mesh.largeModel else "HHH"
+		fmt = "<iii" if mesh.largeModel else "<HHH"
 		for face in mesh.triangles:
 			self.writeTriangle(f, mesh, face, fmt, 0, 1, 2)
 		
@@ -538,7 +571,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			if (len(face.vertices) - 2) % 2:
 				self.writeTriangle(f, mesh, face, fmt, 0, -2, -1)
 		
-		fmt = "iiii" if mesh.largeModel else "HHHH"
+		fmt = "<iiii" if mesh.largeModel else "<HHHH"
 		for face in mesh.quads:
 			self.writeQuad(f, mesh, face, fmt, 0, 1, 2, 3)
 		

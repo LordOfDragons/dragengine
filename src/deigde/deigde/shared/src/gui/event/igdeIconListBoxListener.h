@@ -33,7 +33,7 @@ class igdeMenuCascade;
 /**
  * \brief IGDE UI IconListBox Listener.
  */
-class igdeIconListBoxListener : public deObject{
+class DE_DLL_EXPORT igdeIconListBoxListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
