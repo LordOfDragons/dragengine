@@ -21,6 +21,31 @@ if envLibrary['OSWindows']:
 else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# check if system libwebm is present
+hasSystemWebm = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_libwebm'] != TernaryVariableNo:
+	hasSystemWebm = conf.CheckLibWithHeader(libLinkName,
+		'webm/webm_parser.h', 'c++', 'WebmParser::WebmParser();')
+conf.Finish()
+
+if not hasSystemWebm and envLibrary['with_system_libwebm'] == TernaryVariableYes:
+	Exit('Requested to use system libwebm but no usable libwebm found.')
+
+parent_report['use system libwebm'] = 'yes' if hasSystemWebm else 'no'
+
+libs = [libLinkName]
+
+if hasSystemWebm:
+	parent_targets['lib_libwebm'] = {
+		'name' : 'Internal libwebm library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
 # build libwebm
 def libwebmBuild(target, source, env):
 	buildDir = target[0].get_dir().up()
