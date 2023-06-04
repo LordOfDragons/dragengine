@@ -449,7 +449,7 @@ pListener( NULL ),
 pWorld( NULL ),
 pVLayer( NULL ),
 pUnitsToPixel( 100.0f ),
-pPixelToUnits( 1.0 / pUnitsToPixel )
+pPixelToUnits( 1.0f / pUnitsToPixel )
 {
 	pListener = new meWindowVegetationListener( *this );
 	AddListener( new cBoardListener( *this ) );

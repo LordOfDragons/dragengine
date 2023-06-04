@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglRenderTaskInstance.h"
+#include "deoglComputeRenderTask.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/deoglSPBlockMemory.h"
@@ -100,10 +101,7 @@ int firstIndex ){
 }
 
 void deoglRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags ){
-	if( ! pSIIndexInstanceSPB ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_NOTNULL( pSIIndexInstanceSPB )
 	int i;
 	
 	if( useFlags ){
@@ -129,29 +127,17 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags ){
 	}
 }
 
-void deoglRenderTaskInstance::WriteSIIndexInstanceShort( bool useFlags ){
-	int i;
+void deoglRenderTaskInstance::WriteSIIndexInstanceCompute(){
+	DEASSERT_NOTNULL( pSIIndexInstanceSPB )
 	
-	if( useFlags ){
-		struct sIndexFlags{
-			GLushort index;
-			GLushort flags;
-		};
-		sIndexFlags * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for( i=0; i<pSubInstanceCount; i++ ){
-			const sSubInstance &subInstance = pSubInstances[ i ];
-			data[ i ].index = ( GLushort )subInstance.instance;
-			data[ i ].flags = ( GLushort )subInstance.flags;
-		}
-		
-	}else{
-		struct sIndex{
-			GLuint index;
-		};
-		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for( i=0; i<pSubInstanceCount; i++ ){
-			data[ i ].index = ( GLushort )pSubInstances[ i ].instance;
-		}
+	deoglComputeRenderTask::sStep * const data = ( deoglComputeRenderTask::sStep* )
+		pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+	
+	int i;
+	for( i=0; i<pSubInstanceCount; i++ ){
+		const sSubInstance &subInstance = pSubInstances[ i ];
+		data[ i ].spbInstance = ( uint32_t )( subInstance.instance + 1 );
+		data[ i ].specialFlags = ( uint32_t )subInstance.flags;
 	}
 }
 

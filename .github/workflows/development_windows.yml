@@ -16,7 +16,7 @@ on:
 
 jobs:
   build_windows:
-    uses: ./.github/workflows/build_windows.yml
+    uses: ./.github/workflows/build_windows_vs.yml
     with:
       releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}

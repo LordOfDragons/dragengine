@@ -537,7 +537,13 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSetList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationManager.cpp">
@@ -1012,6 +1018,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertex.cpp">
@@ -2396,9 +2411,6 @@
     <ClInclude Include="..\..\src\dragengine\src\doxy_main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\dragengine_configuration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\errortracing\deErrorTrace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2528,7 +2540,13 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSetList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationManager.h">
@@ -3003,6 +3021,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertex.h">
@@ -3996,6 +4023,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleMirror.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dragengine_configuration.h" />
+    <ClInclude Include="..\..\src\dragengine\src\dragengine_configuration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

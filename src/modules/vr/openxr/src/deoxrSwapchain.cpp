@@ -33,13 +33,17 @@
 // class deoxrSwapchain
 /////////////////////////
 
-deoxrSwapchain::deoxrSwapchain( deoxrSession &session, const decPoint &size ) :
+deoxrSwapchain::deoxrSwapchain( deoxrSession &session, const decPoint &size, eType type ) :
 pSession( session ),
+pType( type ),
 pSize( size ),
 pSwapchain( XR_NULL_HANDLE ),
 pImages( nullptr ),
 pImageCount( 0 )
 {
+	deoxrInstance &instance = session.GetSystem().GetInstance();
+	deVROpenXR &oxr = instance.GetOxr();
+	
 	try{
 		XrSwapchainCreateInfo createInfo;
 		memset( &createInfo, 0, sizeof( createInfo ) );
@@ -55,21 +59,67 @@ pImageCount( 0 )
 		
 		switch( session.GetGraphicApi() ){
 		case deoxrSession::egaOpenGL:
-			createInfo.format = 0x881a; // GL_RGBA16F
-			
-			#ifdef OS_UNIX
-			if( session.GetSystem().GetSystem() == deoxrSystem::esSteamVR ){
-				createInfo.format = 0x8c43; // GL_SRGB8_ALPHA8_EXT
+			switch( type ){
+			case etColor:
+				if( session.HasSwapchainFormat( deoxrSession::escfGlRgba16f ) ){
+					// seen on SteamVR Windows. OculusVR does not support this
+					oxr.LogInfo( "Using Color Swapchain format GL_RGBA16F" );
+					createInfo.format = deoxrSession::escfGlRgba16f; // GL_RGBA16F
+					
+				}else if( session.HasSwapchainFormat( deoxrSession::escfGlRgba16Ext ) ){
+					oxr.LogInfo( "Using Color Swapchain format GL_RGBA16_EXT" );
+					createInfo.format = deoxrSession::escfGlRgba16Ext; // GL_RGBA16_EXT
+					
+				}else if( session.HasSwapchainFormat( deoxrSession::escfGlRgb16f ) ){
+					// seen on OculusVR Windows
+					oxr.LogInfo( "Using Color Swapchain format GL_RGB16F" );
+					createInfo.format = deoxrSession::escfGlRgb16f; // GL_RGB16F
+					
+				}else if( session.HasSwapchainFormat( deoxrSession::escfGlR11fG11fB10f ) ){
+					// seen on OculusVR Windows
+					oxr.LogInfo( "Using Color Swapchain format GL_R11F_G11F_B10F" );
+					createInfo.format = deoxrSession::escfGlR11fG11fB10f; // GL_R11F_G11F_B10F
+					
+				}else if( session.HasSwapchainFormat( deoxrSession::escfGlSrgb8Alpha8Ext ) ){
+					// seen on SteamVR Linux and OculusVR Windows
+					oxr.LogInfo( "Using Color Swapchain format GL_SRGB8_ALPHA8_EXT" );
+					createInfo.format = deoxrSession::escfGlSrgb8Alpha8Ext; // GL_SRGB8_ALPHA8_EXT
+					
+				}else if( session.HasSwapchainFormat( deoxrSession::escfGlSrgb8Ext ) ){
+					// seen on SteamVR Linux and OculusVR Windows
+					oxr.LogInfo( "Using Color Swapchain format GL_SRGB8_EXT" );
+					createInfo.format = deoxrSession::escfGlSrgb8Ext; // GL_SRGB8_EXT
+					
+				}else{
+					DETHROW_INFO( deeInvalidParam, "no supported Swapchain format found" );
+				}
+				break;
+				
+			case etDepth:
+				if( session.HasSwapchainFormat( deoxrSession::escfGlDepth32F ) ){
+					oxr.LogInfo( "Using Depth Swapchain format GL_DEPTH_COMPONENT32F" );
+					createInfo.format = deoxrSession::escfGlDepth32F; // GL_DEPTH_COMPONENT32F
+					
+				}else if( session.HasSwapchainFormat( deoxrSession::escfGlDepth24 ) ){
+					oxr.LogInfo( "Using Depth Swapchain format GL_DEPTH_COMPONENT24" );
+					createInfo.format = deoxrSession::escfGlDepth24; // GL_DEPTH_COMPONENT24
+					
+				}else if( session.HasSwapchainFormat( deoxrSession::escfGlDepth16 ) ){
+					oxr.LogInfo( "Using Depth Swapchain format GL_DEPTH_COMPONENT16" );
+					createInfo.format = deoxrSession::escfGlDepth16; // GL_DEPTH_COMPONENT16
+					
+				}else{
+					DETHROW_INFO( deeInvalidParam, "no supported Depth Swapchain format found" );
+				}
+				break;
 			}
-			#endif
 			break;
 			
 		default:
 			DETHROW_INFO( deeInvalidParam, "no graphic api" );
 		}
 		
-		OXR_CHECK( session.GetSystem().GetInstance().xrCreateSwapchain(
-			session.GetSession(), &createInfo, &pSwapchain ) );
+		OXR_CHECK( instance.xrCreateSwapchain( session.GetSession(), &createInfo, &pSwapchain ) );
 		
 		pGetImages();
 		
@@ -183,6 +233,7 @@ void deoxrSwapchain::pGetImages(){
 // 					oxr.GetGraphicApiOpenGL(), images[ i ].image ) );
 			}
 			pImageCount = ( int )count;
+			delete [] images;
 			
 		}catch( const deException & ){
 			delete [] images;

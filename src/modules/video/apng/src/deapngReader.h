@@ -25,7 +25,6 @@
 #include <png.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/video/deVideo.h>
 
 class decString;
 class decBaseFileReader;
@@ -34,7 +33,7 @@ class deVideoApng;
 
 
 /**
- * \brief Animated PNG reader.
+ * Animated PNG reader.
  */
 class deapngReader{
 private:
@@ -47,20 +46,27 @@ private:
 	
 	int pWidth;
 	int pHeight;
-	deVideo::ePixelFormat pPixelFormat;
+	int pComponentCount;
 	int pFrameCount;
-	int pFrameRate;
+	float pFrameRate;
 	int pFirstFrame;
-	int pPixelSize;
 	int pRowLength;
 	int pImageSize;
 	
 	int pCurFrame;
 	
+	png_uint_32 pLastFrameX;
+	png_uint_32 pLastFrameY;
+	png_uint_32 pLastFrameWidth;
+	png_uint_32 pLastFrameHeight;
+	unsigned char pLastFrameDop;
+	
 	png_bytep pAccumData;
 	png_bytep *pAccumRows;
 	png_bytep pFrameData;
 	png_bytep *pFrameRows;
+	png_bytep pLastFrameData;
+	png_bytep *pLastFrameRows;
 	
 	bool pErrorState;
 	
@@ -69,10 +75,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create reader. */
+	/** Create reader. */
 	deapngReader( deVideoApng &module, decBaseFileReader *reader );
 	
-	/** \brief Clean up reader. */
+	/** Clean up reader. */
 	~deapngReader();
 	/*@}*/
 	
@@ -80,47 +86,47 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Animated PNG module. */
+	/** Animated PNG module. */
 	inline deVideoApng &GetModule() const{ return pModule; }
 	
-	/** \brief File reader. */
+	/** File reader. */
 	inline decBaseFileReader *GetReader() const{ return pReader; }
 	
-	/** \brief Width in pixels. */
+	/** Width in pixels. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height in pixels. */
+	/** Height in pixels. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief Pixel format. */
-	inline deVideo::ePixelFormat GetPixelFormat() const{ return pPixelFormat; }
+	/** Component count. */
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Frame count. */
+	/** Frame count. */
 	inline int GetFrameCount() const{ return pFrameCount; }
 	
-	/** \brief Frame rate. */
-	inline int GetFrameRate() const{ return pFrameRate; }
+	/** Frame rate. */
+	inline float GetFrameRate() const{ return pFrameRate; }
 	
-	/** \brief First frame (depends on first frame hidden). */
+	/** First frame (depends on first frame hidden). */
 	inline int GetFirstFrame() const{ return pFirstFrame; }
 	
 	
 	
-	/** \brief Current frame. */
+	/** Current frame. */
 	inline int GetCurrentFrame() const{ return pCurFrame; }
 	
 	
 	
-	/** \brief Rewinds to the beginning. */
+	/** Rewinds to the beginning. */
 	void Rewind();
 	
-	/** \brief Seek to frame. */
+	/** Seek to frame. */
 	void SeekFrame( int frame );
 	
-	/** \brief Read frame image into accum image and advance to next frame. */
+	/** Read frame image into accum image and advance to next frame. */
 	void ReadImage();
 	
-	/** \brief Copy accum image. */
+	/** Copy accum image. */
 	void CopyAccumImage( void *buffer, int size ) const;
 	/*@}*/
 	

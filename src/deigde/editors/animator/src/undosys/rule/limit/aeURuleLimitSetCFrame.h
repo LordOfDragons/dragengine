@@ -30,7 +30,7 @@ class aeRuleLimit;
 
 
 /**
- * \brief Undo action rule limitor set coordinate frame.
+ * Undo action rule limitor set coordinate frame.
  */
 class aeURuleLimitSetCFrame : public igdeUndo{
 private:
@@ -42,19 +42,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleLimitSetCFrame( aeRuleLimit *rule, deAnimatorRuleLimit::eCoordinateFrames newCoordFrame );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleLimitSetCFrame();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

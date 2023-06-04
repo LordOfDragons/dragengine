@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen SSAO Upscale Stereo</name>
+	
+	<parameter name='pTCTransform'/>
+	
+	<texture name='texAO' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outAO' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/light/ssao_upscale.glsl</sourceCode>
+</shader>

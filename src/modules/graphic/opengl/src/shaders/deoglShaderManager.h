@@ -87,7 +87,7 @@ public:
 	bool HasUnitSourceCodeWithPath( const char *filePath ) const;
 	
 	/** Retrieves the shader unit source code with the given name or NULL if not found. */
-	deoglShaderUnitSourceCode *GetUnitSourceCodeWithPath( const char *filePath );
+	deoglShaderUnitSourceCode *GetUnitSourceCodeWithPath( const char *filePath ) const;
 	
 	/** Adds a shader unit source code. */
 	void AddUnitSourceCode( deoglShaderUnitSourceCode *sourceCode );

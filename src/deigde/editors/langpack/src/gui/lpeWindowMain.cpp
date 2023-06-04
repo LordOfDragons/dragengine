@@ -446,7 +446,7 @@ public:
 		}
 		
 		decString name( langpack->GetEntrySelection().GetActive()
-			? langpack->GetEntrySelection().GetActive()->GetName() : "Entry" );
+			? langpack->GetEntrySelection().GetActive()->GetName() : decString( "Entry" ) );
 		
 		while( igdeCommonDialogs::GetString( &pWindow, "Add Entry", "Identifier:", name ) ){
 			if( langpack->GetEntryList().HasNamed( name ) ){
@@ -464,7 +464,7 @@ public:
 				undo.TakeOver( new lpeULangPackEntryAdd( langpack, entry ) );
 				entry->FreeReference();
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 				if( entry ){
 					entry->FreeReference();
 				}

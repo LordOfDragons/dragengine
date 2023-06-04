@@ -92,6 +92,7 @@ deoglShaderManager::~deoglShaderManager(){
 void deoglShaderManager::ValidateCaches(){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	deCacheHelper &cache = ogl.GetCaches().GetShaders();
+	deoglRTLogger &logger = pRenderThread.GetLogger();
 	
 	// validation string composes of the path and modification times of all shader sources (*.glsl)
 	// and shaders (*.shader.xml) in the order they have been loaded. we could also sort the list
@@ -115,20 +116,20 @@ void deoglShaderManager::ValidateCaches(){
 			reader->Read( ( void* )oldValidationString.GetString(), size );
 			
 			if( validationString == oldValidationString ){
-				ogl.LogInfo( "ShaderManager Cache: Validated" );
+				logger.LogInfo( "ShaderManager Cache: Validated" );
 				
 			}else{
-				ogl.LogInfo( "ShaderManager Cache: Validation failed. Invalidate caches" );
+				logger.LogInfo( "ShaderManager Cache: Validation failed. Invalidate caches" );
 				cache.DeleteAll();
 			}
 			
 		}catch( const deException & ){
-			ogl.LogInfo( "ShaderManager Cache: Validation file failed reading. Invalidate caches" );
+			logger.LogInfo( "ShaderManager Cache: Validation file failed reading. Invalidate caches" );
 			cache.DeleteAll();
 		}
 		
 	}else{
-		ogl.LogInfo( "ShaderManager Cache: Validation file missing. Invalidate caches" );
+		logger.LogInfo( "ShaderManager Cache: Validation file missing. Invalidate caches" );
 		cache.DeleteAll();
 	}
 	
@@ -138,7 +139,7 @@ void deoglShaderManager::ValidateCaches(){
 			->WriteString( validationString );
 		
 	}catch( const deException & ){
-		ogl.LogInfo( "ShaderManager Cache: Writing validation failed" );
+		logger.LogInfo( "ShaderManager Cache: Writing validation failed" );
 	}
 }
 
@@ -155,7 +156,7 @@ bool deoglShaderManager::HasUnitSourceCodeWithPath( const char *filePath ) const
 	return pUnitSourceCodes.Has( filePath );
 }
 
-deoglShaderUnitSourceCode *deoglShaderManager::GetUnitSourceCodeWithPath( const char *filePath ){
+deoglShaderUnitSourceCode *deoglShaderManager::GetUnitSourceCodeWithPath( const char *filePath ) const{
 	deObject *o;
 	return pUnitSourceCodes.GetAt( filePath, &o ) ? ( deoglShaderUnitSourceCode* )o : nullptr;
 }
@@ -180,7 +181,8 @@ void deoglShaderManager::LoadUnitSourceCodes(){
 	pLoadUnitSourceCodesIn( "" );
 	
 	if( ogl.GetConfiguration().GetDoLogInfo() ){
-		ogl.LogInfoFormat( "Loaded %d shader unit source codes.", pUnitSourceCodes.GetCount() - oldCount );
+		pRenderThread.GetLogger().LogInfoFormat( "Loaded %d shader unit source codes.", 
+			pUnitSourceCodes.GetCount() - oldCount );
 	}
 }
 
@@ -209,7 +211,8 @@ void deoglShaderManager::LoadSources(){
 	pLoadSourcesIn( "" );
 	
 	if( ogl.GetConfiguration().GetDoLogInfo() ){
-		ogl.LogInfoFormat( "Loaded %i shaders.", pSources.GetCount() - oldCount );
+		pRenderThread.GetLogger().LogInfoFormat( "Loaded %i shaders.",
+			pSources.GetCount() - oldCount );
 	}
 }
 
@@ -387,7 +390,7 @@ void deoglShaderManager::pLoadUnitSourceCodesIn( const char *directory ){
 			const decPath &path = pathList.GetAt( i );
 			filename = path.GetPathUnix().GetMiddle( basePathLen );
 			/*if( ogl.GetConfiguration()->GetDoLogDebug() ){
-				ogl.LogInfoFormat( "Loading shader unit source code %s...", filename );
+				pRenderThread.GetLogger().LogInfoFormat( "Loading shader unit source code %s...", filename );
 			}*/
 			
 			const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
@@ -402,7 +405,8 @@ void deoglShaderManager::pLoadUnitSourceCodesIn( const char *directory ){
 		}
 		
 	}catch( const deException & ){
-		ogl.LogInfoFormat( "Loading shader unit source code %s failed!", filename.GetString() );
+		pRenderThread.GetLogger().LogInfoFormat(
+			"Loading shader unit source code %s failed!", filename.GetString() );
 		throw;
 	}
 }
@@ -434,7 +438,7 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 			const decPath &path = pathList.GetAt( i );
 			filename = path.GetPathUnix().GetMiddle( basePathLen );
 			/*if( ogl.GetConfiguration()->GetDoLogDebug() ){
-				ogl.LogInfoFormat( "Loading shader %s...", filename );
+				pRenderThread.GetLogger().LogInfoFormat( "Loading shader %s...", filename );
 			}*/
 			
 			const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
@@ -458,7 +462,7 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 		}
 		
 	}catch( const deException & ){
-		ogl.LogInfoFormat( "Loading shader %s failed!", filename.GetString() );
+		pRenderThread.GetLogger().LogInfoFormat( "Loading shader %s failed!", filename.GetString() );
 		throw;
 	}
 }

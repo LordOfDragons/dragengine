@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\occlusionmesh\deocclusionmesh\$V
 
 Write-Host "DEOcclusionMesh Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "occmdeocclusionmesh.dll"
+$Library = "$OutputDir\de_module\occlusionmesh\ddeocclusionmesh\occmdeocclusionmesh.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\occlusionmesh\deocclusionmesh\$Version"
 Write-Host "DEOcclusionMesh Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "occmdeocclusionmesh.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\occlusionmesh\ddeocclusionmesh\occmdeocclusionmesh.pdb" -Destination $TargetDir

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>ToneMap Bright-Pass Stereo</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name='texColor' target='0'/>
+	<texture name='texToneMapParams' target='1'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/tonemap/brightpass.glsl</sourceCode>
+</shader>

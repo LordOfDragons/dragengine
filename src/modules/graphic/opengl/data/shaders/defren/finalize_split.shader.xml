@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Finalize Split</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name='texColor' target='0'/>
+	
+	<parameter name='pTCTransform'/>
+	<parameter name='pGamma'/>
+	<parameter name='pBrightness'/>
+	<parameter name='pContrast'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor1' target='0'/>
+	<output name='outColor2' target='1'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/finalize.glsl</sourceCode>
+</shader>

@@ -35,7 +35,6 @@ class deoglTexSamplerConfig;
 class deoglTexUnitsConfigList;
 
 
-
 /**
  * Render thread shader related objects.
  */

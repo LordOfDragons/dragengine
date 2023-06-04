@@ -94,6 +94,9 @@ public:
 	/** Parent sky instance, */
 	inline deoglRSkyInstance &GetInstance() const{ return pInstance; }
 	
+	/** Layer index. */
+	inline int GetIndex() const{ return pIndex; }
+	
 	/** Update. */
 	void Update();
 	

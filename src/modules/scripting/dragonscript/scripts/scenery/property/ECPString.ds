@@ -32,7 +32,6 @@ pin Dragengine.Preloading
  * \brief String value element class property for use with XML loading.
  */
 class ECPString extends ElementClassProperty
-	/** \brief Value. */
 	private var String pValue
 	
 	
@@ -54,6 +53,14 @@ class ECPString extends ElementClassProperty
 	/** \brief Set value of property from XML decoded value. */
 	public func void setValue(Object value)
 		pValue = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pValue = (property cast ECPString).pValue
 	end
 	
 	

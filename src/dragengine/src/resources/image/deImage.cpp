@@ -57,15 +57,11 @@ pData( NULL ),
 pRetainImageData( GetFilename().IsEmpty() ? 1 : 0 ),
 pPeerGraphic( NULL )
 {
-	if( width < 1 || height < 1 || depth < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( bitCount != 8 && bitCount != 16 && bitCount != 32 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( width >= 1 )
+	DEASSERT_TRUE( height >= 1 )
+	DEASSERT_TRUE( depth >= 1 )
+	DEASSERT_TRUE( componentCount >= 1 && componentCount <= 4 )
+	DEASSERT_TRUE( bitCount == 8 || bitCount == 16 || bitCount == 32 )
 	
 	pData = new unsigned char[ width * height * depth * componentCount * ( bitCount >> 3 ) ];
 }
@@ -82,9 +78,7 @@ pData( NULL ),
 pRetainImageData( 1 ),
 pPeerGraphic( NULL )
 {
-	if( ! image ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( image )
 	
 	pWidth = image->GetWidth();
 	pHeight = image->GetHeight();
@@ -341,15 +335,11 @@ void deImage::SetPeerGraphic( deBaseGraphicImage *peer ){
 ////////////
 
 void deImage::FinalizeConstruction( int width, int height, int depth, int componentCount, int bitCount ){
-	if( width < 1 || height < 1 || depth < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( bitCount != 8 && bitCount != 16 && bitCount != 32 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( width >= 1 )
+	DEASSERT_TRUE( height >= 1 )
+	DEASSERT_TRUE( depth >= 1 )
+	DEASSERT_TRUE( componentCount >= 1 && componentCount <= 4 )
+	DEASSERT_TRUE( bitCount == 8 || bitCount == 16 || bitCount == 32 )
 	
 	pWidth = width;
 	pHeight = height;

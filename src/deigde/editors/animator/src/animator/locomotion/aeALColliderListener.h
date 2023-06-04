@@ -32,7 +32,7 @@ class aeAnimatorLocomotion;
 
 
 /**
- * @brief Animator Locomotion Collider Listener.
+ * Animator Locomotion Collider Listener.
  *
  * Scripting module peer for collider of the the animator. Provides
  * typical Player AI type collision handling.

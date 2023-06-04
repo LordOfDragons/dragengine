@@ -280,12 +280,12 @@ void reRigShape::pRepositionShapes(){
 
 void reRigShape::pUpdateDDSColor(){
 	if( pActive ){
-		pDDSShape->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0 ) );
-		pDDSShape->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1 ) );
+		pDDSShape->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+		pDDSShape->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
 		
 	}else if( pSelected ){
-		pDDSShape->SetEdgeColor( decColor( 0.75f, 0.75f, 0.0f, 1.0 ) );
-		pDDSShape->SetFillColor( decColor( 0.75f, 0.75f, 0.0f, 0.1 ) );
+		pDDSShape->SetEdgeColor( decColor( 0.75f, 0.75f, 0.0f, 1.0f ) );
+		pDDSShape->SetFillColor( decColor( 0.75f, 0.75f, 0.0f, 0.1f ) );
 		
 	}else{
 		pDDSShape->SetEdgeColor( decColor( 0.5f, 0.5f, 0.0f, 1.0f ) );

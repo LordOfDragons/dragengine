@@ -32,7 +32,7 @@ class saeSAnimation;
 
 
 /**
- * \brief Properties Panel.
+ * Properties Panel.
  */
 class saeWindowProperties : public igdeTabBook{
 private:
@@ -47,11 +47,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	saeWindowProperties( saeWindowMain &windowMain );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~saeWindowProperties();
 	/*@}*/
 	
@@ -60,13 +60,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	inline saeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Set speech animation. */
+	/** Set speech animation. */
 	void SetSAnimation( saeSAnimation *sanimation );
 	
-	/** \brief Speech animation path changed. */
+	/** Speech animation path changed. */
 	void OnSAnimationPathChanged();
 	/*@}*/
 };

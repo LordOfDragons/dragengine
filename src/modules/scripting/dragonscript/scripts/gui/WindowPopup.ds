@@ -122,8 +122,8 @@ class WindowPopup extends Window
 	 *          close() is called too.
 	 */
 	public func void popdown()
-		releaseMouse()
 		setVisible(false)
+		releaseMouse()
 		
 		if pCloseOnPopDown
 			close()
@@ -204,7 +204,7 @@ class WindowPopup extends Window
 	
 	/** \brief Send event to the widget. */
 	public func void sendEvent(Event event)
-		// a child widget did not handle its event. ignore it
+		// event from child widget bubbling up
 		if event.getSource() != this
 			return
 		end
@@ -220,8 +220,20 @@ class WindowPopup extends Window
 			end
 			
 		case MouseEvent.idMousePressed
-			if not isPointInside((event cast MouseEvent).getPosition())
+			var MouseEvent mouseEvent = event cast MouseEvent
+			
+			if requiresPopdown(mouseEvent)
+				var Desktop desktop = getDesktop()
+				var Point position = getDesktopPosition() + (event cast MouseEvent).getPosition()
+				var Widget target = desktop.widgetAcceptingInputAt(position)
+				
 				popdown()
+				
+				if target != null
+					target.sendEvent(MouseEvent.new(target, ident, mouseEvent.getButton(),\
+						mouseEvent.getModifiers(), position - target.getDesktopPosition(),\
+						mouseEvent.getSystem(), mouseEvent.getDevice()))
+				end
 				return
 			end
 		end
@@ -237,7 +249,7 @@ class WindowPopup extends Window
 		if ident == MouseEvent.idMouseWheeled
 			updateHoverWidget()
 			var Widget widget = getHoverWidget()
-			if widget != null
+			if widget != null and widget != this
 				widget.sendEvent(MouseEvent.new(widget, ident, mouseEvent.getButton(),\
 					mouseEvent.getModifiers(), mouseEvent.getPosition(),\
 					mouseEvent.getSystem(), mouseEvent.getDevice()))
@@ -306,5 +318,17 @@ class WindowPopup extends Window
 	public func void releaseMouse()
 		clearHoverWidget()
 		super.releaseMouse()
+	end
+	
+	/**
+	 * \brief Requires popdown window.
+	 * \version 1.17
+	 * 
+	 * Returns true if the mouse button press event requires the window to popdown.
+	 * Default implementation returns true if the mouse position is outside the window.
+	 * Subclass can overwrite this method to extend this behavior.
+	 */
+	public func bool requiresPopdown(MouseEvent event)
+		return not isPointInside(event.getPosition())
 	end
 end

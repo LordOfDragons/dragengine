@@ -39,7 +39,7 @@ class igdeEnvironment;
 class DE_DLL_EXPORT igdeFont : public deObject{
 public:
 	/** \brief Font configuration. */
-	struct sConfiguration{
+	struct DE_DLL_EXPORT sConfiguration{
 		decString name; //< Name of font
 		float size; //< Font size in points
 		bool bold; //< Bold font

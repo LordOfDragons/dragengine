@@ -41,15 +41,15 @@
 
 static const char *vUnitSourceCodePath[ deoglLightShaderManager::EUSCP_COUNT ] = {
 	// euscpVertexLight
-	"v130/vertex/defren/light/light.glsl",
+	"vertex/defren/light/light.glsl",
 	// euscpVertexParticle
-	"v130/vertex/defren/light/particle.glsl",
+	"vertex/defren/light/particle.glsl",
 	// euscpGeometryParticle
-	"v130/geometry/defren/light/particle.glsl",
+	"geometry/defren/light/particle.glsl",
 	// euscpGeometryStereo
-	"v130/geometry/defren/light/stereo.glsl",
+	"geometry/defren/light/stereo.glsl",
 	// euscpFragmentLight
-	"v130/fragment/defren/light/light.glsl"
+	"fragment/defren/light/light.glsl"
 };
 
 

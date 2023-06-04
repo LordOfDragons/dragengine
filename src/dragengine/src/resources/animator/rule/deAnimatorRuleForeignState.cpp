@@ -40,15 +40,17 @@
 deAnimatorRuleForeignState::deAnimatorRuleForeignState() :
 pSourceCoordinateFrame( ecfBoneLocal ),
 pDestCoordinateFrame( ecfBoneLocal ),
-pScalePosition( 0.0f ),
-pScaleOrientation( 0.0f ),
-pScaleSize( 0.0f ),
+pScalePosition( 1.0f ),
+pScaleOrientation( 1.0f ),
+pScaleSize( 1.0f ),
+pScaleVertexPositionSet( 1.0f ),
 pModifyX( true ),
 pModifyY( true ),
 pModifyZ( true ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false ){
+pEnableSize( false ),
+pEnableVertexPositionSet( true ){
 }
 
 deAnimatorRuleForeignState::~deAnimatorRuleForeignState(){
@@ -63,6 +65,10 @@ void deAnimatorRuleForeignState::SetForeignBone( const char *boneName ){
 	pForeignBone = boneName;
 }
 
+void deAnimatorRuleForeignState::SetForeignVertexPositionSet( const char *vertexPositionSet ){
+	pForeignVertexPositionSet = vertexPositionSet;
+}
+
 void deAnimatorRuleForeignState::SetScalePosition( float scalePosition ){
 	pScalePosition = scalePosition;
 }
@@ -73,6 +79,10 @@ void deAnimatorRuleForeignState::SetScaleOrientation( float scaleOrientation ){
 
 void deAnimatorRuleForeignState::SetScaleSize( float scaleSize ){
 	pScaleSize = scaleSize;
+}
+
+void deAnimatorRuleForeignState::SetScaleVertexPositionSet( float scale ){
+	pScaleVertexPositionSet = scale;
 }
 
 void deAnimatorRuleForeignState::SetModifyX( bool modify ){
@@ -105,6 +115,10 @@ void deAnimatorRuleForeignState::SetEnableOrientation( bool enable ){
 
 void deAnimatorRuleForeignState::SetEnableSize( bool enable ){
 	pEnableSize = enable;
+}
+
+void deAnimatorRuleForeignState::SetEnableVertexPositionSet( bool enabled ){
+	pEnableVertexPositionSet = enabled;
 }
 
 

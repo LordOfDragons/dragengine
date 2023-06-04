@@ -81,6 +81,7 @@ pEngRule( NULL ),
 pName( copy.pName ),
 pType( copy.pType ),
 pListBones( copy.pListBones ),
+pListVertexPositionSets( copy.pListVertexPositionSets ),
 pBlendMode( copy.pBlendMode ),
 pBlendFactor( copy.pBlendFactor ),
 pInvertBlendFactor( copy.pInvertBlendFactor ),
@@ -135,6 +136,7 @@ void aeRule::InitEngineRule( deAnimatorRule *engRule ) const{
 	engRule->SetBlendFactor( pBlendFactor );
 	engRule->SetInvertBlendFactor( pInvertBlendFactor );
 	engRule->GetListBones() = pListBones;
+	engRule->GetListVertexPositionSets() = pListVertexPositionSets;
 	
 	pTargetBlendFactor.UpdateEngineTarget( animator, engRule->GetTargetBlendFactor() );
 }
@@ -329,12 +331,70 @@ void aeRule::RemoveAllBones(){
 
 
 
+// Vertex position set management
+///////////////////////////////////
+
+void aeRule::SetListVertexPositionSets( const decStringSet &sets ){
+	if( pListVertexPositionSets == sets ){
+		return;
+	}
+	
+	pListVertexPositionSets = sets;
+	
+	if( pEngRule ){
+		pEngRule->GetListVertexPositionSets() = sets;
+	}
+	
+	NotifyRuleChanged();
+}
+
+void aeRule::AddVertexPositionSet( const char *vertexPositionSet ){
+	DEASSERT_NOTNULL( vertexPositionSet )
+	
+	if( ! pListVertexPositionSets.Has( vertexPositionSet ) ){
+		pListVertexPositionSets.Add( vertexPositionSet );
+		
+		if( pEngRule ){
+			pEngRule->GetListVertexPositionSets().Add( vertexPositionSet );
+		}
+		
+		NotifyRuleChanged();
+	}
+}
+
+void aeRule::RemoveVertexPositionSet( const char *vertexPositionSet ){
+	if( pListVertexPositionSets.Has( vertexPositionSet ) ){
+		pListVertexPositionSets.Remove( vertexPositionSet );
+		
+		if( pEngRule ){
+			pEngRule->GetListVertexPositionSets().Remove( vertexPositionSet );
+		}
+		
+		NotifyRuleChanged();
+	}
+}
+
+void aeRule::RemoveAllVertexPositionSets(){
+	if( pListVertexPositionSets.GetCount() > 0 ){
+		pListVertexPositionSets.RemoveAll();
+		
+		if( pEngRule ){
+			pEngRule->GetListVertexPositionSets().RemoveAll();
+		}
+		
+		NotifyRuleChanged();
+	}
+}
+
+
+
 // Operators
 //////////////
 
 aeRule &aeRule::operator=( const aeRule &copy ){
 	SetName( copy.pName );
 	pListBones = copy.pListBones;
+	pListVertexPositionSets = copy.pListVertexPositionSets;
 	SetBlendMode( copy.pBlendMode );
 	SetBlendFactor( copy.pBlendFactor );
 	SetInvertBlendFactor( copy.pInvertBlendFactor );

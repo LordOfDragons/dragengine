@@ -45,7 +45,7 @@ meUHTImportHeightImage::meUHTImportHeightImage( meWorld *world, meHeightTerrainS
 	
 	if( image->GetComponentCount() != 1 ) DETHROW( deeInvalidParam );
 	
-	int resolution = sector->GetHeightTerrain()->GetSectorSize();
+	int resolution = ( int )( sector->GetHeightTerrain()->GetSectorSize() + 0.1f );
 	
 	if( image->GetWidth() != resolution || image->GetHeight() != resolution ) DETHROW( deeInvalidParam );
 	

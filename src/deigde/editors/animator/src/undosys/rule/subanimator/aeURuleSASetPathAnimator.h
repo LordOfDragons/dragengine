@@ -31,7 +31,7 @@ class aeController;
 
 
 /**
- * \brief Undo rule sub animator set path animator.
+ * Undo rule sub animator set path animator.
  */
 class aeURuleSASetPathAnimator : public igdeUndo{
 private:
@@ -47,11 +47,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleSASetPathAnimator( aeRuleSubAnimator *rule, const char *newPath );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleSASetPathAnimator();
 	/*@}*/
 	
@@ -60,10 +60,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

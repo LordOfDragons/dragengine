@@ -675,7 +675,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			speaker.setLayerMask(pLayerMask)
 			speaker.setOwner(element)
 			
-			gameWorld.addOneShotSpeaker(speaker)
+			gameWorld.getBehaviorOneShotSpeaker().addSpeaker(speaker)
 		end
 		
 		

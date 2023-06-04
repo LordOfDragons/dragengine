@@ -29,7 +29,9 @@
 
 #include <dragengine/deObject.h>
 
+class deoglShaderLoadingTimeout;
 class deoglSkinTexture;
+class deoglSkinShaderConfig;
 
 
 /**
@@ -110,7 +112,7 @@ public:
 	const deoglSkinTexturePipeline &GetWithRef( eTypes type, int modifiers = 0 ) const;
 	
 	/** Prepare pipelines. */
-	void Prepare();
+	void Prepare( deoglShaderLoadingTimeout &timeout );
 	
 	/** Debug name. */
 	virtual const char *GetDebugName() const = 0;
@@ -125,69 +127,82 @@ protected:
 	};
 	
 	typedef sChannelInfo ChannelInfo[ deoglSkinChannel::CHANNEL_COUNT ];
-	virtual void pPreparePipelines( const ChannelInfo &cinfo ) = 0;
+	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ) = 0;
 	
 	virtual void pPrepareGeometry( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo );
+		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareGeometryDepthTest( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo );
+		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareAllDepth( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo );
+		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareDepth( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareDepthClipPlane( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareDepthReversed( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareDepthClipPlaneReversed( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareAllCounter( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo );
+		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareCounter( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareCounterClipPlane( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
-	virtual void pPrepareMask( deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+	virtual void pPrepareMask( deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareAllShadow( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo );
+		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareShadowProjection( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareShadowProjectionCube( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareShadowOrthogonal( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareShadowDistance( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareShadowDistanceCube( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
+		deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareEnvMap( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo );
+		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareLuminance( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo );
+		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pPrepareGIMaterial( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo );
+		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
 	
 	virtual void pInitChannelInfo( ChannelInfo &cinfo );
 	
@@ -242,7 +257,8 @@ protected:
 	virtual void pSetDynamicMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	
 	virtual void pCreatePipelines( const deoglPipelineConfiguration &basePipelineConfig,
-		const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask );
+		const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask,
+		deoglShaderLoadingTimeout &timeout );
 };
 
 #endif

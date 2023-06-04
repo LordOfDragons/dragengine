@@ -29,7 +29,6 @@
 #include "deoglDecalMeshBuilderFace.h"
 #include "../component/deoglRComponent.h"
 #include "../envmap/deoglEnvironmentMap.h"
-#include "../extensions/deoglExtResult.h"
 #include "../gi/deoglGIBVHDynamic.h"
 #include "../gi/deoglGIBVHLocal.h"
 #include "../model/deoglModelLOD.h"
@@ -74,6 +73,67 @@
 
 
 
+// Class deoglRDecal::deoglWorldComputeElement
+////////////////////////////////////////////////////
+
+deoglRDecal::WorldComputeElement::WorldComputeElement( deoglRDecal &decal ) :
+deoglWorldComputeElement( eetDecal, &decal ),
+pDecal( decal ){
+}
+
+void deoglRDecal::WorldComputeElement::UpdateData( sDataElement &data ) const{
+	data.highestLod = 0;
+	if( ! pDecal.GetVisible() || ! pDecal.GetParentComponent() ){
+		data.geometryCount = 0;
+		return;
+	}
+	
+	const decDVector &refpos = GetReferencePosition();
+	const deoglRComponent &component = *pDecal.GetParentComponent();
+	
+	data.SetExtends( component.GetMinimumExtend() - refpos, component.GetMaximumExtend() - refpos );
+	data.SetLayerMask( component.GetLayerMask() );
+	data.geometryCount = 1;
+	
+	data.flags = ( uint32_t )deoglWorldCompute::eefDecal;
+	data.flags |= ( uint32_t )( component.GetRenderStatic()
+		? deoglWorldCompute::eefStatic : deoglWorldCompute::eefDynamic );
+	data.flags |= ( uint32_t )( component.IsGIStatic()
+		? deoglWorldCompute::eefGIStatic : deoglWorldCompute::eefGIDynamic );
+}
+
+void deoglRDecal::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+	const deoglSharedVBOBlock * const vboBlock = pDecal.GetVBOBlock();
+	if( ! vboBlock ){
+		return;
+	}
+	
+	const deoglVAO * const vao = vboBlock->GetVBO()->GetVAO();
+	if( ! vao || ! vao->GetRTSVAO() ){
+		return;
+	}
+	
+	deoglSkinTexture * const skinTexture = pDecal.GetUseSkinTexture();
+	if( ! skinTexture ){
+		return;
+	}
+	
+	int filter = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
+	filter |= ertfDecal | ertfShadow;
+	
+	int pipelineModifier = deoglSkinTexturePipelines::emDoubleSided;
+	
+	SetDataGeometry( *data, 0, filter, deoglSkinTexturePipelinesList::eptDecal, pipelineModifier,
+		skinTexture, vao, pDecal.GetRTSInstance(), pDecal.GetSharedSPBElement()->GetIndex() );
+	
+	sInfoTUC info;
+	info.geometry = pDecal.GetTUCGeometry();
+	info.envMap = pDecal.GetTUCEnvMap();
+	SetDataGeometryTUCs( *data, info );
+}
+
+
+
 // Class deoglRDecal
 //////////////////////
 
@@ -88,6 +148,7 @@ pVisible( true ),
 
 pParentComponent( NULL ),
 pComponentMarkedRemove( false ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pSharedSPBElement( NULL ),
 
@@ -197,6 +258,7 @@ void deoglRDecal::SetTransform( const decTexMatrix2 &matrix ){
 
 void deoglRDecal::SetVisible( bool visible ){
 	pVisible = visible;
+	pWorldComputeElement->ComputeUpdateElementAndGeometries();
 }
 
 
@@ -351,6 +413,11 @@ void deoglRDecal::DirtyPrepareSkinStateRenderables(){
 
 
 
+deoglRComponent &deoglRDecal::GetParentComponentRef() const{
+	DEASSERT_NOTNULL( pParentComponent );
+	return *pParentComponent;
+}
+
 void deoglRDecal::SetParentComponent( deoglRComponent *component ){
 	// NOTE this is called from the main thread during synchronization
 	if( component == pParentComponent ){
@@ -358,10 +425,16 @@ void deoglRDecal::SetParentComponent( deoglRComponent *component ){
 	}
 	
 	if( pParentComponent ){
+		pWorldComputeElement->RemoveFromCompute();
 		NotifyDecalDestroyed();
 	}
 	
 	pParentComponent = component;
+	
+	if( component && component->GetParentWorld() ){
+		component->GetParentWorld()->GetCompute().AddElement( pWorldComputeElement );
+	}
+	
 	SetDirtyVBO();
 	SetDirtyGIBVH();
 	
@@ -373,6 +446,18 @@ void deoglRDecal::SetParentComponent( deoglRComponent *component ){
 
 void deoglRDecal::SetComponentMarkedRemove( bool marked ){
 	pComponentMarkedRemove = marked;
+}
+
+void deoglRDecal::AddToWorldCompute( deoglWorldCompute &worldCompute ){
+	worldCompute.AddElement( pWorldComputeElement );
+}
+
+void deoglRDecal::UpdateWorldCompute(){
+	pWorldComputeElement->ComputeUpdateElement();
+}
+
+void deoglRDecal::RemoveFromWorldCompute(){
+	pWorldComputeElement->RemoveFromCompute();
 }
 
 
@@ -403,7 +488,7 @@ deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexturePipelines::eTyp
 		envmapSky = pParentComponent->GetParentWorld()->GetSkyEnvironmentMap();
 	}
 	
-	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt( deoglSkinTexturePipelinesList::eptDecal ).GetWithRef( type ).GetShader();
 	
 	if( skinShader.GetUsedTextureTargetCount() > 0 ){
@@ -429,13 +514,22 @@ void deoglRDecal::InvalidateParamBlocks(){
 }
 
 void deoglRDecal::MarkParamBlocksDirty(){
+	if( pDirtySharedSPBElement ){
+		return;
+	}
+	
 	pDirtySharedSPBElement = true;
 	pRequiresPrepareForRender();
 }
 
 void deoglRDecal::MarkTUCsDirty(){
+	if( pDirtyTUCs ){
+		return;
+	}
+	
 	pDirtyTUCs = true;
 	pRequiresPrepareForRender();
+	pWorldComputeElement->ComputeUpdateElementGeometries();
 }
 
 
@@ -634,19 +728,15 @@ void deoglRDecal::UpdateStaticTexture(){
 //////////////
 
 void deoglRDecal::AddListener( deoglDecalListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( listener )
 	pListeners.Add( listener );
 }
 
 void deoglRDecal::RemoveListener( deoglDecalListener *listener ){
 	const int index = pListeners.IndexOf( listener );
-	if( index == -1 ){
-		return;
-	}
+	DEASSERT_TRUE( index != -1 )
 	
-	pListeners.Remove( listener );
+	pListeners.RemoveFrom( index );
 	
 	if( pListenerIndex >= index ){
 		pListenerIndex--;
@@ -697,10 +787,7 @@ void deoglRDecal::NotifyTUCChanged(){
 
 // #include <dragengine/common/utils/decTimer.h>
 void deoglRDecal::pCreateMeshComponent(){
-	if( pVBOBlock ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_NULL( pVBOBlock )
 	if( ! pParentComponent->GetModel() ){
 		return;
 	}
@@ -812,6 +899,7 @@ void deoglRDecal::pPrepareVBO(){
 	}
 	
 	pDirtyVBO = false;
+	pWorldComputeElement->ComputeUpdateElementGeometries();
 }
 
 void deoglRDecal::pUpdateUseSkin(){
@@ -859,6 +947,7 @@ void deoglRDecal::pUpdateUseSkin(){
 	}
 	
 	pDirtyUseTexture = false;
+	pWorldComputeElement->ComputeUpdateElementGeometries();
 }
 
 void deoglRDecal::pPrepareTUCs(){
@@ -939,7 +1028,7 @@ void deoglRDecal::pPrepareParamBlocks(){
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
-			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+			deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptDecal ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			

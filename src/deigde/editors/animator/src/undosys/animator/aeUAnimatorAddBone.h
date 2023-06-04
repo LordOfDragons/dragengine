@@ -30,7 +30,7 @@ class aeAnimator;
 
 
 /**
- * \brief Undo action animator add bone.
+ * Undo action animator add bone.
  */
 class aeUAnimatorAddBone : public igdeUndo{
 private:
@@ -42,19 +42,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUAnimatorAddBone( aeAnimator *rule, const char *pattern );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUAnimatorAddBone();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

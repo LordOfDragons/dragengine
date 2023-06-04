@@ -48,6 +48,14 @@ aeWPLinkListener::~aeWPLinkListener(){
 // Notifications
 //////////////////
 
+void aeWPLinkListener::ModelChanged( aeAnimator *animator ){
+	if( animator != pPanel.GetAnimator() ){
+		return;
+	}
+	
+	pPanel.UpdateModelVertexPositionSetList();
+}
+
 void aeWPLinkListener::RigChanged( aeAnimator *animator ){
 	if( animator != pPanel.GetAnimator() ){
 		return;

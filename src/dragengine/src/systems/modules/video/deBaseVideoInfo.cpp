@@ -31,14 +31,15 @@
 deBaseVideoInfo::deBaseVideoInfo() :
 pWidth( 1 ),
 pHeight( 1 ),
-pPixelFormat( deVideo::epf444 ),
+pComponentCount( 3 ),
+pBitCount( 8 ),
 pFrameCount( 0 ),
-pFrameRate( 30 ),
+pFrameRate( 30.0f ),
 
-pBytesPerSample( 0 ),
+pBytesPerSample( 2 ),
 pSampleCount( 0 ),
-pSampleRate( 0 ),
-pChannelCount( 0 ){
+pSampleRate( 44100 ),
+pChannelCount( 1 ){
 }
 
 deBaseVideoInfo::~deBaseVideoInfo(){
@@ -50,37 +51,32 @@ deBaseVideoInfo::~deBaseVideoInfo(){
 ///////////////
 
 void deBaseVideoInfo::SetWidth( int width ){
-	if( width < 1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( width >= 1 )
 	pWidth = width;
 }
 
 void deBaseVideoInfo::SetHeight( int height ){
-	if( height < 1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( height >= 1 )
 	pHeight = height;
 }
 
-void deBaseVideoInfo::SetPixelFormat( deVideo::ePixelFormat pixelFormat ){
-	if( pixelFormat < deVideo::epf444 || pixelFormat > deVideo::epf4444 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPixelFormat = pixelFormat;
+void deBaseVideoInfo::SetComponentCount( int componentCount ){
+	DEASSERT_TRUE( componentCount >= 1 && componentCount <= 4 )
+	pComponentCount = componentCount;
+}
+
+void deBaseVideoInfo::SetBitCount( int bitCount ){
+	DEASSERT_TRUE( bitCount == 8 )
+	pBitCount = bitCount;
 }
 
 void deBaseVideoInfo::SetFrameCount( int frameCount ){
-	if( frameCount < 1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( frameCount >= 0 )
 	pFrameCount = frameCount;
 }
 
-void deBaseVideoInfo::SetFrameRate( int frameRate ){
-	if( frameRate < 1 ){
-		DETHROW( deeInvalidParam );
-	}
+void deBaseVideoInfo::SetFrameRate( float frameRate ){
+	DEASSERT_TRUE( frameRate > 0.0f )
 	pFrameRate = frameRate;
 }
 
@@ -91,29 +87,21 @@ void deBaseVideoInfo::SetColorConversionMatrix( const decColorMatrix3 &matrix ){
 
 
 void deBaseVideoInfo::SetBytesPerSample( int bytesPerSample ){
-	if( bytesPerSample < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( bytesPerSample == 1 || bytesPerSample == 2 )
 	pBytesPerSample = bytesPerSample;
 }
 
 void deBaseVideoInfo::SetSampleCount( int sampleCount ){
-	if( sampleCount < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( sampleCount >= 0 )
 	pSampleCount = sampleCount;
 }
 
 void deBaseVideoInfo::SetSampleRate( int sampleRate ){
-	if( sampleRate < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( sampleRate >= 8000 )
 	pSampleRate = sampleRate;
 }
 
 void deBaseVideoInfo::SetChannelCount( int channelCount ){
-	if( channelCount < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( channelCount >= 1 )
 	pChannelCount = channelCount;
 }

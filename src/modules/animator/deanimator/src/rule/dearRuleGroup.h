@@ -29,11 +29,12 @@
 class decIntList;
 class deAnimator;
 class dearBoneStateList;
+class dearVPSStateList;
 
 
 
 /**
- * \brief Group rule.
+ * Group rule.
  */
 class dearRuleGroup : public dearRule{
 private:
@@ -41,6 +42,9 @@ private:
 	
 	dearBoneStateList *pStateList;
 	dearBoneStateList *pStateList2;
+	
+	dearVPSStateList *pVPSStateList;
+	dearVPSStateList *pVPSStateList2;
 	
 	dearRule **pRules;
 	int pRuleCount;
@@ -52,15 +56,16 @@ private:
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pEnableVPS;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleGroup( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleGroup &rule, const decIntList &controllerMapping );
 	
-	/** \brief Clean up animator. */
+	/** Clean up animator. */
 	virtual ~dearRuleGroup();
 	/*@}*/
 	
@@ -69,29 +74,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Capture animator state.
+	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
 	virtual void CaptureStateInto( int identifier );
 	
 	/**
-	 * \brief Store animation frame.
+	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
 	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
 	
 	/**
-	 * \brief Check if a full rebuild of the animator instance is required.
+	 * Check if a full rebuild of the animator instance is required.
 	 */
 	virtual bool RebuildInstance() const;
 	
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Controller changed. */
+	/** Controller changed. */
 	virtual void ControllerChanged( int controller );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	

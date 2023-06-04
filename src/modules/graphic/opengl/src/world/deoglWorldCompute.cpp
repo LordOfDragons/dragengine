@@ -39,6 +39,8 @@
 // Class deoglWorldCompute
 ////////////////////////////
 
+// #define ENABLE_DEBUG_1
+
 // Constructors and Destructors
 /////////////////////////////////
 
@@ -47,16 +49,24 @@ pWorld( world ),
 pFullUpdateLimit( 0 ),
 pFullUpdateFactor( 0.2f ),
 pUpdateElementCount( 0 ),
+pForceFullUpdate( false ),
 pFullUpdateGeometryLimit( 0 ),
 pFullUpdateGeometryFactor( 0.25f ),
-pUpdateElementGeometryCount( 0 )
+pUpdateElementGeometryCount( 0 ),
+pForceFullUpdateGeometry( false ),
+pClearGeometries( nullptr ),
+pClearGeometriesCount( 0 ),
+pClearGeometriesSize( 0 ),
+pClearGeometryCount( 0 )
 {
+	// WARNING potentially called from main thread. calling EnsureBuffer() is not allowed here
+	
 	deoglRenderThread &renderThread = world.GetRenderThread();
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
-	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOElements->SetRowMajor( rowMajor );
-	pSSBOElements->SetParameterCount( 9 );
+	pSSBOElements->SetParameterCount( 11 );
 	pSSBOElements->GetParameterAt( espeMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
 	pSSBOElements->GetParameterAt( espeFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->GetParameterAt( espeMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
@@ -64,25 +74,25 @@ pUpdateElementGeometryCount( 0 )
 	pSSBOElements->GetParameterAt( espeLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
 	pSSBOElements->GetParameterAt( espeFirstGeometry ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->GetParameterAt( espeGeometryCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElements->GetParameterAt( espeLodFirst ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElements->GetParameterAt( espeLodCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeLodFactors ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
+	pSSBOElements->GetParameterAt( espeHighestLod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeCullResult ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeLodIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->MapToStd140();
-	pSSBOElements->SetBindingPoint( 0 );
 	
-	pSSBOElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOElementGeometries.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 	pSSBOElementGeometries->SetRowMajor( rowMajor );
 	pSSBOElementGeometries->SetParameterCount( 9 );
-	pSSBOElementGeometries->GetParameterAt( espetElement ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetLod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetRenderFilter ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetSkinTexture ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetPipelineBase ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetVao ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetSPBInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElementGeometries->GetParameterAt( espetTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegElement ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegLod ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegRenderFilter ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegSkinTexture ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegPipelineBase ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegVao ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegSPBInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementGeometries->GetParameterAt( espegTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 	pSSBOElementGeometries->MapToStd140();
-	pSSBOElementGeometries->SetBindingPoint( 3 );
 	
 	pSharedSPBGeometries.TakeOver( new deoglSharedBlockSPB( pSSBOElementGeometries ) );
 }
@@ -96,9 +106,14 @@ deoglWorldCompute::~deoglWorldCompute(){
 	for( i=0; i<count; i++ ){
 		deoglWorldComputeElement &element = *( deoglWorldComputeElement* )pElements.GetAt( i );
 		element.SetIndex( -1 );
+		element.SetWorldCompute( nullptr );
 		element.GetSPBGeometries() = nullptr;
 	}
 	pElements.RemoveAll();
+	
+	if( pClearGeometries ){
+		delete [] pClearGeometries;
+	}
 }
 
 
@@ -107,25 +122,34 @@ deoglWorldCompute::~deoglWorldCompute(){
 ///////////////
 
 void deoglWorldCompute::Prepare(){
-	if( pUpdateElements.GetCount() < pFullUpdateLimit
+	if(  pUpdateElements.GetCount() < pFullUpdateLimit && ! pForceFullUpdate
 	&& pElements.GetCount() <= pSSBOElements->GetElementCount() ){
 		pUpdateSSBOElements();
 		
 	}else{
 		pFullUpdateSSBOElements();
 	}
+	pForceFullUpdate = false;
 	
 	pUpdateFullUpdateLimits();
 }
 
 void deoglWorldCompute::PrepareGeometries(){
-	if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit ){
+	if( pClearGeometriesCount < pFullUpdateGeometryLimit ){
+		pUpdateSSBOClearGeometries();
+		
+	}else{
+		pForceFullUpdateGeometry = true;
+	}
+	
+	if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit && ! pForceFullUpdateGeometry ){
 		pUpdateSSBOElementGeometries();
 		// pFullUpdateSSBOElementGeometries();
 		
 	}else{
 		pFullUpdateSSBOElementGeometries();
 	}
+	pForceFullUpdateGeometry = false;
 	
 	pUpdateFullUpdateGeometryLimits();
 }
@@ -147,12 +171,33 @@ void deoglWorldCompute::AddElement( deoglWorldComputeElement *element ){
 	const int index = pElements.GetCount();
 	
 	pElements.Add( element );
+	element->SetWorldCompute( this );
 	element->SetIndex( index );
 	element->SetUpdateRequired( true );
+	element->SetUpdateGeometriesRequired( true );
 	
 	if( pUpdateElements.GetCount() < pFullUpdateLimit ){
 		pUpdateElements.Add( element );
+		
+	}else{
+		pForceFullUpdate = true;
 	}
+	
+	if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit ){
+		pUpdateElementGeometries.Add( element );
+		
+	}else{
+		pForceFullUpdateGeometry = true;
+	}
+	
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat(
+		"WorldCompute.AddElement: type=%d index=%d uec=%d ful=%d, uegc=%d fugl=%d",
+		element->GetType(), index, pUpdateElements.GetCount(), pFullUpdateLimit,
+		pUpdateElementGeometries.GetCount(), pFullUpdateGeometryLimit );
+	pDebugPrintElements();
+	pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+#endif
 }
 
 void deoglWorldCompute::UpdateElement( deoglWorldComputeElement *element ){
@@ -167,7 +212,19 @@ void deoglWorldCompute::UpdateElement( deoglWorldComputeElement *element ){
 	
 	if( pUpdateElements.GetCount() < pFullUpdateLimit ){
 		pUpdateElements.Add( element );
+		
+	}else{
+		pForceFullUpdate = true;
 	}
+	
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat(
+		"WorldCompute.UpdateElement: type=%d index=%d uec=%d ful=%d, uegc=%d fugl=%d",
+		element->GetType(), element->GetIndex(), pUpdateElements.GetCount(), pFullUpdateLimit,
+		pUpdateElementGeometries.GetCount(), pFullUpdateGeometryLimit );
+	pDebugPrintElements();
+	pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+#endif
 }
 
 void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
@@ -175,13 +232,45 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 	
 	const int index = element->GetIndex();
 	DEASSERT_TRUE( index != -1 )
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat(
+		"WorldCompute.RemoveElement: type=%d index=%d cgc=%d fugl=%d",
+		element->GetType(), index, pClearGeometriesCount, pFullUpdateGeometryLimit );
+#endif
 	
 	const int last = pElements.GetCount() - 1;
 	
-	element->GetSPBGeometries() = nullptr;
+	if( element->GetSPBGeometries() ){
+		// clear geometries
+		if( pClearGeometriesCount < pFullUpdateGeometryLimit ){
+			sClearGeometries &entry = pClearGeometries[ pClearGeometriesCount++ ];
+			entry.first = element->GetSPBGeometries()->GetIndex();
+			entry.count = element->GetSPBGeometries()->GetCount();
+			
+		}else{
+			pForceFullUpdateGeometry = true;
+		}
+		
+		element->GetSPBGeometries() = nullptr;
+	}
+	
 	element->SetIndex( -1 );
+	element->SetWorldCompute( nullptr );
 	element->SetUpdateRequired( false );
 	element->SetUpdateGeometriesRequired( false );
+	
+	// removing from clear geometries is not required since clearing happens
+	// before updating so no wrong results can happen
+	
+	int removeIndex = pUpdateElementGeometries.IndexOf( element );
+	if( removeIndex != -1 ){
+		pUpdateElementGeometries.RemoveFrom( removeIndex );
+	}
+	
+	removeIndex = pUpdateElements.IndexOf( element );
+	if( removeIndex != -1 ){
+		pUpdateElements.RemoveFrom( removeIndex );
+	}
 	
 	if( index < last ){
 		deoglWorldComputeElement * const swap = ( deoglWorldComputeElement* )pElements.GetAt( last );
@@ -192,16 +281,38 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 			swap->SetUpdateRequired( true );
 			
 			if( pUpdateElements.GetCount() < pFullUpdateLimit ){
-				pUpdateElements.Add( element );
+				pUpdateElements.Add( swap );
+				
+			}else{
+				pForceFullUpdate = true;
+			}
+			
+			if( swap->GetSPBGeometries() ){
+				// updating geometries is required since they contain the element index
+				if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit ){
+					pUpdateElementGeometries.Add( swap );
+					
+				}else{
+					pForceFullUpdateGeometry = true;
+				}
 			}
 		}
 	}
 	
 	pElements.RemoveFrom( last );
+	
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat(
+		"- uec=%d ful=%d, uegc=%d fugl=%d", pUpdateElements.GetCount(), pFullUpdateLimit,
+		pUpdateElementGeometries.GetCount(), pFullUpdateGeometryLimit );
+	pDebugPrintElements();
+	pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+#endif
 }
 
 int deoglWorldCompute::GetElementGeometryCount() const{
-	return GetElementCount() > 0 ? pSSBOElementGeometries->GetElementCount() : 0;
+	return pSharedSPBGeometries->GetSize() - pSharedSPBGeometries->GetFreeElementCountAtEnd();
+	// return GetElementCount() > 0 ? pSSBOElementGeometries->GetElementCount() : 0;
 }
 
 void deoglWorldCompute::UpdateElementGeometries( deoglWorldComputeElement *element ){
@@ -216,7 +327,19 @@ void deoglWorldCompute::UpdateElementGeometries( deoglWorldComputeElement *eleme
 	
 	if( pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit ){
 		pUpdateElementGeometries.Add( element );
+		
+	}else{
+		pForceFullUpdateGeometry = true;
 	}
+	
+	// no clearing geometries here since pCheckElementGeometryCount() will do this if required
+	
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat(
+		"WorldCompute.UpdateElementGeometries: type=%d index=%d", element->GetType(), element->GetIndex() );
+	pDebugPrintElements();
+	pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+#endif
 }
 
 
@@ -236,7 +359,7 @@ void deoglWorldCompute::pUpdateSSBOElements(){
 	
 	const deoglSPBMapBuffer mapped( ssbo );
 	deoglWorldComputeElement::sDataElement * const data =
-		( deoglWorldComputeElement::sDataElement* )ssbo.GetWriteBuffer();
+		( deoglWorldComputeElement::sDataElement* )ssbo.GetMappedBuffer();
 	int i;
 	
 	memset( data, 0, ssbo.GetElementStride() * count );
@@ -249,6 +372,12 @@ void deoglWorldCompute::pUpdateSSBOElements(){
 	
 	pUpdateElementCount = count;
 	pUpdateElements.RemoveAll();
+	
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat( "WorldCompute.pUpdateSSBOElements: %d", count );
+	pDebugPrintElements();
+	pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+#endif
 }
 
 void deoglWorldCompute::pFullUpdateSSBOElements(){
@@ -257,6 +386,7 @@ void deoglWorldCompute::pFullUpdateSSBOElements(){
 	
 	const int count = pElements.GetCount();
 	if( count == 0 ){
+		pSSBOElements->EnsureBuffer(); // since we can not init in constructor
 		return;
 	}
 	
@@ -266,7 +396,7 @@ void deoglWorldCompute::pFullUpdateSSBOElements(){
 	
 	const deoglSPBMapBuffer mapped( pSSBOElements );
 	deoglWorldComputeElement::sDataElement * const data =
-		( deoglWorldComputeElement::sDataElement* )pSSBOElements->GetWriteBuffer();
+		( deoglWorldComputeElement::sDataElement* )pSSBOElements->GetMappedBuffer();
 	
 	memset( data, 0, pSSBOElements->GetElementStride() * count );
 	
@@ -274,11 +404,17 @@ void deoglWorldCompute::pFullUpdateSSBOElements(){
 	for( i=0; i<count; i++ ){
 		pUpdateSSBOElement( *( deoglWorldComputeElement* )pElements.GetAt( i ), data[ i ] );
 	}
+	
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat( "WorldCompute.pFullUpdateSSBOElements %d", count );
+	pDebugPrintElements();
+	pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+#endif
 }
 
 void deoglWorldCompute::pUpdateSSBOElement( deoglWorldComputeElement &element,
 deoglWorldComputeElement::sDataElement &data ){
-	element.UpdateData( *this, data );
+	element.UpdateData( data );
 	element.SetUpdateRequired( false );
 	
 	pCheckElementGeometryCount( element, data );
@@ -286,14 +422,16 @@ deoglWorldComputeElement::sDataElement &data ){
 	if( element.GetSPBGeometries() ){
 		data.firstGeometry = ( uint32_t )element.GetSPBGeometries()->GetIndex();
 	}
-	// data.lodFirst = ( uint32_t )element.GetFirstLod();
 }
 
 void deoglWorldCompute::pCheckElementGeometryCount( deoglWorldComputeElement &element,
 deoglWorldComputeElement::sDataElement &data ){
 	// check if geometry count changed
+	int oldFirstIndex = 0;
 	int oldGeometryCount = 0;
+	
 	if( element.GetSPBGeometries() ){
+		oldFirstIndex = element.GetSPBGeometries()->GetIndex();
 		oldGeometryCount = element.GetSPBGeometries()->GetCount();
 	}
 	
@@ -303,14 +441,28 @@ deoglWorldComputeElement::sDataElement &data ){
 	}
 	
 	if( geometryCount == 0 ){
+		if( oldGeometryCount > 0 ){
+			// clear old geometries
+			if( pClearGeometriesCount < pFullUpdateGeometryLimit ){
+				sClearGeometries &entry = pClearGeometries[ pClearGeometriesCount++ ];
+				entry.first = oldFirstIndex;
+				entry.count = oldGeometryCount;
+				
+			}else{
+				pForceFullUpdateGeometry = true;
+			}
+		}
+		
 		element.GetSPBGeometries() = nullptr;
 		return;
 	}
 	
 	if( geometryCount < oldGeometryCount ){
-		// if the geometry count is less we can keep using the same spb element. this does waste
-		// some slots but chances are the geometry count increses again soon most probably back
-		// to the old count. this is typically the case with outline geometries
+		// if the geometry count is less we can keep using the same spb element. this does
+		// waste some slots but chances are the geometry count increses again soon most
+		// probably back to the old count. this is typically the case with outline geometries.
+		// 
+		// we do not have to clear the geometries since updating element does already
 		return;
 	}
 	
@@ -319,16 +471,30 @@ deoglWorldComputeElement::sDataElement &data ){
 	element.GetSPBGeometries() = nullptr;
 	element.GetSPBGeometries() = pSharedSPBGeometries->GetElement( geometryCount );
 	
-	// if no new element can be obtained we have to grow the spb. this requires a full update
-	// so we can stop trying to do partial updates in the future
+	// if new element can be obtained clear old geometries range. updating element will
+	// write the new geometry range. furthermore UpdateElementGeometries() will be called
+	// too so we do not need to add updating the new geometry range here
 	if( element.GetSPBGeometries() ){
-		return;
+		if( oldGeometryCount > 0 ){
+			// clear old geometries
+			if( pClearGeometriesCount < pFullUpdateGeometryLimit ){
+				sClearGeometries &entry = pClearGeometries[ pClearGeometriesCount++ ];
+				entry.first = oldFirstIndex;
+				entry.count = oldGeometryCount;
+				
+			}else{
+				pForceFullUpdateGeometry = true;
+			}
+		}
+		
+	// if no new element can be obtained we have to grow the spb. this requires a full
+	// update so we can stop trying to do partial updates in the future
+	}else{
+		pSSBOElementGeometries->SetElementCount( pSSBOElementGeometries->GetElementCount() + geometryCount + 100 );
+		pForceFullUpdateGeometry = true;
+		
+		element.GetSPBGeometries() = pSharedSPBGeometries->GetElement( geometryCount );
 	}
-	
-	pSSBOElementGeometries->SetElementCount( pSSBOElementGeometries->GetElementCount() + geometryCount + 100 );
-	pFullUpdateGeometryLimit = 0;
-	
-	element.GetSPBGeometries() = pSharedSPBGeometries->GetElement( geometryCount );
 }
 
 
@@ -365,13 +531,14 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 		ssboIndex.SetElementCount( countIndex );
 	}
 	
-	const deoglSPBMapBuffer mappedData( ssboData ), mappedIndex( ssboIndex );
+	const deoglSPBMapBuffer mappedData( ssboData, 0, pUpdateElementGeometryCount );
+	const deoglSPBMapBuffer mappedIndex( ssboIndex, 0, countIndex );
 	deoglWorldComputeElement::sDataElementGeometry * const dataData =
-		( deoglWorldComputeElement::sDataElementGeometry* )ssboData.GetWriteBuffer();
-	uint32_t * const dataIndex = ( uint32_t* )ssboIndex.GetWriteBuffer();
+		( deoglWorldComputeElement::sDataElementGeometry* )ssboData.GetMappedBuffer();
+	uint32_t * const dataIndex = ( uint32_t* )ssboIndex.GetMappedBuffer();
 	
-	memset( dataData, 0, ssboData.GetElementStride() * pUpdateElementGeometryCount );
-	memset( dataIndex, 0, ssboIndex.GetElementStride() * countIndex );
+	ssboData.Clear();
+	ssboIndex.Clear();
 	
 	int j, nextIndex = 0;
 	
@@ -398,21 +565,34 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 		// pWorld.GetRenderThread().GetLogger().LogInfoFormat("pUpdateSSBOElementGeometries: Upload %dys", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	pUpdateElementGeometries.RemoveAll();
+	
+	// pWorld.GetRenderThread().GetLogger().LogInfo( "WorldCompute.UpdateElementGeometries" );
+	// pDebugPrintElements();
+	// pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+	
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat(
+		"WorldCompute.pFullUpdateSSBOElementGeometries %d", pUpdateElementGeometryCount );
+	pDebugPrintElements();
+	pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+#endif
 }
 
 void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
+	pClearGeometryCount = 0;
 	pUpdateElementGeometryCount = 0;
 	pUpdateElementGeometries.RemoveAll();
 	
 	const int elementCount = pElements.GetCount();
 	if( elementCount == 0 ){
+		pSSBOElementGeometries->EnsureBuffer(); // since we can not init in constructor
 		return;
 	}
 	
 		// decTimer timer;
 	const deoglSPBMapBuffer mapped( pSSBOElementGeometries );
 	deoglWorldComputeElement::sDataElementGeometry * const data =
-		( deoglWorldComputeElement::sDataElementGeometry* )pSSBOElementGeometries->GetWriteBuffer();
+		( deoglWorldComputeElement::sDataElementGeometry* )pSSBOElementGeometries->GetMappedBuffer();
 	
 	pSSBOElementGeometries->Clear();
 	
@@ -427,6 +607,58 @@ void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 		// pWorld.GetRenderThread().GetLogger().LogInfoFormat( "pFullUpdateSSBOElementGeometries: Write %dys", (int)(timer.GetElapsedTime() * 1e6f) );
 		// mapped.Unmap();
 		// pWorld.GetRenderThread().GetLogger().LogInfoFormat( "pFullUpdateSSBOElementGeometries: Upload %dys", (int)(timer.GetElapsedTime() * 1e6f) );
+	
+	// pWorld.GetRenderThread().GetLogger().LogInfo( "WorldCompute.FullUpdateSSBOElementGeometries" );
+	// pDebugPrintElements();
+	// pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+	
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat(
+		"WorldCompute.pUpdateFullUpdateGeometryLimits %d", elementCount );
+	pDebugPrintElements();
+	pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+#endif
+}
+
+
+
+void deoglWorldCompute::pUpdateSSBOClearGeometries(){
+	pClearGeometryCount = 0;
+	
+	int i;
+	for( i=0; i<pClearGeometriesCount; i++ ){
+		pClearGeometryCount += pClearGeometries[ i ].count;
+	}
+	
+	if( pClearGeometryCount == 0 ){
+		pClearGeometriesCount = 0;
+		return;
+	}
+	
+	const deoglRenderCompute &renderCompute = pWorld.GetRenderThread().GetRenderers().GetCompute();
+	deoglSPBlockSSBO &ssbo = renderCompute.GetSSBOClearGeometries();
+	
+	if( pClearGeometryCount > ssbo.GetElementCount() ){
+		ssbo.SetElementCount( pClearGeometryCount );
+	}
+	
+	const deoglSPBMapBuffer mapped( ssbo, 0, pClearGeometryCount );
+	uint32_t * const data = ( uint32_t* )ssbo.GetMappedBuffer();
+	int j, nextIndex = 0;
+	
+	for( i=0; i<pClearGeometriesCount; i++ ){
+		const sClearGeometries &entry = pClearGeometries[ i ];
+		for( j=0; j<entry.count; j++ ){
+			data[ nextIndex++ ] = ( uint32_t )( entry.first + j );
+		}
+	}
+	pClearGeometriesCount = 0;
+	
+#ifdef ENABLE_DEBUG_1
+	pWorld.GetRenderThread().GetLogger().LogInfoFormat( "WorldCompute.pClearGeometries %d", nextIndex );
+	pDebugPrintElements();
+	pSharedSPBGeometries->DebugPrint( pWorld.GetRenderThread().GetLogger() );
+#endif
 }
 
 
@@ -440,4 +672,34 @@ void deoglWorldCompute::pUpdateFullUpdateGeometryLimits(){
 	// this is count of elements not geometries
 	pFullUpdateGeometryLimit = decMath::max( pFullUpdateGeometryLimit,
 		( int )( pFullUpdateGeometryFactor * ( float )pElements.GetCount() ) );
+	
+	// ensure clear geometries array is large enough
+	if( pClearGeometriesSize < pFullUpdateGeometryLimit ){
+		if( pClearGeometries ){
+			delete [] pClearGeometries;
+			pClearGeometries = nullptr;
+		}
+		
+		pClearGeometries = new sClearGeometries[ pFullUpdateGeometryLimit ];
+		pClearGeometriesSize = pFullUpdateGeometryLimit;
+		pClearGeometriesCount = 0; // should be 0 already
+	}
+}
+
+void deoglWorldCompute::pDebugPrintElements(){
+	deoglRTLogger &logger = pWorld.GetRenderThread().GetLogger();
+	const int count = pElements.GetCount();
+	decStringList list;
+	decString string;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglWorldComputeElement &element = *( deoglWorldComputeElement* )pElements.GetAt( i );
+			if(element.GetType() == deoglWorldComputeElement::eetHeightTerrainSectorCluster) continue;
+		string.Format( "[%d:%d(%p),%d,%d]", i, element.GetType(), element.GetOwner(),
+			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetIndex() : -1,
+			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1 );
+		list.Add( string );
+	}
+	logger.LogInfo( list.Join( " " ) );
 }

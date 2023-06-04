@@ -28,7 +28,7 @@
 
 
 /**
- * \brief Animator rule track to.
+ * Animator rule track to.
  */
 class aeRuleTrackTo : public aeRule{
 public:
@@ -47,66 +47,66 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new track to rule. */
+	/** Create a new track to rule. */
 	aeRuleTrackTo();
-	/** \brief Create a copy of a track to rule. */
+	/** Create a copy of a track to rule. */
 	aeRuleTrackTo( const aeRuleTrackTo &copy );
-	/** \brief Clean up the animator rule. */
+	/** Clean up the animator rule. */
 	virtual ~aeRuleTrackTo();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the name of the track bone or empty string to use none. */
+	/** Retrieve the name of the track bone or empty string to use none. */
 	inline const decString &GetTrackBone() const{ return pTrackBone; }
-	/** \brief Set the name of the track bone or empty string to use none. */
+	/** Set the name of the track bone or empty string to use none. */
 	void SetTrackBone( const char *boneName );
-	/** \brief Retrieve the track axis. */
+	/** Retrieve the track axis. */
 	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return pTrackAxis; }
-	/** \brief Set the track axis. */
+	/** Set the track axis. */
 	void SetTrackAxis( deAnimatorRuleTrackTo::eTrackAxis axis );
-	/** \brief Retrieve the up axis. */
+	/** Retrieve the up axis. */
 	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return pUpAxis; }
-	/** \brief Set the up axis. */
+	/** Set the up axis. */
 	void SetUpAxis( deAnimatorRuleTrackTo::eTrackAxis axis );
-	/** \brief Retrieve the up target. */
+	/** Retrieve the up target. */
 	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return pUpTarget; }
-	/** \brief Set the up target. */
+	/** Set the up target. */
 	void SetUpTarget( deAnimatorRuleTrackTo::eUpTarget target );
-	/** \brief Retrieve the locked axis. */
+	/** Retrieve the locked axis. */
 	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return pLockedAxis; }
-	/** \brief Set the locked axis. */
+	/** Set the locked axis. */
 	void SetLockedAxis( deAnimatorRuleTrackTo::eLockedAxis axis );
 	
-	/** \brief Retrieve the position target. */
+	/** Retrieve the position target. */
 	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
 	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
 	
-	/** \brief Retrieve the up target. */
+	/** Retrieve the up target. */
 	inline aeControllerTarget &GetTargetUp(){ return pTargetUp; }
 	inline const aeControllerTarget &GetTargetUp() const{ return pTargetUp; }
 	
-	/** \brief Create an engine animator rule. */
+	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();
-	/** \brief Update targets. */
+	/** Update targets. */
 	virtual void UpdateTargets();
-	/** \brief Retrieve the number of targets using a given link. */
+	/** Retrieve the number of targets using a given link. */
 	virtual int CountLinkUsage( aeLink *link ) const;
-	/** \brief Remove a link from all targets using it. */
+	/** Remove a link from all targets using it. */
 	virtual void RemoveLinkFromTargets( aeLink *link );
-	/** \brief Remove all links from all targets. */
+	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const;
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another track to rule to this track to rule. */
+	/** Copy another track to rule to this track to rule. */
 	virtual aeRuleTrackTo &operator=( const aeRuleTrackTo &copy );
 	/*@}*/
 };

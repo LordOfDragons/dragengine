@@ -32,7 +32,6 @@
 #include "../renderthread/deoglRTDebug.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
-#include "../texture/texture1d/deoglTexture1D.h"
 #include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
@@ -49,7 +48,6 @@
 static GLenum targetMap[] = {
 	0, // eatNone
 	GL_TEXTURE_2D, // eatTexture
-	GL_TEXTURE_1D, // eatTexture1D
 	GL_TEXTURE_CUBE_MAP, // eatCubeMap
 	GL_TEXTURE_CUBE_MAP_POSITIVE_X, // eatCubeMapPosX
 	GL_TEXTURE_CUBE_MAP_NEGATIVE_X, // eatCubeMapNegX
@@ -249,34 +247,6 @@ void deoglFramebuffer::AttachColorTextureLevel( int index, deoglTexture *texture
 		DETHROW( deeInvalidParam );
 	}
 	AttachColorTextureLevel( index, texture->GetTexture(), level );
-}
-
-void deoglFramebuffer::AttachColorTexture1D( int index, deoglTexture1D *texture ){
-	AttachColorTexture1DLevel( index, texture, 0 );
-}
-
-void deoglFramebuffer::AttachColorTexture1DLevel( int index, deoglTexture1D *texture, int level ){
-	if( pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const GLuint image = texture->GetTexture();
-	
-	if( pAttColor[ index ].DoesNotMatch( image, eatTexture1D, level ) ){
-		DetachColorImage( index );
-		
-		if( pglFramebufferTexture
-		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0 + index, image, level ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglFramebufferTexture1D( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_1D, image, level ) );
-		}
-		
-		pAttColor[ index ].Set( image, eatTexture1D, level );
-	}
 }
 
 void deoglFramebuffer::AttachColorCubeMap( int index, deoglCubeMap* texture ){
@@ -496,34 +466,6 @@ void deoglFramebuffer::AttachDepthTextureLevel( deoglTexture *texture, int level
 	}
 }
 
-void deoglFramebuffer::AttachDepthTexture1D( deoglTexture1D *texture ){
-	AttachDepthTexture1DLevel( texture, 0 );
-}
-
-void deoglFramebuffer::AttachDepthTexture1DLevel( deoglTexture1D *texture, int level ){
-	if( pPrimary || ! texture ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const GLuint image = texture->GetTexture();
-	
-	if( pAttDepth.DoesNotMatch( image, eatTexture1D, level ) ){
-		DetachDepthImage();
-		
-		if( pglFramebufferTexture
-		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_DEPTH_ATTACHMENT, image, level ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_DEPTH_ATTACHMENT, GL_TEXTURE_1D, image, level ) );
-		}
-		
-		pAttDepth.Set( image, eatTexture1D, level );
-	}
-}
-
 void deoglFramebuffer::AttachDepthCubeMap( deoglCubeMap *texture ){
 	AttachDepthCubeMapLevel( texture, 0 );
 }
@@ -711,34 +653,6 @@ void deoglFramebuffer::AttachStencilTextureLevel( deoglTexture *texture, int lev
 	pAttStencil.Set( image, eatTexture, level );
 }
 
-void deoglFramebuffer::AttachStencilTexture1D( deoglTexture1D *texture ){
-	AttachStencilTexture1DLevel( texture, 0 );
-}
-
-void deoglFramebuffer::AttachStencilTexture1DLevel( deoglTexture1D *texture, int level ){
-	if( pPrimary || ! texture ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const GLuint image = texture->GetTexture();
-	
-	if( pAttStencil.DoesNotMatch( image, eatTexture1D, level ) ){
-		DetachStencilImage();
-		
-		if( pglFramebufferTexture
-		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_STENCIL_ATTACHMENT, image, level ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglFramebufferTexture1D( GL_FRAMEBUFFER,
-				GL_STENCIL_ATTACHMENT, GL_TEXTURE_1D, image, level ) );
-		}
-		
-		pAttStencil.Set( image, eatTexture1D, level );
-	}
-}
-
 void deoglFramebuffer::AttachStencilArrayTexture( deoglArrayTexture *texture ){
 	AttachStencilArrayTextureLevel( texture, 0 );
 }
@@ -893,7 +807,7 @@ void deoglFramebuffer::UpdateReadWriteBuffers(){
 
 static const char * const vAttTypeName[] = {
 	"none",
-	"texture", "texture1D", "cubeMap",
+	"texture", "cubeMap",
 	"cubeMapPosX", "cubeMapNegX",
 	"cubeMapPosY", "cubeMapNegY",
 	"cubeMapPosZ", "cubeMapNegZ",

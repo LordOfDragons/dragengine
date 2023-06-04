@@ -1,0 +1,3223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\deigde\editors\gameDefinition\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataObjectClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCBillboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCEnvMapProbe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCForceField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCNavBlocker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCNavSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSnapPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfigurationXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\category\gdeCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\category\gdeCategoryList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\filepattern\gdeFilePattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\filepattern\gdeFilePatternList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\gdeGameDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\gdeGameDefinitionListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\billboard\gdeOCBillboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\billboard\gdeOCBillboardList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\camera\gdeOCCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\camera\gdeOCCameraList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\component\gdeOCComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\component\gdeOCComponentList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\component\gdeOCComponentTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\component\gdeOCComponentTextureList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\envmapprobe\gdeOCEnvMapProbe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\envmapprobe\gdeOCEnvMapProbeList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\forceField\gdeOCForceField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\forceField\gdeOCForceFieldList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\gdeObjectClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\gdeObjectClassList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\inherit\gdeOCInherit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\inherit\gdeOCInheritList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\light\gdeOCLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\light\gdeOCLightList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\navblocker\gdeOCNavigationBlocker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\navblocker\gdeOCNavigationBlockerList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\navspace\gdeOCNavigationSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\navspace\gdeOCNavigationSpaceList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\particleemitter\gdeOCParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\particleemitter\gdeOCParticleEmitterList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\snappoint\gdeOCSnapPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\snappoint\gdeOCSnapPointList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeakerList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitterList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\property\gdeProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\property\gdePropertyList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\skin\gdeSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\skin\gdeSkinList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\sky\gdeSky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\sky\gdeSkyController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\sky\gdeSkyControllerList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\sky\gdeSkyList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gdEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gdeIGDEModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOBillboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOEnvMapProbe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOForceField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAONavBlocker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAONavSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSnapPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSubObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeViewActiveObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeViewActiveObjectListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\gdeBaseAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\gdeTaskSyncGameDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\gdeWindowMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\gdeWindowMainListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategoryAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategoryObjectClassAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategoryParticleEmitterAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategoryRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategorySkinAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategorySkyAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbeAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbeCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbeCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbePaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbeRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeBaseMAOCSubObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassDuplicate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassExportXmlEClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassSubclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpaceAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpaceCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpaceCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpacePaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpaceRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\skin\gdeMASkinAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\skin\gdeMASkinRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\sky\gdeMASkyAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\sky\gdeMASkyRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeDefaultPropertyValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWindowProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPGameDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPGameDefinitionListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPPathList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPPatternList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPPropertyList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPSelection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPSelectionListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPTagList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPUndoHistory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPUndoHistoryListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPViewListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategories.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoriesObjectClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoriesParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoriesSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoriesSky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoryObjectClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoryParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategorySkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategorySky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\gdeWPSTreeItemModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\gdeWPSTreeModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\gdeWPSTreeModelListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMObjectClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMObjectClasses.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCBillboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCEnvMapProbe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCForceField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCNavBlocker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCNavSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSnapPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSubObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\particleEmitter\gdeWPSTIMParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\particleEmitter\gdeWPSTIMParticleEmitters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\skin\gdeWPSTIMSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\skin\gdeWPSTIMSkins.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\sky\gdeWPSTIMSkies.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\sky\gdeWPSTIMSky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSCategoryListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSObjectClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSObjectClassListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCBillboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCBillboardListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCCameraListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCComponentListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCEnvMapProbe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCEnvMapProbeListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCForceField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCForceFieldListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCLightListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCNavigationBlocker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCNavigationBlockerListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCNavigationSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCNavigationSpaceListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCParticleEmitterListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSnapPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSnapPointListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeakerListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitterListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSkinListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSkyListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\loadsave\gdeLoadSaveGameDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\loadsave\gdeLoadSaveSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\loadsave\gdeLoadSaveXmlEClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategoryAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategoryBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategoryRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategorySetAutoCategorizePattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategorySetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategorySetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategoryToggleHidden.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPSetExtension.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPSetPattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPropertyAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPropertyRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetDefaultValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetIdentifierGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetMaxValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetMinValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetPathPatternType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPToggleIdentifierUsage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetAutoFindPathObjectClasses.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetAutoFindPathSkies.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetAutoFindPathSkins.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetBaseGameDefIDs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetBasePath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetScriptModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetVFSPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPSetExtension.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPSetPattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPropertyAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPropertyRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetDefaultValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetIdentifierGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetMaxValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetMinValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetPathPatternType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPToggleIdentifierUsage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCAddBillboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetAxis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetBoneName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetOffset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetSkinPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleDoNotScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleLocked.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardTogglePartialHide.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleRenderEnvMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleSizeFixedToScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleSpherical.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCRemoveBillboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCAddCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetFov.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetFovRatio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetImageDistance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetViewDistance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCRemoveCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCAddComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAudioModelPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetBoneName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetColRespType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetModelPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetOccMeshPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetPlaybackController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetRigPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetSkinPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleAffectsAudio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleAttachTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleDoNotScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleLightShadowIgnore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentTogglePartialHide.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleRenderEnvMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleStatic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCRemoveComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCAddTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCRemoveTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetColorTint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetOffset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetPathSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCAddEnvMapProbe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetInfluenceBorderSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetInfluencePriority.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetScaling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetShapeInfluence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetShapeReflection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetShapeReflectionMask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCRemoveEnvMapProbe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCAddForceField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetApplicationType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetBoneName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetDirection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetExponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetFieldType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetFluctuationDirection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetFluctuationForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetInfluenceArea.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetRadius.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetTriggerName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldToggleEnabled.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCRemoveForceField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUAddObjectClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCPropertyValuesFromSubObjects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetDefaultInheritPropertyPrefix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetHideTags.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetPartialHideTags.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetPropertyValues.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetScaleMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetTextureProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleCanInstantiate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsGhost.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeURemoveObjectClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCAddInherit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCInheritSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCInheritSetPropertyPrefix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCRemoveAllInherits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCRemoveInherit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCAddLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetAmbientRatio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetBoneName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetColor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHalfIntDist.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHintLightImportance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHintMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHintParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHintShadowImportance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetIntensity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetLightSkinPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetRange.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetSpotAngle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetSpotExponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetSpotRatio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetSpotSmoothness.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetTriggerName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightToggleActivated.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightToggleCastShadows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCRemoveLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCAddNavBlocker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetBlockingPriority.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetBoneName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetScaling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetShapeList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerToggleEnabled.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCRemoveNavBlocker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCAddNavSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetBlockerShapeList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetBlockingPriority.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetBoneName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetSnapAngle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetSnapDistance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCRemoveNavSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCAddParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetBoneName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetTriggerName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterToggleCasting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCRemoveParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPSetExtension.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPSetPattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPropertyAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPropertyRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetDefaultValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetIdentifierGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetMaxValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetMinValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetPathPatternType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPToggleIdentifierUsage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCAddSnapPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCRemoveSnapPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointSetSnapDistance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointToggleSnapToRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCAddSpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCRemoveSpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetBoneName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetDistanceOffset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetPathSound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetPlaySpeed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetRange.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetRollOff.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetTriggerName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetVolume.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerToggleLooping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerTogglePlaying.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPSetExtension.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPSetPattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetDefaultValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetIdentifierGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetMaxValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetMinValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetPathPatternType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPToggleIdentifierUsage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCAddTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCRemoveTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetColorTint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetOffset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetPathSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUAddParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUParticleEmitterSetCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUParticleEmitterSetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUParticleEmitterSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUParticleEmitterSetPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeURemoveParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUAddSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeURemoveSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUSkinSetCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUSkinSetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUSkinSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUSkinSetPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\controller\gdeUSkyControllerAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\controller\gdeUSkyControllerRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\controller\gdeUSkyControllerSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\controller\gdeUSkyControllerSetValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUAddSky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeURemoveSky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUSkySetCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUSkySetDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUSkySetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUSkySetPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataObjectClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCBillboard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCEnvMapProbe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCForceField.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCLight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCNavBlocker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCNavSpace.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSnapPoint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataProperty.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfiguration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfigurationXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\category\gdeCategory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\category\gdeCategoryList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\filepattern\gdeFilePattern.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\filepattern\gdeFilePatternList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\gdeGameDefinition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\gdeGameDefinitionListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\billboard\gdeOCBillboard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\billboard\gdeOCBillboardList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\camera\gdeOCCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\camera\gdeOCCameraList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\component\gdeOCComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\component\gdeOCComponentList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\component\gdeOCComponentTexture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\component\gdeOCComponentTextureList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\envmapprobe\gdeOCEnvMapProbe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\envmapprobe\gdeOCEnvMapProbeList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\forceField\gdeOCForceField.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\forceField\gdeOCForceFieldList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\gdeObjectClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\gdeObjectClassList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\inherit\gdeOCInherit.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\inherit\gdeOCInheritList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\light\gdeOCLight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\light\gdeOCLightList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\navblocker\gdeOCNavigationBlocker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\navblocker\gdeOCNavigationBlockerList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\navspace\gdeOCNavigationSpace.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\navspace\gdeOCNavigationSpaceList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\particleemitter\gdeOCParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\particleemitter\gdeOCParticleEmitterList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\snappoint\gdeOCSnapPoint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\snappoint\gdeOCSnapPointList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeakerList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitterList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\property\gdeProperty.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\property\gdePropertyList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\skin\gdeSkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\skin\gdeSkinList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\sky\gdeSky.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\sky\gdeSkyController.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\sky\gdeSkyControllerList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\sky\gdeSkyList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gdEditor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gdeIGDEModule.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOBillboard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOEnvMapProbe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOForceField.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOLight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAONavBlocker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAONavSpace.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSnapPoint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSubObject.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeViewActiveObject.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeViewActiveObjectListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\gdeBaseAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\gdeTaskSyncGameDefinition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\gdeWindowMain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\gdeWindowMainListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategoryAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategoryObjectClassAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategoryParticleEmitterAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategoryRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategorySkinAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\category\gdeMACategorySkyAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\billboard\gdeMAOCBillboardRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\camera\gdeMAOCCameraRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\component\gdeMAOCComponentRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbeAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbeCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbeCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbePaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\envMapProbe\gdeMAOCEnvMapProbeRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\forceField\gdeMAOCForceFieldRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeBaseMAOCSubObject.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassDuplicate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassExportXmlEClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\gdeMAObjectClassSubclass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\light\gdeMAOCLightRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navBlocker\gdeMAOCNavBlockerRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpaceAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpaceCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpaceCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpacePaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\navSpace\gdeMAOCNavSpaceRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\particleEmitter\gdeMAOCParticleEmitterRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\snapPoint\gdeMAOCSnapPointRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\skin\gdeMASkinAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\skin\gdeMASkinRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\sky\gdeMASkyAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\sky\gdeMASkyRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeDefaultPropertyValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWindowProperties.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPGameDefinition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPGameDefinitionListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPPathList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPPatternList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPPropertyList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPSelection.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPSelectionListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPTagList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPUndoHistory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPUndoHistoryListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPView.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\gdeWPViewListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategories.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoriesObjectClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoriesParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoriesSkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoriesSky.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoryObjectClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategoryParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategorySkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\category\gdeWPSTIMCategorySky.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\gdeWPSTreeItemModel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\gdeWPSTreeModel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\gdeWPSTreeModelListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMObjectClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMObjectClasses.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCBillboard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCEnvMapProbe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCForceField.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCLight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCNavBlocker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCNavSpace.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSnapPoint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSubObject.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\particleEmitter\gdeWPSTIMParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\particleEmitter\gdeWPSTIMParticleEmitters.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\skin\gdeWPSTIMSkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\skin\gdeWPSTIMSkins.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\sky\gdeWPSTIMSkies.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\sky\gdeWPSTIMSky.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSCategory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSCategoryListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSObjectClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSObjectClassListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCBillboard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCBillboardListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCCameraListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCComponentListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCEnvMapProbe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCEnvMapProbeListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCForceField.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCForceFieldListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCLight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCLightListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCNavigationBlocker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCNavigationBlockerListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCNavigationSpace.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCNavigationSpaceListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCParticleEmitterListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSnapPoint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSnapPointListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeakerListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitterListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSkinListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSky.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSkyListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\loadsave\gdeLoadSaveGameDefinition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\loadsave\gdeLoadSaveSystem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\loadsave\gdeLoadSaveXmlEClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategoryAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategoryBase.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategoryRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategorySetAutoCategorizePattern.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategorySetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategorySetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\category\gdeUCategoryToggleHidden.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPSetExtension.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPCFPSetPattern.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPropertyAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPropertyRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetDefaultValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetIdentifierGroup.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetMaxValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetMinValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetOptions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetPathPatternType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPSetType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\decalProperty\gdeUGDDPToggleIdentifierUsage.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetAutoFindPathObjectClasses.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetAutoFindPathSkies.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetAutoFindPathSkins.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetBaseGameDefIDs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetBasePath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetScriptModule.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\gdeUGDSetVFSPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPSetExtension.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPCFPSetPattern.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPropertyAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPropertyRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetDefaultValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetIdentifierGroup.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetMaxValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetMinValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetOptions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetPathPatternType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPSetType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\gamedef\worldProperty\gdeUGDWPToggleIdentifierUsage.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCAddBillboard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetAxis.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetBoneName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetOffset.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetSize.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardSetSkinPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleDoNotScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleLocked.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardTogglePartialHide.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleRenderEnvMap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleSizeFixedToScreen.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCBillboardToggleSpherical.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\billboard\gdeUOCRemoveBillboard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCAddCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetFov.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetFovRatio.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetImageDistance.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetViewDistance.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCRemoveCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCAddComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAudioModelPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetBoneName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetColRespType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetModelPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetOccMeshPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetPlaybackController.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetRigPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetSkinPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleAffectsAudio.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleAttachTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleDoNotScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleLightShadowIgnore.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentTogglePartialHide.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleRenderEnvMap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleStatic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCRemoveComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCAddTexture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCRemoveTexture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetColorTint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetOffset.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetPathSkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetProperties.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\texture\gdeUOCCTextureSetScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCAddEnvMapProbe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetInfluenceBorderSize.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetInfluencePriority.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetScaling.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetShapeInfluence.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetShapeReflection.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCEnvMapProbeSetShapeReflectionMask.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\envmapprobe\gdeUOCRemoveEnvMapProbe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCAddForceField.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetApplicationType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetBoneName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetDirection.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetExponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetFieldType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetFluctuationDirection.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetFluctuationForce.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetForce.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetInfluenceArea.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetRadius.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetShape.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldSetTriggerName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCForceFieldToggleEnabled.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\forceField\gdeUOCRemoveForceField.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUAddObjectClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCPropertyValuesFromSubObjects.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetCategory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetDefaultInheritPropertyPrefix.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetHideTags.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetPartialHideTags.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetPropertyValues.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetScaleMode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetTextureProperties.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleCanInstantiate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsGhost.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeURemoveObjectClass.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCAddInherit.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCInheritSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCInheritSetPropertyPrefix.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCRemoveAllInherits.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCRemoveInherit.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCAddLight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetAmbientRatio.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetBoneName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetColor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHalfIntDist.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHintLightImportance.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHintMovement.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHintParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetHintShadowImportance.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetIntensity.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetLightSkinPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetRange.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetSpotAngle.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetSpotExponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetSpotRatio.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetSpotSmoothness.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetTriggerName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightSetType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightToggleActivated.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCLightToggleCastShadows.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\light\gdeUOCRemoveLight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCAddNavBlocker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetBlockingPriority.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetBoneName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetLayer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetScaling.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetShapeList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerSetType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCNavBlockerToggleEnabled.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navblocker\gdeUOCRemoveNavBlocker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCAddNavSpace.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetBlockerShapeList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetBlockingPriority.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetBoneName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetLayer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetSnapAngle.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetSnapDistance.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCNavSpaceSetType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\navspace\gdeUOCRemoveNavSpace.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCAddParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetBoneName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterSetTriggerName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCParticleEmitterToggleCasting.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\particleemitter\gdeUOCRemoveParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPSetExtension.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPCFPSetPattern.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPropertyAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPropertyRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetDefaultValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetIdentifierGroup.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetMaxValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetMinValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetOptions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetPathPatternType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPSetType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\property\gdeUOCPToggleIdentifierUsage.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCAddSnapPoint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCRemoveSnapPoint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointSetSnapDistance.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\snappoint\gdeUOCSnapPointToggleSnapToRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCAddSpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCRemoveSpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetBoneName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetDistanceOffset.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetPathSound.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetPlaySpeed.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetRange.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetRollOff.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetTriggerName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetVolume.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerToggleLooping.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerTogglePlaying.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPSetExtension.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPSetPattern.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetDefaultValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetIdentifierGroup.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetMaxValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetMinValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetOptions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetPathPatternType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPSetType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPToggleIdentifierUsage.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCAddTexture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCRemoveTexture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetColorTint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetOffset.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetPathSkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texture\gdeUOCTextureSetScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUAddParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUParticleEmitterSetCategory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUParticleEmitterSetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUParticleEmitterSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeUParticleEmitterSetPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\particleemitter\gdeURemoveParticleEmitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUAddSkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeURemoveSkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUSkinSetCategory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUSkinSetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUSkinSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\skin\gdeUSkinSetPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\controller\gdeUSkyControllerAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\controller\gdeUSkyControllerRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\controller\gdeUSkyControllerSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\controller\gdeUSkyControllerSetValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUAddSky.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeURemoveSky.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUSkySetCategory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUSkySetDescription.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUSkySetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\sky\gdeUSkySetPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

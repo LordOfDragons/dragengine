@@ -1017,7 +1017,7 @@ void seViewConstructedView::CreateCanvas(){
 	//      showing content canvas with a transparency value to show more or less strong
 	
 	deCanvasManager &canvasManager = *GetEngineController().GetEngine()->GetCanvasManager();
-	const decColor colorBackground( 0.65f, 0.65f, 0.65 );
+	const decColor colorBackground( 0.65f, 0.65f, 0.65f );
 	
 	// constructed image background
 	pCanvasContentBackground.TakeOver( canvasManager.CreateCanvasPaint() );

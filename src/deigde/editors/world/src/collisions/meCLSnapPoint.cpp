@@ -200,7 +200,7 @@ void meCLSnapPoint::CollisionResponse( deCollider *owner, deCollisionInfo *info 
 		for( i=0; i<count; i++ ){
 			igdeGDCSnapPoint * const snappoint = list.GetAt( i );
 			const decDVector sourcePosition( matrix * decDVector( snappoint->GetPosition() ) );
-			const float distance = ( targetPosition - sourcePosition ).Length();
+			const float distance = ( float )( targetPosition - sourcePosition ).Length();
 			
 			if( distance > snapDistance ){
 				continue;
@@ -217,7 +217,7 @@ void meCLSnapPoint::CollisionResponse( deCollider *owner, deCollisionInfo *info 
 	}
 	
 	// use object position as snap point
-	const float distance = ( targetPosition - pObject->GetPosition() ).Length();
+	const float distance = ( float )( targetPosition - pObject->GetPosition() ).Length();
 	
 	if( distance <= snapDistance ){
 		if( ! pTargetSnapPoint || distance < pDistance ){

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Approx Transform VNT</name>
+	
+	<parameter name='pParams'/>
+	
+	<shaderStorageBlock name='ModelData' target='0'/>
+	<shaderStorageBlock name='TransformedData' target='1'/>
+	<shaderStorageBlock name='WeightsMatrix' target='2'/>
+	
+	<sourceCode unit='compute'>compute/defren/geometry/approx_transform_vnt.glsl</sourceCode>
+</shader>

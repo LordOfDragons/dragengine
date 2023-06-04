@@ -528,9 +528,9 @@ void peeType::pLoadSkin(){
 				pEngSkin = pEngine->GetSkinManager()->LoadSkin( pSkinPath, "/" );
 			}
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( pEmitter ){
-				pEngSkin = pEmitter->GetEnvironment()->GetErrorSkin();
+				pEngSkin = pEmitter->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
 				pEngSkin->AddReference();
 			}
 		}
@@ -579,9 +579,9 @@ void peeType::pLoadModelSkin(){
 				pEngCastSkin = pEngine->GetSkinManager()->LoadSkin( pModelSkinPath, "/" );
 			}
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( pEmitter ){
-				pEngCastSkin = pEmitter->GetEnvironment()->GetErrorSkin();
+				pEngCastSkin = pEmitter->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
 				pEngCastSkin->AddReference();
 			}
 		}

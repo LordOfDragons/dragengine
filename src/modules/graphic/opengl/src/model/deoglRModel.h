@@ -65,6 +65,7 @@ private:
 	
 	decStringList pBoneNames;
 	decStringList pTextureNames;
+	decStringList pVPSNames;
 	
 	deoglModelLOD **pLODs;
 	int pLODCount;
@@ -119,6 +120,9 @@ public:
 	/** List of texture names. */
 	inline const decStringList &GetTextureNames() const{ return pTextureNames; }
 	
+	/** List of vertex position set names. */
+	inline const decStringList &GetVPSNames() const{ return pVPSNames; }
+	
 	
 	
 	/** Number of lods. */
@@ -155,6 +159,7 @@ private:
 	void pCleanUp();
 	void pInitTextureNames( const deModel &engModel );
 	void pInitBoneNames( const deModel &engModel );
+	void pInitVPSNames( const deModel &engModel );
 	void pInitLODs( const deModel &engModel );
 	void pInitExtends( const deModel &engModel, const deoglModelLOD &baseLod );
 	

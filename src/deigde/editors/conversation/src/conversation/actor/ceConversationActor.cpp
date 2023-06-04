@@ -96,62 +96,62 @@ pNameGestureVariation( "gesture.variation" ),
 pNameGestureBlink( "blinking" ),
 pNameGestureFadeIn( "gesture.fade.in" ),
 pNameGestureFadeOut( "gesture.fade.out" ),
-pActivePose( NULL )
+pActivePose( nullptr )
 {
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	deAnimatorInstanceManager &animatorInstanceManager = *engine.GetAnimatorInstanceManager();
 	
-	pConversation = NULL;
+	pConversation = nullptr;
 	
-	pEngComponent = NULL;
-	pEngAnimatorInstance = NULL;
-	pEngGestureAnimatorInstance = NULL;
-	pEngFacePoseAnimator = NULL;
-	pEngFacePoseAnimatorInstance = NULL;
-	pEngEyesAnimator = NULL;
-	pEngEyesAnimatorInstance = NULL;
-	pEngSpeaker = NULL;
+	pEngComponent = nullptr;
+	pEngAnimatorInstance = nullptr;
+	pEngGestureAnimatorInstance = nullptr;
+	pEngFacePoseAnimator = nullptr;
+	pEngFacePoseAnimatorInstance = nullptr;
+	pEngEyesAnimator = nullptr;
+	pEngEyesAnimatorInstance = nullptr;
+	pEngSpeaker = nullptr;
 	
-	pSpeechAnimation = NULL;
+	pSpeechAnimation = nullptr;
 	
 	pHeadLeftRight = 0.0f;
 	pHeadUpDown = 0.0f;
 	pEyesLeftRight = 0.0f;
 	pEyesUpDown = 0.0f;
 	
-	pPlayGestures = NULL;
+	pPlayGestures = nullptr;
 	pPlayGestureCount = 0;
 	pPlayGestureSize = 0;
 	pPlayGesturePos = 0;
 	pPlayGestureElapsed = 0.0f;
 	pPlayGestureRunning = false;
 	
-	pPlayFacePoses = NULL;
+	pPlayFacePoses = nullptr;
 	pPlayFacePoseCount = 0;
 	pPlayFacePoseSize = 0;
 	pPlayFacePosePos = 0;
 	pPlayFacePoseElapsed = 0.0f;
 	pPlayFacePoseRunning = false;
-	pPlayLastFacePose = NULL;
-	pPlayCurFacePose = NULL;
+	pPlayLastFacePose = nullptr;
+	pPlayCurFacePose = nullptr;
 	
-	pPlayHeadLAs = NULL;
+	pPlayHeadLAs = nullptr;
 	pPlayHeadLACount = 0;
 	pPlayHeadLASize = 0;
 	pPlayHeadLAPos = 0;
 	pPlayHeadLAElapsed = 0.0f;
 	pPlayHeadLARunning = false;
-	pPlayLastHeadLA = NULL;
-	pPlayCurHeadLA = NULL;
+	pPlayLastHeadLA = nullptr;
+	pPlayCurHeadLA = nullptr;
 	
-	pPlayEyesLAs = NULL;
+	pPlayEyesLAs = nullptr;
 	pPlayEyesLACount = 0;
 	pPlayEyesLASize = 0;
 	pPlayEyesLAPos = 0;
 	pPlayEyesLAElapsed = 0.0f;
 	pPlayEyesLARunning = false;
-	pPlayLastEyesLA = NULL;
-	pPlayCurEyesLA = NULL;
+	pPlayLastEyesLA = nullptr;
+	pPlayCurEyesLA = nullptr;
 	pPlayEyesBoneDisable = -1;
 	
 	pBlinkFreqMin = 2.0f; // according to wikipedia 2-10s
@@ -386,7 +386,7 @@ void ceConversationActor::SetActivePose( ceActorPose *pose ){
 		pEngAnimatorInstance->SetAnimator( pose->GetEngineAnimator() );
 		
 	}else{
-		pEngAnimatorInstance->SetAnimator( NULL );
+		pEngAnimatorInstance->SetAnimator( nullptr );
 	}
 	
 	if( pConversation ){
@@ -634,7 +634,7 @@ void ceConversationActor::Reset(){
 	pCommands.RemoveAll();
 	pParameter.RemoveAll();
 	
-	SetActivePose( NULL );
+	SetActivePose( nullptr );
 	pPoses.RemoveAll();
 	NotifyPosesChanged();
 	
@@ -704,37 +704,37 @@ void ceConversationActor::pCleanUp(){
 	}
 	pPoses.RemoveAll();
 	
-	SetConversation( NULL );
+	SetConversation( nullptr );
 	
 	if( pEngSpeaker ){
 		pEngSpeaker->Stop();
-		pEngSpeaker->SetSound( NULL );
+		pEngSpeaker->SetSound( nullptr );
 		pEngSpeaker->FreeReference();
 	}
 	
 	if( pEngEyesAnimatorInstance ){
-		pEngEyesAnimatorInstance->SetAnimator( NULL );
-		pEngEyesAnimatorInstance->SetComponent( NULL );
+		pEngEyesAnimatorInstance->SetAnimator( nullptr );
+		pEngEyesAnimatorInstance->SetComponent( nullptr );
 		pEngEyesAnimatorInstance->FreeReference();
 	}
 	if( pEngEyesAnimator ){
-		pEngEyesAnimator->SetRig( NULL );
+		pEngEyesAnimator->SetRig( nullptr );
 		pEngEyesAnimator->FreeReference();
 	}
 	
 	if( pEngFacePoseAnimatorInstance ){
-		pEngFacePoseAnimatorInstance->SetAnimator( NULL );
-		pEngFacePoseAnimatorInstance->SetComponent( NULL );
+		pEngFacePoseAnimatorInstance->SetAnimator( nullptr );
+		pEngFacePoseAnimatorInstance->SetComponent( nullptr );
 		pEngFacePoseAnimatorInstance->FreeReference();
 	}
 	if( pEngFacePoseAnimator ){
-		pEngFacePoseAnimator->SetRig( NULL );
+		pEngFacePoseAnimator->SetRig( nullptr );
 		pEngFacePoseAnimator->FreeReference();
 	}
 	
 	if( pEngGestureAnimatorInstance ){
-		pEngGestureAnimatorInstance->SetAnimator( NULL );
-		pEngGestureAnimatorInstance->SetComponent( NULL );
+		pEngGestureAnimatorInstance->SetAnimator( nullptr );
+		pEngGestureAnimatorInstance->SetComponent( nullptr );
 		pEngGestureAnimatorInstance->FreeReference();
 	}
 	
@@ -743,8 +743,8 @@ void ceConversationActor::pCleanUp(){
 	}
 	
 	if( pEngAnimatorInstance ){
-		pEngAnimatorInstance->SetAnimator( NULL );
-		pEngAnimatorInstance->SetComponent( NULL );
+		pEngAnimatorInstance->SetAnimator( nullptr );
+		pEngAnimatorInstance->SetComponent( nullptr );
 		pEngAnimatorInstance->FreeReference();
 	}
 	if( pEngComponent ){
@@ -756,10 +756,10 @@ void ceConversationActor::pCleanUp(){
 
 void ceConversationActor::pUpdateComponent(){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
-	const igdeGameDefinition *gamedef = NULL;
-	deModel *model = NULL;
-	deSkin *skin = NULL;
-	deRig *rig = NULL;
+	const igdeGameDefinition *gamedef = nullptr;
+	deModel *model = nullptr;
+	deSkin *skin = nullptr;
+	deRig *rig = nullptr;
 	
 	if( pConversation ){
 		gamedef = pConversation->GetGameDefinition();
@@ -794,12 +794,12 @@ void ceConversationActor::pUpdateComponent(){
 	try{
 		// if the skin is missing use the default one
 		if( ! skin && gamedef ){
-			skin = pEnvironment.GetErrorSkin();
+			skin = pEnvironment.GetStockSkin( igdeEnvironment::essError );
 			skin->AddReference();
 		}
 		
 		// reset the animator
-		pEngAnimatorInstance->SetComponent( NULL ); // otherwise the animator is not reset
+		pEngAnimatorInstance->SetComponent( nullptr ); // otherwise the animator is not reset
 		
 		// update the component with the model and skin
 		if( model && skin ){
@@ -819,7 +819,7 @@ void ceConversationActor::pUpdateComponent(){
 				pConversation->GetEngineWorld()->RemoveComponent( pEngComponent );
 			}
 			pEngComponent->FreeReference();
-			pEngComponent = NULL;
+			pEngComponent = nullptr;
 		}
 		
 		// set the rig if the component exists
@@ -832,15 +832,15 @@ void ceConversationActor::pUpdateComponent(){
 		// free the reference we hold
 		if( rig ){
 			rig->FreeReference();
-			rig = NULL;
+			rig = nullptr;
 		}
 		if( model ){
 			model->FreeReference();
-			model = NULL;
+			model = nullptr;
 		}
 		if( skin ){
 			skin->FreeReference();
-			skin = NULL;
+			skin = nullptr;
 		}
 		
 	}catch( const deException & ){
@@ -867,7 +867,7 @@ void ceConversationActor::pUpdateComponent(){
 void ceConversationActor::pUpdateSpeechAnimation(){
 	deVirtualFileSystem &vfs = *pEnvironment.GetEngineController()->GetEngine()->GetVirtualFileSystem();
 	ceSpeechAnimationXML sanimationXML( pEnvironment.GetLogger(), LOGSOURCE );
-	decBaseFileReader *reader = NULL;
+	decBaseFileReader *reader = nullptr;
 	decPath pathFile;
 	
 	pSpeechAnimation->Clear();
@@ -908,8 +908,8 @@ void ceConversationActor::pUpdateFacePoseAnimator(){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	deVirtualFileSystem &vfs = *engine.GetVirtualFileSystem();
 	igdeLoadAnimator animatorXML( pEnvironment, pEnvironment.GetLogger(), LOGSOURCE );
-	decBaseFileReader *reader = NULL;
-	deAnimator *animator = NULL;
+	decBaseFileReader *reader = nullptr;
+	deAnimator *animator = nullptr;
 	decPath pathFile;
 	
 	if( ! pPathFacePoseAnimator.IsEmpty() ){
@@ -945,8 +945,8 @@ void ceConversationActor::pUpdateEyesAnimator(){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	deVirtualFileSystem &vfs = *engine.GetVirtualFileSystem();
 	igdeLoadAnimator animatorXML( pEnvironment, pEnvironment.GetLogger(), LOGSOURCE );
-	decBaseFileReader *reader = NULL;
-	deAnimator *animator = NULL;
+	decBaseFileReader *reader = nullptr;
+	deAnimator *animator = nullptr;
 	decPath pathFile;
 	
 	if( ! pPathEyesAnimator.IsEmpty() ){
@@ -1063,8 +1063,8 @@ void ceConversationActor::pUpdatePlayGesture( float elapsed ){
 		return;
 	}
 	
-	ceActorGesture *actorGesture = NULL;
-	deAnimator *engAnimator = NULL;
+	ceActorGesture *actorGesture = nullptr;
+	deAnimator *engAnimator = nullptr;
 	bool resetAnimation = false;
 	float startTime = 0.0f;
 	float endTime = 0.0f;
@@ -1085,7 +1085,7 @@ void ceConversationActor::pUpdatePlayGesture( float elapsed ){
 			
 			if( pPlayGestureElapsed < startTime ){
 				engAnimator = pEngGestureAnimatorInstance->GetAnimator();
-				break; // use actorGesturePose = NULL during pause
+				break; // use actorGesturePose = nullptr during pause
 			}
 			
 			if( ! pPlayGestures[ pPlayGesturePos ].gesture || ! pActivePose ){
@@ -1549,9 +1549,9 @@ void ceConversationActor::pUpdatePlayEyesLookAt( cePlayback &playback, float ela
 	
 	// determine the eyes left-right and up-down angles. for this the angles are calculated
 	// for the last and current look-at and then weighted
-	deComponentBone *boneHead = NULL;
-	deRigBone *boneEyeRight = NULL;
-	deRigBone *boneEyeLeft = NULL;
+	deComponentBone *boneHead = nullptr;
+	deRigBone *boneEyeRight = nullptr;
+	deRigBone *boneEyeLeft = nullptr;
 	
 	if( pEngComponent ){
 		pEngComponent->PrepareBones();

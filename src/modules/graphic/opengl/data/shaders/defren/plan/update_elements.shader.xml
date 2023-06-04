@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Update Elements</name>
+	
+	<parameter name='pUpdateElementCount'/>
+	
+	<shaderStorageBlock name='UpdateElement' target='0'/>
+	<shaderStorageBlock name='Element' target='1'/>
+	
+	<sourceCode unit='compute'>compute/defren/plan/update_elements.glsl</sourceCode>
+</shader>

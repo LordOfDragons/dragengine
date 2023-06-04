@@ -49,6 +49,8 @@ pRepeat( 1 ),
 pBoneParameter( deAnimatorLink::ebpPositionZ ),
 pBoneMinimum( 0.0f ),
 pBoneMaximum( 1.0f ),
+pVertexPositionSetMinimum( 0.0f ),
+pVertexPositionSetMaximum( 1.0f ),
 pWrapY( false )
 {
 	pCurve.SetDefaultLinear();
@@ -65,6 +67,9 @@ pBone( copy.pBone ),
 pBoneParameter( copy.pBoneParameter ),
 pBoneMinimum( copy.pBoneMinimum ),
 pBoneMaximum( copy.pBoneMaximum ),
+pVertexPositionSet( copy.pVertexPositionSet ),
+pVertexPositionSetMinimum( copy.pVertexPositionSetMinimum ),
+pVertexPositionSetMaximum( copy.pVertexPositionSetMaximum ),
 pWrapY( copy.pWrapY )
 {
 	pController = copy.pController;
@@ -118,6 +123,8 @@ void aeLink::SetAnimator( aeAnimator *animator ){
 		pEngLink->SetRepeat( pRepeat );
 		pEngLink->SetBone( pBone );
 		pEngLink->SetBoneParameter( pBoneParameter );
+		pEngLink->SetVertexPositionSet( pVertexPositionSet );
+		pEngLink->SetVertexPositionSetValueRange( pVertexPositionSetMinimum, pVertexPositionSetMaximum );
 		pEngLink->SetWrapY( pWrapY );
 		pUpdateBoneLimits();
 		
@@ -265,6 +272,57 @@ void aeLink::SetBoneMaximum( float value ){
 	}
 }
 
+void aeLink::SetVertexPositionSet( const char *vertexPositionSet ){
+	if( pVertexPositionSet == vertexPositionSet ){
+		return;
+	}
+	
+	pVertexPositionSet = vertexPositionSet;
+	
+	if( pEngLink ){
+		pEngLink->SetVertexPositionSet( pVertexPositionSet );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetVertexPositionSetMinimum( float value ){
+	if( fabsf( pVertexPositionSetMinimum - value ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pVertexPositionSetMinimum = value;
+	
+	if( pEngLink ){
+		pEngLink->SetVertexPositionSetValueRange( pVertexPositionSetMinimum, pVertexPositionSetMaximum );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetVertexPositionSetMaximum( float value ){
+	if( fabsf( pVertexPositionSetMaximum - value ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pVertexPositionSetMaximum = value;
+	
+	if( pEngLink ){
+		pEngLink->SetVertexPositionSetValueRange( pVertexPositionSetMinimum, pVertexPositionSetMaximum );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
 void aeLink::SetWrapY( bool wrap ){
 	if( wrap == pWrapY ){
 		return;
@@ -325,6 +383,9 @@ aeLink &aeLink::operator=( const aeLink &copy ){
 	pBoneParameter = copy.pBoneParameter;
 	pBoneMinimum = copy.pBoneMinimum;
 	pBoneMaximum = copy.pBoneMaximum;
+	pVertexPositionSet = copy.pVertexPositionSet;
+	pVertexPositionSetMinimum = copy.pVertexPositionSetMinimum;
+	pVertexPositionSetMaximum = copy.pVertexPositionSetMaximum;
 	pWrapY = copy.pWrapY;
 	return *this;
 }

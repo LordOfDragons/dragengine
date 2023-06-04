@@ -429,7 +429,7 @@ public:
 	gdeWPPathList( panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Object Classes" ),
 	pPanel( panel ){ }
 	
-	virtual igdeUndo *UndoSet( const decStringSet &paths ){
+	virtual igdeUndo *UndoSet( const decStringList &paths ){
 		return new gdeUGDSetAutoFindPathObjectClasses( pPanel.GetGameDefinition(), paths );
 	}
 };
@@ -442,7 +442,7 @@ public:
 	gdeWPPathList( panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path SkinsClasses" ),
 	pPanel( panel ){ }
 	
-	virtual igdeUndo *UndoSet( const decStringSet &paths ){
+	virtual igdeUndo *UndoSet( const decStringList &paths ){
 		return new gdeUGDSetAutoFindPathSkins( pPanel.GetGameDefinition(), paths );
 	}
 };
@@ -455,7 +455,7 @@ public:
 	gdeWPPathList( panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Skies" ),
 	pPanel( panel ){ }
 	
-	virtual igdeUndo *UndoSet( const decStringSet &paths ){
+	virtual igdeUndo *UndoSet( const decStringList &paths ){
 		return new gdeUGDSetAutoFindPathSkies( pPanel.GetGameDefinition(), paths );
 	}
 };

@@ -269,13 +269,6 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	renderTask.PrepareForRender();
 	rengeom.RenderTask( renderTask );
 	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspCounting ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureDiffuse(),
-			"transp_count", deoglDebugSaveTexture::ecNoConversion );
-		//renderThread.GetConfiguration()->SetDebugSnapshot( 0 );
-		renderTask.DebugPrint( renderThread.GetLogger() );
-	}
-	
 	
 	// outline
 	renderTask.Clear();
@@ -337,18 +330,6 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			
 			RenderFullScreenQuad( plan );
 			
-			if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspCounting ){
-				decString text;
-				text.Format( "transp_count_max_u_%ix%i_%i", curWidth, curHeight, nextSize );
-				if( useTexture1 ){
-					//defren.ActivateFBODiffuse( true );
-					renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureReflectivity(), text );
-				}else{
-					//defren.ActivateFBOReflectivity( true );
-					renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureDiffuse(), text );
-				}
-			}
-			
 			useTexture1 = ! useTexture1;
 			curWidth = nextSize;
 		}
@@ -376,18 +357,6 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			shader.SetParameterInt( sptcmcOffsets4, 0, 7, 1, 8 );
 			
 			RenderFullScreenQuad( plan );
-			
-			if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspCounting ){
-				decString text;
-				text.Format( "transp_count_max_v_%ix%i_%i", curWidth, curHeight, nextSize );
-				if( useTexture1 ){
-					//defren.ActivateFBODiffuse( true );
-					renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureReflectivity(), text );
-				}else{
-					//defren.ActivateFBOReflectivity( true );
-					renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureDiffuse(), text );
-				}
-			}
 			
 			useTexture1 = ! useTexture1;
 			curHeight = nextSize;
@@ -430,22 +399,6 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 		
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	#endif
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspCounting ){
-		pOccQuery->GetResult();
-		tsmgr.DisableStage( 0 );
-		if( useTexture1 ){
-			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
-				*defren.GetTextureReflectivity(), "transp_count_get" );
-		}else{
-			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
-				*defren.GetTextureDiffuse(), "transp_count_get" );
-		}
-	}
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspCounting ){
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 	
 	// invalidate buffer. it is not needed anymore
 	renderThread.GetFramebuffer().GetActive()->InvalidateColor( 0 );

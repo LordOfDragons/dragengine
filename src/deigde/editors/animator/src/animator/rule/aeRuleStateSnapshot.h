@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Animator rule state snapshot.
+ * Animator rule state snapshot.
  */
 class aeRuleStateSnapshot : public aeRule{
 public:
@@ -40,57 +40,68 @@ private:
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new state snapshot rule. */
+	/** Create a new state snapshot rule. */
 	aeRuleStateSnapshot();
-	/** \brief Create a copy of a state snapshot rule. */
+	/** Create a copy of a state snapshot rule. */
 	aeRuleStateSnapshot( const aeRuleStateSnapshot &copy );
-	/** \brief Clean up the animator rule. */
+	/** Clean up the animator rule. */
 	virtual ~aeRuleStateSnapshot();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Determine if the last state of the component is used or only the stored state. */
+	/** Determine if the last state of the component is used or only the stored state. */
 	inline bool GetUseLastState() const{ return pUseLastState; }
-	/** \brief Set if the last state of the component is used or only the stored state. */
+	/** Set if the last state of the component is used or only the stored state. */
 	void SetUseLastState( bool useLastState );
 	
-	/** \brief Identifier to snapshot state using animator instance. */
+	/** Identifier to snapshot state using animator instance. */
 	inline int GetID() const{ return pID; }
 	
-	/** \brief Set identifier to snapshot state using animator instance. */
+	/** Set identifier to snapshot state using animator instance. */
 	void SetID( int id );
 	
-	/** \brief Determine if position manipulation is enabled. */
+	/** Determine if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	/** \brief Set if position manipulation is enabled. */
+	/** Set if position manipulation is enabled. */
 	void SetEnablePosition( bool enabled );
-	/** \brief Determine if orientation manipulation is enabled. */
+	
+	/** Determine if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	/** \brief Set if orientation manipulation is enabled. */
+	
+	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation( bool enabled );
-	/** \brief Determine if size manipulation is enabled. */
+	
+	/** Determine if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
-	/** \brief Set if size manipulation is enabled. */
+	
+	/** Set if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
-	/** \brief Create an engine animator rule. */
+	/** Vertex position set manipulation is enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** Set if vertex position set manipulation is enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
+	
+	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const;
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another state snapshot rule to this state snapshot rule. */
+	/** Copy another state snapshot rule to this state snapshot rule. */
 	virtual aeRuleStateSnapshot &operator=( const aeRuleStateSnapshot &copy );
 	/*@}*/
 };

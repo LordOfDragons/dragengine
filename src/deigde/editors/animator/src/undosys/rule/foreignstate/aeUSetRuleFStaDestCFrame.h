@@ -31,7 +31,7 @@ class aeRuleForeignState;
 
 
 /**
- * @brief Undo set rule foreign state destination coordinate frame.
+ * Undo set rule foreign state destination coordinate frame.
  */
 class aeUSetRuleFStaDestCFrame : public igdeUndo{
 private:
@@ -43,19 +43,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleFStaDestCFrame( aeRuleForeignState *rule, deAnimatorRuleForeignState::eCoordinateFrames newCFrame );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaDestCFrame();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

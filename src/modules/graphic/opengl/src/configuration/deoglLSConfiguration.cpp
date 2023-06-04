@@ -358,10 +358,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "bugNo2ComponentFBOTex" ) == 0 ){
 					configuration.SetBugNo2ComponentFBOTex( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
 					
-				}else if( strcmp( name, "occlusionTestMode" ) == 0 ){
-					configuration.SetOcclusionTestMode( ( deoglConfiguration::eOcclusionTestModes )
-						strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
-					
 				}else if( strcmp( name, "disableCubeMapLinearFiltering" ) == 0 ){
 					configuration.SetDisableCubeMapLinearFiltering( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
@@ -425,6 +421,23 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 						
 					}else if( value == "veryLow" ){
 						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusVeryLow );
+						
+					}else{
+						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString() );
+					}
+					
+				}else if( strcmp( name, "vsyncMode" ) == 0 ){
+					const decString value( tag->GetFirstData()->GetData() );
+					if( value == "adaptive" ){
+						configuration.SetVSyncMode( deoglConfiguration::evsmAdaptive );
+						
+					}else if( value == "on" ){
+						configuration.SetVSyncMode( deoglConfiguration::evsmOn );
+						
+					}else if( value == "off" ){
+						configuration.SetVSyncMode( deoglConfiguration::evsmOff );
 						
 					}else{
 						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",

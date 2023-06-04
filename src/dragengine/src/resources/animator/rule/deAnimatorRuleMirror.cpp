@@ -43,7 +43,8 @@ pMatchNames( nullptr ),
 pMatchNameCount( 0 ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false ){
+pEnableSize( false ),
+pEnableVertexPositionSet( true ){
 }
 
 deAnimatorRuleMirror::~deAnimatorRuleMirror(){
@@ -66,29 +67,17 @@ void deAnimatorRuleMirror::SetMirrorBone( const char *boneName ){
 }
 
 const deAnimatorRuleMirror::sMatchName &deAnimatorRuleMirror::GetMatchNameAt( int index ) const{
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
-	}
-	if( index >= pMatchNameCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= matchNameCount" );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pMatchNameCount )
 	
 	return pMatchNames[ index ];
 }
 
 void deAnimatorRuleMirror::AddMatchName( const char *first, const char *second, eMatchNameType type ){
-	if( ! first ){
-		DETHROW_INFO( deeNullPointer, "first" );
-	}
-	if( strlen( first ) == 0 ){
-		DETHROW_INFO( deeInvalidParam, "first is empty string" );
-	}
-	if( ! second ){
-		DETHROW_INFO( deeNullPointer, "second" );
-	}
-	if( strlen( second ) == 0 ){
-		DETHROW_INFO( deeInvalidParam, "second is empty string" );
-	}
+	DEASSERT_NOTNULL( first )
+	DEASSERT_TRUE( strlen( first ) > 0 )
+	DEASSERT_NOTNULL( second )
+	DEASSERT_TRUE( strlen( second ) > 0 )
 	
 	sMatchName * const newArray = new sMatchName[ pMatchNameCount + 1 ];
 	if( pMatchNames ){
@@ -124,6 +113,10 @@ void deAnimatorRuleMirror::SetEnableOrientation( bool enable ){
 
 void deAnimatorRuleMirror::SetEnableSize( bool enable ){
 	pEnableSize = enable;
+}
+
+void deAnimatorRuleMirror::SetEnableVertexPositionSet( bool enabled ){
+	pEnableVertexPositionSet = enabled;
 }
 
 

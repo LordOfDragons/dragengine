@@ -19,17 +19,19 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <signal.h>
 #include <stdint.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #else
+#include <unistd.h>
+#include <sys/time.h>
 #include <sys/wait.h>
 #include <sys/select.h>
 #endif
@@ -132,7 +134,7 @@ void projTestRunProcess::WriteFloatToPipe( float value ){
 }
 
 void projTestRunProcess::WriteString16ToPipe( const char *string ){
-	const int length = strlen( string );
+	const int length = ( int )strlen( string );
 	WriteUShortToPipe( length );
 	WriteToPipe( string, length );
 }
@@ -171,7 +173,7 @@ int projTestRunProcess::ReadUShortFromPipe(){
 	return vushort;
 }
 
-int projTestRunProcess::ReadFloatFromPipe(){
+float projTestRunProcess::ReadFloatFromPipe(){
 	float value;
 	ReadFromPipe( &value, sizeof( float ) );
 	return value;
@@ -216,7 +218,6 @@ void projTestRunProcess::ReadFromPipe( void *data, int length ){
 void projTestRunProcess::Run(){
 	try{
 		pReadRunParameters();
-		pCreateLogger();
 		
 		pLogConfiguration();
 		pLauncher.LocatePath();
@@ -233,9 +234,15 @@ void projTestRunProcess::Run(){
 			pLogger->LogException( LOGSOURCE, e );
 			
 		}else{
+#ifdef OS_W32
+			MessageBoxA( NULL, e.FormatOutput().Join( "\n" ).GetString(),
+				"Test-Runner Error", MB_OK | MB_ICONERROR );
+#else
 			e.PrintError();
+#endif
 		}
 		pStopEngine();
+		throw;
 	}
 	
 	if( pLogger ){
@@ -258,6 +265,9 @@ void projTestRunProcess::pReadRunParameters(){
 	int i, count;
 	
 	pRunParameters.pathLogFile = ReadString16FromPipe();
+	pCreateLogger();
+	pLogger->LogInfo( LOGSOURCE, "TestRunner launched. Reading run parameters..." );
+
 	pRunParameters.pathDataDirectory = ReadString16FromPipe();
 	pRunParameters.pathOverlay = ReadString16FromPipe();
 	pRunParameters.pathConfig = ReadString16FromPipe();
@@ -312,6 +322,8 @@ void projTestRunProcess::pReadRunParameters(){
 	pRunParameters.moduleVR = ReadString16FromPipe();
 	
 // 	WriteUCharToPipe( projTestRunConstants::ercSuccess );
+
+	pLogger->LogInfo( LOGSOURCE, "Run parameters read" );
 }
 
 void projTestRunProcess::pLogConfiguration(){

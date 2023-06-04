@@ -107,6 +107,8 @@ private:
 	DEF_NATFUNC( nfSetEnableRotMax );
 	DEF_NATFUNC( nfSetEnableScaleMin );
 	DEF_NATFUNC( nfSetEnableScaleMax );
+	DEF_NATFUNC( nfSetEnableVertexPositionSetMin );
+	DEF_NATFUNC( nfSetEnableVertexPositionSetMax );
 	
 	DEF_NATFUNC( nfSetMinimumPosition );
 	DEF_NATFUNC( nfSetMaximumPosition );
@@ -114,6 +116,8 @@ private:
 	DEF_NATFUNC( nfSetMaximumRotation );
 	DEF_NATFUNC( nfSetMinimumScaling );
 	DEF_NATFUNC( nfSetMaximumScaling );
+	DEF_NATFUNC( nfSetMinimumVertexPositionSet );
+	DEF_NATFUNC( nfSetMaximumVertexPositionSet );
 	DEF_NATFUNC( nfSetCoordinateFrame );
 	DEF_NATFUNC( nfSetTargetBone );
 	

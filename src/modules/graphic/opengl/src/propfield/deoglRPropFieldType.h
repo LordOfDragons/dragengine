@@ -199,13 +199,13 @@ public:
 	void AddToWorldCompute( deoglWorldCompute &worldCompute );
 	
 	/** Update world compute. */
-	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	void UpdateWorldCompute();
 	
 	/** Update world compute textures. */
-	void UpdateWorldComputeTextures( deoglWorldCompute &worldCompute );
+	void UpdateWorldComputeTextures();
 	
 	/** Remove from world compute. */
-	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
+	void RemoveFromWorldCompute();
 	/*@}*/
 	
 	

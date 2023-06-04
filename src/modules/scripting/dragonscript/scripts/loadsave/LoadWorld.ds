@@ -45,32 +45,32 @@ class LoadWorld extends BaseXmlLoader
 	
 	
 	/** \brief Create loader. */
-	public func new( Console console, LoadHeightTerrain loadHeightTerrainSector ) \
-	this( console, "LoadWorld", loadHeightTerrainSector )
+	public func new(Console console, LoadHeightTerrain loadHeightTerrainSector) \
+	this(console, "LoadWorld", loadHeightTerrainSector)
 	end
 	
 	/** \brief Create loader. */
-	public func new( Console console, String name, LoadHeightTerrain loadHeightTerrainSector ) \
-	super( console, name )
+	public func new(Console console, String name, LoadHeightTerrain loadHeightTerrainSector) \
+	super(console, name)
 		if loadHeightTerrainSector == null
 			throw EInvalidParam.new()
 		end
-		this.pLoadHeightTerrain = loadHeightTerrainSector
+		pLoadHeightTerrain = loadHeightTerrainSector
 	end
 	
 	
 	
 	/** Retrieves the element class manager. */
 	public func ElementClassList getElementClassList()
-		return this.pElementClassList
+		return pElementClassList
 	end
 	
 	/** Sets the element class manager. */
-	public func void setElementClassList( ElementClassList list )
+	public func void setElementClassList(ElementClassList list)
 		if list == null
 			throw EInvalidParam.new()
 		end
-		this.pElementClassList = list
+		pElementClassList = list
 	end
 	
 	
@@ -80,34 +80,34 @@ class LoadWorld extends BaseXmlLoader
 	 * 
 	 * Unique identifiers for new elements are generated using \em idGenerator.
 	 */
-	public func void loadFromFile( StubGameWorld stubWorld, String filename, bool ignorePersistable )
-		this.loadFromFile( stubWorld, filename, ignorePersistable, false )
+	public func void loadFromFile(StubGameWorld stubWorld, String filename, bool ignorePersistable)
+		loadFromFile(stubWorld, filename, ignorePersistable, false)
 	end
 	
-	public func void loadFromFile( StubGameWorld stubWorld, String filename, \
-	bool ignorePersistable, bool enableNetworking )
-		if this.pLoadHeightTerrain == null
+	public func void loadFromFile(StubGameWorld stubWorld, String filename, \
+	bool ignorePersistable, bool enableNetworking)
+		if pLoadHeightTerrain == null
 			throw EInvalidParam.new()
 		end
 		
-		this.logLoadingFromFile( filename )
+		logLoadingFromFile(filename)
 		try
-			var EasyXML document = EasyXML.new( filename )
+			var EasyXML document = EasyXML.new(filename)
 			if document.hasParseFailed()
-				this.logParsingFailed( document.getParseLog() )
+				logParsingFailed(document.getParseLog())
 				throw EInvalidParam.new()
 			end
 			
 			var EasyXMLElement root = document.getRootElement()
-			if not root.getTagName().equals( "world" )
-				this.logUnknownTag( root )
+			if not root.getTagName().equals("world")
+				logUnknownTag(root)
 				throw EInvalidParam.new()
 			end
 			
-			this.pParseWorld( root, stubWorld, filename, ignorePersistable, enableNetworking )
+			pParseWorld(root, stubWorld, filename, ignorePersistable, enableNetworking)
 			
 		catch Exception e
-			this.logLoadingFailed( filename )
+			logLoadingFailed(filename)
 			throw
 		end
 	end
@@ -115,8 +115,8 @@ class LoadWorld extends BaseXmlLoader
 	
 	
 	/** \brief Parse world tag. */
-	private func void pParseWorld( EasyXMLElement root, StubGameWorld stubWorld, \
-	String filename, bool ignorePersistable, bool enableNetworking )
+	private func void pParseWorld(EasyXMLElement root, StubGameWorld stubWorld, \
+	String filename, bool ignorePersistable, bool enableNetworking)
 		var GameWorld world = stubWorld.getGameWorld()
 		var float sectorDim = 500.0
 		var int imageDim = 1024
@@ -126,38 +126,38 @@ class LoadWorld extends BaseXmlLoader
 		end
 		
 		try
-			root.forEachTag( block EasyXMLElement element, String tagName
-				if tagName.equals( "size" )
-					world.getWorld().setSize( this.readDVector( element ) )
+			root.forEachTag(block EasyXMLElement element, String tagName
+				if tagName.equals("size")
+					world.getWorld().setSize(readDVector(element))
 					
-				elif tagName.equals( "gravity" )
-					world.getWorld().setGravity( this.readVector( element ) )
+				elif tagName.equals("gravity")
+					world.getWorld().setGravity(readVector(element))
 					
-				elif tagName.equals( "nextObjectID" )
-					stubWorld.setNextObjectID( UniqueID.newFromHexString( element.getFirstCData() ) )
+				elif tagName.equals("nextObjectID")
+					stubWorld.setNextObjectID(UniqueID.newFromHexString(element.getFirstCData()))
 					
-				elif tagName.equals( "heightTerrain" )
-					var String basePath = File.new( filename ).getParent().getPath()
+				elif tagName.equals("heightTerrain")
+					var String basePath = File.new(filename).getParent().getPath()
 					var String htpath = element.getFirstCData()
-					this.pLoadHeightTerrain.loadFromFile( world, File.absolutePath( htpath, basePath ).getPath() )
+					pLoadHeightTerrain.loadFromFile(world, File.absolutePath(htpath, basePath).getPath())
 					
-				elif tagName.equals( "property" )
-					stubWorld.setPropertyValueFor( element.getAttributeNamed( "key" ), \
-						this.readMultilineString( element ) )
+				elif tagName.equals("property")
+					stubWorld.setPropertyValueFor(element.getAttributeNamed("key"), \
+						readMultilineString(element))
 					
-				elif tagName.equals( "object" )
-					this.pParseObject( element, stubWorld, ignorePersistable, enableNetworking )
+				elif tagName.equals("object")
+					pParseObject(element, stubWorld, ignorePersistable, enableNetworking)
 					
-				elif tagName.equals( "decal" )
-					this.pParseDecal( element, stubWorld )
+				elif tagName.equals("decal")
+					pParseDecal(element, stubWorld)
 					
-				elif tagName.equals( "portalSystem" )
-					this.logDeprecatedTag( element )
+				elif tagName.equals("portalSystem")
+					logDeprecatedTag(element)
 					
-				elif tagName.equals( "navigationSpace" )
-					this.pParseNavigationSpace( element, stubWorld )
+				elif tagName.equals("navigationSpace")
+					pParseNavigationSpace(element, stubWorld)
 				end
-			end )
+			end)
 			
 		catch Exception e
 			world.dispose()
@@ -166,8 +166,8 @@ class LoadWorld extends BaseXmlLoader
 	end
 	
 	/** Parse object tag. */
-	private func void pParseObject( EasyXMLElement root, StubGameWorld stubWorld, \
-	bool ignorePersistable, bool enableNetworking )
+	private func void pParseObject(EasyXMLElement root, StubGameWorld stubWorld, \
+	bool ignorePersistable, bool enableNetworking)
 		var int i, count = root.getElementCount()
 		var bool hasClassname = false
 		var ElementClass elementClass
@@ -176,197 +176,197 @@ class LoadWorld extends BaseXmlLoader
 		var String tagName
 		
 		for i = 0 to count
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
 			
 			tagName = element.getTagName()
-			if not tagName.equals( "classname" )
+			if not tagName.equals("classname")
 				continue
 			end
 			
 			var String classname = element.getFirstCData()
 			if classname.empty()
-				this.logInvalidValue( element, classname )
+				logInvalidValue(element, classname)
 				throw EInvalidParam.new()
 			end
 			
-			var UniqueID id = UniqueID.newFromHexString( root.getAttributeNamed( "id" ) )
-			elementClass = this.pElementClassList.getNamed( classname )
+			var UniqueID id = UniqueID.newFromHexString(root.getAttributeNamed("id"))
+			elementClass = pElementClassList.getNamed(classname)
 			
 			if elementClass != null
 				if ignorePersistable and elementClass.getPersistable()
 					return
 				end
-				stubElement = StubElement.new( elementClass, id )
+				stubElement = StubElement.new(elementClass, id)
 				
 			else
-				stubElement = StubElementClassNotFound.new( classname, id )
+				stubElement = StubElementClassNotFound.new(classname, id)
 			end
 			
 			break
 		end
 		
 		if stubElement == null
-			this.printOnConsole( element, "Missing tag classname" )
+			printOnConsole(element, "Missing tag classname")
 			throw EInvalidParam.new()
 		end
 		
-		stubElement.setEnableNetworking( enableNetworking )
+		stubElement.setEnableNetworking(enableNetworking)
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "classname" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("classname")
 				// done
 				
-			elif tagName.equals( "position" )
-				stubElement.setPosition( this.readDVector( element ) )
+			elif tagName.equals("position")
+				stubElement.setPosition(readDVector(element))
 				
-			elif tagName.equals( "rotation" )
-				stubElement.setRotation( this.readVector( element ) )
+			elif tagName.equals("rotation")
+				stubElement.setRotation(readVector(element))
 				
-			elif tagName.equals( "scaling" )
-				stubElement.setScaling( this.readVector( element ) )
+			elif tagName.equals("scaling")
+				stubElement.setScaling(readVector(element))
 				
-			elif tagName.equals( "property" )
-				stubElement.setPropertyValueFor( element.getAttributeNamed( "key" ), \
-					this.readMultilineString( element ) )
+			elif tagName.equals("property")
+				stubElement.setPropertyValueFor(element.getAttributeNamed("key"), \
+					readMultilineString(element))
 				
-			elif tagName.equals( "texture" )
-				this.pParseObjectTexture( element, stubElement )
+			elif tagName.equals("texture")
+				pParseObjectTexture(element, stubElement)
 				
-			elif tagName.equals( "attachTo" )
-				stubElement.setAttachTo( UniqueID.newFromHexString( element.getFirstCData() ) )
+			elif tagName.equals("attachTo")
+				stubElement.setAttachTo(UniqueID.newFromHexString(element.getFirstCData()))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				//throw EInvalidParam.new()
 			end
-		end )
+		end)
 		
-		stubWorld.addElement( stubElement )
+		stubWorld.addElement(stubElement)
 	end
 	
 	/** Parse object tag. */
-	private func void pParseObjectTexture( EasyXMLElement root, StubElement stubElement )
-		var StubElementTexture stubTexture = StubElementTexture.new( root.getAttributeNamed( "name" ) )
+	private func void pParseObjectTexture(EasyXMLElement root, StubElement stubElement)
+		var StubElementTexture stubTexture = StubElementTexture.new(root.getAttributeNamed("name"))
 		var int texture
 		var Color color
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "skin" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("skin")
 				var String filename = element.getFirstCData()
 				if not filename.empty()
-					stubTexture.setPathSkin( filename )
+					stubTexture.setPathSkin(filename)
 				end
 				
-			elif tagName.equals( "transform" )
-				stubTexture.setTransform( this.pParseObjectTextureTransform( element ) )
+			elif tagName.equals("transform")
+				stubTexture.setTransform(pParseObjectTextureTransform(element))
 				
-			elif tagName.equals( "tint" )
-				color = this.readColor( element, Color.white )
-				if not color.equals( Color.white )
-					stubTexture.setColorTint( color )
+			elif tagName.equals("tint")
+				color = readColor(element, Color.white)
+				if not color.equals(Color.white)
+					stubTexture.setColorTint(color)
 				end
 				
-			elif tagName.equals( "property" )
-				stubTexture.setPropertyValueFor( element.getAttributeNamed( "key" ), \
-					this.readMultilineString( element ) )
+			elif tagName.equals("property")
+				stubTexture.setPropertyValueFor(element.getAttributeNamed("key"), \
+					readMultilineString(element))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				//throw EInvalidParam.new()
 			end
-		end )
+		end)
 		
-		stubElement.addTexture( stubTexture )
+		stubElement.addTexture(stubTexture)
 	end
 	
 	/** Parse object texture transform tag. */
-	private func TexMatrix2 pParseObjectTextureTransform( EasyXMLElement root )
-		var Vector2 translation = Vector2.new( 0.0, 0.0 )
-		var Vector2 scaling = Vector2.new( 1.0, 1.0 )
+	private func TexMatrix2 pParseObjectTextureTransform(EasyXMLElement root)
+		var Vector2 translation = Vector2.new(0.0, 0.0)
+		var Vector2 scaling = Vector2.new(1.0, 1.0)
 		var int e, count = root.getElementCount()
 		var EasyXMLElement element
 		var float rotation = 0.0
 		var String tagName
 		
 		for e = 0 to count
-			element = root.getElementAt( e )
+			element = root.getElementAt(e)
 			
 			if element.getType() == EasyXMLElementType.tag
 				tagName = element.getTagName()
 				
-				if tagName.equals( "translation" )
-					translation = this.readVector2UV( element )
+				if tagName.equals("translation")
+					translation = readVector2UV(element)
 					
-				elif tagName.equals( "scaling" )
-					scaling = this.readVector2UV( element )
+				elif tagName.equals("scaling")
+					scaling = readVector2UV(element)
 					
-				elif tagName.equals( "rotation" )
+				elif tagName.equals("rotation")
 					rotation = element.getFirstCDataFloat()
 					
 				else
-					this.logUnknownTag( element )
+					logUnknownTag(element)
 				end
 			end
 		end
 		
-		return TexMatrix2.newSRT( scaling, rotation, translation )
+		return TexMatrix2.newSRT(scaling, rotation, translation)
 	end
 	
 	/** Parse decal tag. */
-	private func void pParseDecal( EasyXMLElement root, StubGameWorld stubWorld )
+	private func void pParseDecal(EasyXMLElement root, StubGameWorld stubWorld)
 		var StubWorldDecal stubDecal = StubWorldDecal.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "skin" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("skin")
 				var String filename = element.getFirstCData()
 				if not filename.empty()
-					stubDecal.setPathSkin( filename )
+					stubDecal.setPathSkin(filename)
 				end
 				
-			elif tagName.equals( "texture" )
+			elif tagName.equals("texture")
 				var String filename = element.getFirstCData()
 				if not filename.empty()
-					stubDecal.setTextureName( filename )
+					stubDecal.setTextureName(filename)
 				end
 				
-			elif tagName.equals( "position" )
-				stubDecal.setPosition( this.readDVector( element ) )
+			elif tagName.equals("position")
+				stubDecal.setPosition(readDVector(element))
 				
-			elif tagName.equals( "rotation" )
-				stubDecal.setRotation( this.readVector( element ) )
+			elif tagName.equals("rotation")
+				stubDecal.setRotation(readVector(element))
 				
-			elif tagName.equals( "size" )
-				stubDecal.setSize( this.readVector( element ) )
+			elif tagName.equals("size")
+				stubDecal.setSize(readVector(element))
 				
-			elif tagName.equals( "visible" )
-				stubDecal.setVisible( element.getFirstCDataBool() )
+			elif tagName.equals("visible")
+				stubDecal.setVisible(element.getFirstCDataBool())
 				
-			elif tagName.equals( "transform" )
-				stubDecal.setTransform( this.pParseObjectTextureTransform( element ) )
+			elif tagName.equals("transform")
+				stubDecal.setTransform(pParseObjectTextureTransform(element))
 				
-			elif tagName.equals( "tint" )
-				var Color color = this.readColor( element, Color.white )
-				if not color.equals( Color.white )
-					stubDecal.setColorTint( color )
+			elif tagName.equals("tint")
+				var Color color = readColor(element, Color.white)
+				if not color.equals(Color.white)
+					stubDecal.setColorTint(color)
 				end
 				
-			elif tagName.equals( "property" )
-				stubDecal.setPropertyValueFor( element.getAttributeNamed( "key" ), \
-					this.readMultilineString( element ) )
+			elif tagName.equals("property")
+				stubDecal.setPropertyValueFor(element.getAttributeNamed("key"), \
+					readMultilineString(element))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
-		stubWorld.addWorldDecal( stubDecal )
+		stubWorld.addWorldDecal(stubDecal)
 	end
 	
 	/** Parse navigation space tag. */
-	private func void pParseNavigationSpace( EasyXMLElement root, StubGameWorld stubWorld )
+	private func void pParseNavigationSpace(EasyXMLElement root, StubGameWorld stubWorld)
 		var int i, count = root.getElementCount()
 		var Quaternion orientation = Quaternion.new()
 		var DVector position = DVector.new()
@@ -375,33 +375,33 @@ class LoadWorld extends BaseXmlLoader
 		var String tagName
 		
 		for i = 0 to count
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			
 			if element.getType() == EasyXMLElementType.tag
 				tagName = element.getTagName()
 				
-				if tagName.equals( "position" )
-					position = this.readDVector( element )
+				if tagName.equals("position")
+					position = readDVector(element)
 					
-				elif tagName.equals( "orientation" )
-					orientation = Matrix.newRotation( this.readVector( element ) ).toQuaternion()
+				elif tagName.equals("orientation")
+					orientation = Matrix.newRotation(readVector(element)).toQuaternion()
 					
-				elif tagName.equals( "filename" )
+				elif tagName.equals("filename")
 					var String filename = element.getFirstCData()
 					if not filename.empty()
-						navspace = LoadNavigationSpace.new().loadFromFile( filename )
+						navspace = LoadNavigationSpace.new().loadFromFile(filename)
 					end
 					
 				else
-					this.logUnknownTag( element )
+					logUnknownTag(element)
 				end
 			end
 		end
 		
 		if navspace != null
-			navspace.setPosition( position )
-			navspace.setOrientation( orientation )
-			stubWorld.addNavigationSpace( navspace )
+			navspace.setPosition(position)
+			navspace.setOrientation(orientation)
+			stubWorld.addNavigationSpace(navspace)
 		end
 	end
 end

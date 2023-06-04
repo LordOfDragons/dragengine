@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Occlusion OccMap Cube</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	<uniformBlock name='OcclusionMeshParameters' target='2'/>
+	<uniformBlock name='SpecialParameters' target='3'/>
+	<uniformBlock name='InstanceIndex' target='4'/>
+	
+	<shaderStorageBlock name='OcclusionMeshParametersSSBO' target='0'/>
+	
+	<parameter name='pSPBInstanceIndexBase'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/defren/occlusion/occmap.glsl</sourceCode>
+	<sourceCode unit='geometry'>geometry/defren/occlusion/occmap.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/occlusion/occmap.glsl</sourceCode>
+</shader>

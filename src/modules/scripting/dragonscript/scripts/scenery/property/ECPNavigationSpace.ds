@@ -50,31 +50,31 @@ class ECPNavigationSpace extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, LoadNavigationSpace loader ) super( name )
-		this.pLoader = loader
+	public func new(String name, LoadNavigationSpace loader) super(name)
+		pLoader = loader
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, LoadNavigationSpace loader, String path ) super( name )
-		this.pLoader = loader
-		this.pPath = path
+	public func new(String name, LoadNavigationSpace loader, String path) super(name)
+		pLoader = loader
+		pPath = path
 	end
 	
 	
 	
 	/** \brief Navigation spa ce loader. */
 	public func LoadNavigationSpace getLoader()
-		return this.pLoader
+		return pLoader
 	end
 	
 	/** \brief Path to navigation space resource. */
 	public func String getPath()
-		return this.pPath
+		return pPath
 	end
 	
 	/** \brief Set path to navigation space resource. */
-	public func void setPath( String path )
-		this.pPath = path
+	public func void setPath(String path)
+		pPath = path
 	end
 	
 	/**
@@ -85,7 +85,7 @@ class ECPNavigationSpace extends ElementClassProperty
 	 *          to obtain a navigation space that you can add to world safely.
 	 */
 	public func NavigationSpace getNavigationSpaceShared()
-		return this.pNavigationSpace
+		return pNavigationSpace
 	end
 	
 	/**
@@ -95,8 +95,8 @@ class ECPNavigationSpace extends ElementClassProperty
 	 *       safe to be added to world.
 	 */
 	public func NavigationSpace getNavigationSpaceCopy()
-		if this.pNavigationSpace != null
-			return NavigationSpace.new( this.pNavigationSpace )
+		if pNavigationSpace != null
+			return NavigationSpace.new(pNavigationSpace)
 			
 		else
 			return null
@@ -104,39 +104,50 @@ class ECPNavigationSpace extends ElementClassProperty
 	end
 	
 	/** \brief Set navigation space resource or \em null if not present. */
-	public func void setNavigationSpace( NavigationSpace navigationSpace )
-		this.pNavigationSpace = navigationSpace
+	public func void setNavigationSpace(NavigationSpace navigationSpace)
+		pNavigationSpace = navigationSpace
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath = value cast String
+	public func void setValue(Object value)
+		pPath = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		var String path = (property cast ECPNavigationSpace).pPath
+		if path != null and not path.empty()
+			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
+		end
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
+		pHasPreloaded = true
 		
-		if this.pPath == null or this.pPath.empty()
+		if pPath == null or pPath.empty()
 			return
 		end
 		
 		try
-			this.pNavigationSpace = this.pLoader.loadFromFile( \
-				File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+			pNavigationSpace = pLoader.loadFromFile(\
+				File.absolutePath(pPath, elementClass.getBasePath()).getPath())
 			
 		catch Exception e
 		end
@@ -146,11 +157,11 @@ class ECPNavigationSpace extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pPath != null and not this.pPath.empty() and this.pNavigationSpace == null
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Failed loading navigation space " \
-				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pPath != null and not pPath.empty() and pNavigationSpace == null
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Failed loading navigation space " \
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
 			return true
 		end
 		return false

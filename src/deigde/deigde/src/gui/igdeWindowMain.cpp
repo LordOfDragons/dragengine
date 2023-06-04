@@ -182,7 +182,7 @@ public:
 			return;
 		}
 		
-		decString filename( pWindow.GetGameProject() ? pWindow.GetGameProject()->GetFilePath() : "" );
+		decString filename( pWindow.GetGameProject() ? pWindow.GetGameProject()->GetFilePath() : decString() );
 		if( igdeCommonDialogs::GetFileOpen( &pWindow, "Open Game Project",
 		pWindow.GetLoadSaveSystem()->GetOpenFilePatternList( igdeLoadSaveSystem::efplGameProject ), filename ) ){
 			pWindow.LoadGameProject( filename );
@@ -506,7 +506,12 @@ pTaskSyncGameDefinition( NULL )
 		pResourceLoader = new igdeResourceLoader( pEnvironmentIGDE );
 		
 		CreateEngineController(); // uses methods provided by base class
+		GetEngineController().UpdateEngine( nullptr, pConfiguration.GetPathIGDEData(),
+			pConfiguration.GetPathIGDEEditorData() );
+		
 		pCreateSharedModelCollisionRig();
+		pLoadStockSkins();
+		pLoadStockRigs();
 		
 		pAddIGDEEngineModules();
 		GetEngineController().ActivateModule( igdeEngineController::esScripting, "IGDEScript" );
@@ -634,7 +639,7 @@ pTaskSyncGameDefinition( NULL )
 		
 		CreatePlaceholderGameProject();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pCleanUp();
 		throw;
 	}
@@ -727,11 +732,12 @@ void igdeWindowMain::SetGameProject( igdeGameProject *project ){
 	
 	if( project ){
 		project->AddReference();
-		
-		GetEngineController().UpdateEngine( *project, pConfiguration.GetPathIGDEData(),
-			pConfiguration.GetPathIGDEEditorData() );
-		
-		pErrorSkin.TakeOver( GetEngine()->GetSkinManager()->LoadSkin( "/igde/materials/error/material.deskin", "/" ) );
+	}
+	
+	GetEngineController().UpdateEngine( project, pConfiguration.GetPathIGDEData(),
+		pConfiguration.GetPathIGDEEditorData() );
+	
+	if( project ){
 		project->GetGameDefinition()->UpdateEngineObjects();
 	}
 	
@@ -1513,10 +1519,21 @@ bool igdeWindowMain::RequestSaveDocuments( const char *title, const char *messag
 }
 
 igdeIcon *igdeWindowMain::GetStockIcon( igdeEnvironment::eStockIcons icon ) const{
-	if( icon < 0 || icon >= pStockImageCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( icon >= 0 )
+	DEASSERT_TRUE( icon < pStockImageCount )
 	return pStockIcons[ icon ];
+}
+
+const deSkin::Ref &igdeWindowMain::GetStockSkin( igdeEnvironment::eStockSkins skin ) const{
+	DEASSERT_TRUE( skin >= 0 )
+	DEASSERT_TRUE( skin < pStockSkinCount )
+	return pStockSkins[ skin ];
+}
+
+const deRig::Ref &igdeWindowMain::GetStockRig( igdeEnvironment::eStockRigs rig ) const{
+	DEASSERT_TRUE( rig >= 0 )
+	DEASSERT_TRUE( rig < pStockRigCount )
+	return pStockRigs[ rig ];
 }
 
 
@@ -1786,6 +1803,32 @@ void igdeWindowMain::pLoadStockIcons(){
 		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_small_strong_right.png" ) );
 	pStockIcons[ igdeEnvironment::esiSmallWarning ].TakeOver(
 		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_small_warning.png" ) );
+}
+
+void igdeWindowMain::pLoadStockSkins(){
+	deSkinManager &manager = *GetEngine()->GetSkinManager();
+	
+	pStockSkins[ igdeEnvironment::essMissing ].TakeOver(
+		manager.LoadSkin( "/igde/materials/missing/material.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essError ].TakeOver(
+		manager.LoadSkin( "/igde/materials/error/material.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essTestMap ].TakeOver(
+		manager.LoadSkin( "/igde/materials/testmap/material.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essEditOutline ].TakeOver(
+		manager.LoadSkin( "/igde/materials/editing/outlined.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essEditRim ].TakeOver(
+		manager.LoadSkin( "/igde/materials/editing/rim.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essEditRimOutline ].TakeOver(
+		manager.LoadSkin( "/igde/materials/editing/rimOutlined.deskin", "/" ) );
+}
+
+void igdeWindowMain::pLoadStockRigs(){
+	deRigManager &manager = *GetEngine()->GetRigManager();
+	
+	pStockRigs[ igdeEnvironment::esrModelCollision ].TakeOver(
+		manager.LoadRig( "/igde/models/modelCollision.derig", "/" ) );
+	pStockRigs[ igdeEnvironment::esrGhostCollision ].TakeOver(
+		manager.LoadRig( "/igde/models/ghostCollision.derig", "/" ) );
 }
 
 void igdeWindowMain::pCreateGuiThemes(){
@@ -2281,7 +2324,7 @@ void igdeWindowMain::pLoadXMLElementClasses( igdeGameProject &gameProject ){
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
 	vfs->AddContainer( container );
 	
-	const decStringSet &pathList = gameProject.GetProjectGameDefinition()->GetClassManager()->GetAutoFindPath();
+	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetClassManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i;
 	for( i=0; i<pathCount; i++ ){
@@ -2325,7 +2368,7 @@ void igdeWindowMain::pFindAndAddSkins( igdeGameProject &gameProject ){
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
 	vfs->AddContainer( container );
 	
-	const decStringSet &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
+	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i, j;
 	
@@ -2362,7 +2405,7 @@ void igdeWindowMain::pFindAndAddSkies( igdeGameProject &gameProject ){
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
 	vfs->AddContainer( container );
 	
-	const decStringSet &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();
+	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i, j;
 	

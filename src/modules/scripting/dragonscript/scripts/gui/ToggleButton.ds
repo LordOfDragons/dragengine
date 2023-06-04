@@ -184,20 +184,22 @@ class ToggleButton extends Button implements ToggleModelListener
 	
 	/** \brief Key on the keyboard has been pressed. */
 	public func void onKeyPress(KeyEvent event)
-		if event.getKeyCode() == InputEventKey.enter
+		select event.getKeyCode()
+		case InputEventKey.enter
 			if not (pStickyToggled and pToggleModel.getToggled())
 				setPressed(not getPressed())
 				setToggled(not pToggleModel.getToggled())
 				fireAction(0)
 			end
 			
-		elif event.getKeyCode() == InputEventKey.space
+		case InputEventKey.space
 			if not (pStickyToggled and pToggleModel.getToggled())
 				setPressed(true)
 			end
+			
+		else
+			super.onKeyPress(event)
 		end
-		
-		sendEventToListeners(event, false)
 	end
 	
 	/** \brief Key on the keyboard has been released. */

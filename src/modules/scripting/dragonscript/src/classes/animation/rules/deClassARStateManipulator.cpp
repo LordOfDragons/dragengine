@@ -153,6 +153,21 @@ void deClassARStateManipulator::nfSetEnableSize::RunFunction( dsRunTime *rt, dsV
 	}
 }
 
+// public func void setEnableVertexPositionSet( bool enabled )
+deClassARStateManipulator::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARStaM, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARStateManipulator::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void setMinimumPosition( Vector position )
@@ -269,6 +284,36 @@ void deClassARStateManipulator::nfSetMaximumSize::RunFunction( dsRunTime *rt, ds
 	}
 }
 
+// public func void setMinimumVertexPositionSet(float weight)
+deClassARStateManipulator::nfSetMinimumVertexPositionSet::nfSetMinimumVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARStaM, "setMinimumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // weight
+}
+void deClassARStateManipulator::nfSetMinimumVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetMinimumVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setMaximumVertexPositionSet(float weight)
+deClassARStateManipulator::nfSetMaximumVertexPositionSet::nfSetMaximumVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARStaM, "setMaximumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // weight
+}
+void deClassARStateManipulator::nfSetMaximumVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetMaximumVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void targetAddLink( ARStateManipulatorTarget target, int link )
@@ -303,6 +348,10 @@ void deClassARStateManipulator::nfTargetAddLink::RunFunction( dsRunTime *rt, dsV
 		
 	case deClassARStateManipulator::etSize:
 		nd.rule->GetTargetSize().AddLink( link );
+		break;
+		
+	case deClassARStateManipulator::etVertexPositionSet:
+		nd.rule->GetTargetVertexPositionSet().AddLink( link );
 		break;
 		
 	default:
@@ -344,6 +393,10 @@ void deClassARStateManipulator::nfTargetRemoveAllLinks::RunFunction( dsRunTime *
 		
 	case deClassARStateManipulator::etSize:
 		nd.rule->GetTargetSize().RemoveAllLinks();
+		break;
+		
+	case deClassARStateManipulator::etVertexPositionSet:
+		nd.rule->GetTargetVertexPositionSet().RemoveAllLinks();
 		break;
 		
 	default:
@@ -405,6 +458,7 @@ void deClassARStateManipulator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnablePosition( init ) );
 	AddFunction( new nfSetEnableOrientation( init ) );
 	AddFunction( new nfSetEnableSize( init ) );
+	AddFunction( new nfSetEnableVertexPositionSet( init ) );
 	
 	AddFunction( new nfSetMinimumPosition( init ) );
 	AddFunction( new nfSetMaximumPosition( init ) );
@@ -412,6 +466,8 @@ void deClassARStateManipulator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetMaximumRotation( init ) );
 	AddFunction( new nfSetMinimumSize( init ) );
 	AddFunction( new nfSetMaximumSize( init ) );
+	AddFunction( new nfSetMinimumVertexPositionSet( init ) );
+	AddFunction( new nfSetMaximumVertexPositionSet( init ) );
 	
 	AddFunction( new nfTargetAddLink( init ) );
 	AddFunction( new nfTargetRemoveAllLinks( init ) );

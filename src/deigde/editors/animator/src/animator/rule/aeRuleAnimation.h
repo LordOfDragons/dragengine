@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Animator rule animation.
+ * Animator rule animation.
  */
 class aeRuleAnimation : public aeRule{
 public:
@@ -40,69 +40,76 @@ private:
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 	aeControllerTarget pTargetMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new animator rule. */
+	/** Create a new animator rule. */
 	aeRuleAnimation();
-	/** \brief Create a copy of a animator rule. */
+	/** Create a copy of a animator rule. */
 	aeRuleAnimation( const aeRuleAnimation &copy );
-	/** \brief Clean up the animator rule. */
+	/** Clean up the animator rule. */
 	virtual ~aeRuleAnimation();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the name of the animation move. */
+	/** Retrieve the name of the animation move. */
 	inline const decString &GetMoveName() const{ return pMoveName; }
-	/** \brief Set the animation move name. */
+	/** Set the animation move name. */
 	void SetMoveName( const char *moveName );
-	/** \brief Retrieve the animation move time. */
+	/** Retrieve the animation move time. */
 	inline float GetMoveTime() const{ return pMoveTime; }
-	/** \brief Set the animation move time. */
+	/** Set the animation move time. */
 	void SetMoveTime( float moveTime );
 	
-	/** \brief Determine if position manipulation is enabled. */
+	/** Determine if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	/** \brief Set if position manipulation is enabled. */
+	/** Set if position manipulation is enabled. */
 	void SetEnablePosition( bool enabled );
-	/** \brief Determine if orientation manipulation is enabled. */
+	/** Determine if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	/** \brief Set if orientation manipulation is enabled. */
+	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation( bool enabled );
-	/** \brief Determine if size manipulation is enabled. */
+	/** Determine if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
-	/** \brief Set if size manipulation is enabled. */
+	/** Set if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
-	/** \brief Retrieve the move time target. */
+	/** Determine if vertex position set manipulation is enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** Set if vertex position set manipulation is enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
+	
+	/** Retrieve the move time target. */
 	inline aeControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
 	inline const aeControllerTarget &GetTargetMoveTime() const{ return pTargetMoveTime; }
 	
-	/** \brief Create an engine animator rule. */
+	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();
-	/** \brief Update targets. */
+	/** Update targets. */
 	virtual void UpdateTargets();
-	/** \brief Retrieve the number of targets using a given link. */
+	/** Retrieve the number of targets using a given link. */
 	virtual int CountLinkUsage( aeLink *link ) const;
-	/** \brief Remove a link from all targets using it. */
+	/** Remove a link from all targets using it. */
 	virtual void RemoveLinkFromTargets( aeLink *link );
-	/** \brief Remove all links from all targets. */
+	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const;
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another animation rule to this rule. */
+	/** Copy another animation rule to this rule. */
 	virtual aeRuleAnimation &operator=( const aeRuleAnimation &copy );
 	/*@}*/
 };

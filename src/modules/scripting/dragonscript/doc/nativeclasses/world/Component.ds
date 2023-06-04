@@ -393,6 +393,73 @@ class Component
 	
 	
 	
+	/** \name Vertex position sets */
+	/*@{*/
+	/**
+	 * \brief Count of vertex position sets.
+	 * \version 1.17
+	 */
+	public func int getVertexPositionSetCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Index of vertex position set with name or -1 if not found.
+	 * \version 1.17
+	 */
+	public func int indexOfVertexPositionSetNamed(String name)
+		return 0
+	end
+	
+	/**
+	 * \brief Name of vertex position set at index.
+	 * \version 1.17
+	 * \throws EOutOfBoundary Index is less than 0.
+	 * \throws EOutOfBoundary Index is larger than or equal to getVertexPositionSetCount().
+	 */
+	public func String vertexPositionSetGetNameAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Weight of vertex position set at index.
+	 * \version 1.17
+	 * \throws EOutOfBoundary Index is less than 0.
+	 * \throws EOutOfBoundary Index is larger than or equal to getVertexPositionSetCount().
+	 */
+	public func float vertexPositionSetGetWeightAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Weight of vertex position set by name.
+	 * \version 1.17
+	 * \throws EOutOfBoundary Vertex position set with name is absent.
+	 */
+	public func float vertexPositionSetGetWeightNamed(String name)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set weight of vertex position set at index.
+	 * \version 1.17
+	 * \throws EOutOfBoundary Index is less than 0.
+	 * \throws EOutOfBoundary Index is larger than or equal to getVertexPositionSetCount().
+	 */
+	public func void vertexPositionSetSetWeightAt(int index, float weight)
+	end
+	
+	/**
+	 * \brief Set weight of vertex position set by name.
+	 * \version 1.17
+	 * \throws EOutOfBoundary Vertex position set with name is absent.
+	 */
+	public func void vertexPositionSetSetWeightNamed(String name, float weight)
+	end
+	/*@}*/
+	
+	
+	
 	/** \name Hint */
 	/*@{*/
 	/** \brief Movement hint. */

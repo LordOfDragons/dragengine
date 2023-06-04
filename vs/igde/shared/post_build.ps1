@@ -25,7 +25,7 @@ if (Test-Path $TargetDir) {
 $TargetDir = "$OutputDir\$PathDistIGDESystem"
 
 Write-Host "Igde Shared App: Copy Library to '$TargetDir'"
-Install-Files -Path "$OutputDir\deigdeshared.dll" -Destination $TargetDir
+Install-Files -Path "$OutputDir\deigdeshared\deigdeshared.dll" -Destination $TargetDir
 
 $DataTargetDir = "$OutputDir\$PathDistIGDEShares"
 Write-Host "Igde Shared App: Copy Data to '$DataTargetDir'"
@@ -50,8 +50,8 @@ if (Test-Path $TargetDir) {
 $TargetDir = "$OutputDir\$PathDistIGDESdkLib"
 Write-Host "Igde Shared SDK: Copy Libraries to '$TargetDir'"
 
-Install-Files -Path "$OutputDir\deigdeshared.lib" -Destination $TargetDir
-Install-Files -Path "$OutputDir\deigdeshared.exp" -Destination $TargetDir
+Install-Files -Path "$OutputDir\deigdeshared\deigdeshared.lib" -Destination $TargetDir
+Install-Files -Path "$OutputDir\deigdeshared\deigdeshared.exp" -Destination $TargetDir
 
 
 # dependencies
@@ -64,4 +64,4 @@ Copy-Files -SourceDir $FoxDir -TargetDir "$OutputDir\$PathDistIGDEBin" -Pattern 
 $TargetDir = "$OutputDir\$PathDistIGDEPdbSystem"
 Write-Host "Igde Shared Debug: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path "$OutputDir\deigdeshared.pdb" -Destination $TargetDir
+Install-Files -Path "$OutputDir\deigdeshared\deigdeshared.pdb" -Destination $TargetDir

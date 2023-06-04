@@ -19,13 +19,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-
 #include "dearLink.h"
 #include "dearAnimatorInstance.h"
 #include "dearBoneState.h"
+#include "dearVPSState.h"
 #include "dearControllerStates.h"
 
 #include <dragengine/deEngine.h>
@@ -47,6 +44,7 @@ pInstance( instance ),
 pLink( link ),
 pEvaluator( link.GetCurve() ),
 pBoneIndex( -1 ),
+pVPSIndex( -1 ),
 pWrapY( link.GetWrapY() )
 {
 	const int controller = pLink.GetController();
@@ -61,6 +59,10 @@ pWrapY( link.GetWrapY() )
 	
 	if( ! pLink.GetBone().IsEmpty() ){
 		pBoneIndex = instance.GetBoneStateList().IndexOfStateNamed( pLink.GetBone() );
+	}
+	
+	if( ! pLink.GetVertexPositionSet().IsEmpty() ){
+		pVPSIndex = instance.GetVPSStateList().IndexOfStateNamed( pLink.GetVertexPositionSet() );
 	}
 }
 
@@ -82,6 +84,10 @@ int dearLink::GetController() const{
 
 bool dearLink::HasBone() const{
 	return pBoneIndex != -1;
+}
+
+bool dearLink::HasVPS() const{
+	return pVPSIndex != -1;
 }
 
 
@@ -137,6 +143,10 @@ float dearLink::GetValue( float defaultValue ) const{
 		}
 		
 		value = decMath::linearStep( value, pLink.GetBoneMinimumValue(),  pLink.GetBoneMaximumValue() );
+		
+	}else if( pVPSIndex != -1 ){
+		value = decMath::linearStep( pInstance.GetVPSStateList().GetStateAt( pVPSIndex ).GetWeight(),
+			pLink.GetVertexPositionSetMinimumValue(), pLink.GetVertexPositionSetMaximumValue() );
 		
 	}else{
 		return defaultValue;

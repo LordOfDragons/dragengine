@@ -67,7 +67,7 @@ private:
 		deoglRParticleEmitterInstance &pEmitter;
 	public:
 		WorldComputeElement( deoglRParticleEmitterInstance &emitter );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateData( sDataElement &data ) const;
 		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
 	};
 	

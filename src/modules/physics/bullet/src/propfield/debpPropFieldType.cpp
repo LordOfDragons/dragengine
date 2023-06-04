@@ -89,7 +89,7 @@ void debpPropFieldType::SetBendStateSize( int size ){
 }
 
 void debpPropFieldType::Update( float elapsed ){
-	float rfactor = 1.0 / ( float )RAND_MAX;
+	float rfactor = 1.0f / ( float )RAND_MAX;
 	
 	if( pDirty ){
 		dePropFieldInstance *engInstances = pType->GetInstances();

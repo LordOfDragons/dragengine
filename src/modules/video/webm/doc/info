@@ -1,0 +1,6 @@
+There seems to be no useful documentation for libwebm which makes it a chore to implement.
+Only thing I've found this this:
+- https://www.webmproject.org/docs/container/
+- https://chromium.googlesource.com/webm/libwebm/+/master/webm_parser
+- https://chromium.googlesource.com/webm/libwebm/+/refs/heads/main/webm_parser/demo/demo.cc
+- https://github.com/zaps166/libsimplewebm

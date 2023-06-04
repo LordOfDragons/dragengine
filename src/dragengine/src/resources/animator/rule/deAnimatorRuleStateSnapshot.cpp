@@ -41,6 +41,7 @@ deAnimatorRuleStateSnapshot::deAnimatorRuleStateSnapshot() :
 pEnablePosition( true ),
 pEnableOrientation( true ),
 pEnableSize( false ),
+pEnableVertexPositionSet( true ),
 pUseLastState( true ),
 pID( 0 ){
 }
@@ -63,6 +64,10 @@ void deAnimatorRuleStateSnapshot::SetEnableOrientation( bool enabled ){
 
 void deAnimatorRuleStateSnapshot::SetEnableSize( bool enabled ){
 	pEnableSize = enabled;
+}
+
+void deAnimatorRuleStateSnapshot::SetEnableVertexPositionSet( bool enabled ){
+	pEnableVertexPositionSet = enabled;
 }
 
 void deAnimatorRuleStateSnapshot::SetUseLastState( bool useLastState ){

@@ -45,21 +45,21 @@ abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatibl
 	
 	
 	/** \brief Create default composeable behavior with empty identifier. */
-	protected func new( BehaviorElementClass eclass )
-		this.pID = ""
-		this.pInstanceIndex = -1
-		this.useClassNameAsBehaviorID()
+	protected func new(BehaviorElementClass eclass)
+		pID = ""
+		pInstanceIndex = -1
+		useClassNameAsBehaviorID()
 	end
 	
 	/** \brief Create default composeable behavior. */
-	protected func new( BehaviorElementClass eclass, String id )
+	protected func new(BehaviorElementClass eclass, String id)
 		if id == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pID = id
-		this.pInstanceIndex = -1
-		this.useClassNameAsBehaviorID()
+		pID = id
+		pInstanceIndex = -1
+		useClassNameAsBehaviorID()
 	end
 	
 	/** \brief Dispose of behavior. */
@@ -70,20 +70,20 @@ abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatibl
 	
 	/** \brief Identifier. */
 	public func String getID()
-		return this.pID
+		return pID
 	end
 	
 	/** \brief Instance index. */
 	public func int getInstanceIndex()
-		return this.pInstanceIndex
+		return pInstanceIndex
 	end
 	
 	/**
 	 * \brief Assign instance index.
 	 * \warning For use by BehaviorElementClass only! Do not call yourself!
 	 */
-	public func void assignInstanceIndex( int instanceIndex )
-		this.pInstanceIndex = instanceIndex
+	public func void assignInstanceIndex(int instanceIndex)
+		pInstanceIndex = instanceIndex
 	end
 	
 	
@@ -107,7 +107,7 @@ abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatibl
 	 * </ul>
 	 */
 	public func String getBehaviorID()
-		return this.pUseBehaviorID
+		return pUseBehaviorID
 	end
 	
 	/**
@@ -117,15 +117,15 @@ abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatibl
 	 * \note Call this only during the constructor. Behavior identifier has to be
 	 *       static during the entire life time of the behavior.
 	 */
-	protected func void setBehaviorID( String identifier )
+	protected func void setBehaviorID(String identifier)
 		if identifier == null
-			throw ENullPointer.new( "identifier is null" )
+			throw ENullPointer.new("identifier is null")
 		end
 		if identifier.empty()
-			throw EInvalidParam.new( "identifier is empty string" )
+			throw EInvalidParam.new("identifier is empty string")
 		end
 		
-		this.pUseBehaviorID = identifier
+		pUseBehaviorID = identifier
 	end
 	
 	/**
@@ -138,9 +138,9 @@ abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatibl
 	 *       static during the entire life time of the behavior.
 	 */
 	protected func void useClassNameAsBehaviorID()
-		this.pUseBehaviorID = this.className().split( '.' ).getAt( -1 ) cast String
-		if not this.pID.empty()
-			this.pUseBehaviorID = this.pUseBehaviorID + ":" + this.pID
+		pUseBehaviorID = className().split('.').getAt(-1) cast String
+		if not pID.empty()
+			pUseBehaviorID = pUseBehaviorID + ":" + pID
 		end
 	end
 	
@@ -154,9 +154,9 @@ abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatibl
 	 *       static during the entire life time of the behavior.
 	 */
 	protected func void useFullyQualifiedClassNameAsBehaviorID()
-		this.pUseBehaviorID = this.className()
-		if not this.pID.empty()
-			this.pUseBehaviorID = this.pUseBehaviorID + ":" + this.pID
+		pUseBehaviorID = className()
+		if not pID.empty()
+			pUseBehaviorID = pUseBehaviorID + ":" + pID
 		end
 	end
 	
@@ -172,7 +172,7 @@ abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatibl
 	 * 
 	 * Default implementation returns false.
 	 */
-	public func bool supportsBehaviorID( String identifier )
+	public func bool supportsBehaviorID(String identifier)
 		return false
 	end
 	
@@ -185,8 +185,8 @@ abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatibl
 	 * 
 	 * Default implementation throws EInvalidAction exception.
 	 */
-	public func void loadSupportedData( String identifier, PersistencyEnvironment env, \
-	FileReader reader, ECBehaviorInstance instance )
-		throw EInvalidAction.new( "not supported" )
+	public func void loadSupportedData(String identifier, PersistencyEnvironment env, \
+	FileReader reader, ECBehaviorInstance instance)
+		throw EInvalidAction.new("not supported")
 	end
 end

@@ -49,6 +49,7 @@
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelBone.h>
 #include <dragengine/resources/model/deModelTexture.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 
 
 
@@ -58,7 +59,7 @@
 // Cache version in the range from 0 to 255. Increment each time the cache
 // format changed. If reaching 256 wrap around to 0. Important is only the
 // number changes to force discarding old caches
-#define CACHE_VERSION		4
+#define CACHE_VERSION 5
 
 
 
@@ -121,6 +122,7 @@ pSharedSPBListUBO( NULL )
 		
 		pInitBoneNames( model );
 		pInitTextureNames( model );
+		pInitVPSNames( model );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -321,6 +323,14 @@ void deoglRModel::pInitTextureNames( const deModel &engModel ){
 	int i;
 	for( i=0; i<count; i++ ){
 		pTextureNames.Add( engModel.GetTextureAt( i )->GetName() );
+	}
+}
+
+void deoglRModel::pInitVPSNames( const deModel &engModel ){
+	const int count = engModel.GetVertexPositionSetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		pVPSNames.Add( engModel.GetVertexPositionSetAt( i )->GetName() );
 	}
 }
 

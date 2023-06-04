@@ -5,6 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|Win32">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|x64">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -19,14 +27,99 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\src\deigde\editors\font\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\feIGDEModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\fonteditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feFontBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feFontNotifier.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feGenerateFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyph.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphSelection.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\image\feFontImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMain.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFIImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImageListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWindowProperties.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFontListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyph.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyphListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistory.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontImportImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetImagePath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetAdvance.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearing.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetU.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetV.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfigurationXML.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\feIGDEModule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\fonteditor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feFontBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feFontNotifier.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feGenerateFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyph.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphSelection.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\image\feFontImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMainListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFIImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImageListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWindowProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFontListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyph.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyphListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistory.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistoryListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontImportImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetImagePath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetAdvance.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearing.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetU.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetV.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\shared\igde_shared.vcxproj">
+      <Project>{1dcfacb0-ab85-4adc-b18a-91322511c121}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3053cc7a-3e6f-483b-a2c8-d6be96830156}</ProjectGuid>
+    <ProjectGuid>{D35A2559-5FC2-4889-B4F2-C43565586AB7}</ProjectGuid>
     <RootNamespace>deai</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>editor font</ProjectName>
@@ -39,6 +132,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -58,6 +158,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -69,10 +176,16 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -82,15 +195,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>font</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\font\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>font</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\font\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>font</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\font\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,6 +232,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EDITORFONT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -149,6 +292,32 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;EDITORFONT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\font\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>

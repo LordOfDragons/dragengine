@@ -36,11 +36,14 @@
 #include "../../../animator/link/aeLink.h"
 #include "../../../animator/rule/aeRule.h"
 #include "../../../clipboard/aeClipboardDataBones.h"
+#include "../../../clipboard/aeClipboardDataVertexPositionSets.h"
 #include "../../../undosys/rule/aeURuleMirrorBones.h"
+#include "../../../undosys/rule/aeURuleMirrorVertexPositionSets.h"
 #include "../../../undosys/rule/aeURuleTargetAddLink.h"
 #include "../../../undosys/rule/aeURuleTargetRemoveLink.h"
 #include "../../../undosys/rule/aeURuleTargetRemoveAllLinks.h"
 #include "../../../undosys/rule/aeUSetRuleAddBone.h"
+#include "../../../undosys/rule/aeUSetRuleAddVertexPositionSet.h"
 #include "../../../undosys/rule/aeUSetRuleBlendFactor.h"
 #include "../../../undosys/rule/aeUToggleRuleInvertBlendFactor.h"
 #include "../../../undosys/rule/aeUSetRuleBlendMode.h"
@@ -49,6 +52,9 @@
 #include "../../../undosys/rule/aeUSetRuleRemoveBone.h"
 #include "../../../undosys/rule/aeUSetRuleRemoveAllBones.h"
 #include "../../../undosys/rule/aeUSetRuleBones.h"
+#include "../../../undosys/rule/aeUSetRuleRemoveVertexPositionSet.h"
+#include "../../../undosys/rule/aeUSetRuleRemoveAllVertexPositionSets.h"
+#include "../../../undosys/rule/aeUSetRuleVertexPositionSets.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/clipboard/igdeClipboardDataReference.h>
@@ -81,6 +87,8 @@
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigBone.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 
 
 
@@ -460,6 +468,215 @@ public:
 };
 
 
+class cActionVertexPositionSetAdd : public cBaseAction{
+public:
+	cActionVertexPositionSetAdd( aeWPAPanelRule &panel ) : cBaseAction( panel, "Add",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add vertex position set" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		const decString &name = pPanel.GetCBVertexPositionSetText();
+		return ! name.IsEmpty() && ! rule->GetListVertexPositionSets().Has( name )
+			? new aeUSetRuleAddVertexPositionSet( rule, name ) : NULL;
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		const decString &name = pPanel.GetCBVertexPositionSetText();
+		SetEnabled( ! name.IsEmpty() && ! rule.GetListVertexPositionSets().Has( name ) );
+	}
+};
+
+class cActionVertexPositionSetRemoves : public cBaseAction{
+public:
+	cActionVertexPositionSetRemoves( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove vertex position sets" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		const decString &name = pPanel.GetCBVertexPositionSetText();
+		if( name.IsEmpty() ){
+			return NULL;
+		}
+		aeUSetRuleRemoveVertexPositionSet * const undo = new aeUSetRuleRemoveVertexPositionSet( rule, name );
+		if( undo->HasVertexPositionSets() ){
+			return undo;
+			
+		}else{
+			undo->FreeReference();
+			return NULL;
+		}
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( ! pPanel.GetCBVertexPositionSetText().IsEmpty() );
+	}
+};
+
+class cActionVertexPositionSetRemovesAll : public cBaseAction{
+public:
+	cActionVertexPositionSetRemovesAll( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove All",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all vertex position sets" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		return rule->GetListVertexPositionSets().GetCount() > 0
+			? new aeUSetRuleRemoveAllVertexPositionSets( rule ) : NULL;
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( rule.GetListVertexPositionSets().GetCount() > 0 );
+	}
+};
+
+class cActionVertexPositionSetSelectedRemove : public cBaseAction{
+public:
+	cActionVertexPositionSetSelectedRemove( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
+		"Remove selected vertex position set" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		const char * const name = pPanel.GetListVertexPositionSetSelection();
+		return name ? new aeUSetRuleRemoveVertexPositionSet( rule, name ) : NULL;
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( pPanel.GetListVertexPositionSetSelection() );
+	}
+};
+
+class cActionMirrorRigVertexPositionSets : public cBaseAction{
+public:
+	cActionMirrorRigVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel,
+		"Mirror", nullptr, "Mirror vertex position sets" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
+		return new aeURuleMirrorVertexPositionSets( rule );
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( rule.GetListVertexPositionSets().GetCount() > 0 );
+	}
+};
+
+class cActionCopyVertexPositionSets : public cBaseAction{
+public:
+	cActionCopyVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel, "Copy",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position set" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		igdeClipboardDataReference clip;
+		clip.TakeOver( new aeClipboardDataVertexPositionSets( rule->GetListVertexPositionSets() ) );
+		pPanel.GetWindowMain().GetClipboard().Set( clip );
+		return nullptr;
+	}
+};
+
+class cActionPasteVertexPositionSets : public cBaseAction{
+public:
+	cActionPasteVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel, "Paste",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position sets" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		aeClipboardDataVertexPositionSets * const clip = ( aeClipboardDataVertexPositionSets* )pPanel.GetWindowMain()
+			.GetClipboard().GetWithTypeName( aeClipboardDataVertexPositionSets::TYPE_NAME  );
+		if( ! clip ){
+			return NULL;
+		}
+		
+		aeUSetRuleVertexPositionSets * const undo = new aeUSetRuleVertexPositionSets(
+			rule, rule->GetListVertexPositionSets() + clip->GetVertexPositionSets() );
+		undo->SetShortInfo( "Rule paste vertex position sets" );
+		return undo;
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule & ){
+		SetEnabled( pPanel.GetWindowMain().GetClipboard().HasWithTypeName( aeClipboardDataVertexPositionSets::TYPE_NAME ) );
+	}
+};
+
+class cActionExportVertexPositionSets : public cBaseAction{
+public:
+	cActionExportVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel, "Export To Text",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ), "Export vertex position set" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		const decStringSet vpslist = rule->GetListVertexPositionSets();
+		const int count = vpslist.GetCount();
+		decString text;
+		int i;
+		for( i=0; i<count; i++ ){
+			if( i > 0 ){
+				text.AppendCharacter( '\n' );
+			}
+			text.Append( vpslist.GetAt( i ) );
+		}
+		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Export To Text", "Vertex position sets", text );
+		return nullptr;
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( rule.GetListVertexPositionSets().GetCount() > 0 );
+	}
+};
+
+class cActionImportVertexPositionSets : public cBaseAction{
+public:
+	cActionImportVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel, "Import From Text",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Import vertex position sets" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		decString text;
+		while( true ){
+			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
+			"Import From Text", "Vertex position sets. One vertex position set per line.", text ) ){
+				return nullptr;
+			}
+			break;
+		}
+		
+		const decStringList lines( text.Split( '\n' ) );
+		const int count = lines.GetCount();
+		decStringSet vpslist;
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			if( ! lines.GetAt( i ).IsEmpty() ){
+				vpslist.Add( lines.GetAt( i ) );
+			}
+		}
+		
+		aeUSetRuleVertexPositionSets * const undo = new aeUSetRuleVertexPositionSets(
+			rule, rule->GetListVertexPositionSets() + vpslist );
+		undo->SetShortInfo( "Rule import vertex position sets" );
+		return undo;
+	}
+};
+
+class cListVertexPositionSets : public igdeListBoxListener{
+	aeWPAPanelRule &pPanel;
+	
+public:
+	cListVertexPositionSets( aeWPAPanelRule &panel ) : pPanel( panel ){ }
+	
+	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+		if( ! pPanel.GetRule() ){
+			return;
+		}
+		
+		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
+		
+		helper.MenuCommand( menu, new cActionVertexPositionSetAdd( pPanel ), true );
+		helper.MenuCommand( menu, new cActionVertexPositionSetSelectedRemove( pPanel ), true );
+		helper.MenuCommand( menu, new cActionVertexPositionSetRemovesAll( pPanel ), true );
+		helper.MenuCommand( menu, new cActionMirrorRigVertexPositionSets( pPanel ), true );
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionCopyVertexPositionSets( pPanel ), true );
+		helper.MenuCommand( menu, new cActionPasteVertexPositionSets( pPanel ), true );
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionExportVertexPositionSets( pPanel ), true );
+		helper.MenuCommand( menu, new cActionImportVertexPositionSets( pPanel ), true );
+	}
+};
+
+
 class cComboTarget : public cBaseComboBoxListener{
 public:
 	cComboTarget( aeWPAPanelRule &panel ) : cBaseComboBoxListener( panel ){ }
@@ -613,6 +830,21 @@ pTarget( NULL )
 	pListBones->SetDefaultSorter();
 	
 	
+	// affected vertex position sets
+	helper.GroupBoxFlow( *this, groupBox, "Affected Vertex Position Sets:", false, true );
+	
+	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
+	groupBox->AddChild( formLine );
+	helper.ComboBoxFilter( formLine, true, "Vertex Position Sets", pCBVertexPositionSets, NULL );
+	pCBVertexPositionSets->SetDefaultSorter();
+	helper.Button( formLine, pBtnVertexPositionSetAdd, new cActionVertexPositionSetAdd( *this ), true );
+	helper.Button( formLine, pBtnVertexPositionSetDel, new cActionVertexPositionSetRemoves( *this ), true );
+	
+	helper.ListBox( groupBox, 4, "Vertex position sets affected by rule",
+		pListVertexPositionSets, new cListVertexPositionSets( *this ) );
+	pListVertexPositionSets->SetDefaultSorter();
+	
+	
 	// targets
 	helper.GroupBoxFlow( *this, groupBox, "Targets and Links:" );
 	
@@ -666,6 +898,7 @@ void aeWPAPanelRule::OnActivated(){
 	SetTarget( NULL );
 	
 	UpdateRigBoneList();
+	UpdateModelVertexPositionSetList();
 	UpdateAnimMoveList();
 	
 	UpdateLinkList();
@@ -735,6 +968,29 @@ void aeWPAPanelRule::UpdateRigBoneList(){
 	pCBBones->SetText( selection );
 }
 
+void aeWPAPanelRule::UpdateModelVertexPositionSetList(){
+	const decString selection( GetCBVertexPositionSetText() );
+	
+	pCBVertexPositionSets->RemoveAllItems();
+	
+	if( GetAnimator() ){
+		const deComponent * const component = GetAnimator()->GetEngineComponent();
+		const deModel * const model = component ? component->GetModel() : nullptr;
+		if( model ){
+			const int count = model->GetVertexPositionSetCount();
+			int i;
+			
+			for( i=0; i<count; i++ ){
+				pCBVertexPositionSets->AddItem( model->GetVertexPositionSetAt( i )->GetName() );
+			}
+		}
+		pCBVertexPositionSets->SortItems();
+	}
+	
+	pCBVertexPositionSets->StoreFilterItems();
+	pCBVertexPositionSets->SetText( selection );
+}
+
 void aeWPAPanelRule::UpdateAnimMoveList(){
 }
 
@@ -758,11 +1014,22 @@ void aeWPAPanelRule::UpdateRule(){
 		}
 		pListBones->SortItems();
 		
+		// update affected vertex position set list
+		const decStringSet &vpsList = rule->GetListVertexPositionSets();
+		const int vpsCount = vpsList.GetCount();
+		
+		pListVertexPositionSets->RemoveAllItems();
+		for( i=0; i<vpsCount; i++ ){
+			pListVertexPositionSets->AddItem( vpsList.GetAt( i ) );
+		}
+		pListVertexPositionSets->SortItems();
+		
 	}else{
 		pEditName->ClearText();
 		pCBBlendMode->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRule::ebmBlend );
 		pEditBlendFactor->ClearText();
 		pListBones->RemoveAllItems();
+		pListVertexPositionSets->RemoveAllItems();
 	}
 	
 	const bool enabled = rule;
@@ -770,11 +1037,14 @@ void aeWPAPanelRule::UpdateRule(){
 	pCBBlendMode->SetEnabled( enabled );
 	pEditBlendFactor->SetEnabled( enabled );
 	pListBones->SetEnabled( enabled );
+	pListVertexPositionSets->SetEnabled( enabled );
 	
 	pChkInvertBlendFactor->GetAction()->Update();
 	pChkEnabled->GetAction()->Update();
 	pBtnBoneAdd->GetAction()->Update();
 	pBtnBoneDel->GetAction()->Update();
+	pBtnVertexPositionSetAdd->GetAction()->Update();
+	pBtnVertexPositionSetDel->GetAction()->Update();
 	
 	UpdateTarget();
 }
@@ -817,6 +1087,19 @@ void aeWPAPanelRule::SetCBBoneText( const char *text ){
 
 const char *aeWPAPanelRule::GetListBoneSelection() const{
 	return pListBones->GetSelectedItem() ? pListBones->GetSelectedItem()->GetText().GetString() : NULL;
+}
+
+const decString &aeWPAPanelRule::GetCBVertexPositionSetText() const{
+	return pCBVertexPositionSets->GetText();
+}
+
+void aeWPAPanelRule::SetCBVertexPositionSetText( const char *text ){
+	pCBVertexPositionSets->SetText( text );
+}
+
+const char *aeWPAPanelRule::GetListVertexPositionSetSelection() const{
+	return pListVertexPositionSets->GetSelectedItem()
+		? pListVertexPositionSets->GetSelectedItem()->GetText().GetString() : nullptr;
 }
 
 aeLink *aeWPAPanelRule::GetCBLinkSelection() const{

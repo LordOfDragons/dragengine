@@ -221,6 +221,28 @@ void deoglCollideList::AddParticleEmittersColliding( deoglWorldOctree &octree, d
 void deoglCollideList::AddEnvironmentMapsColliding( deoglWorldOctree &octree, deoglDCollisionVolume *volume ){
 }
 
+void deoglCollideList::DebugSingleLine( deoglRTLogger &logger, bool sorted ) const{
+	decStringList pointers;
+	decString string, temp;
+	int i;
+	
+	for( i=0; i<pComponentCount; i++ ){
+		temp.Format( "%p", pComponents[ i ]->GetComponent() );
+		pointers.Add( temp );
+	}
+	if( sorted ) pointers.SortAscending();
+	string.AppendFormat( "c[%s]", pointers.Join( ", " ).GetString() );
+	
+	for( i=0; i<pBillboardCount; i++ ){
+		temp.Format( "%p", pBillboards[ i ] );
+		pointers.Add( temp );
+	}
+	if( sorted ) pointers.SortAscending();
+	string.AppendFormat( " b[%s]", pointers.Join( ", " ).GetString() );
+	
+	logger.LogInfoFormat( "CollideList %p: %s", this, string.GetString() );
+}
+
 
 
 // Components
@@ -997,6 +1019,10 @@ void deoglCollideList::pCleanUp(){
 			pHTSectorSize--;
 		}
 		delete [] pHTSectors;
+	}
+	
+	if( pBillboards ){
+		delete [] pBillboards;
 	}
 	
 	if( pLights ){

@@ -48,7 +48,8 @@ pMove2Time( 0.0f ),
 pUseSameMove( false ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false )
+pEnableSize( false ),
+pEnableVertexPositionSet( true )
 {
 	SetName( "Animation Difference" );
 }
@@ -63,6 +64,7 @@ pUseSameMove( copy.pUseSameMove ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
 pEnableSize( copy.pEnableSize ),
+pEnableVertexPositionSet( copy.pEnableVertexPositionSet ),
 pTargetLeadMoveTime( copy.pTargetLeadMoveTime ),
 pTargetRefMoveTime( copy.pTargetRefMoveTime ){
 }
@@ -153,6 +155,17 @@ void aeRuleAnimationDifference::SetEnableSize( bool enabled ){
 	}
 }
 
+void aeRuleAnimationDifference::SetEnableVertexPositionSet( bool enabled ){
+	if( enabled != pEnableVertexPositionSet ){
+		pEnableVertexPositionSet = enabled;
+		
+		if( GetEngineRule() ){
+			( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetEnableVertexPositionSet( enabled );
+			NotifyRuleChanged();
+		}
+	}
+}
+
 
 
 void aeRuleAnimationDifference::UpdateTargets(){
@@ -219,6 +232,7 @@ deAnimatorRule *aeRuleAnimationDifference::CreateEngineRule(){
 		engRule->SetEnablePosition( pEnablePosition );
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
+		engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
 		
 		pTargetLeadMoveTime.UpdateEngineTarget( GetAnimator(), engRule->GetTargetLeadingMoveTime() );
 		pTargetRefMoveTime.UpdateEngineTarget( GetAnimator(), engRule->GetTargetReferenceMoveTime() );
@@ -260,6 +274,7 @@ aeRuleAnimationDifference &aeRuleAnimationDifference::operator=( const aeRuleAni
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
 	pTargetLeadMoveTime = copy.pTargetLeadMoveTime;
 	pTargetRefMoveTime = copy.pTargetRefMoveTime;
 	aeRule::operator=( copy );

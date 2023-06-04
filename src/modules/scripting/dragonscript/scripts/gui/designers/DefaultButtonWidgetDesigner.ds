@@ -34,57 +34,56 @@ pin Dragengine.Scenery
  * state designs matching the button state instead of the label state itself.
  */
 class DefaultButtonWidgetDesigner extends DefaultWidgetDesigner
-	/** \brief Design for pressed state. */
 	private var StateDesign pDesignPressed
 	
 	
 	
 	/** \brief Create new list box element designer. */
 	public func new()
-		this.pDesignPressed = StateDesign.new()
+		pDesignPressed = StateDesign.new()
 	end
 	
 	/** \brief Create copy of widget designer. */
-	public func new( DefaultButtonWidgetDesigner designer ) super( designer )
-		this.pDesignPressed = designer.pDesignPressed.copyDesign()
+	public func new(DefaultButtonWidgetDesigner designer) super(designer)
+		pDesignPressed = designer.pDesignPressed.copyDesign()
 	end
 	
 	
 	
 	/** \brief Design for pressed state. */
 	public func StateDesign getDesignPressed()
-		return this.pDesignPressed
+		return pDesignPressed
 	end
 	
 	/** \brief Set design for pressed state. */
-	protected func void setDesignPressed( StateDesign design )
+	protected func void setDesignPressed(StateDesign design)
 		if design == null
 			throw EInvalidParam.new()
 		end
-		this.pDesignPressed = design
+		pDesignPressed = design
 	end
 	
 	
 	
 	/** \brief Get state for parameter name selector component or null if not found. */
-	protected func StateDesign getNamedStateDesign( String stateName )
-		if stateName.equals( "pressed" )
-			return this.pDesignPressed
+	protected func StateDesign getNamedStateDesign(String stateName)
+		if stateName.equals("pressed")
+			return pDesignPressed
 			
 		else
-			return super.getNamedStateDesign( stateName )
+			return super.getNamedStateDesign(stateName)
 		end
 	end
 	
 	/** \brief Create copy of designer. */
 	public func WidgetDesigner copyDesigner()
-		return DefaultButtonWidgetDesigner.new( this )
+		return DefaultButtonWidgetDesigner.new(this)
 	end
 	
 	
 	
 	/** \brief Find parent button instance or \em null if absent. */
-	public func Button getParentButton( Widget widget )
+	public func Button getParentButton(Widget widget)
 		var Widget parent = widget.getParent()
 		
 		while parent != null
@@ -104,13 +103,13 @@ class DefaultButtonWidgetDesigner extends DefaultWidgetDesigner
 	 * returned state design can be a set state design or a merge of multiple state
 	 * designs using a fallback logic.
 	 */
-	protected func StateDesign widgetStateFindDesign( Widget widget )
-		var StateDesign design = super.widgetStateFindDesign( widget )
-		var Button button = this.getParentButton( widget )
+	protected func StateDesign widgetStateFindDesign(Widget widget)
+		var StateDesign design = super.widgetStateFindDesign(widget)
+		var Button button = getParentButton(widget)
 		
 		if button != null and button.getEnabled() and button.getPressed()
 			design = design.copyDesign()
-			this.pDesignPressed.merge( design )
+			pDesignPressed.merge(design)
 		end
 		
 		return design

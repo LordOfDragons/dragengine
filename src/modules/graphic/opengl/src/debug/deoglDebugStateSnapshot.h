@@ -42,7 +42,6 @@ private:
 	bool pEnabledCullFace;
 	bool pEnabledDepthTest;
 	bool pEnabledPolygonOffsetFill;
-	bool pEnabledRasterizerDiscard;
 	bool pEnabledScissorTest;
 	bool pEnabledStencilTest;
 	

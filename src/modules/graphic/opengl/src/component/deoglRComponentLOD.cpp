@@ -35,6 +35,7 @@
 #include "../memory/deoglMemoryManager.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
+#include "../model/deoglModelLODVertPosSet.h"
 #include "../model/texture/deoglModelTexture.h"
 #include "../model/face/deoglModelFace.h"
 #include "../rendering/deoglRenderGeometry.h"
@@ -54,7 +55,6 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../texture/deoglTextureStageManager.h"
-#include "../texture/texture1d/deoglTexture1D.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
@@ -286,7 +286,7 @@ void deoglRComponentLOD::WriteWeightMatricesSSBO(){
 	PrepareWeights();
 	
 	if( ! pSSBOWeightMatrices ){
-		pSSBOWeightMatrices.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+		pSSBOWeightMatrices.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
 		deoglSPBlockSSBO &ssbo = pSSBOWeightMatrices;
 		ssbo.SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 		ssbo.SetParameterCount( 1 );
@@ -321,18 +321,65 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int pointCount = modelLOD.GetVertexCount();
 	
-	if( pointCount > 0 && modelLOD.GetVBOBlockWithWeight() ){
-		deoglRenderThread &renderThread = pComponent.GetRenderThread();
-		
-		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWithWeight();
-		vboBlock.Prepare();
-		
-		pEnsureVBO();
-		
-		renderThread.GetRenderers().GetGeometry().ApproxTransformVNT(
-			vboBlock.GetVBO()->GetVAO()->GetVAO(), vboBlock.GetVBO()->GetVBO(),
-			pSSBOWeightMatrices, pVBO, vboBlock.GetOffset(), pointCount );
+	if( pointCount == 0 || ! modelLOD.GetVBOBlockWithWeight() ){
+		return;
 	}
+	
+	deoglRenderThread &renderThread = pComponent.GetRenderThread();
+	deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWithWeight();
+	vboBlock.Prepare();
+	
+	pEnsureVBO();
+	
+	deoglRenderGeometry &renderGeometry = renderThread.GetRenderers().GetGeometry();
+	const float * const vpsWeights = pComponent.GetVertexPositionSets();
+	const int vpsCount = pComponent.GetVertexPositionSetCount();
+	const GLuint vaoModelData = vboBlock.GetVBO()->GetVAO()->GetVAO();
+	const GLuint vboModelData = vboBlock.GetVBO()->GetVBO();
+	deoglRenderGeometry::sVertexPositionSetParams *params = nullptr;
+	int firstPoint = vboBlock.GetOffset();
+	bool inplace = false;
+	
+	int i, useVpsCount = 0;
+	if( vpsCount > 0 ){
+		params = renderGeometry.GetVertexPositionSetParams( vpsCount );
+		
+		for( i=0; i<vpsCount; i++ ){
+			if( vpsWeights[ i ] < 0.001f ){
+				continue;
+			}
+			
+			const deoglModelLODVertPosSet &vps = modelLOD.GetVertexPositionSetAt( i );
+			if( vps.GetPositionCount() == 0 ){
+				continue;
+			}
+			
+			deoglRenderGeometry::sVertexPositionSetParams &param = params[ useVpsCount++ ];
+			param.firstPoint = vps.GetVBOOffset();
+			param.pointCount = vps.GetPositionCount();
+			param.weight = vpsWeights[ i ];
+		}
+	}
+	
+	if( useVpsCount > 0 ){
+		deoglSharedVBOBlock &vboBlockVps = *modelLOD.GetVBOBlockVertPosSet();
+		vboBlockVps.Prepare();
+		
+		const int blockOffset = vboBlockVps.GetOffset();
+		for( i=0; i<useVpsCount; i++ ){
+			params[ i ].firstPoint += blockOffset;
+		}
+		
+		const GLuint vboVPSData = vboBlockVps.GetVBO()->GetVBO();
+		
+		renderGeometry.CopyVNT( vaoModelData, vboModelData, pVBO, firstPoint, pointCount );
+		renderGeometry.VPSTransformVNT( vaoModelData, vboVPSData, params, useVpsCount, pVBO );
+		
+		inplace = true;
+	}
+	
+	renderGeometry.ApproxTransformVNT( vaoModelData, vboModelData, pSSBOWeightMatrices,
+		pVBO, firstPoint, pointCount, inplace );
 }
 
 
@@ -720,7 +767,7 @@ void deoglRComponentLOD::pEnsureVBO(){
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	const int pointCount = pComponent.GetModel()->GetLODAt( pLODIndex ).GetVertexCount();
 	
-	pVBO.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pVBO.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etGpu ) );
 	
 	deoglSPBlockSSBO &vbo = pVBO;
 	vbo.SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );

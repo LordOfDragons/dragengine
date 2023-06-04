@@ -170,15 +170,6 @@ class Light
 	/** \brief Set spot exponent. */
 	public func void setSpotExponent( float exponent )
 	end
-	
-	/** \brief Spot exponent. */
-	public func float getSpotExponent()
-		return 0.0
-	end
-	
-	/** \brief Set spot exponent. */
-	public func void setSpotExponent( float exponent )
-	end
 	/*@}*/
 	
 	

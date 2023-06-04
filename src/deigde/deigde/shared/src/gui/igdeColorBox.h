@@ -38,42 +38,42 @@ class igdeColorBoxListener;
  */
 class DE_DLL_EXPORT igdeColorBox : public igdeWidget{
 public:
-	class cActionCopy : public igdeAction{
+	class DE_DLL_EXPORT cActionCopy : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
 		cActionCopy( igdeColorBox &colorBox );
 		virtual void OnAction();
 	};
 	
-	class cActionCopyHex : public igdeAction{
+	class DE_DLL_EXPORT cActionCopyHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
 		cActionCopyHex( igdeColorBox &colorBox );
 		virtual void OnAction();
 	};
 	
-	class cActionPaste : public igdeAction{
+	class DE_DLL_EXPORT cActionPaste : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
 		cActionPaste( igdeColorBox &colorBox );
 		virtual void OnAction();
 	};
 	
-	class cActionPasteHex : public igdeAction{
+	class DE_DLL_EXPORT cActionPasteHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
 		cActionPasteHex( igdeColorBox &colorBox );
 		virtual void OnAction();
 	};
 	
-	class cActionEditValues : public igdeAction{
+	class DE_DLL_EXPORT cActionEditValues : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
 		cActionEditValues( igdeColorBox &colorBox );
 		virtual void OnAction();
 	};
 	
-	class cActionEditHex : public igdeAction{
+	class DE_DLL_EXPORT cActionEditHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
 		cActionEditHex( igdeColorBox &colorBox );

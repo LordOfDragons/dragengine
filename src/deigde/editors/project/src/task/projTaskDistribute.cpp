@@ -191,7 +191,7 @@ bool projTaskDistribute::Step(){
 			return false;
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pState = esFinished;
 		throw;
 	}

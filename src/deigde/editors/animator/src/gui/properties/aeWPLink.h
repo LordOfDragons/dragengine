@@ -41,7 +41,7 @@ class aeEditLinkMapping;
 
 
 /**
- * \brief Link panel.
+ * Link panel.
  */
 class aeWPLink : public igdeContainerScroll{
 private:
@@ -59,6 +59,9 @@ private:
 	igdeComboBoxReference pCBBoneParameter;
 	igdeTextFieldReference pEditBoneMinimum;
 	igdeTextFieldReference pEditBoneMaximum;
+	igdeComboBoxFilterReference pCBVertexPositionSet;
+	igdeTextFieldReference pEditVertexPositionSetMinimum;
+	igdeTextFieldReference pEditVertexPositionSetMaximum;
 	igdeCheckBoxReference pChkWrapY;
 	
 	bool pPreventUpdate;
@@ -68,11 +71,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPLink( aeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPLink();
 	/*@}*/
 	
@@ -81,31 +84,34 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Active link. */
+	/** Active link. */
 	aeLink *GetLink() const;
 	
-	/** \brief Update link list. */
+	/** Update link list. */
 	void UpdateLinkList();
 	
-	/** \brief Select active link. */
+	/** Select active link. */
 	void SelectActiveLink();
 	
-	/** \brief Update link. */
+	/** Update link. */
 	void UpdateLink();
 	
-	/** \brief Update rig bone list. */
+	/** Update rig bone list. */
 	void UpdateRigBoneList();
 	
-	/** \brief Update controller list. */
+	/** Update model vertex position set list. */
+	void UpdateModelVertexPositionSetList();
+	
+	/** Update controller list. */
 	void UpdateControllerList();
 	/*@}*/
 };

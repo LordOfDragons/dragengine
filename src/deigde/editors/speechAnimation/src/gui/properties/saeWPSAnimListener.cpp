@@ -52,6 +52,11 @@ void saeWPSAnimListener::SAnimationChanged( saeSAnimation *sanimation ){
 	pPanel.UpdateSAnimation();
 }
 
+void saeWPSAnimListener::ModelChanged( saeSAnimation *sanimation ){
+	pPanel.UpdateNeutralVertexPositionSetList();
+	pPanel.UpdatePhonemeVertexPositionSetList();
+}
+
 
 
 void saeWPSAnimListener::PhonemeStructureChanged( saeSAnimation *sanimation ){

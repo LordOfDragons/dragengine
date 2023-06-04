@@ -185,6 +185,8 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		private var AttachDetachListener pAttachDetachListener
 		private var Collider pCollider
 		private var Array pCollisionListeners
+		private var Vector pDebugPanelPosition
+		private var Quaternion pDebugPanelOrientation
 		
 		
 		
@@ -200,6 +202,8 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			pListeners = Array.new()
 			pAttachDetachListener = AttachDetachListener.new(this)
 			pCollisionListeners = Array.new()
+			pDebugPanelPosition = Vector.new(0.1, 0, 0)
+			pDebugPanelOrientation = Quaternion.newFromEuler(0, -90, 60)
 			
 			pVRPlayspace = ecbehavior.getVRPlayspace().instance(element)
 			pComponent = ecbehavior.getComponent().instance(element)
@@ -544,6 +548,68 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			end
 		end
 		
+		/**
+		 * \brief Debug panel position.
+		 * \version 1.17
+		 * \see updateDebugPanelPosition()
+		 */
+		public func Vector getDebugPanelPosition()
+			return pDebugPanelPosition
+		end
+		
+		/**
+		 * \brief Set debug panel position.
+		 * \version 1.17
+		 * \see updateDebugPanelPosition()
+		 */
+		public func void setDebugPanelPosition(Vector position)
+			if position == null
+				throw ENullPointer.new("position")
+			end
+			pDebugPanelPosition = position
+		end
+		
+		/**
+		 * \brief Debug panel orientation.
+		 * \version 1.17
+		 * \see updateDebugPanelPosition()
+		 */
+		public func Quaternion getDebugPanelOrientation()
+			return pDebugPanelOrientation
+		end
+		
+		/**
+		 * \brief Set debug panel orientation.
+		 * \version 1.17
+		 * \see updateDebugPanelPosition()
+		 */
+		public func void setDebugPanelOrientation(Quaternion orientation)
+			if orientation == null
+				throw ENullPointer.new("orientation")
+			end
+			pDebugPanelOrientation = orientation
+		end
+		
+		/**
+		 * \brief Update position and orientation of VR debug panel.
+		 * \version 1.17
+		 * 
+		 * Allows the graphic module to show a debug panel at the users right hand.
+		 * The debug panel is visible if the user looks at the back of his hand like
+		 * looking at his wrist watch. The debug panel is only shown if any debug
+		 * information is present.
+		 * 
+		 * The method has to decide if this hand should update the debug panel position.
+		 * The default implementation sets the debug panel position only if the input
+		 * device is present and the type is InputDeviceType.vrRightHand .
+		 */
+		public func void updateDebugPanelPosition()
+			if pInputDevice != null and pInputDevice.getType() == InputDeviceType.vrRightHand
+				var DMatrix matrix = DMatrix.newWorld(DVector.new(pDebugPanelPosition), pDebugPanelOrientation) * getMatrix()
+				GraphicSystem.setVRDebugPanelPosition(matrix.getPosition(), matrix.toQuaternion())
+			end
+		end
+		
 		
 		
 		/** \brief Add listener. */
@@ -607,9 +673,14 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			setInputDevice(null)
 		end
 		
-		/** \brief Frame update. */
+		/**
+		 * \brief Frame update.
+		 * 
+		 * Calls updateDebugPanelPosition() if required.
+		 */
 		public func void think(float elapsed)
 			pCollider.setGeometry(getPosition(), getOrientation())
+			updateDebugPanelPosition()
 		end
 		
 		/** \brief Element state changed like visible. */

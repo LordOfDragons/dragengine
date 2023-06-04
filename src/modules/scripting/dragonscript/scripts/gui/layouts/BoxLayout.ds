@@ -110,7 +110,7 @@ class BoxLayout implements Layout
 		var bool negate = ( this.pAxis == LayoutAxis.inverseX or this.pAxis == LayoutAxis.inverseY )
 		var int cx = container.getPadding().getLeft()
 		var int cy = container.getPadding().getTop()
-		var int w, effSize, sizeGain
+		var int w, effSize, sizeGain, availCount
 		var Point childSize
 		var Widget child
 		
@@ -119,6 +119,12 @@ class BoxLayout implements Layout
 		var int borderWidth
 		var int borderLeft
 		var int borderTop
+		
+		for w = 0 to count
+			if container.getWidget( w ).getVisible()
+				availCount++
+			end
+		end
 		
 		select this.pAxis
 		case LayoutAxis.x, LayoutAxis.inverseX
@@ -148,7 +154,7 @@ class BoxLayout implements Layout
 					borderWidth = borderSize.getWidth()
 					borderHeight = borderSize.getHeight()
 				end
-				sizeGain = availSpace / ( count - w )
+				sizeGain = availSpace / availCount--
 				child.setSize( Point.new( childSize.getX() + sizeGain, height - borderHeight ) )
 				availSpace -= sizeGain
 				
@@ -189,7 +195,7 @@ class BoxLayout implements Layout
 					borderWidth = borderSize.getWidth()
 					borderHeight = borderSize.getHeight()
 				end
-				sizeGain = availSpace / ( count - w )
+				sizeGain = availSpace / availCount--
 				child.setSize( Point.new( width - borderWidth, childSize.getY() + sizeGain ) )
 				availSpace -= sizeGain
 				

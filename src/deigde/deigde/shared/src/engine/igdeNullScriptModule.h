@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT igdeNullScriptModule : public deBaseScriptingModule{
 public:
-	class cModule : public deInternalModule{
+	class DE_DLL_EXPORT cModule : public deInternalModule{
 	public:
 		cModule( deModuleSystem *system );
 		virtual ~cModule();

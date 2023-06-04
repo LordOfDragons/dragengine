@@ -22,12 +22,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dellLauncher.h"
 
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
+#endif
+
+#ifdef OS_UNIX
+#include <unistd.h>
 #endif
 
 #ifdef OS_BEOS

@@ -57,6 +57,9 @@ public:
 	/** \brief List of bones changed. */
 	virtual void BonesChanged();
 	
+	/** \brief List of vertex position sets changed. */
+	virtual void VertexPositionSetsChanged();
+	
 	/** \brief Controller changed. */
 	virtual void ControllerChanged( int index, deAnimatorController *controller );
 	

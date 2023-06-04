@@ -35,7 +35,6 @@ class deoglSkinRenderable;
 class deoglVSRetainImageData;
 class deoglSkinCalculatedProperty;
 
-class deSemaphore;
 class deSkin;
 
 
@@ -77,6 +76,7 @@ private:
 	decObjectList pCalculatedProperties;
 	
 	deoglVSRetainImageData *pVSRetainImageData;
+	bool pTexturePipelinesReady;
 	
 	deoglMemoryConsumptionSkinUse pMemUse;
 	
@@ -109,6 +109,9 @@ public:
 	 * \details Also released retained image data.
 	 */
 	void FinalizeAsyncResLoading();
+	
+	/** Prepare texture pipelines if not prepared yet. */
+	void PrepareTexturePipelines();
 	
 	
 	

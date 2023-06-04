@@ -23,6 +23,7 @@
 #define _DEOGLRENDERERPLANTASKS_H_
 
 #include "../task/deoglRenderTask.h"
+#include "../task/deoglComputeRenderTask.h"
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
@@ -33,7 +34,10 @@ class deoglRPTBuildRTsGeometry;
 /**
  * Render Plan tasks.
  */
-class deoglRenderPlanTasks{
+class deoglRenderPlanTasks : public deObject{
+public:
+	typedef deTObjectReference<deoglRenderPlanTasks> Ref;
+	
 private:
 	deoglRenderPlan &pPlan;
 	
@@ -55,6 +59,12 @@ private:
 	
 	deoglRPTBuildRTsDepth *pTaskDepth;
 	deoglRPTBuildRTsGeometry *pTaskGeometry;
+	
+	deoglComputeRenderTask::Ref pCRTSolidDepth;
+	deoglComputeRenderTask::Ref pCRTSolidGeometry;
+	
+	deoglComputeRenderTask::Ref pCRTSolidDepthXRay;
+	deoglComputeRenderTask::Ref pCRTSolidGeometryXRay;
 	
 	
 	
@@ -107,6 +117,20 @@ public:
 	
 	
 	
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepth() const{ return pCRTSolidDepth; }
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometry() const{ return pCRTSolidGeometry; }
+	
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepthXRay() const{ return pCRTSolidDepthXRay; }
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometryXRay() const{ return pCRTSolidGeometryXRay; }
+	
+	
+	
+	/** Build compute render tasks and begin reading back steps. */
+	void BuildComputeRenderTasks( const deoglRenderPlanMasked *mask, bool rebuild = false );
+	
+	/** Finish read back compute render tasks. */
+	void FinishReadBackComputeRenderTasks( const deoglRenderPlanMasked *mask );
+	
 	/** Start building render tasks. */
 	void StartBuildTasks( const deoglRenderPlanMasked *mask );
 	
@@ -117,6 +141,15 @@ public:
 	/** Clean up after rendering. */
 	void CleanUp();
 	/*@}*/
+	
+	
+	
+private:
+	void pBuildCRTSolidDepth( deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray );
+	
+	void pBuildCRTSolidGeometry( deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray );
 };
 
 #endif

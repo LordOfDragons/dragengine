@@ -68,7 +68,7 @@ private:
 		deoglRLight &pLight;
 	public:
 		WorldComputeElement( deoglRLight &light );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateData( sDataElement &data ) const;
 	};
 	
 	

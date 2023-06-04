@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\synthesizer\desynthesizer\$Versi
 
 Write-Host "DESynthesizer Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "synthdesynthesizer.dll"
+$Library = "$OutputDir\de_module\synthesizer\desynthesizer\synthdesynthesizer.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\synthesizer\desynthesizer\$Version"
 Write-Host "DESynthesizer Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "synthdesynthesizer.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\synthesizer\desynthesizer\synthdesynthesizer.pdb" -Destination $TargetDir

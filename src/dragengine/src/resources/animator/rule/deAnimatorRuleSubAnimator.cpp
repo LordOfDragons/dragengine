@@ -39,7 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimatorRuleSubAnimator::deAnimatorRuleSubAnimator(){
+deAnimatorRuleSubAnimator::deAnimatorRuleSubAnimator() :
+pEnableVertexPositionSet( true )
+{
 	pConnections = NULL;
 	pConnectionCount = 0;
 	
@@ -49,7 +51,9 @@ deAnimatorRuleSubAnimator::deAnimatorRuleSubAnimator(){
 }
 
 deAnimatorRuleSubAnimator::~deAnimatorRuleSubAnimator(){
-	if( pConnections ) delete [] pConnections;
+	if( pConnections ){
+		delete [] pConnections;
+	}
 }
 
 
@@ -76,6 +80,10 @@ void deAnimatorRuleSubAnimator::SetEnableOrientation( bool enabled ){
 
 void deAnimatorRuleSubAnimator::SetEnableSize( bool enabled ){
 	pEnableSize = enabled;
+}
+
+void deAnimatorRuleSubAnimator::SetEnableVertexPositionSet( bool enabled ){
+	pEnableVertexPositionSet = enabled;
 }
 
 

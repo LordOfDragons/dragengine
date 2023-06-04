@@ -227,6 +227,7 @@ void deoglComponent::SyncToRender(){
 	}
 	if( pDirtyMesh ){
 		pRComponent->MeshChanged();
+		pRComponent->UpdateVertexPositionSets( pComponent );
 		pDirtyMesh = false;
 	}
 	#ifdef HACK_TEST_CS

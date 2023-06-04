@@ -26,6 +26,7 @@
 #include <errno.h>
 
 #include "deoglRenderThread.h"
+#include "deoglLoaderThread.h"
 #include "deoglRTBufferObject.h"
 #include "deoglRTChoices.h"
 #include "deoglRTContext.h"
@@ -102,10 +103,12 @@ pLeakTracker( *this ),
 
 pCanvasInputOverlay( nullptr ),
 pCanvasDebugOverlay( nullptr ),
+pCanvasOverlay( nullptr ),
 
 pChoices( nullptr ),
 pBufferObject( nullptr ),
 pContext( nullptr ),
+pLoaderThread( nullptr ),
 pDebug( nullptr ),
 pDefaultTextures( nullptr ),
 pFramebuffer( nullptr ),
@@ -147,6 +150,7 @@ pDebugTimeThreadRenderWindowsPrepare( 0.0f ),
 pDebugTimeThreadRenderWindowsRender( 0.0f ),
 pDebugTimeThreadRenderCapture( 0.0f ),
 pDebugTimeThreadRenderSwap( 0.0f ),
+pDebugTimeVRRender( 0.0f ),
 pDebugCountThreadWindows( 0 ),
 
 // deprecated
@@ -217,13 +221,17 @@ deoglLightBoundaryMap &deoglRenderThread::GetLightBoundaryMap( int size ){
 
 
 bool deoglRenderThread::HasContext() const{
-	return pContext != NULL;
+	return pContext != nullptr;
 }
 
 
 
 void deoglRenderThread::SetVRCamera( deoglRCamera *camera ){
 	pVRCamera = camera;
+}
+
+void deoglRenderThread::SetVRDebugPanelMatrix( const decDMatrix &matrix ){
+	pVRDebugPanelMatrix = matrix;
 }
 
 void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvasView *canvas ){
@@ -252,6 +260,22 @@ void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvasView *canvas ){
 	}
 	
 	pCanvasDebugOverlay = canvas;
+	
+	if( canvas ){
+		canvas->AddReference();
+	}
+}
+
+void deoglRenderThread::SetCanvasOverlay( deoglRCanvasView *canvas ){
+	if( canvas == pCanvasOverlay ){
+		return;
+	}
+	
+	if( pCanvasOverlay ){
+		pCanvasOverlay->FreeReference();
+	}
+	
+	pCanvasOverlay = canvas;
 	
 	if( canvas ){
 		canvas->AddReference();
@@ -488,12 +512,17 @@ void deoglRenderThread::Run(){
 	DEBUG_SYNC_RT_PASS("out")
 	
 	// render loop
+	pLastFrameTime = 0.0f;
 	pTimerFrameUpdate.Reset();
 	pTimerVRFrameUpdate.Reset();
 	while( true ){
-		// wait for entering synchronize
+		// wait for entering synchronize. we wait only for a small amount of time. if the
+		// main thread does not meet up in this time we do an update with the last frame
+		// data. main threads should be always faster than 20Hz during regular game play.
+		// while loading stuff the main thread can be lagging behind. this ensures loading
+		// displays keep responsive as good as possible from a visual point of view
 		DEBUG_SYNC_RT_WAIT("in")
-		if( pBarrierSyncIn.TryWait( 250 ) ){
+		if( pBarrierSyncIn.TryWait( 1000 / 20 ) ){
 			DEBUG_SYNC_RT_PASS("in")
 			
 			// main thread is messing with our state here. proceed to next barrier doing nothing
@@ -552,13 +581,13 @@ void deoglRenderThread::Run(){
 				DEBUG_SYNC_RT_FAILURE
 			}
 			
-			const float elapsedFrameUpdate = pTimerFrameUpdate.GetElapsedTime();
-			pTimeHistoryFrame.Add( elapsedFrameUpdate );
+			pLastFrameTime = pTimerFrameUpdate.GetElapsedTime();
+			pTimeHistoryFrame.Add( pLastFrameTime );
 			
 			/*
 			pLogger->LogInfoFormat( "RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
-				elapsedRender * 1000.0f, elapsedFrameUpdate * 1000.0f,
-				1.0f / decMath::max( elapsedFrameUpdate, 0.001f ) );
+				elapsedRender * 1000.0f, pLastFrameTime * 1000.0f,
+				1.0f / decMath::max( pLastFrameTime, 0.001f ) );
 			*/
 			
 		#ifdef ANDROID
@@ -843,18 +872,22 @@ void deoglRenderThread::CreateRenderWindow( deoglRRenderWindow *window ){
 //////////////
 
 void deoglRenderThread::SampleDebugTimerRenderThreadRenderWindowsPrepare(){
-	if( ! pDebugInfoModule->GetVisible() ){
-		return;
+	if( pDebugInfoModule->GetVisible() ){
+		pDebugTimeThreadRenderWindowsPrepare = pDebugTimerRenderThread3.GetElapsedTime();
 	}
-	pDebugTimeThreadRenderWindowsPrepare = pDebugTimerRenderThread3.GetElapsedTime();
 }
 
 void deoglRenderThread::SampleDebugTimerRenderThreadRenderWindowsRender(){
-	if( ! pDebugInfoModule->GetVisible() ){
-		return;
+	if( pDebugInfoModule->GetVisible() ){
+		pDebugTimeThreadRenderWindowsRender = pDebugTimerRenderThread3.GetElapsedTime();
+		pDebugCountThreadWindows++;
 	}
-	pDebugTimeThreadRenderWindowsRender = pDebugTimerRenderThread3.GetElapsedTime();
-	pDebugCountThreadWindows++;
+}
+
+void deoglRenderThread::SampleDebugTimerVRRender(){
+	if( pDebugInfoModule->GetVisible() ){
+		pDebugTimeVRRender = pDebugTimerRenderThread3.GetElapsedTime();
+	}
 }
 
 void deoglRenderThread::DevModeDebugInfoChanged(){
@@ -887,6 +920,7 @@ void deoglRenderThread::pCleanUp(){
 
 
 void deoglRenderThread::pInitThreadPhase1(){
+	pLoaderThread = new deoglLoaderThread( *this );
 	pContext = new deoglRTContext( *this );
 	pContext->InitPhase1( pInitialRenderWindow );
 }
@@ -950,8 +984,12 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	pInitCapabilities();
 	
-	if( ! pExtensions->VerifyPresence() ){ // capabilities possibly disabled extensions
-		DETHROW( deeInvalidAction );
+	// verify hardware support
+	bool verified = true;
+	verified &= pCapabilities->Verify();
+	verified &= pExtensions->VerifyPresence(); // capabilities possibly disabled extensions
+	if( ! verified ){
+		DETHROW_INFO( deeInvalidAction, "Required hardware support missing. Please see logs" );
 	}
 	
 	// debug information
@@ -985,6 +1023,9 @@ void deoglRenderThread::pInitThreadPhase4(){
 		
 		pDebugInfoThreadRenderWindows.TakeOver( new deoglDebugInformation( "Windows", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderWindows );
+			
+			pDebugInfoVRRender.TakeOver( new deoglDebugInformation( "VR Render", colorText, colorBgSub3 ) );
+			pDebugInfoThreadRenderWindows->GetChildren().Add( pDebugInfoVRRender );
 			
 			pDebugInfoThreadRenderWindowsPrepare.TakeOver( new deoglDebugInformation( "Prepare", colorText, colorBgSub3 ) );
 			pDebugInfoThreadRenderWindows->GetChildren().Add( pDebugInfoThreadRenderWindowsPrepare );
@@ -1415,7 +1456,8 @@ void deoglRenderThread::pInitExtensions(){
 	//}
 	
 	if( ! pExtensions->VerifyPresence() ){
-		DETHROW( deeInvalidAction );
+		DETHROW_INFO( deeInvalidAction,
+			"Required extensions or functions could not be found. Please see logs" );
 	}
 	
 	// enable states never touched again later (and that can not be changed)
@@ -1524,6 +1566,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		pDebugTimeThreadRenderWindowsPrepare = 0.0f;
 		pDebugTimeThreadRenderWindowsRender = 0.0f;
 		pDebugCountThreadWindows = 0;
+		pDebugTimeVRRender = 0.0f;
 		
 		pRenderers->GetCanvas().DebugInfoCanvasReset();
 		
@@ -1536,11 +1579,13 @@ void deoglRenderThread::pRenderSingleFrame(){
 #endif
 	
 	// synchronize with GPU. it is annoying this has to be required since it prevents fullly
-	// occupying the GPU. the problem is that swap buller stalls GPU processing and thus
-	// GPU->CPU transfer. by synchronizing with the GPU we can ensure all rendering has
-	// finished so we can use the GPU for pre-render processing. this trades stalling at
-	// an unfortunate time with stalling at a well known time
-	OGL_CHECK( *this, glFinish() );
+	// occupying the GPU. the problem is that swap stalls GPU processing and thus GPU->CPU
+	// transfer. by synchronizing with the GPU we can ensure all rendering has finished so
+	// we can use the GPU for pre-render processing. this trades stalling at an unfortunate
+	// time with stalling at a well known time
+	if( ! ( pVRCamera && pVRCamera->GetVR() ) && showDebugInfoModule ){
+		OGL_CHECK( *this, glFinish() );
+	}
 	
 	if( showDebugInfoModule ){
 		pDebugTimeThreadRenderSyncGpu = pDebugTimerRenderThread2.GetElapsedTime();
@@ -1642,6 +1687,9 @@ void deoglRenderThread::pRenderSingleFrame(){
 		
 		pDebugInfoThreadRenderBegin->Clear();
 		pDebugInfoThreadRenderBegin->IncrementElapsedTime( pDebugTimeThreadRenderBegin );
+		
+		pDebugInfoVRRender->Clear();
+		pDebugInfoVRRender->IncrementElapsedTime( pDebugTimeVRRender );
 		
 		pDebugInfoThreadRenderWindows->Clear();
 		pDebugInfoThreadRenderWindows->IncrementElapsedTime( pDebugTimeThreadRenderWindows );
@@ -2144,8 +2192,10 @@ void deoglRenderThread::pBeginFrame(){
 	pContext->ProcessEventLoop();
 	#endif
 	
+	pOgl.GetShaderCompilingInfo()->PrepareForRender( pLastFrameTime );
+	
 	pFrameCounter++; // wraps around when hitting maximum
-	pVRBeginFrame();
+	pVRWaitBeginFrameFinished();
 }
 
 void deoglRenderThread::pSyncConfiguration(){
@@ -2167,8 +2217,6 @@ void deoglRenderThread::pSyncConfiguration(){
 	// change then a single-frame debug parameter has been reset. in this case update the
 	// main thread configuration and mark it non-dirty
 	}else if( pConfiguration.GetDirty() ){
-		config.SetQuickDebug( pConfiguration.GetQuickDebug() );
-		config.SetDebugSnapshot( pConfiguration.GetDebugSnapshot() );
 		config.SetDirty( false );
 		pConfiguration.SetDirty( false );
 	}
@@ -2183,13 +2231,22 @@ void deoglRenderThread::pRenderWindows(){
 	}
 }
 
-void deoglRenderThread::pVRBeginFrame(){
+void deoglRenderThread::pVRStartBeginFrame(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
 	if( ! vr ){
 		return;
 	}
 	
-	vr->BeginFrame();
+	vr->StartBeginFrame();
+}
+
+void deoglRenderThread::pVRWaitBeginFrameFinished(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( ! vr ){
+		return;
+	}
+	
+	vr->WaitBeginFrameFinished();
 	
 	if( pSignalSemaphoreSyncVR ){
 		pSignalSemaphoreSyncVR = false;
@@ -2215,6 +2272,7 @@ void deoglRenderThread::pVREndFrame(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
 	if( vr ){
 		vr->EndFrame();
+		pVRStartBeginFrame();
 	}
 }
 
@@ -2355,13 +2413,17 @@ void deoglRenderThread::pCleanUpThread(){
 		#endif
 		
 		// remove canvas if present
+		if( pCanvasOverlay ){
+			pCanvasOverlay->FreeReference();
+			pCanvasOverlay = nullptr;
+		}
 		if( pCanvasDebugOverlay ){
 			pCanvasDebugOverlay->FreeReference();
-			pCanvasDebugOverlay = NULL;
+			pCanvasDebugOverlay = nullptr;
 		}
 		if( pCanvasInputOverlay ){
 			pCanvasInputOverlay->FreeReference();
-			pCanvasInputOverlay = NULL;
+			pCanvasInputOverlay = nullptr;
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: canvas overlay (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
@@ -2495,6 +2557,7 @@ void deoglRenderThread::pCleanUpThread(){
 		pDebugInfoThreadRenderCapture = nullptr;
 		pDebugInfoThreadRenderEnd = nullptr;
 		pDebugInfoThreadRenderSwap = nullptr;
+		pDebugInfoVRRender = nullptr;
 		pDebugInfoFrameLimiter = nullptr;
 		pDebugInfoFLEstimMain = nullptr;
 		pDebugInfoFLEstimRender = nullptr;
@@ -2587,7 +2650,11 @@ void deoglRenderThread::pCleanUpThread(){
 			pContext->CleanUp();
 			
 			delete pContext;
-			pContext = NULL;
+			pContext = nullptr;
+		}
+		if( pLoaderThread ){
+			delete pLoaderThread;
+			pLoaderThread = nullptr;
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy context (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );

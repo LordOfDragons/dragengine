@@ -40,6 +40,8 @@ pRepeat( 1 ),
 pBoneParameter( ebpPositionZ ),
 pBoneMinValue( 0.0f ),
 pBoneMaxValue( 1.0f ),
+pVertexPositionSetMinValue( 0.0f ),
+pVertexPositionSetMaxValue( 1.0f ),
 pWrapY( false )
 {
 	pCurve.SetDefaultLinear();
@@ -53,6 +55,9 @@ pBone( copy.pBone ),
 pBoneParameter( copy.pBoneParameter ),
 pBoneMinValue( copy.pBoneMinValue ),
 pBoneMaxValue( copy.pBoneMaxValue ),
+pVertexPositionSet( copy.pVertexPositionSet ),
+pVertexPositionSetMinValue( copy.pVertexPositionSetMinValue ),
+pVertexPositionSetMaxValue( copy.pVertexPositionSetMaxValue ),
 pWrapY( copy.pWrapY ){
 }
 
@@ -65,9 +70,7 @@ deAnimatorLink::~deAnimatorLink(){
 ///////////////
 
 void deAnimatorLink::SetController( int controller ){
-	if( controller < -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( controller >= -1 )
 	pController = controller;
 }
 
@@ -76,9 +79,7 @@ void deAnimatorLink::SetCurve( const decCurveBezier &curve ){
 }
 
 void deAnimatorLink::SetRepeat( int repeat ){
-	if( repeat < 1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( repeat > 0 )
 	pRepeat = repeat;
 }
 
@@ -93,6 +94,15 @@ void deAnimatorLink::SetBoneParameter( eBoneParameter parameter ){
 void deAnimatorLink::SetBoneValueRange( float minimum, float maximum ){
 	pBoneMinValue = minimum;
 	pBoneMaxValue = maximum;
+}
+
+void deAnimatorLink::SetVertexPositionSet( const char *vertexPositionSet ){
+	pVertexPositionSet = vertexPositionSet;
+}
+
+void deAnimatorLink::SetVertexPositionSetValueRange( float minimum, float maximum ){
+	pVertexPositionSetMinValue = minimum;
+	pVertexPositionSetMaxValue = maximum;
 }
 
 void deAnimatorLink::SetWrapY( bool wrap ){
@@ -112,6 +122,9 @@ deAnimatorLink &deAnimatorLink::operator=( const deAnimatorLink &copy ){
 	pBoneParameter = copy.pBoneParameter;
 	pBoneMinValue = copy.pBoneMinValue;
 	pBoneMaxValue = copy.pBoneMaxValue;
+	pVertexPositionSet = copy.pVertexPositionSet;
+	pVertexPositionSetMinValue = copy.pVertexPositionSetMinValue;
+	pVertexPositionSetMaxValue = copy.pVertexPositionSetMaxValue;
 	pWrapY = copy.pWrapY;
 	return *this;
 }

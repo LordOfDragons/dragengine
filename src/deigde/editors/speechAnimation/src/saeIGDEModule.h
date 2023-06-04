@@ -27,16 +27,16 @@
 
 
 /**
- * \brief DEIGDE Speech Animation Editor.
+ * DEIGDE Speech Animation Editor.
  */
 class saeIGDEModule : public igdeEditorModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create module. */
+	/** Create module. */
 	saeIGDEModule( igdeEnvironment *environment );
 	
-	/** \brief Clean up module. */
+	/** Clean up module. */
 	virtual ~saeIGDEModule();
 	/*@}*/
 	
@@ -44,7 +44,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Start module. */
+	/** Start module. */
 	virtual void Start();
 	/*@}*/
 };

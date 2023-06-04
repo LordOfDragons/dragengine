@@ -30,7 +30,7 @@ class aeController;
 
 
 /**
- * \brief Undo action controller set name.
+ * Undo action controller set name.
  */
 class aeUControllerSetName : public igdeUndo{
 private:
@@ -43,11 +43,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUControllerSetName( aeController *controller, const char *newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUControllerSetName();
 	/*@}*/
 	
@@ -56,10 +56,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

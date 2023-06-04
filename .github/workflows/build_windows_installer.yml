@@ -69,6 +69,7 @@ jobs:
       
       - name: Unpack Windows Archives
         run: |
+          sudo apt -y update
           sudo apt install -y unzip
           unzip dragengine-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
           unzip dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked

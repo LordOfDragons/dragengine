@@ -31,32 +31,39 @@ pin Dragengine.Utils
  * \brief Rect area value element class property for use with XML loading.
  */
 class ECPRectArea extends ElementClassProperty
-	/** \brief Value. */
 	private var RectArea pValue
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name, RectArea value ) super( name )
-		this.pValue = value
+	public func new(String name, RectArea value) super(name)
+		pValue = value
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func RectArea getRectArea()
-		return this.pValue
+		return pValue
 	end
 	
 	/** \brief Set value. */
-	public func void setRectArea( RectArea area )
-		this.pValue = area
+	public func void setRectArea(RectArea area)
+		pValue = area
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValue = value cast RectArea
+	public func void setValue(Object value)
+		pValue = value cast RectArea
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pValue = RectArea.new((property cast ECPRectArea).pValue)
 	end
 end

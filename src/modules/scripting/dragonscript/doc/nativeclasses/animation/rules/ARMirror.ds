@@ -60,6 +60,13 @@ class ARMirror extends AnimatorRule
 	public func void setEnableSize(bool enabled)
 	end
 	
+	/**
+	 * \brief Enable vertex position set modification.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enabled)
+	end
+	
 	
 	
 	/**

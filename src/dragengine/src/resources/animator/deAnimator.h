@@ -71,6 +71,7 @@ private:
 	decObjectOrderedSet pRules;
 	
 	decStringSet pListBones;
+	decStringSet pListVertexPositionSets;
 	
 	deBaseAnimatorAnimator *pPeerAnimator;
 	
@@ -113,6 +114,13 @@ public:
 	
 	/** \brief Notify peers list of bones changed. */
 	void NotifyBonesChanged();
+	
+	/** \brief Vertex position sets. */
+	inline decStringSet &GetListVertexPositionSets(){ return pListVertexPositionSets; }
+	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
+	
+	/** \brief Notify peers list of vertex position sets changed. */
+	void NotifyVertexPositionSetsChanged();
 	/*@}*/
 	
 	

@@ -54,7 +54,7 @@ class igdeUIHelper;
 class DE_DLL_EXPORT igdeEditPath : public igdeContainerFlow{
 protected:
 	/** \brief Text field listener. */
-	class cListenerTextField : public igdeTextFieldListener{
+	class DE_DLL_EXPORT cListenerTextField : public igdeTextFieldListener{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -65,7 +65,7 @@ protected:
 	};
 	
 	/** \brief Button action. */
-	class cActionButton : public igdeAction{
+	class DE_DLL_EXPORT cActionButton : public igdeAction{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -77,7 +77,7 @@ protected:
 	};
 	
 	/** \brief Button menu action. */
-	class cActionButtonMenu : public igdeActionContextMenu{
+	class DE_DLL_EXPORT cActionButtonMenu : public igdeActionContextMenu{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -89,7 +89,7 @@ protected:
 	};
 	
 	/** \brief Select file using file dialog action. */
-	class cActionSelectFileDialog : public igdeActionSelectFile{
+	class DE_DLL_EXPORT cActionSelectFileDialog : public igdeActionSelectFile{
 	protected:
 		igdeEditPath &pEditPath;
 		bool pUseRelativePath;
@@ -103,7 +103,7 @@ protected:
 	};
 	
 	/** \brief Select skin resource using skin selection dialog. */
-	class cActionSkinSelectDialog : public igdeAction{
+	class DE_DLL_EXPORT cActionSkinSelectDialog : public igdeAction{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -114,7 +114,7 @@ protected:
 	};
 	
 	/** \brief Browse file action. */
-	class cActionBrowseFile : public igdeAction{
+	class DE_DLL_EXPORT cActionBrowseFile : public igdeAction{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -126,7 +126,7 @@ protected:
 	};
 	
 	/** \brief Convert to absolute path. */
-	class cActionConvertAbsolute : public igdeAction{
+	class DE_DLL_EXPORT cActionConvertAbsolute : public igdeAction{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -138,7 +138,7 @@ protected:
 	};
 	
 	/** \brief Convert to relative path. */
-	class cActionConvertRelative : public igdeAction{
+	class DE_DLL_EXPORT cActionConvertRelative : public igdeAction{
 	protected:
 		igdeEditPath &pEditPath;
 		

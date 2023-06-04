@@ -73,15 +73,15 @@ deoglWorldComputeElement( eetPropFieldCluster, &cluster ),
 pCluster( cluster ){
 }
 
-void deoglPropFieldCluster::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, sDataElement &data ) const{
-	const decDVector position( pCluster.GetPropFieldType().GetPropField().GetPosition()
-		- worldCompute.GetWorld().GetReferencePosition() );
+void deoglPropFieldCluster::WorldComputeElement::UpdateData( sDataElement &data ) const{
+	const decDVector position( pCluster.GetPropFieldType().GetPropField().GetPosition() - GetReferencePosition() );
 	
 	data.SetExtends( position + pCluster.GetMinimumExtend(), position + pCluster.GetMaximumExtend() );
 	data.SetEmptyLayerMask();
-	data.flags = ( uint32_t )deoglWorldCompute::eefPropFieldCluster;
+	data.flags = ( uint32_t )( deoglWorldCompute::eefPropFieldCluster
+		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic );
 	data.geometryCount = 1;
+	data.highestLod = 0;
 }
 
 void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
@@ -103,6 +103,7 @@ void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries( sDataElem
 	const deoglModelTexture &modelTex = modelLOD.GetTextureAt( 0 );
 	
 	int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
+	filters |= ertfShadow;
 	if( modelTex.GetDecal() ){
 		filters |= ertfDecal;
 	}
@@ -216,9 +217,7 @@ void deoglPropFieldCluster::SetExtends( const decVector &minExtend, const decVec
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 	
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		pPropFieldType.GetPropField().GetParentWorld()->GetCompute().UpdateElement( pWorldComputeElement );
-	}
+	pWorldComputeElement->ComputeUpdateElement();
 }
 
 void deoglPropFieldCluster::SetInstanceCount( int count ){
@@ -340,7 +339,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexturePipel
 	deoglTexUnitsConfig *tuc = NULL;
 	int target;
 	
-	deoglSkinShader &skinShader = skinTexture->GetPipelines().
+	deoglSkinShader &skinShader = *skinTexture->GetPipelines().
 		GetAt( deoglSkinTexturePipelinesList::eptPropField ).
 		GetWithRef( type ).GetShader();
 	
@@ -376,18 +375,12 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexturePipel
 void deoglPropFieldCluster::MarkTUCsDirty(){
 	pDirtyTUCs = true;
 	pPropFieldType.ClusterRequiresPrepareForRender();
-	
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		UpdateWorldComputeTextures( pPropFieldType.GetPropField().GetParentWorld()->GetCompute() );
-	}
+	UpdateWorldComputeTextures();
 }
 
 void deoglPropFieldCluster::DirtyRTSInstance(){
 	pDirtyRTSInstance = true;
-	
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		UpdateWorldComputeTextures( pPropFieldType.GetPropField().GetParentWorld()->GetCompute() );
-	}
+	UpdateWorldComputeTextures();
 }
 
 
@@ -396,22 +389,16 @@ void deoglPropFieldCluster::AddToWorldCompute( deoglWorldCompute &worldCompute )
 	worldCompute.AddElement( pWorldComputeElement );
 }
 
-void deoglPropFieldCluster::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		worldCompute.UpdateElement( pWorldComputeElement );
-	}
+void deoglPropFieldCluster::UpdateWorldCompute(){
+	pWorldComputeElement->ComputeUpdateElement();
 }
 
-void deoglPropFieldCluster::UpdateWorldComputeTextures( deoglWorldCompute &worldCompute ){
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		worldCompute.UpdateElementGeometries( pWorldComputeElement );
-	}
+void deoglPropFieldCluster::UpdateWorldComputeTextures(){
+	pWorldComputeElement->ComputeUpdateElementGeometries();
 }
 
-void deoglPropFieldCluster::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		worldCompute.RemoveElement( pWorldComputeElement );
-	}
+void deoglPropFieldCluster::RemoveFromWorldCompute(){
+	pWorldComputeElement->RemoveFromCompute();
 }
 
 
@@ -601,7 +588,7 @@ void deoglPropFieldCluster::pUpdateRTSInstances(){
 	}
 	
 	pRTSInstance->SetParameterBlock( pPropFieldType.GetParamBlock() );
-	pRTSInstance->SetParameterBlockSpecial( NULL );
+	pRTSInstance->SetParameterBlockSpecial( nullptr );
 	pRTSInstance->SetPointCount( 0 );
 	pRTSInstance->SetPrimitiveType( GL_TRIANGLES );
 	

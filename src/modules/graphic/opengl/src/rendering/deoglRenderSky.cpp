@@ -214,7 +214,8 @@ deoglRenderBase( renderThread )
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
-	pRenderSkyIntoEnvMapPB = deoglSkinShader::CreateSPBRender( renderThread );
+	pRenderSkyIntoEnvMapPBSingleUse.TakeOver( new deoglSPBSingleUse( renderThread,
+		deoglSkinShader::CreateSPBRender( renderThread ) ) );
 	
 	
 	renderThread.GetShader().SetCommonDefines( commonDefines );
@@ -797,6 +798,8 @@ void deoglRenderSky::PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPla
 	const decDMatrix &matrixProjection = plan.GetProjectionMatrix();
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	const decMatrix matrixSkyBody( matrixCamera.GetRotationMatrix() * matrixProjection );
+	
+	pRenderSkyIntoEnvMapPB = ( deoglSPBlockUBO* )pRenderSkyIntoEnvMapPBSingleUse->Next();
 	const deoglSPBMapBuffer mapped( pRenderSkyIntoEnvMapPB );
 	
 	pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.Invert() );

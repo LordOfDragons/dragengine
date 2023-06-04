@@ -26,6 +26,7 @@
 #include "../deoglBasics.h"
 
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/threading/deMutex.h>
 
 class deoglShaderDefines;
 class deoglShaderSources;
@@ -56,7 +57,18 @@ private:
 	decString pGLSLVersion;
 	decStringList pGLSLExtensions;
 	
+	int pGLSLVersionNumber;
+	
+	bool pHasLoadingShader;
+	bool pGuardHasLoadingShader;
+	bool pHasCompilingShader;
+	bool pGuardHasCompilingShader;
+	
 	deoglShaderPreprocessor pPreprocessor;
+	deMutex pMutexCompile;
+	deMutex pMutexChecks;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -71,6 +83,18 @@ public:
 	/*@{*/
 	/** Compieles a shader from the given sources using the specified defines. */
 	deoglShaderCompiled *CompileShader( deoglShaderProgram &program );
+	
+	/**
+	 * Check if shader is loading or has been loaded since the last call.
+	 * Resets flag if no loading is in progress right now.
+	 */
+	bool GetHasLoadingShader();
+	
+	/**
+	 * Check if shader is compiling or has been compiled since the last call.
+	 * Resets flag if no compiling is in progress right now.
+	 */
+	bool GetHasCompilingShader();
 	/*@}*/
 	
 private:

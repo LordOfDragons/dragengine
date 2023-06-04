@@ -32,7 +32,7 @@
 
 
 /**
- * @brief Closest Hit Visitor.
+ * Closest Hit Visitor.
  *
  * Stores the closest hit found while visitor collisions.
  */

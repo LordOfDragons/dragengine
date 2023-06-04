@@ -231,7 +231,7 @@ void mePropFieldType::SetPathSkin( const char *path ){
 			
 		}catch( const deException & ){
 			if( pPropField && pPropField->GetWorld() ){
-				pSkin = pPropField->GetWorld()->GetEnvironment()->GetErrorSkin();
+				pSkin = pPropField->GetWorld()->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
 				pSkin->AddReference();
 			}
 		}

@@ -30,8 +30,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinTexturePipeline::deoglSkinTexturePipeline(
-	const deoglPipeline *pipeline, const deoglSkinShader::Ref &shader ) :
+deoglSkinTexturePipeline::deoglSkinTexturePipeline( const deoglPipeline *pipeline, deoglSkinShader *shader ) :
 pPipeline( pipeline ),
 pShader( shader )
 {
@@ -41,8 +40,3 @@ pShader( shader )
 
 deoglSkinTexturePipeline::~deoglSkinTexturePipeline(){
 }
-
-
-
-// Management
-///////////////

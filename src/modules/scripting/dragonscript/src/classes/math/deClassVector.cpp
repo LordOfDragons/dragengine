@@ -172,12 +172,11 @@ void deClassVector::nfNormalize::RunFunction( dsRunTime *RT, dsValue *This ){
 	deClassVector &clsVector = *( ( deClassVector* )GetOwnerClass() );
 	const float len = vector.Length();
 	
-	if( len > 0.00001f ){
-		clsVector.PushVector( RT, vector / len );
-		
-	}else{
+	if( len == 0.0f ){
 		DSTHROW( dueDivisionByZero );
 	}
+
+	clsVector.PushVector( RT, vector / len );
 }
 
 // public func Vector absolute()

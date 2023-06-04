@@ -49,6 +49,7 @@ class ElementClass implements ResourceListener
 	private var Dictionary pProperties
 	private var bool pPersistable
 	private var String pBasePath
+	private var bool pIsXmlElementClass
 	
 	private static var CodecPropertyString pSharedCodecPropertyString = CodecPropertyString.new()
 	private static var TSTriggerExpressionParser pSharedTriggerExpressionParser = TSTriggerExpressionParser.new()
@@ -56,24 +57,24 @@ class ElementClass implements ResourceListener
 	
 	
 	/** \brief Create element class. */
-	public func new( String className )
+	public func new(String className)
 		if className == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pClassname = className
-		this.pProperties = Dictionary.new()
-		this.pPersistable = true
-		this.pBasePath = "/"
+		pClassname = className
+		pProperties = Dictionary.new()
+		pPersistable = true
+		pBasePath = "/"
 	end
 	
 	/** \brief Dispose of element class. */
 	public func void dispose()
-		if this.pProperties != null
-			this.pProperties.forEachValue( block ElementClassProperty each
+		if pProperties != null
+			pProperties.forEachValue(block ElementClassProperty each
 				each.dispose()
-			end )
-			this.pProperties = null
+			end)
+			pProperties = null
 		end
 	end
 	
@@ -81,20 +82,36 @@ class ElementClass implements ResourceListener
 	
 	/** \brief Class name. */
 	public func String getClassname()
-		return this.pClassname
+		return pClassname
 	end
 	
 	/** \brief Base path for relative loading of resource properties. */
 	public func String getBasePath()
-		return this.pBasePath
+		return pBasePath
 	end
 	
 	/** \brief Set base path for relative loading of resource properties. */
-	public func void setBasePath( String path )
+	public func void setBasePath(String path)
 		if path == null
 			throw EInvalidParam.new()
 		end
-		this.pBasePath = path
+		pBasePath = path
+	end
+	
+	/**
+	 * \brief Element class is an XML element class.
+	 * \version 1.17
+	 */
+	public func bool getIsXmlElementClass()
+		return pIsXmlElementClass
+	end
+	
+	/**
+	 * \brief Set if element class is an XML element class.
+	 * \version 1.17
+	 */
+	public func void setIsXmlElementClass(bool isXmlElementClass)
+		pIsXmlElementClass = isXmlElementClass
 	end
 	
 	
@@ -105,7 +122,7 @@ class ElementClass implements ResourceListener
 	end
 	
 	/** \brief Set shared property codec helper. */
-	public static func void setSharedCodecPropertyString( CodecPropertyString codec )
+	public static func void setSharedCodecPropertyString(CodecPropertyString codec)
 		if codec == null
 			throw EInvalidParam.new()
 		end
@@ -128,7 +145,7 @@ class ElementClass implements ResourceListener
 	end
 	
 	/** \brief Set shared trigger expression parser. */
-	public static func void setSharedTriggerExpressionParser( TSTriggerExpressionParser parser )
+	public static func void setSharedTriggerExpressionParser(TSTriggerExpressionParser parser)
 		if parser == null
 			throw EInvalidParam.new()
 		end
@@ -149,45 +166,45 @@ class ElementClass implements ResourceListener
 	
 	/** \brief Number of properties. */
 	public func int getPropertyCount()
-		return this.pProperties.getCount()
+		return pProperties.getCount()
 	end
 	
 	/** \brief List of property names as array of strings. */
 	public func Array getPropertyNames()
-		return this.pProperties.getKeys()
+		return pProperties.getKeys()
 	end
 	
 	/** \brief Named property or \em null if absent. */
-	public func ElementClassProperty getPropertyNamed( String name )
-		return this.pProperties.getAt( name, null ) cast ElementClassProperty
+	public func ElementClassProperty getPropertyNamed(String name)
+		return pProperties.getAt(name, null) cast ElementClassProperty
 	end
 	
 	/** \brief Named property is present. */
-	public func bool hasPropertyNamed( String name )
-		return this.pProperties.has( name )
+	public func bool hasPropertyNamed(String name)
+		return pProperties.has(name)
 	end
 	
 	/** \brief Add property. */
-	public func void addProperty( ElementClassProperty property )
-		if this.pProperties.has( property.getName() )
+	public func void addProperty(ElementClassProperty property)
+		if pProperties.has(property.getName())
 			throw EInvalidParam.new()
 		end
-		this.pProperties.setAt( property.getName(), property )
+		pProperties.setAt(property.getName(), property)
 	end
 	
 	/** \brief Remove property. */
-	public func void removeProperty( ElementClassProperty property )
-		this.pProperties.remove( property.getName() )
+	public func void removeProperty(ElementClassProperty property)
+		pProperties.remove(property.getName())
 	end
 	
 	/** \brief Remove all properties. */
 	public func void removeAllProperties()
-		this.pProperties.removeAll()
+		pProperties.removeAll()
 	end
 	
 	/** \brief Visit properties with block with parameter ElementClass. */
-	public func void forEachProperty( Block ablock )
-		this.pProperties.forEachValue( ablock )
+	public func void forEachProperty(Block ablock)
+		pProperties.forEachValue(ablock)
 	end
 	
 	/**
@@ -197,8 +214,8 @@ class ElementClass implements ResourceListener
 	 * and ElementClassProperty as second argument. Block return value becomes processed
 	 * value for the next visited property. First property received initialValue to process.
 	 */
-	public func Object injectProperty( Object injectValue, Block ablock )
-		return this.pProperties.injectValue( injectValue, ablock )
+	public func Object injectProperty(Object injectValue, Block ablock)
+		return pProperties.injectValue(injectValue, ablock)
 	end
 	
 	/**
@@ -215,20 +232,20 @@ class ElementClass implements ResourceListener
 	 * \throws EInvalidParam Property is absent.
 	 * \throws Exception Value is not understood by property.
 	 */
-	public func void setPropertyValue( String name, Object value )
-		( this.pProperties.getAt( name ) cast ElementClassProperty ).setValue( value )
+	public func void setPropertyValue(String name, Object value)
+		(pProperties.getAt(name) cast ElementClassProperty).setValue(value)
 	end
 	
 	
 	
 	/** \brief Element class is persistable to file writers. */
 	public func bool getPersistable()
-		return this.pPersistable
+		return pPersistable
 	end
 	
 	/** \brief Set element class is persistable to file writers. */
-	public func void setPersistable( bool persistable )
-		this.pPersistable = persistable
+	public func void setPersistable(bool persistable)
+		pPersistable = persistable
 	end
 	
 	
@@ -241,17 +258,33 @@ class ElementClass implements ResourceListener
 	 * 
 	 * The default implementation returns \em null.
 	 */
-	public func ElementClass duplicateNamed( String classname )
+	public func ElementClass duplicateNamed(String classname)
 		return null
+	end
+	
+	/**
+	 * \brief Copy values of properties from another class to properties of this class.
+	 * \version 1.17
+	 * 
+	 * Using this function call is required to support nested XML subclassing. Nested XML
+	 * subclassing means the class duplicateNamed() is called on is not a script class but
+	 * an XML subclass. In this situation the duplicateNamed() is called on the script class
+	 * the base XML subclass has been created from and the values set to the properties using
+	 * the XML file are lost.
+	 */
+	public func void copyPropertyValues(ElementClass eclass)
+		eclass.pProperties.forEach(block String name, ElementClassProperty property
+			(pProperties.getAt(name) cast ElementClassProperty).copyValue(eclass, property)
+		end)
 	end
 	
 	
 	
 	/** \brief Preload resources. */
-	public func void preloadResources( PreloadCounter counter )
-		this.pProperties.forEachValue( block ElementClassProperty each
-			each.preloadResources( this, counter )
-		end )
+	public func void preloadResources(PreloadCounter counter)
+		pProperties.forEachValue(block ElementClassProperty each
+			each.preloadResources(this, counter)
+		end)
 	end
 	
 	/**
@@ -259,7 +292,7 @@ class ElementClass implements ResourceListener
 	 * are elements created alongside elements of this class or elements which
 	 * can be produced during the lifetime of an element of this class.
 	 */
-	public func void addDependencies( PreloadManager preloadManager )
+	public func void addDependencies(PreloadManager preloadManager)
 	end
 	
 	
@@ -287,14 +320,14 @@ class ElementClass implements ResourceListener
 	 * This method is used by createAndAddElement() and loadAndAddElement(). It can be
 	 * used to create fully initialized elements without adding them to the game world.
 	 */
-	public func Element createElement( StubElement stub )
-		var Element element = this.createElement()
+	public func Element createElement(StubElement stub)
+		var Element element = createElement()
 		if element == null
 			return null
 		end
 		
 		try
-			element.init( stub )
+			element.init(stub)
 			
 		catch Exception e
 			element.dispose()
@@ -315,14 +348,14 @@ class ElementClass implements ResourceListener
 	 * Subclasses not representing actual elements or require special handling should
 	 * overwrite this method and loadAndAddElement() to provide the specific handling.
 	 */
-	public func void createAndAddElement( StubElement stub, GameWorld gameWorld )
-		var Element element = this.createElement( stub )
+	public func void createAndAddElement(StubElement stub, GameWorld gameWorld)
+		var Element element = createElement(stub)
 		if element == null
 			return
 		end
 		
 		try
-			gameWorld.addElement( element )
+			gameWorld.addElement(element)
 			
 		catch Exception e
 			element.removeFromGameWorldIfPresent()
@@ -342,15 +375,15 @@ class ElementClass implements ResourceListener
 	 * This method is used by loadAndAddElement(). It can be used to create fully
 	 * loaded elements without adding them to the game world.
 	 */
-	public func Element loadElement( PersistencyEnvironment env, StubElement stub, \
-	FileReader reader )
-		var Element element = this.createElement( stub )
+	public func Element loadElement(PersistencyEnvironment env, StubElement stub, \
+	FileReader reader)
+		var Element element = createElement(stub)
 		if element == null
 			return null
 		end
 		
 		try
-			element.readFromFile( env, reader )
+			element.readFromFile(env, reader)
 			
 		catch Exception e
 			element.removeFromGameWorldIfPresent()
@@ -372,15 +405,15 @@ class ElementClass implements ResourceListener
 	 * Subclasses not representing actual elements or require special handling should
 	 * overwrite this method and createAndAddElement() to provide the specific handling.
 	 */
-	public func void loadAndAddElement( PersistencyEnvironment env, StubElement stub, \
-	FileReader reader, GameWorld gameWorld )
-		var Element element = this.loadElement( env, stub, reader )
+	public func void loadAndAddElement(PersistencyEnvironment env, StubElement stub, \
+	FileReader reader, GameWorld gameWorld)
+		var Element element = loadElement(env, stub, reader)
 		if element == null
 			return
 		end
 		
 		try
-			gameWorld.addElement( element )
+			gameWorld.addElement(element)
 			
 		catch Exception e
 			element.removeFromGameWorldIfPresent()
@@ -393,7 +426,7 @@ class ElementClass implements ResourceListener
 	
 	/** \brief Hash code. */
 	public func int hashCode()
-		return this.pClassname.hashCode()
+		return pClassname.hashCode()
 	end
 	
 	/**
@@ -401,9 +434,9 @@ class ElementClass implements ResourceListener
 	 * 
 	 * Two element classes are equal if they have the same class name.
 	 */
-	public func bool equals( Object obj )
+	public func bool equals(Object obj)
 		if obj castable ElementClass
-			return this.pClassname.equals( ( obj cast ElementClass ).getClassname() )
+			return pClassname.equals((obj cast ElementClass).getClassname())
 			
 		else
 			return false
@@ -413,10 +446,10 @@ class ElementClass implements ResourceListener
 	
 	
 	/** \brief Resource finished loading successfully. */
-	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
+	public func void finishedLoading(String path, ResourceLoaderType resourceType, Object resource)
 	end
 	
 	/** \brief Resource failed loading. */
-	public func void failedLoading( String path, ResourceLoaderType resourceType )
+	public func void failedLoading(String path, ResourceLoaderType resourceType)
 	end
 end

@@ -41,12 +41,12 @@ abstract class ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name )
+	public func new(String name)
 		if name == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("name")
 		end
 		
-		this.pName = name
+		pName = name
 	end
 	
 	/** \brief Dispose of element class property to break reference loops. */
@@ -57,23 +57,41 @@ abstract class ElementClassProperty
 	
 	/** \brief Name. */
 	public func String getName()
-		return this.pName
+		return pName
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	abstract public func void setValue( Object value )
+	abstract public func void setValue(Object value)
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 * 
+	 * Used for loading XML element classes depending on other XML element classes. This
+	 * requires copying settings from the base XML element class to the derived XML element
+	 * class. Otherwise the base XML element class changes are lost.
+	 * 
+	 * Element class properties are required to support copying settings from the same element
+	 * class property type. Support to copy settings from other element class property types
+	 * is optional and can be useful for special use cases. Such element class properties
+	 * are typically custom written for an individual application.
+	 * 
+	 * The default implementation is empty.
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+	end
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
 	end
 	
 	/**
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
 		return false
 	end
 end

@@ -30,7 +30,7 @@ class deAnimatorRuleStateManipulator;
 
 
 /**
- * \brief State manipulator rule.
+ * State manipulator rule.
  */
 class dearRuleStateManipulator : public dearRule{
 private:
@@ -39,25 +39,30 @@ private:
 	dearControllerTarget pTargetPosition;
 	dearControllerTarget pTargetRotation;
 	dearControllerTarget pTargetSize;
+	dearControllerTarget pTargetVPS;
 	
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableScale;
+	const bool pEnableVPS;
+	const bool pEnableBones;
 	const decVector pMinPosition;
 	const decVector pMaxPosition;
 	const decVector pMinRotation;
 	const decVector pMaxRotation;
 	const decVector pMinSize;
 	const decVector pMaxSize;
+	const float pMinVPS;
+	const float pMaxVPS;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleStateManipulator( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleStateManipulator &rule );
 	
-	/** \brief Clean up animator. */
+	/** Clean up animator. */
 	virtual ~dearRuleStateManipulator();
 	/*@}*/
 	
@@ -65,8 +70,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	/*@}*/
 };
 

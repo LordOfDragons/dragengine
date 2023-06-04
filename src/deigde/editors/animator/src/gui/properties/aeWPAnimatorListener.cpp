@@ -48,6 +48,14 @@ aeWPAnimatorListener::~aeWPAnimatorListener(){
 // Notifications
 //////////////////
 
+void aeWPAnimatorListener::ModelChanged( aeAnimator *animator ){
+	if( animator != pPanel.GetAnimator() ){
+		return;
+	}
+	
+	pPanel.UpdateModelVertexPositionSetList();
+}
+
 void aeWPAnimatorListener::RigChanged( aeAnimator *animator ){
 	if( animator != pPanel.GetAnimator() ){
 		return;

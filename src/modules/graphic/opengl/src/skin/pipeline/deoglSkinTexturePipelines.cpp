@@ -29,6 +29,7 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../rendering/deoglRenderReflection.h"
+#include "../../shaders/deoglShaderLoadingTimeout.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -119,17 +120,20 @@ const deoglSkinTexturePipeline &deoglSkinTexturePipelines::GetWithRef( eTypes ty
 	}
 }
 
-void deoglSkinTexturePipelines::Prepare(){
+void deoglSkinTexturePipelines::Prepare( deoglShaderLoadingTimeout &timeout ){
 	if( pPrepared ){
 		return;
 	}
 	
-	pPrepared = true;
-	
 	ChannelInfo cinfo;
 	pInitChannelInfo( cinfo );
 	
-	pPreparePipelines( cinfo );
+	pPreparePipelines( cinfo, timeout );
+	if( timeout.TimedOut() ){
+		return;
+	}
+	
+	pPrepared = true;
 }
 
 
@@ -138,7 +142,7 @@ void deoglSkinTexturePipelines::Prepare(){
 ////////////////////////
 
 void deoglSkinTexturePipelines::pPrepareGeometry( deoglSkinShaderConfig &baseShaderConfig,
-const ChannelInfo &cinfo ){
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglPipelineConfiguration pipconf;
 	pPipelineConfigGeometry( pipconf );
 	
@@ -146,11 +150,12 @@ const ChannelInfo &cinfo ){
 	pSetBase( shaconf );
 	pSetGeometry( shaconf, cinfo );
 	
-	pCreatePipelines( pipconf, shaconf, etGeometry, emStereo | emFlipCullFace | emDoubleSided );
+	pCreatePipelines( pipconf, shaconf, etGeometry,
+		emStereo | emFlipCullFace | emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareGeometryDepthTest( deoglSkinShaderConfig &baseShaderConfig,
-const ChannelInfo &cinfo ){
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglPipelineConfiguration pipconf;
 	pPipelineConfigGeometryDepthTest( pipconf );
 	
@@ -158,56 +163,62 @@ const ChannelInfo &cinfo ){
 	pSetBase( shaconf );
 	pSetGeometryDepthTest( shaconf, cinfo );
 	
-	pCreatePipelines( pipconf, shaconf, etGeometryDepthTest, emStereo | emFlipCullFace | emDoubleSided );
+	pCreatePipelines( pipconf, shaconf, etGeometryDepthTest,
+		emStereo | emFlipCullFace | emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareAllDepth( deoglSkinShaderConfig &baseShaderConfig,
-const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
+const deoglSkinTexturePipelines::ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglPipelineConfiguration pipconf;
 	pPipelineConfigDepth( pipconf );
 	
-	pPrepareDepth( pipconf, baseShaderConfig, cinfo );
-	pPrepareDepthClipPlane( pipconf, baseShaderConfig, cinfo );
+	pPrepareDepth( pipconf, baseShaderConfig, cinfo, timeout );
+	pPrepareDepthClipPlane( pipconf, baseShaderConfig, cinfo, timeout );
 	
 	pPipelineConfigDepthReversed( pipconf );
 	
-	pPrepareDepthReversed( pipconf, baseShaderConfig, cinfo );
-	pPrepareDepthClipPlaneReversed( pipconf, baseShaderConfig, cinfo );
+	pPrepareDepthReversed( pipconf, baseShaderConfig, cinfo, timeout );
+	pPrepareDepthClipPlaneReversed( pipconf, baseShaderConfig, cinfo, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareDepth( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo ){
+deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetDepth( shaconf, cinfo );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etDepth, emStereo | emFlipCullFace | emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etDepth,
+		emStereo | emFlipCullFace | emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareDepthClipPlane( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo ){
+deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetDepth( shaconf, cinfo );
 	
 	shaconf.SetClipPlane( true );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etDepthClipPlane, emStereo | emFlipCullFace | emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etDepthClipPlane,
+		emStereo | emFlipCullFace | emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareDepthReversed( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
+deoglSkinShaderConfig &baseShaderConfig, const deoglSkinTexturePipelines::ChannelInfo &cinfo,
+deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetDepth( shaconf, cinfo );
 	
 	shaconf.SetDepthTestMode( deoglSkinShaderConfig::edtmSmaller );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etDepthReversed, emStereo | emFlipCullFace | emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etDepthReversed,
+		emStereo | emFlipCullFace | emDoubleSided, timeout );
 }
 
-void deoglSkinTexturePipelines::pPrepareDepthClipPlaneReversed( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
+void deoglSkinTexturePipelines::pPrepareDepthClipPlaneReversed(
+deoglPipelineConfiguration &basePipelineConfig, deoglSkinShaderConfig &baseShaderConfig,
+const deoglSkinTexturePipelines::ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetDepth( shaconf, cinfo );
@@ -215,39 +226,43 @@ deoglSkinShaderConfig &baseShaderConfig, const deoglSkinTexturePipelines::Channe
 	shaconf.SetClipPlane( true );
 	shaconf.SetDepthTestMode( deoglSkinShaderConfig::edtmSmaller );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etDepthClipPlaneReversed, emStereo | emFlipCullFace | emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etDepthClipPlaneReversed,
+		emStereo | emFlipCullFace | emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareAllCounter( deoglSkinShaderConfig &baseShaderConfig,
-const ChannelInfo &cinfo ){
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglPipelineConfiguration pipconf;
 	pPipelineConfigCounter( pipconf );
-	pPrepareCounter( pipconf, baseShaderConfig, cinfo );
-	pPrepareCounterClipPlane( pipconf, baseShaderConfig, cinfo );
+	pPrepareCounter( pipconf, baseShaderConfig, cinfo, timeout );
+	pPrepareCounterClipPlane( pipconf, baseShaderConfig, cinfo, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareCounter( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo ){
+deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetCounter( shaconf, cinfo );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etCounter, emStereo | emFlipCullFace | emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etCounter,
+		emStereo | emFlipCullFace | emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareCounterClipPlane( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
+deoglSkinShaderConfig &baseShaderConfig, const deoglSkinTexturePipelines::ChannelInfo &cinfo,
+deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetCounter( shaconf, cinfo );
 	
 	shaconf.SetClipPlane( true );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etCounterClipPlane, emStereo | emFlipCullFace | emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etCounterClipPlane,
+		emStereo | emFlipCullFace | emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareMask( deoglSkinShaderConfig &baseShaderConfig,
-const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
+const deoglSkinTexturePipelines::ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglPipelineConfiguration pipconf;
 	pPipelineConfigMask( pipconf );
 	
@@ -255,81 +270,85 @@ const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
 	pSetBase( shaconf );
 	pSetMask( shaconf, cinfo );
 	
-	pCreatePipelines( pipconf, shaconf, etMask, emStereo | emFlipCullFace | emDoubleSided );
+	pCreatePipelines( pipconf, shaconf, etMask, emStereo | emFlipCullFace | emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareAllShadow( deoglSkinShaderConfig &baseShaderConfig,
-const ChannelInfo &cinfo ){
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglPipelineConfiguration pipconf;
 	pPipelineConfigShadowProjection( pipconf );
-	pPrepareShadowProjection( pipconf, baseShaderConfig, cinfo );
-	pPrepareShadowProjectionCube( pipconf, baseShaderConfig, cinfo );
+	pPrepareShadowProjection( pipconf, baseShaderConfig, cinfo, timeout );
+	pPrepareShadowProjectionCube( pipconf, baseShaderConfig, cinfo, timeout );
 	
 	pPipelineConfigShadowOrthogonal( pipconf );
-	pPrepareShadowOrthogonal( pipconf, baseShaderConfig, cinfo );
-	pPrepareShadowOrthogonalCascaded( pipconf, baseShaderConfig, cinfo );
+	pPrepareShadowOrthogonal( pipconf, baseShaderConfig, cinfo, timeout );
+	pPrepareShadowOrthogonalCascaded( pipconf, baseShaderConfig, cinfo, timeout );
 	
 	pPipelineConfigShadowDistance( pipconf );
-	pPrepareShadowDistance( pipconf, baseShaderConfig, cinfo );
-	pPrepareShadowDistanceCube( pipconf, baseShaderConfig, cinfo );
+	pPrepareShadowDistance( pipconf, baseShaderConfig, cinfo, timeout );
+	pPrepareShadowDistanceCube( pipconf, baseShaderConfig, cinfo, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareShadowProjection( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo ) {
+deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ) {
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetShadowProjection( shaconf, cinfo );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etShadowProjection, emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etShadowProjection, emDoubleSided, timeout );
 }
 
-void deoglSkinTexturePipelines::pPrepareShadowProjectionCube( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
+void deoglSkinTexturePipelines::pPrepareShadowProjectionCube(
+deoglPipelineConfiguration &basePipelineConfig, deoglSkinShaderConfig &baseShaderConfig,
+const deoglSkinTexturePipelines::ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetShadowProjectionCube( shaconf, cinfo );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etShadowProjectionCube, emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etShadowProjectionCube, emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareShadowOrthogonal( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo ){
+deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetShadowOrthogonal( shaconf, cinfo );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etShadowOrthogonal, emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etShadowOrthogonal, emDoubleSided, timeout );
 }
 
-void deoglSkinTexturePipelines::pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo ){
+void deoglSkinTexturePipelines::pPrepareShadowOrthogonalCascaded(
+deoglPipelineConfiguration &basePipelineConfig, deoglSkinShaderConfig &baseShaderConfig,
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetShadowOrthogonalCascaded( shaconf, cinfo );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etShadowOrthogonalCascaded, emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etShadowOrthogonalCascaded, emDoubleSided, timeout );
 }
 
-void deoglSkinTexturePipelines::pPrepareShadowDistance( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo ){
+void deoglSkinTexturePipelines::pPrepareShadowDistance(
+deoglPipelineConfiguration &basePipelineConfig, deoglSkinShaderConfig &baseShaderConfig,
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetShadowDistance( shaconf, cinfo );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etShadowDistance, emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etShadowDistance, emDoubleSided, timeout );
 }
 
-void deoglSkinTexturePipelines::pPrepareShadowDistanceCube( deoglPipelineConfiguration &basePipelineConfig,
-deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo ){
+void deoglSkinTexturePipelines::pPrepareShadowDistanceCube(
+deoglPipelineConfiguration &basePipelineConfig, deoglSkinShaderConfig &baseShaderConfig,
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglSkinShaderConfig shaconf( baseShaderConfig );
 	pSetBase( shaconf );
 	pSetShadowDistanceCube( shaconf, cinfo );
 	
-	pCreatePipelines( basePipelineConfig, shaconf, etShadowDistanceCube, emDoubleSided );
+	pCreatePipelines( basePipelineConfig, shaconf, etShadowDistanceCube, emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareEnvMap( deoglSkinShaderConfig &baseShaderConfig,
-const ChannelInfo &cinfo ){
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglPipelineConfiguration pipconf;
 	pPipelineConfigGeometry( pipconf );
 	
@@ -337,11 +356,11 @@ const ChannelInfo &cinfo ){
 	pSetBase( shaconf );
 	pSetEnvMap( shaconf, cinfo );
 	
-	pCreatePipelines( pipconf, shaconf, etEnvMap, emDoubleSided );
+	pCreatePipelines( pipconf, shaconf, etEnvMap, emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareLuminance( deoglSkinShaderConfig &baseShaderConfig,
-const ChannelInfo &cinfo ){
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglPipelineConfiguration pipconf;
 	pPipelineConfigGeometry( pipconf );
 	
@@ -349,11 +368,11 @@ const ChannelInfo &cinfo ){
 	pSetBase( shaconf );
 	pSetLuminance( shaconf, cinfo );
 	
-	pCreatePipelines( pipconf, shaconf, etLuminance, emDoubleSided );
+	pCreatePipelines( pipconf, shaconf, etLuminance, emDoubleSided, timeout );
 }
 
 void deoglSkinTexturePipelines::pPrepareGIMaterial( deoglSkinShaderConfig &baseShaderConfig,
-const ChannelInfo &cinfo ){
+const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
 	deoglPipelineConfiguration pipconf;
 	pPipelineConfigGIMaterial( pipconf );
 	
@@ -361,7 +380,7 @@ const ChannelInfo &cinfo ){
 	pSetBase( shaconf );
 	pSetGIMaterial( shaconf, cinfo );
 	
-	pCreatePipelines( pipconf, shaconf, etGIMaterial, 0 );
+	pCreatePipelines( pipconf, shaconf, etGIMaterial, 0, timeout );
 }
 
 
@@ -908,7 +927,8 @@ void deoglSkinTexturePipelines::pSetDynamicMask( deoglSkinShaderConfig &config, 
 
 
 void deoglSkinTexturePipelines::pCreatePipelines( const deoglPipelineConfiguration &basePipelineConfig,
-const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask ){
+const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask,
+deoglShaderLoadingTimeout &timeout ){
 	const deoglRenderThread &renderThread = pTexture.GetRenderThread();
 	deoglSkinShaderManager &shaderManager = renderThread.GetShader().GetSkinShaderManager();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
@@ -922,8 +942,12 @@ const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask ){
 	
 	for( modifier=0; modifier<ModifiersPerType; modifier++ ){
 		// skip unsupported modifiers
-		if( ( modifier & modifierMask ) != modifier ){
+		if( ( modifier & modifierMask ) != modifier || pPipelines[ type ][ modifier ] ){
 			continue;
+		}
+		
+		if( ! timeout.CanLoad() ){
+			return;
 		}
 		
 		// stereo
@@ -952,11 +976,10 @@ const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask ){
 		pipconf.SetEnableCullFace( modifier & emDoubleSided ? false : enableCullFace );
 		
 		// create shader and pipeline
-		const deoglSkinShader::Ref shader(
-			deoglSkinShader::Ref::New( shaderManager.GetShaderWith( shaconf ) ) );
+		deoglSkinShader *shader;
 		
 		try{
-			shader->PrepareShader(); // make GetShader() to be present
+			shader = shaderManager.GetShaderWith( shaconf );
 			
 		}catch( ... ){
 			pTexture.GetRenderThread().GetLogger().LogErrorFormat(
@@ -964,6 +987,7 @@ const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask ){
 				GetDebugName(), DebugNamesTypes.EntryName( type ).GetString(),
 				DebugNamesModifiers.SetName( modifier ).GetString(),
 				pTexture.GetSkin().GetFilename().GetString(), pTexture.GetName().GetString() );
+			timeout.Loaded();
 			throw;
 		}
 		
@@ -974,5 +998,7 @@ const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask ){
 		
 		pPipelines[ type ][ modifier ].TakeOver( new deoglSkinTexturePipeline(
 			pipelineManager.GetWith( pipconf, true ), shader ) );
+		
+		timeout.Loaded();
 	}
 }

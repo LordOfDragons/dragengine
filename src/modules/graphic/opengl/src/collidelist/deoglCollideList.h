@@ -22,6 +22,7 @@
 #ifndef _DEOGLCOLLIDELIST_H_
 #define _DEOGLCOLLIDELIST_H_
 
+#include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../particle/deoglParticleEmitterInstanceList.h"
@@ -47,6 +48,7 @@ class deoglRWorld;
 class deoglTMViewFrustum;
 class deoglTransformVolume;
 class deoglWorldOctree;
+class deoglRTLogger;
 
 
 
@@ -138,6 +140,9 @@ public:
 	inline const deoglEnvironmentMapList &GetEnvironmentMapList() const{ return pEnvMapList; }
 	/** Adds all environment maps colliding with the given volume. */
 	void AddEnvironmentMapsColliding( deoglWorldOctree &octree, deoglDCollisionVolume *volume );
+	
+	/** Single line debug. */
+	void DebugSingleLine( deoglRTLogger &logger, bool sorted ) const;
 	/*@}*/
 	
 	

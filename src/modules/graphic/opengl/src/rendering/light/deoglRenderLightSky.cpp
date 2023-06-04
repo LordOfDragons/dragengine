@@ -546,6 +546,10 @@ const deoglRenderPlanMasked *mask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	
+	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+		plan.FinishReadBackComputeRenderTasks();
+	}
+	
 	if( solid && ! mask ){
 		RenderGIShadows( plan, shadowMapper );
 	}
@@ -575,9 +579,9 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderShadowMap" );
 	const deoglRWorld &world = *plan.GetPlan().GetWorld();
 #ifdef SKY_SHADOW_LAYERED_RENDERING
-	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowCascadedPB();
+	deoglSPBlockUBO *renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowCascadedPB();
 #else
-	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+	deoglSPBlockUBO *renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
 #endif
 	const bool bugClearEntireArrTex = renderThread.GetCapabilities().GetClearEntireArrayTexture().Broken();
 // 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
@@ -724,7 +728,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	
 	
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( &renderParamBlock );
+	renderTask.SetRenderParamBlock( renderParamBlock );
 	
 	addToRenderTask.Reset();
 #ifdef SKY_SHADOW_LAYERED_RENDERING
@@ -756,7 +760,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	{
 		const deoglSPBMapBuffer mapped( renderParamBlock );
 		
-		renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
 		
 		for( i=0; i<layerCount; i++ ){
 			deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
@@ -778,11 +782,11 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			matrixCamera = decMatrix::CreateCamera( sl.position, matLig.TransformView(), matLig.TransformUp() )
 				* decMatrix::CreateScale( sl.scale * 2.0f );
 			
-			renderParamBlock.SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, i, matrixCamera );
-			renderParamBlock.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, i, matrixCamera );
-			renderParamBlock.SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn,
+			renderParamBlock->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, i, matrixCamera );
+			renderParamBlock->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, i, matrixCamera );
+			renderParamBlock->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn,
 				i, matrixCamera.GetRotationMatrix().Invert() );
-			renderParamBlock.SetParameterDataArrayVec4( deoglSkinShader::erutDepthOffset,
+			renderParamBlock->SetParameterDataArrayVec4( deoglSkinShader::erutDepthOffset,
 				i, sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 		}
 	}
@@ -818,11 +822,13 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			#endif
 		
 #ifdef SKY_SHADOW_FILTERED
-		if( i == 0 ){
-			plan.WaitFinishedBuildRT1();
-			
-		}else if( i == 3 ){
-			plan.WaitFinishedBuildRT2();
+		if( ! renderThread.GetChoices().GetUseComputeRenderTask() ){
+			if( i == 0 ){
+				plan.WaitFinishedBuildRT1();
+				
+			}else if( i == 3 ){
+				plan.WaitFinishedBuildRT2();
+			}
 		}
 		DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitContent, false );
 #endif
@@ -878,36 +884,38 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		
 		// render solid content. two different depth offsets for front and back faces are used. double sided always
 		// counts as front facing. this way all can be rendered in one go
+		if( i > 0 ){
+			renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
+		}
 		{
-			const deoglSPBMapBuffer mapped( renderParamBlock );
+			const deoglSPBMapBuffer mapped( *renderParamBlock );
 			
-			renderParamBlock.SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixCamera );
-			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
-			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera );
-			renderParamBlock.SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
+			renderParamBlock->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixCamera );
+			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera );
+			renderParamBlock->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
 				matrixCamera.GetRotationMatrix().Invert() );
-			renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 				sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 			
-			renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 		}
 			SSDTPF("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
+		if( renderThread.GetChoices().GetUseComputeRenderTask() ){
 #ifdef SKY_SHADOW_FILTERED
-		sl.renderTask->SetRenderParamBlock( &renderParamBlock );
-		sl.addToRenderTask->SetForceDoubleSided( true );
-		
-		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
-			renderThread.GetLogger().LogInfoFormat( "RenderLightSky: shadow split %i", i );
-			sl.renderTask->DebugPrint( renderThread.GetLogger() );
-		}
-		DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitTask, true );
-			SSDTPF("SkyLight %d: RTBuild %dys (s=%d t=%d v=%d i=%d si=%d)\n", i,
-				(int)(timer.GetElapsedTime()*1e6f), sl.renderTask->GetShaderCount(),
-				sl.renderTask->GetTotalTextureCount(), sl.renderTask->GetTotalVAOCount(),
-				sl.renderTask->GetTotalInstanceCount(), sl.renderTask->GetTotalSubInstanceCount());
+			sl.computeRenderTask->SetRenderParamBlock( renderParamBlock );
+			DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitTask, true );
 #endif
-		rengeom.RenderTask( *sl.renderTask );
+			rengeom.RenderTask( sl.computeRenderTask );
+			
+		}else{
+#ifdef SKY_SHADOW_FILTERED
+			sl.renderTask->SetRenderParamBlock( renderParamBlock );
+			sl.addToRenderTask->SetForceDoubleSided( true );
+#endif
+			rengeom.RenderTask( *sl.renderTask );
+		}
 		
 		// clear back facing fragments. back facing fragments cause a lot of troubles to shadow
 		// casting. the idea here is to consider back facing fragments hit before any front facing
@@ -922,66 +930,12 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		}
 			SSDTPF("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
-		// debug
-		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
-			const decQuaternion rot = matLig.ToQuaternion();
-			const float sx = ( sl.maxExtend.x - sl.minExtend.x ) * 0.5f;
-			const float sy = ( sl.maxExtend.y - sl.minExtend.y ) * 0.5f;
-			const float sz = ( sl.maxExtend.z - sl.minExtend.z ) * 0.5f;
-			
-			printf( "\n# split %i: fn=%g ff=%g lb=%g zs=%g zo=%g ex=(%g,%g,%g)(%g,%g,%g) pos=(%g,%g,%g) sca=(%g,%g,%g)\n",
-				        i, sl.frustumNear, sl.frustumFar, sl.layerBorder, sl.zscale, sl.zoffset,
-				sl.minExtend.x, sl.minExtend.y, sl.minExtend.z, sl.maxExtend.x, sl.maxExtend.y, sl.maxExtend.z,
-				sl.position.x, sl.position.y, sl.position.z, sl.scale.x, sl.scale.y, sl.scale.z );
-			
-			printf( "meshSplit = bpy.data.meshes.new( 'split%i' )\n", i );
-			printf( "objSplit = bpy.data.objects.new( 'split%i', meshSplit )\n", i );
-			printf( "bpy.context.scene.objects.link( objSplit )\n" );
-			printf( "bpy.context.scene.objects.active = objSplit\n" );
-			printf( "vertices = []\n" );
-			printf( "vertices.append( [%g,%g,%g] )\n", -sx, sy, -sz );
-			printf( "vertices.append( [%g,%g,%g] )\n", sx, sy, -sz );
-			printf( "vertices.append( [%g,%g,%g] )\n", sx, -sy, -sz );
-			printf( "vertices.append( [%g,%g,%g] )\n", -sx, -sy, -sz );
-			printf( "vertices.append( [%g,%g,%g] )\n", -sx, sy, sz );
-			printf( "vertices.append( [%g,%g,%g] )\n", sx, sy, sz );
-			printf( "vertices.append( [%g,%g,%g] )\n", sx, -sy, sz );
-			printf( "vertices.append( [%g,%g,%g] )\n", -sx, -sy, sz );
-			printf( "vertices = [ cposs( v, scale ) for v in vertices ]\n" );
-			printf( "faces = []\n" );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 1, 5, 6, 2 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 4, 0, 3, 7 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 4, 5, 1, 0 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 3, 2, 6, 7 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 5, 4, 7, 6 );
-			printf( "faces.append( [%i,%i,%i,%i] )\n", 0, 1, 2, 3 );
-			printf( "faces = [ f[::-1] for f in faces ]\n" );
-			printf( "meshSplit.from_pydata( vertices, [], faces )\n" );
-			printf( "meshSplit.update()\n" );
-			printf( "objSplit.location = cposs( [%g,%g,%g], scale )\n", sl.position.x, sl.position.y, sl.position.z );
-			printf( "objSplit.rotation_mode = 'QUATERNION'\n" );
-			printf( "objSplit.rotation_quaternion = cquat( [%g,%g,%g,%g] )\n", rot.x, rot.y, rot.z, rot.w );
-		}
-		
 		DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitRender, true );
 	}
 #endif
 	
 	shadowMapper.DropForeignArrayTextures();
 	DebugTimer3SampleCount( plan.GetPlan(), *pDebugInfoSolidShadowSplit, layerCount, true );
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowMap ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTexture(
-			*( pSolidShadowMap->GetArrayTexture() ), "sky_shadow", true );
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 }
 
 void deoglRenderLightSky::RenderGIShadows( deoglRenderPlanSkyLight &plan,
@@ -1062,7 +1016,7 @@ deoglShadowMapper &shadowMapper ){
 	
 	if( plan.GetGIShadowUpdateStatic() ){
 		// parameter block
-		deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+		deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
 		{
 			const deoglSPBMapBuffer mapped( renderParamBlock );
 			
@@ -1094,16 +1048,25 @@ deoglShadowMapper &shadowMapper ){
 				SSDTLOG("RenderGIShadowMap RenderParamBlock %d", (int)(timer.GetElapsedTime() * 1e6f));
 		
 		// render
-		plan.GetGIRenderTaskStatic().SetRenderParamBlock( &renderParamBlock );
-		plan.GetGIRenderTaskAddStatic().SetForceDoubleSided( true );
-		
 		shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainStaticMapWithSize( shadowMapSize, true, false ) );
-		RenderGIShadowMap( shadowMapper, plan.GetGIRenderTaskStatic(), shadowMapSize, false /*true*/ );
+		
+		if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+			plan.GetCRTShadowGIStatic()->SetRenderParamBlock( &renderParamBlock );
+			
+			RenderGIShadowMap( shadowMapper, plan.GetCRTShadowGIStatic(), shadowMapSize, false /*true*/ );
+			
+		}else{
+			plan.GetGIRenderTaskStatic().SetRenderParamBlock( &renderParamBlock );
+			plan.GetGIRenderTaskAddStatic().SetForceDoubleSided( true );
+			
+			RenderGIShadowMap( shadowMapper, plan.GetGIRenderTaskStatic(), shadowMapSize, false /*true*/ );
+		}
+		
 		shadowMapper.DropForeignTextures();
 	}
 	
 	// dynamic shadow map. parameter block
-	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
 	{
 		const deoglSPBMapBuffer mapped( renderParamBlock );
 		
@@ -1124,15 +1087,24 @@ deoglShadowMapper &shadowMapper ){
 			SSDTLOG("RenderGIShadowMap RenderParamBlock %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// render
-	plan.GetGIRenderTaskDynamic().SetRenderParamBlock( &renderParamBlock );
-	plan.GetGIRenderTaskAddDynamic().SetForceDoubleSided( true );
-	
 	if( scsolid.GetDynamicMap() && scsolid.GetDynamicMap()->GetWidth() != shadowMapSize ){
 		scsolid.DropDynamic();
 	}
 	
 	shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainDynamicMapWithSize( shadowMapSize, true, false ) );
-	RenderGIShadowMap( shadowMapper, plan.GetGIRenderTaskDynamic(), shadowMapSize, false );
+	
+	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+		plan.GetCRTShadowGIDynamic()->SetRenderParamBlock( &renderParamBlock );
+		
+		RenderGIShadowMap( shadowMapper, plan.GetCRTShadowGIDynamic(), shadowMapSize, false );
+		
+	}else{
+		plan.GetGIRenderTaskDynamic().SetRenderParamBlock( &renderParamBlock );
+		plan.GetGIRenderTaskAddDynamic().SetForceDoubleSided( true );
+		
+		RenderGIShadowMap( shadowMapper, plan.GetGIRenderTaskDynamic(), shadowMapSize, false );
+	}
+	
 	shadowMapper.DropForeignTextures();
 	
 	// clean up
@@ -1196,6 +1168,33 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 		pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
 		RenderFullScreenQuadVAO();
 				SSDTLOG("RenderGIShadowMap BackFaceClear %d", (int)(timer.GetElapsedTime() * 1e6f));
+	}
+}
+
+void deoglRenderLightSky::RenderGIShadowMap( deoglShadowMapper &shadowMapper,
+deoglComputeRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderGIShadowMapCRT" );
+	
+	// clear shadow map
+	pPipelineClearBuffers->Activate();
+	shadowMapper.ActivateSolidTexture( shadowMapSize, false, true );
+	
+	if( clearBackFaceFragments ){
+		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, ~0 ) );
+		
+	}else{
+		const GLfloat clearDepth = 1.0f;
+		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+	}
+	
+	// render shadow map. only solid content without holes is rendered at the highest lod level
+	renderTask.Render();
+	
+	if( clearBackFaceFragments ){
+		pPipelineClearDepth->Activate();
+		pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
+		RenderFullScreenQuadVAO();
 	}
 }
 

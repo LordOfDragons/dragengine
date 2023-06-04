@@ -34,7 +34,7 @@ class aeRuleStateManipulator;
 
 
 /**
- * @brief Undo set rule state manipulator enable rotation.
+ * Undo set rule state manipulator enable rotation.
  *
  * Undo to set enable rotation of a state manipulator rule.
  */
@@ -45,19 +45,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleSModEnableRot( aeRuleStateManipulator *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleSModEnableRot();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

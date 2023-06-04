@@ -92,6 +92,12 @@ void deAnimator::NotifyBonesChanged(){
 	}
 }
 
+void deAnimator::NotifyVertexPositionSetsChanged(){
+	if( pPeerAnimator ){
+		pPeerAnimator->VertexPositionSetsChanged();
+	}
+}
+
 
 
 // Controller Management

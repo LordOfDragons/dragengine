@@ -29,7 +29,7 @@ class aeWPRule;
 
 
 /**
- * \brief Rule panel listener.
+ * Rule panel listener.
  */
 class aeWPRuleListener : public aeAnimatorNotifier{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	aeWPRuleListener( aeWPRule &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~aeWPRuleListener();
 	/*@}*/
 	
@@ -51,34 +51,37 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Rig changed. */
+	/** Model changed. */
+	virtual void ModelChanged( aeAnimator *animator );
+	
+	/** Rig changed. */
 	virtual void RigChanged( aeAnimator *animator );
 	
-	/** \brief Animation changed. */
+	/** Animation changed. */
 	virtual void AnimationChanged( aeAnimator *animator );
 	
-	/** \brief Controller named changed. */
+	/** Controller named changed. */
 	virtual void ControllerNameChanged( aeAnimator *animator, aeController *controller );
 	
-	/** \brief Controller count or order changed. */
+	/** Controller count or order changed. */
 	virtual void ControllerStructureChanged( aeAnimator *animator );
 	
-	/** \brief Link name changed. */
+	/** Link name changed. */
 	virtual void LinkNameChanged( aeAnimator *animator, aeLink *link );
 	
-	/** \brief Link count or order changed. */
+	/** Link count or order changed. */
 	virtual void LinkStructureChanged( aeAnimator *animator );
 	
-	/** \brief Active rule changed. */
+	/** Active rule changed. */
 	virtual void ActiveRuleChanged( aeAnimator *animator, aeRule *rule );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged( aeAnimator *animator, aeRule *rule );
 	
-	/** \brief Rule name changed. */
+	/** Rule name changed. */
 	virtual void RuleNameChanged( aeAnimator *animator, aeRule *rule );
 	
-	/** \brief Rule count or order changed. */
+	/** Rule count or order changed. */
 	virtual void RuleStructureChanged( aeAnimator *animator );
 	/*@}*/
 };

@@ -42,6 +42,7 @@ class deoglVR{
 private:
 	enum eState{
 		esBeginFrame,
+		esWaitBeginFrameFinished,
 		esRender,
 		esSubmit
 	};
@@ -65,6 +66,11 @@ private:
 	bool pUseRenderStereo;
 	decPoint pRenderStereoSize;
 	deoglFramebuffer *pFBOStereo;
+	
+	decPoint pDebugPanelSize;
+	deoglRenderTarget::Ref pRenderTargetDebugPanel;
+	decVector2 pDebugPanelRenderSize;
+	decColorMatrix pDebugPanelColorTransform;
 	
 	
 	
@@ -121,8 +127,25 @@ public:
 	
 	
 	
-	/** Begin frame. */
-	void BeginFrame();
+	/** Debug panel size. */
+	inline const decPoint &GetDebugPanelSize() const{ return pDebugPanelSize; }
+	
+	/** Get debug panel render target. Creates it if not created yet. */
+	const deoglRenderTarget::Ref &GetRenderTargetDebugPanel();
+	
+	/** Debug panel render size. */
+	inline const decVector2 &GetDebugPanelRenderSize() const{ return pDebugPanelRenderSize; }
+	
+	/** Debug panel color transform. */
+	inline const decColorMatrix &GetDebugPanelColorTransform() const{ return pDebugPanelColorTransform; }
+	
+	
+	
+	/** Start begin frame. */
+	void StartBeginFrame();
+	
+	/** Wait until begin frame finished. */
+	void WaitBeginFrameFinished();
 	
 	/** Render if required. */
 	void Render();

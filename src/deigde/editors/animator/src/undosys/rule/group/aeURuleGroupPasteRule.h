@@ -33,7 +33,7 @@ class aeRuleGroup;
 
 
 /**
- * \brief Undo action rule group paste rule.
+ * Undo action rule group paste rule.
  */
 class aeURuleGroupPasteRule : public igdeUndo{
 private:
@@ -46,19 +46,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleGroupPasteRule( aeRuleGroup *group, const aeRuleList &ruleList, int index );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleGroupPasteRule();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 	

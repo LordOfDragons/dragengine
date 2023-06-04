@@ -49,8 +49,8 @@ pReader( NULL )
 	try{
 		pReader = new deapngReader( module, file );
 		
-		module.LogInfoFormat( "width=%i height=%i pixelFormat=%i frameCount=%i frameRate=%i",
-			pReader->GetWidth(), pReader->GetHeight(), pReader->GetPixelFormat(),
+		module.LogInfoFormat( "width=%d height=%d componentCount=%d frameCount=%d frameRate=%g",
+			pReader->GetWidth(), pReader->GetHeight(), pReader->GetComponentCount(),
 			pReader->GetFrameCount(), pReader->GetFrameRate() );
 		
 	}catch( const deException &e ){
@@ -78,13 +78,13 @@ void deapngDecoder::SetPosition( int position ){
 	pReader->SeekFrame( position );
 }
 
-bool deapngDecoder::DecodeFrame( void *buffer1, int size1, void *buffer2, int size2 ){
+bool deapngDecoder::DecodeFrame( void *buffer, int size ){
 	if( pReader->GetCurrentFrame() >= pReader->GetFrameCount() ){
 		return false; // trying to read past end of stream
 	}
 	
 	pReader->ReadImage();
-	pReader->CopyAccumImage( buffer1, size1 );
+	pReader->CopyAccumImage( buffer, size );
 	return true;
 }
 

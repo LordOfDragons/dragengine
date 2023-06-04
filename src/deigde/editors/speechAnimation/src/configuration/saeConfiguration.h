@@ -30,7 +30,7 @@ class saeWindowMain;
 
 
 /**
- * \brief Editor Configuration.
+ * Editor Configuration.
  */
 class saeConfiguration{
 private:
@@ -57,10 +57,10 @@ public:
 	
 	
 	
-	/** \brief Prevent saving. */
+	/** Prevent saving. */
 	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
-	/** \brief Set prevent saving. */
+	/** Set prevent saving. */
 	void SetPreventSaving( bool preventSaving );
 	
 	/**

@@ -30,7 +30,7 @@ class aeRuleBoneTransformator;
 
 
 /**
- * \brief Undo action rule bone transformator set coordinate frame.
+ * Undo action rule bone transformator set coordinate frame.
  */
 class aeURuleBTransSetCFrame : public igdeUndo{
 private:
@@ -42,19 +42,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleBTransSetCFrame( aeRuleBoneTransformator *rule, deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleBTransSetCFrame();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

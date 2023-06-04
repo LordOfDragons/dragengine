@@ -32,7 +32,7 @@ class aeRuleLimit;
 
 
 /**
- * \brief Undo action rule limitor set minimum scaling.
+ * Undo action rule limitor set minimum scaling.
  */
 class aeURuleLimitSetScaleMin : public igdeUndo{
 private:
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleLimitSetScaleMin( aeRuleLimit *rule, const decVector &newMin );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleLimitSetScaleMin();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 	

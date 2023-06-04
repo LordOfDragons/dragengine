@@ -45,7 +45,8 @@ pMoveName( "idle" ),
 pMoveTime( 0.0f ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false )
+pEnableSize( false ),
+pEnableVertexPositionSet( true )
 {
 	SetName( "Animation" );
 }
@@ -57,6 +58,7 @@ pMoveTime( copy.pMoveTime ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
 pEnableSize( copy.pEnableSize ),
+pEnableVertexPositionSet( copy.pEnableVertexPositionSet ),
 pTargetMoveTime( copy.pTargetMoveTime ){
 }
 
@@ -69,8 +71,6 @@ aeRuleAnimation::~aeRuleAnimation(){
 ///////////////
 
 void aeRuleAnimation::SetMoveName( const char *moveName ){
-	if( ! moveName ) DETHROW( deeInvalidParam );
-	
 	pMoveName = moveName;
 	
 	if( GetEngineRule() ){
@@ -116,6 +116,17 @@ void aeRuleAnimation::SetEnableSize( bool enabled ){
 		
 		if( GetEngineRule() ){
 			( ( deAnimatorRuleAnimation* )GetEngineRule() )->SetEnableSize( enabled );
+			NotifyRuleChanged();
+		}
+	}
+}
+
+void aeRuleAnimation::SetEnableVertexPositionSet( bool enabled ){
+	if( enabled != pEnableVertexPositionSet ){
+		pEnableVertexPositionSet = enabled;
+		
+		if( GetEngineRule() ){
+			( ( deAnimatorRuleAnimation* )GetEngineRule() )->SetEnableVertexPositionSet( enabled );
 			NotifyRuleChanged();
 		}
 	}
@@ -177,6 +188,7 @@ deAnimatorRule *aeRuleAnimation::CreateEngineRule(){
 		engRule->SetEnablePosition( pEnablePosition );
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
+		engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
 		
 		pTargetMoveTime.UpdateEngineTarget( GetAnimator(), engRule->GetTargetMoveTime() );
 		
@@ -215,6 +227,7 @@ aeRuleAnimation &aeRuleAnimation::operator=( const aeRuleAnimation &copy ){
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
 	pTargetMoveTime = copy.pTargetMoveTime;
 	aeRule::operator=( copy );
 	return *this;

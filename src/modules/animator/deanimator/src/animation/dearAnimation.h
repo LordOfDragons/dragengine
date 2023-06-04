@@ -32,7 +32,7 @@ class deAnimation;
 
 
 /**
- * \brief DEAnimator animation peer.
+ * DEAnimator animation peer.
  */
 class dearAnimation : public deBaseAnimatorAnimation{
 private:
@@ -45,24 +45,24 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new peer. */
+	/** Creates a new peer. */
 	dearAnimation( deDEAnimator *module, deAnimation *animation );
-	/** \brief Cleans up the peer. */
+	/** Cleans up the peer. */
 	virtual ~dearAnimation();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the module. */
+	/** Retrieve the module. */
 	inline deDEAnimator *GetModule() const{ return pModule; }
-	/** \brief Retrieve the animation. */
+	/** Retrieve the animation. */
 	inline deAnimation *GetAnimation() const{ return pAnimation; }
 	
-	/** \brief Retrieve the number of moves. */
+	/** Retrieve the number of moves. */
 	int GetMoveCount() const;
-	/** \brief Retrieve move by index. */
+	/** Retrieve move by index. */
 	dearAnimationMove *GetMoveAt( int index ) const;
-	/** \brief Retrieve move by name or NULL if not found. */
+	/** Retrieve move by name or NULL if not found. */
 	dearAnimationMove *GetMoveNamed( const char *name ) const;
 	/*@}*/
 	

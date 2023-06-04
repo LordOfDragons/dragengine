@@ -28,7 +28,7 @@ class deAnimationKeyframe;
 
 
 /**
- * \brief Animation move keyframe.
+ * Animation move keyframe.
  * \details Stores information about a keyframe and the change up to the next keyframe.
  *          if existing. The step values are stored as valueDifference/timeDifference.
  *          This way the interpolated value can be quickly retrieved as
@@ -48,50 +48,50 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new animation move keyframe. */
+	/** Creates a new animation move keyframe. */
 	dearAnimationKeyframe();
-	/** \brief Cleans up the animation move keyframe. */
+	/** Cleans up the animation move keyframe. */
 	~dearAnimationKeyframe();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the time in seconds. */
+	/** Retrieves the time in seconds. */
 	inline float GetTime() const{ return pTime; }
-	/** \brief Retrieves the time step. */
+	/** Retrieves the time step. */
 	inline float GetTimeStep() const{ return pTimeStep; }
-	/** \brief Retrieves the position. */
+	/** Retrieves the position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
-	/** \brief Retrieves the position step. */
+	/** Retrieves the position step. */
 	inline const decVector &GetPositionStep() const{ return pPositionStep; }
-	/** \brief Retrieves the quaternion rotation. */
+	/** Retrieves the quaternion rotation. */
 	inline const decQuaternion &GetRotation() const{ return pRotation; }
-	/** \brief Retrieves the quaternion rotation step. */
+	/** Retrieves the quaternion rotation step. */
 	inline const decQuaternion &GetRotationStep() const{ return pRotationStep; }
-	/** \brief Retrieves the scaling. */
+	/** Retrieves the scaling. */
 	inline const decVector &GetScaling() const{ return pScaling; }
-	/** \brief Retrieves the scaling step. */
+	/** Retrieves the scaling step. */
 	inline const decVector &GetScalingStep() const{ return pScalingStep; }
 	
 	/**
-	 * \brief Retrieve interpolated position.
+	 * Retrieve interpolated position.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
 	decVector InterpolatePosition( float time ) const;
 	/**
-	 * \brief Retrieve interpolated rotation.
+	 * Retrieve interpolated rotation.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
 	decQuaternion InterpolateRotation( float time ) const;
 	/**
-	 * \brief Retrieve interpolated scaling.
+	 * Retrieve interpolated scaling.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
 	decVector InterpolateScaling( float time ) const;
 	
-	/** \brief Set keyframe without interpolation data. */
+	/** Set keyframe without interpolation data. */
 	void Set( const deAnimationKeyframe &keyframe, bool &negate );
-	/** \brief Set keyframe with interpolation data. */
+	/** Set keyframe with interpolation data. */
 	void Set( const deAnimationKeyframe &keyframe, const deAnimationKeyframe &nextKeyframe, bool &negate );
 	/*@}*/
 };

@@ -25,6 +25,8 @@
 #include "dearRuleMirror.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
@@ -63,17 +65,26 @@ dearRule( instance, animator, firstLink, rule ),
 
 pMirror( rule ),
 pMirrorBone( -1 ),
+
 pBonePairs( nullptr ),
 pBonePairCount( 0 ),
+
+pVPSPairs( nullptr ),
+pVPSPairCount( 0 ),
+
 pMirrorAxis( rule.GetMirrorAxis() ),
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() )
+pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() )
 {
 	RuleChanged();
 }
 
 dearRuleMirror::~dearRuleMirror(){
+	if( pVPSPairs ){
+		delete [] pVPSPairs;
+	}
 	if( pBonePairs ){
 		delete [] pBonePairs;
 	}
@@ -84,7 +95,7 @@ dearRuleMirror::~dearRuleMirror(){
 // Management
 ///////////////
 
-void dearRuleMirror::Apply( dearBoneStateList &stalist ){
+void dearRuleMirror::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() || pBonePairCount == 0 ){
 		return;
@@ -162,16 +173,30 @@ DEBUG_RESET_TIMERS;
 				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
 		}
 	}
+	
+	// step through all vertex position set pairs and apply transformation
+	for( i=0; i<pVPSPairCount; i++ ){
+		const sVPSPair &pair = pVPSPairs[ i ];
+		
+		dearVPSState &vpsState1 = vpsstalist.GetStateAt( pair.first );
+		const float weight1 = vpsState1.GetWeight();
+		
+		dearVPSState &vpsState2 = vpsstalist.GetStateAt( pair.second );
+		const float weight2 = vpsState2.GetWeight();
+		
+		vpsState1.BlendWith( weight2, blendMode, blendFactor, pEnableVPS );
+		vpsState2.BlendWith( weight1, blendMode, blendFactor, pEnableVPS );
+	}
 DEBUG_PRINT_TIMER;
 }
 
 
 
-// #include "../deDEAnimator.h"
 void dearRuleMirror::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateBones();
+	pUpdateVPS();
 	
 	switch( pMirrorAxis ){
 	case deAnimatorRuleMirror::emaX:
@@ -189,17 +214,6 @@ void dearRuleMirror::RuleChanged(){
 	default:
 		pMirrorMatrix.SetIdentity();
 	}
-	
-	// DEBUG
-	/*
-	const dearBoneStateList &l = GetInstance().GetBoneStateList();
-	deDEAnimator &m = GetInstance().GetModule();
-	m.LogInfoFormat("Mirror: %d", pBonePairCount);
-	for(int i=0; i<pBonePairCount; i++){
-		m.LogInfoFormat("- '%s' <-> '%s'", l.GetStateAt(pBonePairs[i].first)->GetRigBoneName(),
-			l.GetStateAt(pBonePairs[i].second)->GetRigBoneName());
-	}
-	*/
 }
 
 
@@ -212,8 +226,8 @@ void dearRuleMirror::pUpdateBones(){
 	
 	if( pBonePairs ){
 		delete [] pBonePairs;
+		pBonePairs = nullptr;
 	}
-	pBonePairs = nullptr;
 	pBonePairCount = 0;
 	
 	const int mappingCount = GetBoneMappingCount();
@@ -401,6 +415,170 @@ void dearRuleMirror::pUpdateBones(){
 	}
 	
 	delete [] bones;
+	delete [] matchesFirst;
+	delete [] matchesSecond;
+}
+
+void dearRuleMirror::pUpdateVPS(){
+	if( pVPSPairs ){
+		delete [] pVPSPairs;
+		pVPSPairs = nullptr;
+	}
+	pVPSPairCount = 0;
+	
+	const int mappingCount = GetVPSMappingCount();
+	if( mappingCount == 0 ){
+		return;
+	}
+	
+	struct sVPS{
+		int index;
+		decString name;
+		bool paired;
+	};
+	sVPS * const vpsList = new sVPS[ mappingCount ];
+	
+	int i;
+	for( i=0; i<mappingCount; i++ ){
+		vpsList[ i ].index = GetVPSMappingFor( i );
+		vpsList[ i ].name = GetInstance().GetVPSStateList().GetStateAt( vpsList[ i ].index ).GetName();
+		vpsList[ i ].paired = false;
+	}
+	
+	struct sMatch{
+		sVPS *vps;
+		const char *before;
+		const char *after;
+		int lenBefore;
+		int lenAfter;
+		
+		void Set( sVPS *pvps, const char *pbefore, int plenBefore, const char *pafter, int plenAfter ){
+			vps = pvps;
+			before = pbefore;
+			lenBefore = plenBefore;
+			after = pafter;
+			lenAfter = plenAfter;
+		}
+	};
+	sMatch * const matchesFirst = new sMatch[ mappingCount ];
+	sMatch * const matchesSecond = new sMatch[ mappingCount ];
+	int matchFirstCount, matchSecondCount;
+	
+	pVPSPairs = new sVPSPair[ mappingCount ];
+	
+	const int count = pMirror.GetMatchNameCount();
+	int j, k, index;
+	
+	for( i=0; i<count; i++ ){
+		const deAnimatorRuleMirror::sMatchName &matchName = pMirror.GetMatchNameAt( i );
+		const int lenFirst = matchName.first.GetLength();
+		const int lenSecond = matchName.second.GetLength();
+		
+		// find matching vertex position sets for first and second string
+		matchSecondCount = 0;
+		matchFirstCount = 0;
+		
+		switch( matchName.type ){
+		case deAnimatorRuleMirror::emntFirst:
+			for( j=0; j<mappingCount; j++ ){
+				if( vpsList[ j ].paired ){
+					continue;
+				}
+				
+				if( vpsList[ j ].name.BeginsWith( matchName.first ) ){
+					matchesFirst[ matchFirstCount++ ].Set( vpsList + j, "", 0,
+						vpsList[ j ].name.GetString() + lenFirst,
+						vpsList[ j ].name.GetLength() - lenFirst );
+					
+				}else if( vpsList[ j ].name.BeginsWith( matchName.second ) ){
+					matchesSecond[ matchSecondCount++ ].Set( vpsList + j, "", 0,
+						vpsList[ j ].name.GetString() + lenSecond,
+						vpsList[ j ].name.GetLength() - lenSecond );
+				}
+			}
+			break;
+			
+		case deAnimatorRuleMirror::emntLast:
+			for( j=0; j<mappingCount; j++ ){
+				if( vpsList[ j ].paired ){
+					continue;
+				}
+				
+				if( vpsList[ j ].name.EndsWith( matchName.first ) ){
+					matchesFirst[ matchFirstCount++ ].Set( vpsList + j,
+						vpsList[ j ].name.GetString(), vpsList[ j ].name.GetLength() - lenFirst, "", 0 );
+					
+				}else if( vpsList[ j ].name.EndsWith( matchName.second ) ){
+					matchesSecond[ matchSecondCount++ ].Set( vpsList + j,
+						vpsList[ j ].name.GetString(), vpsList[ j ].name.GetLength() - lenSecond, "", 0 );
+				}
+			}
+			break;
+			
+		case deAnimatorRuleMirror::emntMiddle:
+			for( j=0; j<mappingCount; j++ ){
+				if( vpsList[ j ].paired ){
+					continue;
+				}
+				
+				index = vpsList[ j ].name.FindString( matchName.first );
+				if( index != -1 ){
+					matchesFirst[ matchFirstCount++ ].Set( vpsList + j,
+						vpsList[ j ].name.GetString(), index,
+						vpsList[ j ].name.GetString() + index + lenFirst,
+						vpsList[ j ].name.GetLength() - lenFirst - index );
+					
+				}else{
+					index = vpsList[ j ].name.FindString( matchName.second );
+					if( index != -1 ){
+						matchesSecond[ matchSecondCount++ ].Set( vpsList + j,
+							vpsList[ j ].name.GetString(), index,
+							vpsList[ j ].name.GetString() + index + lenSecond,
+							vpsList[ j ].name.GetLength() - lenSecond - index );
+					}
+				}
+			}
+			break;
+			
+		default:
+			break;
+		}
+		
+		if( matchFirstCount == 0 || matchSecondCount == 0 ){
+			continue;
+		}
+		
+		// find pairs
+		for( j=0; j<matchFirstCount; j++ ){
+			const sMatch &first = matchesFirst[ j ];
+			
+			for( k=0; k<matchSecondCount; k++ ){
+				const sMatch &second = matchesSecond[ k ];
+				if( second.vps->paired ){
+					continue;
+				}
+				
+				if( first.lenAfter == second.lenAfter && first.lenBefore == second.lenBefore
+				&& strncmp( first.before, second.before, first.lenBefore ) == 0
+				&& strncmp( first.after, second.after, first.lenAfter ) == 0 ){
+					// pair found
+					pVPSPairs[ pVPSPairCount ].first = first.vps->index;
+					pVPSPairs[ pVPSPairCount ].second = second.vps->index;
+					pVPSPairCount++;
+					
+					first.vps->paired = true;
+					second.vps->paired = true;
+					break;
+				}
+			}
+		}
+	}
+	
+	// ignore non-paired
+	
+	// sorting is not required for vertex position sets
+	
+	delete [] vpsList;
 	delete [] matchesFirst;
 	delete [] matchesSecond;
 }

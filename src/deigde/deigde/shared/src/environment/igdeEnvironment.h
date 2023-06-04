@@ -25,6 +25,8 @@
 #include "../gui/resources/igdeFont.h"
 
 #include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/rig/deRig.h>
 
 class igdeEngineController;
 class igdeFilePatternList;
@@ -50,7 +52,6 @@ class dePropField;
 class deTouchSensor;
 class deVirtualFileSystem;
 class deRig;
-class deSkin;
 class decStringList;
 
 
@@ -64,56 +65,23 @@ class DE_DLL_EXPORT igdeEnvironment{
 public:
 	/** \brief File Pattern List Types. */
 	enum eFilePatternListTypes{
-		/** \brief All files. */
-		efpltAll,
-		
-		/** \brief Animation. */
-		efpltAnimation,
-		
-		/** \brief Animator. */
-		efpltAnimator,
-		
-		/** \brief Font. */
-		efpltFont,
-		
-		/** \brief Image. */
-		efpltImage,
-		
-		/** \brief Language pack. */
-		efpltLanguagePack,
-		
-		/** \brief Model. */
-		efpltModel,
-		
-		/** \brief Navigation space. */
-		efpltNavigationSpace,
-		
-		/** \brief Occlusion mesh. */
-		efpltOcclusionMesh,
-		
-		/** \brief Particle Emitter. */
-		efpltParticleEmitter,
-		
-		/** \brief Rig. */
-		efpltRig,
-		
-		/** \brief Skin. */
-		efpltSkin,
-		
-		/** \brief Sky. */
-		efpltSky,
-		
-		/** \brief Synthesizer. */
-		efpltSynthesizer,
-		
-		/** \brief Sound. */
-		efpltSound,
-		
-		/** \brief Video. */
-		efpltVideo,
-		
-		/** \brief Speech animation. */
-		efpltSpeechAnimation
+		efpltAll, //<! All files.
+		efpltAnimation, //<! Animation.
+		efpltAnimator, //<! Animator.
+		efpltFont, //<! Font.
+		efpltImage, //<! Image.
+		efpltLanguagePack, //<! Language pack.
+		efpltModel, //<! Model.
+		efpltNavigationSpace, //<! Navigation space.
+		efpltOcclusionMesh, //<! Occlusion mesh.
+		efpltParticleEmitter, //<! Particle Emitter.
+		efpltRig, //<! Rig.
+		efpltSkin, //<! Skin.
+		efpltSky, //<! Sky.
+		efpltSynthesizer, //<! Synthesizer.
+		efpltSound, //<! Sound.
+		efpltVideo, //<! Video.
+		efpltSpeechAnimation //<! Speech animation.
 	};
 	
 	/** \brief Stock icons. */
@@ -160,29 +128,85 @@ public:
 	
 	/** \brief System colors. */
 	enum eSystemColors{
-		/** \brief Window background color. */
-		escWindowBackground,
+		escWindowBackground, //<! Window background color.
+		escWindowForeground, //<! Window foreground color.
+		escWidgetBackground, //<! Widget background color.
+		escWidgetForeground, //<! Widget foreground color.
+		escWidgetHighlight, //<! Widget highlight color.
+		escWidgetShadow, //<! Widget shadow color.
+		escWidgetSelectedBackground, //<! Widget selected background color.
+		escWidgetSelectedForeground //<! Widget selected foreground color.
+	};
+	
+	/** \brief Stock skins. */
+	enum eStockSkins{
+		/**
+		 * \brief Skin is missing for a component texture.
+		 * 
+		 * This skin has no renderables defined.
+		 */
+		essMissing,
 		
-		/** \brief Window foreground color. */
-		escWindowForeground,
+		/**
+		 * \brief Skin to display an error condition.
+		 * 
+		 * This skin has no renderables defined.
+		 */
+		essError,
 		
-		/** \brief Widget background color. */
-		escWidgetBackground,
+		/**
+		 * \brief Skin with test map typically used to examine texture coordinate layout.
+		 * 
+		 * This skin has no renderables defined.
+		 */
+		essTestMap,
 		
-		/** \brief Widget foreground color. */
-		escWidgetForeground,
+		/**
+		 * \brief Skin to highlight edited objects using outline.
+		 * 
+		 * This skin has these renderables defined:
+		 * - color: Color of the outline. Default value (1,0,0)
+		 * - thickness: Thickness of the outline. Default value 0.005
+		 */
+		essEditOutline,
 		
-		/** \brief Widget highlight color. */
-		escWidgetHighlight,
+		/**
+		 * \brief Skin to highlight edited objects using rim.
+		 * 
+		 * This skin has these renderables defined:
+		 * - color: Color of the rim. Default value (1,0,0)
+		 * - angle: Angle of rim. Default value 0.4
+		 * - exponent: Exponent of rim. Default value 0.5
+		 */
+		essEditRim,
 		
-		/** \brief Widget shadow color. */
-		escWidgetShadow,
+		/**
+		 * \brief Skin to highlight edited objects using rim and outline.
+		 * 
+		 * This skin has these renderables defined:
+		 * - color: Color of the outline and rim. Default value (1,0,0)
+		 * - thickness: Thickness of the outline. Default value 0.005
+		 * - angle: Angle of rim. Default value 0.4
+		 * - exponent: Exponent of rim. Default value 0.5
+		 */
+		essEditRimOutline
+	};
+	
+	/** \brief Stock rigs. */
+	enum eStockRigs{
+		/**
+		 * \brief Model collision rig.
+		 * 
+		 * This rig uses model collision.
+		 */
+		esrModelCollision,
 		
-		/** \brief Widget selected background olor. */
-		escWidgetSelectedBackground,
-		
-		/** \brief Widget selected foreground olor. */
-		escWidgetSelectedForeground
+		/**
+		 * \brief Ghost collision rig.
+		 * 
+		 * This rig uses no collision.
+		 */
+		esrGhostCollision
 	};
 	
 	
@@ -212,8 +236,24 @@ public:
 	 */
 	virtual igdeContainer *GetUIContainer() = 0;
 	
-	/** \brief Retrieves a stock icon. */
+	/** \brief Stock icon. */
 	virtual igdeIcon *GetStockIcon( eStockIcons icon ) = 0;
+	
+	/**
+	 * \brief Stock skin.
+	 * 
+	 * Stock skins are only available after the engine controller has been started for the
+	 * first time. If not available nullptr is returned.
+	 */
+	virtual deSkin::Ref GetStockSkin( eStockSkins skin ) = 0;
+	
+	/**
+	 * \brief Stock rig.
+	 * 
+	 * Stock rigs are only available after the engine controller has been started for the
+	 * first time. If not available nullptr is returned.
+	 */
+	virtual deRig::Ref GetStockRig( eStockRigs rig ) = 0;
 	
 	/** \brief Engine controller. */
 	virtual igdeEngineController *GetEngineController() = 0;
@@ -271,9 +311,6 @@ public:
 	
 	/** \brief UI Helper for properties panels. */
 	virtual igdeUIHelper &GetUIHelperProperties() = 0;
-	
-	/** \brief Error skin. */
-	virtual deSkin *GetErrorSkin() = 0;
 	
 	
 	

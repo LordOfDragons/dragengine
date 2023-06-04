@@ -52,13 +52,13 @@ private:
 	bool pRenderStereoVSLayer;
 	bool pRenderFSQuadStereoVSLayer;
 	bool pUseInverseDepth;
-	bool pRenderCubeGS;
 	GLenum pDepthCompareFuncRegular;
 	GLenum pDepthCompareFuncReversed;
 	GLfloat pClearDepthValueRegular;
 	GLfloat pClearDepthValueReversed;
 	bool pUseComputeRenderTask;
-	
+	bool pUseDirectStateAccess;
+
 	
 	
 public:
@@ -116,9 +116,6 @@ public:
 	/** Use inverse depth. */
 	inline bool GetUseInverseDepth() const{ return pUseInverseDepth; }
 	
-	/** Use render cube using geomtry shader. */
-	inline bool GetRenderCubeGS() const{ return pRenderCubeGS; }
-	
 	/** Regular depth compare function. */
 	inline GLenum GetDepthCompareFuncRegular() const{ return pDepthCompareFuncRegular; }
 	
@@ -133,6 +130,9 @@ public:
 	
 	/** Use compute shader render task. */
 	inline bool GetUseComputeRenderTask() const{ return pUseComputeRenderTask; }
+	
+	/** Use direct state access. */
+	inline bool GetUseDirectStateAccess() const{ return pUseDirectStateAccess; }
 	/*@}*/
 };
 

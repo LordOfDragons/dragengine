@@ -29,7 +29,7 @@ class saeSAnimation;
 
 
 /**
- * \brief Undo Action Speech Animation Set Rig Path.
+ * Undo Action Speech Animation Set Rig Path.
  */
 class saeUSAnimSetRigPath : public igdeUndo{
 private:
@@ -43,11 +43,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	saeUSAnimSetRigPath( saeSAnimation *sanimation, const char *newName );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~saeUSAnimSetRigPath();
 	/*@}*/
 	
@@ -56,10 +56,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

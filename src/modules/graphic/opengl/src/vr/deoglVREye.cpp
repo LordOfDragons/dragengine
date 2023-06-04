@@ -240,6 +240,11 @@ void deoglVREye::Render(){
 }
 
 void deoglVREye::Submit( deBaseVRModule &vrmodule ){
+	if( ! pRenderTarget->GetFBO() || ! pRenderTarget->GetTexture() ){
+		// shutdown protection
+		return;
+	}
+
 	if( pVRViewImageCount > 0 ){
 		const int acquiredImageIndex = vrmodule.AcquireEyeViewImage( pEye );
 		if( acquiredImageIndex == -1 ){
@@ -329,7 +334,8 @@ void deoglVREye::pGetParameters( deBaseVRModule &vrmodule ){
 		pHiddenMesh = hiddenMesh;
 		pHiddenRMesh = nullptr;
 		if( pHiddenMesh ){
-			pHiddenRMesh = ( ( deoglModel* )pHiddenMesh->GetPeerGraphic() )->GetRModel();
+			deoglModel * const oglModel = ( deoglModel* )pHiddenMesh->GetPeerGraphic();
+			pHiddenRMesh = oglModel ? oglModel->GetRModel() : nullptr;
 		}
 // 	}
 }

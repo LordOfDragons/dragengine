@@ -136,8 +136,8 @@ const char *basePath, bool asynchron ){
 			module->InitLoadVideo( fileReader, videoInfo );
 			
 			video = new deVideo( this, vfs, path.GetPathUnix(), modificationTime,
-				videoInfo.GetWidth(), videoInfo.GetHeight(), videoInfo.GetPixelFormat(),
-				videoInfo.GetFrameRate(), videoInfo.GetFrameCount(),
+				videoInfo.GetWidth(), videoInfo.GetHeight(), videoInfo.GetComponentCount(),
+				videoInfo.GetBitCount(), videoInfo.GetFrameRate(), videoInfo.GetFrameCount(),
 				videoInfo.GetColorConversionMatrix(), videoInfo.GetBytesPerSample(),
 				videoInfo.GetSampleCount(), videoInfo.GetSampleRate(), videoInfo.GetChannelCount() );
 			video->SetAsynchron( asynchron );

@@ -26,7 +26,7 @@
 
 #include <dragengine/common/exceptions.h>
 
-#include "deoglExtResult.h"
+#include "deoglGL.h"
 
 
 

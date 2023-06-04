@@ -30,7 +30,7 @@ class saeWPUndoHistoryListener;
 
 
 /**
- * \brief Undo History Panel.
+ * Undo History Panel.
  */
 class saeWPUndoHistory : public igdeWPUndoHistory{
 private:
@@ -42,11 +42,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	saeWPUndoHistory( igdeEnvironment &environment );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~saeWPUndoHistory();
 	/*@}*/
 	
@@ -55,10 +55,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Speech animation. */
+	/** Speech animation. */
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
-	/** \brief Set speech animation. */
+	/** Set speech animation. */
 	void SetSAnimation( saeSAnimation *sanimation );
 	/*@}*/
 };

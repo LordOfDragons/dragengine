@@ -47,7 +47,7 @@ class igdeUIHelper;
 class DE_DLL_EXPORT igdeEditDirectory : public igdeContainerFlow{
 protected:
 	/** \brief Text field listener. */
-	class cListenerTextField : public igdeTextFieldListener{
+	class DE_DLL_EXPORT cListenerTextField : public igdeTextFieldListener{
 	protected:
 		igdeEditDirectory &pEditDirectory;
 		
@@ -58,7 +58,7 @@ protected:
 	};
 	
 	/** \brief Button action. */
-	class cActionButton : public igdeActionSelectDirectory{
+	class DE_DLL_EXPORT cActionButton : public igdeActionSelectDirectory{
 	protected:
 		igdeEditDirectory &pEditDirectory;
 		

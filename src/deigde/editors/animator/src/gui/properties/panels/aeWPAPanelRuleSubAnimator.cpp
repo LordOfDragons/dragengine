@@ -33,6 +33,7 @@
 #include "../../../undosys/rule/subanimator/aeURuleSubAnimToggleEnablePosition.h"
 #include "../../../undosys/rule/subanimator/aeURuleSubAnimToggleEnableRotation.h"
 #include "../../../undosys/rule/subanimator/aeURuleSubAnimToggleEnableSize.h"
+#include "../../../undosys/rule/subanimator/aeURuleSubAnimToggleEnableVertexPositionSet.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
@@ -208,6 +209,22 @@ public:
 	}
 };
 
+class cActionEnableVertexPositionSet : public cBaseAction{
+public:
+	cActionEnableVertexPositionSet( aeWPAPanelRuleSubAnimator &panel ) : cBaseAction( panel,
+		"Enable vertex position set manipulation", nullptr,
+		"Determines if vertex position set is modified or kept as it is" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleSubAnimator *rule ){
+		return new aeURuleSubAnimToggleEnableVertexPositionSet( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleSubAnimator &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetEnableVertexPositionSet() );
+	}
+};
+
 class cComboConnectionController : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 	
@@ -254,6 +271,7 @@ pPreventUpdate( false )
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
+	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
 	
 	
 	helper.GroupBox( *this, groupBox, "Connections:" );
@@ -375,6 +393,7 @@ void aeWPAPanelRuleSubAnimator::UpdateRule(){
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();
 	pChkEnableSize->GetAction()->Update();
+	pChkEnableVertexPositionSet->GetAction()->Update();
 	
 	UpdateConnectionList();
 }

@@ -507,9 +507,16 @@ public:
 		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Inherit", "Name:", name, proposals ) ){
 			return nullptr;
 		}
-		if( objectClass->IsOrInheritsFrom( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Add Inherit", "Inheritance loop" );
-			return nullptr;
+		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass( name );
+		if( inheritOC ){
+			if( objectClass == inheritOC ){
+				igdeCommonDialogs::Error( &pPanel, "Add Inherit", "Can not inherit from yourself" );
+				return nullptr;
+			}
+			if( inheritOC->InheritsFrom( objectClass ) ){
+				igdeCommonDialogs::Error( &pPanel, "Add Inherit", "Inheritance loop" );
+				return nullptr;
+			}
 		}
 		
 		deObjectReference objRef;
@@ -569,10 +576,18 @@ public:
 		if( ! inherit || inherit->GetName() == comboBox.GetText() ){
 			return nullptr;
 		}
-		if( objectClass->IsOrInheritsFrom( comboBox.GetText() ) ){
-			igdeCommonDialogs::Error( &pPanel, "Set Inherit Name", "Inheritance loop" );
-			comboBox.SetText( inherit->GetName() );
-			return nullptr;
+		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass( comboBox.GetText() );
+		if( inheritOC ){
+			if( objectClass == inheritOC ){
+				igdeCommonDialogs::Error( &pPanel, "Set Inherit Name", "Can not inherit from yourself" );
+				comboBox.SetText( inherit->GetName() );
+				return nullptr;
+			}
+			if( inheritOC->InheritsFrom( objectClass ) ){
+				igdeCommonDialogs::Error( &pPanel, "Set Inherit Name", "Inheritance loop" );
+				comboBox.SetText( inherit->GetName() );
+				return nullptr;
+			}
 		}
 		return new gdeUOCInheritSetName( objectClass, inherit, comboBox.GetText() );
 	}
@@ -1441,7 +1456,7 @@ void gdeWPSObjectClass::UpdateProperty(){
 void gdeWPSObjectClass::UpdatePropertyValues(){
 	const gdeObjectClass * const objectClass = GetObjectClass();
 	decString selection( pListPropertyValues->GetSelectedItem()
-		? pListPropertyValues->GetSelectedItem()->GetText() : "" );
+		? pListPropertyValues->GetSelectedItem()->GetText() : decString() );
 	
 	pListPropertyValues->RemoveAllItems();
 	

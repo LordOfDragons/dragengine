@@ -28,7 +28,6 @@ class deoglArrayTexture;
 class deoglCubeMap;
 class deoglRenderThread;
 class deoglTexture;
-class deoglTexture1D;
 
 class deErrorTracePoint;
 
@@ -44,7 +43,6 @@ private:
 	enum eAttachementTypes{
 		eatNone,
 		eatTexture,
-		eatTexture1D,
 		eatCubeMap,
 		eatCubeMapPosX,
 		eatCubeMapNegX,
@@ -158,10 +156,6 @@ public:
 	void AttachColorTexture( int index, deoglTexture *texture );
 	/** Attach a color texture level. */
 	void AttachColorTextureLevel( int index, deoglTexture *texture, int level );
-	/** Attach a color 1d texture. */
-	void AttachColorTexture1D( int index, deoglTexture1D *texture );
-	/** Attach a color 1d texture level. */
-	void AttachColorTexture1DLevel( int index, deoglTexture1D *texture, int level );
 	/** Attach a color cube map. */
 	void AttachColorCubeMap( int index, deoglCubeMap *texture );
 	/** Attach a color cube map level. */
@@ -200,10 +194,6 @@ public:
 	void AttachDepthTexture( deoglTexture *texture );
 	/** Attach a depth texture level. */
 	void AttachDepthTextureLevel( deoglTexture *texture, int level );
-	/** Attach a depth 1d texture. */
-	void AttachDepthTexture1D( deoglTexture1D *texture );
-	/** Attach a depth 1d texture level. */
-	void AttachDepthTexture1DLevel( deoglTexture1D *texture, int level );
 	/** Attach a depth cube map. */
 	void AttachDepthCubeMap( deoglCubeMap *texture );
 	/** Attach a depth cube map level. */
@@ -236,10 +226,6 @@ public:
 	void AttachStencilTexture( deoglTexture *texture );
 	/** Attach a stencil texture level. */
 	void AttachStencilTextureLevel( deoglTexture *texture, int level );
-	/** Attach a stencil 1d texture. */
-	void AttachStencilTexture1D( deoglTexture1D *texture );
-	/** Attach a stencil 1d texture level. */
-	void AttachStencilTexture1DLevel( deoglTexture1D *texture, int level );
 	/** Attach a stencil texture. */
 	void AttachStencilArrayTexture( deoglArrayTexture *texture );
 	/** Attach a stencil texture level. */

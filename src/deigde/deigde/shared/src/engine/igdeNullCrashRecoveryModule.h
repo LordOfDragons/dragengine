@@ -32,7 +32,7 @@
  */
 class DE_DLL_EXPORT igdeNullCrashRecoveryModule : public deBaseCrashRecoveryModule{
 public:
-	class cModule : public deInternalModule{
+	class DE_DLL_EXPORT cModule : public deInternalModule{
 	public:
 		cModule( deModuleSystem *system );
 		virtual ~cModule();

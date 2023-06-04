@@ -9,11 +9,11 @@ Import-Module "$PSScriptRoot\..\..\shared.psm1"
 $TargetDir = "$OutputDir\$PathDistDELauncherBin"
 Write-Host "Console Launcher: Copy Program to '$TargetDir'"
 
-Install-Files -Path "$OutputDir\delauncher-console.exe" -Destination $TargetDir
+Install-Files -Path "$OutputDir\launcher\console\delauncher-console.exe" -Destination $TargetDir
 
 
 # debug
 $TargetDir = "$OutputDir\$PathDistDEPdbLauncherBin"
 Write-Host "Console Launcher: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path "$OutputDir\delauncher-console.pdb" -Destination $TargetDir
+Install-Files -Path "$OutputDir\launcher\console\delauncher-console.pdb" -Destination $TargetDir

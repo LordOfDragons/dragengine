@@ -176,7 +176,7 @@ void ceCanvasRuleOfThirdsAid::pAddRect( int x1, int y1, int x2, int y2, const de
 	canvasPaint->SetThickness( 0 );
 	canvasPaint->SetLineColor( decColor( color, 0.0f ) /*color*/ );
 	canvasPaint->SetFillColor( color );
-	canvasPaint->SetOrder( pCanvasView->GetCanvasCount() );
+	canvasPaint->SetOrder( ( float )pCanvasView->GetCanvasCount() );
 	canvasPaint->SetTransparency( transparency );
 	canvasPaint->SetPosition( decPoint( x1, y1 ) );
 	canvasPaint->SetSize( decPoint( x2 - x1, y2 - y1 ) );

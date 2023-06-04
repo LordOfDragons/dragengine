@@ -29,7 +29,7 @@ class aeRuleLimit;
 
 
 /**
- * \brief Undo action rule limit toggle enable maximum y position.
+ * Undo action rule limit toggle enable maximum y position.
  */
 class aeURuleLimitSetEnablePosYMax : public igdeUndo{
 private:
@@ -38,19 +38,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleLimitSetEnablePosYMax( aeRuleLimit *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleLimitSetEnablePosYMax();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

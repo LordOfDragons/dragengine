@@ -38,6 +38,37 @@ class deImage;
  */
 class DE_DLL_EXPORT deBaseVRModule : public deBaseModule{
 public:
+	/**
+	 * \brief Feature support requested by script module.
+	 * \version 1.17
+	 */
+	enum eFeatureSupportLevel{
+		/**
+		 * \brief Feature is disabled.
+		 *
+		 * VR Module does not enable this feature even if present.
+		 */
+		efslDisabled,
+		
+		/**
+		 * \brief Feature is optional.
+		 * 
+		 * VR Module shall enable feature if present. If feature is absent
+		 * starting the VR runtime still succeeds.
+		 */
+		efslOptional,
+		
+		/**
+		 * \brief Feature is required.
+		 * 
+		 * VR Module is required to enable feature. If feature is absent
+		 * starting the VR runtime fails.
+		 */
+		efslRequired
+	};
+	
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
@@ -72,6 +103,44 @@ public:
 	 * Returns true if a call to StartRuntime() is likely to succeed or not.
 	 */
 	virtual bool RuntimeUsable() = 0;
+	
+	/**
+	 * \brief Set feature request level for eye gaze tracking.
+	 * \version 1.17
+	 * 
+	 * Tracking eye gaze features is consider a high privacy operation by most VR environments.
+	 * Enabling this feature usually requires the user to explicitely agree. Furthermore eye
+	 * gaze tracking is not required for the majority of games and applications. For these
+	 * reasons eye gaze tracking is disabled by default. To enable set the feature request
+	 * level to optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time StartRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support eye gaze tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	virtual void RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level );
+	
+	/**
+	 * \brief Set feature request level for facial tracking.
+	 * \version 1.17
+	 * 
+	 * Facial tracking includes eye tracking and mouth tracking. Tracking facial features
+	 * is consider a high privacy operation by most VR environments. Enabling this feature
+	 * usually requires the user to explicitely agree. Furthermore facial tracking typically
+	 * is an expensive operation and can degrade performance. Last but not least facial
+	 * tracking is not required for the majority of games and applications. For this reason
+	 * facial tracking is disabled by default. To enable set the feature request level to
+	 * optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time StartRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support facial tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	virtual void RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level );
 	
 	/**
 	 * \brief Start VR.
@@ -299,12 +368,25 @@ public:
 	virtual void GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo );
 	
 	/**
-	 * \brief Begin frame.
+	 * \brief Start begin frame.
 	 * \warning For Graphic Module use only.
 	 * 
-	 * Graphic module has to check after this function returns if render parameters changed.
+	 * Begin frame typically causes VR runtime to synchronize and blocks the calling thread
+	 * until the next synchronization point is hit. This call returns immediately after
+	 * starting the begin frame process. Graphic module has to call WaitBeginFrameFinished()
+	 * to wait for the synchronization to be finished.
 	 */
-	virtual void BeginFrame() = 0;
+	virtual void StartBeginFrame() = 0;
+	
+	/**
+	 * \brief Wait for begin frame to be finished.
+	 * \warning For Graphic Module use only.
+	 * 
+	 * Waits for a StartBeginFrame() call to finish. If no begin frame process is running
+	 * this function returns immediately. Graphic module has to check after this function
+	 * returns if render parameters changed.
+	 */
+	virtual void WaitBeginFrameFinished() = 0;
 	
 	/**
 	 * \brief Acquire eye view image to render into.

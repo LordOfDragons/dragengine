@@ -27,6 +27,8 @@
 #include "../dearAnimator.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearControllerStates.h"
 #include "../dearAnimatorInstance.h"
 #include "../dearLink.h"
@@ -72,17 +74,19 @@ dearRuleSubAnimator::dearRuleSubAnimator( dearAnimatorInstance &instance, const 
 dearRule( instance, animator, firstLink, rule ),
 pSubAnimator( rule ),
 
-pArSubAnimator( NULL ),
+pArSubAnimator( nullptr ),
 pSubAnimatorUpdateTracker( 0 ),
 
-pRules( NULL ),
+pRules( nullptr ),
 pRuleCount( 0 ),
 
-pStateList( NULL ),
+pStateList( nullptr ),
+pVPSStateList( nullptr ),
 
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
 pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() ),
 
 // determine if the sub animator rules can be applied directly using our bone state list. this
 // avoids the need for the copy and the apply phase. this optimization is only possible if:
@@ -98,12 +102,14 @@ pDirectUseStates(
 	&& ( rule.GetListBones().GetCount() == 0 )
 	&& rule.GetEnablePosition()
 	&& rule.GetEnableOrientation()
-	&& rule.GetEnableSize() ),
+	&& rule.GetEnableSize()
+	&& rule.GetEnableVertexPositionSet() ),
 
 pHasSubAnimator( rule.GetSubAnimator() )
 {
 	try{
 		pStateList = instance.GetBoneStateList().CreateCopy();
+		pVPSStateList = instance.GetVPSStateList().CreateCopy();
 		
 		if( pHasSubAnimator ){
 			pArSubAnimator = ( dearAnimator* )rule.GetSubAnimator()->GetPeerAnimator();
@@ -144,7 +150,7 @@ void dearRuleSubAnimator::StoreFrameInto( int identifier, const char *moveName, 
 
 bool dearRuleSubAnimator::RebuildInstance() const{
 	deAnimator * const animator = pSubAnimator.GetSubAnimator();
-	dearAnimator * arAnimator = NULL;
+	dearAnimator * arAnimator = nullptr;
 	
 	if( animator ){
 		arAnimator = ( dearAnimator* )animator->GetPeerAnimator();
@@ -167,7 +173,7 @@ bool dearRuleSubAnimator::RebuildInstance() const{
 	return rebuild;
 }
 
-void dearRuleSubAnimator::Apply( dearBoneStateList &stalist ){
+void dearRuleSubAnimator::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;
@@ -183,26 +189,26 @@ DEBUG_RESET_TIMERS;
 	
 DEBUG_PRINT_TIMER( "Prepare" );
 	
-	// if we have a valid sub animator we apply it
 	if( pHasSubAnimator ){
+		// if we have a valid sub animator we apply it
+		
 		// determine if the sub animator rules can be applied directly
 		// using our bone state list. this avoids the need for the copy
 		// and the apply phase. this optimization is only possible if
 		// blend mode is blend and blend factor is 1
-		const bool directUse = ( pDirectUseStates && fabsf( 1.0f - blendFactor ) < FLOAT_SAFE_EPSILON );
+		const bool directUse = pDirectUseStates && fabsf( 1.0f - blendFactor ) < FLOAT_SAFE_EPSILON;
 		
-		// direct use allows to directly use our states list without needing a copy/apply
 		if( directUse ){
+			// direct use allows to directly use our states list without needing a copy/apply
 			for( i=0; i<pRuleCount; i++ ){
-				pRules[ i ]->Apply( stalist );
+				pRules[ i ]->Apply( stalist, vpsstalist );
 			}
 			
 DEBUG_PRINT_TIMER( "Update Bone States Directly" );
 			
-		// otherwise use the safer but slower way
 		}else{
+			// otherwise use the safer but slower way
 			const int boneCount = GetBoneMappingCount();
-			
 			for( i=0; i<boneCount; i++ ){
 				const int animatorBone = GetBoneMappingFor( i );
 				if( animatorBone == -1 ){
@@ -212,10 +218,19 @@ DEBUG_PRINT_TIMER( "Update Bone States Directly" );
 				pStateList->GetStateAt( animatorBone )->SetFrom( *stalist.GetStateAt( animatorBone ) );
 			}
 			
-DEBUG_PRINT_TIMER( "Copy Bone States" );
+			const int vpsCount = GetVPSMappingCount();
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				
+				pVPSStateList->GetStateAt( animatorVps ).SetFrom( vpsstalist.GetStateAt( animatorVps ) );
+			}
+DEBUG_PRINT_TIMER( "Copy States" );
 			
 			for( i=0; i<pRuleCount; i++ ){
-				pRules[ i ]->Apply( *pStateList );
+				pRules[ i ]->Apply( *pStateList, *pVPSStateList );
 			}
 DEBUG_PRINT_TIMER( "Apply Rules" );
 			
@@ -225,23 +240,40 @@ DEBUG_PRINT_TIMER( "Apply Rules" );
 					continue;
 				}
 				
-				const dearBoneState &stateFrom = *pStateList->GetStateAt( animatorBone );
-				dearBoneState &stateTo = *stalist.GetStateAt( animatorBone );
-				
-				stateTo.BlendWith( stateFrom, blendMode, blendFactor,
+				stalist.GetStateAt( animatorBone )->BlendWith(
+					*pStateList->GetStateAt( animatorBone ), blendMode, blendFactor,
 					pEnablePosition, pEnableOrientation, pEnableSize );
+			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				
+				vpsstalist.GetStateAt( animatorVps ).BlendWith(
+					pVPSStateList->GetStateAt( animatorVps ), blendMode, blendFactor, pEnableVPS );
 			}
 DEBUG_PRINT_TIMER( "Apply Temporary State" );
 		}
 		
-	// if the animator does not exist or is not valid we apply a reference state instead
 	}else{
+		// if the animator does not exist or is not valid we apply a reference state instead
 		const int boneCount = GetBoneMappingCount();
 		for( i =0; i <boneCount; i++ ){
 			const int animatorBone = GetBoneMappingFor( i );
 			if( animatorBone != -1 ){
 				stalist.GetStateAt( animatorBone )->BlendWithDefault( blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
+		}
+		
+		const int vpsCount = GetVPSMappingCount();
+		for( i =0; i <vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps != -1 ){
+				vpsstalist.GetStateAt( animatorVps ).BlendWithDefault(
+					blendMode, blendFactor, pEnableVPS );
 			}
 		}
 	}
@@ -263,6 +295,9 @@ void dearRuleSubAnimator::pCleanUp(){
 		delete [] pRules;
 	}
 	
+	if( pVPSStateList ){
+		delete pVPSStateList;
+	}
 	if( pStateList ){
 		delete pStateList;
 	}
@@ -308,13 +343,13 @@ void dearRuleSubAnimator::pCreateRules( const decIntList &controllerMapping ){
 	const int firstLink = instance.GetLinkCount();
 	
 	if( linkCount > 0 ){
-		dearLink *link = NULL;
+		dearLink *link = nullptr;
 		
 		try{
 			for( i=0; i<linkCount; i++ ){
 				link = new dearLink( instance, *animator->GetLinkAt( i ), subControllerMapping );
 				instance.AddLink( link );
-				link = NULL;
+				link = nullptr;
 			}
 			
 		}catch( const deException & ){

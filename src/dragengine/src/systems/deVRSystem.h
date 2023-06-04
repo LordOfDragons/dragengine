@@ -23,10 +23,9 @@
 #define _DEVRSYSTEM_H_
 
 #include "deBaseSystem.h"
+#include "modules/vr/deBaseVRModule.h"
 #include "../input/deInputEventQueue.h"
 #include "../resources/camera/deCamera.h"
-
-class deBaseVRModule;
 
 
 /**
@@ -38,6 +37,8 @@ private:
 	deBaseVRModule *pActiveModule;
 	deInputEventQueue pEventQueue;
 	deCamera::Ref pCamera;
+	deBaseVRModule::eFeatureSupportLevel pRequestFeatureEyeGazeTracking;
+	deBaseVRModule::eFeatureSupportLevel pRequestFeatureFacialTracking;
 	bool pEnablePassthrough;
 	float pPassthroughTransparency;
 	
@@ -81,6 +82,44 @@ public:
 	 * Returns true if a call to StartRuntime() is likely to succeed or not.
 	 */
 	bool RuntimeUsable();
+	
+	/**
+	 * \brief Set feature request level for eye gaze tracking.
+	 * \version 1.17
+	 * 
+	 * Tracking eye gaze features is consider a high privacy operation by most VR environments.
+	 * Enabling this feature usually requires the user to explicitely agree. Furthermore eye
+	 * gaze tracking is not required for the majority of games and applications. For these
+	 * reasons eye gaze tracking is disabled by default. To enable set the feature request
+	 * level to optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time StartRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support eye gaze tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	void RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level );
+	
+	/**
+	 * \brief Set feature request level for facial tracking.
+	 * \version 1.17
+	 * 
+	 * Facial tracking includes eye tracking and mouth tracking. Tracking facial features
+	 * is consider a high privacy operation by most VR environments. Enabling this feature
+	 * usually requires the user to explicitely agree. Furthermore facial tracking typically
+	 * is an expensive operation and can degrade performance. Last but not least facial
+	 * tracking is not required for the majority of games and applications. For this reason
+	 * facial tracking is disabled by default. To enable set the feature request level to
+	 * optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time StartRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support facial tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	void RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level );
 	
 	/**
 	 * \brief Start VR.

@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Controller States.
+ * Controller States.
  */
 class dearControllerStates{
 private:
@@ -41,7 +41,7 @@ private:
 	int pStateCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new controller states object. */
 	dearControllerStates();
@@ -49,7 +49,7 @@ public:
 	~dearControllerStates();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of states. */
 	inline int GetStateCount() const{ return pStateCount; }

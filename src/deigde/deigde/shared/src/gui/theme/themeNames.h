@@ -22,6 +22,8 @@
 #ifndef _THEMENAMES_H_
 #define _THEMENAMES_H_
 
+#include <dragengine/dragengine_export.h>
+
 /**
  * \brief Names for gui themes provided by the basic IGDE implementation.
  */
@@ -31,14 +33,14 @@ namespace igdeGuiThemeNames{
 	 * 
 	 * Name: "default"
 	 */
-	extern const char *defaultTheme;
+	extern DE_DLL_EXPORT const char * defaultTheme;
 	
 	/**
 	 * \brief Properties side panel gui theme.
 	 * 
 	 * Name: "properties"
 	 */
-	extern const char *properties;
+	extern DE_DLL_EXPORT const char * properties;
 };
 
 #endif

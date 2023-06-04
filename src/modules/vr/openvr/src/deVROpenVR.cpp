@@ -684,7 +684,10 @@ deImage *deVROpenVR::GetDistortionMap( eEye eye ){
 	return nullptr;
 }
 
-void deVROpenVR::BeginFrame(){
+void deVROpenVR::StartBeginFrame(){
+}
+
+void deVROpenVR::WaitBeginFrameFinished(){
 	if( ! pVRSystem ){
 		return;
 	}

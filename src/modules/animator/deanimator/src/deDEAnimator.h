@@ -27,16 +27,16 @@
 
 
 /**
- * \brief DEAnimator animator module.
+ * DEAnimator animator module.
  */
 class deDEAnimator : public deBaseAnimatorModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create animator module. */
+	/** Create animator module. */
 	deDEAnimator( deLoadableModule &loadableModule );
 	
-	/** \brief Clean up animator module. */
+	/** Clean up animator module. */
 	virtual ~deDEAnimator();
 	/*@}*/
 	
@@ -44,10 +44,10 @@ public:
 	
 	/** \name Module Management */
 	/*@{*/
-	/** \brief Initialize module. */
+	/** Initialize module. */
 	virtual bool Init();
 	
-	/** \brief Shut down module and clean up. */
+	/** Shut down module and clean up. */
 	virtual void CleanUp();
 	/*@}*/
 	
@@ -55,16 +55,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Create peer for animator. */
+	/** Create peer for animator. */
 	virtual deBaseAnimatorAnimator *CreateAnimator( deAnimator *animator );
 	
-	/** \brief Create peer for animator instance. */
+	/** Create peer for animator instance. */
 	virtual deBaseAnimatorAnimatorInstance *CreateAnimatorInstance( deAnimatorInstance *instance );
 	
-	/** \brief Create peer for animation. */
+	/** Create peer for animation. */
 	virtual deBaseAnimatorAnimation *CreateAnimation( deAnimation *animation );
 	
-	/** \brief Create peer for component. */
+	/** Create peer for component. */
 	virtual deBaseAnimatorComponent *CreateComponent( deComponent *component );
 	/*@}*/
 };

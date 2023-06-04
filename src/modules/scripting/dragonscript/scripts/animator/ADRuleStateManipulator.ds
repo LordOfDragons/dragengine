@@ -39,9 +39,12 @@ class ADRuleStateManipulator extends ADRule
 	private var Vector pMaxRot
 	private var Vector pMinSize
 	private var Vector pMaxSize
+	private var float pMinVertexPositionSet
+	private var float pMaxVertexPositionSet
 	private var bool pEnablePos
 	private var bool pEnableOrient
 	private var bool pEnableSize
+	private var bool pEnableVertexPositionSet
 	
 	
 	
@@ -53,9 +56,12 @@ class ADRuleStateManipulator extends ADRule
 		pMaxRot = Vector.new()
 		pMinSize = Vector.new(1, 1, 1)
 		pMaxSize = Vector.new(1, 1, 1)
+		pMinVertexPositionSet = 0
+		pMaxVertexPositionSet = 0
 		pEnablePos = false
 		pEnableOrient = true
 		pEnableSize = false
+		pEnableVertexPositionSet = true
 	end
 	
 	/**
@@ -70,9 +76,12 @@ class ADRuleStateManipulator extends ADRule
 		pMaxRot = rule.pMaxRot
 		pMinSize = rule.pMinSize
 		pMaxSize = rule.pMaxSize
+		pMinVertexPositionSet = rule.pMinVertexPositionSet
+		pMaxVertexPositionSet = rule.pMaxVertexPositionSet
 		pEnablePos = rule.pEnablePos
 		pEnableOrient = rule.pEnableOrient
 		pEnableSize = rule.pEnableSize
+		pEnableVertexPositionSet = rule.pEnableVertexPositionSet
 	end
 	
 	
@@ -155,6 +164,29 @@ class ADRuleStateManipulator extends ADRule
 		pMaxSize = size
 	end
 	
+	/**
+	 * \brief Minimum vertex position set weight.
+	 * \version 1.17
+	 */
+	public func float getMinimumVertexPositionSet()
+		return pMinVertexPositionSet
+	end
+	
+	/** \brief Set minimum vertex position set weight. */
+	public func void setMinimumVertexPositionSet(float weight)
+		pMinVertexPositionSet = weight
+	end
+	
+	/** \brief Maximum vertex position set weight. */
+	public func float getMaximumVertexPositionSet()
+		return pMaxVertexPositionSet
+	end
+	
+	/** \brief Set maximum vertex position set weight. */
+	public func void setMaximumVertexPositionSet(float weight)
+		pMaxVertexPositionSet = weight
+	end
+	
 	/** \brief Pposition manipulation is enabled. */
 	public func bool getEnablePosition()
 		return pEnablePos
@@ -185,6 +217,22 @@ class ADRuleStateManipulator extends ADRule
 		pEnableSize = enable
 	end
 	
+	/**
+	 * \brief Vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func bool getEnableVertexPositionSet()
+		return pEnableVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set if vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enable)
+		pEnableVertexPositionSet = enable
+	end
+	
 	
 	
 	/** \brief Build engine animator rule using the stored definition. */
@@ -202,10 +250,13 @@ class ADRuleStateManipulator extends ADRule
 		rule.setMinimumRotation(pMinRot)
 		rule.setMaximumRotation(pMaxRot)
 		rule.setMinimumSize(pMinSize)
-		rule.setMaximumSize(pMaxRot)
+		rule.setMaximumSize(pMaxSize)
+		rule.setMinimumVertexPositionSet(pMinVertexPositionSet)
+		rule.setMaximumVertexPositionSet(pMaxVertexPositionSet)
 		rule.setEnablePosition(pEnablePos)
 		rule.setEnableOrientation(pEnableOrient)
 		rule.setEnableSize(pEnableSize)
+		rule.setEnableVertexPositionSet(pEnableVertexPositionSet)
 		
 		return rule
 	end
@@ -226,6 +277,7 @@ class ADRuleStateManipulator extends ADRule
 		console.addMessage(debugCommon("State Manipulator") + \
 			" minp=" + pMinPos + " maxp=" + pMaxPos + " mino=" + pMinRot + " maxo=" + pMaxRot + \
 			" mins=" + pMinSize + " maxs=" + pMaxSize + " epos=" + pEnablePos + \
-			" eorient=" + pEnableOrient + " esize=" + pEnableSize + ")")
+			" eorient=" + pEnableOrient + " esize=" + pEnableSize + \
+			" evps=" + pEnableVertexPositionSet + ")")
 	end
 end

@@ -107,9 +107,18 @@ void saeLoadSaveSAnimation::pWriteSAnimation( decXmlWriter &writer, const saeSAn
 	
 	pWriteDisplay( writer, sanimation );
 	
-	writer.WriteDataTagString( "rig", sanimation.GetRigPath().GetString() );
-	writer.WriteDataTagString( "animation", sanimation.GetAnimationPath().GetString() );
-	writer.WriteDataTagString( "neutralMoveName", sanimation.GetNeutralMoveName().GetString() );
+	writer.WriteDataTagString( "rig", sanimation.GetRigPath() );
+	writer.WriteDataTagString( "animation", sanimation.GetAnimationPath() );
+	
+	if( ! sanimation.GetNeutralMoveName().IsEmpty() ){
+		writer.WriteDataTagString( "neutralMoveName", sanimation.GetNeutralMoveName() );
+	}
+	
+	const decStringSet &neutralVertexPositionSets = sanimation.GetNeutralVertexPositionSets();
+	count = neutralVertexPositionSets.GetCount();
+	for( i=0; i<count; i++ ){
+		writer.WriteDataTagString( "neutralVertexPositionSet", neutralVertexPositionSets.GetAt( i ) );
+	}
 	
 	count = phonemeList.GetCount();
 	for( i=0; i<count; i++ ){
@@ -127,9 +136,9 @@ void saeLoadSaveSAnimation::pWriteSAnimation( decXmlWriter &writer, const saeSAn
 void saeLoadSaveSAnimation::pWriteDisplay( decXmlWriter &writer, const saeSAnimation &sanimation ){
 	writer.WriteOpeningTag( "display" );
 	
-	writer.WriteDataTagString( "model", sanimation.GetDisplayModelPath().GetString() );
-	writer.WriteDataTagString( "skin", sanimation.GetDisplaySkinPath().GetString() );
-	writer.WriteDataTagString( "rig", sanimation.GetDisplayRigPath().GetString() );
+	writer.WriteDataTagString( "model", sanimation.GetDisplayModelPath() );
+	writer.WriteDataTagString( "skin", sanimation.GetDisplaySkinPath() );
+	writer.WriteDataTagString( "rig", sanimation.GetDisplayRigPath() );
 	
 	writer.WriteClosingTag( "display" );
 }
@@ -139,8 +148,15 @@ void saeLoadSaveSAnimation::pWritePhoneme( decXmlWriter &writer, const saePhonem
 	writer.WriteAttributeInt( "ipa", phoneme.GetIPA() );
 	writer.WriteOpeningTagEnd();
 	
-	writer.WriteDataTagString( "sampleText", phoneme.GetSampleText().GetString() );
-	writer.WriteDataTagString( "moveName", phoneme.GetMoveName().GetString() );
+	if( ! phoneme.GetSampleText().IsEmpty() ){
+		writer.WriteDataTagString( "sampleText", phoneme.GetSampleText() );
+	}
+	if( ! phoneme.GetMoveName().IsEmpty() ){
+		writer.WriteDataTagString( "moveName", phoneme.GetMoveName() );
+	}
+	if( ! phoneme.GetVertexPositionSet().IsEmpty() ){
+		writer.WriteDataTagString( "vertexPositionSet", phoneme.GetVertexPositionSet() );
+	}
 	writer.WriteDataTagFloat( "length", phoneme.GetLength() );
 	
 	writer.WriteClosingTag( "phoneme" );
@@ -160,6 +176,7 @@ void saeLoadSaveSAnimation::pWriteWord( decXmlWriter &writer, const saeWord &wor
 
 void saeLoadSaveSAnimation::pReadSAnimation( const decXmlElementTag &root, saeSAnimation &sanimation ){
 	const int elementCount = root.GetElementCount();
+	decStringSet neutralVertexPositionSets;
 	const decXmlElementTag *tag;
 	int e;
 	
@@ -179,6 +196,9 @@ void saeLoadSaveSAnimation::pReadSAnimation( const decXmlElementTag &root, saeSA
 			}else if( strcmp( tag->GetName(), "neutralMoveName" ) == 0 ){
 				sanimation.SetNeutralMoveName( GetCDataString( *tag ) );
 				
+			}else if( strcmp( tag->GetName(), "neutralVertexPositionSet" ) == 0 ){
+				neutralVertexPositionSets.Add( GetCDataString( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "phoneme" ) == 0 ){
 				pReadPhoneme( *tag, sanimation );
 				
@@ -190,6 +210,8 @@ void saeLoadSaveSAnimation::pReadSAnimation( const decXmlElementTag &root, saeSA
 			}
 		}
 	}
+	
+	sanimation.SetNeutralVertexPositionSets( neutralVertexPositionSets );
 }
 
 void saeLoadSaveSAnimation::pReadDisplay( const decXmlElementTag &root, saeSAnimation &sanimation ){
@@ -242,13 +264,16 @@ void saeLoadSaveSAnimation::pReadPhoneme( const decXmlElementTag &root, saeSAnim
 			tag = root.GetElementIfTag( e );
 			
 			if( tag ){
-				if( strcmp( tag->GetName(), "sampleText" ) == 0 ){
+				if( tag->GetName() == "sampleText" ){
 					phoneme->SetSampleText( GetCDataString( *tag ) );
 					
-				}else if( strcmp( tag->GetName(), "moveName" ) == 0 ){
+				}else if( tag->GetName() == "moveName" ){
 					phoneme->SetMoveName( GetCDataString( *tag ) );
 					
-				}else if( strcmp( tag->GetName(), "length" ) == 0 ){
+				}else if( tag->GetName() == "vertexPositionSet" ){
+					phoneme->SetVertexPositionSet( GetCDataString( *tag ) );
+					
+				}else if( tag->GetName() == "length" ){
 					phoneme->SetLength( GetCDataFloat( *tag ) );
 					
 				}else{

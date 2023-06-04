@@ -284,7 +284,7 @@ deoglRenderLightBase( renderThread )
 		pipconf.EnableCulling( false );
 		pipconf.EnablePolygonOffset( useInverseDepth ? -smOffsetScale : smOffsetScale, -smOffsetBias );
 		
-		renderers.GetOcclusion().AddOccMapDefines( defines );
+		AddSharedSPBDefines( defines );
 		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );
@@ -544,7 +544,7 @@ void deoglRenderLightSpot::RenderLight( deoglRenderPlanLight &planLight, bool so
 const deoglRenderPlanMasked *mask ){
 	// determine what needs to be rendered
 	deoglCollideListLight &cllight = *planLight.GetLight();
-	if( cllight.IsHiddenByOccQuery() ){
+	if( ! cllight.GetCulled() && cllight.IsHiddenByOccQuery() ){
 		cllight.SetCulled( true );
 	}
 	
@@ -1309,7 +1309,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglRenderPlan &plan = planLight.GetPlan();
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "LightSpot.RenderShadowMap" );
-	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().NextShadowPB();
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
@@ -1460,7 +1460,7 @@ void deoglRenderLightSpot::RenderAmbientMap( deoglRenderPlanLight &planLight,
 deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "LightSpot.RenderAmbientMap" );
-	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetOccMapPB();
+	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().NextOccMapPB();
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();

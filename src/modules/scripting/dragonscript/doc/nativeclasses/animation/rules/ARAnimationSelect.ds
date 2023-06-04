@@ -37,15 +37,22 @@ class ARAnimationSelect extends AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Enable position modification. */
-	public func void setEnablePosition( bool enabled )
+	public func void setEnablePosition(bool enabled)
 	end
 	
 	/** \brief Enable orientation modification. */
-	public func void setEnableOrientation( bool enabled )
+	public func void setEnableOrientation(bool enabled)
 	end
 	
 	/** \brief Enable size modification. */
-	public func void setEnableSize( bool enabled )
+	public func void setEnableSize(bool enabled)
+	end
+	
+	/**
+	 * \brief Enable vertex position set modification.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enabled)
 	end
 	
 	
@@ -56,12 +63,12 @@ class ARAnimationSelect extends AnimatorRule
 	end
 	
 	/** \brief Move at index. */
-	public func String getMoveAt( int index )
+	public func String getMoveAt(int index)
 		return null
 	end
 	
 	/** \brief Add move. */
-	public func void addMove( String moveName )
+	public func void addMove(String moveName)
 	end
 	
 	/** \brief Remove all move. */
@@ -74,14 +81,14 @@ class ARAnimationSelect extends AnimatorRule
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink( ARAnimationSelectTarget target, int link )
+	public func void targetAddLink(ARAnimationSelectTarget target, int link)
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks( ARAnimationSelectTarget target )
+	public func void targetRemoveAllLinks(ARAnimationSelectTarget target)
 	end
 	/*@}*/
 end

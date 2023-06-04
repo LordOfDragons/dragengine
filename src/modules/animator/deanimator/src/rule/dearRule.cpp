@@ -19,14 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "dearRule.h"
 #include "../deDEAnimator.h"
 #include "../dearAnimator.h"
 #include "../dearAnimatorInstance.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSStateList.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -48,9 +46,13 @@ pInstance( instance ),
 pAnimator( animator ),
 pRule( rule ),
 
-pBoneMappings( NULL ),
+pBoneMappings( nullptr ),
 pBoneMappingCount( 0 ),
 pUseAllBones( false ),
+
+pVPSMappings( nullptr ),
+pVPSMappingCount( 0 ),
+pUseAllVPS( false ),
 
 pTargetBlendFactor( rule.GetTargetBlendFactor(), firstLink ),
 
@@ -61,6 +63,9 @@ pEnabled( rule.GetEnabled() ){
 }
 
 dearRule::~dearRule(){
+	if( pVPSMappings ){
+		delete [] pVPSMappings;
+	}
 	if( pBoneMappings ){
 		delete [] pBoneMappings;
 	}
@@ -75,29 +80,45 @@ deDEAnimator &dearRule::GetModule() const{
 	return pInstance.GetModule();
 }
 
+
+
 int dearRule::GetBoneMappingCount() const{
-	if( pUseAllBones ){
-		return pInstance.GetBoneStateList().GetStateCount();
-		
-	}else{
-		return pBoneMappingCount;
-	}
+	return pUseAllBones ? pInstance.GetBoneStateList().GetStateCount() : pBoneMappingCount;
 }
 
 int dearRule::GetBoneMappingFor( int boneIndex ) const{
 	if( pUseAllBones ){
-		if( boneIndex < 0 || boneIndex >= pInstance.GetBoneStateList().GetStateCount() ){
-			DETHROW( deeInvalidParam );
-		}
+		DEASSERT_TRUE( boneIndex >= 0 )
+		DEASSERT_TRUE( boneIndex < pInstance.GetBoneStateList().GetStateCount() )
 		return boneIndex;
 		
 	}else{
-		if( boneIndex < 0 || boneIndex >= pBoneMappingCount ){
-			DETHROW( deeInvalidParam );
-		}
+		DEASSERT_TRUE( boneIndex >= 0 )
+		DEASSERT_TRUE( boneIndex < pBoneMappingCount )
 		return pBoneMappings[ boneIndex ];
 	}
 }
+
+
+
+int dearRule::GetVPSMappingCount() const{
+	return pUseAllVPS ? pInstance.GetVPSStateList().GetStateCount() : pVPSMappingCount;
+}
+
+int dearRule::GetVPSMappingFor( int vpsIndex ) const{
+	if( pUseAllVPS ){
+		DEASSERT_TRUE( vpsIndex >= 0 )
+		DEASSERT_TRUE( vpsIndex < pInstance.GetVPSStateList().GetStateCount() )
+		return vpsIndex;
+		
+	}else{
+		DEASSERT_TRUE( vpsIndex >= 0 )
+		DEASSERT_TRUE( vpsIndex < pVPSMappingCount )
+		return pVPSMappings[ vpsIndex ];
+	}
+}
+
+
 
 float dearRule::GetBlendFactor() const{
 	const float blendFactor = pTargetBlendFactor.GetValue( pInstance, pBlendFactor );
@@ -125,6 +146,7 @@ void dearRule::ControllerChanged( int ){
 
 void dearRule::RuleChanged(){
 	pUpdateBoneMappings();
+	pUpdateVPSMappings();
 }
 
 
@@ -139,11 +161,11 @@ void dearRule::pUpdateBoneMappings(){
 	int i;
 	
 	// determine the count of bones
-	pUseAllBones = ( boneCount == 0 );
+	pUseAllBones = boneCount == 0;
 	
 	// if the count differs recreate the array
 	if( pBoneMappingCount != boneCount ){
-		int *newArray = NULL;
+		int *newArray = nullptr;
 		
 		if( boneCount > 0 ){
 			newArray = new int[ boneCount ];
@@ -160,5 +182,36 @@ void dearRule::pUpdateBoneMappings(){
 	// same as the bones in the component rig.
 	for( i=0; i<pBoneMappingCount; i++ ){
 		pBoneMappings[ i ] = stalist.IndexOfStateNamed( boneList.GetAt( i ) );
+	}
+}
+
+void dearRule::pUpdateVPSMappings(){
+	const dearVPSStateList &stalist = pInstance.GetVPSStateList();
+	const decStringSet &vpsList = pRule.GetListVertexPositionSets();
+	const int vpsCount = vpsList.GetCount();
+	int i;
+	
+	// determine the count of vertex position sets
+	pUseAllVPS = vpsCount == 0;
+	
+	// if the count differs recreate the array
+	if( pVPSMappingCount != vpsCount ){
+		int *newArray = nullptr;
+		
+		if( vpsCount > 0 ){
+			newArray = new int[ vpsCount ];
+		}
+		
+		if( pVPSMappings ){
+			delete [] pVPSMappings;
+		}
+		pVPSMappings = newArray;
+		pVPSMappingCount = vpsCount;
+	}
+	
+	// update the vertex position set mappings. the vertex position sets in the animator are the
+	// same as the vertex position sets in the component model.
+	for( i=0; i<pVPSMappingCount; i++ ){
+		pVPSMappings[ i ] = stalist.IndexOfStateNamed( vpsList.GetAt( i ) );
 	}
 }

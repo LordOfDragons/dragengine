@@ -38,22 +38,30 @@ class ECPBoolean extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, bool value ) super( name )
-		this.pValue = value
+	public func new(String name, bool value) super(name)
+		pValue = value
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func bool getValue()
-		return this.pValue
+		return pValue
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValue = value cast bool
+	public func void setValue(Object value)
+		pValue = value cast bool
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pValue = (property cast ECPBoolean).pValue
 	end
 	
 	
@@ -64,7 +72,7 @@ class ECPBoolean extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored value is returned.
 	 * If the named stub property is present it is returned.
 	 */
-	public func bool getValue( StubWithProperties stub )
-		return stub.getPropertyBoolFor( this.getName(), this.pValue )
+	public func bool getValue(StubWithProperties stub)
+		return stub.getPropertyBoolFor(getName(), pValue)
 	end
 end

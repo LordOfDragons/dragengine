@@ -26,6 +26,7 @@
 #include "deoglGITraceRays.h"
 #include "deoglGIMaterials.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBSingleUse.h"
 
 class deoglRenderThread;
 
@@ -87,9 +88,16 @@ private:
 	deoglGITraceRays pTraceRays;
 	deoglGIMaterials pMaterials;
 	
+	deoglSPBSingleUse::Ref pUBOParameterSingleUse;
 	deoglSPBlockUBO::Ref pUBOParameter;
+	
+	deoglSPBSingleUse::Ref pUBOProbeIndexSingleUse;
 	deoglSPBlockUBO::Ref pUBOProbeIndex;
+	
+	deoglSPBSingleUse::Ref pUBOProbePositionSingleUse;
 	deoglSPBlockUBO::Ref pUBOProbePosition;
+	
+	deoglSPBSingleUse::Ref pUBORayDirectionSingleUse;
 	deoglSPBlockUBO::Ref pUBORayDirection;
 	
 	
@@ -124,9 +132,16 @@ public:
 	inline const deoglGIMaterials &GetMaterials() const{ return pMaterials; }
 	
 	/** UBO. */
+	deoglSPBlockUBO &NextUBOParameter();
 	inline deoglSPBlockUBO &GetUBOParameter() const{ return pUBOParameter; }
+	
+	deoglSPBlockUBO &NextUBOProbeIndex();
 	inline deoglSPBlockUBO &GetUBOProbeIndex() const{ return pUBOProbeIndex; }
+	
+	deoglSPBlockUBO &NextUBOProbePosition();
 	inline deoglSPBlockUBO &GetUBOProbePosition() const{ return pUBOProbePosition; }
+	
+	deoglSPBlockUBO &NextUBORayDirection();
 	inline deoglSPBlockUBO &GetUBORayDirection() const{ return pUBORayDirection; }
 	/*@}*/
 	

@@ -27,8 +27,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-    # we need ubuntu-22.04 not ubuntu-latest or mingw is too old
+    runs-on: ubuntu-latest
     
     steps:
       - uses: actions/checkout@v3
@@ -61,6 +60,7 @@ jobs:
       
       - name: Install required packages
         run: |
+          sudo apt -y update
           sudo apt -y install build-essential scons cmake autoconf libtool nasm \
             patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
             libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \

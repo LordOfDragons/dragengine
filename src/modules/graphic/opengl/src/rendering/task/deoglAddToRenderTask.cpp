@@ -1230,7 +1230,7 @@ const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) c
 		AddTexture( tuc->GetRTSTexture() )->AddVAO( vao->GetRTSVAO() );
 }
 
-deoglRenderTaskTexture *deoglAddToRenderTask::pGetEmptyTexture ( const deoglPipeline *pipeline ) const{
+deoglRenderTaskTexture *deoglAddToRenderTask::pGetEmptyTexture( const deoglPipeline *pipeline ) const{
 	return pRenderTask.AddPipeline( pipeline )->AddTexture(
 		pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
 }

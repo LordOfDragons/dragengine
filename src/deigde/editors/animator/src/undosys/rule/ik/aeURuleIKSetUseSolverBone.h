@@ -33,7 +33,7 @@ class aeRuleInverseKinematic;
 
 
 /**
- * @brief Undo set rule inverse kinematic use solver bone.
+ * Undo set rule inverse kinematic use solver bone.
  *
  * Undo to set if the inverse kinematic rule uses a solver bone.
  */
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleIKSetUseSolverBone( aeRuleInverseKinematic *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleIKSetUseSolverBone();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

@@ -25,10 +25,14 @@
 #include "dearRuleAnimation.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../animation/dearAnimation.h"
 #include "../animation/dearAnimationMove.h"
 #include "../animation/dearAnimationKeyframe.h"
 #include "../animation/dearAnimationKeyframeList.h"
+#include "../animation/dearAnimationKeyframeVPS.h"
+#include "../animation/dearAnimationKeyframeVPSList.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animation/deAnimation.h>
@@ -36,6 +40,8 @@
 #include <dragengine/resources/animation/deAnimationMove.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
 #include <dragengine/resources/animation/deAnimationKeyframeList.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
 #include <dragengine/resources/animator/controller/deAnimatorControllerTarget.h>
@@ -78,7 +84,8 @@ pTargetMoveTime( rule.GetTargetMoveTime(), firstLink ),
 
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() )
+pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() )
 {
 	RuleChanged();
 }
@@ -94,12 +101,9 @@ dearRuleAnimation::~dearRuleAnimation(){
 // Management
 ///////////////
 
-void dearRuleAnimation::Apply( dearBoneStateList &stalist ){
+void dearRuleAnimation::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
-	if( ! GetEnabled() ){
-		return;
-	}
-	if( ! pMove ){
+	if( ! GetEnabled() || ! pMove ){
 		return;
 	}
 	
@@ -110,6 +114,7 @@ DEBUG_RESET_TIMERS;
 	
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	const float moveTime = pMove->GetPlaytime() *
@@ -161,6 +166,39 @@ DEBUG_RESET_TIMERS;
 				blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
 		}
 	}
+	
+	// step through all vertex position sets and set animation
+	for( i=0; i<vpsCount; i++ ){
+		const int animatorVps = GetVPSMappingFor( i );
+		if( animatorVps == -1 ){
+			continue;
+		}
+		
+		// determine animation state
+		dearVPSState &vpsState = vpsstalist.GetStateAt( animatorVps );
+		const int animationVps = pMapAnimationVPS.GetAt( i );
+		
+		if( animationVps == -1 ){
+			vpsState.BlendWithDefault( blendMode, blendFactor, pEnableVPS );
+			
+		}else{
+			// determine keyframe containing the move time
+			const dearAnimationKeyframeVPSList &kflist = *pMove->GetKeyframeVPSListAt( animationVps );
+			const dearAnimationKeyframeVPS * const keyframe = kflist.GetWithTime( moveTime );
+			
+			// if there are no keyframes use the default state
+			if( ! keyframe ){
+				vpsState.BlendWithDefault( blendMode, blendFactor, pEnableVPS );
+				continue;
+			}
+			
+			// calculate bone data
+			const float time = moveTime - keyframe->GetTime();
+			float weight = pEnableVPS ? keyframe->InterpolateWeight( time ) : 0.0f;
+			
+			vpsState.BlendWith( weight, blendMode, blendFactor, pEnableVPS );
+		}
+	}
 DEBUG_PRINT_TIMER;
 }
 
@@ -169,6 +207,7 @@ void dearRuleAnimation::RuleChanged(){
 	
 	pUpdateMove();
 	pMapAnimationBones.Init( *this );
+	pMapAnimationVPS.Init( *this );
 }
 
 

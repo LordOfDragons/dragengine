@@ -30,7 +30,7 @@ class aeRule;
 
 
 /**
- * \brief Undo action rule mirror bones.
+ * Undo action rule mirror bones.
  * 
  * Mirrors the following bone names:
  * - '.l' with '.r'
@@ -48,11 +48,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo action. */
+	/** Create undo action. */
 	aeURuleMirrorBones( aeRule *rule );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleMirrorBones();
 	/*@}*/
 	
@@ -61,15 +61,15 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action affects any bones. */
+	/** Undo action affects any bones. */
 	bool HasAnyEffect() const;
 	
 	
 	
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

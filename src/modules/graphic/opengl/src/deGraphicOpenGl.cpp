@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "deGraphicOpenGl.h"
+#include "deoglResources.h"
 
 #include "billboard/deoglBillboard.h"
 
@@ -58,16 +59,15 @@
 #include "parameters/deoglParameter.h"
 #include "parameters/deoglParameterList.h"
 #include "parameters/deoglPLogLevel.h"
+#include "parameters/deoglPVSyncMode.h"
 #include "parameters/ao/deoglPAOSelfShadowEnable.h"
 #include "parameters/ao/deoglPAOSelfShadowSmoothAngle.h"
 #include "parameters/debug/deoglPDebugContext.h"
 #include "parameters/debug/deoglPDebugNoMessages.h"
 #include "parameters/debug/deoglPDebugNoCulling.h"
 #include "parameters/debug/deoglPDebugShowCB.h"
-#include "parameters/debug/deoglPQuickDebug.h"
 #include "parameters/debug/deoglPShowLightCB.h"
 #include "parameters/debug/deoglPOcclusionReduction.h"
-#include "parameters/debug/deoglPOccTestMode.h"
 #include "parameters/debug/deoglPWireframeMode.h"
 #include "parameters/defren/deoglPDefRenSizeLimit.h"
 #include "parameters/defren/deoglPHDRRMaximumIntensity.h"
@@ -150,6 +150,7 @@
 #include <dragengine/resources/canvas/deCanvasVisitorIdentify.h>
 #include <dragengine/resources/canvas/deCanvas.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/effect/deEffect.h>
 #include <dragengine/resources/effect/deEffectColorMatrix.h>
 #include <dragengine/resources/effect/deEffectDistortImage.h>
@@ -207,9 +208,10 @@ pCommandExecuter( *this ),
 pRenderWindowList( *this ),
 pCaptureCanvasList( *this ),
 
-pRenderThread( NULL ),
-pCaches( NULL ),
+pRenderThread( nullptr ),
+pCaches( nullptr ),
 pDebugOverlay( *this ),
+pResources( nullptr ),
 pVRCamera( nullptr )
 {
 	pCreateParameters();
@@ -243,9 +245,13 @@ bool deGraphicOpenGl::Init( deRenderWindow *renderWindow ){
 	
 	try{
 		pCaches = new deoglCaches( *this );
+		pResources = new deoglResources( *this );
 		
 		pRenderThread = new deoglRenderThread( *this ); // make this a permanently existing object just with Init/CleanUp
 		pRenderThread->Init( renderWindow );
+		
+		pOverlay.TakeOver( GetGameEngine()->GetCanvasManager()->CreateCanvasView() );
+		pShaderCompilingInfo.TakeOver( new deoglShaderCompilingInfo( *this ) );
 		
 	}catch( const deException &e ){
 		e.PrintError();
@@ -271,9 +277,15 @@ void deGraphicOpenGl::CleanUp(){
 	deoglLSConfiguration saveConfig( *this );
 	saveConfig.SaveConfig( pConfiguration );
 	
+	pShaderCompilingInfo = nullptr;
+	pOverlay = nullptr;
 	if( pCaches ){
 		delete pCaches;
 		pCaches = NULL;
+	}
+	if( pResources ){
+		delete pResources;
+		pResources = nullptr;
 	}
 	
 	LogInfo( "Done CleanUp" );
@@ -331,6 +343,24 @@ void deGraphicOpenGl::RenderWindows(){
 	pRenderThread->FinalizeAsyncResLoading();
 // 		LogInfoFormat( "RenderWindows: FinalizeAsyncResLoading = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	
+	// update overlay
+	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+	if( renderWindow ){
+		pOverlay->SetSize( decPoint( renderWindow->GetWidth(), renderWindow->GetHeight() ) );
+	}
+	
+	pShaderCompilingInfo->Update( GetGameEngine()->GetElapsedTime() );
+	pRenderThread->SetVRDebugPanelMatrix( pVRDebugPanelMatrix );
+	
+	if( renderWindow ){
+		deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )pOverlay->GetPeerGraphic() );
+		oglCanvas.SyncToRender();
+		pRenderThread->SetCanvasOverlay( oglCanvas.GetRCanvasView() );
+		
+	}else{
+		pRenderThread->SetCanvasOverlay( nullptr );
+	}
+	
 	// synchronize capture canvas. this creates images from pixel buffers for finished
 	// captures and prepares new captures if present
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
@@ -370,6 +400,10 @@ void deGraphicOpenGl::RenderWindows(){
 
 int deGraphicOpenGl::GetFPSRate(){
 	return pRenderThread->GetFPSRate();
+}
+
+void deGraphicOpenGl::SetVRDebugPanelPosition( const decDVector &position, const decQuaternion &orientation ){
+	pVRDebugPanelMatrix.SetWorld( position, orientation );
 }
 
 
@@ -682,6 +716,8 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPDefRenSizeLimit( *this ) );
 	pParameters.AddParameter( new deoglPTranspLayerLimit( *this ) );
 	
+	pParameters.AddParameter( new deoglPVSyncMode( *this ) );
+	
 	pParameters.AddParameter( new deoglPVRRenderScale( *this ) );
 	pParameters.AddParameter( new deoglPVRForceFrameRate( *this ) );
 	
@@ -691,8 +727,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );
-	pParameters.AddParameter( new deoglPOccTestMode( *this ) );
-	pParameters.AddParameter( new deoglPQuickDebug( *this ) );
 	pParameters.AddParameter( new deoglPShowLightCB( *this ) );
 	pParameters.AddParameter( new deoglPWireframeMode( *this ) );
 #endif

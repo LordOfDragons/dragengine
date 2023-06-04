@@ -30,7 +30,7 @@
 
 
 /**
- * \brief Base animator rule.
+ * Base animator rule.
  */
 class dearRuleBoneTransformator : public dearRule{
 private:
@@ -60,11 +60,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleBoneTransformator( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleBoneTransformator &rule );
 	
-	/** \brief Clean up rule. */
+	/** Clean up rule. */
 	virtual ~dearRuleBoneTransformator();
 	/*@}*/
 	
@@ -72,15 +72,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Target bone index. */
+	/** Target bone index. */
 	inline int GetTargetBone() const{ return pTargetBone; }
 	
 	
 	
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	

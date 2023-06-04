@@ -310,12 +310,16 @@ void aeAnimator::UpdateWorld( float elapsed ){
 	// reset the animation states if required
 	if( pEngComponent && pResetState ){
 		const int boneCount = pEngComponent->GetBoneCount();
-		
 		for( i=0; i<boneCount; i++ ){
 			deComponentBone &bone = pEngComponent->GetBoneAt( i );
 			bone.SetPosition( decVector() );
 			bone.SetRotation( decQuaternion() );
 			bone.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
+		}
+		
+		const int vertexPositionSetCount = pEngComponent->GetVertexPositionSetCount();
+		for( i=0; i<vertexPositionSetCount; i++ ){
+			pEngComponent->SetVertexPositionSetWeightAt( i, 0.0f );
 		}
 		
 		pEngComponent->InvalidateBones();
@@ -785,6 +789,67 @@ void aeAnimator::RemoveAllBones(){
 		if( pEngAnimator ){
 			pEngAnimator->GetListBones().RemoveAll();
 			pEngAnimator->NotifyBonesChanged();
+		}
+		
+		NotifyAnimatorChanged();
+	}
+}
+
+
+
+// Vertex position set management
+///////////////////////////////////
+
+void aeAnimator::SetListVertexPositionSets( const decStringSet &sets ){
+	if( sets == pListVertexPositionSets ){
+		return;
+	}
+	
+	pListVertexPositionSets = sets;
+	
+	if( pEngAnimator ){
+		pEngAnimator->GetListVertexPositionSets() = sets;
+		pEngAnimator->NotifyVertexPositionSetsChanged();
+	}
+	
+	NotifyAnimatorChanged();
+}
+
+void aeAnimator::AddVertexPositionSet( const char *vertexPositionSet ){
+	DEASSERT_NOTNULL( vertexPositionSet )
+	
+	if( ! pListVertexPositionSets.Has( vertexPositionSet ) ){
+		pListVertexPositionSets.Add( vertexPositionSet );
+		
+		if( pEngAnimator ){
+			pEngAnimator->GetListVertexPositionSets().Add( vertexPositionSet );
+			pEngAnimator->NotifyVertexPositionSetsChanged();
+		}
+		
+		NotifyAnimatorChanged();
+	}
+}
+
+void aeAnimator::RemoveVertexPositionSet( const char *vertexPositionSet ){
+	if( pListVertexPositionSets.Has( vertexPositionSet ) ){
+		pListVertexPositionSets.Remove( vertexPositionSet );
+		
+		if( pEngAnimator ){
+			pEngAnimator->GetListVertexPositionSets().Remove( vertexPositionSet );
+			pEngAnimator->NotifyVertexPositionSetsChanged();
+		}
+		
+		NotifyAnimatorChanged();
+	}
+}
+
+void aeAnimator::RemoveAllVertexPositionSets(){
+	if( pListVertexPositionSets.GetCount() > 0 ){
+		pListVertexPositionSets.RemoveAll();
+		
+		if( pEngAnimator ){
+			pEngAnimator->GetListVertexPositionSets().RemoveAll();
+			pEngAnimator->NotifyVertexPositionSetsChanged();
 		}
 		
 		NotifyAnimatorChanged();

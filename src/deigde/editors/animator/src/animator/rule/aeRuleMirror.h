@@ -64,6 +64,7 @@ private:
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 	
 	
@@ -145,6 +146,12 @@ public:
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
+	
+	/** Vertex position set manipulation is enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** Set if vertex position set manipulation is enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
 	
 	
 	

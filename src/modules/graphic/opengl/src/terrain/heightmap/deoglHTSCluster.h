@@ -64,7 +64,7 @@ private:
 		deoglHTSCluster &pCluster;
 	public:
 		WorldComputeElement( deoglHTSCluster &cluster );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateData( sDataElement &data ) const;
 		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
 	};
 	
@@ -246,13 +246,13 @@ public:
 	void AddToWorldCompute( deoglWorldCompute &worldCompute );
 	
 	/** Update world compute. */
-	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	void UpdateWorldCompute();
 	
 	/** Update world compute textures. */
-	void UpdateWorldComputeTexturres( deoglWorldCompute &worldCompute );
+	void UpdateWorldComputeTextures();
 	
 	/** Remove from world compute. */
-	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
+	void RemoveFromWorldCompute();
 	/*@}*/
 	
 	

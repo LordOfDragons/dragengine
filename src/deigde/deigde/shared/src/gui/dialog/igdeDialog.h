@@ -46,7 +46,7 @@ public:
 	/**
 	 * \brief Accept dialog action calling Accept() on dialog.
 	 */
-	class AcceptDialog : public igdeAction{
+	class DE_DLL_EXPORT AcceptDialog : public igdeAction{
 	private:
 		igdeDialog &pDialog;
 		
@@ -61,7 +61,7 @@ public:
 	/**
 	 * \brief Cancel dialog action calling Cancel() on dialog.
 	 */
-	class CancelDialog : public igdeAction{
+	class DE_DLL_EXPORT CancelDialog : public igdeAction{
 	private:
 		igdeDialog &pDialog;
 		

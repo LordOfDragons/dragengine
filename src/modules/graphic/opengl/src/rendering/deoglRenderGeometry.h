@@ -33,6 +33,7 @@ class deoglPersistentRenderTask;
 class deoglRComponent;
 class deoglRenderPlan;
 class deoglRenderTask;
+class deoglComputeRenderTask;
 class deoglRLight;
 class deoglSkinState;
 class deoglSkinTexture;
@@ -47,10 +48,25 @@ class deoglVAO;
  * Renderer for 3D geometry.
  */
 class deoglRenderGeometry : public deoglRenderBase{
+public:
+	struct sVertexPositionSetParams{
+		int firstPoint;
+		int pointCount;
+		float weight;
+	};
+	
+	
+	
 private:
 	decColor pAmbient;
 	
+	const deoglPipeline *pPipelineCopyVNT;
+	const deoglPipeline *pPipelineVPSTransformVNT;
 	const deoglPipeline *pPipelineApproxTransformVNT;
+	const deoglPipeline *pPipelineApproxTransformVNTInplace;
+	
+	sVertexPositionSetParams *pVertexPositionSetParams;
+	int pVertexPositionSetParamSize;
 	
 	
 	
@@ -75,12 +91,19 @@ public:
 	/*@{*/
 	/** Render a render task. */
 	void RenderTask( const deoglRenderTask &renderTask );
-	
-	/** Render a persistent render task. */
+	void RenderTask( const deoglComputeRenderTask &renderTask );
 	void RenderTask( const deoglPersistentRenderTask &renderTask );
 	
+	void CopyVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO &transformed,
+		int firstPoint, int pointCount );
+	
+	sVertexPositionSetParams *GetVertexPositionSetParams( int count );
+	
+	void VPSTransformVNT( GLuint vaoModelData, GLuint vboVertexPositionSetData,
+		const sVertexPositionSetParams *params, int paramCount, const deoglSPBlockSSBO &transformed );
+	
 	void ApproxTransformVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO *weightMatrices,
-		const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount );
+		const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount, bool inplace );
 	/*@}*/
 	
 private:

@@ -58,7 +58,7 @@ private:
 		deoglPropFieldCluster &pCluster;
 	public:
 		WorldComputeElement( deoglPropFieldCluster &cluster );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateData( sDataElement &data ) const;
 		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
 	};
 	
@@ -213,13 +213,13 @@ public:
 	void AddToWorldCompute( deoglWorldCompute &worldCompute );
 	
 	/** Update world compute. */
-	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	void UpdateWorldCompute();
 	
 	/** Update world compute textures. */
-	void UpdateWorldComputeTextures( deoglWorldCompute &worldCompute );
+	void UpdateWorldComputeTextures();
 	
 	/** Remove from world compute. */
-	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
+	void RemoveFromWorldCompute();
 	/*@}*/
 	
 	

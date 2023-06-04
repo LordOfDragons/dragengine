@@ -47,11 +47,11 @@ pDecoderContextInited( false ),
 pDecoderBlockInited( false ),
 pFileSize( reader.GetLength() ),
 pFileRemaining( pFileSize - reader.GetPosition() ),
-pBytesPerSample( 0 ),
+pBytesPerSample( 2 ),
 pSampleCount( 0 ),
-pSampleRate( 0 ),
-pChannelCount( 0 ),
-pBufferSampleSize( 0 ),
+pSampleRate( 44100 ),
+pChannelCount( 1 ),
+pBufferSampleSize( 2 ),
 pCurSample( 0 )
 {
 	// WARNING info and comment struct have to stay alive while the decoder context and
@@ -109,19 +109,15 @@ int dethVideoAudioDecoder::ReadSamples( void *buffer, int size ){
 					if( vorbis_synthesis( &pDecoderBlock, &packet ) ){
 						continue; // not data packet (for example header) or bad packet. read on
 					}
-					if( vorbis_synthesis_blockin( &pDecoderContext, &pDecoderBlock ) ){
-						DETHROW( deeInvalidAction );
-					}
+					DEASSERT_TRUE( vorbis_synthesis_blockin( &pDecoderContext, &pDecoderBlock ) == 0 )
 					keepGoing = true;
 					break;
 					
-				}else if( pReadPage( page ) == 0 ){
+				}else if( pReadPage( page ) ){
 					if( ogg_page_serialno( &page ) != pSerial ){
 						continue;
 					}
-					if( ogg_stream_pagein( &pStreamState, &page ) ){
-						DETHROW( deeInvalidAction );
-					}
+					DEASSERT_TRUE( ogg_stream_pagein( &pStreamState, &page ) == 0 )
 					
 				}else{
 					break;
@@ -311,18 +307,14 @@ bool dethVideoAudioDecoder::pReadPage( ogg_page &page ){
 	
 	while( ogg_sync_pageout( &pSyncState, &page ) != 1 ){
 		char * const buffer = ogg_sync_buffer( &pSyncState, bufferSize );
-		if( ! buffer ){
-			DETHROW( deeOutOfMemory );
-		}
+		DEASSERT_NOTNULL( buffer )
 		
 		const int readBytes = pReadFromFile( buffer, bufferSize );
 		if( readBytes == 0 ){
 			return false; // end of file
 		}
 		
-		if( ogg_sync_wrote( &pSyncState, readBytes ) ){
-			DETHROW( deeOutOfMemory );
-		}
+		DEASSERT_TRUE( ogg_sync_wrote( &pSyncState, readBytes ) == 0 )
 	}
 	
 	return true;
@@ -386,19 +378,15 @@ void dethVideoAudioDecoder::pSeek( int position ){
 					if( vorbis_synthesis( &pDecoderBlock, &packet ) ){
 						continue; // not data packet (for example header) or bad packet. read on
 					}
-					if( vorbis_synthesis_blockin( &pDecoderContext, &pDecoderBlock ) ){
-						DETHROW( deeInvalidAction );
-					}
+					DEASSERT_TRUE( vorbis_synthesis_blockin( &pDecoderContext, &pDecoderBlock ) == 0 )
 					keepGoing = true;
 					break;
 					
-				}else if( pReadPage( page ) == 0 ){
+				}else if( pReadPage( page ) ){
 					if( ogg_page_serialno( &page ) != pSerial ){
 						continue;
 					}
-					if( ogg_stream_pagein( &pStreamState, &page ) ){
-						DETHROW( deeInvalidAction );
-					}
+					DEASSERT_TRUE( ogg_stream_pagein( &pStreamState, &page ) == 0 )
 					
 				}else{
 					break;

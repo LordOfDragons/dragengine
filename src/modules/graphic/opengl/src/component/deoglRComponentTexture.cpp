@@ -437,16 +437,21 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 				pSharedSPBRTIGroup.Add( group );
 			}
 			
-			if( ( pRenderTaskFilters & ( ertfRender | ertfShadowNone | ertfDecal ) ) == ertfRender ){
+			if( ( pRenderTaskFilters & ( ertfRender | ertfShadowNone | ertfDecal | ertfSolid | ertfHoles ) ) == ( ertfRender | ertfSolid ) ){
 				// combine shadow textures if possible
 				for( i=0; i<count; i++ ){
+					deoglModelLOD &modelLod = model.GetLODAt( i );
+					if( modelLod.GetTextureAt( pIndex ).GetFaceCount() == 0 ){
+						pSharedSPBRTIGroupShadow.Add( nullptr );
+						continue;
+					}
+					
 					const int combineCount = pShadowCombineCount( i );
 					if( combineCount < 2 ){
 						pSharedSPBRTIGroupShadow.Add( nullptr );
 						continue;
 					}
 					
-					deoglModelLOD &modelLod = model.GetLODAt( i );
 					deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt( pIndex );
 					group.TakeOver( list.GetWith( spb, combineCount ) );
 					
@@ -1059,10 +1064,20 @@ void deoglRComponentTexture::pUpdateRenderTaskFilters(){
 }
 
 int deoglRComponentTexture::pShadowCombineCount( int lodLevel ) const{
-	const bool hasHoles = ( pRenderTaskFilters & ( ertfSolid | ertfHoles ) ) == ( ertfSolid | ertfHoles );
-	if( hasHoles && pUseSkinState && ( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ) ){
-		return 1; // can not combine since variation is used
+	const bool solid = ( pRenderTaskFilters & ertfSolid ) == ertfSolid;
+	const bool hasHoles = solid && ( pRenderTaskFilters & ertfHoles ) == ertfHoles;
+	if( ! solid || hasHoles || ! pUseSkinTexture ){
+		// this check is only used to allow combined shadows to be added to world element
+		// geometries by components. the reason is that TUCs can not be obtained at the
+		// time element data is written. maybe later on this can be re-added
+		// 
+		// transparency is disallowed since solid shadows can not do not use it
+		return 1;
 	}
+	
+	// if( hasHoles && pUseSkinState && ( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ) ){
+	// 	return 1; // can not combine since variation is used
+	// }
 	
 	int i;
 	for( i=0; i<pIndex; i++ ){
@@ -1073,24 +1088,33 @@ int deoglRComponentTexture::pShadowCombineCount( int lodLevel ) const{
 		}
 	}
 	
+	const deoglModelLOD &modelLod = pComponent.GetModelRef().GetLODAt( lodLevel );
 	const int mask = ertfRender | ertfSolid | ertfShadowNone | ertfHoles | ertfDecal | ertfDoubleSided;
 	const int filter = pRenderTaskFilters & mask;
 	const int count = pComponent.GetTextureCount();
+	int emptyCount = 0;
 	
 	for( i=pIndex+1; i<count; i++ ){
+		if( modelLod.GetTextureAt( i ).GetFaceCount() == 0 ){
+			emptyCount++; // always combineable but we do not count it as one
+			continue;
+		}
+		
 		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
 		if( ( texture.pRenderTaskFilters & mask ) != filter ){
 			break; // can not be combined because filters differ
 		}
-		if( hasHoles ){
-			if( pTUCShadow != texture.pTUCShadow ){
-				break; // can not be combined because TUC differs
-			}
-			if( ! pTransform.IsEqualTo( texture.pTransform ) ){
-				break; // can not be combined because transform differs
-			}
-		}
+		
+		// if( hasHoles ){
+		// 	if( pTUCShadow != texture.pTUCShadow ){
+		// 		break; // can not be combined because TUC differs
+		// 	}
+		// 	if( ! pTransform.IsEqualTo( texture.pTransform ) ){
+		// 		break; // can not be combined because transform differs
+		// 	}
+		// }
 	}
 	
-	return i - pIndex; // count of matching textures that can be combined
+	const int combineCount = i - pIndex;
+	return combineCount - emptyCount > 1 ? combineCount : 1;
 }

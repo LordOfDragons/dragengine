@@ -29,7 +29,7 @@ class aeLink;
 
 
 /**
- * \brief Undo action set link bone.
+ * Undo action set link bone.
  */
 class aeULinkSetBone : public igdeUndo{
 private:
@@ -41,11 +41,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo action. */
+	/** Create undo action. */
 	aeULinkSetBone( aeLink *link, const char *newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeULinkSetBone();
 	/*@}*/
 	
@@ -54,10 +54,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

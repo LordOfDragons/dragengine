@@ -31,7 +31,7 @@ class aeWindowMain;
 
 
 /**
- * \brief Editor Configuration.
+ * Editor Configuration.
  */
 class aeConfiguration{
 private:
@@ -51,10 +51,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create configuration. */
+	/** Create configuration. */
 	aeConfiguration( aeWindowMain &windowMain );
 	
-	/** \brief Clean up configuration. */
+	/** Clean up configuration. */
 	~aeConfiguration();
 	/*@}*/
 	
@@ -62,61 +62,61 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
-	/** \brief Locomotion testing forward key. */
+	/** Locomotion testing forward key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyForward() const{ return pLocoKeyForward; }
 	
-	/** \brief Set locomotion testing forward key. */
+	/** Set locomotion testing forward key. */
 	void SetLocoKeyForward( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing backwards key. */
+	/** Locomotion testing backwards key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyBackwards() const{ return pLocoKeyBackwards; }
 	
-	/** \brief Set locomotion testing backwards key. */
+	/** Set locomotion testing backwards key. */
 	void SetLocoKeyBackwards( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing left key. */
+	/** Locomotion testing left key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyLeft() const{ return pLocoKeyLeft; }
 	
-	/** \brief Set locomotion testing left key. */
+	/** Set locomotion testing left key. */
 	void SetLocoKeyLeft( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing right key. */
+	/** Locomotion testing right key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyRight() const{ return pLocoKeyRight; }
 	
-	/** \brief Set locomotion testing right key. */
+	/** Set locomotion testing right key. */
 	void SetLocoKeyRight( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing crouch key. */
+	/** Locomotion testing crouch key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyCrouch() const{ return pLocoKeyCrouch; }
 	
-	/** \brief Set locomotion testing crouch key. */
+	/** Set locomotion testing crouch key. */
 	void SetLocoKeyCrouch( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing run key. */
+	/** Locomotion testing run key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyRun() const{ return pLocoKeyRun; }
 	
-	/** \brief Set locomotion testing run key. */
+	/** Set locomotion testing run key. */
 	void SetLocoKeyRun( deInputEvent::eKeyCodes key );
 	
 	
 	
-	/** \brief Prevent saving. */
+	/** Prevent saving. */
 	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
-	/** \brief Set prevent saving. */
+	/** Set prevent saving. */
 	void SetPreventSaving( bool preventSaving );
 	
 	
 	
-	/** \brief Load configuration. */
+	/** Load configuration. */
 	void LoadConfiguration();
 	
-	/** \brief Save configuration. */
+	/** Save configuration. */
 	void SaveConfiguration();
 	/*@}*/
 	

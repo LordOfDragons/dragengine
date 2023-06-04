@@ -143,8 +143,8 @@ reRigConstraint::reRigConstraint( deEngine *engine ){
 		
 		pDDSOffset = new igdeWDebugDrawerShape;
 		pDDSOffset->SetVisible( false );
-		pDDSOffset->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0 ) );
-		pDDSOffset->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1 ) );
+		pDDSOffset->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+		pDDSOffset->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
 		shapeBuilder.CreateSphere( *pDDSOffset, decVector(), 0.01f );
 		pDDSOffset->SetParentDebugDrawer( pDebugDrawer );
 		
@@ -770,12 +770,12 @@ void reRigConstraint::pUpdateDDConstraint(){
 	pUpdateDDConstraintGeometry();
 	
 	if( pActive ){
-		pDDSConstraint->SetEdgeColor( decColor( 1.0f, 0.5f, 1.0f, 1.0 ) );
-		pDDSConstraint->SetFillColor( decColor( 1.0f, 0.5f, 1.0f, 0.1 ) );
+		pDDSConstraint->SetEdgeColor( decColor( 1.0f, 0.5f, 1.0f, 1.0f ) );
+		pDDSConstraint->SetFillColor( decColor( 1.0f, 0.5f, 1.0f, 0.1f ) );
 		
 	}else if( pSelected ){
-		pDDSConstraint->SetEdgeColor( decColor( 1.0f, 0.0f, 1.0f, 1.0 ) );
-		pDDSConstraint->SetFillColor( decColor( 1.0f, 0.0f, 1.0f, 0.1 ) );
+		pDDSConstraint->SetEdgeColor( decColor( 1.0f, 0.0f, 1.0f, 1.0f ) );
+		pDDSConstraint->SetFillColor( decColor( 1.0f, 0.0f, 1.0f, 0.1f ) );
 		
 	}else{
 		pDDSConstraint->SetEdgeColor( decColor( 0.5f, 0.0f, 0.5f, 1.0f ) );

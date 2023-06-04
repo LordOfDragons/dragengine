@@ -37,7 +37,7 @@
 ////////////////////////////
 
 gdeUGDSetAutoFindPathObjectClasses::gdeUGDSetAutoFindPathObjectClasses(
-	gdeGameDefinition *gameDefinition, const decStringSet &newValue ) :
+	gdeGameDefinition *gameDefinition, const decStringList &newValue ) :
 pGameDefinition( NULL ),
 pNewValue( newValue )
 {

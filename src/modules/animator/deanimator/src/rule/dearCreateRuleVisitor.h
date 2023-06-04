@@ -33,7 +33,7 @@ class deAnimator;
 
 
 /**
- * \brief Visitor creating peer animator rule from an engine animator rule.
+ * Visitor creating peer animator rule from an engine animator rule.
  */
 class dearCreateRuleVisitor : public deAnimatorRuleVisitor{
 private:
@@ -47,11 +47,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new visitor. */
+	/** Create new visitor. */
 	dearCreateRuleVisitor( dearAnimatorInstance &instance, const dearAnimator &animator,
 		const decIntList &controllerMapping, int firstLink );
 	
-	/** \brief Clean up object. */
+	/** Clean up object. */
 	virtual ~dearCreateRuleVisitor();
 	/*@}*/
 	
@@ -59,16 +59,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Reset visitor. */
+	/** Reset visitor. */
 	void Reset();
 	
-	/** \brief Created rule. */
+	/** Created rule. */
 	inline dearRule *GetCreatedRule() const{ return pCreatedRule; }
 	
-	/** \brief Rule has been created. */
+	/** Rule has been created. */
 	bool HasCreatedRule() const;
 	
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRule *CreateRuleFrom( deAnimatorRule &engRule );
 	/*@}*/
 	
@@ -76,47 +76,47 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit animator rule. */
+	/** Visit animator rule. */
 	virtual void VisitRule( deAnimatorRule &rule );
 	
-	/** \brief Visit animation rule. */
+	/** Visit animation rule. */
 	virtual void VisitAnimation( deAnimatorRuleAnimation &rule );
 	
-	/** \brief Visit animation difference rule. */
+	/** Visit animation difference rule. */
 	virtual void VisitAnimationDifference( deAnimatorRuleAnimationDifference &rule );
 	
-	/** \brief Visit animation select rule. */
+	/** Visit animation select rule. */
 	virtual void VisitAnimationSelect( deAnimatorRuleAnimationSelect &rule );
 	
-	/** \brief Visit bone rotator animator rule. */
+	/** Visit bone rotator animator rule. */
 	virtual void VisitBoneTransformator( deAnimatorRuleBoneTransformator &rule );
 	
-	/** \brief Visit inverse kinematic animator rule. */
+	/** Visit inverse kinematic animator rule. */
 	virtual void VisitInverseKinematic( deAnimatorRuleInverseKinematic &rule );
 	
-	/** \brief Visit state manipulator rule. */
+	/** Visit state manipulator rule. */
 	virtual void VisitStateManipulator( deAnimatorRuleStateManipulator &rule );
 	
-	/** \brief Visit state snapshot rule. */
+	/** Visit state snapshot rule. */
 	virtual void VisitStateSnapshot( deAnimatorRuleStateSnapshot &rule );
 	
-	/** \brief Visit foreign state rule. */
+	/** Visit foreign state rule. */
 	virtual void VisitForeignState( deAnimatorRuleForeignState &rule );
 	
-	/** \brief Visit group rule. */
+	/** Visit group rule. */
 	virtual void VisitGroup( deAnimatorRuleGroup &rule );
 	
-	/** \brief Visit sub animator rule. */
+	/** Visit sub animator rule. */
 	virtual void VisitSubAnimator( deAnimatorRuleSubAnimator &rule );
 	
-	/** \brief Visit track to rule. */
+	/** Visit track to rule. */
 	virtual void VisitTrackTo( deAnimatorRuleTrackTo &rule );
 	
-	/** \brief Visit limit rule. */
+	/** Visit limit rule. */
 	virtual void VisitLimit( deAnimatorRuleLimit &rule );
 	
 	/**
-	 * \brief Visit mirror rule.
+	 * Visit mirror rule.
 	 * \version 1.9
 	 */
 	virtual void VisitMirror( deAnimatorRuleMirror &rule );

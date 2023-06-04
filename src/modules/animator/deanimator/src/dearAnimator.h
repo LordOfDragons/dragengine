@@ -82,6 +82,9 @@ public:
 	/** List of bones changed. */
 	virtual void BonesChanged();
 	
+	/** List of vertex position sets changed. */
+	virtual void VertexPositionSetsChanged();
+	
 	/** Controllers added or removed. */
 	virtual void ControllerCountChanged();
 	

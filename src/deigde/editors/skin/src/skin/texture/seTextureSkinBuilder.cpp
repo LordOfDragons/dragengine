@@ -170,7 +170,7 @@ void seTextureSkinBuilder::BuildSkin( deSkin *engSkin ){
 		engSkin->AddTexture( engTexture );
 		engTexture = NULL;
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( engPropertyConstructed ){
 			delete engPropertyConstructed;
 		}
@@ -208,7 +208,7 @@ const sePropertyNodeGroup &nodeGroup ){
 			engNode = NULL;
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( engNode ){
 			delete engNode;
 		}
@@ -280,7 +280,7 @@ deSkinPropertyNode *seTextureSkinBuilder::CreateNode( const sePropertyNode &node
 				engMask = CreateNode( *node.GetMask() );
 				engNode->SetMask( engMask );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 				if( engMask ){
 					delete engMask;
 				}
@@ -288,7 +288,7 @@ deSkinPropertyNode *seTextureSkinBuilder::CreateNode( const sePropertyNode &node
 			}
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( engNode ){
 			delete engNode;
 		}

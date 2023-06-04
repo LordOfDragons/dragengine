@@ -317,7 +317,7 @@ void mePathFindTest::pUpdateDDPath(){
 	}
 	
 	const int circlePointCount = 8;
-	const float radius = 0.02;
+	const float radius = 0.02f;
 	const float circleStep = DEG2RAD * ( 360.0f / ( float )circlePointCount );
 	const decVector up( 0.0f, 1.0f, 0.0f );
 	

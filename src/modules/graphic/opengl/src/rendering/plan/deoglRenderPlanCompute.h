@@ -22,9 +22,9 @@
 #ifndef _DEOGLRENDERERPLANCOMPUTE_H_
 #define _DEOGLRENDERERPLANCOMPUTE_H_
 
+#include "../task/deoglComputeRenderTask.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../../world/deoglWorldCSOctree.h"
 
 class deoglRenderPlan;
 
@@ -32,8 +32,10 @@ class deoglRenderPlan;
 /**
  * Render Plan compute.
  */
-class deoglRenderPlanCompute{
+class deoglRenderPlanCompute : public deObject{
 public:
+	typedef deTObjectReference<deoglRenderPlanCompute> Ref;
+	
 	/** Find config parameters. */
 	enum eFindConfigParameters{
 		efcpNodeCount,
@@ -57,29 +59,31 @@ public:
 		efcpSplitMinExtend,
 		efcpSplitMaxExtend,
 		efcpSplitSizeThreshold,
-		efcpSplitCount
+		efcpSplitCount,
+		efcpLodFactor,
+		efcpLodOffset,
+		efcpLodMethod
+	};
+	
+	/** Lod method. */
+	enum eLodMethod{
+		elmLowest,
+		elmHighest,
+		elmProjection,
+		elmOrthogonal
 	};
 	
 	
 	
 private:
-	/** Counters struct. */
-	struct sCounters{
-		uint32_t workGroupSize[ 3 ];
-		uint32_t counter;
-	};
-	
-	
 	deoglRenderPlan &pPlan;
 	
-	deoglWorldCSOctree::Ref pWorldCSOctree;
-	
 	deoglSPBlockUBO::Ref pUBOFindConfig;
-	
-	deoglSPBlockSSBO::Ref pSSBOSearchNodes;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
-	
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
+	deoglSPBlockSSBO::Ref pSSBOVisibleElements2;
+	
+	deoglComputeRenderTask::Ref pRTOcclusion;
 	
 	
 	
@@ -89,34 +93,42 @@ public:
 	/** Create render plan compute. */
 	deoglRenderPlanCompute( deoglRenderPlan &plan );
 	
+protected:
 	/** Clean up render plan compute. */
 	~deoglRenderPlanCompute();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** World compute shader octree. */
-	inline const deoglWorldCSOctree::Ref &GetWorldCSOctree() const{ return pWorldCSOctree; }
-	
 	/** Prepare world compute shader octree. */
 	void PrepareWorldCompute();
 	
 	/** Prepare buffers. */
 	void PrepareBuffers();
 	
+	/** Read visible elements. */
 	void ReadVisibleElements();
 	
+	/** Update element geometries. */
 	void UpdateElementGeometries();
 	
+	/** Build occlusion render task. */
+	void BuildRTOcclusion( const deoglRenderPlanMasked *mask );
+	
+	/** Ready occlusion render task. */
+	void ReadyRTOcclusion( const deoglRenderPlanMasked *mask );
+	
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
-	
-	inline const deoglSPBlockSSBO::Ref &GetSSBOSearchNodes() const{ return pSSBOSearchNodes; }
-	
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
-	
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{ return pSSBOVisibleElements2; }
+	
+	void SwapVisibleElements();
+	
+	inline const deoglComputeRenderTask::Ref &GetRTOcclusion() const{ return pRTOcclusion; }
 	/*@}*/
 	
 	
@@ -124,7 +136,6 @@ public:
 protected:
 	void pPrepareFindConfig();
 	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
-	void pClearCounters();
 	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );
 	void pCalculateFrustumBoundaryBox( decDVector &frustumMinExtend, decDVector &frustumMaxExtend );
 	float pCalculateErrorScaling();

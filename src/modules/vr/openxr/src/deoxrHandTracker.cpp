@@ -26,6 +26,7 @@
 #include "deoxrHandTracker.h"
 #include "deoxrSession.h"
 #include "deoxrUtils.h"
+#include "device/deoxrDevice.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
@@ -60,8 +61,9 @@ deInputDevice::eHandBones ptip, float angle0, float angle1 ){
 // class deoxrHandTracker
 ///////////////////////////
 
-deoxrHandTracker::deoxrHandTracker( deoxrSession &session, XrHandEXT hand, deoxrSpace &space ) :
+deoxrHandTracker::deoxrHandTracker( deoxrSession &session, deoxrDevice &device, XrHandEXT hand ) :
 pSession( session ),
+pDevice( device ),
 pHand( hand ),
 pHandTracker( XR_NULL_HANDLE ),
 pJointLocations( nullptr ),
@@ -119,10 +121,12 @@ pMapBoneXrToDeCount( 0 )
 			pJointLocations[ pJointCount ].radius = 0.01f;
 		}
 		
-		// initialize structures used to fetch joints
+		// initialize structures used to fetch joints. we use always session space
+		// not device space if present due to bugs in vr drivers causing hand tracking
+		// to be always reported in world space instead of the space we tell it to use
 		memset( &pLocateInfo, 0, sizeof( pLocateInfo ) );
 		pLocateInfo.type = XR_TYPE_HAND_JOINTS_LOCATE_INFO_EXT;
-		pLocateInfo.baseSpace = space.GetSpace();
+		pLocateInfo.baseSpace = session.GetSpace()->GetSpace();
 		
 		memset( &pLocations, 0, sizeof( pLocations ) );
 		pLocations.type = XR_TYPE_HAND_JOINT_LOCATIONS_EXT;
@@ -215,15 +219,28 @@ void deoxrHandTracker::Locate(){
 		return;
 	}
 	
+	decMatrix invDeviceMatrix;
 	int i;
+
+	if( pDevice.GetSpacePose() ){
+		const deInputDevicePose &pose = pDevice.GetDirectDevicePose();
+		invDeviceMatrix = decMatrix::CreateWorld( pose.GetPosition(), pose.GetOrientation() ).QuickInvert();
+	}
+
 	for( i=0; i<pMapBoneXrToDeCount; i++ ){
 		const sBoneMapping &mapping = pMapBoneXrToDe[ i ];
 		
-		mapping.bone->SetPosition( deoxrUtils::Convert( mapping.location->pose.position ) );
-		mapping.bone->SetOrientation( deoxrUtils::Convert( mapping.location->pose.orientation ) );
+		const decMatrix matrix( decMatrix::CreateWorld(
+			deoxrUtils::Convert( mapping.location->pose.position ),
+			deoxrUtils::Convert( mapping.location->pose.orientation ) ) * invDeviceMatrix );
+
+		mapping.bone->SetPosition( matrix.GetPosition() );
+		mapping.bone->SetOrientation( matrix.ToQuaternion() );
 		
-		mapping.bone->SetLinearVelocity( deoxrUtils::Convert( mapping.velocity->linearVelocity ) );
-		mapping.bone->SetAngularVelocity( deoxrUtils::ConvertEuler( mapping.velocity->angularVelocity ) );
+		mapping.bone->SetLinearVelocity( invDeviceMatrix.TransformNormal(
+			deoxrUtils::Convert( mapping.velocity->linearVelocity ) ) );
+		mapping.bone->SetAngularVelocity( invDeviceMatrix.TransformNormal(
+			deoxrUtils::ConvertEuler( mapping.velocity->angularVelocity ) ) );
 	}
 	
 	/*{

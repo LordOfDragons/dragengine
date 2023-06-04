@@ -25,6 +25,8 @@
 #include "dearRuleForeignState.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
@@ -63,14 +65,17 @@ dearRule( instance, animator, firstLink, rule ),
 
 pForeignState( rule ),
 pForeignBone( -1 ),
+pForeignVPS( -1 ),
 
 pTargetPosition( rule.GetTargetPosition(), firstLink ),
 pTargetOrientation( rule.GetTargetOrientation(), firstLink ),
 pTargetSize( rule.GetTargetSize(), firstLink ),
+pTargetVPS( rule.GetTargetVertexPositionSet(), firstLink ),
 
 pScalePosition( rule.GetScalePosition() ),
 pScaleOrientation( rule.GetScaleOrientation() ),
 pScaleSize( rule.GetScaleSize() ),
+pScaleVPS( rule.GetScaleVertexPositionSet() ),
 pSourceCoordFrame( rule.GetSourceCoordinateFrame() ),
 pDestCoordFrame( rule.GetDestCoordinateFrame() ),
 pLockX( ! rule.GetModifyX() ),
@@ -79,7 +84,8 @@ pLockZ( ! rule.GetModifyZ() ),
 pLockNone( ! pLockX && ! pLockY && ! pLockZ ),
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() )
+pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() )
 {
 	RuleChanged();
 }
@@ -92,7 +98,7 @@ dearRuleForeignState::~dearRuleForeignState(){
 // Management
 ///////////////
 
-void dearRuleForeignState::Apply( dearBoneStateList &stalist ){
+void dearRuleForeignState::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;
@@ -106,16 +112,19 @@ DEBUG_RESET_TIMERS;
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	const dearAnimatorInstance &instance = GetInstance();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	// controller affected values
-	const float scalePosition = decMath::clamp( pTargetPosition.GetValue( instance, pScalePosition ), 0.0f, 1.0f );
-	const float scaleOrientation = decMath::clamp( pTargetOrientation.GetValue( instance, pScaleOrientation ), 0.0f, 1.0f );
-	const float scaleSize = decMath::clamp( pTargetSize.GetValue( instance, pScaleSize ), 0.0f, 1.0f );
+	const float scalePosition = pTargetPosition.GetValue( instance, pScalePosition );
+	const float scaleOrientation = pTargetOrientation.GetValue( instance, pScaleOrientation );
+	const float scaleSize = pTargetSize.GetValue( instance, pScaleSize );
+	const float scaleVPS = pTargetVPS.GetValue( instance, pScaleVPS );
 	
 	// calculate the foreign state
 	decVector scale( 1.0f, 1.0f, 1.0f );
 	decQuaternion orientation;
+	float weight = 0.0f;
 	decVector position;
 	decMatrix matrix;
 	
@@ -161,6 +170,10 @@ DEBUG_RESET_TIMERS;
 			}
 			break;
 		}
+	}
+	
+	if( pForeignVPS != -1 && pEnableVPS ){
+		weight = vpsstalist.GetStateAt( pForeignVPS ).GetWeight() * scaleVPS;
 	}
 	
 	// apply state.
@@ -301,6 +314,14 @@ DEBUG_RESET_TIMERS;
 			break;
 		}
 	}
+	
+	for( i=0; i<vpsCount; i++ ){
+		const int animatorVps = GetVPSMappingFor( i );
+		if( animatorVps == -1 ){
+			continue;
+		}
+		vpsstalist.GetStateAt( animatorVps ).BlendWith( weight, blendMode, blendFactor, pEnableVPS );
+	}
 DEBUG_PRINT_TIMER;
 }
 
@@ -319,4 +340,5 @@ void dearRuleForeignState::RuleChanged(){
 
 void dearRuleForeignState::pUpdateForeignBone(){
 	pForeignBone = GetInstance().GetBoneStateList().IndexOfStateNamed( pForeignState.GetForeignBone() );
+	pForeignVPS = GetInstance().GetVPSStateList().IndexOfStateNamed( pForeignState.GetForeignVertexPositionSet() );
 }

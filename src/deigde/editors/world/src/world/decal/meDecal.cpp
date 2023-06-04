@@ -923,7 +923,7 @@ void meDecal::pLoadSkin(){
 			skin = skinMgr->LoadSkin( pSkinPath, "/" );
 			
 		}catch( const deException & ){
-			skin = pEnvironment->GetErrorSkin();
+			skin = pEnvironment->GetStockSkin( igdeEnvironment::essError );
 			skin->AddReference();
 		}
 	}

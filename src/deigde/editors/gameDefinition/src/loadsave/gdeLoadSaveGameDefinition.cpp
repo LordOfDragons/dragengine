@@ -135,9 +135,9 @@ decBaseFileWriter &writer ){
 
 void gdeLoadSaveGameDefinition::pReadGameDefinition( const decXmlElementTag &root, gdeGameDefinition &gameDefinition ){
 	const int elementCount = root.GetElementCount();
-	decStringSet autoFindPathObjectClasses;
-	decStringSet autoFindPathSkins;
-	decStringSet autoFindPathSkies;
+	decStringList autoFindPathObjectClasses;
+	decStringList autoFindPathSkins;
+	decStringList autoFindPathSkies;
 	decStringList baseGameDefIDs;
 	int i;
 	
@@ -198,13 +198,22 @@ void gdeLoadSaveGameDefinition::pReadGameDefinition( const decXmlElementTag &roo
 			pReadProperty( *tag, gameDefinition.GetDecalProperties() );
 			
 		}else if( tagName == "findPathClasses" ){
-			autoFindPathObjectClasses.Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			if( cdata && ! autoFindPathObjectClasses.Has( cdata ) ){
+				autoFindPathObjectClasses.Add( cdata );
+			}
 			
 		}else if( tagName == "findPathSkins" ){
-			autoFindPathSkins.Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			if( cdata && ! autoFindPathSkins.Has( cdata ) ){
+				autoFindPathSkins.Add( cdata );
+			}
 			
 		}else if( tagName == "findPathSkies" ){
-			autoFindPathSkies.Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			if( cdata && ! autoFindPathSkies.Has( cdata ) ){
+				autoFindPathSkies.Add( cdata );
+			}
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
@@ -2171,19 +2180,19 @@ const gdeGameDefinition &gameDefinition ){
 	pWriteProperties( writer, gameDefinition.GetDecalProperties(), "decalProperty" );
 	
 	// auto find path
-	const decStringSet &autoFindPathObjectClasses = gameDefinition.GetAutoFindPathObjectClasses();
+	const decStringList &autoFindPathObjectClasses = gameDefinition.GetAutoFindPathObjectClasses();
 	int autoFindPathCount = autoFindPathObjectClasses.GetCount();
 	for( i=0; i<autoFindPathCount; i++ ){
 		writer.WriteDataTagString( "findPathClasses", autoFindPathObjectClasses.GetAt( i ) );
 	}
 	
-	const decStringSet &autoFindPathSkins = gameDefinition.GetAutoFindPathSkins();
+	const decStringList &autoFindPathSkins = gameDefinition.GetAutoFindPathSkins();
 	autoFindPathCount = autoFindPathSkins.GetCount();
 	for( i=0; i<autoFindPathCount; i++ ){
 		writer.WriteDataTagString( "findPathSkins", autoFindPathSkins.GetAt( i ) );
 	}
 	
-	const decStringSet &autoFindPathSkies = gameDefinition.GetAutoFindPathSkies();
+	const decStringList &autoFindPathSkies = gameDefinition.GetAutoFindPathSkies();
 	autoFindPathCount = autoFindPathSkies.GetCount();
 	for( i=0; i<autoFindPathCount; i++ ){
 		writer.WriteDataTagString( "findPathSkies", autoFindPathSkies.GetAt( i ) );

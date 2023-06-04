@@ -689,25 +689,25 @@ void ceWDSLane::CreateCanvas(){
 	pCanvas.TakeOver( canvasManager.CreateCanvasView() );
 	
 	pCanvasPanelSheet.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasPanelSheet->SetOrder( pCanvas->GetCanvasCount() );
+	pCanvasPanelSheet->SetOrder( ( float )pCanvas->GetCanvasCount() );
 	pCanvas->AddCanvas( pCanvasPanelSheet );
 	
 	pCanvasBar.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasBar->SetFillColor( colorBarFill );
 	pCanvasBar->SetLineColor( colorBarLine );
 	pCanvasBar->SetThickness( 1 );
-	pCanvasBar->SetOrder( pCanvasPanelSheet->GetCanvasCount() );
+	pCanvasBar->SetOrder( ( float )pCanvasPanelSheet->GetCanvasCount() );
 	pCanvasPanelSheet->AddCanvas( pCanvasBar );
 	
 	pCanvasBarSelection.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasBarSelection->SetFillColor( colorBarSelectionFill );
 	pCanvasBarSelection->SetThickness( 0 );
 	pCanvasBarSelection->SetVisible( false );
-	pCanvasBarSelection->SetOrder( pCanvasPanelSheet->GetCanvasCount() );
+	pCanvasBarSelection->SetOrder( ( float )pCanvasPanelSheet->GetCanvasCount() );
 	pCanvasPanelSheet->AddCanvas( pCanvasBarSelection );
 	
 	pCanvasHandles.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasHandles->SetOrder( pCanvasPanelSheet->GetCanvasCount() );
+	pCanvasHandles->SetOrder( ( float )pCanvasPanelSheet->GetCanvasCount() );
 	pCanvasPanelSheet->AddCanvas( pCanvasHandles );
 }
 
@@ -843,7 +843,7 @@ void ceWDSLane::RebuildCanvas(){
 			
 			strip.stripId.TakeOver( canvasManager.CreateCanvasText() );
 			strip.stripId->SetFont( font );
-			strip.stripId->SetFontSize( font->GetLineHeight() );
+			strip.stripId->SetFontSize( ( float )font->GetLineHeight() );
 			strip.stripId->SetColor( colorText );
 			
 			pStrips.Add( refStrip );
@@ -851,16 +851,16 @@ void ceWDSLane::RebuildCanvas(){
 		
 		cStrip &strip = *( ( cStrip* )pStrips.GetAt( i ) );
 		
-		strip.handlePause->SetOrder( pCanvasHandles->GetCanvasCount() );
+		strip.handlePause->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
 		pCanvasHandles->AddCanvas( strip.handlePause );
 		
-		strip.handleDuration->SetOrder( pCanvasHandles->GetCanvasCount() );
+		strip.handleDuration->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
 		pCanvasHandles->AddCanvas( strip.handleDuration );
 		
-		strip.stripIdBg->SetOrder( pCanvasHandles->GetCanvasCount() );
+		strip.stripIdBg->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
 		pCanvasHandles->AddCanvas( strip.stripIdBg );
 		
-		strip.stripId->SetOrder( pCanvasHandles->GetCanvasCount() );
+		strip.stripId->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
 		pCanvasHandles->AddCanvas( strip.stripId );
 	}
 }

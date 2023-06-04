@@ -22,6 +22,8 @@
 #ifndef _IGDEEDITORMODULEDEFINITION_H_
 #define _IGDEEDITORMODULEDEFINITION_H_
 
+#include <dragengine/dragengine_configuration.h>
+
 #if defined( HAS_LIB_DL )
 #include <dlfcn.h>
 

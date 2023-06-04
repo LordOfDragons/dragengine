@@ -31,7 +31,7 @@ class igdeUIHelper;
 class igdeUndoSystem;
 class igdeUndo;
 
-class decStringSet;
+class decStringList;
 
 
 /**
@@ -44,10 +44,11 @@ private:
 	igdeEditPathReference pEditPath;
 	igdeListBoxReference pListBox;
 	
-	const decStringSet *pPathList;
+	const decStringList *pPathList;
 	igdeUndoSystem *pUndoSystem;
 	
-	igdeActionReference pActionAdd;
+	igdeActionReference pActionAppend;
+	igdeActionReference pActionInsert;
 	igdeActionReference pActionRemove;
 	igdeActionReference pActionClear;
 	
@@ -70,10 +71,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path list to edit. */
-	inline const decStringSet *GetPathList() const{ return pPathList; }
+	inline const decStringList *GetPathList() const{ return pPathList; }
 	
 	/** \brief Set path list to edit. */
-	void SetPathList( const decStringSet *pathList );
+	void SetPathList( const decStringList *pathList );
 	
 	/** \brief Undo system or NULL. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
@@ -95,7 +96,8 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
+	inline igdeAction *GetActionAppend() const{ return pActionAppend; }
+	inline igdeAction *GetActionInsert() const{ return pActionInsert; }
 	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
 	inline igdeAction *GetActionClear() const{ return pActionClear; }
 	/*@}*/
@@ -104,7 +106,7 @@ public:
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoSet( const decStringSet &paths ) = 0;
+	virtual igdeUndo *UndoSet( const decStringList &paths ) = 0;
 	/*@}*/
 	
 	

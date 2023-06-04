@@ -30,10 +30,12 @@
 
 class deoglRenderThread;
 class deoglPipeline;
-class deoglTexUnitsConfig;
-class deoglVAO;
 class deoglRenderTaskSharedInstance;
+class deoglRenderTaskSharedTexture;
+class deoglRenderTaskSharedVAO;
 class deoglWorldCompute;
+class deoglRTLogger;
+
 
 
 /**
@@ -51,37 +53,52 @@ public:
 		ecpRenderTaskFilterMask,
 		ecpFilterPipelineLists,
 		ecpPipelineType,
-		ecpPipelineModifier
+		ecpPipelineModifier,
+		ecpPipelineDoubleSided,
+		ecpPipelineSingleSided
 	};
 	
 	/** Task parameters. */
 	enum eTaskParameters{
+		etpPass,
 		etpPipeline,
 		etpTuc,
 		etpVao,
 		etpInstance,
 		etpSpbInstance,
-		etpSpecialFlags
+		etpSpecialFlags,
+		etpSubInstanceCount
 	};
 	
-	/** Task. */
-	struct sTask{
+	/** Step. */
+	struct sStep{
+		uint32_t pass;
 		uint32_t pipeline;
 		uint32_t tuc;
 		uint32_t vao;
 		uint32_t instance;
-		uint32_t spbInstance;
+		uint32_t spbInstance; // SPBInstance + 1
 		uint32_t specialFlags;
+		uint32_t subInstanceCount;
 	};
 	
-	/** Task resolved. */
-	struct sTaskResolved{
-		const deoglPipeline *pipeline;
-		const deoglTexUnitsConfig *tuc;
-		const deoglVAO *vao;
-		const deoglRenderTaskSharedInstance *instance;
-		int spbInstance;
-		int specialFlags;
+	/** Stage. */
+	enum eStates{
+		esInitial,
+		esPreparing,
+		esBuilding,
+		esReady
+	};
+	
+	/** Prepare guard. */
+	class cGuard{
+	private:
+		deoglComputeRenderTask &pRenderTask;
+		const deoglWorldCompute &pWorldCompute;
+		
+	public:
+		cGuard( deoglComputeRenderTask &renderTask, const deoglWorldCompute &worldCompute, int passCount );
+		~cGuard();
 	};
 	
 	
@@ -91,18 +108,36 @@ private:
 	
 	deoglSPBlockUBO::Ref pUBOConfig;
 	deoglSPBlockSSBO::Ref pSSBOSteps;
+	deoglSPBlockSSBO::Ref pSSBOCounters;
 	
+	eStates pState;
+	int pPassCount;
+	int pPass;
+	
+	bool pUseSPBInstanceFlags;
 	bool pRenderVSStereo;
+	deoglSPBlockUBO::Ref pRenderParamBlock;
 	
 	int pSkinPipelineLists;
 	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
+	int pSkinPipelineModifier;
 	
 	bool pSolid;
+	bool pFilterSolid;
+	
 	bool pNoShadowNone;
 	bool pNoNotReflected;
 	bool pNoRendered;
 	bool pOutline;
 	bool pForceDoubleSided;
+	bool pOcclusion;
+	
+	bool pShadow;
+	bool pFilterShadow;
+	bool pCompactShadow;
+	
+	bool pFilterDoubleSided;
+	bool pDoubleSided;
 	
 	bool pFilterXRay;
 	bool pXRay;
@@ -115,11 +150,19 @@ private:
 	
 	int pFilterCubeFace;
 	
+	const deoglPipeline *pPipelineDoubleSided;
+	const deoglPipeline *pPipelineSingleSided;
+	
 	int pFilters;
 	int pFilterMask;
 	int pFiltersMasked;
 	
 	bool pUseSpecialParamBlock;
+	
+	sStep *pSteps;
+	int pStepCount;
+	int pStepSize;
+	bool pSkipSubInstanceGroups;
 	
 	
 	
@@ -146,18 +189,68 @@ public:
 	/** Render steps SSBO. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOSteps() const{ return pSSBOSteps; }
 	
+	/** Counters SSBO. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
 	
+	
+	
+	/** State. */
+	inline eStates GetState() const{ return pState; }
+	
+	/** Begin preparing render task. */
+	void BeginPrepare( int passCount );
 	
 	/** Clear. */
 	void Clear();
 	
+	/** End pass switching to the next one. */
+	void EndPass( const deoglWorldCompute &worldCompute );
 	
+	/** Finish preparing render task. */
+	void EndPrepare( const deoglWorldCompute &worldCompute );
+	
+	/**
+	 * Read back render task steps.
+	 * 
+	 * Checks first if the counters are less than or equal to the steps SSBO element count.
+	 * 
+	 * If the SSBO has not been large enough the SSBO is enlarged, the counter is reset,
+	 * the stage set to esBuilding and false is returned. In this case the caller has to
+	 * rebuild the render task and call ReadBackSteps() again.
+	 * 
+	 * If the SSBO is large enough reading back is done and true is returned. This prevents
+	 * the steps SSBO from growing very large compared to the size required consuming lots
+	 * of GPU memory for nothing
+	 */
+	bool ReadBackSteps();
+	
+	/** Render task. */
+	void Render();
+	
+	
+	
+	/** Pass count. */
+	inline int GetPassCount() const{ return pPassCount; }
+	
+	
+	
+	/** Use SPB instance flags. */
+	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
+	
+	/** Set use instance flags. */
+	void SetUseSPBInstanceFlags( bool useFlags );
 	
 	/** Use vertex shader stereo rendering. */
 	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
 	
 	/** Set use vertex shader stereo rendering. */
 	void SetRenderVSStereo( bool renderVSStereo );
+	
+	/** Render parameter shader parameter block or nullptr. */
+	inline const deoglSPBlockUBO::Ref &GetRenderParamBlock() const{ return pRenderParamBlock; }
+	
+	/** Set render parameter shader parameter block or nullptr. */
+	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
 	
 	
 	
@@ -179,6 +272,12 @@ public:
 	/** Set pipeline type. */
 	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
 	
+	/** Pipeline modifier. */
+	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
+	
+	/** Set pipeline modifier. */
+	void SetSkinPipelineModifier( int modifier );
+	
 	
 	
 	/** Solid or transparent textures are added. */
@@ -186,6 +285,14 @@ public:
 	
 	/** Set if solid or transparent texture are added. */
 	void SetSolid( bool solid );
+	
+	/** Filter solid. */
+	inline bool GetFilterSolid() const{ return pFilterSolid; }
+	
+	/** Set to filter solid. */
+	void SetFilterSolid( bool filterSolid );
+	
+	
 	
 	/** Textures with the shadow none property are not added. */
 	inline bool GetNoShadowNone() const{ return pNoShadowNone; }
@@ -216,6 +323,46 @@ public:
 	
 	/** Set to force double sided. */
 	void SetForceDoubleSided( bool forceDoubleSided );
+	
+	/** Occlusion. */
+	inline bool GetOcclusion() const{ return pOcclusion; }
+	
+	/** Set occlusion. */
+	void SetOcclusion( bool occlusion );
+	
+	
+	
+	/** Shadow. */
+	inline bool GetShadow() const{ return pShadow; }
+	
+	/** Set shadow. */
+	void SetShadow( bool shadow );
+	
+	/** Filter shadow. */
+	inline bool GetFilterShadow() const{ return pFilterShadow; }
+	
+	/** Set filter shadow. */
+	void SetFilterShadow( bool filter );
+	
+	/** Compact shadow. */
+	inline bool GetCompactShadow() const{ return pCompactShadow; }
+	
+	/** Set compact shadow. */
+	void SetCompactShadow( bool compactShadow );
+	
+	
+	
+	/** Filtering for double sided is enabled. */
+	inline bool GetFilterDoubleSided() const{ return pFilterDoubleSided; }
+	
+	/** Set if filtering for double sided is enabled. */
+	void SetFilterDoubleSided( bool filterDoubleSided );
+	
+	/** Double sided textures are added. */
+	inline bool GetDoubleSided() const{ return pDoubleSided; }
+	
+	/** Set if double sided texture are added. */
+	void SetDoubleSided( bool doubleSided );
 	
 	
 	
@@ -269,6 +416,20 @@ public:
 	
 	
 	
+	/** Pipeline for double sided occlusion or nullptr. */
+	inline const deoglPipeline *GetPipelineDoubleSided() const{ return pPipelineDoubleSided; }
+	
+	/** Set pipeline for double sided occlusion or nullptr. */
+	void SetPipelineDoubleSided( const deoglPipeline *pipeline );
+	
+	/** Pipeline for single sided occlusion or nullptr. */
+	inline const deoglPipeline *GetPipelineSingleSided() const{ return pPipelineSingleSided; }
+	
+	/** Set pipeline for single sided occlusion or nullptr. */
+	void SetPipelineSingleSided( const deoglPipeline *pipeline );
+	
+	
+	
 	/** Use special shader parameter blocks. */
 	inline bool GetUseSpecialParamBlock() const{ return pUseSpecialParamBlock; }
 	
@@ -277,15 +438,29 @@ public:
 	
 	
 	
-	/** Prepare buffers. */
-	void PrepareBuffers( const deoglWorldCompute &worldCompute );
+	/** Count of steps. */
+	inline int GetStepCount() const{ return pStepCount; }
+	
+	/** Render steps direct access or nullptr if not mapped. */
+	inline const sStep *GetSteps() const{ return pSteps; }
+	
+	/** Skip sub instance groups. */
+	inline bool GetSkipSubInstanceGroups() const{ return pSkipSubInstanceGroups; }
+	/*@}*/
+	
+	
+	
+	/** \name Debug */
+	/*@{*/
+	/** Debug print. */
+	void DebugSimple( deoglRTLogger &logger, bool sorted );
 	/*@}*/
 	
 	
 	
 private:
-	void pPrepareConfig( const deoglWorldCompute &worldCompute );
 	void pRenderFilter( int &filter, int &mask ) const;
+	void pClearCounters();
 };
 
 #endif

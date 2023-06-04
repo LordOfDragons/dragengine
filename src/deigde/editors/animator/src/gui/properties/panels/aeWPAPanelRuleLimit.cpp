@@ -35,6 +35,8 @@
 #include "../../../undosys/rule/limit/aeURuleLimitSetRotMax.h"
 #include "../../../undosys/rule/limit/aeURuleLimitSetScaleMin.h"
 #include "../../../undosys/rule/limit/aeURuleLimitSetScaleMax.h"
+#include "../../../undosys/rule/limit/aeURuleLimitSetVertexPositionSetMin.h"
+#include "../../../undosys/rule/limit/aeURuleLimitSetVertexPositionSetMax.h"
 #include "../../../undosys/rule/limit/aeURuleLimitSetCFrame.h"
 #include "../../../undosys/rule/limit/aeURuleLimitSetEnablePosXMin.h"
 #include "../../../undosys/rule/limit/aeURuleLimitSetEnablePosXMax.h"
@@ -54,6 +56,8 @@
 #include "../../../undosys/rule/limit/aeURuleLimitSetEnableScaleYMax.h"
 #include "../../../undosys/rule/limit/aeURuleLimitSetEnableScaleZMin.h"
 #include "../../../undosys/rule/limit/aeURuleLimitSetEnableScaleZMax.h"
+#include "../../../undosys/rule/limit/aeURuleLimitSetEnableVertexPositionSetMin.h"
+#include "../../../undosys/rule/limit/aeURuleLimitSetEnableVertexPositionSetMax.h"
 #include "../../../undosys/rule/limit/aeURuleLimitSetTargetBone.h"
 #include "../../../animatoreditor.h"
 
@@ -63,6 +67,8 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -182,6 +188,30 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator *animator, aeRuleLimit *rule ) = 0;
 };
 
+class cBaseTextFieldListener : public igdeTextFieldListener{
+protected:
+	aeWPAPanelRuleLimit &pPanel;
+	
+public:
+	cBaseTextFieldListener( aeWPAPanelRuleLimit &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		aeAnimator * const animator = pPanel.GetAnimator();
+		aeRuleLimit * const rule = ( aeRuleLimit* )pPanel.GetRule();
+		if( ! animator || ! rule ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( textField, animator, rule ) );
+		if( undo ){
+			animator->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator *animator, aeRuleLimit *rule ) = 0;
+};
+
 
 class cEditPositionMinimum : public cBaseEditVectorListener{
 public:
@@ -240,6 +270,28 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule ){
 		return ! editVector->GetVector().IsEqualTo( rule->GetMaximumScaling() )
 			? new aeURuleLimitSetScaleMax( rule, editVector->GetVector() ) : NULL;
+	}
+};
+
+class cEditVertexPositionSetMinimum : public cBaseTextFieldListener{
+public:
+	cEditVertexPositionSetMinimum( aeWPAPanelRuleLimit &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleLimit *rule ){
+		const float value = textField->GetFloat();
+		return fabsf( value - rule->GetMinimumVertexPositionSet() ) > FLOAT_SAFE_EPSILON
+			? new aeURuleLimitSetVertexPositionSetMin( rule, value ) : nullptr;
+	}
+};
+
+class cEditVertexPositionSetMaximum : public cBaseTextFieldListener{
+public:
+	cEditVertexPositionSetMaximum( aeWPAPanelRuleLimit &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleLimit *rule ){
+		const float value = textField->GetFloat();
+		return fabsf( value - rule->GetMaximumVertexPositionSet() ) > FLOAT_SAFE_EPSILON
+			? new aeURuleLimitSetVertexPositionSetMax( rule, value ) : nullptr;
 	}
 };
 
@@ -307,7 +359,7 @@ public:
 class cActionEnablePositionMaxX : public cBaseAction{
 public:
 	cActionEnablePositionMaxX( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
-		"X", NULL, "Determaxes if the x position of bones is limited against the maximum" ){ }
+		"X", NULL, "Determines if the x position of bones is limited against the maximum" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
 		return new aeURuleLimitSetEnablePosXMax( rule );
@@ -322,7 +374,7 @@ public:
 class cActionEnablePositionMaxY : public cBaseAction{
 public:
 	cActionEnablePositionMaxY( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
-		"Y", NULL, "Determaxes if the y position of bones is limited against the maximum" ){ }
+		"Y", NULL, "Determines if the y position of bones is limited against the maximum" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
 		return new aeURuleLimitSetEnablePosYMax( rule );
@@ -337,7 +389,7 @@ public:
 class cActionEnablePositionMaxZ : public cBaseAction{
 public:
 	cActionEnablePositionMaxZ( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
-		"Z", NULL, "Determaxes if the z position of bones is limited against the maximum" ){ }
+		"Z", NULL, "Determines if the z position of bones is limited against the maximum" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
 		return new aeURuleLimitSetEnablePosZMax( rule );
@@ -398,7 +450,7 @@ public:
 class cActionEnableRotationMaxX : public cBaseAction{
 public:
 	cActionEnableRotationMaxX( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
-		"X", NULL, "Determaxes if the x rotation of bones is limited against the maximum" ){ }
+		"X", NULL, "Determines if the x rotation of bones is limited against the maximum" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
 		return new aeURuleLimitSetEnableRotXMax( rule );
@@ -413,7 +465,7 @@ public:
 class cActionEnableRotationMaxY : public cBaseAction{
 public:
 	cActionEnableRotationMaxY( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
-		"Y", NULL, "Determaxes if the y rotation of bones is limited against the maximum" ){ }
+		"Y", NULL, "Determines if the y rotation of bones is limited against the maximum" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
 		return new aeURuleLimitSetEnableRotYMax( rule );
@@ -428,7 +480,7 @@ public:
 class cActionEnableRotationMaxZ : public cBaseAction{
 public:
 	cActionEnableRotationMaxZ( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
-		"Z", NULL, "Determaxes if the z rotation of bones is limited against the maximum" ){ }
+		"Z", NULL, "Determines if the z rotation of bones is limited against the maximum" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
 		return new aeURuleLimitSetEnableRotZMax( rule );
@@ -489,7 +541,7 @@ public:
 class cActionEnableScalingMaxX : public cBaseAction{
 public:
 	cActionEnableScalingMaxX( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
-		"X", NULL, "Determaxes if the x scaling of bones is limited against the maximum" ){ }
+		"X", NULL, "Determines if the x scaling of bones is limited against the maximum" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
 		return new aeURuleLimitSetEnableScaleXMax( rule );
@@ -504,7 +556,7 @@ public:
 class cActionEnableScalingMaxY : public cBaseAction{
 public:
 	cActionEnableScalingMaxY( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
-		"Y", NULL, "Determaxes if the y scaling of bones is limited against the maximum" ){ }
+		"Y", NULL, "Determines if the y scaling of bones is limited against the maximum" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
 		return new aeURuleLimitSetEnableScaleYMax( rule );
@@ -519,7 +571,7 @@ public:
 class cActionEnableScalingMaxZ : public cBaseAction{
 public:
 	cActionEnableScalingMaxZ( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
-		"Z", NULL, "Determaxes if the z scaling of bones is limited against the maximum" ){ }
+		"Z", NULL, "Determines if the z scaling of bones is limited against the maximum" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
 		return new aeURuleLimitSetEnableScaleZMax( rule );
@@ -528,6 +580,36 @@ public:
 	virtual void Update( const aeAnimator & , const aeRuleLimit &rule ){
 		SetEnabled( true );
 		SetSelected( rule.GetEnableScalingZMax() );
+	}
+};
+
+class cActionEnableVertexPositionSetMin : public cBaseAction{
+public:
+	cActionEnableVertexPositionSetMin( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
+		"Minimum", nullptr, "Scaling of vertex position sets is limited against the minimum" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
+		return new aeURuleLimitSetEnableVertexPositionSetMin( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleLimit &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetEnableVertexPositionSetMin() );
+	}
+};
+
+class cActionEnableVertexPositionSetMax : public cBaseAction{
+public:
+	cActionEnableVertexPositionSetMax( aeWPAPanelRuleLimit &panel ) : cBaseAction( panel,
+		"Maximum", nullptr, "Scaling of vertex position sets is limited against the maximum" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleLimit *rule ){
+		return new aeURuleLimitSetEnableVertexPositionSetMax( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleLimit &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetEnableVertexPositionSetMax() );
 	}
 };
 
@@ -577,6 +659,11 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertLimit )
 	helper.EditVector( groupBox, "Max Scaling:", "Maximum scaling",
 		pEditMaxScale, new cEditScalingMaximum( *this ) );
 	
+	helper.EditFloat( groupBox, "Min Vertex Position Set:", "Minimum vertex position set",
+		pEditMinVertexPositionSet, new cEditVertexPositionSetMinimum( *this ) );
+	helper.EditFloat( groupBox, "Max Vertex Position Set:", "Maximum vertex position set",
+		pEditMaxVertexPositionSet, new cEditVertexPositionSetMaximum( *this ) );
+	
 	helper.ComboBox( groupBox, "Coord-Frame:", "Sets the coordinate frame to use for rotation",
 		pCBCoordFrame, new cComboCoordFrame( *this ) );
 	pCBCoordFrame->AddItem( "Bone Local", NULL, ( void* )( intptr_t )deAnimatorRuleLimit::ecfBoneLocal );
@@ -616,6 +703,10 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertLimit )
 	helper.CheckBoxOnly( formLine, pChkEnableScaleXMax, new cActionEnableScalingMaxX( *this ), true );
 	helper.CheckBoxOnly( formLine, pChkEnableScaleYMax, new cActionEnableScalingMaxY( *this ), true );
 	helper.CheckBoxOnly( formLine, pChkEnableScaleZMax, new cActionEnableScalingMaxZ( *this ), true );
+	
+	helper.FormLine( groupBox, "Enable Vertex Position Set", "Limit vertex position set", formLine );
+	helper.CheckBoxOnly( formLine, pChkEnableVertexPositionSetMin, new cActionEnableVertexPositionSetMin( *this ), true );
+	helper.CheckBoxOnly( formLine, pChkEnableVertexPositionSetMax, new cActionEnableVertexPositionSetMax( *this ), true );
 }
 
 aeWPAPanelRuleLimit::~aeWPAPanelRuleLimit(){
@@ -661,6 +752,8 @@ void aeWPAPanelRuleLimit::UpdateRule(){
 		pEditMaxRot->SetVector( rule->GetMaximumRotation() );
 		pEditMinScale->SetVector( rule->GetMinimumScaling() );
 		pEditMaxScale->SetVector( rule->GetMaximumScaling() );
+		pEditMinVertexPositionSet->SetFloat( rule->GetMinimumVertexPositionSet() );
+		pEditMaxVertexPositionSet->SetFloat( rule->GetMaximumVertexPositionSet() );
 		pCBCoordFrame->SetSelectionWithData( ( void* )( intptr_t )rule->GetCoordinateFrame() );
 		pCBTargetBone->SetText( rule->GetTargetBone() );
 		
@@ -671,6 +764,8 @@ void aeWPAPanelRuleLimit::UpdateRule(){
 		pEditMaxRot->SetVector( decVector() );
 		pEditMinScale->SetVector( decVector() );
 		pEditMaxScale->SetVector( decVector() );
+		pEditMinVertexPositionSet->SetFloat( 0.0f );
+		pEditMaxVertexPositionSet->SetFloat( 1.0f );
 		pCBCoordFrame->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleLimit::ecfComponent );
 		pCBTargetBone->ClearText();
 	}
@@ -682,6 +777,8 @@ void aeWPAPanelRuleLimit::UpdateRule(){
 	pEditMaxRot->SetEnabled( enabled );
 	pEditMinScale->SetEnabled( enabled );
 	pEditMaxScale->SetEnabled( enabled );
+	pEditMinVertexPositionSet->SetEnabled( enabled );
+	pEditMaxVertexPositionSet->SetEnabled( enabled );
 	pCBCoordFrame->SetEnabled( enabled );
 	pCBTargetBone->SetEnabled( enabled );
 	
@@ -705,4 +802,7 @@ void aeWPAPanelRuleLimit::UpdateRule(){
 	pChkEnableScaleYMax->GetAction()->Update();
 	pChkEnableScaleZMin->GetAction()->Update();
 	pChkEnableScaleZMax->GetAction()->Update();
+	
+	pChkEnableVertexPositionSetMin->GetAction()->Update();
+	pChkEnableVertexPositionSetMax->GetAction()->Update();
 }

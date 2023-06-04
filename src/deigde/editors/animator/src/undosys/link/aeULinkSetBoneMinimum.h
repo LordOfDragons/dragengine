@@ -29,7 +29,7 @@ class aeLink;
 
 
 /**
- * \brief Undo action set bone minimum.
+ * Undo action set bone minimum.
  */
 class aeULinkSetBoneMinimum : public igdeUndo{
 private:
@@ -41,11 +41,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo action. */
+	/** Create undo action. */
 	aeULinkSetBoneMinimum( aeLink *link, float newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeULinkSetBoneMinimum();
 	/*@}*/
 	
@@ -54,10 +54,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

@@ -32,7 +32,7 @@ class aeLink;
 
 
 /**
- * @brief Undo Link Set Name.
+ * Undo Link Set Name.
  *
  * Sets the name of a link.
  */
@@ -46,19 +46,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeULinkSetName( aeLink *link, const char *newName );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeULinkSetName();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

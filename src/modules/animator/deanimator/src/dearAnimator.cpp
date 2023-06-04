@@ -81,6 +81,10 @@ void dearAnimator::BonesChanged(){
 	pUpdateTracker++;
 }
 
+void dearAnimator::VertexPositionSetsChanged(){
+	pUpdateTracker++;
+}
+
 void dearAnimator::ControllerCountChanged(){
 	pUpdateTracker++;
 }

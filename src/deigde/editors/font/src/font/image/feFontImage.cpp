@@ -70,10 +70,10 @@ feFontImage::feFontImage( deEngine *engine ){
 		const int pixelCount = pWidth * pHeight;
 		int i;
 		for( i=0; i<pixelCount; i++ ){
-			pixels[ i ].red = 0.0f;
-			pixels[ i ].green = 0.0f;
-			pixels[ i ].blue = 0.0f;
-			pixels[ i ].alpha = 1.0f;
+			pixels[ i ].red = 0;
+			pixels[ i ].green = 0;
+			pixels[ i ].blue = 0;
+			pixels[ i ].alpha = 255;
 		}
 		
 		pEngImage->NotifyImageDataChanged();

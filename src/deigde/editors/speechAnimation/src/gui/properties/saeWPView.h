@@ -35,7 +35,7 @@ class saeSAnimation;
 
 
 /**
- * \brief View property window.
+ * View property window.
  */
 class saeWPView : public igdeContainerScroll{
 private:
@@ -55,11 +55,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	saeWPView( saeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~saeWPView();
 	/*@}*/
 	
@@ -68,22 +68,22 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Speech animation. */
+	/** Speech animation. */
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
-	/** \brief Set speech animation. */
+	/** Set speech animation. */
 	void SetSAnimation( saeSAnimation *sanimation );
 	
-	/** \brief Update view. */
+	/** Update view. */
 	void UpdateView();
 	
-	/** \brief Update sky. */
+	/** Update sky. */
 	void UpdateSky();
 	
-	/** \brief Update camera. */
+	/** Update camera. */
 	void UpdateCamera();
 	/*@}*/
 };

@@ -30,7 +30,7 @@ class aeRuleTrackTo;
 
 
 /**
- * @brief Undo Action Rule Track To Set Track Axis.
+ * Undo Action Rule Track To Set Track Axis.
  */
 class aeURuleTrackToSetTrackAxis : public igdeUndo{
 private:
@@ -42,19 +42,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleTrackToSetTrackAxis( aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eTrackAxis newAxis );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleTrackToSetTrackAxis();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

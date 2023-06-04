@@ -153,6 +153,21 @@ void deClassARStateSnapshot::nfSetEnableSize::RunFunction( dsRunTime *rt, dsValu
 	}
 }
 
+// public func void setEnableVertexPositionSet( bool enabled )
+deClassARStateSnapshot::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARSnap, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARStateSnapshot::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void setUseLastState( bool useLastState )
@@ -297,6 +312,7 @@ void deClassARStateSnapshot::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnablePosition( init ) );
 	AddFunction( new nfSetEnableOrientation( init ) );
 	AddFunction( new nfSetEnableSize( init ) );
+	AddFunction( new nfSetEnableVertexPositionSet( init ) );
 	
 	AddFunction( new nfSetUseLastState( init ) );
 	AddFunction( new nfSetID( init ) );

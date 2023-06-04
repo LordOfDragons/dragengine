@@ -33,7 +33,7 @@ class aeAnimator;
 
 
 /**
- * \brief Undo action remove controller.
+ * Undo action remove controller.
  */
 class aeURemoveController : public igdeUndo{
 private:
@@ -48,11 +48,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURemoveController( aeAnimator *animator, aeController *controller );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURemoveController();
 	/*@}*/
 	
@@ -61,10 +61,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

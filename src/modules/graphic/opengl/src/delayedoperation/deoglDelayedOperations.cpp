@@ -29,7 +29,6 @@
 #include "../deGraphicOpenGl.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../debug/deoglDebugSaveTexture.h"
-#include "../extensions/deoglExtResult.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
 #include "../model/deoglModelLOD.h"
@@ -45,6 +44,7 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../shaders/deoglShaderLoadingTimeout.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/combinedTexture/deoglCombinedTexture.h"
 #include "../skin/combinedTexture/deoglCombinedTextureList.h"
@@ -89,10 +89,8 @@ enum eSPGenConeMap{
 
 deoglDelayedOperations::deoglDelayedOperations( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-
 pHasAsyncResInitOperations( false ),
 pHasInitOperations( false ),
-
 pOGLObjects( nullptr ),
 pOGLObjectCount( 0 ),
 pOGLObjectSize( 0 ),
@@ -197,11 +195,10 @@ void deoglDelayedOperations::ProcessInitOperations(){
 	pInitImageList.RemoveAll();
 	
 	// initialize skins
-	count = pInitSkinList.GetCount();
-	for( i=0; i<count; i++ ){
-		pProcessSkin( *( ( deoglRSkin* )pInitSkinList.GetAt( i ) ) );
+	while( pInitSkinList.GetCount() > 0 ){
+		pProcessSkin( *( ( deoglRSkin* )pInitSkinList.GetAt( 0 ) ) );
+		pInitSkinList.RemoveFrom( 0 );
 	}
-	pInitSkinList.RemoveAll();
 	
 	// initialize models
 	count = pInitModelList.GetCount();
@@ -339,6 +336,27 @@ void deoglDelayedOperations::DeleteOpenGLObject( eOpenGLObjectType type, GLuint 
 	}
 	
 	pOGLObjects[ pOGLObjectCount++ ].Set( type, name );
+}
+
+void deoglDelayedOperations::DeleteOpenGLObject( deoglDelayedOperations::eOpenGLObjectType type, GLsync sync ){
+	if( ! sync ){
+		return;
+	}
+	
+	const deMutexGuard lock( pMutexOGLObjects );
+	
+	if( pOGLObjectCount == pOGLObjectSize ){
+		const int newSize = pOGLObjectSize * 3 / 2 + 1;
+		sOpenGLObject * const newArray = new sOpenGLObject[ newSize ];
+		if( pOGLObjects ){
+			memcpy( newArray, pOGLObjects, sizeof( sOpenGLObject ) * pOGLObjectSize );
+			delete [] pOGLObjects;
+		}
+		pOGLObjects = newArray;
+		pOGLObjectSize = newSize;
+	}
+	
+	pOGLObjects[ pOGLObjectCount++ ].Set( type, sync );
 }
 
 
@@ -645,7 +663,7 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 			}
 			*/
 			
-			skinChannel->SetPixelBufferMipMap( NULL );
+			skinChannel->SetPixelBufferMipMap( nullptr );
 		}
 	}
 	
@@ -657,8 +675,12 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 		skinTexture.AssignRTSIndex();
 		
 		skinTexture.PrepareParamBlock();
-		skinTexture.GetPipelines().Prepare();
 	}
+	
+	// this can take some time if pipelines are not prepared yet due to compiling shaders.
+	// asynchonous skins prepare pipelines using the loader thread if enabled. if disabled
+	// or if synchronous this call here prepares the pipelines
+	skin.PrepareTexturePipelines();
 }
 
 void deoglDelayedOperations::pProcessModel( deoglRModel &model ){
@@ -868,6 +890,11 @@ void deoglDelayedOperations::pDeleteOpenGLObjects(){
 			pglDeleteBuffers( 1, &entry.name );
 			break;
 			
+		case eoglotBuffererPersistUnmap:
+			pglUnmapNamedBuffer( entry.name );
+			pglDeleteBuffers( 1, &entry.name );
+			break;
+			
 		case eoglotTexture:
 			glDeleteTextures( 1, &entry.name );
 			break;
@@ -894,6 +921,10 @@ void deoglDelayedOperations::pDeleteOpenGLObjects(){
 			
 		case eoglotShader:
 			pglDeleteShader( entry.name );
+			break;
+			
+		case eoglotSync:
+			pglDeleteSync( entry.sync );
 			break;
 		}
 	}

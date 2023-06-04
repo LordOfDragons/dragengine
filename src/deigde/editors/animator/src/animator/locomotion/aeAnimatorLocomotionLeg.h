@@ -36,7 +36,7 @@ class aeAnimatorLocomotion;
 
 
 /**
- * @brief Animator Locomotion Leg.
+ * Animator Locomotion Leg.
  *
  * Keeps track of a leg in an animator locomotion. A leg stores various
  * parameters required for properly animating a leg on uneven terrain.

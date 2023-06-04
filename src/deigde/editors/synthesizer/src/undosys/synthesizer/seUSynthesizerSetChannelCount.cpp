@@ -37,7 +37,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSynthesizerSetChannelCount::seUSynthesizerSetChannelCount( seSynthesizer *synthesizer, float newChannelCount ) :
+seUSynthesizerSetChannelCount::seUSynthesizerSetChannelCount( seSynthesizer *synthesizer, int newChannelCount ) :
 pSynthesizer( NULL )
 {
 	if( ! synthesizer ){

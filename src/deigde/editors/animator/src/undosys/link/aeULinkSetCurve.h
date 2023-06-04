@@ -32,7 +32,7 @@ class aeLink;
 
 
 /**
- * \brief Undo link set curve.
+ * Undo link set curve.
  */
 class aeULinkSetCurve : public igdeUndo{
 private:
@@ -45,11 +45,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeULinkSetCurve( aeLink *link, const decCurveBezier &newCurve );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeULinkSetCurve();
 	/*@}*/
 	
@@ -58,16 +58,16 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Set new curve. */
+	/** Set new curve. */
 	void SetNewCurve( const decCurveBezier &curve );
 	
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	
-	/** \brief Progressive redo action. */
+	/** Progressive redo action. */
 	void ProgressiveRedo();
 	/*@}*/
 };

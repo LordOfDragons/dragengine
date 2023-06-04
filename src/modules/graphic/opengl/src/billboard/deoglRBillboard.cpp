@@ -78,13 +78,14 @@ deoglWorldComputeElement( eetBillboard, &billboard ),
 pBillboard( billboard ){
 }
 
-void deoglRBillboard::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, sDataElement &data ) const{
-	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
+void deoglRBillboard::WorldComputeElement::UpdateData( sDataElement &data ) const{
+	const decDVector &refpos = GetReferencePosition();
 	data.SetExtends( pBillboard.GetMinimumExtend() - refpos, pBillboard.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pBillboard.GetLayerMask() );
-	data.flags = ( uint32_t )deoglWorldCompute::eefBillboard;
+	data.flags = ( uint32_t )( deoglWorldCompute::eefBillboard
+		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic );
 	data.geometryCount = 1;
+	data.highestLod = 0;
 }
 
 void deoglRBillboard::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
@@ -94,7 +95,6 @@ void deoglRBillboard::WorldComputeElement::UpdateDataGeometries( sDataElementGeo
 	}
 	
 	int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
-	filters |= ertfDecal;
 	
 	SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptBillboard,
 		deoglSkinTexturePipelines::emDoubleSided, skinTexture,
@@ -200,9 +200,7 @@ void deoglRBillboard::SetParentWorld( deoglRWorld *parentWorld ){
 	InvalidateRenderEnvMap();
 	pSkinRendered.DropDelayedDeletionObjects();
 	
-	if( pParentWorld && pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
-	}
+	pWorldComputeElement->RemoveFromCompute();
 	
 	pParentWorld = parentWorld;
 	
@@ -228,17 +226,15 @@ void deoglRBillboard::UpdateOctreeNode(){
 	if( pVisible ){
 		pParentWorld->GetOctree().InsertBillboardIntoTree( this );
 		
-		if( pWorldComputeElement->GetIndex() != -1 ){
-			pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+		if( pWorldComputeElement->GetWorldCompute() ){
+			pWorldComputeElement->ComputeUpdateElement();
 			
 		}else{
 			pParentWorld->GetCompute().AddElement( pWorldComputeElement );
 		}
 		
 	}else{
-		if( pWorldComputeElement->GetIndex() != -1 ){
-			pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
-		}
+		pWorldComputeElement->RemoveFromCompute();
 		if( pOctreeNode ){
 			pOctreeNode->RemoveBillboard( this );
 		}
@@ -268,10 +264,7 @@ void deoglRBillboard::SetSkin( deoglRSkin *skin ){
 	
 	pSkinRendered.SetDirty();
 	
-	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
-		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
-	}
+	pWorldComputeElement->ComputeUpdateElementAndGeometries();
 }
 
 void deoglRBillboard::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
@@ -464,7 +457,7 @@ deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor( deoglSkinTexturePipelines::
 		return NULL;
 	}
 	
-	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt( deoglSkinTexturePipelinesList::eptBillboard ).GetWithRef( type ).GetShader();
 	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
 	deoglRDynamicSkin *dynamicSkin = NULL;
@@ -501,10 +494,7 @@ void deoglRBillboard::MarkParamBlocksDirty(){
 void deoglRBillboard::MarkTUCsDirty(){
 	pDirtyTUCs = true;
 	pRequiresPrepareForRender();
-	
-	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
-	}
+	pWorldComputeElement->ComputeUpdateElementGeometries();
 }
 
 
@@ -1051,7 +1041,7 @@ void deoglRBillboard::pPrepareParamBlocks(){
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
-			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+			deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptBillboard ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			

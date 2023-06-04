@@ -54,7 +54,7 @@ meHTVRule::meHTVRule( int type, int slotCount ){
 			pSlotCount = slotCount;
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( pSlots ){
 			delete [] pSlots;
 		}
@@ -80,7 +80,7 @@ pSlots( NULL )
 			pSlots[ pSlotCount ].SetIsInput( rule.pSlots[ pSlotCount ].GetIsInput() );
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( pSlots ){
 			delete [] pSlots;
 		}

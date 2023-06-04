@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\animation\deanim\$Version"
 
 Write-Host "DEAnim Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "animdeanim.dll"
+$Library = "$OutputDir\de_module\animation\deanim\animdeanim.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\animation\deanim\$Version"
 Write-Host "DEAnim Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "animdeanim.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\animation\deanim\animdeanim.pdb" -Destination $TargetDir

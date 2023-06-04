@@ -38,13 +38,13 @@
 #include "../extensions/deoglExtensions.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTChoices.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/filesystem/deCacheHelper.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 #ifdef ANDROID
@@ -121,8 +121,8 @@ public:
 static cSpecialPrintShader vSpecialPrintShader;
 #endif
 
-static const char * const vPsfFragment = "v130/fragment/defren/light/light.glsl";
-static const char * const vPsfVertex = "v130/vertex/defren/light/light.glsl";
+static const char * const vPsfFragment = "fragment/defren/light/light.glsl";
+static const char * const vPsfVertex = "vertex/defren/light/light.glsl";
 static const char * const vPsfDefines[] = {
 	"HIGH_PRECISION",
 	"HIGHP",
@@ -211,6 +211,29 @@ static bool psfMatchesLink( const deoglShaderProgram &program ){
 #define SHADER_CACHE_REVISION 1
 
 
+// Class cHasConditionGuard
+/////////////////////////////
+
+class cHasConditionGuard{
+private:
+	bool &pGuard;
+	deMutex &pMutex;
+	
+public:
+	cHasConditionGuard( bool &has, bool &guardHas, deMutex &mutex ) :
+	pGuard( guardHas ), pMutex( mutex ){
+		const deMutexGuard guard( mutex );
+		has = true;
+		guardHas = true;
+	}
+	
+	~cHasConditionGuard(){
+		const deMutexGuard guard( pMutex );
+		pGuard = false;
+	}
+};
+
+
 // Class deoglShaderLanguage
 //////////////////////////////
 
@@ -219,6 +242,10 @@ static bool psfMatchesLink( const deoglShaderProgram &program ){
 
 deoglShaderLanguage::deoglShaderLanguage( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
+pHasLoadingShader( false ),
+pGuardHasLoadingShader( false ),
+pHasCompilingShader( false ),
+pGuardHasCompilingShader( false ),
 pPreprocessor( renderThread )
 {
 	pErrorLog = NULL;
@@ -233,30 +260,37 @@ pPreprocessor( renderThread )
 			switch( ext.GetGLVersion() ){
 			case deoglExtensions::evgl3p2:
 				pGLSLVersion = "150";
+				pGLSLVersionNumber = 150;
 				break;
 				
 			case deoglExtensions::evgl3p1:
 				pGLSLVersion = "140";
+				pGLSLVersionNumber = 140;
 				break;
 				
 			case deoglExtensions::evgl3p0:
 				pGLSLVersion = "130";
+				pGLSLVersionNumber = 130;
 				break;
 				
 			case deoglExtensions::evgl2p1:
 				pGLSLVersion = "120";
+				pGLSLVersionNumber = 120;
 				break;
 				
 			default:
 				pGLSLVersion = "110";
+				pGLSLVersionNumber = 110;
 			}
 			
 		}else{
 			pGLSLVersion.Format( "%d%0d0 core", ext.GetGLVersionMajor(), ext.GetGLVersionMinor() );
+			pGLSLVersionNumber = 100 * ext.GetGLVersionMajor() + 10 * ext.GetGLVersionMinor();
 		}
 		
 	}else{
 		pGLSLVersion.Format( "%d%0d0 es", ext.GetGLVersionMajor(), ext.GetGLVersionMinor() );
+		pGLSLVersionNumber = 100 * ext.GetGLVersionMajor() + 10 * ext.GetGLVersionMinor();
 	}
 	
 	// some extensions provide functionality which is not present in the supported GLSL
@@ -341,12 +375,33 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 	return compiled;
 }
 
+bool deoglShaderLanguage::GetHasLoadingShader(){
+	const deMutexGuard guard( pMutexChecks );
+	const bool result = pHasLoadingShader;
+	if( ! pGuardHasLoadingShader ){
+		pHasLoadingShader = false;
+	}
+	return result;
+}
+
+bool deoglShaderLanguage::GetHasCompilingShader(){
+	const deMutexGuard guard( pMutexChecks );
+	const bool result = pHasCompilingShader;
+	if( ! pGuardHasCompilingShader ){
+		pHasCompilingShader = false;
+	}
+	return result;
+}
+
 
 
 // Private Functions
 //////////////////////
 
 deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &program ){
+	const cHasConditionGuard guardHas( pHasCompilingShader, pGuardHasCompilingShader, pMutexChecks );
+	const deMutexGuard guard( pMutexCompile );
+	
 	const deoglExtensions &ext = pRenderThread.GetExtensions();
 	const deoglShaderSources &sources = *program.GetSources();
 	const deoglShaderUnitSourceCode * const scCompute = program.GetComputeSourceCode();
@@ -808,89 +863,102 @@ deoglShaderCompiled& compiled ){
 	const GLuint handleShader = compiled.GetHandleShader();
 	int i, count, location;
 	
-	// for the rest we have to activate this shader. to avoid upseting the shader tracker the current shader
-	// has to be deactivated first. this ensures the next time a shader is activated it is bound as active
-	// although the compiled shader is set.
-	pRenderThread.GetShader().ActivateShader( nullptr );
-	compiled.Activate();
+	// for the rest we have to activate this shader. to avoid upseting the shader tracker
+	// the current shader is remembered then restored. if this call is done from inside
+	// the render thread then this will properly restore the shader avoiding upseting the
+	// shader tracker. if this is not the render thread then this has no negative effect
+	// 
+	// we can not touch the shader tracker here since we do not know if this call has
+	// been done from inside the render thread or not
+	GLuint restoreShader;
+	OGL_CHECK( pRenderThread, glGetIntegerv( GL_CURRENT_PROGRAM, ( GLint* )&restoreShader ) );
 	
-	// bind textures
-	const deoglShaderBindingList &textureList = sources.GetTextureList();
-	count = textureList.GetCount();
-	for( i=0; i<count; i++ ){
-		location = pglGetUniformLocation( handleShader, textureList.GetNameAt( i ) );
-		if( location != -1 ){
-			OGL_CHECK( pRenderThread, pglUniform1i( location, textureList.GetTargetAt( i ) ) );
-		}
-	}
-	
-	// resolve parameters
-	const decStringList &parameterList = sources.GetParameterList();
-	count = parameterList.GetCount();
-	compiled.SetParameterCount( count );
-	for( i=0; i<count; i++ ){
-		compiled.SetParameterAt( i, pglGetUniformLocation( handleShader, parameterList.GetAt( i ).GetString() ) );
-	}
-	
-	// bind uniform blocks
-	if( pglGetUniformBlockIndex && pglUniformBlockBinding ){
-		const deoglShaderBindingList &uniformBlockList = sources.GetUniformBlockList();
-		count = uniformBlockList.GetCount();
-		for( i=0; i<count; i++ ){
-			location = pglGetUniformBlockIndex( handleShader, uniformBlockList.GetNameAt( i ) );
-			if( location != -1 ){
-				OGL_CHECK( pRenderThread, pglUniformBlockBinding(
-					handleShader, location, uniformBlockList.GetTargetAt( i ) ) );
-			}
-		}
-	}
-	
-	// bind shader storage blocks. we do not throw an exception here if the required
-	// functions are missing since SSBO usage is often wrapped in if-defs
-	const deoglShaderBindingList &shaderStorageBlockList = sources.GetShaderStorageBlockList();
-	count = shaderStorageBlockList.GetCount();
-	if( count > 0 && pglGetProgramResourceIndex && pglShaderStorageBlockBinding ){
-		/*if( ! pglGetProgramResourceIndex ){
-			DETHROW_INFO( deeInvalidParam, "missing glGetProgramResourceIndex" );
-		}
-		if( ! pglShaderStorageBlockBinding ){
-			DETHROW_INFO( deeInvalidParam, "missing glShaderStorageBlockBinding" );
-		}*/
-		for( i=0; i<count; i++ ){
-			location = pglGetProgramResourceIndex( handleShader, GL_SHADER_STORAGE_BLOCK,
-				shaderStorageBlockList.GetNameAt( i ) );
-			if( location != -1 ){ // GL_INVALID_INDEX
-				OGL_CHECK( pRenderThread, pglShaderStorageBlockBinding(
-					handleShader, location, shaderStorageBlockList.GetTargetAt( i ) ) );
-			}
-		}
-	}
-	
-	// bind feedback variables. this is done after the linking if only the NV transform feedback extension exists
-	if( ! pglTransformFeedbackVaryings && pglTransformFeedbackVaryingsNV ){
-		const bool feedbackInterleaved = sources.GetFeedbackInterleaved();
-		const decStringList &feedbackList = sources.GetFeedbackList();
-		count = feedbackList.GetCount();
+	try{
+		// pRenderThread.GetShader().ActivateShader( nullptr ); // nope, see above comment
+		// compiled.Activate();
+		OGL_CHECK( pRenderThread, pglUseProgram( compiled.GetHandleShader() ) );
 		
-		if( count > 0 ){
-			int * const locations = new int[ count ];
-			
+		// bind textures
+		const deoglShaderBindingList &textureList = sources.GetTextureList();
+		count = textureList.GetCount();
+		for( i=0; i<count; i++ ){
+			location = pglGetUniformLocation( handleShader, textureList.GetNameAt( i ) );
+			if( location != -1 ){
+				OGL_CHECK( pRenderThread, pglUniform1i( location, textureList.GetTargetAt( i ) ) );
+			}
+		}
+		
+		// resolve parameters
+		const decStringList &parameterList = sources.GetParameterList();
+		count = parameterList.GetCount();
+		compiled.SetParameterCount( count );
+		for( i=0; i<count; i++ ){
+			compiled.SetParameterAt( i, pglGetUniformLocation( handleShader, parameterList.GetAt( i ).GetString() ) );
+		}
+		
+		// bind uniform blocks
+		if( pglGetUniformBlockIndex && pglUniformBlockBinding ){
+			const deoglShaderBindingList &uniformBlockList = sources.GetUniformBlockList();
+			count = uniformBlockList.GetCount();
 			for( i=0; i<count; i++ ){
-				locations[ i ] = pglGetVaryingLocationNV( handleShader, feedbackList.GetAt( i ).GetString() );
-				if( locations[ i ] == -1 ){
-					DETHROW( deeInvalidParam );
+				location = pglGetUniformBlockIndex( handleShader, uniformBlockList.GetNameAt( i ) );
+				if( location != -1 ){
+					OGL_CHECK( pRenderThread, pglUniformBlockBinding(
+						handleShader, location, uniformBlockList.GetTargetAt( i ) ) );
 				}
 			}
-			
-			OGL_CHECK( pRenderThread, pglTransformFeedbackVaryingsNV( handleShader, count, locations,
-				feedbackInterleaved ? GL_INTERLEAVED_ATTRIBS : GL_SEPARATE_ATTRIBS ) );
-			
-			delete [] locations;
 		}
+		
+		// bind shader storage blocks. we do not throw an exception here if the required
+		// functions are missing since SSBO usage is often wrapped in if-defs
+		const deoglShaderBindingList &shaderStorageBlockList = sources.GetShaderStorageBlockList();
+		count = shaderStorageBlockList.GetCount();
+		if( count > 0 && pglGetProgramResourceIndex && pglShaderStorageBlockBinding ){
+			/*if( ! pglGetProgramResourceIndex ){
+				DETHROW_INFO( deeInvalidParam, "missing glGetProgramResourceIndex" );
+			}
+			if( ! pglShaderStorageBlockBinding ){
+				DETHROW_INFO( deeInvalidParam, "missing glShaderStorageBlockBinding" );
+			}*/
+			for( i=0; i<count; i++ ){
+				location = pglGetProgramResourceIndex( handleShader, GL_SHADER_STORAGE_BLOCK,
+					shaderStorageBlockList.GetNameAt( i ) );
+				if( location != -1 ){ // GL_INVALID_INDEX
+					OGL_CHECK( pRenderThread, pglShaderStorageBlockBinding(
+						handleShader, location, shaderStorageBlockList.GetTargetAt( i ) ) );
+				}
+			}
+		}
+		
+		// bind feedback variables. this is done after the linking if only the NV transform feedback extension exists
+		if( ! pglTransformFeedbackVaryings && pglTransformFeedbackVaryingsNV ){
+			const bool feedbackInterleaved = sources.GetFeedbackInterleaved();
+			const decStringList &feedbackList = sources.GetFeedbackList();
+			count = feedbackList.GetCount();
+			
+			if( count > 0 ){
+				int * const locations = new int[ count ];
+				
+				for( i=0; i<count; i++ ){
+					locations[ i ] = pglGetVaryingLocationNV( handleShader, feedbackList.GetAt( i ).GetString() );
+					if( locations[ i ] == -1 ){
+						DETHROW( deeInvalidParam );
+					}
+				}
+				
+				OGL_CHECK( pRenderThread, pglTransformFeedbackVaryingsNV( handleShader, count, locations,
+					feedbackInterleaved ? GL_INTERLEAVED_ATTRIBS : GL_SEPARATE_ATTRIBS ) );
+				
+				delete [] locations;
+			}
+		}
+		
+		OGL_CHECK( pRenderThread, pglUseProgram( restoreShader ) );
+		
+	}catch( const deException & ){
+		OGL_CHECK( pRenderThread, pglUseProgram( restoreShader ) );
+		throw;
 	}
-	
-	// deactivate the shader is not required since we set the active one to NULL already.
-	//OGL_CHECK( pRenderThread, pglUseProgramObject( 0 ) );
 }
 
 deoglShaderCompiled *deoglShaderLanguage::pCacheLoadShader( deoglShaderProgram &program ){
@@ -901,6 +969,8 @@ deoglShaderCompiled *deoglShaderLanguage::pCacheLoadShader( deoglShaderProgram &
 	|| program.GetCacheId().IsEmpty() ){
 		return nullptr;
 	}
+	
+	const cHasConditionGuard guardHas( pHasLoadingShader, pGuardHasLoadingShader, pMutexChecks );
 	
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheShaders = caches.GetShaders();
@@ -944,11 +1014,17 @@ deoglShaderCompiled *deoglShaderLanguage::pCacheLoadShader( deoglShaderProgram &
 		// create program using binary data
 		compiled = new deoglShaderCompiled( pRenderThread );
 		
+		{
+		// this has to be mutex protected since this uses opengl call like pCompileShader()
+		const deMutexGuard guard( pMutexCompile );
+		
 		OGL_CHECK( pRenderThread, pglProgramBinary( compiled->GetHandleShader(),
 			format, data.GetString(), length ) );
 		
-		// loading the binary does everything up to the linking step
+		// loading the binary does everything up to the linking step. this also uses
+		// opengl calls and thus has to be mutex protected
 		pAfterLinkShader( program, *compiled );
+		}
 		
 		// done
 		reader = nullptr;
@@ -1047,6 +1123,11 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 	for( i=0; i<extCount; i++ ){
 		line.Format( "#extension %s : require\n", pGLSLExtensions.GetAt( i ).GetString() );
 		pPreprocessor.SourcesAppend( line, false );
+	}
+	
+	// add version selection defines
+	if( pGLSLVersionNumber >= 450 ){
+		pPreprocessor.SetSymbol( "GLSL_450", "1" );
 	}
 	
 	// add symbols

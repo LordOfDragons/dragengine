@@ -29,7 +29,7 @@ class aeLink;
 
 
 /**
- * \brief Link List.
+ * Link List.
  */
 class aeLinkList{
 private:
@@ -38,62 +38,62 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new link list. */
+	/** Create new link list. */
 	aeLinkList();
 	
-	/** \brief Create copy of a link list. */
+	/** Create copy of a link list. */
 	aeLinkList( const aeLinkList &copy );
 	
-	/** \brief Clean up link list. */
+	/** Clean up link list. */
 	~aeLinkList();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of links. */
+	/** Number of links. */
 	int GetCount() const;
 	
 	/**
-	 * \brief Link at index.
+	 * Link at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
 	aeLink *GetAt( int index ) const;
 	
-	/** \brief Named link. */
+	/** Named link. */
 	aeLink *GetNamed( const char *name ) const;
 	
 	/**
-	 * \brief Index of link or -1 if not present in the list.
+	 * Index of link or -1 if not present in the list.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 */
 	int IndexOf( aeLink *link ) const;
 	
 	/**
-	 * \brief Determine if a link is present in the list.
+	 * Determine if a link is present in the list.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 */
 	bool Has( aeLink *link ) const;
 	
 	/**
-	 * \brief Named link is present in the list.
+	 * Named link is present in the list.
 	 */
 	bool HasNamed( const char *name ) const;
 	
 	/**
-	 * \brief Add link.
+	 * Add link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 */
 	void Add( aeLink *link );
 	
 	/**
-	 * \brief Insert link.
+	 * Insert link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
 	void Insert( aeLink *link, int index );
 	
 	/**
-	 * \brief Move link.
+	 * Move link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
@@ -101,22 +101,22 @@ public:
 	void Move( aeLink *link, int index );
 	
 	/**
-	 * \brief Remove link.
+	 * Remove link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 * \throws deeInvalidParam \em link is not present in the list.
 	 */
 	void Remove( aeLink *link );
 	
-	/** \brief Remove all links. */
+	/** Remove all links. */
 	void RemoveAll();
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy link list to this link list. */
+	/** Copy link list to this link list. */
 	aeLinkList &operator=( const aeLinkList &list );
 	
-	/** \brief Add links from link list if not present in this link list. */
+	/** Add links from link list if not present in this link list. */
 	aeLinkList &operator+=( const aeLinkList &list );
 	/*@}*/
 };

@@ -24,6 +24,7 @@
 
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../target/deoglRenderTarget.h"
+#include "../configuration/deoglConfiguration.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -134,6 +135,9 @@ private:
 	bool pSwapBuffers;
 	bool pNotifySizeChanged;
 	
+	deoglConfiguration::eVSyncMode pVSyncMode;
+	bool pInitSwapInterval;
+	
 	deoglRenderTarget::Ref pRenderTarget;
 	
 	
@@ -180,6 +184,7 @@ public:
 	inline HWND GetWindow() const{ return pWindow; }
 	inline HDC GetWindowDC() const{ return pWindowDC; }
 	void SetHostWindow( HWND window );
+	decPoint GetInnerSize() const;
 	#endif
 	
 	#ifdef OS_MACOS
@@ -290,6 +295,8 @@ public:
 	void pMacOSDelegateWindowDeactivated();
 	void pMacOSDelegateWindowResized();
 	#endif
+	
+	void pUpdateVSync();
 };
 
 #endif

@@ -333,8 +333,6 @@ void deoglLightShader::GenerateShader(){
 	try{
 		pSources.TakeOver( new deoglShaderSources );
 		
-		pSources->SetVersion( "150" );
-		
 		GenerateDefines( defines );
 		GenerateVertexSC();
 		GenerateGeometrySC();

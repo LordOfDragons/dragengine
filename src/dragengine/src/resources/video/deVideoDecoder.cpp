@@ -60,27 +60,18 @@ deVideoDecoder::~deVideoDecoder(){
 ///////////////
 
 int deVideoDecoder::GetPosition(){
-	if( ! pPeerVideo ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( pPeerVideo )
 	return pPeerVideo->GetPosition();
 }
 
 void deVideoDecoder::SetPosition( int position ){
-	if( ! pPeerVideo ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( pPeerVideo )
 	pPeerVideo->SetPosition( position );
 }
 
-bool deVideoDecoder::DecodeFrame( void *buffer1, int size1, void *buffer2, int size2 ){
-	if( ! pPeerVideo ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pPeerVideo->DecodeFrame( buffer1, size1, buffer2, size2 );
+bool deVideoDecoder::DecodeFrame( void *buffer, int size ){
+	DEASSERT_TRUE( pPeerVideo )
+	return pPeerVideo->DecodeFrame( buffer, size );
 }
 
 

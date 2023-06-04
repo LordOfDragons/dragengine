@@ -55,51 +55,58 @@ pin Dragengine.Utils
  * Curve points do not support being defined in StubWithProperties.
  */
 class ECPCurveBezier3D extends ElementClassProperty
-	/** \brief Curve. */
 	private var CurveBezier3D pCurve
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pCurve = CurveBezier3D.new()
+	public func new(String name) super(name)
+		pCurve = CurveBezier3D.new()
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, CurveBezier3D curve ) super( name )
-		this.pCurve = curve
+	public func new(String name, CurveBezier3D curve) super(name)
+		pCurve = curve
 	end
 	
 	
 	
 	/** \brief Curve. */
 	public func CurveBezier3D getCurve()
-		return this.pCurve
+		return pCurve
 	end
 	
 	/** \brief Set curve. */
-	public func void setCurve( CurveBezier3D curve )
-		this.pCurve = curve
+	public func void setCurve(CurveBezier3D curve)
+		pCurve = curve
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pCurve = CurveBezier3D.new((property cast ECPCurveBezier3D).pCurve)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
+	public func void setValue(Object value)
 		if value == null
-			this.pCurve = null
+			pCurve = null
 			return
 		end
 		
-		this.pCurve = CurveBezier3D.new()
-		( value cast Array ).forEach( block Array each
+		pCurve = CurveBezier3D.new()
+		(value cast Array).forEach(block Array each
 			if each.getCount() == 1
-				this.pCurve.addPoint( each.getAt( 0 ) cast Vector )
+				pCurve.addPoint(each.getAt(0) cast Vector)
 				
 			elif each.getCount() == 3
-				this.pCurve.addPoint( each.getAt( 0 ) cast Vector, \
-					each.getAt( 1 ) cast Vector, each.getAt( 2 ) cast Vector )
+				pCurve.addPoint(each.getAt(0) cast Vector, \
+					each.getAt(1) cast Vector, each.getAt(2) cast Vector)
 			end
-		end )
+		end)
 	end
 end

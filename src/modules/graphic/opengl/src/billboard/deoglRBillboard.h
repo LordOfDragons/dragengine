@@ -62,7 +62,7 @@ private:
 		deoglRBillboard &pBillboard;
 	public:
 		WorldComputeElement( deoglRBillboard &billboard );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateData( sDataElement &data ) const;
 		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
 	};
 	

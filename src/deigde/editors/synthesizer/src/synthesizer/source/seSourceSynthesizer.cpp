@@ -227,7 +227,7 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 			// free the loaded synthesizer as it is no more needed
 			synthesizer->FreeReference();
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			GetSynthesizer()->GetEnvironment()->GetLogger()->LogInfoFormat( "Synthesizer Editor",
 				"Failed to load child synthesizer '%s' (base directory '%s')", pPathSynthesizer.GetString(), basePath.GetString() );
 			

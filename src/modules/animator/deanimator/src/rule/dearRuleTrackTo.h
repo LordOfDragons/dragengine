@@ -30,7 +30,7 @@
 
 
 /**
- * \brief Track to rule.
+ * Track to rule.
  */
 class dearRuleTrackTo : public dearRule{
 private:
@@ -49,11 +49,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleTrackTo( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleTrackTo &rule );
 	
-	/** \brief Clean up rule. */
+	/** Clean up rule. */
 	virtual ~dearRuleTrackTo();
 	/*@}*/
 	
@@ -61,15 +61,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Track bone index. */
+	/** Track bone index. */
 	inline int GetTrackBone() const{ return pTrackBone; }
 	
 	
 	
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	

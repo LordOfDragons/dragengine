@@ -66,12 +66,10 @@ pNumProgramBinaryFormats( 0 ),
 
 pATLUnbind( *this ),
 pUBOIndirectMatrixAccess( *this ),
-pRasterizerDiscard( *this ),
-pClearEntireCubeMap( *this ),
 pClearEntireArrayTexture( *this ),
-pGeometryShaderLayer( *this ),
 pUBODirectLinkDeadloop( *this ),
-pFramebufferTextureSingle( *this )
+pFramebufferTextureSingle( *this ),
+pStd430( *this )
 {
 	const GLfloat fsquad[ 12 ] = {
 		0.0f, 1.0f,
@@ -247,11 +245,10 @@ void deoglCapabilities::DetectCapabilities(){
 		pFramebufferTextureSingle.Check( fbo );
 		
 		pUBOIndirectMatrixAccess.Check( fbo );
-		pRasterizerDiscard.Check( fbo );
-// 		pClearEntireCubeMap.Check( fbo ); // nVidia fails this although working
 		pClearEntireArrayTexture.Check( fbo );
-// 		pGeometryShaderLayer.Check( fbo ); // nVidia fails this although working
 		pUBODirectLinkDeadloop.Check( fbo );
+		
+		pStd430.Check();
 		
 		#ifdef OS_ANDROID
 		framebuffer = new deoglFramebuffer( pRenderThread, false );
@@ -316,6 +313,15 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		throw;
 	}
+}
+
+bool deoglCapabilities::Verify() const{
+	if( pStd430.Broken() ){
+		pRenderThread.GetLogger().LogError( "Std430 Layout Not Supported" );
+		return false;
+	}
+	
+	return true;
 }
 
 

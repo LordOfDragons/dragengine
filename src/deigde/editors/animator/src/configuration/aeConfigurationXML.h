@@ -36,7 +36,7 @@ class decXmlElementTag;
 
 
 /**
- * @brief Load/Save Configuration XML.
+ * Load/Save Configuration XML.
  */
 class aeConfigurationXML : public igdeBaseXML{
 public:

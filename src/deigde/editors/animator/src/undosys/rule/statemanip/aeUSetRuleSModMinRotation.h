@@ -34,7 +34,7 @@ class aeRuleStateManipulator;
 
 
 /**
- * @brief Undo set rule state modifier minimum.
+ * Undo set rule state modifier minimum.
  *
  * Undo to set the minimum rotation of a state modifier rule.
  */
@@ -48,19 +48,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeUSetRuleSModMinRotation( aeRuleStateManipulator *rule, const decVector &newMin );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeUSetRuleSModMinRotation();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

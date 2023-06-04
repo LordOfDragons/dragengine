@@ -237,8 +237,8 @@ void gdeVAOComponent::pCreateComponent(){
 		try{
 			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
 			
-		}catch( const deException &e ){
-			skin = environment.GetErrorSkin();
+		}catch( const deException & ){
+			skin = environment.GetStockSkin( igdeEnvironment::essError );
 		}
 	}
 	
@@ -343,8 +343,8 @@ deComponentTexture &engTexture, int engTextureIndex ){
 				occtextureSkin.TakeOver( engine.GetSkinManager()->LoadSkin( texture->GetPathSkin(), "/" ) );
 			}
 			
-		}catch( const deException &e ){
-			occtextureSkin = environment.GetErrorSkin();
+		}catch( const deException & ){
+			occtextureSkin = environment.GetStockSkin( igdeEnvironment::essError );
 		}
 		
 		if( occtextureSkin ){
@@ -477,7 +477,7 @@ void gdeVAOComponent::pAttachComponent(){
 		pCollider->AddAttachment( attachment );
 		attachment = NULL;
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( attachment ){
 			delete attachment;
 		}

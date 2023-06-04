@@ -22,18 +22,21 @@
 #ifndef _DEGRAPHICOPENGL_H_
 #define _DEGRAPHICOPENGL_H_
 
-#include "window/deoglRenderWindowList.h"
 #include "canvas/capture/deoglCaptureCanvasList.h"
 #include "configuration/deoglConfiguration.h"
 #include "commands/deoglCommandExecuter.h"
-#include "parameters/deoglParameterList.h"
 #include "debug/deoglDebugOverlay.h"
+#include "parameters/deoglParameterList.h"
+#include "shaders/deoglShaderCompilingInfo.h"
+#include "window/deoglRenderWindowList.h"
 
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicModule.h>
 
 class deoglCaches;
 class deoglRenderThread;
 class deoglCamera;
+class deoglResources;
 
 
 
@@ -52,8 +55,13 @@ private:
 	deoglRenderThread *pRenderThread;
 	deoglCaches *pCaches;
 	deoglDebugOverlay pDebugOverlay;
+	deoglResources *pResources;
+	
+	deCanvasView::Ref pOverlay;
+	deoglShaderCompilingInfo::Ref pShaderCompilingInfo;
 	
 	deoglCamera *pVRCamera;
+	decDMatrix pVRDebugPanelMatrix;
 	
 	
 	
@@ -121,6 +129,9 @@ public:
 	 * Returns 0 if module is not using a separate thread.
 	 */
 	virtual int GetFPSRate();
+	
+	/** Set position and orientation of VR debug panel if graphic module shows one. */
+	virtual void SetVRDebugPanelPosition( const decDVector &position, const decQuaternion &orientation );
 	/*@}*/
 	
 	
@@ -286,6 +297,15 @@ public:
 	/** Debug overlay manager. */
 	inline deoglDebugOverlay &GetDebugOverlay(){ return pDebugOverlay; }
 	
+	/** Resources. */
+	inline deoglResources &GetResources() const{ return *pResources; }
+	
+	/** Overlay canvas view. */
+	inline const deCanvasView::Ref &GetOverlay() const{ return pOverlay; }
+	
+	/** Shader compiling information. */
+	inline const deoglShaderCompilingInfo::Ref &GetShaderCompilingInfo() const{ return pShaderCompilingInfo; }
+	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
 	
@@ -298,6 +318,9 @@ public:
 	
 	/** Set VR camera or null. */
 	void SetVRCamera( deoglCamera *camera );
+	
+	/** VR debug panel matrix. */
+	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }
 	/*@}*/
 	
 private:

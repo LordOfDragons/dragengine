@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Copy Depth</name>
+	
+	<texture name="texDepth" target="0"/>
+	<texture name="texColor" target="1"/>
+	
+	<parameter name="pQuadParams"/>
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
+	
+	<output name='outColor' target='0'/>
+	<output name='outDepth' target='1'/>
+	
+	<sourceCode unit="vertex">vertex/generic/fullscreenquad.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/copydepth.glsl</sourceCode>
+</shader>

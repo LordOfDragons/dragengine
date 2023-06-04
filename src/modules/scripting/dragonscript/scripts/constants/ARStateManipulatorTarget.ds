@@ -38,4 +38,10 @@ enum ARStateManipulatorTarget
 	
 	/** \brief Size target. */
 	size
+	
+	/**
+	 * \brief Vertex position set target.
+	 * \version 1.17
+	 */
+	vertexPositionSet
 end

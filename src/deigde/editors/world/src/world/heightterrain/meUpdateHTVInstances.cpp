@@ -85,7 +85,7 @@ void meUpdateHTVInstances::UpdateInstances(){
 	decVector inormal, sripos;
 	decDVector evalPos;
 	
-	double rfactor = 1.0 / ( double )RAND_MAX;
+	float rfactor = 1.0f / ( float )RAND_MAX;
 	decVector ipos, irot;
 	int i, instanceCount;
 	float iscale;
@@ -152,8 +152,8 @@ void meUpdateHTVInstances::UpdateInstances(){
 			ipos.x -= roffset;
 			ipos.z -= roffset;
 			
-			sripos.x = srfpos.x + ipos.x;
-			sripos.z = srfpos.z + ipos.z;
+			sripos.x = ( float )srfpos.x + ipos.x;
+			sripos.z = ( float )srfpos.z + ipos.z;
 			
 			if( htsector->GetHeightNormalAt( sripos.x, sripos.z, ipos.y, inormal ) ){
 				evalPos.x = fieldPosition.x + ( double )ipos.x;

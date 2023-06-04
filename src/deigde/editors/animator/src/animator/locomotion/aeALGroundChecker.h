@@ -32,7 +32,7 @@ class deCollisionInfo;
 
 
 /**
- * @brief Animator Locomotion Ground Checker.
+ * Animator Locomotion Ground Checker.
  *
  * The ground checker detects the collider obstructing a collision shape or
  * a ray. To obtain this result first reset the ground checker and then use

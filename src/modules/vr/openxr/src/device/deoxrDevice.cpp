@@ -29,6 +29,7 @@
 #include "deoxrDeviceComponent.h"
 #include "deoxrDeviceManager.h"
 #include "../deVROpenXR.h"
+#include "../deoxrUtils.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -49,7 +50,9 @@
 
 deoxrDevice::deoxrDevice( deVROpenXR &oxr, const deoxrDeviceProfile &profile ) :
 pOxr( oxr ),
+pIndex( -1 ),
 pProfile( profile ),
+pType( deInputDevice::edtGeneric ),
 pBoneConfiguration( deInputDevice::ebcNone ),
 pNameNumber( -1 ){
 }
@@ -439,6 +442,12 @@ void deoxrDevice::GetInfo( deInputDevice &info ) const{
 	for( i=0; i<feedbackCount; i++ ){
 		( ( deoxrDeviceFeedback* )pFeedbacks.GetAt( i ) )->GetInfo( info.GetFeedbackAt( i ) );
 	}
+
+	info.SetSupportsFaceEyeExpressions( pFaceTracker );
+	info.SetSupportsFaceMouthExpressions( pFaceTracker );
+}
+
+void deoxrDevice::UpdateParameters(){
 }
 
 void deoxrDevice::TrackStates(){
@@ -468,11 +477,32 @@ void deoxrDevice::TrackStates(){
 		memset( &state, 0, sizeof( state ) );
 		state.type = XR_TYPE_ACTION_STATE_POSE;
 		
+		void **nextState = &state.next;
+
+		XrEyeGazeSampleTimeEXT sampleTime;
+		if( pType == deInputDevice::edtVREyeTracker ){
+			memset( &sampleTime, 0, sizeof( sampleTime ) );
+			sampleTime.type = XR_TYPE_EYE_GAZE_SAMPLE_TIME_EXT;
+			*nextState = &sampleTime;
+			nextState = &sampleTime.next;
+		}
+
 		if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
-		&& state.isActive ){
-			pSpacePose->LocateSpace( session.GetSpace(), session.GetPredictedDisplayTime(),
-				pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
-			
+		&& state.isActive == XR_TRUE ){
+			if( pType == deInputDevice::edtVREyeTracker ){
+				// according to specification eye gaze pose is similar to local pose. actually drivers
+				// seem to ignore view space and always return pose in local space. we enforce local
+				// space to make sure all kinds of drivers return the same result
+				
+				// using local space requires locating space without converting coordinate system
+				pSpacePose->LocateSpaceEye( session.GetPredictedDisplayTime(),
+					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
+
+			}else{
+				pSpacePose->LocateSpace( session.GetSpace(), session.GetPredictedDisplayTime(),
+					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
+			}
+
 			pPoseDevice.SetPosition( pPosePosition );
 			pPoseDevice.SetOrientation( pPoseOrientation );
 			pPoseDevice.SetLinearVelocity( pPoseLinearVelocity );

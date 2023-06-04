@@ -44,64 +44,75 @@ class ECPSkin extends ElementClassProperty implements ResourceListener
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
+	public func new(String name) super(name)
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, String path ) super( name )
-		this.pPath = path
+	public func new(String name, String path) super(name)
+		pPath = path
 	end
 	
 	
 	
 	/** \brief Path to skin resource. */
 	public func String getPath()
-		return this.pPath
+		return pPath
 	end
 	
 	/** \brief Set path to skin resource. */
-	public func void setPath( String path )
-		this.pPath = path
+	public func void setPath(String path)
+		pPath = path
 	end
 	
 	/** \brief Skin resource or \em null if not present. */
 	public func Skin getSkin()
-		return this.pSkin
+		return pSkin
 	end
 	
 	/** \brief Set skin resource or \em null if not present. */
-	public func void setSkin( Skin skin )
-		this.pSkin = skin
+	public func void setSkin(Skin skin)
+		pSkin = skin
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pPath = value cast String
+	public func void setValue(Object value)
+		pPath = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		var String path = (property cast ECPSkin).pPath
+		if path != null and not path.empty()
+			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
+		end
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
+		pHasPreloaded = true
 		
-		if this.pPath == null or this.pPath.empty()
+		if pPath == null or pPath.empty()
 			return
 		end
 		
-		Skin.loadAsynchron( File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath(), this )
-		this.pCounter = counter
+		Skin.loadAsynchron(File.absolutePath(pPath, elementClass.getBasePath()).getPath(), this)
+		pCounter = counter
 		counter.increase()
 	end
 	
@@ -109,11 +120,11 @@ class ECPSkin extends ElementClassProperty implements ResourceListener
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pPath != null and not this.pPath.empty() and this.pSkin == null
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Failed loading skin " \
-				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pPath != null and not pPath.empty() and pSkin == null
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Failed loading skin " \
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
 			return true
 		end
 		return false
@@ -122,14 +133,14 @@ class ECPSkin extends ElementClassProperty implements ResourceListener
 	
 	
 	/** \brief Resource has finished loading. */
-	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
-		this.pSkin = resource cast Skin
-		this.pCounter.decrease()
+	public func void finishedLoading(String path, ResourceLoaderType resourceType, Object resource)
+		pSkin = resource cast Skin
+		pCounter.decrease()
 	end
 	
 	/** \brief Resource failed loading. */
-	public func void failedLoading( String path, ResourceLoaderType resourceType )
-		this.pCounter.decrease()
+	public func void failedLoading(String path, ResourceLoaderType resourceType)
+		pCounter.decrease()
 	end
 	
 	
@@ -140,17 +151,17 @@ class ECPSkin extends ElementClassProperty implements ResourceListener
 	 * If named stub property is not present or empty string the stored skin is returned.
 	 * If the named stub property is present it is loaded as skin resource.
 	 */
-	public func Skin getSkin( StubWithProperties stub, ElementClass eclass )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Skin getSkin(StubWithProperties stub, ElementClass eclass)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pSkin
+			return pSkin
 			
 		else
 			try
-				return Skin.new( value )
+				return Skin.new(value)
 				
 			catch Exception e
-				throw ELoadResourceFailed.new( value, eclass.getClassname() )
+				throw ELoadResourceFailed.new(value, eclass.getClassname())
 			end
 		end
 	end

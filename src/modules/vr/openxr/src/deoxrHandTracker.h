@@ -64,6 +64,7 @@ private:
 	};
 	
 	deoxrSession &pSession;
+	deoxrDevice &pDevice;
 	
 	const XrHandEXT pHand;
 	XrHandTrackerEXT pHandTracker;
@@ -92,7 +93,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create hand tracker. */
-	deoxrHandTracker( deoxrSession &session, XrHandEXT hand, deoxrSpace &space );
+	deoxrHandTracker( deoxrSession &session, deoxrDevice &device, XrHandEXT hand );
 	
 protected:
 	/** Clean up space. */

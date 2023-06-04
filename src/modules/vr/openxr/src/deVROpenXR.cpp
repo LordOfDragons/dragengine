@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "deVROpenXR.h"
+#include "deoxrThreadSync.h"
 #include "deoxrPath.h"
 #include "device/deoxrDevice.h"
 #include "device/deoxrDeviceAxis.h"
@@ -98,7 +99,10 @@ pSessionState( XR_SESSION_STATE_UNKNOWN ),
 pShutdownRequested( false ),
 pPreventDeletion( false ),
 pRestartSession( false ),
-pLastDetectedSystem( deoxrSystem::esUnknown )
+pLastDetectedSystem( deoxrSystem::esUnknown ),
+pThreadSync( nullptr ),
+pRequestFeatureEyeGazeTracking( efslDisabled ),
+pRequestFeatureFacialTracking( efslDisabled )
 {
 	memset( pActions, 0, sizeof( pActions ) );
 }
@@ -307,10 +311,18 @@ bool deVROpenXR::RuntimeUsable(){
 	return true; //pInstance;
 }
 
+void deVROpenXR::RequestFeatureEyeGazeTracking( eFeatureSupportLevel level ){
+	pRequestFeatureEyeGazeTracking = level;
+}
+
+void deVROpenXR::RequestFeatureFacialTracking( eFeatureSupportLevel level ){
+	pRequestFeatureFacialTracking = level;
+}
+
 void deVROpenXR::StartRuntime(){
 	deMutexGuard lock( pMutexOpenXR );
 	
-	const bool enableDebug = true;
+	const bool enableDebug = false; //true;
 	
 	LogInfo( "Start Runtime" );
 	pShutdownRequested = false;
@@ -322,6 +334,13 @@ void deVROpenXR::StartRuntime(){
 		
 		pSystem.TakeOver( new deoxrSystem( pInstance ) );
 		pLastDetectedSystem = pSystem->GetSystem();
+		
+		if( ! pThreadSync ){
+			// pThreadSync = new deoxrThreadSync( *this );
+			// pThreadSync->Start();
+			// for some strange reason this async version can cause XR_ERROR_CALL_ORDER_INVALID.
+			// I guess steamvr is not implemented according to spec here... how annoying
+		}
 		
 	}catch( const deException &e ){
 		LogException( e );
@@ -340,6 +359,11 @@ void deVROpenXR::StopRuntime(){
 	if( pSession ){
 		pShutdownRequested = true;
 	}
+	
+	if( pThreadSync ){
+		pThreadSync->ExitThread();
+		pThreadSync->WaitForExit();
+	}
 }
 
 void deVROpenXR::SetCamera( deCamera *camera ){
@@ -348,7 +372,7 @@ void deVROpenXR::SetCamera( deCamera *camera ){
 	}
 	
 	if( pCamera && pCamera->GetPeerGraphic() ){
-		pCamera->GetPeerGraphic()->VRResignedFromHMD();
+		// pCamera->GetPeerGraphic()->VRResignedFromHMD();
 	}
 	
 	pCamera = camera;
@@ -500,6 +524,7 @@ void deVROpenXR::ProcessEvents(){
 					pSession->Begin();
 					pDeviceProfiles.CheckAllAttached();
 				}
+				LogInfo( "Done Session State Changed: ready" );
 				break;
 				
 			case XR_SESSION_STATE_SYNCHRONIZED:
@@ -773,60 +798,31 @@ void deVROpenXR::GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVec
 	tcTo.Set( 1.0f, 1.0f );
 }
 
-void deVROpenXR::BeginFrame(){
-	const deMutexGuard lock( pMutexOpenXR );
+void deVROpenXR::StartBeginFrame(){
+	const deMutexGuard guard( pMutexOpenXR );
+	if( ! pBeginFrame() ){
+		return;
+	}
+	if( pThreadSync ){
+		pThreadSync->StartWaitFrame();
+	}
+}
+
+void deVROpenXR::WaitBeginFrameFinished(){
+	const deMutexGuard guard( pMutexOpenXR );
 	if( ! pSystem ){
 		return;
 	}
 	
-	if( pSession && pRestartSession ){
-		LogInfo( "Restarting session (somebody requested this)" );
-		pDeviceProfiles.ClearActions();
-		pPassthrough = nullptr;
-		pSession = nullptr;
-		pDestroyActionSet();
-		
-		pRestartSession = false;
-	}
-	
 	if( ! pSession ){
-		if( pShutdownRequested ){
-			pRealShutdown();
-			return;
-		}
-		
-		LogInfo( "BeginFrame: Create Session" );
-		pRestartSession = false;
-		try{
-			pSession.TakeOver( new deoxrSession( pSystem ) );
-			
-			pDeviceProfiles.CheckAllAttached();
-			// no CheckNotifyAttachedDetached call here since we potentially outside main thread
-			
-			pCreateActionSet();
-			pSuggestBindings();
-			
-			pSession->AttachActionSet( pActionSet );
-			
-			if( pSystem->GetSupportsPassthrough() ){
-				pPassthrough.TakeOver( new deoxrPassthrough( pSession ) );
-			}
-			
-		}catch( const deException &e ){
-			LogException( e );
-			
-			LogError( "Runtime failed during BeginFrame. Shutting down runtime. Restart runtime to continue." );
-			pDeviceProfiles.ClearActions();
-			pDestroyActionSet();
-			pPassthrough = nullptr;
-			pSession = nullptr;
-			
-			pRealShutdown();
-			return;
-		}
+		return;
 	}
-	
-	pSession->WaitFrame();
+	if( pThreadSync ){
+		pThreadSync->WaitWaitFrameFinished();
+		
+	}else{
+		pSession->WaitFrame();
+	}
 	
 	if( pShutdownRequested ){
 		pRealShutdown();
@@ -877,6 +873,7 @@ void deVROpenXR::pRealShutdown(){
 	LogInfo( "Shutdown runtime" );
 	
 	pDeviceProfiles.ClearActions();
+	pDevices.CheckNotifyAttachedDetached();
 	
 	pPassthrough = nullptr;
 	pSession = nullptr;
@@ -988,5 +985,66 @@ void deVROpenXR::pSuggestBindings(){
 			LogWarnFormat( "Device profile '%s' failed suggesting bindings. "
 				"Ignoring device profile", profile.GetPath().GetName().GetString() );
 		}
+	}
+}
+
+bool deVROpenXR::pBeginFrame(){
+	if( ! pSystem ){
+		return false;
+	}
+	
+	if( pSession && pRestartSession ){
+		LogInfo( "Restarting session (somebody requested this)" );
+		pDeviceProfiles.ClearActions();
+		pPassthrough = nullptr;
+		pSession = nullptr;
+		pDestroyActionSet();
+		
+		pRestartSession = false;
+	}
+	
+	if( pSession ){
+		return true;
+	}
+	
+	// create session
+	if( pShutdownRequested ){
+		pRealShutdown();
+		return false;
+	}
+	
+	LogInfo( "BeginFrame: Create Session" );
+	pRestartSession = false;
+	try{
+		pSession.TakeOver( new deoxrSession( pSystem ) );
+		
+		// required before CheckAllAttached since this could add devices which in turn
+		// accesses actions. creating actions does access device profiles but this is
+		// a special call that has to always succeed
+		pCreateActionSet();
+
+		pDeviceProfiles.CheckAllAttached();
+		// no CheckNotifyAttachedDetached call here since we potentially outside main thread
+		
+		pSuggestBindings();
+		
+		pSession->AttachActionSet( pActionSet );
+		
+		if( pSystem->GetSupportsPassthrough() ){
+			pPassthrough.TakeOver( new deoxrPassthrough( pSession ) );
+		}
+		return true;
+		
+	}catch( const deException &e ){
+		LogException( e );
+		
+		LogError( "Runtime failed during BeginFrame. Shutting down runtime. Restart runtime to continue." );
+		pDeviceProfiles.ClearActions();
+		pDestroyActionSet();
+		pPassthrough = nullptr;
+		pSession = nullptr;
+		
+		pRealShutdown();
+		return false;
 	}
 }

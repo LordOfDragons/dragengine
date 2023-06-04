@@ -44,15 +44,14 @@
 
 deAnimation::deAnimation( deAnimationManager *manager, deVirtualFileSystem *vfs,
 	const char *filename, TIME_SYSTEM modificationTime ) :
-deFileResource( manager, vfs, filename, modificationTime ){
-	pBones = NULL;
-	pBoneCount = 0;
-	pBoneSize = 0;
-	pMoves = NULL;
-	pMoveCount = 0;
-	pMoveSize = 0;
-	
-	pPeerAnimator = NULL;
+deFileResource( manager, vfs, filename, modificationTime ),
+pBones( nullptr ),
+pBoneCount( 0 ),
+pBoneSize( 0 ),
+pMoves( nullptr ),
+pMoveCount( 0 ),
+pMoveSize( 0 ),
+pPeerAnimator( nullptr ){
 }
 
 deAnimation::~deAnimation(){
@@ -65,28 +64,22 @@ deAnimation::~deAnimation(){
 ///////////////
 
 bool deAnimation::MatchesModel( deModel *model ) const{
-	if( ! model ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( model )
 	
 	int i;
-	// check if the bone count is equal
-	if( pBoneCount != model->GetBoneCount() ){
-		return false;
-	}
-	
-	// checks if the animation is matching the model. all
-	// bones in the animation have to match a model bone and
-	// the count of bones has to be equal. this way all bones
-	// are animated and none is missing. this is handy to
-	// check for animation troubles.
 	for( i=0; i<pBoneCount; i++ ){
 		if( ! model->HasBoneNamed( pBones[ i ]->GetName() ) ){
 			return false;
 		}
 	}
 	
-	// all bones matched and the bone count is equal.
+	const int vpsCount = pVertexPositionSets.GetCount();
+	for( i=0; i<vpsCount; i++ ){
+		if( ! model->HasVertexPositionSetNamed( pVertexPositionSets.GetAt( i ) ) ){
+			return false;
+		}
+	}
+	
 	return true;
 }
 

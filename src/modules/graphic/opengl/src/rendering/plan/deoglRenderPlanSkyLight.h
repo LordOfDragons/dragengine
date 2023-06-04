@@ -24,6 +24,7 @@
 
 #include "../task/deoglAddToRenderTask.h"
 #include "../task/deoglRenderTask.h"
+#include "../task/deoglComputeRenderTask.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
@@ -62,18 +63,12 @@ public:
 		decMatrix matrix;
 		deoglRenderTask *renderTask;
 		deoglAddToRenderTask *addToRenderTask;
+		deoglComputeRenderTask::Ref computeRenderTask;
 	};
 	
 	
 	
 private:
-	/** Counters struct. */
-	struct sCounters{
-		uint32_t workGroupSize[ 3 ];
-		uint32_t counter;
-	};
-	
-	
 	deoglRenderPlan &pPlan;
 	deoglRSkyInstance *pSky;
 	deoglRSkyInstanceLayer *pLayer;
@@ -112,10 +107,17 @@ private:
 	deoglSPBlockUBO::Ref pUBOFindConfig;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
+	deoglSPBlockSSBO::Ref pSSBOVisibleElements2;
 	
-	deoglSPBlockUBO::Ref pUBOFindConfigGI;
-	deoglSPBlockSSBO::Ref pSSBOCountersGI;
-	deoglSPBlockSSBO::Ref pSSBOVisibleElementsGI;
+	deoglSPBlockUBO::Ref pUBOFindConfigGIStatic;
+	deoglSPBlockSSBO::Ref pSSBOCountersGIStatic;
+	deoglSPBlockSSBO::Ref pSSBOVisibleElementsGIStatic;
+	deoglComputeRenderTask::Ref pCRTShadowGIStatic;
+	
+	deoglSPBlockUBO::Ref pUBOFindConfigGIDynamic;
+	deoglSPBlockSSBO::Ref pSSBOCountersGIDynamic;
+	deoglSPBlockSSBO::Ref pSSBOVisibleElementsGIDynamic;
+	deoglComputeRenderTask::Ref pCRTShadowGIDynamic;
 	
 	
 	
@@ -230,10 +232,19 @@ public:
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{ return pSSBOVisibleElements2; }
 	
-	inline const deoglSPBlockUBO::Ref &GetUBOFindConfigGI() const{ return pUBOFindConfigGI; }
-	inline const deoglSPBlockSSBO::Ref &GetSSBOCountersGI() const{ return pSSBOCountersGI; }
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsGI() const{ return pSSBOVisibleElementsGI; }
+	void SwapVisibleElements();
+	
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfigGIStatic() const{ return pUBOFindConfigGIStatic; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCountersGIStatic() const{ return pSSBOCountersGIStatic; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsGIStatic() const{ return pSSBOVisibleElementsGIStatic; }
+	inline const deoglComputeRenderTask::Ref &GetCRTShadowGIStatic() const{ return pCRTShadowGIStatic; }
+	
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfigGIDynamic() const{ return pUBOFindConfigGIDynamic; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCountersGIDynamic() const{ return pSSBOCountersGIDynamic; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsGIDynamic() const{ return pSSBOVisibleElementsGIDynamic; }
+	inline const deoglComputeRenderTask::Ref &GetCRTShadowGIDynamic() const{ return pCRTShadowGIDynamic; }
 	
 	
 	
@@ -264,7 +275,8 @@ public:
 	
 	void PrepareBuffers();
 	void ReadVisibleElements();
-	void ReadVisibleElementsGI();
+	void BuildComputeRenderTasks( bool rebuild = false );
+	void FinishReadBackComputeRenderTasks();
 	
 	/** Clean up after rendering. */
 	void CleanUp();
@@ -273,7 +285,9 @@ public:
 	
 private:
 	void pPrepareFindConfig();
-	void pPrepareFindConfigGI();
+	void pPrepareFindConfigGIStatic();
+	void pPrepareFindConfigGIDynamic();
+	void pPrepareFindConfigGI( deoglSPBlockUBO &ubo );
 	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
 	void pClearCounters();
 	void pSetWorldComputeParams( deoglSPBlockUBO &ubo );
@@ -294,6 +308,9 @@ private:
 	void pWaitFinishedFindContent();
 	void pWaitFinishedGIFindContent();
 	void pGICalcShadowLayerParams();
+	
+	void pBuildCRTShadow( int  layer );
+	void pBuildCRTShadowGI( deoglComputeRenderTask &renderTask );
 	/*@}*/
 };
 

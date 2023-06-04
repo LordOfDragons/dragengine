@@ -63,6 +63,7 @@ private:
 	const deoglPipeline *pPipelineBuildEnvMap;
 	const deoglPipeline *pPipelineEnvMapMask;
 	
+	deoglSPBSingleUse::Ref pRenderParamBlockSingleUse;
 	deoglSPBlockUBO::Ref pRenderParamBlock;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
@@ -70,6 +71,7 @@ private:
 	bool pUseEquiEnvMap;
 	deoglCubeMap *pEnvMap;
 	deoglTexture *pEnvMapEqui;
+	deoglSPBSingleUse::Ref pEnvMapsParamBlockSingleUse;
 	deoglSPBlockUBO::Ref pEnvMapsParamBlock;
 	
 	deoglEnvironmentMap *pDirectEnvMapActive; ///< weak reference

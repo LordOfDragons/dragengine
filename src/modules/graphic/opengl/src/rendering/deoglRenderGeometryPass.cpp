@@ -97,20 +97,6 @@ deoglRenderGeometryPass::~deoglRenderGeometryPass(){
 // Rendering
 //////////////
 
-#define DO_QUICK_DEBUG 1
-
-#ifdef DO_QUICK_DEBUG
-#define QUICK_DEBUG_START( lower, upper ) \
-	if( renderThread.GetConfiguration().GetQuickDebug() > upper \
-	|| renderThread.GetConfiguration().GetQuickDebug() < lower ){
-#define QUICK_DEBUG_END }
-#else
-#define QUICK_DEBUG_START( lower, upper )
-#define QUICK_DEBUG_END
-#endif
-
-
-
 //#define ENABLE_DEBUG_ENTER_EXIT 1
 #ifdef OS_ANDROID
 // 	#define ENABLE_DEBUG_ENTER_EXIT 1
@@ -154,6 +140,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GeometryPass.RenderSolidGeometryPass" );
+	const bool useComputeRenderTask = renderThread.GetChoices().GetUseComputeRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -163,8 +150,6 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	// render pre-pass depth. this includes rendering depth, occlusion testing and transparency counting
 	rendepth.RenderSolidDepthPass( plan, mask, xray );
-	
-	QUICK_DEBUG_START( 14, 19 )
 	
 	DebugTimer1Reset( plan, true );
 	
@@ -178,10 +163,8 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	SetViewport( plan );
 // 	defren.ActivateFBOMaterialColor();
 	if( ! xray ){
-		QUICK_DEBUG_START( 16, 19 )
 		renderThread.GetRenderers().GetSky().RenderSky( plan, mask );
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometrySky, true );
-		QUICK_DEBUG_END
 	}
 	
 	
@@ -227,10 +210,11 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglRenderPlanTasks &tasks = plan.GetTasks();
 	tasks.WaitFinishBuildingTasksGeometry();
 	
-	deoglRenderTask *renderTask;
+	deoglRenderTask *renderTask = nullptr;
+	deoglComputeRenderTask *computeRenderTask = nullptr;
 	
 	// height terrain has to come first since it has to be handled differently
-	deoglDebugTraceGroup debugTraceHT( renderThread, "GeometryPass.RenderSolidGeometryPass.HeightTerrain" );
+	deoglDebugTraceGroup debugTraceHT( renderThread, "HeightTerrain" );
 	renderTask = xray ? &tasks.GetSolidGeometryHeight1XRayTask() : &tasks.GetSolidGeometryHeight1Task();
 	if( renderTask->GetPipelineCount() > 0 ){
 		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
@@ -244,28 +228,41 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	}
 	
 	// other content
-	deoglDebugTraceGroup debugTraceOther( debugTraceHT, "GeometryPass.RenderSolidGeometryPass.Geometry" );
-	renderTask = xray ? &tasks.GetSolidGeometryXRayTask() : &tasks.GetSolidGeometryTask();
-	if( renderTask->GetPipelineCount() > 0 ){
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		rengeom.RenderTask( *renderTask );
+	deoglDebugTraceGroup debugTraceOther( debugTraceHT, "Geometry" );
+	if( useComputeRenderTask ){
+		computeRenderTask = xray ? tasks.GetCRTSolidGeometryXRay() : tasks.GetCRTSolidGeometry();
+		// computeRenderTask->DebugSimple(renderThread.GetLogger(), false);
+		if( computeRenderTask->GetStepCount() > 0 ){
+			computeRenderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+			computeRenderTask->Render();
+		}
+		
+	}else{
+		renderTask = xray ? &tasks.GetSolidGeometryXRayTask() : &tasks.GetSolidGeometryTask();
+		if( renderTask->GetPipelineCount() > 0 ){
+			renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+			rengeom.RenderTask( *renderTask );
+		}
 	}
 	
 	// outline
-	deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "GeometryPass.RenderSolidGeometryPass.Outline" );
-	renderTask = xray ? &tasks.GetSolidGeometryOutlineXRayTask() : &tasks.GetSolidGeometryOutlineTask();
-	if( renderTask->GetPipelineCount() > 0 ){
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		rengeom.RenderTask( *renderTask );
+	if( ! useComputeRenderTask ){
+		deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "Outline" );
+		renderTask = xray ? &tasks.GetSolidGeometryOutlineXRayTask() : &tasks.GetSolidGeometryOutlineTask();
+		if( renderTask->GetPipelineCount() > 0 ){
+			renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+			rengeom.RenderTask( *renderTask );
+		}
+		
+		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
 	}
-	
-	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
 	debugTraceOther.Close();
 	
 	// decals
-	RenderDecals( plan, xray );
-	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true );
-	QUICK_DEBUG_END
+	if( ! useComputeRenderTask ){
+		RenderDecals( plan, xray );
+		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true );
+	}
 	
 	
 	// downsample depth into mip-map levels if some later feature requires this. this can be done only after the

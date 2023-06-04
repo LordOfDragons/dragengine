@@ -31,6 +31,7 @@ class dearAnimator;
 class dearAnimatorInstance;
 class dearAnimation;
 class dearBoneStateList;
+class dearVPSStateList;
 class deDEAnimator;
 
 
@@ -43,9 +44,14 @@ private:
 	dearAnimatorInstance &pInstance;
 	const dearAnimator &pAnimator;
 	const deAnimatorRule &pRule;
+	
 	int *pBoneMappings;
 	int pBoneMappingCount;
 	bool pUseAllBones;
+	
+	int *pVPSMappings;
+	int pVPSMappingCount;
+	bool pUseAllVPS;
 	
 	dearControllerTarget pTargetBlendFactor;
 	
@@ -80,6 +86,8 @@ public:
 	/** Animator rule. */
 	inline const deAnimatorRule &GetRule() const{ return pRule; }
 	
+	
+	
 	/** All bones are used or a list of bones. */
 	inline bool GetUseAllBones() const{ return pUseAllBones; }
 	
@@ -88,6 +96,19 @@ public:
 	
 	/** Bone mapping for bone index. */
 	int GetBoneMappingFor( int boneIndex ) const;
+	
+	
+	
+	/** All vertex position sets are used or a list of vertex position sets. */
+	inline bool GetUseAllVPS() const{ return pUseAllVPS; }
+	
+	/** Vertex position set mapping count. */
+	int GetVPSMappingCount() const;
+	
+	/** Vertex position set mapping for vertex position set index. */
+	int GetVPSMappingFor( int vpsIndex ) const;
+	
+	
 	
 	/** Blend factor after applying a controller to it if one is set. */
 	float GetBlendFactor() const;
@@ -123,7 +144,7 @@ public:
 	virtual bool RebuildInstance() const;
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist ) = 0;
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ) = 0;
 	
 	/** Controller changed. */
 	virtual void ControllerChanged( int controller );
@@ -134,6 +155,7 @@ public:
 	
 private:
 	void pUpdateBoneMappings();
+	void pUpdateVPSMappings();
 };
 
 #endif

@@ -40,7 +40,8 @@
 deAnimatorRuleAnimationSelect::deAnimatorRuleAnimationSelect() :
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( false ){
+pEnableSize( false ),
+pEnableVertexPositionSet( true ){
 }
 
 deAnimatorRuleAnimationSelect::~deAnimatorRuleAnimationSelect(){
@@ -61,6 +62,10 @@ void deAnimatorRuleAnimationSelect::SetEnableOrientation( bool enabled ){
 
 void deAnimatorRuleAnimationSelect::SetEnableSize( bool enabled ){
 	pEnableSize = enabled;
+}
+
+void deAnimatorRuleAnimationSelect::SetEnableVertexPositionSet( bool enabled ){
+	pEnableVertexPositionSet = enabled;
 }
 
 

@@ -62,8 +62,8 @@ private:
 	const deoglPipeline *pPipelineDebugProbeUpdatePass1;
 	const deoglPipeline *pPipelineDebugProbeUpdatePass2;
 	
+	deoglSPBSingleUse::Ref pUBORenderLightSingleUse;
 	deoglSPBlockUBO::Ref pUBORenderLight;
-	deoglSPBlockUBO::Ref pUBORenderLightSSS;
 	
 	
 	

@@ -37,7 +37,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSynthesizerSetBytesPerSample::seUSynthesizerSetBytesPerSample( seSynthesizer *synthesizer, float newBytesPerSample ) :
+seUSynthesizerSetBytesPerSample::seUSynthesizerSetBytesPerSample( seSynthesizer *synthesizer, int newBytesPerSample ) :
 pSynthesizer( NULL )
 {
 	if( ! synthesizer ){

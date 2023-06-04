@@ -34,12 +34,12 @@
 #include "../gui/properties/meWindowProperties.h"
 #include "../utils/meBitArray.h"
 #include "../utils/meByteArray.h"
-#include "../../../deigde/shared/src/environment/igdeEnvironment.h"
-#include "../../../deigde/shared/src/loadsave/igdeLoadSaveHTNavSpace.h"
 
+#include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include <deigde/loadsave/igdeLoadSaveHTNavSpace.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>

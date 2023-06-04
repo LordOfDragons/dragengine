@@ -26,6 +26,8 @@
 #include "dearRuleLimit.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
@@ -71,9 +73,9 @@ pEnablePositionYMax( rule.GetEnablePositionYMax() ),
 pEnablePositionZMin( rule.GetEnablePositionZMin() ),
 pEnablePositionZMax( rule.GetEnablePositionZMax() ),
 pEnablePositionAny(
-	pEnablePositionXMin | pEnablePositionXMax |
-	pEnablePositionYMin | pEnablePositionYMax |
-	pEnablePositionZMin | pEnablePositionZMax ),
+	pEnablePositionXMin || pEnablePositionXMax ||
+	pEnablePositionYMin || pEnablePositionYMax ||
+	pEnablePositionZMin || pEnablePositionZMax ),
 
 pEnableRotationXMin( rule.GetEnableRotationXMin() ),
 pEnableRotationXMax( rule.GetEnableRotationXMax() ),
@@ -82,9 +84,9 @@ pEnableRotationYMax( rule.GetEnableRotationYMax() ),
 pEnableRotationZMin( rule.GetEnableRotationZMin() ),
 pEnableRotationZMax( rule.GetEnableRotationZMax() ),
 pEnableRotationAny(
-	pEnableRotationXMin | pEnableRotationXMax |
-	pEnableRotationYMin | pEnableRotationYMax |
-	pEnableRotationZMin | pEnableRotationZMax ),
+	pEnableRotationXMin || pEnableRotationXMax ||
+	pEnableRotationYMin || pEnableRotationYMax ||
+	pEnableRotationZMin || pEnableRotationZMax ),
 
 pEnableScalingXMin( rule.GetEnableScalingXMin() ),
 pEnableScalingXMax( rule.GetEnableScalingXMax() ),
@@ -93,11 +95,15 @@ pEnableScalingYMax( rule.GetEnableScalingYMax() ),
 pEnableScalingZMin( rule.GetEnableScalingZMin() ),
 pEnableScalingZMax( rule.GetEnableScalingZMax() ),
 pEnableScalingAny(
-	pEnableScalingXMin | pEnableScalingXMax |
-	pEnableScalingYMin | pEnableScalingYMax |
-	pEnableScalingZMin | pEnableScalingZMax ),
+	pEnableScalingXMin || pEnableScalingXMax ||
+	pEnableScalingYMin || pEnableScalingYMax ||
+	pEnableScalingZMin || pEnableScalingZMax ),
 
-pEnabledAny( pEnablePositionAny | pEnableRotationAny | pEnableScalingAny ),
+pEnableVPSMin( rule.GetEnableVertexPositionSetMin() ),
+pEnableVPSMax( rule.GetEnableVertexPositionSetMax() ),
+pEnableVPSAny( pEnableVPSMin || pEnableVPSMax ),
+
+pEnabledAny( pEnablePositionAny || pEnableRotationAny || pEnableScalingAny || pEnableVPSAny ),
 
 pCoordinateFrame( rule.GetCoordinateFrame() ),
 pMinPosition( rule.GetMinimumPosition() ),
@@ -105,7 +111,9 @@ pMaxPosition( rule.GetMaximumPosition() ),
 pMinRotation( rule.GetMinimumRotation() ),
 pMaxRotation( rule.GetMaximumRotation() ),
 pMinScaling( rule.GetMinimumScaling() ),
-pMaxScaling( rule.GetMaximumScaling() )
+pMaxScaling( rule.GetMaximumScaling() ),
+pMinVPS( rule.GetMinimumVertexPositionSet() ),
+pMaxVPS( rule.GetMaximumVertexPositionSet() )
 {
 	RuleChanged();
 }
@@ -118,13 +126,9 @@ dearRuleLimit::~dearRuleLimit(){
 // Management
 ///////////////
 
-void dearRuleLimit::Apply( dearBoneStateList &stalist ){
+void dearRuleLimit::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
-	if( ! GetEnabled() ){
-		return;
-	}
-	
-	if( ! pEnabledAny ){
+	if( ! GetEnabled() || ! pEnabledAny ){
 		return;
 	}
 	
@@ -136,6 +140,7 @@ DEBUG_RESET_TIMERS;
 	// prepare for applying the rule
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	// for bone local a quick version can be used
@@ -423,6 +428,36 @@ DEBUG_RESET_TIMERS;
 			bstate.BlendWith( position, orientation, scaling, blendMode, blendFactor, true, true, true );
 		}
 		break;
+	}
+	
+	// vertex position sets
+	for( i=0; i<vpsCount; i++ ){
+		const int animatorVps = GetVPSMappingFor( i );
+		if( animatorVps == -1 ){
+			continue;
+		}
+		
+		dearVPSState &vpsState = vpsstalist.GetStateAt( animatorVps );
+		
+		float weight = 0.0f;
+		if( pEnableVPSAny ){
+			weight = vpsState.GetWeight();
+		}
+		
+		bool hasChanged = false;
+		
+		if( pEnableVPSMin && weight < pMinVPS ){
+			weight = pMinVPS;
+			hasChanged = true;
+		}
+		if( pEnableVPSMax && weight > pMaxVPS ){
+			weight = pMaxVPS;
+			hasChanged = true;
+		}
+		
+		if( hasChanged ){
+			vpsState.BlendWith( weight, blendMode, blendFactor, true );
+		}
 	}
 DEBUG_PRINT_TIMER;
 }

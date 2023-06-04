@@ -119,7 +119,8 @@ void meHTVVariation::SetPathSkin( const char *path ){
 				
 			}catch( const deException & ){
 				if( pVLayer && pVLayer->GetHeightTerrain() ){
-					pSkin = pVLayer->GetHeightTerrain()->GetWorld().GetEnvironment()->GetErrorSkin();
+					pSkin = pVLayer->GetHeightTerrain()->GetWorld().GetEnvironment()->
+						GetStockSkin( igdeEnvironment::essError );
 					pSkin->AddReference();
 				}
 			}

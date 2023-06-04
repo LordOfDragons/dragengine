@@ -30,7 +30,7 @@ class aeRuleTrackTo;
 
 
 /**
- * @brief Undo Action Rule Track To Set Up Target.
+ * Undo Action Rule Track To Set Up Target.
  */
 class aeURuleTrackToSetUpTarget : public igdeUndo{
 private:
@@ -42,19 +42,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleTrackToSetUpTarget( aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eUpTarget newTarget );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleTrackToSetUpTarget();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 };

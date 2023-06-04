@@ -157,10 +157,7 @@ void deoglRPropFieldType::SetSkin( deoglRSkin *skin ){
 	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
-	
-	if( pPropField.GetParentWorld() ){
-		UpdateWorldComputeTextures( pPropField.GetParentWorld()->GetCompute() );
-	}
+	UpdateWorldComputeTextures();
 }
 
 
@@ -451,9 +448,8 @@ void deoglRPropFieldType::RemoveAllClusters(){
 	int i;
 	
 	if( pPropField.GetParentWorld() ){
-		deoglWorldCompute &worldCompute = pPropField.GetParentWorld()->GetCompute();
 		for( i=0; i<clusterCount; i++ ){
-			( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->RemoveFromWorldCompute( worldCompute );
+			( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->RemoveFromWorldCompute();
 		}
 	}
 	
@@ -608,10 +604,7 @@ void deoglRPropFieldType::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock,
 
 void deoglRPropFieldType::WorldReferencePointChanged(){
 	pDirtyParamBlock = true;
-	
-	if( pPropField.GetParentWorld() ){
-		UpdateWorldCompute( pPropField.GetParentWorld()->GetCompute() );
-	}
+	UpdateWorldCompute();
 }
 
 
@@ -624,27 +617,39 @@ void deoglRPropFieldType::AddToWorldCompute( deoglWorldCompute &worldCompute ){
 	}
 }
 
-void deoglRPropFieldType::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
+void deoglRPropFieldType::UpdateWorldCompute(){
+	if( ! pPropField.GetParentWorld() ){
+		return;
+	}
+	
 	const int clusterCount = pClusters.GetCount();
 	int i;
 	for( i=0; i<clusterCount; i++ ){
-		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateWorldCompute( worldCompute );
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateWorldCompute();
 	}
 }
 
-void deoglRPropFieldType::UpdateWorldComputeTextures( deoglWorldCompute &worldCompute ){
+void deoglRPropFieldType::UpdateWorldComputeTextures(){
+	if( ! pPropField.GetParentWorld() ){
+		return;
+	}
+	
 	const int clusterCount = pClusters.GetCount();
 	int i;
 	for( i=0; i<clusterCount; i++ ){
-		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateWorldComputeTextures( worldCompute );
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateWorldComputeTextures();
 	}
 }
 
-void deoglRPropFieldType::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
+void deoglRPropFieldType::RemoveFromWorldCompute(){
+	if( ! pPropField.GetParentWorld() ){
+		return;
+	}
+	
 	const int clusterCount = pClusters.GetCount();
 	int i;
 	for( i=0; i<clusterCount; i++ ){
-		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->RemoveFromWorldCompute( worldCompute );
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->RemoveFromWorldCompute();
 	}
 }
 
@@ -671,7 +676,7 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 		pParamBlock = nullptr;
 		
 		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+			const deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptPropField ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
@@ -690,7 +695,7 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 	
 	if( pDirtyParamBlock ){
 		if( pParamBlock ){
-			UpdateInstanceParamBlock( pParamBlock, pUseSkinTexture->GetPipelines().
+			UpdateInstanceParamBlock( pParamBlock, *pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptPropField ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader() );
 		}

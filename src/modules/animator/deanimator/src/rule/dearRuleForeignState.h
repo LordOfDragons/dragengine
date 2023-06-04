@@ -29,20 +29,23 @@
 
 
 /**
- * \brief Foreign state rule.
+ * Foreign state rule.
  */
 class dearRuleForeignState : public dearRule{
 private:
 	const deAnimatorRuleForeignState &pForeignState;
 	int pForeignBone;
+	int pForeignVPS;
 	
 	dearControllerTarget pTargetPosition;
 	dearControllerTarget pTargetOrientation;
 	dearControllerTarget pTargetSize;
+	dearControllerTarget pTargetVPS;
 	
 	const float pScalePosition;
 	const float pScaleOrientation;
 	const float pScaleSize;
+	const float pScaleVPS;
 	const deAnimatorRuleForeignState::eCoordinateFrames pSourceCoordFrame;
 	const deAnimatorRuleForeignState::eCoordinateFrames pDestCoordFrame;
 	const bool pLockX;
@@ -52,17 +55,18 @@ private:
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pEnableVPS;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRuleForeignState( dearAnimatorInstance &instance, const dearAnimator &animator,
 		int firstLink, const deAnimatorRuleForeignState &rule );
 	
-	/** \brief Clean up rule. */
+	/** Clean up rule. */
 	virtual ~dearRuleForeignState();
 	/*@}*/
 	
@@ -70,15 +74,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Foreign bone index. */
+	/** Foreign bone index. */
 	inline int GetForeignBone() const{ return pForeignBone; }
 	
 	
 	
-	/** \brief Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist );
+	/** Apply to animator. */
+	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	

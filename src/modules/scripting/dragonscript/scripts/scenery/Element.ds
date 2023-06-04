@@ -31,43 +31,18 @@ pin Dragengine.LoadSave
  * \brief Game world element.
  */
 class Element 
-	/** \brief Element class. */
 	private var ElementClass pClass
-	
-	/** \brief Position. */
 	private var DVector pPosition
-	
-	/** \brief Orientation. */
 	private var Quaternion pOrientation
-	
-	/** \brief Scaling. */
 	private var Vector pScaling
-	
-	/** \brief Is scaled. */
 	private var bool pIsScaled
-	
-	/** \brief Parent or \em null if not attached. */
 	private var Element pParent
-	
-	/** \brief Game world or \em null if not added to one. */
 	private var GameWorld pGameWorld
-	
-	/** \brief Element is visible */
 	private var bool pVisible
-	
-	/** \brief Element is touchable. */
 	private var bool pTouchable
-	
-	/** \brief Unique id used for saving or networking. */
 	private var UniqueID pID
-	
-	/** \brief Element matrix or \em null if not calculated yet. */
 	private var DMatrix pMatrix
-	
-	/** \brief Inverse element matrix or \em null if not calculated yet. */
 	private var DMatrix pMatrixInverse
-	
-	/** \brief Element stub used to create the element or \em null if unknown. */
 	private var StubElement pStub
 	
 	
@@ -116,8 +91,8 @@ class Element
 	/**
 	 * \brief Initialize element from stub.
 	 * 
-	 * The stub is stored in the element for saving. Do not change the stub after
-	 * using it for the init() call.
+	 * Stub is stored in element for saving. Stub can be changed in certain situations.
+	 * In general though the stub should be kept unchanged.
 	 */
 	public func void init( StubElement stub )
 		if stub == null

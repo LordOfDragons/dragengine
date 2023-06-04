@@ -1684,15 +1684,15 @@ void meHeightTerrainSector::pUpdatePropFieldPositions(){
 	
 	for( y=0, p=0; y<pPropFieldCellCount; y++ ){
 		position.z = sectorOffsetZ + cellOffset - cellSize * ( double )y;
-		minExtend.y = position.z - halfCellSize;
-		maxExtend.y = position.z + halfCellSize;
+		minExtend.y = ( float )position.z - halfCellSize;
+		maxExtend.y = ( float )position.z + halfCellSize;
 		
 		for( x=0; x<pPropFieldCellCount; x++, p++ ){
 			engPF = pPropFields[ p ]->GetEnginePropField();
 			
 			position.x = sectorOffsetX - cellOffset + cellSize * ( double )x;
-			minExtend.x = position.x - halfCellSize;
-			maxExtend.x = position.x + halfCellSize;
+			minExtend.x = ( float )position.x - halfCellSize;
+			maxExtend.x = ( float )position.x + halfCellSize;
 			
 			engPF->SetPosition( position );
 			//engPF->SetSize( size );

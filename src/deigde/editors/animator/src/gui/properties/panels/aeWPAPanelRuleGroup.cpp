@@ -31,6 +31,7 @@
 #include "../../../undosys/rule/group/aeURuleGroupToggleEnablePosition.h"
 #include "../../../undosys/rule/group/aeURuleGroupToggleEnableRotation.h"
 #include "../../../undosys/rule/group/aeURuleGroupToggleEnableSize.h"
+#include "../../../undosys/rule/group/aeURuleGroupToggleEnableVertexPositionSet.h"
 #include "../../../undosys/rule/group/aeURuleGroupToggleUseCurrentState.h"
 #include "../../../undosys/rule/group/aeURuleGroupSetApplicationType.h"
 
@@ -173,6 +174,22 @@ public:
 	}
 };
 
+class cActionEnableVertexPositionSet : public cBaseAction{
+public:
+	cActionEnableVertexPositionSet( aeWPAPanelRuleGroup &panel ) : cBaseAction( panel,
+		"Enable vertex position set manipulation", nullptr,
+		"Determines if the vertex position set is modified or kept as it is" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleGroup *rule ){
+		return new aeURuleGroupToggleEnableVertexPositionSet( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleGroup &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetEnableVertexPositionSet() );
+	}
+};
+
 class cActionUseCurrentState : public cBaseAction{
 public:
 	cActionUseCurrentState( aeWPAPanelRuleGroup &panel ) : cBaseAction( panel,
@@ -219,6 +236,7 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertGroup )
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
+	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
 }
 
 aeWPAPanelRuleGroup::~aeWPAPanelRuleGroup(){
@@ -248,6 +266,7 @@ void aeWPAPanelRuleGroup::UpdateRule(){
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();
 	pChkEnableSize->GetAction()->Update();
+	pChkEnableVertexPositionSet->GetAction()->Update();
 }
 
 void aeWPAPanelRuleGroup::UpdateTargetList(){

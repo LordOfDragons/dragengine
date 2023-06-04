@@ -31,7 +31,7 @@ class aeRuleAnimationSelect;
 
 
 /**
- * \brief Undo set rule animation select set moves.
+ * Undo set rule animation select set moves.
  */
 class aeURuleAnimSelectSetMoves : public igdeUndo{
 private:
@@ -45,12 +45,12 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo object. */
+	/** Create undo object. */
 	aeURuleAnimSelectSetMoves( aeRuleAnimationSelect *rule, const decStringList &newMoves,
 		const char *description = "Set animation select rule moves" );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleAnimSelectSetMoves();
 	/*@}*/
 	
@@ -59,10 +59,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

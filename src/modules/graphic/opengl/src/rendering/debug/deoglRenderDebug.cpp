@@ -363,7 +363,7 @@ void deoglRenderDebug::BeginRenderText(){
 	pTBORenderText2->Clear();
 }
 
-void deoglRenderDebug::AddRenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color ){
+void deoglRenderDebug::AddRenderText( const decPoint &viewport, const char *text, int x, int y, const decColor &color ){
 	if( ! text ){
 		DETHROW( deeInvalidParam );
 	}
@@ -371,10 +371,10 @@ void deoglRenderDebug::AddRenderText( deoglRenderPlan &plan, const char *text, i
 	const deoglDebugFont::sGlyph * const glyphs = pDebugFont->GetGlyphs();
 	const float fontScale = 1.0f;
 	
-	const float scalePosition1X = 1.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition1Y = -1.0f / ( float )plan.GetViewportHeight();
-	const float scalePosition2X = 2.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition2Y = -2.0f / ( float )plan.GetViewportHeight();
+	const float scalePosition1X = 1.0f / ( float )viewport.x;
+	const float scalePosition1Y = -1.0f / ( float )viewport.y;
+	const float scalePosition2X = 2.0f / ( float )viewport.x;
+	const float scalePosition2Y = -2.0f / ( float )viewport.y;
 	const float offsetPositionX = scalePosition2X * 0.375f - 1.0f;
 	const float offsetPositionY = scalePosition2Y * 0.375f + 1.0f;
 	
@@ -454,12 +454,12 @@ void deoglRenderDebug::BeginRenderRectangle(){
 	pTBORenderRectangle2->Clear();
 }
 
-void deoglRenderDebug::AddRenderRectangle( deoglRenderPlan &plan,
+void deoglRenderDebug::AddRenderRectangle( const decPoint &viewport,
 int x1, int y1, int x2, int y2, const decColor &color ){
-	const float scalePosition1X = 1.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition1Y = -1.0f / ( float )plan.GetViewportHeight();
-	const float scalePosition2X = 2.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition2Y = -2.0f / ( float )plan.GetViewportHeight();
+	const float scalePosition1X = 1.0f / ( float )viewport.x;
+	const float scalePosition1Y = -1.0f / ( float )viewport.y;
+	const float scalePosition2X = 2.0f / ( float )viewport.x;
+	const float scalePosition2Y = -2.0f / ( float )viewport.y;
 	const float offsetPositionX = scalePosition2X * 0.375f - 1.0f;
 	const float offsetPositionY = scalePosition2Y * 0.375f + 1.0f;
 	

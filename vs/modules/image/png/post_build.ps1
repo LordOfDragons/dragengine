@@ -12,7 +12,7 @@ $TargetDir = "$OutputDir\$PathDistDEDataModules\image\png\$Version"
 
 Write-Host "IES Module: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "imgpng.dll"
+$Library = "$OutputDir\de_module\image\png\imgpng.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
@@ -24,4 +24,4 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\image\png\$Version"
 Write-Host "IES Module: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "imgpng.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\de_module\image\png\imgpng.pdb" -Destination $TargetDir

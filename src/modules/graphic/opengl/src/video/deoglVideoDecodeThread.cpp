@@ -225,14 +225,32 @@ void deoglVideoDecodeThread::Run(){
 
 
 void deoglVideoDecodeThread::PreparePixelBuffers(){
-	deoglPixelBuffer::ePixelFormats pbFormat = deoglPixelBuffer::epfByte3;
-	const deVideo::ePixelFormat pixelFormat = pVideo->GetPixelFormat();
+	const int componentCount = pVideo->GetComponentCount();
 	const int height = pVideo->GetHeight();
 	const int width = pVideo->GetWidth();
 	
 	// determine the pixel buffer format to use
-	if( pixelFormat == deVideo::epf4444 ){
+	deoglPixelBuffer::ePixelFormats pbFormat;
+	
+	switch( componentCount ){
+	case 1:
+		pbFormat = deoglPixelBuffer::epfByte1;
+		break;
+		
+	case 2:
+		pbFormat = deoglPixelBuffer::epfByte2;
+		break;
+		
+	case 3:
+		pbFormat = deoglPixelBuffer::epfByte3;
+		break;
+		
+	case 4:
 		pbFormat = deoglPixelBuffer::epfByte4;
+		break;
+		
+	default:
+		DETHROW_INFO( deeInvalidParam, "invalid component count" );
 	}
 	
 	// if the pixel buffers do not match the required size free them
@@ -268,8 +286,7 @@ void deoglVideoDecodeThread::DecodeFrame(){
 	
 	pDecoder->SetPosition( pFrame ); // in most cases this should not seek
 	
-	if( ! pDecoder->DecodeFrame( pPixelBufferDecode->GetPointer(),
-	pPixelBufferDecode->GetImageSize(), NULL, 0 ) ){
+	if( ! pDecoder->DecodeFrame( pPixelBufferDecode->GetPointer(), pPixelBufferDecode->GetImageSize() ) ){
 		SetErrorPixelBuffer();
 		return;
 	}
@@ -280,6 +297,46 @@ void deoglVideoDecodeThread::DecodeFrame(){
 	int x, y;
 	
 	switch( pPixelBufferTexture->GetFormat() ){
+	case deoglPixelBuffer::epfByte1:
+		{
+		const deoglPixelBuffer::sByte1 * const pixelsDecode = pPixelBufferDecode->GetPointerByte1();
+		deoglPixelBuffer::sByte1 * const pixelsTexture = pPixelBufferTexture->GetPointerByte1();
+		
+		for( y=0; y<height; y++ ){
+			deoglPixelBuffer::sByte1 * const pixelLineTexture = pixelsTexture + width * ( height - y - 1 );
+			const deoglPixelBuffer::sByte1 * const pixelLineDecode = pixelsDecode + width * y;
+			
+			for( x=0; x<width; x++ ){
+				color.r = ( float )pixelLineDecode[ x ].r * factor;
+				
+				color = colorMatrix * color;
+				
+				pixelLineTexture[ x ].r = decMath::clamp( ( int )( color.r * 255.0f ), 0, 255 );
+			}
+		}
+		} break;
+		
+	case deoglPixelBuffer::epfByte2:
+		{
+		const deoglPixelBuffer::sByte2 * const pixelsDecode = pPixelBufferDecode->GetPointerByte2();
+		deoglPixelBuffer::sByte2 * const pixelsTexture = pPixelBufferTexture->GetPointerByte2();
+		
+		for( y=0; y<height; y++ ){
+			deoglPixelBuffer::sByte2 * const pixelLineTexture = pixelsTexture + width * ( height - y - 1 );
+			const deoglPixelBuffer::sByte2 * const pixelLineDecode = pixelsDecode + width * y;
+			
+			for( x=0; x<width; x++ ){
+				color.r = ( float )pixelLineDecode[ x ].r * factor;
+				color.g = ( float )pixelLineDecode[ x ].g * factor;
+				
+				color = colorMatrix * color;
+				
+				pixelLineTexture[ x ].r = decMath::clamp( ( int )( color.r * 255.0f ), 0, 255 );
+				pixelLineTexture[ x ].g = decMath::clamp( ( int )( color.g * 255.0f ), 0, 255 );
+			}
+		}
+		} break;
+		
 	case deoglPixelBuffer::epfByte3:
 		{
 		const deoglPixelBuffer::sByte3 * const pixelsDecode = pPixelBufferDecode->GetPointerByte3();
@@ -316,9 +373,10 @@ void deoglVideoDecodeThread::DecodeFrame(){
 				color.r = ( float )pixelLineDecode[ x ].r * factor;
 				color.g = ( float )pixelLineDecode[ x ].g * factor;
 				color.b = ( float )pixelLineDecode[ x ].b * factor;
-				color.a = ( float )pixelLineDecode[ x ].a * factor;
 				
-				color = colorMatrix * color;
+				color = colorMatrix * color; // sets a=1 so alpha has to be set afterwards
+				
+				color.a = ( float )pixelLineDecode[ x ].a * factor;
 				
 				pixelLineTexture[ x ].r = decMath::clamp( ( int )( color.r * 255.0f ), 0, 255 );
 				pixelLineTexture[ x ].g = decMath::clamp( ( int )( color.g * 255.0f ), 0, 255 );
@@ -326,6 +384,7 @@ void deoglVideoDecodeThread::DecodeFrame(){
 				pixelLineTexture[ x ].a = decMath::clamp( ( int )( color.a * 255.0f ), 0, 255 );
 			}
 		}
+		
 		} break;
 		
 	default:
@@ -340,6 +399,23 @@ void deoglVideoDecodeThread::SetErrorPixelBuffer(){
 	int i;
 	
 	switch( pPixelBufferTexture->GetFormat() ){
+	case deoglPixelBuffer::epfByte1:
+		{
+		deoglPixelBuffer::sByte1 * const pixels = pPixelBufferTexture->GetPointerByte1();
+		for( i=0; i<count; i++ ){
+			pixels[ i ].r = 255;
+		}
+		} break;
+		
+	case deoglPixelBuffer::epfByte2:
+		{
+		deoglPixelBuffer::sByte2 * const pixels = pPixelBufferTexture->GetPointerByte2();
+		for( i=0; i<count; i++ ){
+			pixels[ i ].r = 255;
+			pixels[ i ].g = 0;
+		}
+		} break;
+		
 	case deoglPixelBuffer::epfByte3:
 		{
 		deoglPixelBuffer::sByte3 * const pixels = pPixelBufferTexture->GetPointerByte3();

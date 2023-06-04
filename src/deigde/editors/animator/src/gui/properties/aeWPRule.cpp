@@ -455,6 +455,7 @@ void aeWPRule::SetAnimator( aeAnimator *animator ){
 	UpdateRule();
 	UpdateRuleMoveList();
 	UpdateRuleBoneList();
+	UpdateRuleVertexPositionSetList();
 	UpdateLinkList();
 	UpdateControllerList();
 }
@@ -664,6 +665,12 @@ void aeWPRule::UpdateRule(){
 void aeWPRule::UpdateRuleBoneList(){
 	if( pActivePanel ){
 		pActivePanel->UpdateRigBoneList();
+	}
+}
+
+void aeWPRule::UpdateRuleVertexPositionSetList(){
+	if( pActivePanel ){
+		pActivePanel->UpdateModelVertexPositionSetList();
 	}
 }
 

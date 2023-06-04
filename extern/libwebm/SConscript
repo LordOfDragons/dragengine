@@ -1,0 +1,115 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# parameters
+libraryVersion = '1.0.0.29'
+
+srcdir = 'libwebm-libwebm-{}'.format(libraryVersion)
+
+libLinkName = 'webm'
+
+if envLibrary['OSWindows']:
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# build libwebm
+def libwebmBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[ 0 ].abspath)
+	
+	script = createScriptHeader(env)
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	cmdline = ['cmake']
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	# this is required to force output into the lib-dir we want. otherwise on some platforms the library
+	# is written to 'lib' directory, on others to 'lib64'. this makes it impossible to write an SConscript
+	# that properly tracks this library. using --libdir we force the 'lib' directory name and all is fine
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
+	
+	if env['with_debug']:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	
+	if env['platform_android'] != 'no':
+		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
+		
+	elif 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+	
+	if env['OSWindows']:
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(
+			env.File('#extern/mingw/mingw-w64-x86_64.cmake').abspath))
+	
+	cmdline.append('-DENABLE_IWYU=OFF')
+	cmdline.append('-DENABLE_TESTS=OFF')
+	cmdline.append('-DENABLE_WEBMINFO=OFF')
+	cmdline.append('-DENABLE_WEBM_PARSER=ON')
+	
+	cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=ON')
+		
+	if env['platform_android'] != 'no':
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
+	elif 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building libwebm')
+
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles(envLibrary, 'patches/{}'.format(libraryVersion), '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+targets = [staticFileName]
+targets.extend([
+	'include/webm/buffer_reader.h',
+	'include/webm/callback.h',
+	'include/webm/dom_types.h',
+	'include/webm/element.h',
+	'include/webm/file_reader.h',
+	'include/webm/id.h',
+	'include/webm/istream_reader.h',
+	'include/webm/reader.h',
+	'include/webm/status.h',
+	'include/webm/webm_parser.h'])
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(libwebmBuild, 'Build libwebm'))
+
+depends = parent_env.Alias('lib_libwebm', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'share', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+
+libpath = [envLibrary.Dir('lib')]
+
+libs = library[0:1]
+runtimelibs = []
+
+parent_targets['lib_libwebm'] = {
+	'name' : 'Internal libwebm library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

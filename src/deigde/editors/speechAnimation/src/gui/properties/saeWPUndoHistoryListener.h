@@ -29,7 +29,7 @@ class saeWPUndoHistory;
 
 
 /**
- * \brief Undo History Properties Panel Listener.
+ * Undo History Properties Panel Listener.
  */
 class saeWPUndoHistoryListener : public saeSAnimationListener{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	saeWPUndoHistoryListener( saeWPUndoHistory &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~saeWPUndoHistoryListener();
 	/*@}*/
 	
@@ -51,7 +51,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo changed. */
+	/** Undo changed. */
 	virtual void UndoChanged( saeSAnimation *sanimation );
 	/*@}*/
 };

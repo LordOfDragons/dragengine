@@ -47,8 +47,10 @@
 igdeCommonDialogs::eButton igdeNativeFoxCommonDialogs::Message( igdeWidget *owner,
 igdeCommonDialogs::eButtonSet buttons, igdeCommonDialogs::eIcon icon,
 const char *title, const char *text ){
-	if( ! owner || ! owner->GetNativeWidget() || ! title || ! text ){
-		DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( title )
+	DEASSERT_NOTNULL( text )
+	if( owner ){
+		DEASSERT_NOTNULL( owner->GetNativeWidget() )
 	}
 	
 	int foxButtons;
@@ -74,25 +76,45 @@ const char *title, const char *text ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXWindow * const foxOwner = ( FXWindow* )owner->GetNativeWidget();
+	FXWindow * const foxOwner = owner ? ( FXWindow* )owner->GetNativeWidget() : nullptr;
 	int foxResult;
 	
 	switch( icon ){
 	case igdeCommonDialogs::eiQuestion:
-		foxResult = FXMessageBox::question( foxOwner, foxButtons, title, text, "" );
+		if( foxOwner ){
+			foxResult = FXMessageBox::question( foxOwner, foxButtons, title, text, "" );
+			
+		}else{
+			foxResult = FXMessageBox::question( FXApp::instance(), foxButtons, title, text, "" );
+		}
 		break;
 		
 	case igdeCommonDialogs::eiWarning:
-		foxResult = FXMessageBox::warning( foxOwner, foxButtons, title, text, "" );
+		if( foxOwner ){
+			foxResult = FXMessageBox::warning( foxOwner, foxButtons, title, text, "" );
+			
+		}else{
+			foxResult = FXMessageBox::warning( FXApp::instance(), foxButtons, title, text, "" );
+		}
 		break;
 		
 	case igdeCommonDialogs::eiError:
-		foxResult = FXMessageBox::error( foxOwner, foxButtons, title, text, "" );
+		if( foxOwner ){
+			foxResult = FXMessageBox::error( foxOwner, foxButtons, title, text, "" );
+			
+		}else{
+			foxResult = FXMessageBox::error( FXApp::instance(), foxButtons, title, text, "" );
+		}
 		break;
 		
 	case igdeCommonDialogs::eiInfo:
 	case igdeCommonDialogs::eiNone:
-		foxResult = FXMessageBox::information( foxOwner, foxButtons, title, text, "" );
+		if( foxOwner ){
+			foxResult = FXMessageBox::information( foxOwner, foxButtons, title, text, "" );
+			
+		}else{
+			foxResult = FXMessageBox::information( FXApp::instance(), foxButtons, title, text, "" );
+		}
 		break;
 		
 	default:

@@ -30,7 +30,7 @@ class aeWPUndoHistoryListener;
 
 
 /**
- * \brief Undo History Panel.
+ * Undo History Panel.
  */
 class aeWPUndoHistory : public igdeWPUndoHistory{
 private:
@@ -42,11 +42,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPUndoHistory( igdeEnvironment &environment );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPUndoHistory();
 	/*@}*/
 	
@@ -55,10 +55,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pWorld; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	/*@}*/
 };

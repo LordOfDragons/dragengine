@@ -33,7 +33,7 @@ class aeRuleInverseKinematic;
 
 
 /**
- * @brief Undo rule inverse kinematic set adjust orientation.
+ * Undo rule inverse kinematic set adjust orientation.
  *
  * Undo to set if the inverse kinematic rule adjusts the orientation.
  */
@@ -44,19 +44,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleIKSetAdjustOrientation( aeRuleInverseKinematic *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleIKSetAdjustOrientation();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

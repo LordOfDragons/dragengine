@@ -57,11 +57,15 @@ private:
 	const deoglPipeline *pPipelineOccMapDownSample;
 	const deoglPipeline *pPipelineOccMapDownSampleStereo;
 	const deoglPipeline *pPipelineOccTest;
+	const deoglPipeline *pPipelineOccTestComputeRT;
 	const deoglPipeline *pPipelineOccTestDual;
 	const deoglPipeline *pPipelineOccTestSun;
+	const deoglPipeline *pPipelineOccTestSunComputeRT;
 	const deoglPipeline *pPipelineOccMapCube;
 	
+	deoglSPBSingleUse::Ref pRenderParamBlockSingleUse;
 	deoglSPBlockUBO::Ref pRenderParamBlock;
+	deoglSPBSingleUse::Ref pOccMapFrustumParamBlockSingleUse;
 	deoglSPBlockUBO::Ref pOccMapFrustumParamBlock;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
@@ -80,14 +84,11 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** Add basic defines for occlusion map shaders. */
-	void AddOccMapDefines( deoglShaderDefines &defines );
-	
 	/** Render occlusion tests. */
 	void RenderTestsCamera( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Render occlusion tests. */
-	void RenderTestsSkyLayer( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLigh );
+	void RenderTestsSkyLayer( deoglRenderPlanSkyLight &planSkyLigh );
 	
 	/** Shader to use for occlusion map rendering. */
 	const deoglPipeline *GetRenderOcclusionMapRTS( const deoglRenderPlan &plan,
@@ -95,7 +96,8 @@ public:
 	
 	/** Render occlusion meshes into the occlusion map. */
 	void RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
-	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask &renderTask );
+	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask *renderTask,
+		deoglComputeRenderTask *computeRenderTask );
 	
 	/** Render occlusion queries using active occlusion map. */
 	void RenderOcclusionQueries( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool perspective );
@@ -106,7 +108,7 @@ public:
 		const decMatrix &matrixCamera, const decMatrix &matrixCameraStereo );
 	
 	/** Render occlusion tests with frustum check. */
-	void RenderOcclusionTestsSun( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,
+	void RenderOcclusionTestsSun( deoglRenderPlanSkyLight &planSkyLight, deoglOcclusionTest &occlusionTest,
 		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
 		const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2,
 		const decMatrix &matrixCamera2Stereo );

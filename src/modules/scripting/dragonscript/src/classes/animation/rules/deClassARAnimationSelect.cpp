@@ -153,6 +153,21 @@ void deClassARAnimationSelect::nfSetEnableSize::RunFunction( dsRunTime *rt, dsVa
 	}
 }
 
+// public func void setEnableVertexPositionSet( bool enabled )
+deClassARAnimationSelect::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARAnimSel, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARAnimationSelect::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 // public func void targetAddLink( ARAnimationSelectTarget target, int link )
 deClassARAnimationSelect::nfTargetAddLink::nfTargetAddLink( const sInitData &init ) : dsFunction( init.clsARAnimSel,
 "targetAddLink", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -338,6 +353,7 @@ void deClassARAnimationSelect::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnablePosition( init ) );
 	AddFunction( new nfSetEnableOrientation( init ) );
 	AddFunction( new nfSetEnableSize( init ) );
+	AddFunction( new nfSetEnableVertexPositionSet( init ) );
 	
 	AddFunction( new nfTargetAddLink( init ) );
 	AddFunction( new nfTargetRemoveAllLinks( init ) );

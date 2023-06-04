@@ -44,7 +44,7 @@ class deSkyController;
 class DE_DLL_EXPORT igdeWSky{
 public:
 	/** \brief Asynchronous loading finished. */
-	class cAsyncLoadFinished{
+	class DE_DLL_EXPORT cAsyncLoadFinished{
 	public:
 		/** \brief Create listener. */
 		cAsyncLoadFinished();

@@ -81,10 +81,6 @@ static decTimer timer;
 // Definitions
 ////////////////
 
-#define DEBUG_SNAPSHOT_TONEMAP 50
-
-
-
 /*
 == Notes ==
 ===========
@@ -167,119 +163,6 @@ enum eSPFinalize{
 	spfinBrightness,
 	spfinContrast
 };
-
-
-
-// Debug Checks
-/////////////////
-
-static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRendering &defren, const deoglArrayTexture &texture ){
-	const int defrenHeight = defren.GetHeight();
-	const int defrenWidth = defren.GetWidth();
-	const int defrenLayers = defren.GetLayerCount();
-	const int texHeight = texture.GetHeight();
-	const int texWidth = texture.GetWidth();
-	
-	const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
-		new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 ) ) );
-	
-	texture.GetPixelsLevel( 0, pixelBuffer );
-	decColor * const dummy = ( decColor* )pixelBuffer->GetPointer();
-	
-	int nanCulprits = 0;
-	int nanCulpritsR = 0;
-	int nanCulpritsG = 0;
-	int nanCulpritsB = 0;
-	int nanCulpritsA = 0;
-	int infCulprits = 0;
-	int infCulpritsR = 0;
-	int infCulpritsG = 0;
-	int infCulpritsB = 0;
-	int infCulpritsA = 0;
-	int x, y, l;
-	
-	for( l=0; l<defrenLayers; l++ ){
-		for( y=0; y<defrenHeight; y++ ){
-			for( x=0; x<defrenWidth; x++ ){
-				const int i = ( texWidth * texHeight ) * l + ( texHeight - 1 - y ) * texWidth + x;
-				
-				if( isnan( dummy[i].r ) ){
-					nanCulpritsR++;
-				}
-				if( isnan( dummy[i].g ) ){
-					nanCulpritsG++;
-				}
-				if( isnan( dummy[i].b ) ){
-					nanCulpritsB++;
-				}
-				if( isnan( dummy[i].a ) ){
-					nanCulpritsA++;
-				}
-				
-				if( isinf( dummy[i].r ) ){
-					infCulpritsR++;
-				}
-				if( isinf( dummy[i].g ) ){
-					infCulpritsG++;
-				}
-				if( isinf( dummy[i].b ) ){
-					infCulpritsB++;
-				}
-				if( isinf( dummy[i].a ) ){
-					infCulpritsA++;
-				}
-				
-				if( isnan( dummy[i].r ) || isnan( dummy[i].g ) || isnan( dummy[i].b ) || isnan( dummy[i].a ) ){
-					nanCulprits++;
-				}
-				if( isinf( dummy[i].r ) || isinf( dummy[i].g ) || isinf( dummy[i].b ) || isinf( dummy[i].a ) ){
-					infCulprits++;
-				}
-			}
-		}
-	}
-	
-	renderThread.GetLogger().LogInfoFormat( "nan/inf check rendered image: nan(%i,%i,%i,%i|%i) inf(%i,%i,%i,%i|%i)",
-		nanCulpritsR, nanCulpritsG, nanCulpritsB, nanCulpritsA, nanCulprits,
-		infCulpritsR, infCulpritsG, infCulpritsB, infCulpritsA, infCulprits );
-	
-	delete [] dummy;
-}
-
-static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglArrayTexture &texture, int width, int height ){
-	const int texHeight = texture.GetHeight();
-	const int texWidth = texture.GetWidth();
-	int totallyBlack = 0;
-	
-	const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
-		new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 ) ) );
-	
-	texture.GetPixelsLevel( 0, pixelBuffer );
-	decColor * const dummy = ( decColor* )pixelBuffer->GetPointer();
-	
-	const int count = width * height;
-	float avg = 0.0f;
-	int x, y;
-	
-	for( y=0; y<height; y++ ){
-		for( x=0; x<width; x++ ){
-			const float value = dummy[ ( texHeight - 1 - y ) * texWidth + x ].r;
-			
-			avg += value;
-			
-			if( value < -9.2f ){
-				totallyBlack++;
-			}
-			//if( width <= 4 && height <= 4 ){
-			//	ogl.LogInfoFormat( "average scene color: (%ix%i) value (%i,%i) = %g", width, height, x, y, value );
-			//}
-		}
-	}
-	
-	renderThread.GetLogger().LogInfoFormat( "average scene color: (%ix%i) %g (%i totallyBlack)", width, height, expf( avg / ( float )count ), totallyBlack );
-	
-	delete [] dummy;
-}
 
 
 
@@ -501,7 +384,6 @@ DEBUG_RESET_TIMERS;
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.ToneMap" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
@@ -518,32 +400,18 @@ DEBUG_RESET_TIMERS;
 	}
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	
-	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 DEBUG_PRINT_TIMER_TOTAL( "Tone-Mapping" );
 }
 
 void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.CalculateSceneKey" );
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 //	const float pixelSizeS = defren.GetPixelSizeU();
 //	const float pixelSizeT = defren.GetPixelSizeV();
 	deoglShaderCompiled *shader;
 	bool modeTarget;
-	
-	if( config.GetDebugSnapshot() == 55 ){
-		DebugNanCheck( renderThread, defren, *defren.GetTextureLuminance() );
-	}
-	
-	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-// 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureColor(), "tonemap_input_color" );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureLuminance(), "tonemap_input_luminance" );
-	}
 	
 	// convert color to log luminance. to allow for proper averaging the output image is reduced
 	// to the largest power of four size fitting inside for upcoming downsampling. if the found
@@ -600,11 +468,6 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	shader->SetParameterFloat( spc2llParam2, tcOffsetU, tcOffsetV, clampU, clampV );
 	
 	RenderFullScreenQuad( plan );
-	
-	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(),
-			0, "tonemap_loglum", deoglDebugSaveTexture::ecLogIntensity );
-	}
 DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 	
 	// average the log luminances
@@ -620,7 +483,6 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 	}
 	
-	int round = 0;
 	while( curWidth > 4 || curHeight > 4 ){
 		lastWidth = curWidth;
 		lastHeight = curHeight;
@@ -673,36 +535,9 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 		
 		RenderFullScreenQuad( plan );
 		
-		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-			decString text;
-			text.Format( "tonemap_avg_lumlog_%i_%ix%i_to_%ix%i", round++, lastWidth, lastHeight, curWidth, curHeight );
-			if( modeTarget || useTextureBarrier ){
-				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(),
-					0, text.GetString(), deoglDebugSaveTexture::ecLogIntensity );
-			}else{
-				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary2(),
-					0, text.GetString(), deoglDebugSaveTexture::ecLogIntensity );
-			}
-		}
-		
-		if( config.GetDebugSnapshot() == 55 ){
-			if( modeTarget || useTextureBarrier ){
-				DebugAvgSceneColor( renderThread, *defren.GetTextureTemporary1(), curWidth, curHeight );
-			}else{
-				DebugAvgSceneColor( renderThread, *defren.GetTextureTemporary2(), curWidth, curHeight );
-			}
-		}
-		
 		modeTarget = ! modeTarget;
 	}
 DEBUG_PRINT_TIMER( "ToneMap: Average" );
-	
-	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		if( plan.GetWorld()->GetSkyEnvironmentMap() && plan.GetWorld()->GetSkyEnvironmentMap()->GetEnvironmentMap() ){
-			renderThread.GetDebug().GetDebugSaveTexture().SaveCubeMapLevel(
-				*plan.GetWorld()->GetSkyEnvironmentMap()->GetEnvironmentMap(), 8, "tonemap_envmap", false );
-		}
-	}
 	
 	// determine tone map parameters to use for this scene
 	renderThread.GetFramebuffer().Activate( pFBOToneMapParams );
@@ -782,14 +617,6 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	oglCamera.SetToneMapParamsTexture( pTextureToneMapParams );
 	pTextureToneMapParams = lastParams;
 DEBUG_PRINT_TIMER( "ToneMap: Determine Parameters" );
-	
-	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 ) ) );
-		oglCamera.GetToneMapParamsTexture()->GetPixelsLevel( 0, pixelBuffer );
-		const deoglPixelBuffer::sFloat4 avgSceneColor = *pixelBuffer->GetPointerFloat4();
-		renderThread.GetLogger().LogInfoFormat( "tone map params: %g %g %g %g", avgSceneColor.r, avgSceneColor.g, avgSceneColor.b, avgSceneColor.a );
-	}
 }
 
 void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth, int &bloomHeight ){
@@ -797,7 +624,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.RenderBloomPass" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const float pixelSizeU = defren.GetPixelSizeU();
 	const float pixelSizeV = defren.GetPixelSizeV();
 	deoglRCamera *oglCamera = plan.GetCamera();
@@ -848,10 +674,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	tsmgr.EnableTexture( 1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest() );
 	
 	RenderFullScreenQuad( plan );
-	
-	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), "tonemap_bright" );
-	}
 	
 	// determine the number of blur passes. depends right now on the size of the bright image.
 	// right now on a 1024 image 4 blur passes are done (1024, 512, 256, 128). hence the
@@ -908,12 +730,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		
 		RenderFullScreenQuad( plan );
 		
-		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-			decString text;
-			text.Format( "tonemap_bloom_%i_blur_x", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary2(), text.GetString() ); // temporary2
-		}
-		
 		// blur in y direction
 		defren.ActivateFBOTemporary1( false );
 		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
@@ -925,12 +741,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		shader->SetParameterFloat( spbbOffsets5, 0.0f, blurTCOffsets[ 4 ] * pixelSizeV, 0.0f, -blurTCOffsets[ 4 ] * pixelSizeV );
 		
 		RenderFullScreenQuad( plan );
-		
-		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-			decString text;
-			text.Format( "tonemap_bloom_%i_blur_y", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), text.GetString() );
-		}
 	}
 	
 #if 0
@@ -979,16 +789,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 			OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
 			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 			
-			if( renderThread.GetConfiguration()->GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-				decString text;
-				text.Format( "tonemap_bloom_%i_reduce_%ix%i_to_%ix%i", i, lastWidth, lastHeight, curWidth, curHeight );
-				if( modeTarget ){
-					renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTemporary2Texture(), text.GetString(), false );
-				}else{
-					renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetSpecularityTexture(), text.GetString(), false );
-				}
-			}
-			
 			modeTarget = ! modeTarget;
 		}
 		
@@ -1013,16 +813,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		
-		if( renderThread.GetConfiguration()->GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-			decString text;
-			text.Format( "tonemap_bloom_%i_blur_x", i );
-			if( modeTarget ){
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTemporary2Texture(), text.GetString(), false );
-			}else{
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetSpecularityTexture(), text.GetString(), false );
-			}
-		}
-		
 		modeTarget = ! modeTarget;
 		
 		// blur filter in y direction
@@ -1037,16 +827,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 			tsmgr.EnableTexture( 0, *defren.GetTemporary2Texture(), GetSamplerClampLinear() );
 		}
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-		
-		if( renderThread.GetConfiguration()->GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-			decString text;
-			text.Format( "tonemap_bloom_%i_blur_y", i );
-			if( modeTarget ){
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTemporary2Texture(), text.GetString(), false );
-			}else{
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetSpecularityTexture(), text.GetString(), false );
-			}
-		}
 		
 		// add to bloom texture
 		renderThread.GetShader().ActivateShader( pPipelineBloomAdd );
@@ -1068,12 +848,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		}
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		
-		if( renderThread.GetConfiguration()->GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-			decString text;
-			text.Format( "tonemap_bloom_%i_result", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTemporaryTexture(), text.GetString(), false );
-		}
 	}
 #endif
 DEBUG_PRINT_TIMER( "ToneMap: Blooming" );

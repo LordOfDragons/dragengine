@@ -98,7 +98,7 @@ dearRuleBoneTransformator::~dearRuleBoneTransformator(){
 // Management
 ///////////////
 
-void dearRuleBoneTransformator::Apply( dearBoneStateList &stalist ){
+void dearRuleBoneTransformator::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;

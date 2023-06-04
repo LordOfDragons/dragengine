@@ -6,22 +6,27 @@
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 
 # application
-$Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
+$Version = Get-Version -Path "$SourceDir\..\SConscript"
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistIgdeEditors\world\$Version"
+$TargetDir = "$OutputDir\$PathDistIGDEDataModules\world"
 
 Write-Host "World Editor: Copy Module to '$TargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "world.dll"
+$Library = "$OutputDir\igde_editor\world\world.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
-Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
-    -Destination (Join-Path -Path $TargetDir -ChildPath "module.xml")`
+Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml"`
     -Library $Library -Version $Version
 
 
+$DataTargetDir = "$OutputDir\$PathDistIGDESharesModules\world"
+Write-Host "World Editor: Copy Data to '$DataTargetDir'"
+
+Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir "$DataTargetDir" -Pattern "*"
+
+
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
+$TargetDir = "$OutputDir\$PathDistIGDEPdbDataModules\world"
 Write-Host "World Editor: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "world.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\igde_editor\world\world.pdb" -Destination $TargetDir

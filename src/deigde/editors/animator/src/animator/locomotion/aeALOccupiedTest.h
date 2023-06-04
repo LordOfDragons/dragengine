@@ -31,7 +31,7 @@
 
 
 /**
- * @brief Animator Locomotion Occupied Test.
+ * Animator Locomotion Occupied Test.
  *
  * Simple test storing if a collision happend.
  */

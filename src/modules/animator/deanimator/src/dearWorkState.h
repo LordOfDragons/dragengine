@@ -29,9 +29,8 @@ class dearBoneState;
 
 
 /**
- * @brief Work state class.
- * Stores the working state of a bone for rules doing complex calculations on bones before they are
- * applied to the bone states. Stores only the global matrix as this one required during complex
+ * Working state of a bone for rules doing complex calculations on bones before they are applied
+ * to the bone states. Stores only the global matrix as this one required during complex
  * calculations. Stores also a link to the bone state it is applied to in the end.
  */
 class dearWorkState{
@@ -41,7 +40,7 @@ private:
 	decMatrix pInvGlobalMatrix;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new bone state object. */
 	dearWorkState();
@@ -49,7 +48,7 @@ public:
 	~dearWorkState();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the linked bone state. */
 	inline dearBoneState *GetBoneState() const{ return pBoneState; }

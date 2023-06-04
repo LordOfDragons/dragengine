@@ -43,6 +43,7 @@ class AnimatorDefinition
 	private var Array pLinks
 	private var Array pRules
 	private var Array pBones
+	private var Array pVertexPositionSets
 	
 	
 	
@@ -53,6 +54,7 @@ class AnimatorDefinition
 		pLinks = Array.new()
 		pRules = Array.new()
 		pBones = Array.new()
+		pVertexPositionSets = Array.new()
 	end
 	
 	/**
@@ -78,6 +80,7 @@ class AnimatorDefinition
 			return rule.copy(definition, this)
 		end)
 		pBones = Array.new(definition.pBones)
+		pVertexPositionSets = Array.new(definition.pVertexPositionSets)
 	end
 	
 	
@@ -235,6 +238,35 @@ class AnimatorDefinition
 	
 	
 	
+	/**
+	 * \brief Count of bones.
+	 * \version 1.17
+	 */
+	public func int getVertexPositionSetCount()
+		return pVertexPositionSets.getCount()
+	end
+	
+	/**
+	 * \brief VertexPositionSet at index.
+	 * \version 1.17
+	 */
+	public func String getVertexPositionSetAt(int index)
+		return pVertexPositionSets.getAt(index) cast String
+	end
+	
+	/**
+	 * \brief Add bone.
+	 * \version 1.17
+	 */
+	public func void addVertexPositionSet(String bone)
+		if bone == null
+			throw ENullPointer.new("bone")
+		end
+		pVertexPositionSets.add(bone)
+	end
+	
+	
+	
 	/** \brief Build animator. */
 	public func void buildAnimator(Animator animator)
 		if animator == null
@@ -256,6 +288,9 @@ class AnimatorDefinition
 		end)
 		pBones.forEach(block String each
 			animator.addBone(each)
+		end)
+		pVertexPositionSets.forEach(block String each
+			animator.addVertexPositionSet(each)
 		end)
 		
 		animator.setRig(pRig)
@@ -283,6 +318,11 @@ class AnimatorDefinition
 		count = pBones.getCount()
 		for i = 0 to count
 			text = text + " bone=" + pBones.getAt(i).toString()
+		end
+		
+		count = pVertexPositionSets.getCount()
+		for i = 0 to count
+			text = text + " vertPosSet=" + pVertexPositionSets.getAt(i).toString()
 		end
 		
 		console.addMessage(text)

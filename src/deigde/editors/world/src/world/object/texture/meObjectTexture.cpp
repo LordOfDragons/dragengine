@@ -136,7 +136,7 @@ void meObjectTexture::LoadSkin(){
 				GetSkinManager()->LoadSkin( pSkinPath.GetString(), "/" );
 			
 		}catch( const deException & ){
-			engSkin = pEnvironment->GetErrorSkin();
+			engSkin = pEnvironment->GetStockSkin( igdeEnvironment::essError );
 			engSkin->AddReference();
 		}
 	}

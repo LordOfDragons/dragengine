@@ -95,6 +95,9 @@ public:
 	
 	/** Has no effect. */
 	virtual void UnmapBuffer();
+	
+	/** Create copy of shader parameter block. */
+	virtual deoglShaderParameterBlock *Copy() const;
 	/*@}*/
 	
 	

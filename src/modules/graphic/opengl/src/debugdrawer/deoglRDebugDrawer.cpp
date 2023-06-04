@@ -25,7 +25,6 @@
 
 #include "deoglRDebugDrawer.h"
 #include "deoglDebugDrawerShape.h"
-#include "../extensions/deoglExtResult.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../vao/deoglVAO.h"

@@ -21,17 +21,17 @@
 
 #ifndef _DEARANIMATIONMOVE_H_
 #define _DEARANIMATIONMOVE_H_
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 class deAnimationMove;
 class dearAnimationKeyframeList;
+class dearAnimationKeyframeVPSList;
 
 
 
-/**
- * \brief Animation peer move.
- */
+/** Animation peer move. */
 class dearAnimationMove : public deObject{
 private:
 	decString pName;
@@ -40,14 +40,19 @@ private:
 	dearAnimationKeyframeList **pKeyframeLists;
 	int pKeyframeListCount;
 	
+	dearAnimationKeyframeVPSList **pKeyframeVPSLists;
+	int pKeyframeVPSListCount;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new animation move. */
+	/** Create a new animation move. */
 	dearAnimationMove( const deAnimationMove &move );
 	
 protected:
-	/** \brief Clean up the animation move. */
+	/** Clean up the animation move. */
 	virtual ~dearAnimationMove();
 	/*@}*/
 	
@@ -56,21 +61,32 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
-	/** \brief Retrieve the play time in seconds. */
+	
+	/** Play time in seconds. */
 	inline float GetPlaytime() const{ return pPlaytime; }
 	
-	/** \brief Retrieve the number of keyframe lists. */
+	/** Count of keyframe lists. */
 	inline int GetKeyframeListCount() const{ return pKeyframeListCount; }
-	/** \brief Retrieve keyframe list by index. */
+	
+	/** Keyframe list at index. */
 	dearAnimationKeyframeList *GetKeyframeListAt( int index ) const;
+	
+	/** Count of keyframe lists. */
+	inline int GetKeyframeVPSListCount() const{ return pKeyframeVPSListCount; }
+	
+	/** Keyframe list at index. */
+	dearAnimationKeyframeVPSList *GetKeyframeVPSListAt( int index ) const;
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();
 	
 	void pCreateKeyframeLists( const deAnimationMove &move );
+	void pCreateKeyframeVPSLists( const deAnimationMove &move );
 };
 
 #endif

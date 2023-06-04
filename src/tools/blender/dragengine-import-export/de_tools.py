@@ -27,6 +27,8 @@ import bpy
 from .de_tool_aogen import OBJECT_OT_ToolAOGeneration
 from .de_tool_channellayout import OBJECT_OT_DEToolSortActionChannels
 from .de_tool_collapsevertices import TypeDETVertex
+from .de_tool_copyvertex import TypeDETCVVertex
+from .de_tool_transferallshapekeys import OBJECT_OT_ToolTransferAllShapeKeys
 from .de_tool_mirrorvertices import OBJECT_OT_ToolMirrorVertices
 from .de_tool_removeemptyvertexgroups import OBJECT_OT_ToolRemoveEmptyVertexGroups
 from .de_tool_eclassproperty import OBJECT_OT_DEToolEClassProperty
@@ -169,6 +171,7 @@ class MATERIAL_UL_matslots_example(bpy.types.UIList):
 
 class TypeDETOptions(bpy.types.PropertyGroup):
 	collapseVerticesTargets: bpy.props.CollectionProperty(type=TypeDETVertex)
+	copyVerticesSelection: bpy.props.CollectionProperty(type=TypeDETCVVertex)
 	projectUVCurrent: bpy.props.PointerProperty(type=TypeDETProjectUVTemplate)
 	projectUVTemplates: bpy.props.CollectionProperty(type=TypeDETProjectUVTemplate)
 registerClass(TypeDETOptions)
@@ -205,6 +208,29 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		row = col.row(align=True)
 		row.operator(operator="dragengine.collapsevertices_settargets", text="Targets")
 		row.operator(operator="dragengine.collapsevertices_apply", text="Apply")
+		
+		# copy vertices
+		layout.row(align=True).label(text="Copy Vertices (Shape Key):")
+		col = layout.column(align=True)
+		
+		row = col.row(align=True)
+		row.operator(operator="dragengine.copyvertices_copy", text="Copy")
+		op = row.operator(operator="dragengine.copyvertices_paste", text="Paste")
+		op.mirror = False
+		
+		row = col.row(align=True)
+		op = row.operator(operator="dragengine.copyvertices_paste",
+		                  text="Paste", icon="MOD_MIRROR")
+		op.mirror = True
+		op.topology = False
+		op = row.operator(operator="dragengine.copyvertices_paste",
+		                  text="Topology", icon="MOD_MIRROR")
+		op.mirror = True
+		op.topology = True
+		
+		row = col.row(align=True)
+		op = row.operator(operator="dragengine.transferallshapekeys",
+		                  text="Transfer All")
 		
 		# unwrap
 		layout.row(align=True).label(text="Unwrap:")

@@ -19,6 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "deoglWorldCompute.h"
 #include "deoglWorldComputeElement.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
@@ -26,6 +27,7 @@
 #include "../rendering/task/shared/deoglRenderTaskSharedVAO.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../vao/deoglVAO.h"
+#include "../world/deoglRWorld.h"
 
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -80,6 +82,7 @@ giMaterial( nullptr ){
 deoglWorldComputeElement::deoglWorldComputeElement( eElementTypes type, const void *owner ) :
 pType( type ),
 pOwner( owner ),
+pWorldCompute( nullptr ),
 pIndex( -1 ),
 pUpdateRequired( false ),
 pUpdateGeometriesRequired( false )
@@ -94,6 +97,42 @@ deoglWorldComputeElement::~deoglWorldComputeElement(){
 
 // Management
 ///////////////
+
+deoglWorldCompute &deoglWorldComputeElement::GetWorldComputeRef() const{
+	DEASSERT_NOTNULL( pWorldCompute )
+	return *pWorldCompute;
+}
+
+const decDVector &deoglWorldComputeElement::GetReferencePosition() const{
+	return pWorldCompute->GetWorld().GetReferencePosition();
+}
+
+void deoglWorldComputeElement::ComputeUpdateElement(){
+	if( pWorldCompute ){
+		pWorldCompute->UpdateElement( this );
+	}
+}
+
+void deoglWorldComputeElement::ComputeUpdateElementGeometries(){
+	if( pWorldCompute ){
+		pWorldCompute->UpdateElementGeometries( this );
+	}
+}
+
+void deoglWorldComputeElement::ComputeUpdateElementAndGeometries(){
+	if( pWorldCompute ){
+		pWorldCompute->UpdateElement( this );
+		pWorldCompute->UpdateElementGeometries( this );
+	}
+}
+
+void deoglWorldComputeElement::RemoveFromCompute(){
+	if( pWorldCompute ){
+		pWorldCompute->RemoveElement( this );
+	}
+}
+
+
 
 void deoglWorldComputeElement::UpdateDataGeometries( sDataElementGeometry* ) const{
 }
@@ -138,7 +177,29 @@ void deoglWorldComputeElement::SetDataGeometryTUCs( sDataElementGeometry &data, 
 	}
 }
 
+void deoglWorldComputeElement::SetDataGeometry( sDataElementGeometry &data, int renderFilter,
+const deoglVAO *vao, const deoglRenderTaskSharedInstance *instance, int spbInstance ) const{
+	data.element = ( uint32_t )pIndex;
+	data.lod = 0;
+	data.skinTexture = 0;
+	data.tucs[ 0 ] = data.tucs[ 1 ] = data.tucs[ 2 ] = data.tucs[ 3 ] = 0;
+	
+	if( ! vao || ! vao->GetRTSVAO() || ! instance || spbInstance < -1 ){
+		return;
+	}
+	
+	data.renderFilter = ( uint32_t )renderFilter;
+	data.pipelineBase = ( uint32_t )deoglSkinTexturePipelinesList::PipelineTypesCount;
+	data.vao = ( uint32_t )vao->GetRTSVAO()->GetIndex();
+	data.instance = ( uint32_t )instance->GetIndex();
+	data.spbInstance = ( uint32_t )( spbInstance + 1 );
+}
 
+
+
+void deoglWorldComputeElement::SetWorldCompute( deoglWorldCompute *worldCompute ){
+	pWorldCompute = worldCompute;
+}
 
 void deoglWorldComputeElement::SetIndex( int index ){
 	pIndex = index;

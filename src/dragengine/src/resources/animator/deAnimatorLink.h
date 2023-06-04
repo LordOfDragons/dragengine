@@ -50,6 +50,11 @@
  * If controller is -1 a bone name can be set. This will use a bone parameter
  * as input instead of a controller value. The bone parameter is mapped from
  * the specified range to the 0 to 1 range.
+ * 
+ * \par Vertex Position Set Input (version 1.17)
+ * 
+ * If controller is -1 a vertex position set name can be set. This will use
+ * the vertex position set weight as input.
  */
 class DE_DLL_EXPORT deAnimatorLink{
 public:
@@ -96,6 +101,9 @@ private:
 	eBoneParameter pBoneParameter;
 	float pBoneMinValue;
 	float pBoneMaxValue;
+	decString pVertexPositionSet;
+	float pVertexPositionSetMinValue;
+	float pVertexPositionSetMaxValue;
 	bool pWrapY;
 	
 	
@@ -185,6 +193,36 @@ public:
 	 * \version 1.6
 	 */
 	void SetBoneValueRange( float minimum, float maximum );
+	
+	/**
+	 * \brief Vertex position set to use as input or empty string to not use.
+	 * \version 1.17
+	 */
+	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
+	
+	/**
+	 * \brief Set vertex position set to use as input or empty string to not use.
+	 * \version 1.17
+	 */
+	void SetVertexPositionSet( const char *vertexPositionSet );
+	
+	/**
+	 * \brief Minimum vertex position set value.
+	 * \version 1.17
+	 */
+	inline float GetVertexPositionSetMinimumValue() const{ return pVertexPositionSetMinValue; }
+	
+	/**
+	 * \brief Maximum vertex position set value.
+	 * \version 1.17
+	 */
+	inline float GetVertexPositionSetMaximumValue() const{ return pVertexPositionSetMaxValue; }
+	
+	/**
+	 * \brief Set vertex position set range.
+	 * \version 1.17
+	 */
+	void SetVertexPositionSetValueRange( float minimum, float maximum );
 	
 	/**
 	 * \brief Wrap Y value instead of clamping.

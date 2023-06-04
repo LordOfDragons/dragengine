@@ -100,7 +100,6 @@ private:
 	const deoglPipeline *pPipelineBoxBoundary1Ambient;
 	const deoglPipeline *pPipelineBoxBoundary2;
 	const deoglPipeline *pPipelineOccMap;
-	const deoglPipeline *pPipelineOccMapCube;
 	const deoglPipeline *pPipelineCopyDepth;
 	
 	GLuint pVBOCopyShadow;

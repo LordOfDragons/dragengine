@@ -329,7 +329,7 @@ void meLoadSaveSystem::pRebuildFilePatternLists(){
 	
 	try{
 		for( i=0; i<pLSWorldCount; i++ ){
-			pattern.Format( "*%s", pLSWorlds[ i ]->GetPattern() );
+			pattern.Format( "*%s", pLSWorlds[ i ]->GetPattern().GetString() );
 			filePattern = new igdeFilePattern( pLSWorlds[ i ]->GetName(), pattern, pLSWorlds[ i ]->GetPattern() );
 			pFilePatternList.AddFilePattern( filePattern );
 			filePattern = NULL;

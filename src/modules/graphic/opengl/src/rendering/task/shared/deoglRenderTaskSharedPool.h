@@ -25,6 +25,7 @@
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decIntList.h>
+#include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
 class deoglRenderTaskSharedInstance;
@@ -50,6 +51,8 @@ private:
 	decPointerList pFreeVAOs;
 	decPointerList pFreeInstances;
 	decIntList pFreeSkinTextures;
+	
+	deMutex pMutexSkinTextures;
 	
 	
 	
@@ -90,10 +93,10 @@ public:
 	/** Get instance at index. */
 	deoglRenderTaskSharedInstance &GetInstanceAt( int index ) const;
 	
-	/** Get skin texture at index. */
+	/** Get skin texture at index. Manually lock GetMutexSkinTextures(). */
 	deoglSkinTexture *GetSkinTextureAt( int index ) const;
 	
-	/** Get skin texture count. */
+	/** Get skin texture count. Manually lock GetMutexSkinTextures(). */
 	int GetSkinTextureCount() const;
 	
 	
@@ -109,6 +112,11 @@ public:
 	
 	/** Return skin texture. */
 	void ReturnSkinTexture( int slot );
+	
+	
+	
+	/** Skin textures mutex. */
+	inline deMutex &GetMutexSkinTextures(){ return pMutexSkinTextures; }
 	/*@}*/
 };
 

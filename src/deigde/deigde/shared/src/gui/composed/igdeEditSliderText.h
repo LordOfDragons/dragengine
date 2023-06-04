@@ -44,7 +44,7 @@ class igdeUIHelper;
 class DE_DLL_EXPORT igdeEditSliderText : public igdeContainerFlow{
 protected:
 	/** \brief Slider listener. */
-	class cListenerSlider : public igdeSliderListener{
+	class DE_DLL_EXPORT cListenerSlider : public igdeSliderListener{
 	protected:
 		igdeEditSliderText &pSliderText;
 		
@@ -56,7 +56,7 @@ protected:
 	};
 	
 	/** \brief Text field listener. */
-	class cListenerTextField : public igdeTextFieldListener{
+	class DE_DLL_EXPORT cListenerTextField : public igdeTextFieldListener{
 	protected:
 		igdeEditSliderText &pSliderText;
 		

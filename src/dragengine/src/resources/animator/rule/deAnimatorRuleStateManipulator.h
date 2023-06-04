@@ -51,13 +51,17 @@ private:
 	decVector pMaxRotation;
 	decVector pMinSize;
 	decVector pMaxSize;
+	float pMinVertexPositionSet;
+	float pMaxVertexPositionSet;
 	bool pEnablePosition;
 	bool pEnableRotation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 	deAnimatorControllerTarget pTargetPosition;
 	deAnimatorControllerTarget pTargetRotation;
 	deAnimatorControllerTarget pTargetSize;
+	deAnimatorControllerTarget pTargetVertexPositionSet;
 	
 	
 	
@@ -116,6 +120,18 @@ public:
 	/** \brief Set maximum size. */
 	void SetMaximumSize( const decVector &size );
 	
+	/** \brief Minimum vertex position set. */
+	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
+	
+	/** \brief Set minimum vertex position set. */
+	void SetMinimumVertexPositionSet( float weight );
+	
+	/** \brief Maximum vertex position set. */
+	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
+	
+	/** \brief Set maximum vertex position set. */
+	void SetMaximumVertexPositionSet( float weight );
+	
 	/** \brief Determines if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
@@ -134,6 +150,12 @@ public:
 	/** \brief Sets if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
+	/** \brief Vertex position sets are enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** \brief Set if vertex position sets are enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
+	
 	/** \brief Position target. */
 	inline deAnimatorControllerTarget &GetTargetPosition(){ return pTargetPosition; }
 	inline const deAnimatorControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
@@ -145,6 +167,10 @@ public:
 	/** \brief Size target. */
 	inline deAnimatorControllerTarget &GetTargetSize(){ return pTargetSize; }
 	inline const deAnimatorControllerTarget &GetTargetSize() const{ return pTargetSize; }
+	
+	/** \brief Vertex position set target. */
+	inline deAnimatorControllerTarget &GetTargetVertexPositionSet(){ return pTargetVertexPositionSet; }
+	inline const deAnimatorControllerTarget &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
 	/*@}*/
 	
 	

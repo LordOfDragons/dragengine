@@ -31,31 +31,30 @@ pin Dragengine.Utils
  * \brief Mapping strings class property for use with XML loading.
  */
 class ECPStringMap extends ElementClassProperty
-	/** \brief Dictionary of String mapping to String. */
 	private var Dictionary pMap
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pMap = Dictionary.new()
+	public func new(String name) super(name)
+		pMap = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Number of mappings. */
 	public func int getMappingCount()
-		return this.pMap.getCount()
+		return pMap.getCount()
 	end
 	
 	/** \brief Map string or \em null if mapping does not exist. */
-	public func String map( String key )
-		return this.pMap.getAt( key, null ) cast String
+	public func String map(String key)
+		return pMap.getAt(key, null) cast String
 	end
 	
 	/** \brief Mapping is present. */
-	public func bool hasMapping( String key )
-		return this.pMap.has( key )
+	public func bool hasMapping(String key)
+		return pMap.has(key)
 	end
 	
 	/**
@@ -63,30 +62,38 @@ class ECPStringMap extends ElementClassProperty
 	 * 
 	 * First block parameter is String key. Second block parameter is String value.
 	 */
-	public func void forEachMapping( Block ablock )
-		this.pMap.forEach( ablock )
+	public func void forEachMapping(Block ablock)
+		pMap.forEach(ablock)
 	end
 	
 	/** \brief Remove all mappings. */
 	public func void removeAllMappings()
-		this.pMap.removeAll()
+		pMap.removeAll()
 	end
 	
 	/** \brief Add mapping replacing existing one if present. */
-	public func void addMapping( String key, String value )
+	public func void addMapping(String key, String value)
 		if key == null or value == null
 			throw EInvalidParam.new()
 		end
-		this.pMap.setAt( key, value )
+		pMap.setAt(key, value)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pMap.removeAll()
-		( value cast Dictionary ).forEach( block String key, String value
-			this.pMap.setAt( key, value )
-		end )
+	public func void setValue(Object value)
+		pMap.removeAll()
+		(value cast Dictionary).forEach(block String key, String value
+			pMap.setAt(key, value)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pMap = Dictionary.new((property cast ECPStringMap).pMap)
 	end
 end

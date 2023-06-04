@@ -42,14 +42,23 @@ decVector deoxrUtils::ConvertEuler( const XrVector3f &vector ){
 }
 
 decQuaternion deoxrUtils::Convert( const XrQuaternionf &quaternion ){
-	return decQuaternion( quaternion.x, quaternion.y, -quaternion.z, -quaternion.w );
+	//return decQuaternion( quaternion.x, quaternion.y, -quaternion.z, -quaternion.w );
+	// axis axis' = (axis.x, axis.y, -axis.z)
+	// handedness switch: axis'' = -axis' = (-axis.x, -axis.y, axis.z)  
+	return decQuaternion( -quaternion.x, -quaternion.y, quaternion.z, quaternion.w );
 }
 
 void deoxrUtils::Convert( const decQuaternion &quaternion, XrQuaternionf &xrquat ){
+	/*
 	xrquat.x = quaternion.x;
 	xrquat.y = quaternion.y;
 	xrquat.z = -quaternion.z;
 	xrquat.w = -quaternion.w;
+	*/
+	xrquat.x = -quaternion.x;
+	xrquat.y = -quaternion.y;
+	xrquat.z = quaternion.z;
+	xrquat.w = quaternion.w;
 }
 
 void deoxrUtils::Convert( const decVector &rotation, XrQuaternionf &xrquat ){

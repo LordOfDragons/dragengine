@@ -274,6 +274,8 @@ deoglRenderLightBase( renderThread )
 		pPipelineDebugProbeOffsetXRay = pipelineManager.GetWith( pipconf );
 		
 		
+		pipconf2.SetEnableDepthTest( false );
+		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
 		pipconf2.SetShader( renderThread, sources, defines );
 		pPipelineDebugProbeUpdatePass1 = pipelineManager.GetWith( pipconf2 );
@@ -545,7 +547,8 @@ void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
 	const int count = giState->GetCascadeCount();
 	int i;
 	
-	deoglSPBlockUBO &ubo = GetUBORenderLight();
+	pUBORenderLight = ( deoglSPBlockUBO* )pUBORenderLightSingleUse->Next();
+	deoglSPBlockUBO &ubo = pUBORenderLight;
 	const deoglSPBMapBuffer mapped( ubo );
 	
 	for( i=0; i<count; i++ ){
@@ -580,7 +583,8 @@ void deoglRenderGI::PrepareUBORenderLight( const deoglGIState &giState, const de
 	const int count = giState.GetCascadeCount();
 	int i;
 	
-	deoglSPBlockUBO &ubo = GetUBORenderLight();
+	pUBORenderLight = ( deoglSPBlockUBO* )pUBORenderLightSingleUse->Next();
+	deoglSPBlockUBO &ubo = pUBORenderLight;
 	const deoglSPBMapBuffer mapped( ubo );
 	
 	for( i=0; i<count; i++ ){
@@ -875,11 +879,9 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	giState->GetPBProbeDynamicStates()->Activate( 1 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
-	giState->GetPBProbeDynamicStates()->Deactivate( 1 );
-	giState->GetPBProbeOffsets()->Deactivate();
+	giState->GetPBProbeOffsets()->GPUFinishedWriting();
 	
 	giState->ProbesMoved(); // tell state probes moved so it can read it later without stalling
 	
@@ -926,10 +928,9 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	giState->GetPBProbeExtends()->Activate();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetRayCacheProbeCount(), 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT
-		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
-	giState->GetPBProbeExtends()->Deactivate();
+	giState->GetPBProbeExtends()->GPUFinishedWriting();
 }
 
 void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
@@ -1197,33 +1198,34 @@ void deoglRenderGI::pCleanUp(){
 
 void deoglRenderGI::pCreateUBORenderLight(){
 	deoglRenderThread &renderThread = GetRenderThread();
-	pUBORenderLight.TakeOver( new deoglSPBlockUBO( renderThread ) );
-	deoglSPBlockUBO &ubo = pUBORenderLight;
+	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
 	
-	ubo.SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-	ubo.SetParameterCount( euprlGridCoordUnshift + 1 );
-	ubo.SetElementCount( GI_MAX_CASCADES );
+	ubo->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	ubo->SetParameterCount( euprlGridCoordUnshift + 1 );
+	ubo->SetElementCount( GI_MAX_CASCADES );
 	
-	ubo.GetParameterAt( euprlMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-	ubo.GetParameterAt( euprlMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-	ubo.GetParameterAt( euprlProbeCount ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
-	ubo.GetParameterAt( euprlOcclusionMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-	ubo.GetParameterAt( euprlProbeClamp ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
-	ubo.GetParameterAt( euprlDistanceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-	ubo.GetParameterAt( euprlProbeSpacing ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-	ubo.GetParameterAt( euprlProbeSpacingInv ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-	ubo.GetParameterAt( euprlPositionClamp ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-	ubo.GetParameterAt( euprlNormalBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-	ubo.GetParameterAt( euprlOcclusionMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-	ubo.GetParameterAt( euprlDistanceMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-	ubo.GetParameterAt( euprlGridCoordShift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
-	ubo.GetParameterAt( euprlIrradianceGamma ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-	ubo.GetParameterAt( euprlSelfShadowBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-	ubo.GetParameterAt( euprlGridOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-	ubo.GetParameterAt( euprlGridCoordUnshift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
+	ubo->GetParameterAt( euprlMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
+	ubo->GetParameterAt( euprlMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+	ubo->GetParameterAt( euprlProbeCount ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
+	ubo->GetParameterAt( euprlOcclusionMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	ubo->GetParameterAt( euprlProbeClamp ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
+	ubo->GetParameterAt( euprlDistanceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	ubo->GetParameterAt( euprlProbeSpacing ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	ubo->GetParameterAt( euprlProbeSpacingInv ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	ubo->GetParameterAt( euprlPositionClamp ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	ubo->GetParameterAt( euprlNormalBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	ubo->GetParameterAt( euprlOcclusionMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	ubo->GetParameterAt( euprlDistanceMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	ubo->GetParameterAt( euprlGridCoordShift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
+	ubo->GetParameterAt( euprlIrradianceGamma ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	ubo->GetParameterAt( euprlSelfShadowBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	ubo->GetParameterAt( euprlGridOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	ubo->GetParameterAt( euprlGridCoordUnshift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 	
-	ubo.MapToStd140();
-	ubo.SetBindingPoint( 1 );
+	ubo->MapToStd140();
+	ubo->SetBindingPoint( 1 );
+	
+	pUBORenderLightSingleUse.TakeOver( new deoglSPBSingleUse( renderThread, ubo ) );
 }
 
 void deoglRenderGI::pClearTraceRays( const decPoint &size ){

@@ -78,6 +78,7 @@ private:
 	GLuint pTBOInstances;
 	deoglShaderParameterBlockList pSPBInstances;
 	int pSPBInstanceMaxEntries;
+	int pSPBInstanceIndexCount;
 	bool pUseSPBInstanceFlags;
 	bool pRenderVSStereo;
 	GLuint pVBODrawIndirect;
@@ -200,6 +201,7 @@ public:
 	/*@{*/
 	/** Debug print. */
 	void DebugPrint( deoglRTLogger &rtlogger );
+	void DebugSimple( deoglRTLogger &logger );
 	/*@}*/
 	
 	

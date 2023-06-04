@@ -29,7 +29,7 @@ class aeRuleBoneTransformator;
 
 
 /**
- * \brief Undo action rule bone set target bone.
+ * Undo action rule bone set target bone.
  */
 class aeURuleBTransSetTargetBone : public igdeUndo{
 private:
@@ -41,19 +41,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new undo object. */
+	/** Creates a new undo object. */
 	aeURuleBTransSetTargetBone( aeRuleBoneTransformator *rule, const char *newBone );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleBTransSetTargetBone();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

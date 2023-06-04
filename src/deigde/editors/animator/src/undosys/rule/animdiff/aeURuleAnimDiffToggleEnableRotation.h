@@ -30,7 +30,7 @@ class aeRuleAnimationDifference;
 
 
 /**
- * @brief Undo rule animation difference set enable rotation.
+ * Undo rule animation difference set enable rotation.
  */
 class aeURuleAnimDiffToggleEnableRotation : public igdeUndo{
 private:
@@ -39,19 +39,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
+	/** Create undo. */
 	aeURuleAnimDiffToggleEnableRotation( aeRuleAnimationDifference *rule );
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~aeURuleAnimDiffToggleEnableRotation();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

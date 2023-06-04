@@ -255,7 +255,7 @@ void meWPAdd::UpdateObjectFilter(){
 	pChkFilterObjects->SetChecked( true );
 	
 	const decString selection( pListObjClasses->GetSelectedItem()
-		? pListObjClasses->GetSelectedItem()->GetText() : "" );
+		? pListObjClasses->GetSelectedItem()->GetText() : decString() );
 	const decStringSet &set = guiparams.GetAddFilterObjectSet();
 	const int count = set.GetCount();
 	int i;

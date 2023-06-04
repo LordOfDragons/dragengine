@@ -27,13 +27,14 @@
 #include <dragengine/systems/modules/animator/deBaseAnimatorComponent.h>
 
 class dearComponentBoneState;
+class dearComponentVPSState;
 class deDEAnimator;
 class deComponent;
 
 
 
 /**
- * \brief Component peer.
+ * Component peer.
  */
 class dearComponent : public deBaseAnimatorComponent{
 private:
@@ -42,15 +43,21 @@ private:
 	
 	dearComponentBoneState *pBoneStates;
 	int pBoneStateCount;
+	
+	dearComponentVPSState *pVPSStates;
+	int pVPSStateCount;
+	
 	decDMatrix pMatrix;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	dearComponent( deDEAnimator &module, deComponent &component );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~dearComponent();
 	/*@}*/
 	
@@ -58,49 +65,63 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deDEAnimator &GetModule(){ return pModule; }
 	inline const deDEAnimator &GetModule() const{ return pModule; }
 	
-	/** \brief Component resource. */
+	/** Component resource. */
 	inline deComponent &GetComponent() const{ return pComponent; }
 	
 	
 	
-	/** \brief Bone states. */
+	/** Bone states. */
 	inline dearComponentBoneState *GetBoneStates() const{ return pBoneStates; }
 	
-	/** \brief Number of bone states. */
+	/** Number of bone states. */
 	inline int GetBoneStateCount() const{ return pBoneStateCount; }
 	
-	/**
-	 * \brief Bone state at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetBoneStateCount().
-	 */
+	/** Bone state at index. */
 	dearComponentBoneState &GetBoneStateAt( int index ) const;
 	
-	/** \brief Component matrix. */
+	
+	
+	/** Vertex position set states. */
+	inline dearComponentVPSState *GetVPSStates() const{ return pVPSStates; }
+	
+	/** Count of vertex position set states. */
+	inline int GetVPSStateCount() const{ return pVPSStateCount; }
+	
+	/** Vertex position set state at index. */
+	dearComponentVPSState &GetVPSStateAt( int index ) const;
+	
+	
+	
+	/** Component matrix. */
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
 	
-	/** \brief Prepare bones similar to deComponent::PrepareBones(). */
+	
+	
+	/** Prepare bones similar to deComponent::PrepareBones(). */
 	void PrepareBones();
 	
-	/** \brief Update bone states from component bones and store component matrix. */
+	/** Update bone states from component bones and store component matrix. */
 	void UpdateFromComponent();
 	
-	/** \brief Update matrix from component only. */
+	/** Update matrix from component only. */
 	void UpdateMatrixFromComponent();
 	
-	/** \brief Update component bones from bone states. */
+	/** Update component bones from bone states. */
 	void UpdateComponent();
 	
-	/** \brief Update component bones using values calculated by PrepareBones() and set the component valid. */
+	/** Update component bones using values calculated by PrepareBones() and set the component valid. */
 	void UpdateComponentPrepareBones();
 	
 	
 	
-	/** \brief Rig changed. */
+	/** Model changed. */
+	virtual void ModelChanged();
+	
+	/** Rig changed. */
 	virtual void RigChanged();
 	/*@}*/
 };

@@ -72,7 +72,7 @@ public:
 	
 	
 protected:
-	class cMap : public deObject{
+	class DE_DLL_EXPORT cMap : public deObject{
 	public:
 		decString value;
 		decObjectDictionary map;

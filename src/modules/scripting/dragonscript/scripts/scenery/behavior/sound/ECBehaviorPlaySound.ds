@@ -33,7 +33,7 @@ pin Dragengine.TriggerSystem
  * \brief Behavior element behavior play sound using one shot speaker.
  * 
  * Behavior is comparable to ECBehaviorSpeaker but does not add a permanent speaker to the
- * element. Instead GameWorld.addOneShotSpeaker() is used to play a short sound event.
+ * element. Instead GWBehaviorOneShotSpeaker.addSpeaker() is used to play a short sound event.
  * One shot speakers are constructed the same way as ECBehaviorSpeaker does. Once deployed
  * the one shot speaker stays in place and vanishes once it finished playing. This is the
  * preferred way to play short sound events like a door lock toggling or firing gun shots.
@@ -426,7 +426,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 			speaker.setOwner(element)
 			speaker.play()
 			
-			gameWorld.addOneShotSpeaker(speaker)
+			gameWorld.getBehaviorOneShotSpeaker().addSpeaker(speaker)
 			return speaker
 		end
 	end
