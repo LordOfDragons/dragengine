@@ -29,6 +29,7 @@ with_system_libhidapi = 'yes'
 with_system_libopenhmd = 'yes'
 with_system_fftw = 'no'             # not used right now
 with_system_soundtouch = 'yes'
+with_system_libwebm = 'yes'
 with_opengl = 'yes'
 with_python = 'no'
 with_npapisdk = 'no'
