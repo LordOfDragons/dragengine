@@ -405,11 +405,13 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		}
 		#endif
 		
+		#ifndef OS_BEOS
 		if( pLoaderContext ){
 			// this check is required for windows to work correctly because on windows the window
 			// is activated before the loader context is created which would cause problems
 			pRenderThread.GetLoaderThread().EnableContext( true );
 		}
+		#endif
 		
 	}else{
 		pRenderThread.GetLoaderThread().EnableContext( false );

@@ -86,7 +86,7 @@ def libwebmBuild(target, source, env):
 	cmdline.append('-DENABLE_TESTS=OFF')
 	cmdline.append('-DENABLE_WEBMINFO=OFF')
 	cmdline.append('-DENABLE_WEBM_PARSER=ON')
-	
+	cmdline.append('-DBUILD_SHARED_LIBS=OFF')
 	cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=ON')
 		
 	if env['platform_android'] != 'no':

@@ -1356,8 +1356,10 @@ void deoglRRenderWindow::pUpdateVSync(){
 	
 	pInitSwapInterval = false;
 	
+	#ifndef OS_BEOS
 	const deoglExtensions &ext = pRenderThread.GetExtensions();
 	deoglRTLogger &logger = pRenderThread.GetLogger();
+	#endif
 	
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( ext.GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control ) ){
