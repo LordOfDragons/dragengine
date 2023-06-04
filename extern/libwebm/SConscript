@@ -103,6 +103,8 @@ def libwebmBuild(target, source, env):
 
 patches = [] # create with 'diff -rupN original_sources patches_sources'
 globFiles(envLibrary, 'patches/{}'.format(libraryVersion), '*.patch', patches, recursive=False)
+if envLibrary['OSBeOS']:
+	globFiles(envLibrary, 'patches/{}/beos'.format(libraryVersion), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 targets = [staticFileName]
