@@ -196,6 +196,7 @@ params.Add( TernaryVariable( 'with_system_libopenhmd', 'Use System libopenhmd' )
 params.Add( TernaryVariable( 'with_system_fftw', 'Use System fftw' ) )
 params.Add( TernaryVariable( 'with_system_soundtouch', 'Use System soundtouch' ) )
 params.Add( TernaryVariable( 'with_system_libwebp', 'Use System libwebp' ) )
+params.Add( TernaryVariable( 'with_system_libwebm', 'Use System libwebm' ) )
 params.Add( TernaryVariable( 'with_system_libvpx', 'Use System libvpx' ) )
 
 params.Add( TernaryVariable( 'with_opengl', 'Use OpenGL' ) )
