@@ -12,3 +12,5 @@ deigde-data
 *.log
 debhelper-build-stamp
 files
+libdelauncher-dev
+libdelauncher1
