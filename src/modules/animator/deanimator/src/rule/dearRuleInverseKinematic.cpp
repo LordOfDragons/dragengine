@@ -306,19 +306,21 @@ DEBUG_RESET_TIMERS;
 				}
 				planeNormal /= planeNormalLen;
 				
-				// determine the amount of rotation to apply. for small rotation angles the distance between
-				// the tip and the goal roughly equals the sine. for example if the tipVector is 1m long then
-				// 1 degree of rotation results in a displacement of roughly 1.7cm along the gradient normal.
-				// therefore the distance between the tip and the goal can be used to determine how large the
-				// rotation has to be. if the distance is larger than 1 degree of rotation the full rotation
-				// is applied. if the distance is less the rotation is scaled down to not overshoot.
+				// determine the amount of rotation to apply. for small rotation angles the
+				// distance between the tip and the goal roughly equals the sine. for example
+				// if the tipVector is 1m long then 1 degree of rotation results in a displacement
+				// of roughly 1.7cm along the gradient normal. therefore the distance between
+				// the tip and the goal can be used to determine how large the rotation has to be.
+				// if the distance is larger than 1 degree of rotation the full rotation is applied.
+				// if the distance is less the rotation is scaled down to not overshoot.
 				
-				// for small rotations the gradient vector is a good approximization for the rotation path
-				// along the rotation plane. the projection of the target normal onto the gradient yields
-				// therefore roughly the amount of rotation required to move the tip onto the same line as
-				// the goal is located on. the tip is though still usually farther away or close than the
-				// goal position. the maximal rotation is clipped so the approximation of the rotation using
-				// the gradient is valid.
+				// for small rotations the gradient vector is a good approximization for the
+				// rotation path along the rotation plane. the projection of the target normal
+				// onto the gradient yields therefore roughly the amount of rotation required to
+				// move the tip onto the same line as the goal is located on. the tip is though
+				// still usually farther away or close than the goal position. the maximal
+				// rotation is clipped so the approximation of the rotation using the gradient
+				// is valid.
 			//	gradient = planeNormal % tipVector;
 				gradient = tipVector % planeNormal;
 				const float gradientLen = gradient.Length();
@@ -328,15 +330,38 @@ DEBUG_RESET_TIMERS;
 					angle = atan2f( y, x );
 					// angle = y / x;
 					
+					// old version with incorrect angle calculation. the problem here is that this
+					// version worked well for human sized inverse kinematics (hence chains up
+					// to 0.5m length) but exploded for large models
+					// angle = y;
+					
+					// the correct calculation above though causes limb breaking. the main problem
+					// here is that the bones close to the target are rotate much further than
+					// those farther away (hence nearer to the base). the idea here is now to
+					// put higher importance to bones farther away compared to those closer to
+					// the tip. the goalDistSquared contains the distance from the base to the
+					// goal. this is used as reference size against which the distance from the
+					// bone to the tip is compared. this way the bones farther away turn stronger
+					// than those closer to the tip resulting in a better result
+					float factor = x / decMath::max( goalDistSquared, 0.001f );
+					
+					// raising the factor to the power of two puts more important to the bones
+					// farther away. with a power of two the result of "y" and "atan2(y,x)*factor"
+					// are similar inside typical ranges
+					factor *= factor;
+					
+					// clamping prevents angles from rotating too far making things more stable
+					angle *= decMath::min( factor, 1.0f );
+					
 				}else{
 					angle = 0.0f;
 				}
 				
 				if( angle > MAX_ROT ){
-					angle = MAX_ROT;
+					// angle = MAX_ROT;
 				}
 				
-				angle *= 0.1f; // reduce to improve sticking to starting pose
+				// angle *= 0.1f; // reduce to improve sticking to starting pose
 				
 				rotationMatrix.SetRotationAxis( planeNormal, angle );
 				
