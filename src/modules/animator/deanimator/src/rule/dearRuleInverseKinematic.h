@@ -37,6 +37,7 @@ private:
 	const deAnimatorRuleInverseKinematic &pInverseKinematic;
 	dearIKWorkState *pChain;
 	int pChainCount;
+	float pChainLength;
 	
 	dearControllerTarget pTargetGoalPosition;
 	dearControllerTarget pTargetGoalOrientation;
@@ -59,6 +60,8 @@ private:
 	
 	const float pReachRange;
 	const decVector pReachCenter;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -91,6 +94,7 @@ private:
 	void pUpdateChain();
 	void pSetChainCount( int count );
 	void pInitIKLimits();
+	void pUpdateChainWeights();
 	void pUpdateReachBone();
 	void pLimitReach( dearBoneStateList &stalist, decVector &goalPosition,
 		float range, const decVector &center );

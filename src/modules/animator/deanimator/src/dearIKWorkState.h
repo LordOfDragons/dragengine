@@ -63,6 +63,7 @@ private:
 	decQuaternion pLimitZeroQuat;
 	decQuaternion pLimitZeroQuatInv;
 	decVector pLockedRotation;
+	float pWeight;
 	
 	
 	
@@ -153,6 +154,12 @@ public:
 	
 	/** Set locked rotation. */
 	void SetLockedRotation( const decVector &rotation );
+	
+	/** Weight. */
+	inline float GetWeight() const{ return pWeight; }
+	
+	/** Set weight. */
+	void SetWeight( float weight );
 	/*@}*/
 };
 

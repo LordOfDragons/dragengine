@@ -43,7 +43,8 @@ pAxisTypeY( eatFree ),
 pAxisTypeZ( eatFree ),
 pHasLimits( false ),
 pDampening( 1.0f, 1.0f, 1.0f ),
-pHasDampening( false ){
+pHasDampening( false ),
+pWeight( 1.0f ){
 }
 
 dearIKWorkState::~dearIKWorkState(){
@@ -110,4 +111,8 @@ void dearIKWorkState::UpdateLimits( const deRigBone &bone ){
 
 void dearIKWorkState::SetLockedRotation( const decVector &rotation ){
 	pLockedRotation = rotation;
+}
+
+void dearIKWorkState::SetWeight( float weight ){
+	pWeight = weight;
 }

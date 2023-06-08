@@ -75,8 +75,9 @@ dearRule( instance, animator, firstLink, rule ),
 
 pInverseKinematic( rule ),
 
-pChain( NULL ),
+pChain( nullptr ),
 pChainCount( 0 ),
+pChainLength( 0.0f ),
 
 pTargetGoalPosition( rule.GetTargetGoalPosition(), firstLink ),
 pTargetGoalOrientation( rule.GetTargetGoalOrientation(), firstLink ),
@@ -343,15 +344,16 @@ DEBUG_RESET_TIMERS;
 					// goal. this is used as reference size against which the distance from the
 					// bone to the tip is compared. this way the bones farther away turn stronger
 					// than those closer to the tip resulting in a better result
-					float factor = x / decMath::max( goalDistSquared, 0.001f );
+					// float factor = x / decMath::max( goalDistSquared, 0.001f );
 					
 					// raising the factor to the power of two puts more important to the bones
 					// farther away. with a power of two the result of "y" and "atan2(y,x)*factor"
 					// are similar inside typical ranges
-					factor *= factor;
+					// factor *= factor;
 					
 					// clamping prevents angles from rotating too far making things more stable
-					angle *= decMath::min( factor, 1.0f );
+					// angle *= decMath::min( factor, 1.0f );
+					angle *= pChain[ i ].GetWeight();
 					
 				}else{
 					angle = 0.0f;
@@ -654,6 +656,7 @@ void dearRuleInverseKinematic::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateChain();
+	pUpdateChainWeights();
 	pUpdateReachBone();
 }
 
@@ -842,6 +845,48 @@ void dearRuleInverseKinematic::pInitIKLimits(){
 			pChain[ i ].SetHasLimits( false );
 			pChain[ i ].SetDampening( decVector( 1.0f, 1.0f, 1.0f ) );
 		}
+	}
+}
+
+void dearRuleInverseKinematic::pUpdateChainWeights(){
+	pChainLength = 0.0f;
+	
+	if( pChainCount == 0 ){
+		return;
+	}
+	
+	if( pChainCount == 1 ){
+		pChain[ 0 ].SetWeight( 1.0f );
+		return;
+	}
+	
+	// calculate chain length. this is the sum of all bone segments from the base to the tip
+	decDVector position( pChain[ 0 ].GetGlobalMatrix().GetPosition() );
+	int i;
+	
+	for( i=1; i<pChainCount; i++ ){
+		const decDVector nextPosition( pChain[ i ].GetGlobalMatrix().GetPosition() );
+		pChainLength += ( nextPosition - position ).Length();
+		position = nextPosition;
+	}
+	
+	// calculate weights. weight is calculated for the bone distance along the chain length.
+	// distance is the sum of all bone segments up to the bone position
+	position = pChain[ 0 ].GetGlobalMatrix().GetPosition();
+	float weight, accum = 0.0f;
+	
+	pChain[ 0 ].SetWeight( 1.0f );
+	
+	for( i=1; i<pChainCount; i++ ){
+		const decDVector nextPosition( pChain[ i ].GetGlobalMatrix().GetPosition() );
+		accum += ( nextPosition - position ).Length();
+		position = nextPosition;
+		
+		weight = decMath::linearStep( accum, 0.0f, pChainLength, 1.0f, 0.1f );
+		
+		// weight *= weight;
+		
+		pChain[ i ].SetWeight( weight );
 	}
 }
 
