@@ -37,13 +37,13 @@
 #include <dragengine/resources/rig/deRigBone.h>
 
 
-
 // Definitions
 ////////////////
 
-// MAX_ROT = sinf( DEG2RAD * 1.0 )
-#define MAX_ROT	1.74532836e-2f
-
+// according to paper rotation should not go beyond PI (180 degrees) or problems can happen.
+// clamping here though to a lower value to improve stability with ik limits
+#define MAX_ROT ( DEG2RAD * 60.0f )
+// #define MAX_ROT ( DEG2RAD * 1.0f )
 
 
 // Class dearRuleInverseKinematic
@@ -156,12 +156,10 @@ DEBUG_RESET_TIMERS;
 		decMatrix goalMatrix, rotationMatrix, matrix;
 		decMatrix boneLocalRot, boneLocalRotOrg;
 		decVector tipPosition, bonePosition;
-		decVector planeNormal, targetNormal, gradient;
-		decVector tipVector, vector, rotation;
-		float curDist, oldDist, angle;
+		decVector vector, rotation;
+		float curDist, oldDist;
 		//float dot, oneTan = tanf( DEG2RAD );
 		//float correctionFactor = 0.2f;
-		float planeNormalLen, tipVectorLen;
 		float tipDistSquared, goalDistSquared;
 		int s, maxStepCount = 500;
 		bool hasIKLimits = false;
@@ -253,8 +251,6 @@ DEBUG_RESET_TIMERS;
 		tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
 		curDist = ( tipPosition - goalPosition ).Length();
 		
-		// const float weightFactor = 1.0f / ( float )pChainCount;
-		
 		// NOTE according to papers best is to start first with the bone closest to the target
 		// then working the way down to the base. during each rotation constraints can be
 		// taken into consideration (clamping for example). in the case of a non-reachable
@@ -286,86 +282,36 @@ DEBUG_RESET_TIMERS;
 			for( i=pChainCount-1; i>=0; i-- ){
 				bonePosition = pChain[ i ].GetGlobalMatrix().GetPosition();
 				
-				// determine tip vector and length. if the length is close to 0 the bone in question
-				// is skipped since a 0 length bone corrupts the ik solving calculations
-				tipVector = tipPosition - bonePosition;
-				tipVectorLen = tipVector.Length();
-				if( tipVectorLen < 1e-5f ){
+				// calculate rotation axis and rotation angle
+				const decVector tipVector( tipPosition - bonePosition );
+				const float tipVectorLen = tipVector.Length();
+				if( tipVectorLen < FLOAT_SAFE_EPSILON ){
 					continue;
 				}
 				
-				// calculate the optimal plane to bring the tip closer to the target
-				targetNormal = goalPosition - tipPosition;
-				if( targetNormal.IsZero( 1e-5f ) ){
+				const decVector targetVector( goalPosition - bonePosition );
+				const float targetVectorLen = targetVector.Length();
+				if( targetVectorLen < FLOAT_SAFE_EPSILON ){
 					continue;
 				}
 				
-				planeNormal = tipVector % targetNormal;
-				planeNormalLen = planeNormal.Length();
-				if( planeNormalLen < 1e-5f ){
+				const decVector tipVectorNor( tipVector / tipVectorLen );
+				const decVector targetVectorNor( targetVector / targetVectorLen );
+				
+				const decVector rotationAxis( tipVectorNor % targetVectorNor );
+				if( rotationAxis.IsZero( 0.01f ) ){
 					continue;
 				}
-				planeNormal /= planeNormalLen;
 				
-				// determine the amount of rotation to apply. for small rotation angles the
-				// distance between the tip and the goal roughly equals the sine. for example
-				// if the tipVector is 1m long then 1 degree of rotation results in a displacement
-				// of roughly 1.7cm along the gradient normal. therefore the distance between
-				// the tip and the goal can be used to determine how large the rotation has to be.
-				// if the distance is larger than 1 degree of rotation the full rotation is applied.
-				// if the distance is less the rotation is scaled down to not overshoot.
+				float rotationAngle = -acosf( tipVectorNor * targetVectorNor );
 				
-				// for small rotations the gradient vector is a good approximization for the
-				// rotation path along the rotation plane. the projection of the target normal
-				// onto the gradient yields therefore roughly the amount of rotation required to
-				// move the tip onto the same line as the goal is located on. the tip is though
-				// still usually farther away or close than the goal position. the maximal
-				// rotation is clipped so the approximation of the rotation using the gradient
-				// is valid.
-			//	gradient = planeNormal % tipVector;
-				gradient = tipVector % planeNormal;
-				const float gradientLen = gradient.Length();
-				if( gradientLen > 1e-5f ){
-					const float y = ( gradient / gradientLen ) * targetNormal;
-					const float x = ( tipVector / tipVectorLen ) * ( goalPosition - bonePosition );
-					angle = atan2f( y, x );
-					// angle = y / x;
-					
-					// old version with incorrect angle calculation. the problem here is that this
-					// version worked well for human sized inverse kinematics (hence chains up
-					// to 0.5m length) but exploded for large models
-					// angle = y;
-					
-					// the correct calculation above though causes limb breaking. the main problem
-					// here is that the bones close to the target are rotate much further than
-					// those farther away (hence nearer to the base). the idea here is now to
-					// put higher importance to bones farther away compared to those closer to
-					// the tip. the goalDistSquared contains the distance from the base to the
-					// goal. this is used as reference size against which the distance from the
-					// bone to the tip is compared. this way the bones farther away turn stronger
-					// than those closer to the tip resulting in a better result
-					// float factor = x / decMath::max( goalDistSquared, 0.001f );
-					
-					// raising the factor to the power of two puts more important to the bones
-					// farther away. with a power of two the result of "y" and "atan2(y,x)*factor"
-					// are similar inside typical ranges
-					// factor *= factor;
-					
-					// clamping prevents angles from rotating too far making things more stable
-					// angle *= decMath::min( factor, 1.0f );
-					angle *= pChain[ i ].GetWeight();
-					
-				}else{
-					angle = 0.0f;
-				}
+				rotationAngle = decMath::clamp( rotationAngle, -MAX_ROT, MAX_ROT );
 				
-				if( angle > MAX_ROT ){
-					// angle = MAX_ROT;
-				}
+				rotationAngle *= 0.9f; // damping to improve stability and smooth result
 				
-				// angle *= 0.1f; // reduce to improve sticking to starting pose
+				// rotationAngle *= pChain[ i ].GetWeight();
 				
-				rotationMatrix.SetRotationAxis( planeNormal, angle );
+				rotationMatrix.SetRotationAxis( rotationAxis, rotationAngle );
 				
 				// retrieve the current rotation and apply limits if the rig bone has any
 				if( pChain[ i ].GetHasLimits() ){
@@ -882,12 +828,18 @@ void dearRuleInverseKinematic::pUpdateChainWeights(){
 		accum += ( nextPosition - position ).Length();
 		position = nextPosition;
 		
+		// weight = decMath::linearStep( ( float )i, 0.0f, ( float )( pChainCount - 1 ), 1.0f, 0.1f );
 		weight = decMath::linearStep( accum, 0.0f, pChainLength, 1.0f, 0.1f );
-		
-		// weight *= weight;
 		
 		pChain[ i ].SetWeight( weight );
 	}
+	
+	/*
+	const float scaleWeight = 1.0f;
+	for( i=0; i<pChainCount; i++ ){
+		pChain[ i ].SetWeight( pChain[ i ].GetWeight() * scaleWeight );
+	}
+	*/
 }
 
 void dearRuleInverseKinematic::pUpdateReachBone(){
