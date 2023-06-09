@@ -34,6 +34,17 @@ class deAnimatorRuleInverseKinematic;
  */
 class dearRuleInverseKinematic : public dearRule{
 private:
+	struct sParameters{
+		float blendFactor;
+		decVector goalPosition;
+		decQuaternion goalOrientation;
+		decVector localPosition;
+		decQuaternion localOrientation;
+		float reachRange;
+		decVector reachCenter;
+	};
+	
+	
 	const deAnimatorRuleInverseKinematic &pInverseKinematic;
 	dearIKWorkState *pChain;
 	int pChainCount;
@@ -98,6 +109,10 @@ private:
 	void pUpdateReachBone();
 	void pLimitReach( dearBoneStateList &stalist, decVector &goalPosition,
 		float range, const decVector &center );
+	
+	void pSolveSingleBone( dearBoneStateList &stalist, const sParameters &params );
+	void pSolveCCD( dearBoneStateList &stalist, const sParameters &params );
+	void pUpdateBonesFromWorkingState( dearBoneStateList &stalist, const sParameters &params );
 };
 
 #endif
