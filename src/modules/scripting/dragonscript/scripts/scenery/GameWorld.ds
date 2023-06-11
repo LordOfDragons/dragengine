@@ -44,7 +44,7 @@ class GameWorld
 	private var SafeArray pElements
 	private var SafeArray pThinkers
 	private var Dictionary pElementIDMap
-	private var Array pEnterFrameOnce
+	private var SafeArray pEnterFrameOnce
 	private var SpawnPointList pSpawnPoints
 	private var TemporaryDecalManager pTempDecalMgr
 	private var CachedVegetation pCachedVegetation
@@ -73,7 +73,7 @@ class GameWorld
 		pElements = SafeArray.new()
 		pThinkers = SafeArray.new()
 		pElementIDMap = Dictionary.new()
-		pEnterFrameOnce = Array.new()
+		pEnterFrameOnce = SafeArray.new()
 		pSpawnPoints = SpawnPointList.new()
 		pTempDecalMgr = TemporaryDecalManager.new()
 		pUniqueIDRemapper = UniqueIDRemapper.new()
