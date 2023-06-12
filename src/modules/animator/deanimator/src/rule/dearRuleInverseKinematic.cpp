@@ -637,7 +637,7 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 			const decVector targetVectorNor( targetVector / targetVectorLen );
 			
 			const decVector rotationAxis( tipVectorNor % targetVectorNor );
-			if( rotationAxis.IsZero() ){
+			if( rotationAxis.IsZero(0.001f) ){
 				continue;
 			}
 			
