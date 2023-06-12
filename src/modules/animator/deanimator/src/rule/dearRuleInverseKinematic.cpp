@@ -557,6 +557,17 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 		}
 	}
 	
+	// if the orientation is adjusted modify the orientation of the last bone in the chain
+	if( pAdjustOrientation ){
+		bonePosition = pChain[ pChainCount - 1 ].GetGlobalMatrix().GetPosition();
+		
+		goalMatrix.a14 = bonePosition.x;
+		goalMatrix.a24 = bonePosition.y;
+		goalMatrix.a34 = bonePosition.z;
+		
+		pChain[ pChainCount - 1 ].SetGlobalMatrix( goalMatrix );
+	}
+	
 	// determine the squared distance of the goal to the base of the chain. used later on to
 	// check for singularity situations
 	vector = goalPosition - pChain[ 0 ].GetGlobalMatrix().GetPosition();
@@ -584,7 +595,6 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 	// => for( i=0; i<pChainCount; i++ )
 	
 	for( s=0; s<maxStepCount; s++ ){
-		
 		// update inverse global matrices
 		if( hasIKLimits ){
 			for( i=0; i<pChainCount; i++ ){
@@ -596,6 +606,19 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 		// for( i=0; i<pChainCount; i++ ){
 		for( i=pChainCount-1; i>=0; i-- ){
 			bonePosition = pChain[ i ].GetGlobalMatrix().GetPosition();
+			
+			if( pAdjustOrientation && i == pChainCount - 1 ){
+				goalMatrix.a14 = bonePosition.x;
+				goalMatrix.a24 = bonePosition.y;
+				goalMatrix.a34 = bonePosition.z;
+				
+				pChain[ pChainCount - 1 ].SetGlobalMatrix( goalMatrix );
+				
+				// calculate the new tip position
+				tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
+				
+				continue;
+			}
 			
 			// calculate rotation axis and rotation angle
 			const decVector tipVector( tipPosition - bonePosition );
@@ -614,7 +637,7 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 			const decVector targetVectorNor( targetVector / targetVectorLen );
 			
 			const decVector rotationAxis( tipVectorNor % targetVectorNor );
-			if( rotationAxis.IsZero( 0.01f ) ){
+			if( rotationAxis.IsZero() ){
 				continue;
 			}
 			
@@ -749,10 +772,10 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 			goalMatrix.a34 = bonePosition.z;
 			
 			pChain[ pChainCount - 1 ].SetGlobalMatrix( goalMatrix );
+			
+			// calculate the new tip position
+			tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
 		}
-		
-		// calculate the new tip position for the next run
-		// tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
 		
 		// check if another round is required
 		oldDist = curDist;
