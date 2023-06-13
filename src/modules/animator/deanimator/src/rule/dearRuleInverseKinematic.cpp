@@ -830,7 +830,9 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 			
 			if( pAdjustOrientation && j == pChainCount - 1 ){
 				boneMatrix.SetFromQuaternion( params.goalOrientation );
-				bonePosition = targetPosition - boneMatrix * pChain[ j ].GetEndPosition();
+				
+				bonePosition = targetPosition
+					- boneMatrix.TransformNormal( pChain[ j ].GetEndPosition() );
 				
 				boneMatrix.a14 = bonePosition.x;
 				boneMatrix.a24 = bonePosition.y;
@@ -852,7 +854,9 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 							* decQuaternion::CreateFromAxis( rotationAxis, rotationAngle ) );
 					}
 					
-					bonePosition = targetPosition + direction * ( pChain[ j ].GetLength() / lenDirection );
+					bonePosition = targetPosition
+						+ direction * ( pChain[ j ].GetLength() / lenDirection );
+					
 					boneMatrix.a14 = bonePosition.x;
 					boneMatrix.a24 = bonePosition.y;
 					boneMatrix.a34 = bonePosition.z;
