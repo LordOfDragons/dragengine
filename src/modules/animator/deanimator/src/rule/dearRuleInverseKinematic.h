@@ -42,6 +42,10 @@ private:
 		decQuaternion localOrientation;
 		float reachRange;
 		decVector reachCenter;
+		decMatrix goalMatrix;
+		bool hasSolverBone;
+		bool hasIKLimits;
+		float rotationCrossThreshold;
 	};
 	
 	
@@ -109,10 +113,19 @@ private:
 	void pUpdateReachBone();
 	void pLimitReach( dearBoneStateList &stalist, decVector &goalPosition,
 		float range, const decVector &center );
+	void pApplyAdjustOrientation( decMatrix &goalMatrix,
+		decVector &tipPosition, const decVector &localPosition );
+	void pInitWorkingStates( dearBoneStateList &stalist, const sParameters &params );
+	void pUpdateInverseGlobal( const sParameters &params );
+	void pInitLength( const decVector &localPosition );
 	
 	void pSolveSingleBone( dearBoneStateList &stalist, const sParameters &params );
 	void pSolveCCD( dearBoneStateList &stalist, const sParameters &params );
+	void pSolveFabrik( dearBoneStateList &stalist, const sParameters &params );
 	void pUpdateBonesFromWorkingState( dearBoneStateList &stalist, const sParameters &params );
+	bool pCalcRotation( const sParameters &params, const decVector &goalPosition,
+		const decVector &tipPosition, const decVector &bonePosition,
+		decVector &rotationAxis, float &rotationAngle );
 };
 
 #endif

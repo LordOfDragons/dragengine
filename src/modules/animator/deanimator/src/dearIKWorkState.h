@@ -64,6 +64,8 @@ private:
 	decQuaternion pLimitZeroQuatInv;
 	decVector pLockedRotation;
 	float pWeight;
+	float pLength;
+	decVector pEndPosition;
 	
 	
 	
@@ -160,6 +162,18 @@ public:
 	
 	/** Set weight. */
 	void SetWeight( float weight );
+	
+	/** Length. */
+	inline float GetLength() const{ return pLength; }
+	
+	/** Set length. */
+	void SetLength( float length );
+	
+	/** End position. */
+	const decVector &GetEndPosition() const{ return pEndPosition; }
+	
+	/** Set end position. */
+	void SetEndPosition( const decVector &position );
 	/*@}*/
 };
 

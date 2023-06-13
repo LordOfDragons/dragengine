@@ -44,7 +44,8 @@ pAxisTypeZ( eatFree ),
 pHasLimits( false ),
 pDampening( 1.0f, 1.0f, 1.0f ),
 pHasDampening( false ),
-pWeight( 1.0f ){
+pWeight( 1.0f ),
+pLength( 0.0f ){
 }
 
 dearIKWorkState::~dearIKWorkState(){
@@ -115,4 +116,13 @@ void dearIKWorkState::SetLockedRotation( const decVector &rotation ){
 
 void dearIKWorkState::SetWeight( float weight ){
 	pWeight = weight;
+}
+
+void dearIKWorkState::SetLength( float length ){
+	pLength = length;
+}
+
+void dearIKWorkState::SetEndPosition( const decVector &position ){
+	pEndPosition = position;
+	pLength = position.Length();
 }
