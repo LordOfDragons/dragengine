@@ -116,7 +116,7 @@ private:
 	void pApplyAdjustOrientation( decMatrix &goalMatrix,
 		decVector &tipPosition, const decVector &localPosition );
 	void pInitWorkingStates( dearBoneStateList &stalist, const sParameters &params );
-	void pUpdateInverseGlobal( const sParameters &params );
+	void pUpdateInverseGlobal();
 	void pInitLength( const decVector &localPosition );
 	
 	void pSolveSingleBone( dearBoneStateList &stalist, const sParameters &params );

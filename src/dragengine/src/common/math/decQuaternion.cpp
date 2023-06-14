@@ -366,10 +366,11 @@ void decQuaternion::SetFromEulerZ( float angle ){
 }
 
 void decQuaternion::SetFromAxis( const decVector &axis, float angle ){
+	const decVector a = axis.Normalized();
 	const float s = sinf( angle * 0.5f );
-	x = axis.x * s;
-	y = axis.y * s;
-	z = axis.z * s;
+	x = a.x * s;
+	y = a.y * s;
+	z = a.z * s;
 	w = cosf( angle * 0.5f );
 }
 

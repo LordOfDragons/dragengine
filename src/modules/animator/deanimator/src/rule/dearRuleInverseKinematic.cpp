@@ -169,7 +169,7 @@ DEBUG_RESET_TIMERS;
 		params.rotationCrossThreshold = 0.001f; // less and things can explode
 		
 		pSolveCCD( stalist, params );
-// 		pSolveFabrik( stalist, params );
+		// pSolveFabrik( stalist, params );
 		
 		pUpdateBonesFromWorkingState( stalist, params );
 		
@@ -473,7 +473,7 @@ void dearRuleInverseKinematic::pInitWorkingStates( dearBoneStateList &stalist, c
 		dearBoneState &boneState = *stalist.GetStateAt( pChain[ i ].GetBoneStateIndex() );
 		boneState.UpdateMatrices();
 		pChain[ i ].SetGlobalMatrix( boneState.GetGlobalMatrix() );
-		pChain[ i ].SetInverseGlobalMatrix( pChain[ i ].GetGlobalMatrix().QuickInvert() );
+		pChain[ i ].SetInverseGlobalMatrix( boneState.GetInverseGlobalMatrix() );
 	}
 	
 	if( params.hasIKLimits ){
@@ -487,11 +487,7 @@ void dearRuleInverseKinematic::pInitWorkingStates( dearBoneStateList &stalist, c
 	}
 }
 
-void dearRuleInverseKinematic::pUpdateInverseGlobal( const sParameters &params ){
-	if( ! params.hasIKLimits ){
-		return;
-	}
-	
+void dearRuleInverseKinematic::pUpdateInverseGlobal(){
 	int i;
 	for( i=0; i<pChainCount; i++ ){
 		pChain[ i ].SetInverseGlobalMatrix( pChain[ i ].GetGlobalMatrix().QuickInvert() );
@@ -500,7 +496,6 @@ void dearRuleInverseKinematic::pUpdateInverseGlobal( const sParameters &params )
 
 void dearRuleInverseKinematic::pInitLength( const decVector &localPosition ){
 	int i;
-	
 	for( i=0; i<pChainCount-1; i++ ){
 		pChain[ i ].SetEndPosition( pChain[ i ].GetInverseGlobalMatrix()
 			* pChain[ i + 1 ].GetGlobalMatrix().GetPosition() );
@@ -629,7 +624,9 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 	// => for( i=0; i<pChainCount; i++ )
 	
 	for( s=0; s<maxStepCount; s++ ){
-		pUpdateInverseGlobal( params );
+		if( params.hasIKLimits ){
+			pUpdateInverseGlobal();
+		}
 		
 		// adjust all bones in the chain to approach closer to the target
 		// for( i=0; i<pChainCount; i++ ){
@@ -641,8 +638,8 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 				continue;
 			}
 			
-			if( ! pCalcRotation( params, params.goalPosition, tipPosition,
-			bonePosition, rotationAxis, rotationAngle ) ){
+			if( ! pCalcRotation( params, params.goalPosition, tipPosition, bonePosition,
+			rotationAxis, rotationAngle ) ){
 				continue;
 			}
 			
@@ -652,7 +649,7 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 			
 			rotationAngle *= pChain[ i ].GetWeight();
 			
-			rotationMatrix.SetRotationAxis( rotationAxis, rotationAngle );
+			rotationMatrix.SetRotationAxis( rotationAxis, -rotationAngle ); // why negation needed?
 			
 			// retrieve the current rotation and apply limits if the rig bone has any
 			if( pChain[ i ].GetHasLimits() ){
@@ -816,7 +813,9 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 	int i, j;
 	
 	for( i=0; i<maxStepCount; i++ ){
-		pUpdateInverseGlobal( params );
+		if( params.hasIKLimits ){
+			pUpdateInverseGlobal();
+		}
 		
 		// backward stage
 		targetPosition = params.goalPosition;
@@ -848,8 +847,8 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 				
 				float lenDirection = direction.Length();
 				if( lenDirection > FLOAT_SAFE_EPSILON ){
-					if( pCalcRotation( params, targetPosition, endPosition,
-					bonePosition, rotationAxis, rotationAngle ) ){
+					if( pCalcRotation( params, targetPosition, endPosition, bonePosition,
+					rotationAxis, rotationAngle ) ){
 						boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion()
 							* decQuaternion::CreateFromAxis( rotationAxis, rotationAngle ) );
 					}
@@ -872,7 +871,7 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 		
 		for( j=0; j<pChainCount; j++ ){
 			decMatrix boneMatrix( pChain[ j ].GetGlobalMatrix() );
-			decVector bonePosition( boneMatrix.GetPosition() );
+			const decVector bonePosition( boneMatrix.GetPosition() );
 			const decVector endPosition( boneMatrix * pChain[ j ].GetEndPosition() );
 			
 			decVector direction( endPosition - targetPosition );
@@ -882,18 +881,17 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 				if( pAdjustOrientation && j == pChainCount - 1 ){
 					boneMatrix.SetFromQuaternion( params.goalOrientation );
 					
-				}else if( pCalcRotation( params, targetPosition, bonePosition,
-				endPosition, rotationAxis, rotationAngle ) ){
+				}else if( pCalcRotation( params, targetPosition, bonePosition, endPosition,
+				rotationAxis, rotationAngle ) ){
 					boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion()
 						* decQuaternion::CreateFromAxis( rotationAxis, rotationAngle ) );
 				}
-				
-				bonePosition = targetPosition + direction * ( pChain[ j ].GetLength() / lenDirection );
-				boneMatrix.a14 = bonePosition.x;
-				boneMatrix.a24 = bonePosition.y;
-				boneMatrix.a34 = bonePosition.z;
-				pChain[ j ].SetGlobalMatrix( boneMatrix );
 			}
+			
+			boneMatrix.a14 = targetPosition.x;
+			boneMatrix.a24 = targetPosition.y;
+			boneMatrix.a34 = targetPosition.z;
+			pChain[ j ].SetGlobalMatrix( boneMatrix );
 			
 			targetPosition = boneMatrix * pChain[ j ].GetEndPosition();
 		}
@@ -970,6 +968,6 @@ const decVector &bonePosition, decVector &rotationAxis, float &rotationAngle ){
 		return false;
 	}
 	
-	rotationAngle = -acosf( tipVectorNor * targetVectorNor );
+	rotationAngle = acosf( tipVectorNor * targetVectorNor );
 	return true;
 }
