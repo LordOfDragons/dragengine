@@ -46,6 +46,8 @@ private:
 		bool hasSolverBone;
 		bool hasIKLimits;
 		float rotationCrossThreshold;
+		float goalReachedThreshold;
+		float improvedThreshold;
 	};
 	
 	

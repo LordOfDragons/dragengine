@@ -126,3 +126,7 @@ void dearIKWorkState::SetEndPosition( const decVector &position ){
 	pEndPosition = position;
 	pLength = position.Length();
 }
+
+decVector dearIKWorkState::GetGlobalEnd() const{
+	return pGlobalMatrix * pEndPosition;
+}

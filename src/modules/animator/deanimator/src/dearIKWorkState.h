@@ -174,6 +174,9 @@ public:
 	
 	/** Set end position. */
 	void SetEndPosition( const decVector &position );
+	
+	/** End position in component space. */
+	decVector GetGlobalEnd() const;
 	/*@}*/
 };
 
