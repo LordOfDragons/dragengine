@@ -130,3 +130,8 @@ void dearIKWorkState::SetEndPosition( const decVector &position ){
 decVector dearIKWorkState::GetGlobalEnd() const{
 	return pGlobalMatrix * pEndPosition;
 }
+
+void dearIKWorkState::SetRigLocalRotation( const decQuaternion &rotation ){
+	pRigLocalRot = rotation;
+	pInvRigLocalRot = rotation.Conjugate();
+}

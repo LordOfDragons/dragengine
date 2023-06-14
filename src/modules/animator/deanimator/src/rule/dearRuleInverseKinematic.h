@@ -128,6 +128,9 @@ private:
 	bool pCalcRotation( const sParameters &params, const decVector &goalPosition,
 		const decVector &tipPosition, const decVector &bonePosition,
 		decVector &rotationAxis, float &rotationAngle );
+	decQuaternion pLimitRotation( int index, const decMatrix &globalMatrix,
+		const decQuaternion &baseRotation, const decQuaternion &baseInverseRotation,
+		const decQuaternion &rotation );
 };
 
 #endif

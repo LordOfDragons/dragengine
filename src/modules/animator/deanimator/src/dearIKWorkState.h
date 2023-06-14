@@ -66,6 +66,8 @@ private:
 	float pWeight;
 	float pLength;
 	decVector pEndPosition;
+	decQuaternion pRigLocalRot;
+	decQuaternion pInvRigLocalRot;
 	
 	
 	
@@ -177,6 +179,15 @@ public:
 	
 	/** End position in component space. */
 	decVector GetGlobalEnd() const;
+	
+	/** Rig local rotation. */
+	inline const decQuaternion &GetRigLocalRotation() const{ return pRigLocalRot; }
+	
+	/** Inverse rig local rotation. */
+	inline const decQuaternion &GetInverseRigLocalRotation() const{ return pInvRigLocalRot; }
+	
+	/** Set rig local rotation. */
+	void SetRigLocalRotation( const decQuaternion &rotation );
 	/*@}*/
 };
 
