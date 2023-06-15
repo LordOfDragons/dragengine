@@ -132,31 +132,21 @@ DEBUG_RESET_TIMERS;
 	params.localOrientation = pLocalOrientation;
 	pTargetLocalOrientation.GetQuaternion( instance, params.localOrientation );
 	
+	params.hasSolverBone = pUseSolverBone && pSolverBone != -1;
+	if( params.hasSolverBone ){
+		dearBoneState &boneState = *stalist.GetStateAt( pSolverBone );
+		boneState.UpdateMatrices();
+		
+		params.goalPosition = boneState.GetGlobalMatrix() * params.goalPosition;
+		params.goalOrientation *= boneState.GetGlobalMatrix().ToQuaternion();
+	}
+	
 	if( pChainCount > 1 ){
 		params.reachRange = pReachRange * decMath::clamp(
 			pTargetReachRange.GetValue( instance, 1.0f ), 0.0f, 1.0f );
 		
 		params.reachCenter = pReachCenter;
 		pTargetReachCenter.GetVector( instance, params.reachCenter );
-		
-		params.hasSolverBone = pUseSolverBone && pSolverBone != -1;
-		if( params.hasSolverBone ){
-			dearBoneState &boneState = *stalist.GetStateAt( pSolverBone );
-			boneState.UpdateMatrices();
-			params.goalPosition = boneState.GetGlobalMatrix() * params.goalPosition;
-		}
-		
-		if( pAdjustOrientation ){
-			if( params.hasSolverBone ){
-				params.goalMatrix = decMatrix::CreateFromQuaternion( params.localOrientation )
-					.QuickMultiply( decMatrix::CreateFromQuaternion( params.goalOrientation ) )
-					.QuickMultiply( stalist.GetStateAt( pSolverBone )->GetGlobalMatrix().GetRotationMatrix() );
-				
-			}else{
-				params.goalMatrix = decMatrix::CreateFromQuaternion( params.localOrientation )
-					.QuickMultiply( decMatrix::CreateFromQuaternion( params.goalOrientation ) );
-			}
-		}
 		
 		pLimitReach( stalist, params.goalPosition, params.reachRange, params.reachCenter );
 		
@@ -176,8 +166,8 @@ DEBUG_RESET_TIMERS;
 		// reached a singularity or the goal is outside the reach of the bone chain
 		params.improvedThreshold = 1e-5f;
 		
-		pSolveCCD( stalist, params );
-		// pSolveFabrik( stalist, params );
+		// pSolveCCD( stalist, params );
+		pSolveFabrik( stalist, params );
 		
 		pUpdateBonesFromWorkingState( stalist, params );
 		
@@ -516,44 +506,25 @@ void dearRuleInverseKinematic::pInitLength( const decVector &localPosition ){
 }
 
 void dearRuleInverseKinematic::pSolveSingleBone( dearBoneStateList &stalist, const sParameters &params ){
-	const bool hasSolverBone = pUseSolverBone && pSolverBone != -1;
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
-	decVector goalPosition( params.goalPosition );
-	decMatrix goalMatrix;
-	
-	// calculate the target values. this depends on the presence of a solver
-	// bone as well as if the orientation has to be adjusted
-	if( hasSolverBone ){
-		dearBoneState &solverState = *stalist.GetStateAt( pSolverBone );
-		solverState.UpdateMatrices();
-		
-		goalPosition = solverState.GetGlobalMatrix() * goalPosition;
-	}
-	
-	if( pAdjustOrientation ){
-		if( hasSolverBone ){
-			goalMatrix = decMatrix::CreateFromQuaternion( params.localOrientation )
-				.QuickMultiply( decMatrix::CreateFromQuaternion( params.goalOrientation ) )
-				.QuickMultiply( stalist.GetStateAt( pSolverBone )->GetGlobalMatrix().GetRotationMatrix() );
-			
-		}else{
-			goalMatrix = decMatrix::CreateFromQuaternion( params.localOrientation )
-				.QuickMultiply( decMatrix::CreateFromQuaternion( params.goalOrientation ) );
-		}
-	}
 	
 	// set position and orientation to the bone from the ik settings.
 	// the position is only set if there is no parent bone.
 	dearBoneState &boneState = *stalist.GetStateAt( pChain[ 0 ].GetBoneStateIndex() );
+	decMatrix goalMatrix;
 	
 	boneState.UpdateMatrices();
 	
-	if( ! pAdjustOrientation ){
+	if( pAdjustOrientation ){
+		goalMatrix.SetWorld( params.goalPosition, params.localOrientation * params.goalOrientation );
+		
+	}else{
 		goalMatrix = boneState.GetGlobalMatrix();
+		goalMatrix.a14 = params.goalPosition.x;
+		goalMatrix.a24 = params.goalPosition.y;
+		goalMatrix.a34 = params.goalPosition.z;
 	}
-	goalMatrix.a14 = goalPosition.x;
-	goalMatrix.a24 = goalPosition.y;
-	goalMatrix.a34 = goalPosition.z;
+	
 	if( boneState.GetParentState() ){
 		goalMatrix = goalMatrix.QuickMultiply( boneState.GetParentState()->GetInverseGlobalMatrix() );
 	}
@@ -577,8 +548,6 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 	
 	const int maxStepCount = 500;
 	
-	decMatrix goalMatrix( params.goalMatrix );
-	
 	decMatrix baseRotMatrix, baseInverseRotMat;
 	decMatrix rotationMatrix, matrix;
 	decMatrix boneLocalRot, boneLocalRotOrg;
@@ -589,6 +558,9 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 	int i, j, s;
 	
 	pInitWorkingStates( stalist, params );
+	
+	decMatrix goalMatrix( decMatrix::CreateFromQuaternion(
+		params.localOrientation * params.goalOrientation ) );
 	
 	// determine the base matrices
 	if( params.hasIKLimits ){
@@ -822,13 +794,7 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 		baseInverseRot = baseRot.Conjugate();
 	}
 	
-	decMatrix goalMatrix( params.goalMatrix );
-	
-	// reason (all quaternion orientations):
-	// goal = local * tip.global
-	// conj(local) * goal = conj(local) * local * tip.global
-	// conj(local) * goal = tip.global
-	const decQuaternion goalOrientation( params.localOrientation.Conjugate() * params.goalOrientation );
+	const decQuaternion goalOrientation( params.localOrientation * params.goalOrientation );
 	
 	const decVector basePosition( pChain[ 0 ].GetGlobalMatrix().GetPosition() );
 	decVector lastEnd( pChain[ pChainCount - 1 ].GetGlobalEnd() );

@@ -42,7 +42,6 @@ private:
 		decQuaternion localOrientation;
 		float reachRange;
 		decVector reachCenter;
-		decMatrix goalMatrix;
 		bool hasSolverBone;
 		bool hasIKLimits;
 		float rotationCrossThreshold;
