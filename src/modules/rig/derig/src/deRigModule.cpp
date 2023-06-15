@@ -1327,47 +1327,62 @@ void deRigModule::pWriteBone( decXmlWriter &writer, const deRig &rig, const deRi
 	
 	if( ! ikLimitsUpper.IsZero() || ! ikResistance.IsZero()
 	|| ! ikLimitsLower.IsEqualTo( decVector( 360.0f, 360.0f, 360.0f ) ) ){
-		writer.WriteOpeningTag( "ikX" );
 		if( fabsf( ikLimitsLower.x - 360.0f ) > FLOAT_SAFE_EPSILON
-		|| fabsf( ikLimitsUpper.x ) > FLOAT_SAFE_EPSILON ){
-			writer.WriteDataTagFloat( "lower", ikLimitsLower.x );
-			writer.WriteDataTagFloat( "upper", ikLimitsUpper.x );
+		|| fabsf( ikLimitsUpper.x ) > FLOAT_SAFE_EPSILON
+		|| fabsf( ikResistance.x ) > FLOAT_SAFE_EPSILON
+		|| bone.GetIKLockedX() ){
+			writer.WriteOpeningTag( "ikX" );
+			if( fabsf( ikLimitsLower.x - 360.0f ) > FLOAT_SAFE_EPSILON
+			|| fabsf( ikLimitsUpper.x ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "lower", ikLimitsLower.x );
+				writer.WriteDataTagFloat( "upper", ikLimitsUpper.x );
+			}
+			if( fabsf( ikResistance.x ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "resistance", ikResistance.x );
+			}
+			if( bone.GetIKLockedX() ){
+				writer.WriteDataTagInt( "locked", bone.GetIKLockedX() ? 1 : 0 );
+			}
+			writer.WriteClosingTag( "ikX" );
 		}
-		if( fabsf( ikResistance.x ) > FLOAT_SAFE_EPSILON ){
-			writer.WriteDataTagFloat( "resistance", ikResistance.x );
-		}
-		if( bone.GetIKLockedX() ){
-			writer.WriteDataTagInt( "locked", bone.GetIKLockedX() ? 1 : 0 );
-		}
-		writer.WriteClosingTag( "ikX" );
 		
-		writer.WriteOpeningTag( "ikY" );
 		if( fabsf( ikLimitsLower.y - 360.0f ) > FLOAT_SAFE_EPSILON
-		|| fabsf( ikLimitsUpper.y ) > FLOAT_SAFE_EPSILON ){
-			writer.WriteDataTagFloat( "lower", ikLimitsLower.y );
-			writer.WriteDataTagFloat( "upper", ikLimitsUpper.y );
+		|| fabsf( ikLimitsUpper.y ) > FLOAT_SAFE_EPSILON
+		|| fabsf( ikResistance.y ) > FLOAT_SAFE_EPSILON
+		|| bone.GetIKLockedY() ){
+			writer.WriteOpeningTag( "ikY" );
+			if( fabsf( ikLimitsLower.y - 360.0f ) > FLOAT_SAFE_EPSILON
+			|| fabsf( ikLimitsUpper.y ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "lower", ikLimitsLower.y );
+				writer.WriteDataTagFloat( "upper", ikLimitsUpper.y );
+			}
+			if( fabsf( ikResistance.y ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "resistance", ikResistance.y );
+			}
+			if( bone.GetIKLockedY() ){
+				writer.WriteDataTagInt( "locked", bone.GetIKLockedY() ? 1 : 0 );
+			}
+			writer.WriteClosingTag( "ikY" );
 		}
-		if( fabsf( ikResistance.y ) > FLOAT_SAFE_EPSILON ){
-			writer.WriteDataTagFloat( "resistance", ikResistance.y );
-		}
-		if( bone.GetIKLockedY() ){
-			writer.WriteDataTagInt( "locked", bone.GetIKLockedY() ? 1 : 0 );
-		}
-		writer.WriteClosingTag( "ikY" );
 		
-		writer.WriteOpeningTag( "ikZ" );
 		if( fabsf( ikLimitsLower.z - 360.0f ) > FLOAT_SAFE_EPSILON
-		|| fabsf( ikLimitsUpper.z ) > FLOAT_SAFE_EPSILON ){
-			writer.WriteDataTagFloat( "lower", ikLimitsLower.z );
-			writer.WriteDataTagFloat( "upper", ikLimitsUpper.z );
+		|| fabsf( ikLimitsUpper.z ) > FLOAT_SAFE_EPSILON
+		|| fabsf( ikResistance.z ) > FLOAT_SAFE_EPSILON
+		|| bone.GetIKLockedZ() ){
+			writer.WriteOpeningTag( "ikZ" );
+			if( fabsf( ikLimitsLower.z - 360.0f ) > FLOAT_SAFE_EPSILON
+			|| fabsf( ikLimitsUpper.z ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "lower", ikLimitsLower.z );
+				writer.WriteDataTagFloat( "upper", ikLimitsUpper.z );
+			}
+			if( fabsf( ikResistance.z ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "resistance", ikResistance.z );
+			}
+			if( bone.GetIKLockedZ() ){
+				writer.WriteDataTagInt( "locked", bone.GetIKLockedZ() ? 1 : 0 );
+			}
+			writer.WriteClosingTag( "ikZ" );
 		}
-		if( fabsf( ikResistance.z ) > FLOAT_SAFE_EPSILON ){
-			writer.WriteDataTagFloat( "resistance", ikResistance.z );
-		}
-		if( bone.GetIKLockedZ() ){
-			writer.WriteDataTagInt( "locked", bone.GetIKLockedZ() ? 1 : 0 );
-		}
-		writer.WriteClosingTag( "ikZ" );
 	}
 	
 	const decStringList &shapeProperties = bone.GetShapeProperties();
