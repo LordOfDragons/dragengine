@@ -136,7 +136,7 @@ public:
 	void SetDampening( const decVector &resistance );
 	
 	/** Has dampening. */
-	inline bool HasDampening() const{ return pHasDampening; }
+	inline bool GetHasDampening() const{ return pHasDampening; }
 	
 	/** Lower limit. */
 	inline const decVector &GetLimitLower() const{ return pLimitLower; }
