@@ -344,9 +344,11 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 						elif poseBone.use_ik_limit_x:
 							f.write("\t\t\t<lower>%g</lower>\n" % (poseBone.ik_min_x / ONE_PI))
 							f.write('\t\t\t<upper>%g</upper>\n' % (poseBone.ik_max_x / ONE_PI))
-							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_x))
+							if poseBone.ik_stiffness_x != 0:
+								f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_x))
 						else:
-							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_x))
+							if poseBone.ik_stiffness_x != 0:
+								f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_x))
 						f.write("\t\t</ikX>\n")
 					
 					if poseBone.lock_ik_z or poseBone.use_ik_limit_z or poseBone.ik_stiffness_z != 0:
@@ -356,9 +358,11 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 						elif poseBone.use_ik_limit_z:
 							f.write("\t\t\t<lower>%g</lower>\n" % (poseBone.ik_min_z / ONE_PI))
 							f.write('\t\t\t<upper>%g</upper>\n' % (poseBone.ik_max_z / ONE_PI))
-							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_z))
+							if poseBone.ik_stiffness_z != 0:
+								f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_z))
 						else:
-							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_z))
+							if poseBone.ik_stiffness_z != 0:
+								f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_z))
 						f.write("\t\t</ikY>\n")
 					
 					if poseBone.lock_ik_y or poseBone.use_ik_limit_y or poseBone.ik_stiffness_y != 0:
@@ -368,9 +372,11 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 						elif poseBone.use_ik_limit_y:
 							f.write("\t\t\t<lower>%g</lower>\n" % (poseBone.ik_min_y / ONE_PI))
 							f.write('\t\t\t<upper>%g</upper>\n' % (poseBone.ik_max_y / ONE_PI))
-							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_y))
+							if poseBone.ik_stiffness_y != 0:
+								f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_y))
 						else:
-							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_y))
+							if poseBone.ik_stiffness_y != 0:
+								f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_y))
 						f.write("\t\t</ikZ>\n")
 					
 				# write volumes belonging to this bone
