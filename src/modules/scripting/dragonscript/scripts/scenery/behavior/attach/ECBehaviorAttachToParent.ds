@@ -296,8 +296,7 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 		public func void attachToAttachSlot(BehaviorElement parent)
 			// ECBehaviorAttachSlot calls BehaviorElement.setParent() if successfull
 			if pRelative
-				ECBehaviorAttachSlot.getInstanceIn(parent, pAttachSlot) \
-					.attachWorld(pAttachable)
+				ECBehaviorAttachSlot.getInstanceIn(parent, pAttachSlot).attachWorld(pAttachable)
 				
 			else
 				ECBehaviorAttachSlot.getInstanceIn(parent, pAttachSlot) \
