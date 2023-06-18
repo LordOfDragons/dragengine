@@ -35,27 +35,27 @@ class TriggerShoutClass extends BehaviorElementClass
 	
 	
 	/** \brief Create element class. */
-	public func new( TSTriggerTable triggerTable, Console console ) \
-	this( "TriggerShout", triggerTable, console )
+	public func new(TSTriggerTable triggerTable, Console console) \
+	this("TriggerShout", triggerTable, console)
 	end
 	
 	/** \brief Create element class. */
-	public func new( String name, TSTriggerTable triggerTable, Console console ) super( name )
-		this.pShowMessage = ECBehaviorShowMessage.new( this, triggerTable, console )
+	public func new(String name, TSTriggerTable triggerTable, Console console) super(name)
+		pShowMessage = ECBehaviorShowMessage.new(this, triggerTable, console)
 	end
 	
 	
 	
 	/** \brief Show message behavior. */
 	public func ECBehaviorShowMessage getShowMessage()
-		return this.pShowMessage
+		return pShowMessage
 	end
 	
 	
 	
 	/** \brief Create copy of element class. */
-	public func ElementClass duplicateNamed( String classname )
-		return TriggerShoutClass.new( classname, this.pShowMessage.getTriggerTable(), this.pShowMessage.getConsole() )
+	public func ElementClass duplicateNamed(String classname)
+		return TriggerShoutClass.new(classname, pShowMessage.getTriggerTable(), pShowMessage.getConsole())
 	end
 	
 	
@@ -70,6 +70,6 @@ class TriggerShoutClass extends BehaviorElementClass
 	 * and loadAndAddElement() bypassing this method.
 	 */
 	protected func Element createElement()
-		return TriggerShout.new( this )
+		return TriggerShout.new(this)
 	end
 end
