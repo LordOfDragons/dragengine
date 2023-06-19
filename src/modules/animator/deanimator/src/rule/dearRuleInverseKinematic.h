@@ -127,9 +127,21 @@ private:
 	bool pCalcRotation( const sParameters &params, const decVector &goalPosition,
 		const decVector &tipPosition, const decVector &bonePosition,
 		decVector &rotationAxis, float &rotationAngle );
+	
+	decQuaternion pGlobalToBoneLocalRotation( int index, const decQuaternion &globalRotation,
+		const decQuaternion &baseInverseRotation ) const;
+	
+	decQuaternion pApplyIKResistance( int index, const decQuaternion &globalRotation,
+		const decQuaternion &baseInverseRotation, const decQuaternion &rotation ) const;
+	
+	decQuaternion pApplyIKLimits( int index, const decQuaternion &rotation ) const;
+	
+	decQuaternion pBoneLocalToGlobalRotation( int index, const decQuaternion &globalRotation,
+		const decQuaternion &baseRotation, const decQuaternion &rotation ) const;
+	
 	decQuaternion pApplyIKRestrictions( int index, const decMatrix &globalMatrix,
 		const decQuaternion &baseRotation, const decQuaternion &baseInverseRotation,
-		const decQuaternion &rotation );
+		const decQuaternion &rotation ) const;
 };
 
 #endif

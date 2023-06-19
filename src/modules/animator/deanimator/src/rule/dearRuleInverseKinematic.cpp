@@ -480,6 +480,7 @@ void dearRuleInverseKinematic::pInitWorkingStates( dearBoneStateList &stalist, c
 			//boneState.UpdateFromGlobalMatrix();
 			
 			pChain[ i ].SetRigLocalRotation( boneState.GetRigLocalMatrix().ToQuaternion() );
+			pChain[ i ].SetOrgOrientation( boneState.GetOrientation() );
 			pChain[ i ].SetLockedRotation( ( boneState.GetOrientation()
 				* pChain[ i ].GetLimitZeroQuat() ).GetEulerAngles() );
 		}
@@ -805,43 +806,102 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 	int i, j;
 	
 	for( i=0; i<maxStepCount; i++ ){
-		if( params.hasIKLimits && i > 0 ){
-			pUpdateInverseGlobal();
-		}
+		// if( params.hasIKLimits && i > 0 ){
+			// pUpdateInverseGlobal();
+		// }
 		
 		// forward stage
 		targetPosition = params.goalPosition;
 		
 		for( j=pChainCount-1; j>=0; j-- ){
-// 			const decMatrix &invMatGlobal = pChain[ j ].GetInverseGlobalMatrix();
-// 			targetInBonePosition = invMatGlobal * targetPosition;
+			dearIKWorkState &iws = pChain[ j ];
 			
 			if( pAdjustOrientation && j == pChainCount - 1 ){
 				boneMatrix.SetFromQuaternion( goalOrientation );
 				
 			}else{
-				boneMatrix = pChain[ j ].GetGlobalMatrix();
-				
+				boneMatrix = iws.GetGlobalMatrix();
 				decQuaternion rotation;
-				if( pCalcRotation( params, targetPosition, pChain[ j ].GetGlobalEnd(),
-				boneMatrix.GetPosition(), rotationAxis, rotationAngle ) ){
+				
+				const bool hasRotation = pCalcRotation( params, targetPosition, iws.GetGlobalEnd(),
+					boneMatrix.GetPosition(), rotationAxis, rotationAngle );
+				
+#if 1
+				if( hasRotation ){
 					rotation.SetFromAxis( rotationAxis, rotationAngle );
-					
-					if( pChain[ j ].GetHasLimits() || pChain[ j ].GetHasDampening() ){
-						rotation = pApplyIKRestrictions ( j, boneMatrix, baseRot, baseInverseRot, rotation );
+					if( iws.GetHasDampening() || iws.GetHasLimits() ){
+						const decQuaternion globalRotation( boneMatrix.ToQuaternion() );
+						rotation = pGlobalToBoneLocalRotation( j, globalRotation * rotation, baseInverseRot );
+						if( iws.GetHasDampening() ){
+							rotation = pApplyIKResistance( j, globalRotation, baseInverseRot, rotation );
+						}
+						if( iws.GetHasLimits() ){
+							rotation = pApplyIKLimits( j, rotation );
+						}
+						rotation = pBoneLocalToGlobalRotation( j, globalRotation, baseRot, rotation );
 					}
 				}
 				
 				boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation );
+				
+#else
+				if( j < pChainCount - 1 ){
+					if( hasRotation ){
+						rotation.SetFromAxis( rotationAxis, rotationAngle );
+						
+						if( iws.GetHasDampening() ){
+							const decQuaternion globalRotation( boneMatrix.ToQuaternion() );
+							rotation = pGlobalToBoneLocalRotation( j, globalRotation * rotation, baseInverseRot );
+							rotation = pApplyIKResistance( j, globalRotation, baseInverseRot, rotation );
+							rotation = pBoneLocalToGlobalRotation( j, globalRotation, baseRot, rotation );
+						}
+						
+						boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation );
+					}
+					
+					dearIKWorkState &iws2 = pChain[ j + 1 ];
+					if( iws2.GetHasLimits() ){
+						iws.SetGlobalMatrix( boneMatrix );
+						iws.SetInverseGlobalMatrix( boneMatrix.QuickInvert() );
+						
+						const decQuaternion globalRotation( iws2.GetGlobalMatrix().ToQuaternion() );
+						rotation = pGlobalToBoneLocalRotation( j + 1, globalRotation, decQuaternion() );
+						rotation = pApplyIKLimits( j + 1, rotation );
+						rotation = pBoneLocalToGlobalRotation( j + 1, globalRotation, decQuaternion(), rotation );
+						
+						// the child bone has to stay where it is so apply the rotation to the
+						// current bone instead. this requires rotating the opposite direction
+						boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation.Conjugate() );
+					}
+					
+				}else if( hasRotation ){
+					if( iws.GetHasDampening() || iws.GetHasLimits() ){
+						const decQuaternion globalRotation( boneMatrix.ToQuaternion() );
+						rotation = pGlobalToBoneLocalRotation( j, globalRotation * rotation, baseInverseRot );
+						if( iws.GetHasDampening() ){
+							rotation = pApplyIKResistance( j, globalRotation, baseInverseRot, rotation );
+						}
+						if( iws.GetHasLimits() ){
+							rotation = pApplyIKLimits( j, rotation );
+						}
+						rotation = pBoneLocalToGlobalRotation( j, globalRotation, baseRot, rotation );
+					}
+					
+					boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation );
+				}
+#endif
 			}
 			
-			const decVector bonePosition( targetPosition
-				- boneMatrix.TransformNormal( pChain[ j ].GetEndPosition() ) );
+			const decVector bonePosition( targetPosition - boneMatrix.TransformNormal( iws.GetEndPosition() ) );
 			
 			boneMatrix.a14 = bonePosition.x;
 			boneMatrix.a24 = bonePosition.y;
 			boneMatrix.a34 = bonePosition.z;
-			pChain[ j ].SetGlobalMatrix( boneMatrix );
+			
+			iws.SetGlobalMatrix( boneMatrix );
+			if( params.hasIKLimits ){
+				iws.SetInverseGlobalMatrix( boneMatrix.QuickInvert() );
+			}
 			
 			targetPosition = bonePosition;
 		}
@@ -850,19 +910,29 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 		targetPosition = basePosition;
 		
 		for( j=0; j<pChainCount; j++ ){
+			dearIKWorkState &iws = pChain[ j ];
+			
 			if( pAdjustOrientation && j == pChainCount - 1 ){
 				boneMatrix.SetFromQuaternion( goalOrientation );
 				
 			}else{
-				boneMatrix = pChain[ j ].GetGlobalMatrix();
+				boneMatrix = iws.GetGlobalMatrix();
 				
 				decQuaternion rotation;
 				if( pCalcRotation( params, targetPosition, boneMatrix.GetPosition(),
-				pChain[ j ].GetGlobalEnd(), rotationAxis, rotationAngle ) ){
+				iws.GetGlobalEnd(), rotationAxis, rotationAngle ) ){
 					rotation.SetFromAxis( rotationAxis, rotationAngle );
 					
-					if( pChain[ j ].GetHasLimits() || pChain[ j ].GetHasDampening() ){
-						rotation = pApplyIKRestrictions ( j, boneMatrix, baseRot, baseInverseRot, rotation );
+					if( iws.GetHasDampening() || iws.GetHasLimits() ){
+						const decQuaternion globalRotation( boneMatrix.ToQuaternion() );
+						rotation = pGlobalToBoneLocalRotation( j, globalRotation * rotation, baseInverseRot );
+						if( iws.GetHasDampening() ){
+							rotation = pApplyIKResistance( j, globalRotation, baseInverseRot, rotation );
+						}
+						if( iws.GetHasLimits() ){
+							rotation = pApplyIKLimits( j, rotation );
+						}
+						rotation = pBoneLocalToGlobalRotation( j, globalRotation, baseRot, rotation );
 					}
 				}
 				
@@ -872,9 +942,13 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 			boneMatrix.a14 = targetPosition.x;
 			boneMatrix.a24 = targetPosition.y;
 			boneMatrix.a34 = targetPosition.z;
-			pChain[ j ].SetGlobalMatrix( boneMatrix );
 			
-			targetPosition = pChain[ j ].GetGlobalEnd();
+			iws.SetGlobalMatrix( boneMatrix );
+			if( params.hasIKLimits ){
+				iws.SetInverseGlobalMatrix( boneMatrix.QuickInvert() );
+			}
+			
+			targetPosition = iws.GetGlobalEnd();
 		}
 		
 		// finish step
@@ -957,10 +1031,98 @@ const decVector &bonePosition, decVector &rotationAxis, float &rotationAngle ){
 	return true;
 }
 
+decQuaternion dearRuleInverseKinematic::pGlobalToBoneLocalRotation( int index,
+const decQuaternion &globalRotation, const decQuaternion &baseInverseRotation ) const{
+	if( index == 0 ){
+		return globalRotation * baseInverseRotation;
+		
+	}else{
+		return globalRotation * pChain[ index - 1 ].GetInverseGlobalMatrix().ToQuaternion()
+			* pChain[ index ].GetInverseRigLocalRotation();
+	}
+}
+
+decQuaternion dearRuleInverseKinematic::pApplyIKResistance( int index,
+const decQuaternion &globalRotation, const decQuaternion &baseInverseRotation,
+const decQuaternion &rotation ) const{
+	const decQuaternion orgRotation( pGlobalToBoneLocalRotation( index, globalRotation, baseInverseRotation ) );
+	
+	decVector eulerDiff( ( rotation * orgRotation.Conjugate() ).GetEulerAngles() );
+	const decVector &dampening = pChain[ index ].GetDampening();
+	
+	eulerDiff.x *= dampening.x;
+	eulerDiff.y *= dampening.y;
+	eulerDiff.z *= dampening.z;
+	return decQuaternion::CreateFromEuler( eulerDiff ) * orgRotation;
+}
+
+decQuaternion dearRuleInverseKinematic::pApplyIKLimits( int index, const decQuaternion &rotation ) const{
+	const dearIKWorkState &ikws = pChain[ index ];
+	decQuaternion rotated( rotation * ikws.GetLimitZeroQuat() );
+	decVector eulerRotation( rotated.GetEulerAngles() );
+	
+	const decVector &lockedRotation = ikws.GetLockedRotation();
+	const decVector &limitsLower = ikws.GetLimitLower();
+	const decVector &limitsUpper = ikws.GetLimitUpper();
+	
+	switch( ikws.GetAxisTypeX() ){
+	case dearIKWorkState::eatLocked:
+		eulerRotation.x = lockedRotation.x;
+		break;
+		
+	case dearIKWorkState::eatLimited:
+		eulerRotation.x = decMath::clamp( eulerRotation.x, limitsLower.x, limitsUpper.x );
+		break;
+		
+	default:
+		break;
+	}
+	
+	switch( ikws.GetAxisTypeY() ){
+	case dearIKWorkState::eatLocked:
+		eulerRotation.y = lockedRotation.y;
+		break;
+		
+	case dearIKWorkState::eatLimited:
+		eulerRotation.y = decMath::clamp( eulerRotation.y, limitsLower.y, limitsUpper.y );
+		break;
+		
+	default:
+		break;
+	}
+	
+	switch( ikws.GetAxisTypeZ() ){
+	case dearIKWorkState::eatLocked:
+		eulerRotation.z = lockedRotation.z;
+		break;
+		
+	case dearIKWorkState::eatLimited:
+		eulerRotation.z = decMath::clamp( eulerRotation.z, limitsLower.z, limitsUpper.z );
+		break;
+		
+	default:
+		break;
+	}
+	
+	return decQuaternion::CreateFromEuler( eulerRotation ) * ikws.GetLimitZeroQuatInv();
+}
+
+decQuaternion dearRuleInverseKinematic::pBoneLocalToGlobalRotation( int index,
+const decQuaternion &globalRotation, const decQuaternion &baseRotation,
+const decQuaternion &rotation ) const{
+	if( index == 0 ){
+		return globalRotation.Conjugate() * rotation * baseRotation;
+		
+	}else{
+		return globalRotation.Conjugate() * rotation * pChain[ index ].GetRigLocalRotation()
+			* pChain[ index - 1 ].GetGlobalMatrix().ToQuaternion();
+	}
+}
+
 decQuaternion dearRuleInverseKinematic::pApplyIKRestrictions( int index,
 const decMatrix &globalMatrix, const decQuaternion &baseRotation,
-const decQuaternion &baseInverseRotation, const decQuaternion &rotation ){
-	decQuaternion boneLocalRot, boneLocalRotOrg, boneInvLocalRotOrg, parentRot;
+const decQuaternion &baseInverseRotation, const decQuaternion &rotation ) const{
+	decQuaternion boneLocalRot, boneLocalRotOrg, parentRot;
 	const decQuaternion globRot( globalMatrix.ToQuaternion() );
 	const dearIKWorkState &ikws = pChain[ index ];
 	
@@ -977,11 +1139,9 @@ const decQuaternion &baseInverseRotation, const decQuaternion &rotation ){
 		boneLocalRotOrg = globRot * invParentRot;
 	}
 	
-	boneInvLocalRotOrg = boneLocalRotOrg.Conjugate();
-	
 	// apply damping. this has to be done on the unclamped rig local orientation
 	if( ikws.GetHasDampening() ){
-		decVector eulerDiff( ( boneLocalRot * boneInvLocalRotOrg ).GetEulerAngles() );
+		decVector eulerDiff( ( boneLocalRot * boneLocalRotOrg.Conjugate() ).GetEulerAngles() );
 		const decVector &dampening = ikws.GetDampening();
 		
 		eulerDiff.x *= dampening.x;

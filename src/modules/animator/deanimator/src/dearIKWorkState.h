@@ -68,6 +68,8 @@ private:
 	decVector pEndPosition;
 	decQuaternion pRigLocalRot;
 	decQuaternion pInvRigLocalRot;
+	decQuaternion pOrgOrientation;
+	decQuaternion pInvOrgOrientation;
 	
 	
 	
@@ -188,6 +190,15 @@ public:
 	
 	/** Set rig local rotation. */
 	void SetRigLocalRotation( const decQuaternion &rotation );
+	
+	/** Orientation before IK is processed. */
+	inline const decQuaternion &GetOrgOrientation() const{ return pOrgOrientation; }
+	
+	/** Inverse orientation before IK is processed. */
+	inline const decQuaternion &GetInvOrgOrientation() const{ return pInvOrgOrientation; }
+	
+	/** Set orientation before IK is processed. */
+	void SetOrgOrientation( const decQuaternion &orientation );
 	/*@}*/
 };
 

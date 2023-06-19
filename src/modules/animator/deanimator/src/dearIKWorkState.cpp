@@ -135,3 +135,7 @@ void dearIKWorkState::SetRigLocalRotation( const decQuaternion &rotation ){
 	pRigLocalRot = rotation;
 	pInvRigLocalRot = rotation.Conjugate();
 }
+
+void dearIKWorkState::SetOrgOrientation( const decQuaternion &orientation ){
+	pOrgOrientation = orientation;
+}
