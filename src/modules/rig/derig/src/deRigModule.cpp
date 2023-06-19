@@ -1326,7 +1326,8 @@ void deRigModule::pWriteBone( decXmlWriter &writer, const deRig &rig, const deRi
 	const decVector &ikResistance = bone.GetIKResistance();
 	
 	if( ! ikLimitsUpper.IsZero() || ! ikResistance.IsZero()
-	|| ! ikLimitsLower.IsEqualTo( decVector( 360.0f, 360.0f, 360.0f ) ) ){
+	|| ! ikLimitsLower.IsEqualTo( decVector( 360.0f, 360.0f, 360.0f ) )
+	|| bone.GetIKLockedX() || bone.GetIKLockedY() || bone.GetIKLockedZ() ){
 		if( fabsf( ikLimitsLower.x - 360.0f ) > FLOAT_SAFE_EPSILON
 		|| fabsf( ikLimitsUpper.x ) > FLOAT_SAFE_EPSILON
 		|| fabsf( ikResistance.x ) > FLOAT_SAFE_EPSILON
