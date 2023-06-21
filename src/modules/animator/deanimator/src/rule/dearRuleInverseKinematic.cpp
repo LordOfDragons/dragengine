@@ -828,8 +828,14 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 		for( j=pChainCount-1; j>=0; j-- ){
 			dearIKWorkState &iws = pChain[ j ];
 			
+			
+			
+#ifdef FABRIK_MODIFIED
 			if( pAdjustOrientation && j == pChainCount - 1 ){
 				boneMatrix.SetFromQuaternion( goalOrientation );
+				if( params.hasIKLimits ){
+					iws.SetLastGlobalOrientation( goalOrientation );
+				}
 				
 			}else{
 				boneMatrix = iws.GetGlobalMatrix();
@@ -837,8 +843,6 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 				
 				const bool hasRotation = pCalcRotation( params, targetPosition, iws.GetGlobalEnd(),
 					boneMatrix.GetPosition(), rotationAxis, rotationAngle );
-				
-#ifdef FABRIK_MODIFIED
 				if( params.hasIKLimits ){
 					iws.SetLastGlobalOrientation( boneMatrix.ToQuaternion() );
 				}
@@ -907,25 +911,61 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 					rotation.SetFromAxis( rotationAxis, rotationAngle * scale );
 					boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation );
 				}
-				
+			}
+			
+			const decVector bonePosition( targetPosition - boneMatrix.TransformNormal( iws.GetEndPosition() ) );
+			
+			boneMatrix.a14 = bonePosition.x;
+			boneMatrix.a24 = bonePosition.y;
+			boneMatrix.a34 = bonePosition.z;
+			
+			iws.SetGlobalMatrix( boneMatrix );
+			if( params.hasIKLimits ){
+				iws.SetInverseGlobalMatrix( boneMatrix.QuickInvert() );
+			}
+			
+			targetPosition = bonePosition;
+			
 #elif defined FABRIK_MODIFIED_2
+			const bool adjustOrientation = pAdjustOrientation && j == pChainCount - 1;
+			
+			if( adjustOrientation ){
+				boneMatrix.SetFromQuaternion( goalOrientation );
+				if( params.hasIKLimits ){
+					iws.SetLastGlobalOrientation( goalOrientation );
+				}
+				
+			}else{
+				boneMatrix = iws.GetGlobalMatrix();
 				if( params.hasIKLimits ){
 					iws.SetLastGlobalOrientation( boneMatrix.ToQuaternion() );
 				}
 				
+				const bool hasRotation = pCalcRotation( params, targetPosition, iws.GetGlobalEnd(),
+					boneMatrix.GetPosition(), rotationAxis, rotationAngle );
 				if( hasRotation ){
-					rotation.SetFromAxis( rotationAxis, rotationAngle * scale );
-					boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation );
+					boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion()
+						* decQuaternion::CreateFromAxis( rotationAxis, rotationAngle * scale ) );
 				}
-				
+			}
+			
+			const decVector bonePosition( targetPosition - boneMatrix.TransformNormal( iws.GetEndPosition() ) );
+			boneMatrix.a14 = bonePosition.x;
+			boneMatrix.a24 = bonePosition.y;
+			boneMatrix.a34 = bonePosition.z;
+			
+			iws.SetGlobalMatrix( boneMatrix );
+			if( params.hasIKLimits ){
+				iws.SetInverseGlobalMatrix( boneMatrix.QuickInvert() );
+			}
+			
+			targetPosition = bonePosition;
+			
+			if( ! adjustOrientation ){
+				decQuaternion rotation;
 				if( j < pChainCount - 1 ){
 					dearIKWorkState &iws2 = pChain[ j + 1 ];
 					if( iws2.GetHasDampening() || iws2.GetHasLimits() ){
-						// update the global matrices of this bone. this is required for the
-						// calculations below requring the parent bone to be used
-						iws.SetGlobalMatrix( boneMatrix );
-						iws.SetInverseGlobalMatrix( boneMatrix.QuickInvert() );
-						
 						// calculate the linked orientation of the child bone
 						const decQuaternion globalOrientation( iws2.GetGlobalMatrix().ToQuaternion() );
 						
@@ -987,8 +1027,18 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 						// requires less steps since pose is kept close to good solutions
 					}
 				}
-				
+			}
+		
 #else
+			if( pAdjustOrientation && j == pChainCount - 1 ){
+				boneMatrix.SetFromQuaternion( goalOrientation );
+				
+			}else{
+				boneMatrix = iws.GetGlobalMatrix();
+				decQuaternion rotation;
+				
+				const bool hasRotation = pCalcRotation( params, targetPosition, iws.GetGlobalEnd(),
+					boneMatrix.GetPosition(), rotationAxis, rotationAngle );
 				if( hasRotation ){
 					rotation.SetFromAxis( rotationAxis, rotationAngle );
 					if( iws.GetHasDampening() || iws.GetHasLimits() ){
@@ -1010,7 +1060,6 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 				}
 				
 				boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation );
-#endif
 			}
 			
 			const decVector bonePosition( targetPosition - boneMatrix.TransformNormal( iws.GetEndPosition() ) );
@@ -1025,6 +1074,8 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 			}
 			
 			targetPosition = bonePosition;
+			
+#endif
 		}
 		
 #if defined FABRIK_MODIFIED && defined FABRIK_MODIFIED_FIX
