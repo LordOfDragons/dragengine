@@ -127,6 +127,8 @@ private:
 	bool pCalcRotation( const sParameters &params, const decVector &goalPosition,
 		const decVector &tipPosition, const decVector &bonePosition,
 		decVector &rotationAxis, float &rotationAngle );
+	decMatrix pGlobalRotationMatrix( const decVector &pivot, const decQuaternion &rotation ) const;
+	decMatrix pGlobalRotationMatrix( const decVector &pivot, const decVector &axis, float angle ) const;
 	
 	decQuaternion pGlobalOrientationToBoneOrientation( int index,
 		const decQuaternion &globalOrientation, const decQuaternion &baseInverseRotation ) const;

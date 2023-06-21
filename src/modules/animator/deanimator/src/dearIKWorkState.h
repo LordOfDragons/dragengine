@@ -105,6 +105,9 @@ public:
 	/** Set inverse global matrix. */
 	void SetInverseGlobalMatrix( const decMatrix &matrix );
 	
+	/** Transform global matrix and optionally update inverse. */
+	void TransformGlobalMatrix( const decMatrix &matrix, bool updateInverse );
+	
 	
 	
 	/** X axis type. */

@@ -53,7 +53,10 @@ dearIKWorkState::~dearIKWorkState(){
 
 
 
-// Management
+// Management	
+	/** Transform global matrix and update inverse global matrix. */
+	void TransformGlobalMatrixInverse( const decMatrix &matrix );
+
 ///////////////
 
 void dearIKWorkState::SetBoneStateIndex( int index ){
@@ -66,6 +69,13 @@ void dearIKWorkState::SetGlobalMatrix( const decMatrix &matrix ){
 
 void dearIKWorkState::SetInverseGlobalMatrix( const decMatrix &matrix ){
 	pInvGlobalMatrix = matrix;
+}
+
+void dearIKWorkState::TransformGlobalMatrix( const decMatrix &matrix, bool updateInverse ){
+	pGlobalMatrix = pGlobalMatrix.QuickMultiply( matrix );
+	if( updateInverse ){
+		pInvGlobalMatrix = pGlobalMatrix.QuickInvert();
+	}
 }
 
 void dearIKWorkState::SetAxisTypeX( eAxisTypes type ){
