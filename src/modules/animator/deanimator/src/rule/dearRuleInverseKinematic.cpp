@@ -779,7 +779,7 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 
 // #define FABRIK_MODIFIED
 // #define FABRIK_MODIFIED_FIX
-#define FABRIK_MODIFIED_2
+// #define FABRIK_MODIFIED_2
 
 void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const sParameters &params ){
 	const int maxStepCount = 500; //50;
@@ -809,7 +809,10 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 	decMatrix boneMatrix, matrixRotation;
 	/*const*/ float scale = 1.0f;
 	float rotationAngle;
-	int i, j, k;
+	int i, j;
+#ifdef FABRIK_MODIFIED_2
+	int k;
+#endif
 	
 	for( i=0; i<maxStepCount; i++ ){
 		// if( params.hasIKLimits && i > 0 ){
@@ -866,7 +869,7 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 								// 	orientation.GetEulerAngles().x * RAD2DEG, orientation.GetEulerAngles().y * RAD2DEG, orientation.GetEulerAngles().z * RAD2DEG);
 						if( iws2.GetHasDampening() ){
 							orientation = pApplyIKResistance( j + 1,
-								iws2.GetLastGlobalOrientation(), baseInverseRot, orientation );
+								iws2.GetLastGlobalOrientation(), decQuaternion(), orientation );
 						}
 						if( iws2.GetHasLimits() ){
 							orientation = pApplyIKLimits( j + 1, orientation );
@@ -910,12 +913,12 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 					iws.SetLastGlobalOrientation( boneMatrix.ToQuaternion() );
 				}
 				
+				if( hasRotation ){
+					rotation.SetFromAxis( rotationAxis, rotationAngle * scale );
+					boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation );
+				}
+				
 				if( j < pChainCount - 1 ){
-					if( hasRotation ){
-						rotation.SetFromAxis( rotationAxis, rotationAngle * scale );
-						boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation );
-					}
-					
 					dearIKWorkState &iws2 = pChain[ j + 1 ];
 					if( iws2.GetHasDampening() || iws2.GetHasLimits() ){
 						// update the global matrices of this bone. this is required for the
@@ -930,13 +933,15 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 							j + 1, globalOrientation, decQuaternion() ) );
 						if( iws2.GetHasDampening() ){
 							orientation = pApplyIKResistance( j + 1,
-								iws2.GetLastGlobalOrientation(), baseInverseRot, orientation );
+								iws2.GetLastGlobalOrientation(), decQuaternion(), orientation );
 						}
 						if( iws2.GetHasLimits() ){
 							orientation = pApplyIKLimits( j + 1, orientation );
 						}
 						orientation = pBoneOrientationToGlobalOrientation(
 							j + 1, decQuaternion(), orientation );
+						
+						rotation = globalOrientation.Conjugate() * orientation;
 						
 						// according to the original fabrik algorithm the child bone has to stay
 						// at the same position and orientation and the current bone has to be
@@ -949,8 +954,7 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 						// unfavorable way violating the constraint. to solve this issue the child
 						// bone has to be rotated to satisfy the constraint.
 						matrixRotation = pGlobalRotationMatrix(
-							iws2.GetGlobalMatrix().GetPosition(),
-							globalOrientation.Conjugate() * orientation ); 
+							iws2.GetGlobalMatrix().GetPosition(), rotation ); 
 						
 						for( k=j+1; k<pChainCount; k++ ){
 							pChain[ k ].TransformGlobalMatrix( matrixRotation, false );
@@ -964,7 +968,7 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 						// from the current bone position to the target but at a different
 						// distance. this is fine enough since upcoming steps can now improve
 						// the result without violating the limits that hard.
-						rotationPivot = iws.GetGlobalMatrix().GetPosition();
+						rotationPivot = boneMatrix.GetPosition();
 						
 						if( pCalcRotation( params, params.goalPosition, ikwTip.GetGlobalEnd(),
 						rotationPivot, rotationAxis, rotationAngle ) ){
@@ -982,10 +986,6 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 						// this is more expensive than regular fabrik but avoids explosion and
 						// requires less steps since pose is kept close to good solutions
 					}
-					
-				}else if( hasRotation ){
-					rotation.SetFromAxis( rotationAxis, rotationAngle * scale );
-					boneMatrix.SetFromQuaternion( boneMatrix.ToQuaternion() * rotation );
 				}
 				
 #else
@@ -1195,7 +1195,7 @@ const decQuaternion &rotation ) const{
 decMatrix dearRuleInverseKinematic::pGlobalRotationMatrix( const decVector &pivot,
 const decVector &axis, float angle ) const{
 	return decMatrix::CreateTranslation( -pivot ).
-		QuickMultiply( decMatrix::CreateRotationAxis( axis, -angle ) ).
+		QuickMultiply( decMatrix::CreateRotationAxis( axis, angle ) ).
 		QuickMultiply( decMatrix::CreateTranslation( pivot ) ); 
 }
 
