@@ -52,7 +52,8 @@ pCurValue( 0.0f ),
 pClamp( true ),
 pFrozen( false ),
 pLocoAttr( aeAnimatorLocomotion::eaNone ),
-pLocoLeg( 0 ){
+pLocoLeg( 0 ),
+pVectorSimulation( evsNone ){
 }
 
 aeController::aeController( const aeController &copy ) :
@@ -65,7 +66,8 @@ pCurValue( copy.pCurValue ),
 pClamp( copy.pClamp ),
 pFrozen( copy.pFrozen ),
 pLocoAttr( copy.pLocoAttr ),
-pLocoLeg( copy.pLocoLeg ){
+pLocoLeg( copy.pLocoLeg ),
+pVectorSimulation( copy.pVectorSimulation ){
 }
 
 aeController::~aeController(){
@@ -263,7 +265,7 @@ void aeController::SetVector( const decVector &vector ){
 void aeController::SetLocomotionAttribute( int attribute ){
 	if( attribute != pLocoAttr ){
 		pLocoAttr = attribute;
-			
+		
 		if( pAnimator ){
 			pAnimator->NotifyControllerChanged( this );
 		}
@@ -272,6 +274,18 @@ void aeController::SetLocomotionAttribute( int attribute ){
 
 void aeController::SetLocomotionLeg( int leg ){
 	pLocoLeg = leg;
+}
+
+void aeController::SetVectorSimulation( eVectorSimulation simulation ){
+	if( simulation == pVectorSimulation ){
+		return;
+	}
+	
+	pVectorSimulation = simulation;
+	
+	if( pAnimator ){
+		pAnimator->NotifyControllerChanged( this );
+	}
 }
 
 

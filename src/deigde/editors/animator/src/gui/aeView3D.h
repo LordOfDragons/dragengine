@@ -25,6 +25,7 @@
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseKeyListenerReference.h>
 #include <deigde/gui/event/igdeMouseCameraListenerReference.h>
+#include <deigde/gui/gizmo/igdeGizmoManager.h>
 #include <deigde/undo/igdeUndoReference.h>
 
 
@@ -45,6 +46,9 @@ private:
 	igdeMouseCameraListenerReference pCameraInteraction;
 	igdeMouseKeyListenerReference pLocomotionInteraction;
 	igdeMouseKeyListenerReference pWakeboardInteraction;
+	igdeMouseKeyListenerReference pEditorInteraction;
+	
+	igdeGizmoManager pGizmos;
 	
 	
 	
@@ -93,6 +97,9 @@ public:
 	
 	/** Create canvas. */
 	virtual void CreateCanvas();
+	
+	/** Gizmos. */
+	inline igdeGizmoManager &GetGizoms(){ return pGizmos; }
 	/*@}*/
 };
 

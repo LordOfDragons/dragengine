@@ -40,9 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeCLClosestHit::aeCLClosestHit(){
-	pHitDistance = 0.0f;
-	pHasHit = false;
+aeCLClosestHit::aeCLClosestHit() :
+pHitDistance( 0.0f ),
+pHasHit( false ),
+pHitCollider( nullptr ),
+pHitShape( -1 ){
 }
 
 aeCLClosestHit::~aeCLClosestHit(){
@@ -56,6 +58,8 @@ aeCLClosestHit::~aeCLClosestHit(){
 void aeCLClosestHit::Reset(){
 	pHitDistance = 0.0f;
 	pHasHit = false;
+	pHitCollider = nullptr;
+	pHitShape = -1;
 }
 
 
@@ -76,10 +80,14 @@ void aeCLClosestHit::CollisionResponse( deCollider *owner, deCollisionInfo *info
 	}
 	*/
 	
-	if( pHasHit && distance >= pHitDistance ) return;
+	if( pHasHit && distance >= pHitDistance ){
+		return;
+	}
 	
 	pHitDistance = distance;
 	pHitNormal = info->GetNormal();
+	pHitCollider = info->GetCollider();
+	pHitShape = info->GetShape();
 	
 	pHasHit = true;
 }

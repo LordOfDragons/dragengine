@@ -232,12 +232,16 @@ igdeIcon *igdeEnvironmentIGDE::GetStockIcon( eStockIcons icon ){
 	return pWindowMain->GetStockIcon( icon );
 }
 
-deSkin::Ref igdeEnvironmentIGDE::GetStockSkin( igdeEnvironment::eStockSkins skin ){
+deSkin::Ref igdeEnvironmentIGDE::GetStockSkin( eStockSkins skin ){
 	return pWindowMain->GetStockSkin( skin );
 }
 
-deRig::Ref igdeEnvironmentIGDE::GetStockRig( igdeEnvironment::eStockRigs rig ){
+deRig::Ref igdeEnvironmentIGDE::GetStockRig( eStockRigs rig ){
 	return pWindowMain->GetStockRig( rig );
+}
+
+deModel::Ref igdeEnvironmentIGDE::GetStockModel( eStockModels model ){
+	return pWindowMain->GetStockModel( model );
 }
 
 deLogger *igdeEnvironmentIGDE::GetLogger(){

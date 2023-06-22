@@ -79,14 +79,21 @@ public:
 	enum eCollisionLayers{
 		/** Non-AI Elements blocked by walls. */
 		eclTerrain,
+		
 		/** Non-AI Elements ignoring walls. */
 		eclElements,
+		
 		/** Proxies. */
 		eclProxies,
+		
 		/** AI Elements ignoring walls. */
 		eclAI,
+		
 		/** Everything that actors can stand upon. */
 		eclGround,
+		
+		/** Gizmos. */
+		eclGizmo
 	};
 	
 private:

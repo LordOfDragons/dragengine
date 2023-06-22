@@ -122,8 +122,11 @@ private:
 	static const int pStockSkinCount = igdeEnvironment::essEditRimOutline + 1;
 	deSkin::Ref pStockSkins[ pStockSkinCount ];
 	
-	static const int pStockRigCount = igdeEnvironment::esrGhostCollision + 1;
+	static const int pStockRigCount = igdeEnvironment::esrGizmoMove + 1;
 	deRig::Ref pStockRigs[ pStockRigCount ];
+	
+	static const int pStockModelCount = igdeEnvironment::esmGizmoMove + 1;
+	deModel::Ref pStockModels[ pStockModelCount ];
 	
 	igdeActionReference pActionGameNew;
 	igdeActionReference pActionGameOpen;
@@ -430,6 +433,7 @@ public:
 	igdeIcon *GetStockIcon( igdeEnvironment::eStockIcons icon ) const;
 	const deSkin::Ref &GetStockSkin( igdeEnvironment::eStockSkins skin ) const;
 	const deRig::Ref &GetStockRig( igdeEnvironment::eStockRigs rig ) const;
+	const deModel::Ref &GetStockModel( igdeEnvironment::eStockModels model ) const;
 	/*@}*/
 	
 	
@@ -469,6 +473,7 @@ private:
 	void pLoadStockIcons();
 	void pLoadStockSkins();
 	void pLoadStockRigs();
+	void pLoadStockModels();
 	void pCreateGuiThemes();
 	void pLoadIGDEGameDefinition();
 	void pAddIGDEEngineModules();

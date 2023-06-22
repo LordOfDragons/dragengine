@@ -780,6 +780,13 @@ void dearRuleInverseKinematic::pSolveCCD( dearBoneStateList &stalist, const sPar
 // #define FABRIK_MODIFIED
 // #define FABRIK_MODIFIED_FIX
 // #define FABRIK_MODIFIED_2
+// #define FABRIK_SLOW_APPROACH
+
+// modified2: works in some cases, fails with others. ik resistance not applying for some reason
+// modified+fix: not working well at all
+// modified: not working well at all
+// unmodified: still works best although calculation in the forward phase is wrong
+// slow approach: not really help much beyond unmodified even wors in some cases
 
 void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const sParameters &params ){
 	const int maxStepCount = 500; //50;
@@ -800,10 +807,10 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 	
 	const decQuaternion goalOrientation( params.localOrientation * params.goalOrientation );
 	
-	dearIKWorkState &ikwTip = pChain[ pChainCount - 1 ];
+	dearIKWorkState &iwsTip = pChain[ pChainCount - 1 ];
 	
 	const decVector basePosition( pChain[ 0 ].GetGlobalMatrix().GetPosition() );
-	decVector lastEnd( ikwTip.GetGlobalEnd() );
+	decVector lastEnd( iwsTip.GetGlobalEnd() );
 	
 	decVector targetPosition, targetInBonePosition, rotationAxis, rotationPivot;
 	decMatrix boneMatrix, matrixRotation;
@@ -823,7 +830,12 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 		scale = 1.0f;
 		
 		// forward stage
+#ifdef FABRIK_SLOW_APPROACH
+		targetPosition = iwsTip.GetEndPosition().Mix( params.goalPosition,
+			decMath::linearStep( ( float )i, 0.0f, 10.0f, 0.25f, 1.0f ) );
+#else
 		targetPosition = params.goalPosition;
+#endif
 		
 		for( j=pChainCount-1; j>=0; j-- ){
 			dearIKWorkState &iws = pChain[ j ];
@@ -1010,7 +1022,7 @@ void dearRuleInverseKinematic::pSolveFabrik( dearBoneStateList &stalist, const s
 						// the result without violating the limits that hard.
 						rotationPivot = boneMatrix.GetPosition();
 						
-						if( pCalcRotation( params, params.goalPosition, ikwTip.GetGlobalEnd(),
+						if( pCalcRotation( params, params.goalPosition, iwsTip.GetGlobalEnd(),
 						rotationPivot, rotationAxis, rotationAngle ) ){
 							matrixRotation = pGlobalRotationMatrix(
 								rotationPivot, rotationAxis, -rotationAngle ); 

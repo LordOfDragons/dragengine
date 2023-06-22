@@ -27,9 +27,6 @@
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 #include <dragengine/common/math/decMath.h>
 
-// predefinitions
-
-
 
 /**
  * Closest Hit Visitor.
@@ -41,6 +38,9 @@ private:
 	float pHitDistance;
 	decVector pHitNormal;
 	bool pHasHit;
+	deCollider *pHitCollider;
+	int pHitShape;
+	
 	
 public:
 	/** @name Constructors and Destructors */
@@ -62,6 +62,12 @@ public:
 	inline float GetHitDistance() const{ return pHitDistance; }
 	/** Retrieves the hit normal. */
 	inline const decVector &GetHitNormal() const{ return pHitNormal; }
+	
+	/** Collider or nullptr. */
+	inline deCollider *GetHitCollider() const{ return pHitCollider; }
+	
+	/** Hit shape index or -1. */
+	inline int GetHitShape() const{ return pHitShape; }
 	/*@}*/
 	
 	/** @name Notifications */

@@ -74,6 +74,9 @@ public:
 	/** \brief Stock rig. */
 	virtual deRig::Ref GetStockRig( eStockRigs rig );
 	
+	/** \brief Stock model. */
+	virtual deModel::Ref GetStockModel( eStockModels model );
+	
 	/**
 	 * \brief Stock skin.
 	 * 

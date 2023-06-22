@@ -44,6 +44,12 @@ class aeController : public deObject{
 public:
 	typedef deTObjectReference<aeController> Ref;
 	
+	enum eVectorSimulation{
+		evsNone,
+		evsPosition,
+		evsRotation
+	};
+	
 	
 private:
 	aeAnimator *pAnimator;
@@ -59,6 +65,8 @@ private:
 	decVector pVector;
 	int pLocoAttr;
 	int pLocoLeg;
+	eVectorSimulation pVectorSimulation;
+	
 	
 public:
 	/** @name Constructors and Destructors */
@@ -132,6 +140,12 @@ public:
 	inline int GetLocomotionLeg() const{ return pLocoLeg; }
 	/** Sets the locomotion leg this target is controlled by. */
 	void SetLocomotionLeg( int leg );
+	
+	/** Vector simulation. */
+	inline eVectorSimulation GetVectorSimulation() const{ return pVectorSimulation; }
+	
+	/** Set vector simulation. */
+	void SetVectorSimulation( eVectorSimulation simulation );
 	/*@}*/
 	
 private:
