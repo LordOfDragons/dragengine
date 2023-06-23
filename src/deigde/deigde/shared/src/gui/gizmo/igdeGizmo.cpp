@@ -82,6 +82,9 @@ pIsEditing( false )
 }
 
 igdeGizmo::~igdeGizmo(){
+	if( pCollider ){
+		pEnvironment.SetColliderUserPointer( pCollider, nullptr );
+	}
 }
 
 
@@ -200,6 +203,10 @@ void igdeGizmo::SetCollisionFilter( const decCollisionFilter &filter ){
 	pCollider->SetCollisionFilter( filter );
 }
 
+void igdeGizmo::SetColliderUserPointer( void *userPointer ){
+	pEnvironment.SetColliderUserPointer( pCollider, userPointer );
+}
+
 bool igdeGizmo::GetVisible() const{
 	return pDebugDrawer->GetVisible();
 }
@@ -251,17 +258,17 @@ decDMatrix igdeGizmo::GetMatrix() const{
 ////////////////
 
 bool igdeGizmo::StartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-const decDMatrix &viewMatrix, const deCollider *hitCollider, int hitShape, double hitDistance ){
-	if( pCollider != hitCollider || hitShape == -1 ){
+const decDMatrix &viewMatrix, double distance, int shape ){
+	if( shape == -1 ){
 		return false;
 	}
 	
-	const decString name( GetRigShapeName( hitShape ) );
+	const decString name( GetRigShapeName( shape ) );
 	if( name.IsEmpty() ){
 		return false;
 	}
 	
-	const decDVector hitPoint( rayOrigin + rayDirection * hitDistance );
+	const decDVector hitPoint( rayOrigin + rayDirection * distance );
 	
 	if( ! OnStartEditing( rayOrigin, rayDirection, viewMatrix, hitPoint, name ) ){
 		return false;

@@ -93,7 +93,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGizmoMove();
+	virtual ~igdeGizmoMove() override;
 	/*@}*/
 	
 	
@@ -124,7 +124,7 @@ public:
 	 * 
 	 * Default implementation applies no limits.
 	 */
-	decDVector LimitPosition( const decDVector &position );
+	virtual decDVector LimitPosition( const decDVector &position );
 	/*@}*/
 	
 	
@@ -155,7 +155,7 @@ protected:
 	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
 	 * \param[in] viewMatrix View oriented matrix.
 	 */
-	bool OnStartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
+	virtual bool OnStartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
 		const decDMatrix &viewMatrix, const decDVector &hitPoint,
 		const decString &shapeName ) override;
 	
@@ -168,7 +168,7 @@ protected:
 	 * \param[in] rayDirection Direction of ray (including length).
 	 * \param[in] viewMatrix View oriented matrix.
 	 */
-	void OnUpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
+	virtual void OnUpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
 		const decDMatrix &viewMatrix ) override;
 	
 	/**
@@ -178,14 +178,14 @@ protected:
 	 * 
 	 * \param[in] elapsed Elapsed time.
 	 */
-	void OnFrameUpdateEditing( float elapsed ) override;
+	virtual void OnFrameUpdateEditing( float elapsed ) override;
 	
 	/**
 	 * \brief Stop editing.
 	 * 
 	 * Called by StopEditing() after a prior to an OnStartEditing() call returning true.
 	 */
-	void OnStopEditing() override;
+	virtual void OnStopEditing() override;
 };
 
 #endif

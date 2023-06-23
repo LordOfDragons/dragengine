@@ -31,6 +31,7 @@
 #include "../animator/wakeboard/aeWakeboard.h"
 #include "../configuration/aeConfiguration.h"
 #include "../visitors/aeCLClosestHit.h"
+#include "../visitors/aeElementVisitor.h"
 
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -303,9 +304,12 @@ public:
 				return;
 			}
 			
-			if( pView.GetGizoms().StartEditing( rayPosition, decDVector( rayDirection ), viewMatrix,
-			visitor.GetHitCollider(), visitor.GetHitShape(), ( double )visitor.GetHitDistance() ) ){
-				return;
+			visitor.IdentifyHitElement( pView.GetEnvironment() );
+			
+			if( visitor.GetHitGizmo() ){
+				pView.GetGizoms().StartEditing( visitor.GetHitGizmo(), rayPosition,
+				decDVector( rayDirection ), viewMatrix, ( double )visitor.GetHitDistance(),
+				visitor.GetHitShape() );
 			}
 			} break;
 			

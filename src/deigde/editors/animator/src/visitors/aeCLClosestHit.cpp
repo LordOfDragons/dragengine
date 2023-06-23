@@ -24,6 +24,9 @@
 #include <string.h>
 
 #include "aeCLClosestHit.h"
+#include "aeElementVisitable.h"
+
+#include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/resources/collider/deCollider.h>
@@ -44,7 +47,8 @@ aeCLClosestHit::aeCLClosestHit() :
 pHitDistance( 0.0f ),
 pHasHit( false ),
 pHitCollider( nullptr ),
-pHitShape( -1 ){
+pHitShape( -1 ),
+pHitGizmo( nullptr ){
 }
 
 aeCLClosestHit::~aeCLClosestHit(){
@@ -60,6 +64,18 @@ void aeCLClosestHit::Reset(){
 	pHasHit = false;
 	pHitCollider = nullptr;
 	pHitShape = -1;
+	pHitGizmo = nullptr;
+}
+
+void aeCLClosestHit::IdentifyHitElement( igdeEnvironment &environment ){
+	if( ! pHitCollider ){
+		return;
+	}
+	
+	aeElementVisitable * const visitable = ( aeElementVisitable* )environment.GetColliderUserPointer( pHitCollider );
+	if( visitable ){
+		visitable->visitElement( *this );
+	}
 }
 
 
@@ -70,16 +86,6 @@ void aeCLClosestHit::Reset(){
 void aeCLClosestHit::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 	float distance = info->GetDistance();
 	
-	/*
-	if( info->GetHTSector() ){
-		printf( "hit height terrain: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0 );
-	}else if( info->GetCollider() ){
-		printf( "hit collider: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0 );
-	}else{
-		printf( "hit something else: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0 );
-	}
-	*/
-	
 	if( pHasHit && distance >= pHitDistance ){
 		return;
 	}
@@ -88,7 +94,6 @@ void aeCLClosestHit::CollisionResponse( deCollider *owner, deCollisionInfo *info
 	pHitNormal = info->GetNormal();
 	pHitCollider = info->GetCollider();
 	pHitShape = info->GetShape();
-	
 	pHasHit = true;
 }
 
@@ -97,4 +102,13 @@ bool aeCLClosestHit::CanHitCollider( deCollider *owner, deCollider *collider ){
 }
 
 void aeCLClosestHit::ColliderChanged( deCollider *owner ){
+}
+
+
+
+// Visiting
+/////////////
+
+void aeCLClosestHit::visitGizmo( igdeGizmo *gizmo ){
+	pHitGizmo = gizmo;
 }

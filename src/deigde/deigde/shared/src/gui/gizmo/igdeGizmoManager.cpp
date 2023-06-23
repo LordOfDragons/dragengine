@@ -21,7 +21,6 @@
 
 #include <stdlib.h>
 
-#include "igdeGizmo.h"
 #include "igdeGizmoManager.h"
 
 #include <dragengine/common/exceptions.h>
@@ -35,8 +34,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGizmoManager::igdeGizmoManager() :
-pEditingGizmo( nullptr ){
+igdeGizmoManager::igdeGizmoManager(){
 }
 
 igdeGizmoManager::~igdeGizmoManager(){
@@ -48,34 +46,15 @@ igdeGizmoManager::~igdeGizmoManager(){
 // Management
 ///////////////
 
-void igdeGizmoManager::Add( igdeGizmo *gizmo ){
-	DEASSERT_NOTNULL( gizmo )
-	pGizmos.Add( gizmo );
-}
-
-void igdeGizmoManager::Remove( igdeGizmo *gizmo ){
+bool igdeGizmoManager::StartEditing( igdeGizmo *gizmo, const decDVector &rayOrigin,
+const decDVector &rayDirection, const decDMatrix &viewMatrix, double distance, int shape ){
 	DEASSERT_NOTNULL( gizmo )
 	
-	if( pEditingGizmo == gizmo ){
-		StopEditing();
-	}
-	
-	pGizmos.Remove( gizmo );
-}
-
-bool igdeGizmoManager::StartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-const decDMatrix &viewMatrix, const deCollider *hitCollider, int hitShape, double hitDistance ){
 	StopEditing();
 	
-	const int count = pGizmos.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		igdeGizmo * const gizmo = ( igdeGizmo* )pGizmos.GetAt( i );
-		if( gizmo->StartEditing( rayOrigin, rayDirection, viewMatrix, hitCollider, hitShape, hitDistance ) ){
-			pEditingGizmo = gizmo;
-			return true;
-		}
+	if( gizmo->StartEditing( rayOrigin, rayDirection, viewMatrix, distance, shape ) ){
+		pEditingGizmo = gizmo;
+		return true;
 	}
 	
 	return false;

@@ -326,68 +326,48 @@ void igdeEnvironmentIGDE::ActivateEditor( igdeEditorModule *editor ){
 
 void igdeEnvironmentIGDE::SetColliderDelegee( deCollider *collider,
 deBaseScriptingCollider *delegee ){
-	if( ! collider ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( collider )
 	
 	igdeSMCollider * const peer = ( igdeSMCollider* )collider->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	peer->SetDelegee( delegee );
 }
 
 void *igdeEnvironmentIGDE::GetColliderUserPointer( deCollider *collider ){
-	if( ! collider ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( collider )
 	
 	const igdeSMCollider * const peer = ( const igdeSMCollider * )collider->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	return peer->GetUserPointer();
 }
 
 void igdeEnvironmentIGDE::SetColliderUserPointer( deCollider *collider, void *userPointer ){
-	if( ! collider ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( collider )
 	
 	igdeSMCollider * const peer = ( igdeSMCollider* )collider->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	peer->SetUserPointer( userPointer );
 }
 
 void igdeEnvironmentIGDE::SetTouchSensorDelegee( deTouchSensor *touchSensor,
 deBaseScriptingTouchSensor *delegee ){
-	if( ! touchSensor ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( touchSensor )
 	
 	igdeSMTouchSensor * const peer = ( igdeSMTouchSensor* )touchSensor->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	peer->SetDelegee( delegee );
 }
 
 void igdeEnvironmentIGDE::SetPropFieldDelegee( dePropField *propField,
 deBaseScriptingPropField *delegee ){
-	if( ! propField ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( propField )
 	
 	igdeSMPropField * const peer = ( igdeSMPropField* )propField->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	peer->SetDelegee( delegee );
 }

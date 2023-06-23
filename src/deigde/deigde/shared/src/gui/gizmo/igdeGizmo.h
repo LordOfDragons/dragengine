@@ -80,7 +80,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGizmo();
+	virtual ~igdeGizmo() override;
 	/*@}*/
 	
 	
@@ -134,6 +134,9 @@ public:
 	/** \brief Set collision filter. */
 	void SetCollisionFilter( const decCollisionFilter &filter );
 	
+	/** \brief Set collider user pointer. */
+	void SetColliderUserPointer( void *userPointer );
+	
 	/** \brief Gizmo is visible. */
 	bool GetVisible() const;
 	
@@ -171,18 +174,18 @@ public:
 	/** \name Interaction */
 	/*@{*/
 	/**
-	 * \brief Start editing if collision matches gizmo collider.
+	 * \brief Start editing.
 	 * 
-	 * If gizmo started editing true is returned.
+	 * If gizmo started editing true is returned. If editing can not be started false is returned.
 	 * 
 	 * \param[in] rayOrigin Origin of ray hitting gizmo.
 	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
 	 * \param[in] viewMatrix View oriented matrix.
-	 * \param[in] info Collision information.
+	 * \param[in] distance Distance from 0 to 1 along rayDirection up to hit point.
+	 * \param[in] shape Index of shape hit by ray or -1.
 	 */
 	bool StartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, const deCollider *hitCollider,
-		int hitShape, double hitDistance );
+		const decDMatrix &viewMatrix, double distance, int shape );
 	
 	/**
 	 * \brief Update editing.

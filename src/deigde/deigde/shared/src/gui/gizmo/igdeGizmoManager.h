@@ -22,11 +22,9 @@
 #ifndef _IGDEGIZMOMANAGER_H_
 #define _IGDEGIZMOMANAGER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "igdeGizmo.h"
 
-class igdeGizmo;
 class deWorld;
-class deCollider;
 
 
 /**
@@ -38,8 +36,7 @@ class deCollider;
  */
 class DE_DLL_EXPORT igdeGizmoManager{
 private:
-	decObjectOrderedSet pGizmos;
-	igdeGizmo *pEditingGizmo;
+	igdeGizmo::Ref pEditingGizmo;
 	
 	
 	
@@ -58,14 +55,8 @@ public:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Add gizmo. */
-	void Add( igdeGizmo *gizmo );
-	
-	/** \brief Remove gizmo. */
-	void Remove( igdeGizmo *gizmo );
-	
 	/**
-	 * \brief Cast ray and start editing gizmo if hit.
+	 * \brief Start editing gizmo.
 	 * 
 	 * If editing started true is returned. Caller has to grab input on affected widget
 	 * or otherwise ensure user can drag the mouse to send UpdateEditing() accordingly.
@@ -73,14 +64,14 @@ public:
 	 * \param[in] rayOrigin Origin of ray hitting gizmo.
 	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
 	 * \param[in] viewMatrix View oriented matrix.
-	 * \param[in] info Collision information.
+	 * \param[in] distance Distance from 0 to 1 along rayDirection up to hit point.
+	 * \param[in] shape Index of shape hit by ray or -1.
 	 */
-	bool StartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, const deCollider *hitCollider,
-		int hitShape, double hitDistance );
+	bool StartEditing( igdeGizmo *gizmo, const decDVector &rayOrigin,
+		const decDVector &rayDirection, const decDMatrix &viewMatrix, double distance, int shape );
 	
 	/** \brief Editing gizmo or nullptr. */
-	inline igdeGizmo *GetEditingGizmo() const{ return pEditingGizmo; }
+	inline const igdeGizmo::Ref &GetEditingGizmo() const{ return pEditingGizmo; }
 	
 	/**
 	 * \brief Update editing.
