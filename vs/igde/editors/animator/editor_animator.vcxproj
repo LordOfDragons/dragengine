@@ -317,6 +317,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableVertexPositionSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitable.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\aeIGDEModule.h" />
@@ -597,6 +599,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxVertexPositionSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinVertexPositionSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableVertexPositionSet.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitable.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitor.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

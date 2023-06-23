@@ -213,6 +213,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTreeListListenerReference.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePattern.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePatternList.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmo.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoManager.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMove.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeApplication.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButton.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButtonReference.cpp" />
@@ -639,6 +642,9 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTreeListListenerReference.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePattern.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePatternList.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmo.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoManager.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMove.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeApplication.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButton.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButtonReference.h" />
