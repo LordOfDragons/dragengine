@@ -60,6 +60,7 @@ public:
 	 * 
 	 * If editing started true is returned. Caller has to grab input on affected widget
 	 * or otherwise ensure user can drag the mouse to send UpdateEditing() accordingly.
+	 * If a gizmo is already editing false is returned.
 	 * 
 	 * \param[in] rayOrigin Origin of ray hitting gizmo.
 	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
@@ -95,8 +96,12 @@ public:
 	 */
 	void OnFrameUpdate( float elapsed );
 	
-	/** \brief Stop editing gizmo if one is editing right now. */
-	void StopEditing();
+	/**
+	 * \brief Stop editing gizmo if one is editing right now.
+	 * 
+	 * \param[in] cancel Cancel editing if possible.
+	 */
+	void StopEditing( bool cancel );
 	/*@}*/
 };
 

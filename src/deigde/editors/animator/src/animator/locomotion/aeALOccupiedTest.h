@@ -40,7 +40,7 @@ private:
 	bool pHasCollision;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	aeALOccupiedTest();
@@ -48,7 +48,7 @@ public:
 	virtual ~aeALOccupiedTest();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Resets the ground checker. */
 	void Reset();
@@ -56,7 +56,7 @@ public:
 	inline bool HasCollision() const{ return pHasCollision; }
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/**
 	 * Determines the response for a given collision. If you specified ertCustom

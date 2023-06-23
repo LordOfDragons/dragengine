@@ -635,5 +635,6 @@ void aeWPController::UpdateControllerValue(){
 	const aeController * const controller = GetController();
 	if( controller ){
 		pSldValue->SetValue( controller->GetCurrentValue() );
+		pEditVector->SetVector( controller->GetVector() );
 	}
 }

@@ -58,7 +58,7 @@ private:
 	decString pPathAnimator;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sub animator. */
 	aeSubAnimator( deEngine *engine );
@@ -66,7 +66,7 @@ public:
 	~aeSubAnimator();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine animator or NULL if not existing. */
 	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }

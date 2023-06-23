@@ -55,7 +55,7 @@ private:
 	float pMaxTiltLeftRight;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new wakeboard object. */
 	aeWakeboard( aeAnimator *animator );
@@ -63,7 +63,7 @@ public:
 	~aeWakeboard();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Resets the wakeboard. */
 	void Reset();

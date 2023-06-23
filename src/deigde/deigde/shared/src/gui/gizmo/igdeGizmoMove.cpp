@@ -35,6 +35,14 @@
 // Class igdeGizmoMove
 ////////////////////////
 
+const char * const igdeGizmoMove::ShapeNameMoveX = "move x";
+const char * const igdeGizmoMove::ShapeNameMoveY = "move y";
+const char * const igdeGizmoMove::ShapeNameMoveZ = "move z";
+const char * const igdeGizmoMove::ShapeNameMoveXY = "move xy";
+const char * const igdeGizmoMove::ShapeNameMoveYZ = "move yz";
+const char * const igdeGizmoMove::ShapeNameMoveXZ = "move xz";
+const char * const igdeGizmoMove::ShapeNameMoveView = "move view";
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -44,6 +52,16 @@ pAction( eaNone )
 {
 	SetShapeFromModel( environment.GetStockModel( igdeEnvironment::esmGizmoMove ) );
 	SetRig( environment.GetStockRig( igdeEnvironment::esrGizmoMove ) );
+	
+	SetShapeColor( ShapeNameMoveX, decColor( 1.0f, 0.0f, 0.0f ) );
+	SetShapeColor( ShapeNameMoveY, decColor( 0.0f, 1.0f, 0.0f ) );
+	SetShapeColor( ShapeNameMoveZ, decColor( 0.0f, 0.0f, 1.0f ) );
+	
+	SetShapeColor( ShapeNameMoveYZ, decColor( 1.0f, 0.0f, 0.0f ) );
+	SetShapeColor( ShapeNameMoveXZ, decColor( 0.0f, 1.0f, 0.0f ) );
+	SetShapeColor( ShapeNameMoveXY, decColor( 0.0f, 0.0f, 1.0f ) );
+	
+	SetShapeColor( ShapeNameMoveView, decColor( 1.0f, 0.75f, 0.5f ) );
 }
 
 igdeGizmoMove::~igdeGizmoMove(){
@@ -54,6 +72,14 @@ igdeGizmoMove::~igdeGizmoMove(){
 // Management
 ///////////////
 
+decQuaternion igdeGizmoMove::GetObjectOrientation(){
+	return decQuaternion();
+}
+
+decVector igdeGizmoMove::GetObjectScale(){
+	return decVector( 1.0f, 1.0f, 1.0f );
+}
+
 decDMatrix igdeGizmoMove::GetObjectMatrix(){
 	return decDMatrix::CreateWorld( GetObjectPosition(),
 		GetObjectOrientation(), decDVector( GetObjectScale() ) );
@@ -63,31 +89,35 @@ decDVector igdeGizmoMove::LimitPosition( const decDVector &position ){
 	return position;
 }
 
+void igdeGizmoMove::OnObjectGeometryChanged(){
+	SetGeometry( GetObjectPosition(), GetObjectOrientation() );
+}
+
 
 
 // Protected Functions
 ////////////////////////
 
 igdeGizmoMove::eActions igdeGizmoMove::pShapeNameToAction( const decString &shapeName ) const{
-	if( shapeName == "move x" ){
+	if( shapeName == ShapeNameMoveX ){
 		return eaMoveX;
 		
-	}else if( shapeName == "move y" ){
+	}else if( shapeName == ShapeNameMoveY ){
 		return eaMoveY;
 		
-	}else if( shapeName == "move z" ){
+	}else if( shapeName == ShapeNameMoveZ ){
 		return eaMoveZ;
 		
-	}else if( shapeName == "move xy" ){
+	}else if( shapeName == ShapeNameMoveXY ){
 		return eaMoveXY;
 		
-	}else if( shapeName == "move yz" ){
+	}else if( shapeName == ShapeNameMoveYZ ){
 		return eaMoveYZ;
 		
-	}else if( shapeName == "move xz" ){
+	}else if( shapeName == ShapeNameMoveXZ ){
 		return eaMoveXZ;
 		
-	}else if( shapeName == "move view" ){
+	}else if( shapeName == ShapeNameMoveView ){
 		return eaMoveView;
 		
 	}else{
@@ -201,6 +231,13 @@ const decDVector &rayDirection, const decDMatrix & ){
 void igdeGizmoMove::OnFrameUpdateEditing( float ){
 }
 
-void igdeGizmoMove::OnStopEditing(){
+void igdeGizmoMove::OnStopEditing( bool cancel ){
+	if( cancel ){
+		SetObjectPosition( pMoveOrigin );
+	}
 	pAction = eaNone;
+}
+
+void igdeGizmoMove::OnAddToWorld(){
+	OnObjectGeometryChanged();
 }

@@ -47,7 +47,7 @@ private:
 	bool pHasCollision;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new ground checker. */
 	aeALGroundChecker();
@@ -55,7 +55,7 @@ public:
 	virtual ~aeALGroundChecker();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Resets the ground checker. */
 	void Reset();
@@ -65,7 +65,7 @@ public:
 	inline const deCollisionInfo &GetCollisionInfo() const{ return *pColInfo; }
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/**
 	 * Determines the response for a given collision. If you specified ertCustom

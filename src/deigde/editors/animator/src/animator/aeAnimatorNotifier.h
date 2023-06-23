@@ -39,7 +39,7 @@ class aeAttachment;
  */
 class aeAnimatorNotifier : public deObject{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new animator notifier. */
 	aeAnimatorNotifier();
@@ -47,7 +47,7 @@ public:
 	virtual ~aeAnimatorNotifier();
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/** Changed or saved state changed. */
 	virtual void StateChanged( aeAnimator *animator );

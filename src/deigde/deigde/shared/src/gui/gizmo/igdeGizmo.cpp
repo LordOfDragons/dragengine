@@ -85,6 +85,8 @@ igdeGizmo::~igdeGizmo(){
 	if( pCollider ){
 		pEnvironment.SetColliderUserPointer( pCollider, nullptr );
 	}
+	
+	SetWorld( nullptr );
 }
 
 
@@ -100,6 +102,7 @@ void igdeGizmo::SetWorld( deWorld *world ){
 	if( pWorld ){
 		pWorld->RemoveCollider( pCollider );
 		pWorld->RemoveDebugDrawer( pDebugDrawer );
+		OnRemoveFromWorld();
 	}
 	
 	pWorld = world;
@@ -107,6 +110,7 @@ void igdeGizmo::SetWorld( deWorld *world ){
 	if( world ){
 		world->AddDebugDrawer( pDebugDrawer );
 		world->AddCollider( pCollider );
+		OnAddToWorld();
 	}
 }
 
@@ -170,6 +174,12 @@ decString igdeGizmo::GetRigShapeName( int rigShapeIndex ) const{
 	}else{
 		return decString();
 	}
+}
+
+decColor igdeGizmo::GetShapeColor( const char *name ) const{
+	decColor color( pDebugDrawer->GetShapeAt( pShapeNames.IndexOf( name ) )->GetFillColor() );
+	color.a = 1.0f;
+	return color;
 }
 
 void igdeGizmo::SetShapeColor( const char *name, const decColor &color ){
@@ -289,9 +299,9 @@ void igdeGizmo::OnFrameUpdate( float elapsed ){
 	OnFrameUpdateEditing( elapsed );
 }
 
-void igdeGizmo::StopEditing(){
+void igdeGizmo::StopEditing( bool cancel ){
 	DEASSERT_TRUE( pIsEditing )
-	OnStopEditing();
+	OnStopEditing( cancel );
 	pIsEditing = false;
 }
 
@@ -306,5 +316,11 @@ void igdeGizmo::OnUpdateEditing( const decDVector &, const decDVector &, const d
 void igdeGizmo::OnFrameUpdateEditing( float ){
 }
 
-void igdeGizmo::OnStopEditing(){
+void igdeGizmo::OnStopEditing( bool ){
+}
+
+void igdeGizmo::OnAddToWorld(){
+}
+
+void igdeGizmo::OnRemoveFromWorld(){
 }

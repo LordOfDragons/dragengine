@@ -38,7 +38,7 @@ igdeGizmoManager::igdeGizmoManager(){
 }
 
 igdeGizmoManager::~igdeGizmoManager(){
-	StopEditing();
+	StopEditing( true );
 }
 
 
@@ -50,7 +50,9 @@ bool igdeGizmoManager::StartEditing( igdeGizmo *gizmo, const decDVector &rayOrig
 const decDVector &rayDirection, const decDMatrix &viewMatrix, double distance, int shape ){
 	DEASSERT_NOTNULL( gizmo )
 	
-	StopEditing();
+	if( pEditingGizmo ){
+		return false;
+	}
 	
 	if( gizmo->StartEditing( rayOrigin, rayDirection, viewMatrix, distance, shape ) ){
 		pEditingGizmo = gizmo;
@@ -73,9 +75,9 @@ void igdeGizmoManager::OnFrameUpdate( float elapsed ){
 	}
 }
 
-void igdeGizmoManager::StopEditing(){
+void igdeGizmoManager::StopEditing( bool cancel ){
 	if( pEditingGizmo ){
-		pEditingGizmo->StopEditing();
+		pEditingGizmo->StopEditing( cancel );
 		pEditingGizmo = nullptr;
 	}
 }

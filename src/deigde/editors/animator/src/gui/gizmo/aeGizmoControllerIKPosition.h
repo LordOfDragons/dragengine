@@ -19,32 +19,57 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _AEELEMENTVISITABLE_H_
-#define _AEELEMENTVISITABLE_H_
+#ifndef _AEGIZMOCONTROLLERIKPOSITION_H_
+#define _AEGIZMOCONTROLLERIKPOSITION_H_
 
-class aeElementVisitor;
+#include "../../visitors/aeElementVisitable.h"
+
+#include <deigde/gui/gizmo/igdeGizmoMove.h>
+
+class aeController;
+
 
 
 /**
- * Visitable element.
+ * Synchronize game definition task.
  */
-class aeElementVisitable{
+class aeGizmoControllerIKPosition : public igdeGizmoMove, aeElementVisitable{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeGizmoControllerIKPosition> Ref;
+	
+	
+	
+private:
+	aeController &pController;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create visitable. */
-	aeElementVisitable();
+	/** Create gizmo. */
+	aeGizmoControllerIKPosition( igdeEnvironment &environment, aeController &controller );
 	
-	/** Clean up visitable. */
-	virtual ~aeElementVisitable();
+protected:
+	/** Clean up gizmo. */
+	virtual ~aeGizmoControllerIKPosition() override;
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	virtual decDVector GetObjectPosition() override;
+	virtual void SetObjectPosition( const decDVector &position ) override;
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	/** Visit element. */
-	virtual void VisitElement( aeElementVisitor &visitor );
+	virtual void VisitElement( aeElementVisitor &visitor ) override;
 	/*@}*/
 };
 

@@ -34,6 +34,7 @@
 #include "../visitors/aeElementVisitor.h"
 
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
@@ -280,36 +281,45 @@ public:
 		switch( button ){
 		case deInputEvent::embcLeft:
 			{
-			decLayerMask layerMask;
-			layerMask.SetBit( aeAnimator::eclTerrain );
-			layerMask.SetBit( aeAnimator::eclElements );
-			layerMask.SetBit( aeAnimator::eclAI );
-			layerMask.SetBit( aeAnimator::eclGround );
-			layerMask.SetBit( aeAnimator::eclGizmo );
-			
-			const decDMatrix viewMatrix( animator->GetCamera()->GetViewMatrix() );
-			const decDVector rayPosition = viewMatrix.GetPosition();
-			const decVector rayDirection = animator->GetCamera()->GetDirectionFor(
-				pView.GetRenderAreaSize().x, pView.GetRenderAreaSize().y, position.x, position.y ) * 500.0f;
-			
-			aeCLClosestHit visitor;
-			
 			deBasePhysicsWorld * const peer = animator->GetEngineWorld()->GetPeerPhysics();
 			if( ! peer ){
 				return;
 			}
 			
+			const decDMatrix viewMatrix( animator->GetCamera()->GetViewMatrix() );
+			decLayerMask layerMask;
+			aeCLClosestHit visitor;
+			
+			const decDVector rayPosition = viewMatrix.GetPosition();
+			const decVector rayDirection = animator->GetCamera()->GetDirectionFor(
+				pView.GetRenderAreaSize().x, pView.GetRenderAreaSize().y, position.x, position.y ) * 500.0f;
+			
+			// test for gizmos only first. stop if a gizmo is hit and started editing
+			layerMask.SetBit( aeAnimator::eclGizmo );
+			
 			peer->RayHits( rayPosition, rayDirection, &visitor, decCollisionFilter( layerMask ) );
-			if( ! visitor.GetHasHit() ){
-				return;
+			if( visitor.GetHasHit() ){
+				visitor.IdentifyHitElement( pView.GetEnvironment() );
+				if( visitor.GetHitGizmo() ){
+					if( pView.GetGizoms().StartEditing( visitor.GetHitGizmo(), rayPosition,
+					decDVector( rayDirection ), viewMatrix, ( double )visitor.GetHitDistance(),
+					visitor.GetHitShape() ) ){
+						return;
+					}
+				}
 			}
 			
-			visitor.IdentifyHitElement( pView.GetEnvironment() );
+			// test for anything else but gizmos
+			layerMask = decLayerMask();
+			layerMask.SetBit( aeAnimator::eclTerrain );
+			layerMask.SetBit( aeAnimator::eclElements );
+			layerMask.SetBit( aeAnimator::eclAI );
+			layerMask.SetBit( aeAnimator::eclGround );
 			
-			if( visitor.GetHitGizmo() ){
-				pView.GetGizoms().StartEditing( visitor.GetHitGizmo(), rayPosition,
-				decDVector( rayDirection ), viewMatrix, ( double )visitor.GetHitDistance(),
-				visitor.GetHitShape() );
+			peer->RayHits( rayPosition, rayDirection, &visitor, decCollisionFilter( layerMask ) );
+			if( visitor.GetHasHit() ){
+				visitor.IdentifyHitElement( pView.GetEnvironment() );
+				// TODO
 			}
 			} break;
 			
@@ -325,7 +335,7 @@ public:
 		switch( button ){
 		case deInputEvent::embcLeft:
 			if( pView.GetGizoms().GetEditingGizmo() ){
-				pView.GetGizoms().StopEditing();
+				pView.GetGizoms().StopEditing( false );
 			}
 			break;
 			
@@ -356,6 +366,16 @@ public:
 	}
 	
 	void OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ) override{
+		switch( keyCode ){
+		case deInputEvent::ekcEscape:
+			if( pView.GetGizoms().GetEditingGizmo() ){
+				pView.GetGizoms().StopEditing( true );
+			}
+			break;
+			
+		default:
+			break;
+		}
 	}
 	
 	void OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ) override{

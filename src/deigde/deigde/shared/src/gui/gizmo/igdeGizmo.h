@@ -119,6 +119,13 @@ public:
 	decString GetRigShapeName( int rigShapeIndex ) const;
 	
 	/**
+	 * \brief Get color of named shape.
+	 * 
+	 * If named shape is absent an exception is thrown.
+	 */
+	decColor GetShapeColor( const char *name ) const;
+	
+	/**
 	 * \brief Set color of named shape.
 	 * 
 	 * If named shape is absent nothing is done.
@@ -212,9 +219,11 @@ public:
 	/**
 	 * \brief Stop editing.
 	 * 
+	 * \param[in] cancel Cancel editing if possible.
+	 * 
 	 * Called if StartEditing() returned true.
 	 */
-	void StopEditing();
+	void StopEditing( bool cancel );
 	
 	/**
 	 * \brief Gizmo is editing.
@@ -264,9 +273,17 @@ protected:
 	/**
 	 * \brief Stop editing.
 	 * 
+	 * \param[in] cancel Cancel editing if possible.
+	 * 
 	 * Called by StopEditing() after a prior to an OnStartEditing() call returning true.
 	 */
-	virtual void OnStopEditing();
+	virtual void OnStopEditing( bool cancel );
+	
+	/** \brief Added to world. */
+	virtual void OnAddToWorld();
+	
+	/** \brief Removed from world. */
+	virtual void OnRemoveFromWorld();
 };
 
 #endif

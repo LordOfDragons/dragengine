@@ -63,6 +63,15 @@ public:
 		eaMoveView
 	};
 	
+	/** \brief Default shape names. */
+	static const char * const ShapeNameMoveX;
+	static const char * const ShapeNameMoveY;
+	static const char * const ShapeNameMoveZ;
+	static const char * const ShapeNameMoveXY;
+	static const char * const ShapeNameMoveYZ;
+	static const char * const ShapeNameMoveXZ;
+	static const char * const ShapeNameMoveView;
+	
 	
 	
 private:
@@ -111,10 +120,10 @@ public:
 	virtual void SetObjectPosition( const decDVector &position ) = 0;
 	
 	/** \brief Get object orientation. */
-	virtual decQuaternion GetObjectOrientation() = 0;
+	virtual decQuaternion GetObjectOrientation();
 	
 	/** \brief Get object scale. */
-	virtual decVector GetObjectScale() = 0;
+	virtual decVector GetObjectScale();
 	
 	/** \brief Object matrix with scaling. */
 	decDMatrix GetObjectMatrix();
@@ -125,6 +134,13 @@ public:
 	 * Default implementation applies no limits.
 	 */
 	virtual decDVector LimitPosition( const decDVector &position );
+	
+	/**
+	 * \brief Object position or orientation changed.
+	 * 
+	 * Call this function after object position or orientation changed.
+	 */
+	void OnObjectGeometryChanged();
 	/*@}*/
 	
 	
@@ -183,9 +199,14 @@ protected:
 	/**
 	 * \brief Stop editing.
 	 * 
+	 * \param[in] cancel Cancel editing if possible.
+	 * 
 	 * Called by StopEditing() after a prior to an OnStartEditing() call returning true.
 	 */
-	virtual void OnStopEditing() override;
+	virtual void OnStopEditing( bool cancel );
+	
+	/** \brief Added to world. */
+	virtual void OnAddToWorld() override;
 };
 
 #endif

@@ -42,7 +42,7 @@ private:
 	aeAnimatorLocomotion *pLocomotion;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
 	aeALColliderListener();
@@ -50,13 +50,13 @@ public:
 	virtual ~aeALColliderListener();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Sets the animator locomotion. */
 	void SetAnimatorLocomotion( aeAnimatorLocomotion *locomotion );
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/**
 	 * Determines the response for a given collision. If you specified ertCustom

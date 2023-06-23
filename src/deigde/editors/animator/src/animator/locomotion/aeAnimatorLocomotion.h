@@ -258,7 +258,7 @@ private:
 	float pTurnIP;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a animator locomotion. */
 	aeAnimatorLocomotion( aeAnimator *animator );
@@ -266,7 +266,7 @@ public:
 	~aeAnimatorLocomotion();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Resets the locomotion system for a new simulation round. */
 	void Reset();

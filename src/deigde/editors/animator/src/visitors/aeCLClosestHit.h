@@ -99,7 +99,7 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	virtual void visitGizmo( igdeGizmo *gizmo ) override;
+	virtual void VisitGizmo( igdeGizmo *gizmo ) override;
 	/*@}*/
 };
 

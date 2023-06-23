@@ -29,11 +29,12 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrainSector.h>
-#include <dragengine/common/exceptions.h>
 
 
 
@@ -74,7 +75,7 @@ void aeCLClosestHit::IdentifyHitElement( igdeEnvironment &environment ){
 	
 	aeElementVisitable * const visitable = ( aeElementVisitable* )environment.GetColliderUserPointer( pHitCollider );
 	if( visitable ){
-		visitable->visitElement( *this );
+		visitable->VisitElement( *this );
 	}
 }
 
@@ -109,6 +110,6 @@ void aeCLClosestHit::ColliderChanged( deCollider *owner ){
 // Visiting
 /////////////
 
-void aeCLClosestHit::visitGizmo( igdeGizmo *gizmo ){
+void aeCLClosestHit::VisitGizmo( igdeGizmo *gizmo ){
 	pHitGizmo = gizmo;
 }

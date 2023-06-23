@@ -39,5 +39,5 @@ aeElementVisitor::~aeElementVisitor(){
 // Visiting
 /////////////
 
-void aeElementVisitor::visitGizmo( igdeGizmo* ){
+void aeElementVisitor::VisitGizmo( igdeGizmo* ){
 }
