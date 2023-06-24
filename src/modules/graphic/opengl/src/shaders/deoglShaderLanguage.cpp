@@ -1041,7 +1041,7 @@ deoglShaderCompiled *deoglShaderLanguage::pCacheLoadShader( deoglShaderProgram &
 		pRenderThread.GetLogger().LogErrorFormat(
 			"ShaderLanguage.CacheLoadShader: Failed loading cached shader '%.50s...'. Cache discarded",
 			program.GetCacheId().GetString() );
-		pRenderThread.GetLogger().LogException( e );
+		//pRenderThread.GetLogger().LogException( e ); // do not spam logs. slows things down
 		
 		if( compiled ){
 			delete compiled;
