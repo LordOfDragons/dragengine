@@ -53,15 +53,16 @@
 
 igdeGizmo::igdeGizmo( igdeEnvironment &environment ) :
 pEnvironment( environment ),
-pEdgeTransparency( 0.0f ),
-pFillTransparency( 0.6f ),
-pIsEditing( false )
+pTransparency( 0.6f ),
+pHoverTransparency( 1.0f ),
+pIsEditing( false ),
+pIsHovering( false )
 {
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	
 	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	
-	pCollider.TakeOver( engine.GetColliderManager()->CreateColliderVolume() );
+	pCollider.TakeOver( engine.GetColliderManager()->CreateColliderRig() );
 	pCollider->SetUseLocalGravity( true );
 	pCollider->SetResponseType( deCollider::ertKinematic );
 	
@@ -114,94 +115,55 @@ void igdeGizmo::SetWorld( deWorld *world ){
 	}
 }
 
-void igdeGizmo::SetShapeFromModel( const deModel &model ){
-	pShapeNames.RemoveAll();
-	pDebugDrawer->RemoveAllShapes();
-	
-	const deModelLOD &lod = *model.GetLODAt( 0 );
-	const deModelVertex * const vertices = lod.GetVertices();
-	const deModelFace * const faces = lod.GetFaces();
-	const int textureCount = model.GetTextureCount();
-	deDebugDrawerShapeFace *ddsface = nullptr;
-	const int faceCount = lod.GetFaceCount();
-	deDebugDrawerShape *ddshape = nullptr;
-	int i;
-	
-	try{
-		for( i=0; i<textureCount; i++ ){
-			ddshape = new deDebugDrawerShape;
-			pDebugDrawer->AddShape( ddshape );
-			ddshape = nullptr;
-			
-			pShapeNames.Add( model.GetTextureAt( i )->GetName() );
-		}
-		
-	}catch( const deException & ){
-		if( ddshape ){
-			delete ddshape;
-		}
-		pDebugDrawer->NotifyShapeLayoutChanged();
-		throw;
-	}
-	
-	try{
-		for( i=0; i<faceCount; i++ ){
-			const deModelFace &face = faces[ i ];
-			ddsface = new deDebugDrawerShapeFace;
-			ddsface->AddVertex( vertices[ face.GetVertex1() ].GetPosition() );
-			ddsface->AddVertex( vertices[ face.GetVertex2() ].GetPosition() );
-			ddsface->AddVertex( vertices[ face.GetVertex3() ].GetPosition() );
-			ddsface->CalculateNormal();
-			pDebugDrawer->GetShapeAt( face.GetTexture() )->AddFace( ddsface );
-			ddsface = nullptr;
-		}
-		
-	}catch( const deException & ){
-		if( ddsface ){
-			delete ddsface;
-		}
-		pDebugDrawer->NotifyShapeLayoutChanged();
-		throw;
-	}
-	
-	pDebugDrawer->NotifyShapeLayoutChanged();
-}
 
-decString igdeGizmo::GetRigShapeName( int rigShapeIndex ) const{
-	if( rigShapeIndex >= 0 && rigShapeIndex <= pRigShapeNames.GetCount() ){
-		return pRigShapeNames.GetAt( rigShapeIndex );
-		
-	}else{
-		return decString();
-	}
-}
 
-decColor igdeGizmo::GetShapeColor( const char *name ) const{
-	decColor color( pDebugDrawer->GetShapeAt( pShapeNames.IndexOf( name ) )->GetFillColor() );
-	color.a = 1.0f;
-	return color;
+const decColor &igdeGizmo::GetShapeColor( const char *name ) const{
+	const cShapeColor * const shapeColor = pNamedShapeColor( name );
+	DEASSERT_NOTNULL( shapeColor )
+	
+	return shapeColor->color;
 }
 
 void igdeGizmo::SetShapeColor( const char *name, const decColor &color ){
-	const int index = pShapeNames.IndexOf( name );
-	if( index == -1 ){
+	cShapeColor * const shapeColor = pNamedShapeColor( name );
+	if( shapeColor ){
+		if( ! shapeColor->color.IsEqualTo( color ) ){
+			shapeColor->color = color;
+			pApplyShapeColors();
+		}
+		
+	}else{
+		const int ddshapeIndex = pModelTextureNames.IndexOf( name );
+		pShapeColors.Add( deObject::Ref::New( new cShapeColor( name, color, ddshapeIndex ) ) );
+		if( ddshapeIndex != -1 ){
+			pApplyShapeColors();
+		}
+	}
+}
+
+void igdeGizmo::SetTransparency( float transparency ){
+	transparency = decMath::clamp( transparency, 0.0f, 1.0f );
+	if( fabsf( transparency - pTransparency ) < FLOAT_SAFE_EPSILON ){
 		return;
 	}
 	
-	deDebugDrawerShape &shape = *pDebugDrawer->GetShapeAt( index );
-	shape.SetEdgeColor( decColor( color, pEdgeTransparency ) );
-	shape.SetFillColor( decColor( color, pFillTransparency ) );
-	pDebugDrawer->NotifyShapeColorChanged();
+	pTransparency = transparency;
+	
+	if( ! pIsHovering ){
+		pApplyShapeColors();
+	}
 }
 
-void igdeGizmo::SetRig( deRig *rig ){
-	if( rig ){
-		pCollider->SetShapes( rig->GetShapes() );
-		pRigShapeNames = rig->GetShapeProperties();
-		
-	}else{
-		pCollider->SetShapes( decShapeList() );
-		pRigShapeNames.RemoveAll();
+void igdeGizmo::SetHoverTransparency( float transparency ){
+	transparency = decMath::clamp( transparency, 0.0f, 1.0f );
+	if( fabsf( transparency - pHoverTransparency ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pHoverTransparency = transparency;
+	
+	if( pIsHovering ){
+		pApplyShapeColors();
 	}
 }
 
@@ -213,9 +175,13 @@ void igdeGizmo::SetCollisionFilter( const decCollisionFilter &filter ){
 	pCollider->SetCollisionFilter( filter );
 }
 
+
+
 void igdeGizmo::SetColliderUserPointer( void *userPointer ){
 	pEnvironment.SetColliderUserPointer( pCollider, userPointer );
 }
+
+
 
 bool igdeGizmo::GetVisible() const{
 	return pDebugDrawer->GetVisible();
@@ -264,6 +230,82 @@ decDMatrix igdeGizmo::GetMatrix() const{
 
 
 
+void igdeGizmo::SetShapeFromModel( const deModel &model ){
+	const int shapeColorCount = pShapeColors.GetCount();
+	int i;
+	for( i=0; i<shapeColorCount; i++ ){
+		( ( cShapeColor* )pShapeColors.GetAt( i ) )->ddshapeIndex = -1;
+	}
+	
+	pModelTextureNames.RemoveAll();
+	pDebugDrawer->RemoveAllShapes();
+	
+	const deModelLOD &lod = *model.GetLODAt( 0 );
+	const deModelVertex * const vertices = lod.GetVertices();
+	const deModelFace * const faces = lod.GetFaces();
+	const int textureCount = model.GetTextureCount();
+	deDebugDrawerShapeFace *ddsface = nullptr;
+	const int faceCount = lod.GetFaceCount();
+	deDebugDrawerShape *ddshape = nullptr;
+	
+	try{
+		for( i=0; i<textureCount; i++ ){
+			const decString &name = model.GetTextureAt( i )->GetName();
+			
+			ddshape = new deDebugDrawerShape;
+			ddshape->SetEdgeColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
+			pDebugDrawer->AddShape( ddshape );
+			ddshape = nullptr;
+			
+			cShapeColor * const shapeColor = pNamedShapeColor( name );
+			if( shapeColor ){
+				shapeColor->ddshapeIndex = i;
+			}
+			
+			pModelTextureNames.Add( name );
+		}
+		
+	}catch( const deException & ){
+		if( ddshape ){
+			delete ddshape;
+		}
+		pDebugDrawer->NotifyShapeLayoutChanged();
+		throw;
+	}
+	
+	try{
+		for( i=0; i<faceCount; i++ ){
+			const deModelFace &face = faces[ i ];
+			ddsface = new deDebugDrawerShapeFace;
+			ddsface->AddVertex( vertices[ face.GetVertex1() ].GetPosition() );
+			ddsface->AddVertex( vertices[ face.GetVertex2() ].GetPosition() );
+			ddsface->AddVertex( vertices[ face.GetVertex3() ].GetPosition() );
+			ddsface->CalculateNormal();
+			pDebugDrawer->GetShapeAt( face.GetTexture() )->AddFace( ddsface );
+			ddsface = nullptr;
+		}
+		
+	}catch( const deException & ){
+		if( ddsface ){
+			delete ddsface;
+		}
+		pDebugDrawer->NotifyShapeLayoutChanged();
+		throw;
+	}
+	
+	pDebugDrawer->NotifyShapeLayoutChanged();
+}
+
+deRig *igdeGizmo::GetRig() const{
+	return pCollider->GetRig();
+}
+
+void igdeGizmo::SetRig( deRig *rig ){
+	pCollider->SetRig( rig );
+}
+
+
+
 // Interaction
 ////////////////
 
@@ -273,14 +315,14 @@ const decDMatrix &viewMatrix, double distance, int shape ){
 		return false;
 	}
 	
-	const decString name( GetRigShapeName( shape ) );
-	if( name.IsEmpty() ){
+	const decString * const name = pGetRigShapeName( shape );
+	if( ! name ){
 		return false;
 	}
 	
 	const decDVector hitPoint( rayOrigin + rayDirection * distance );
 	
-	if( ! OnStartEditing( rayOrigin, rayDirection, viewMatrix, hitPoint, name ) ){
+	if( ! OnStartEditing( rayOrigin, rayDirection, viewMatrix, hitPoint, *name ) ){
 		return false;
 	}
 	
@@ -323,4 +365,54 @@ void igdeGizmo::OnAddToWorld(){
 }
 
 void igdeGizmo::OnRemoveFromWorld(){
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void igdeGizmo::pApplyShapeColors(){
+	const float transparency = pIsHovering ? pHoverTransparency : pTransparency;
+	const int count = pShapeColors.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const cShapeColor &shapeColor = *( cShapeColor* )pShapeColors.GetAt( i );
+		if( shapeColor.ddshapeIndex == -1 ){
+			continue;
+		}
+		
+		deDebugDrawerShape &shape = *pDebugDrawer->GetShapeAt( shapeColor.ddshapeIndex );
+		shape.SetEdgeColor( decColor( shapeColor.color, 0.0f ) );
+		shape.SetFillColor( decColor( shapeColor.color, transparency ) );
+	}
+	
+	pDebugDrawer->NotifyShapeColorChanged();
+}
+
+igdeGizmo::cShapeColor *igdeGizmo::pNamedShapeColor( const char *name ) const{
+	const int count = pShapeColors.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		cShapeColor *shapeColor = ( cShapeColor* )pShapeColors.GetAt( i );
+		if( shapeColor->name == name ){
+			return shapeColor;
+		}
+	}
+	return nullptr;
+}
+
+const decString *igdeGizmo::pGetRigShapeName( int rigShapeIndex ) const{
+	if( ! pCollider->GetRig() ){
+		return nullptr;
+	}
+	
+	const decStringList &shapes = pCollider->GetRig()->GetShapeProperties();
+	if( rigShapeIndex < 0 || rigShapeIndex >= shapes.GetCount() ){
+		return nullptr;
+	}
+	
+	return &shapes.GetAt( rigShapeIndex );
 }

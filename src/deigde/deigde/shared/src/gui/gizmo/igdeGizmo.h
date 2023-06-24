@@ -24,10 +24,11 @@
 
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/collider/deColliderRig.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/world/deWorld.h>
 
@@ -41,6 +42,17 @@ class deCollider;
 
 /**
  * \brief Interactive 3D gizmo.
+ * 
+ * Gizmo shape is initialized using the content of a deModel resource. For each material in
+ * the model one deDebugDrawerShape is created. The colors to use for each shape can be set
+ * up front using a list of named shape colors. Shapes with names matching this list will
+ * be adjusted. Hence the list of set shape colors and the list of actual shapes do not have
+ * to be the same. This allows to change the gizmo shape later on retaining the set shape
+ * colors.
+ * 
+ * Gizmo collider is assigned a deRig resource which usually has only rig shapes. Shapes are
+ * matches using the rig shape properties. Hence assign the rig shapes the name you want to
+ * use to identify the actions to carry out when interacting with different parts of the gizmo.
  */
 class DE_DLL_EXPORT igdeGizmo : public deObject{
 public:
@@ -50,18 +62,35 @@ public:
 	
 	
 private:
+	class cShapeColor : public deObject {
+	public:
+		typedef deTObjectReference<cShapeColor> Ref;
+		
+		decString name;
+		decColor color;
+		int ddshapeIndex;
+		
+		cShapeColor( const char *aname, const decColor &acolor, int addshapeIndex ) :
+		name( aname ), color( acolor ), ddshapeIndex( addshapeIndex ){
+		}
+	};
+	
+	
+	
 	igdeEnvironment &pEnvironment;
 	
 	deWorld::Ref pWorld;
 	deDebugDrawer::Ref pDebugDrawer;
-	deColliderVolume::Ref pCollider;
+	deColliderRig::Ref pCollider;
 	
-	decStringList pShapeNames;
-	decStringList pRigShapeNames;
-	float pEdgeTransparency;
-	float pFillTransparency;
+	decObjectList pShapeColors;
+	float pTransparency;
+	float pHoverTransparency;
+	
+	decStringList pModelTextureNames;
 	
 	bool pIsEditing;
+	bool pIsHovering;
 	
 	
 	
@@ -94,46 +123,25 @@ public:
 	/** \brief Set world or nullptr. */
 	void SetWorld( deWorld *world );
 	
-	/**
-	 * \brief Set gizmo shape from model.
-	 * 
-	 * Each material is assigned an individual debug drawer shape. Stores the list of
-	 * material names with the list index matching the debug drawer shape index.
-	 */
-	void SetShapeFromModel( const deModel &model );
 	
-	/** \brief List of shape names. */
-	inline const decStringList &GetShapeNames() const{ return pShapeNames; }
 	
-	/** \brief Named shape is present. */
-	inline bool HasShapeNamed( const char *name ) const{ return pShapeNames.Has( name ); }
+	/** \brief Get color of named shape. */
+	const decColor &GetShapeColor( const char *name ) const;
 	
-	/** \brief List of rig shape names. */
-	inline const decStringList &GetRigShapeNames() const{ return pRigShapeNames; }
-	
-	/**
-	 * \brief Name of rig shape.
-	 * 
-	 * If index is out of range returns empty string.
-	 */
-	decString GetRigShapeName( int rigShapeIndex ) const;
-	
-	/**
-	 * \brief Get color of named shape.
-	 * 
-	 * If named shape is absent an exception is thrown.
-	 */
-	decColor GetShapeColor( const char *name ) const;
-	
-	/**
-	 * \brief Set color of named shape.
-	 * 
-	 * If named shape is absent nothing is done.
-	 */
+	/** \brief Set color of named shape. */
 	void SetShapeColor( const char *name, const decColor &color );
 	
-	/** \brief Set rig or nullptr. */
-	void SetRig( deRig *rig );
+	/** \brief Transparency. */
+	inline float GetTransparency() const{ return pTransparency; }
+	
+	/** \brief Set transparency. */
+	void SetTransparency( float transparency );
+	
+	/** \brief Hover transparency. */
+	inline float GetHoverTransparency() const{ return pHoverTransparency; }
+	
+	/** \brief Set hover transparency. */
+	void SetHoverTransparency( float transparency );
 	
 	/** \brief Collision filter. */
 	const decCollisionFilter &GetCollisionFilter() const;
@@ -141,8 +149,12 @@ public:
 	/** \brief Set collision filter. */
 	void SetCollisionFilter( const decCollisionFilter &filter );
 	
+	
+	
 	/** \brief Set collider user pointer. */
 	void SetColliderUserPointer( void *userPointer );
+	
+	
 	
 	/** \brief Gizmo is visible. */
 	bool GetVisible() const;
@@ -174,6 +186,22 @@ public:
 	
 	/** \brief Gizmo matrix without scaling. */
 	decDMatrix GetMatrix() const;
+
+	
+	
+	/**
+	 * \brief Set gizmo shape from model.
+	 * 
+	 * Each material is assigned an individual debug drawer shape. Stores the list of
+	 * material names with the list index matching the debug drawer shape index.
+	 */
+	void SetShapeFromModel( const deModel &model );
+	
+	/** \brief Rig or nullptr. */
+	deRig *GetRig() const;
+	
+	/** \brief Set rig or nullptr. */
+	void SetRig( deRig *rig );
 	/*@}*/
 	
 	
@@ -284,6 +312,13 @@ protected:
 	
 	/** \brief Removed from world. */
 	virtual void OnRemoveFromWorld();
+	
+	
+	
+private:
+	void pApplyShapeColors();
+	cShapeColor *pNamedShapeColor( const char *name ) const;
+	const decString *pGetRigShapeName( int rigShapeIndex ) const;
 };
 
 #endif
