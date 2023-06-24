@@ -1296,6 +1296,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMouseKeyListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\clipboard\igdeClipboard.h">
@@ -2587,6 +2590,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMouseKeyListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

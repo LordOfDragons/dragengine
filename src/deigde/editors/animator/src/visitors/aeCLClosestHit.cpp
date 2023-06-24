@@ -48,6 +48,7 @@ aeCLClosestHit::aeCLClosestHit() :
 pHitDistance( 0.0f ),
 pHasHit( false ),
 pHitCollider( nullptr ),
+pHitBone( -1 ),
 pHitShape( -1 ),
 pHitGizmo( nullptr ){
 }
@@ -64,6 +65,7 @@ void aeCLClosestHit::Reset(){
 	pHitDistance = 0.0f;
 	pHasHit = false;
 	pHitCollider = nullptr;
+	pHitBone = -1;
 	pHitShape = -1;
 	pHitGizmo = nullptr;
 }
@@ -73,7 +75,9 @@ void aeCLClosestHit::IdentifyHitElement( igdeEnvironment &environment ){
 		return;
 	}
 	
-	aeElementVisitable * const visitable = ( aeElementVisitable* )environment.GetColliderUserPointer( pHitCollider );
+	aeElementVisitable * const visitable =
+		( aeElementVisitable* )environment.GetColliderUserPointer( pHitCollider );
+	
 	if( visitable ){
 		visitable->VisitElement( *this );
 	}
@@ -84,7 +88,7 @@ void aeCLClosestHit::IdentifyHitElement( igdeEnvironment &environment ){
 // Notifications
 //////////////////
 
-void aeCLClosestHit::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
+void aeCLClosestHit::CollisionResponse( deCollider*, deCollisionInfo *info ){
 	float distance = info->GetDistance();
 	
 	if( pHasHit && distance >= pHitDistance ){
@@ -94,15 +98,16 @@ void aeCLClosestHit::CollisionResponse( deCollider *owner, deCollisionInfo *info
 	pHitDistance = distance;
 	pHitNormal = info->GetNormal();
 	pHitCollider = info->GetCollider();
+	pHitBone = info->GetBone();
 	pHitShape = info->GetShape();
 	pHasHit = true;
 }
 
-bool aeCLClosestHit::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool aeCLClosestHit::CanHitCollider( deCollider*, deCollider* ){
 	return true;
 }
 
-void aeCLClosestHit::ColliderChanged( deCollider *owner ){
+void aeCLClosestHit::ColliderChanged( deCollider* ){
 }
 
 

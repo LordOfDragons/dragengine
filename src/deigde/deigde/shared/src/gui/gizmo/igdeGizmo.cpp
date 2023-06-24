@@ -42,6 +42,7 @@
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelVertex.h>
 #include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/rig/deRigBone.h>
 
 
 
@@ -53,8 +54,9 @@
 
 igdeGizmo::igdeGizmo( igdeEnvironment &environment ) :
 pEnvironment( environment ),
-pTransparency( 0.6f ),
-pHoverTransparency( 1.0f ),
+pTransparency( 0.45f ),
+pHoverTransparency( 0.95f ),
+pHoverColorMultiply( 1.0f, 1.0f, 1.0f ),
 pIsEditing( false ),
 pIsHovering( false )
 {
@@ -161,6 +163,18 @@ void igdeGizmo::SetHoverTransparency( float transparency ){
 	}
 	
 	pHoverTransparency = transparency;
+	
+	if( pIsHovering ){
+		pApplyShapeColors();
+	}
+}
+
+void igdeGizmo::SetHoverColorMultiply( const decColor &multiply ){
+	if( multiply.IsEqualTo( pHoverColorMultiply ) ){
+		return;
+	}
+	
+	pHoverColorMultiply = multiply;
 	
 	if( pIsHovering ){
 		pApplyShapeColors();
@@ -309,36 +323,66 @@ void igdeGizmo::SetRig( deRig *rig ){
 // Interaction
 ////////////////
 
+void igdeGizmo::StartHovering( const decDVector &rayOrigin, const decDVector &rayDirection,
+double distance, int bone, int shape, int modifiers ){
+	DEASSERT_FALSE( pIsHovering )
+	
+	pHoverShapeName = pCollisionShapeName( bone, shape );
+	pIsHovering = true;
+	pApplyShapeColors();
+	
+	OnStartHovering( rayOrigin, rayDirection, rayOrigin + rayDirection * distance, modifiers );
+}
+
+void igdeGizmo::UpdateHovering( const decDVector &rayOrigin, const decDVector &rayDirection,
+double distance, int bone , int shape, int modifiers ){
+	DEASSERT_TRUE( pIsHovering )
+	
+	pHoverShapeName = pCollisionShapeName( bone, shape );
+	pApplyShapeColors();
+	
+	OnUpdateHovering( rayOrigin, rayDirection, rayOrigin + rayDirection * distance, modifiers );
+}
+
+void igdeGizmo::StopHovering(){
+	DEASSERT_TRUE( pIsHovering )
+	
+	pHoverShapeName.Empty();
+	pIsHovering = false;
+	pApplyShapeColors();
+	
+	OnStopHovering();
+}
+
+
+
 bool igdeGizmo::StartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-const decDMatrix &viewMatrix, double distance, int shape ){
-	if( shape == -1 ){
+const decDMatrix &viewMatrix, double distance, int bone, int shape, int modifiers ){
+	DEASSERT_FALSE( pIsEditing )
+	if( bone == -1 && shape == -1 ){
 		return false;
 	}
 	
-	const decString * const name = pGetRigShapeName( shape );
-	if( ! name ){
+	if( OnStartEditing( rayOrigin, rayDirection, viewMatrix,
+	rayOrigin + rayDirection * distance, pCollisionShapeName( bone, shape ), modifiers ) ){
+		pIsEditing = true;
+		return true;
+		
+	}else{
 		return false;
 	}
-	
-	const decDVector hitPoint( rayOrigin + rayDirection * distance );
-	
-	if( ! OnStartEditing( rayOrigin, rayDirection, viewMatrix, hitPoint, *name ) ){
-		return false;
-	}
-	
-	pIsEditing = true;
-	return true;
 }
 
 void igdeGizmo::UpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-const decDMatrix &viewMatrix ){
+const decDMatrix &viewMatrix, int modifiers ){
 	DEASSERT_TRUE( pIsEditing )
-	OnUpdateEditing( rayOrigin, rayDirection, viewMatrix );
+	OnUpdateEditing( rayOrigin, rayDirection, viewMatrix, modifiers );
 }
 
-void igdeGizmo::OnFrameUpdate( float elapsed ){
+void igdeGizmo::MouseWheeledEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
+const decDMatrix &viewMatrix, const decPoint &change, int modifiers ){
 	DEASSERT_TRUE( pIsEditing )
-	OnFrameUpdateEditing( elapsed );
+	OnMouseWheeledEditing( rayOrigin, rayDirection, viewMatrix, change, modifiers );
 }
 
 void igdeGizmo::StopEditing( bool cancel ){
@@ -349,13 +393,28 @@ void igdeGizmo::StopEditing( bool cancel ){
 
 
 
+void igdeGizmo::OnFrameUpdate( float ){
+}
+
+
+
 // Protected Functions
 ////////////////////////
 
-void igdeGizmo::OnUpdateEditing( const decDVector &, const decDVector &, const decDMatrix & ){
+void igdeGizmo::OnStartHovering( const decDVector &, const decDVector &, const decDVector &, int ) {
 }
 
-void igdeGizmo::OnFrameUpdateEditing( float ){
+void igdeGizmo::OnUpdateHovering( const decDVector &, const decDVector &, const decDVector &, int ) {
+}
+
+void igdeGizmo::OnStopHovering(){
+}
+
+void igdeGizmo::OnUpdateEditing( const decDVector &, const decDVector &, const decDMatrix &, int ){
+}
+
+void igdeGizmo::OnMouseWheeledEditing( const decDVector &, const decDVector &,
+const decDMatrix &, const decPoint &, int ){
 }
 
 void igdeGizmo::OnStopEditing( bool ){
@@ -373,8 +432,8 @@ void igdeGizmo::OnRemoveFromWorld(){
 //////////////////////
 
 void igdeGizmo::pApplyShapeColors(){
-	const float transparency = pIsHovering ? pHoverTransparency : pTransparency;
 	const int count = pShapeColors.GetCount();
+	decColor color;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -383,9 +442,16 @@ void igdeGizmo::pApplyShapeColors(){
 			continue;
 		}
 		
+		if( pIsHovering && shapeColor.name == pHoverShapeName ){
+			color = decColor( shapeColor.color * pHoverColorMultiply, pHoverTransparency );
+			
+		}else{
+			color = decColor( shapeColor.color, pTransparency );
+		}
+		
 		deDebugDrawerShape &shape = *pDebugDrawer->GetShapeAt( shapeColor.ddshapeIndex );
-		shape.SetEdgeColor( decColor( shapeColor.color, 0.0f ) );
-		shape.SetFillColor( decColor( shapeColor.color, transparency ) );
+		shape.SetEdgeColor( decColor( color, 0.0f ) );
+		shape.SetFillColor( color );
 	}
 	
 	pDebugDrawer->NotifyShapeColorChanged();
@@ -404,15 +470,16 @@ igdeGizmo::cShapeColor *igdeGizmo::pNamedShapeColor( const char *name ) const{
 	return nullptr;
 }
 
-const decString *igdeGizmo::pGetRigShapeName( int rigShapeIndex ) const{
-	if( ! pCollider->GetRig() ){
-		return nullptr;
+const decString &igdeGizmo::pCollisionShapeName( int bone, int shape ) const{
+	if( pCollider->GetRig() ){
+		if( bone != -1 ){
+			return pCollider->GetRig()->GetBoneAt( bone ).GetName();
+			
+		}else if( shape != -1 ){
+			return pCollider->GetRig()->GetShapeProperties().GetAt( shape );
+		}
 	}
 	
-	const decStringList &shapes = pCollider->GetRig()->GetShapeProperties();
-	if( rigShapeIndex < 0 || rigShapeIndex >= shapes.GetCount() ){
-		return nullptr;
-	}
-	
-	return &shapes.GetAt( rigShapeIndex );
+	static const decString emptyName;
+	return emptyName;
 }

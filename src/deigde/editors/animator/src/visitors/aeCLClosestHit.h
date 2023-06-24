@@ -34,12 +34,13 @@ class igdeEnvironment;
 /**
  * Closest Hit Visitor.
  */
-class aeCLClosestHit : public deBaseScriptingCollider, aeElementVisitor{
+class aeCLClosestHit : public deBaseScriptingCollider, public aeElementVisitor{
 private:
 	float pHitDistance;
 	decVector pHitNormal;
 	bool pHasHit;
 	deCollider *pHitCollider;
+	int pHitBone;
 	int pHitShape;
 	
 	igdeGizmo *pHitGizmo;
@@ -73,6 +74,9 @@ public:
 	
 	/** Hit collider or nullptr. */
 	inline deCollider *GetHitCollider() const{ return pHitCollider; }
+	
+	/** Hit bone index or -1. */
+	inline int GetHitBone() const{ return pHitBone; }
 	
 	/** Hit shape index or -1. */
 	inline int GetHitShape() const{ return pHitShape; }

@@ -86,6 +86,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\dialog\aeDialogMirrorMatchName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoManager.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWindowProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimator.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimatorListener.cpp" />
@@ -369,6 +370,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\dialog\aeDialogMirrorMatchName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoManager.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWindowProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimator.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimatorListener.h" />

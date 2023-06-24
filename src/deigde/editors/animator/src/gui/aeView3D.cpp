@@ -19,10 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "aeView3D.h"
 #include "aeWindowMain.h"
 #include "../animator/aeCamera.h"
@@ -278,6 +274,11 @@ public:
 			return;
 		}
 		
+		pView.GetGizoms().OnButtonPress( pView, *animator->GetCamera(), button, position, modifiers );
+		if( pView.GetGizoms().HasEditingGizmo() ){
+			return;
+		}
+		
 		switch( button ){
 		case deInputEvent::embcLeft:
 			{
@@ -287,35 +288,17 @@ public:
 			}
 			
 			const decDMatrix viewMatrix( animator->GetCamera()->GetViewMatrix() );
-			decLayerMask layerMask;
-			aeCLClosestHit visitor;
-			
 			const decDVector rayPosition = viewMatrix.GetPosition();
 			const decVector rayDirection = animator->GetCamera()->GetDirectionFor(
 				pView.GetRenderAreaSize().x, pView.GetRenderAreaSize().y, position.x, position.y ) * 500.0f;
 			
-			// test for gizmos only first. stop if a gizmo is hit and started editing
-			layerMask.SetBit( aeAnimator::eclGizmo );
-			
-			peer->RayHits( rayPosition, rayDirection, &visitor, decCollisionFilter( layerMask ) );
-			if( visitor.GetHasHit() ){
-				visitor.IdentifyHitElement( pView.GetEnvironment() );
-				if( visitor.GetHitGizmo() ){
-					if( pView.GetGizoms().StartEditing( visitor.GetHitGizmo(), rayPosition,
-					decDVector( rayDirection ), viewMatrix, ( double )visitor.GetHitDistance(),
-					visitor.GetHitShape() ) ){
-						return;
-					}
-				}
-			}
-			
-			// test for anything else but gizmos
-			layerMask = decLayerMask();
+			decLayerMask layerMask;
 			layerMask.SetBit( aeAnimator::eclTerrain );
 			layerMask.SetBit( aeAnimator::eclElements );
 			layerMask.SetBit( aeAnimator::eclAI );
 			layerMask.SetBit( aeAnimator::eclGround );
 			
+			aeCLClosestHit visitor;
 			peer->RayHits( rayPosition, rayDirection, &visitor, decCollisionFilter( layerMask ) );
 			if( visitor.GetHasHit() ){
 				visitor.IdentifyHitElement( pView.GetEnvironment() );
@@ -332,11 +315,18 @@ public:
 	}
 	
 	void OnButtonRelease( igdeWidget*, int button, const decPoint &position, int modifiers ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnButtonRelease( pView, *animator->GetCamera(), button, position, modifiers );
+		if( pView.GetGizoms().HasEditingGizmo() ){
+			return;
+		}
+		
 		switch( button ){
 		case deInputEvent::embcLeft:
-			if( pView.GetGizoms().GetEditingGizmo() ){
-				pView.GetGizoms().StopEditing( false );
-			}
 			break;
 			
 		case deInputEvent::embcRight:
@@ -348,37 +338,42 @@ public:
 	}
 	
 	void OnMouseMoved(igdeWidget*, const decPoint &position, int modifiers ) override{
-		if( pView.GetGizoms().GetEditingGizmo() ){
-			aeAnimator * const animator = pView.GetAnimator();
-			if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
-				return;
-			}
-			
-			const decDMatrix viewMatrix( animator->GetCamera()->GetViewMatrix() );
-			const decDVector rayPosition = viewMatrix.GetPosition();
-			const decVector rayDirection = animator->GetCamera()->GetDirectionFor(
-				pView.GetRenderAreaSize().x, pView.GetRenderAreaSize().y, position.x, position.y );
-			pView.GetGizoms().UpdateEditing( rayPosition, decDVector( rayDirection ), viewMatrix );
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnMouseMoved( pView, *animator->GetCamera(), position, modifiers );
+		if( pView.GetGizoms().HasEditingGizmo() ){
+			return;
 		}
 	}
 	
-	void OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &change, int modifiers ) override{
-	}
-	
-	void OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ) override{
-		switch( keyCode ){
-		case deInputEvent::ekcEscape:
-			if( pView.GetGizoms().GetEditingGizmo() ){
-				pView.GetGizoms().StopEditing( true );
-			}
-			break;
-			
-		default:
-			break;
+	void OnMouseWheeled( igdeWidget*, const decPoint &position, const decPoint &change, int modifiers ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
 		}
+		
+		pView.GetGizoms().OnMouseWheeled( pView, *animator->GetCamera(), position, change, modifiers );
 	}
 	
-	void OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ) override{
+	void OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int key ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnKeyPress( keyCode, key );
+	}
+	
+	void OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes keyCode, int key ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnKeyRelease( keyCode, key );
 	}
 };
 

@@ -86,11 +86,13 @@ private:
 	decObjectList pShapeColors;
 	float pTransparency;
 	float pHoverTransparency;
+	decColor pHoverColorMultiply;
 	
 	decStringList pModelTextureNames;
 	
 	bool pIsEditing;
 	bool pIsHovering;
+	decString pHoverShapeName;
 	
 	
 	
@@ -134,14 +136,32 @@ public:
 	/** \brief Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
-	/** \brief Set transparency. */
+	/**
+	 * \brief Set transparency.
+	 * 
+	 * Default value is 0.95 .
+	 */
 	void SetTransparency( float transparency );
 	
 	/** \brief Hover transparency. */
 	inline float GetHoverTransparency() const{ return pHoverTransparency; }
 	
-	/** \brief Set hover transparency. */
+	/**
+	 * \brief Set hover transparency.
+	 * 
+	 * Default value is 0.45 .
+	 */
 	void SetHoverTransparency( float transparency );
+	
+	/** \brief Hover color multiply factor. */
+	inline const decColor &GetHoverColorMultiply() const{ return pHoverColorMultiply; }
+	
+	/**
+	 * \brief Set hover color multiply factor.
+	 * 
+	 * Default value is white.
+	 */
+	void SetHoverColorMultiply( const decColor &multiply );
 	
 	/** \brief Collision filter. */
 	const decCollisionFilter &GetCollisionFilter() const;
@@ -209,6 +229,53 @@ public:
 	/** \name Interaction */
 	/*@{*/
 	/**
+	 * \brief Start hovering.
+	 * 
+	 * \param[in] rayOrigin Origin of ray hitting gizmo.
+	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
+	 * \param[in] distance Distance from 0 to 1 along rayDirection up to hit point.
+	 * \param[in] bone Index of bone hit by ray or -1.
+	 * \param[in] shape Index of shape hit by ray or -1.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
+	 */
+	void StartHovering( const decDVector &rayOrigin, const decDVector &rayDirection,
+		double distance, int bone, int shape, int modifiers );
+	
+	/**
+	 * \brief Update hovering.
+	 * 
+	 * Called if ray position or direction changed between StartHovering() and StopHovering().
+	 * If StartEditing() is called and returns true while hovering no more UpdateHover() will
+	 * be send but instead UpdateEditing().
+	 * 
+	 * \param[in] rayOrigin Origin of ray hitting gizmo.
+	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
+	 * \param[in] distance Distance from 0 to 1 along rayDirection up to hit point.
+	 * \param[in] bone Index of bone hit by ray or -1.
+	 * \param[in] shape Index of shape hit by ray or -1.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
+	 */
+	void UpdateHovering( const decDVector &rayOrigin, const decDVector &rayDirection,
+		double distance, int bone, int shape, int modifiers );
+	
+	/** \brief Stop hovering. */
+	void StopHovering();
+	
+	/**
+	 * \brief Gizmo is hovering.
+	 * 
+	 * Returns true between StartHovering() and StopHovering() otherwise false.
+	 */
+	inline bool IsHovering() const{ return pIsHovering; }
+	
+	/** \brief Name of hover shape or empty string. */
+	inline const decString &GetHoverShapeName() const{ return pHoverShapeName; }
+	
+	
+	
+	/**
 	 * \brief Start editing.
 	 * 
 	 * If gizmo started editing true is returned. If editing can not be started false is returned.
@@ -217,10 +284,13 @@ public:
 	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
 	 * \param[in] viewMatrix View oriented matrix.
 	 * \param[in] distance Distance from 0 to 1 along rayDirection up to hit point.
+	 * \param[in] bone Index of bone hit by ray or -1.
 	 * \param[in] shape Index of shape hit by ray or -1.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
 	 */
 	bool StartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, double distance, int shape );
+		const decDMatrix &viewMatrix, double distance, int bone, int shape, int modifiers );
 	
 	/**
 	 * \brief Update editing.
@@ -231,18 +301,23 @@ public:
 	 * \param[in] rayOrigin Origin of ray.
 	 * \param[in] rayDirection Normalized direction of ray.
 	 * \param[in] viewMatrix View oriented matrix.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
 	 */
 	void UpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix );
+		const decDMatrix &viewMatrix, int modifiers );
 	
 	/**
-	 * \brief Frame update while editing.
+	 * \brief User wheeled mouse while editing.
 	 * 
-	 * Called between StartEditing() returning true and StopEditing() on frame update.
-	 * 
-	 * \param[in] elapsed Elapsed time.
+	 * \param[in] rayOrigin Origin of ray.
+	 * \param[in] rayDirection Normalized direction of ray.
+	 * \param[in] viewMatrix View oriented matrix.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void OnFrameUpdate( float elapsed );
+	void MouseWheeledEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, const decPoint &change, int modifiers );
 	
 	/**
 	 * \brief Stop editing.
@@ -259,11 +334,52 @@ public:
 	 * Returns true between StartEditing() returning true and StopEditing() otherwise false.
 	 */
 	inline bool IsEditing() const{ return pIsEditing; }
+	
+	
+	
+	/**
+	 * \brief Frame update.
+	 * \param[in] elapsed Elapsed time.
+	 */
+	virtual void OnFrameUpdate( float elapsed );
 	/*@}*/
 	
 	
 	
 protected:
+	/**
+	 * \brief Start hovering.
+	 * 
+	 * \param[in] rayOrigin Origin of ray hitting gizmo.
+	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
+	 * \param[in] hitPoint Hit point on gizmo shape.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
+	 */
+	virtual void OnStartHovering( const decDVector &rayOrigin,
+		const decDVector &rayDirection, const decDVector &hitPoint, int modifiers );
+	
+	/**
+	 * \brief Update hovering.
+	 * 
+	 * Called if ray position or direction changed between StartHovering() and StopHovering().
+	 * If StartEditing() is called and returns true while hovering no more UpdateHover() will
+	 * be send but instead UpdateEditing().
+	 * 
+	 * \param[in] rayOrigin Origin of ray hitting gizmo.
+	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
+	 * \param[in] hitPoint Hit point on gizmo shape.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
+	 */
+	virtual void OnUpdateHovering( const decDVector &rayOrigin,
+		const decDVector &rayDirection, const decDVector &hitPoint, int modifiers );
+	
+	/** \brief Stop hovering. */
+	virtual void OnStopHovering();
+	
+	
+	
 	/**
 	 * \brief Start editing.
 	 * 
@@ -273,9 +389,14 @@ protected:
 	 * \param[in] rayOrigin Origin of ray hitting gizmo.
 	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
 	 * \param[in] viewMatrix View oriented matrix.
+	 * \param[in] hitPoint Hit point on gizmo shape.
+	 * \param[in] shapeName Name of hit gizmo shape
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
 	 */
 	virtual bool OnStartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shapeName ) = 0;
+		const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shapeName,
+		int modifiers ) = 0;
 	
 	/**
 	 * \brief Update editing.
@@ -285,18 +406,23 @@ protected:
 	 * \param[in] rayOrigin Origin of ray.
 	 * \param[in] rayDirection Direction of ray (including length).
 	 * \param[in] viewMatrix View oriented matrix.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
 	 */
 	virtual void OnUpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix );
+		const decDMatrix &viewMatrix, int modifiers );
 	
 	/**
-	 * \brief Update editing.
+	 * \brief User wheeled mouse while editing.
 	 * 
-	 * Called between StartEditing() and StopEditing() on frame update.
-	 * 
-	 * \param[in] elapsed Elapsed time.
+	 * \param[in] rayOrigin Origin of ray.
+	 * \param[in] rayDirection Direction of ray (including length).
+	 * \param[in] viewMatrix View oriented matrix.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnFrameUpdateEditing( float elapsed );
+	virtual void OnMouseWheeledEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, const decPoint &change, int modifiers );
 	
 	/**
 	 * \brief Stop editing.
@@ -306,6 +432,8 @@ protected:
 	 * Called by StopEditing() after a prior to an OnStartEditing() call returning true.
 	 */
 	virtual void OnStopEditing( bool cancel );
+	
+	
 	
 	/** \brief Added to world. */
 	virtual void OnAddToWorld();
@@ -318,7 +446,7 @@ protected:
 private:
 	void pApplyShapeColors();
 	cShapeColor *pNamedShapeColor( const char *name ) const;
-	const decString *pGetRigShapeName( int rigShapeIndex ) const;
+	const decString &pCollisionShapeName( int bone, int shape ) const;
 };
 
 #endif

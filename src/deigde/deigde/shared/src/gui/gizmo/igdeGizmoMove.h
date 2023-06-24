@@ -170,10 +170,14 @@ protected:
 	 * \param[in] rayOrigin Origin of ray hitting gizmo.
 	 * \param[in] rayDirection Direction of ray (including length) hitting gizmo.
 	 * \param[in] viewMatrix View oriented matrix.
+	 * \param[in] hitPoint Hit point on gizmo shape.
+	 * \param[in] shapeName Name of hit gizmo shape
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
 	 */
 	virtual bool OnStartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
 		const decDMatrix &viewMatrix, const decDVector &hitPoint,
-		const decString &shapeName ) override;
+		const decString &shapeName, int modifiers ) override;
 	
 	/**
 	 * \brief Update editing.
@@ -183,18 +187,11 @@ protected:
 	 * \param[in] rayOrigin Origin of ray.
 	 * \param[in] rayDirection Direction of ray (including length).
 	 * \param[in] viewMatrix View oriented matrix.
+	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
+	 *                      values from deInputEvent::eStateModifiers.
 	 */
 	virtual void OnUpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix ) override;
-	
-	/**
-	 * \brief Update editing.
-	 * 
-	 * Called between StartEditing() and StopEditing() on frame update.
-	 * 
-	 * \param[in] elapsed Elapsed time.
-	 */
-	virtual void OnFrameUpdateEditing( float elapsed ) override;
+		const decDMatrix &viewMatrix, int modifiers ) override;
 	
 	/**
 	 * \brief Stop editing.
@@ -203,7 +200,7 @@ protected:
 	 * 
 	 * Called by StopEditing() after a prior to an OnStartEditing() call returning true.
 	 */
-	virtual void OnStopEditing( bool cancel );
+	virtual void OnStopEditing( bool cancel ) override;
 	
 	/** \brief Added to world. */
 	virtual void OnAddToWorld() override;

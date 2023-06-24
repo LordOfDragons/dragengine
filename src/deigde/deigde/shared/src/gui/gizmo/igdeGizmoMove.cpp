@@ -126,7 +126,7 @@ igdeGizmoMove::eActions igdeGizmoMove::pShapeNameToAction( const decString &shap
 }
 
 bool igdeGizmoMove::OnStartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shapeName ){
+const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shapeName, int modifiers ){
 	const eActions action = pShapeNameToAction( shapeName );
 	
 	const decDMatrix objectMatrix( decDMatrix::CreateFromQuaternion( GetObjectOrientation() ) );
@@ -210,7 +210,7 @@ const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shape
 }
 
 void igdeGizmoMove::OnUpdateEditing( const decDVector &rayOrigin,
-const decDVector &rayDirection, const decDMatrix & ){
+const decDVector &rayDirection, const decDMatrix &viewMatrix, int modifiers ){
 	const double denom = rayDirection * pPlaneNormal;
 	if( fabs( denom ) < DOUBLE_SAFE_EPSILON ){
 		return;
@@ -226,9 +226,6 @@ const decDVector &rayDirection, const decDMatrix & ){
 	position = LimitPosition( position );
 	
 	SetObjectPosition( position );
-}
-
-void igdeGizmoMove::OnFrameUpdateEditing( float ){
 }
 
 void igdeGizmoMove::OnStopEditing( bool cancel ){
