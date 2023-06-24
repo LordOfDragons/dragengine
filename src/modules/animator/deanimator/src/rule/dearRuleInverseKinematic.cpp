@@ -1214,8 +1214,6 @@ dearBoneStateList &stalist, const sParameters &params ){
 				.QuickMultiply( boneState.GetInverseRigLocalMatrix() );
 		}
 		
-							// GetModule().LogInfoFormat("final: %d (%f,%f,%f)", i,
-							// 	matrix.GetEulerAngles().x * RAD2DEG, matrix.GetEulerAngles().y * RAD2DEG, matrix.GetEulerAngles().z * RAD2DEG);
 		boneState.BlendWith( matrix.GetPosition(), matrix.ToQuaternion(),
 			blendMode, params.blendFactor, true, true );
 	}
@@ -1311,9 +1309,6 @@ decQuaternion dearRuleInverseKinematic::pApplyIKLimits( int index, const decQuat
 	
 	switch( ikws.GetAxisTypeY() ){
 	case dearIKWorkState::eatLocked:
-						// GetModule().LogInfoFormat("LIMIT: (%f,%f,%f) (%f,%f,%f)",
-						// 	euler.x * RAD2DEG, euler.y * RAD2DEG, euler.z * RAD2DEG,
-						// 	lockedRotation.x * RAD2DEG, lockedRotation.y * RAD2DEG, lockedRotation.z * RAD2DEG );
 		euler.y = lockedRotation.y;
 		break;
 		
