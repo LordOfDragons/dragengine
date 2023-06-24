@@ -710,10 +710,8 @@ void debpColliderRig::ScaleChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if( ! pPreventUpdate ){
-		if( ! pSimplePhyBody ){
-			DirtyBones();
-		}
+	if( ! pPreventUpdate && ! pSimplePhyBody ){
+		DirtyBones();
 	}
 	
 	pDirtyShapes = true;
@@ -1260,13 +1258,13 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 		debpColliderAttachment &bpAttachment = *GetAttachmentAt( i );
 		const deColliderAttachment &attachment = *bpAttachment.GetAttachment();
 		deResource * const attachedResource = attachment.GetResource();
-		if( attachedResource->GetResourceManager()->GetResourceType() != deResourceManager::ertCollider ){
-			continue;
-		}
-		deCollider &attachedCollider = *( ( deCollider* )attachedResource );
-		const int attachType = attachment.GetAttachType();
+		deCollider *attachedCollider = nullptr;
 		
-		attachedCollider.Visit( visitor );
+		if( attachedResource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider ){
+			attachedCollider = ( deCollider* )attachedResource;
+			attachedCollider->Visit( visitor );
+		}
+		const int attachType = attachment.GetAttachType();
 		
 		changed = false;
 		
@@ -1381,8 +1379,8 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 		}
 		
 		// notify attachments if not prevented
-		if( changed ){
-			debpCollider &bpCollider = *( ( debpCollider* )attachedCollider.GetPeerPhysics() );
+		if( changed && attachedCollider ){
+			debpCollider &bpCollider = *( ( debpCollider* )attachedCollider->GetPeerPhysics() );
 			
 			if( pPreventAttNotify ){
 				// notification is prevented. register collider for finish detection.
@@ -1390,7 +1388,7 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 				bpCollider.RegisterColDetFinish();
 				
 			}else{
-				attachedCollider.GetPeerScripting()->ColliderChanged( &attachedCollider );
+				attachedCollider->GetPeerScripting()->ColliderChanged( attachedCollider );
 				bpCollider.ClearRequiresUpdate();
 			}
 		}
