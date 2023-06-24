@@ -136,7 +136,7 @@ void igdeGizmo::SetShapeFromModel( const deModel &model ){
 			pShapeNames.Add( model.GetTextureAt( i )->GetName() );
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( ddshape ){
 			delete ddshape;
 		}
@@ -156,7 +156,7 @@ void igdeGizmo::SetShapeFromModel( const deModel &model ){
 			ddsface = nullptr;
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( ddsface ){
 			delete ddsface;
 		}

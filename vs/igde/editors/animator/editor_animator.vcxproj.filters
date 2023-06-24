@@ -859,6 +859,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\aeIGDEModule.h">
@@ -1699,6 +1702,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
