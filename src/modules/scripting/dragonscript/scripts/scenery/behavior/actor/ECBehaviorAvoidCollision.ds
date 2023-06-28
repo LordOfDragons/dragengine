@@ -583,12 +583,11 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		/**
 		 * \brief Avoid collision with an element if deemded necessary.
 		 * 
-		 * Default implementation does nothing if element is null or the element is the same
-		 * as the element owning the behavior. Otherwise uses avoid-element visitor on
-		 * element to apply element specific avoiding.
+		 * Default implementation does nothing if element is null. Otherwise uses avoid-element
+		 * visitor on element to apply element specific avoiding.
 		 */
 		protected func void avoidElement(Element element)
-			if element != null and element != getElement()
+			if element != null
 				element.visit(pAvoidElement)
 			end
 		end
