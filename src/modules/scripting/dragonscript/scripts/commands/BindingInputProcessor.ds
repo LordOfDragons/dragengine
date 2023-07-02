@@ -41,41 +41,49 @@ class BindingInputProcessor extends DefaultInputProcessor
 	
 	
 	/** \brief Create input processor. */
-	public func new( BindingManager bindingManager )
+	public func new(BindingManager bindingManager)
 		if bindingManager == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pBindingManager = bindingManager
-		this.pScaleMouseAxis = 0.2
-		this.pScaleMouseWheel = 0.2
+		pBindingManager = bindingManager
+		pScaleMouseAxis = 0.2
+		pScaleMouseWheel = 0.2
 	end
 	
 	
 	
 	/** \brief Binding manager */
 	public func BindingManager getBindingManager()
-		return this.pBindingManager
+		return pBindingManager
 	end
 	
 	/** \brief Mouse axis scaling factor. */
 	public func float getScaleMouseAxis()
-		return this.pScaleMouseAxis
+		return pScaleMouseAxis
 	end
 	
-	/** \brief Set mouse axis scaling factor. */
-	public func void setScaleMouseAxis( float scale )
-		this.pScaleMouseAxis = DEMath.max( scale, 0.0 )
+	/**
+	 * \brief Set mouse axis scaling factor.
+	 * 
+	 * Default value is 0.2
+	 */
+	public func void setScaleMouseAxis(float scale)
+		pScaleMouseAxis = DEMath.max(scale, 0.0)
 	end
 	
 	/** \brief Mouse wheel scaling factor. */
 	public func float getScaleMouseWheel()
-		return this.pScaleMouseWheel
+		return pScaleMouseWheel
 	end
 	
-	/** \brief Set mouse wheel scaling factor. */
-	public func void setScaleMouseWheel( float scale )
-		this.pScaleMouseWheel = DEMath.max( scale, 0.0 )
+	/**
+	 * \brief Set mouse wheel scaling factor.
+	 * 
+	 * Default value is 0.2
+	 */
+	public func void setScaleMouseWheel(float scale)
+		pScaleMouseWheel = DEMath.max(scale, 0.0)
 	end
 	
 	
@@ -85,7 +93,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * 
 	 * Default implementation calls Command.start() .
 	 */
-	protected func void activate( Binding binding )
+	protected func void activate(Binding binding)
 		binding.getCommand().start()
 	end
 	
@@ -94,7 +102,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * 
 	 * Default implementation calls Command.stop() .
 	 */
-	protected func void deactivate( Binding binding )
+	protected func void deactivate(Binding binding)
 		binding.getCommand().stop()
 	end
 	
@@ -103,8 +111,8 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * 
 	 * Default implementation calls Command.analogRelative() .
 	 */
-	protected func void analogRelative( Binding binding, float value )
-		binding.getCommand().analogRelative( value )
+	protected func void analogRelative(Binding binding, float value)
+		binding.getCommand().analogRelative(value)
 	end
 	
 	/**
@@ -112,8 +120,8 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * 
 	 * Default implementation calls Command.analogRelative() .
 	 */
-	protected func void analogAbsolute( Binding binding, float value )
-		binding.getCommand().analogAbsolute( value )
+	protected func void analogAbsolute(Binding binding, float value)
+		binding.getCommand().analogAbsolute(value)
 	end
 	
 	/**
@@ -121,7 +129,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * 
 	 * Default implementation calls Command.touch() .
 	 */
-	protected func void touch( Binding binding )
+	protected func void touch(Binding binding)
 		binding.getCommand().touch()
 	end
 	
@@ -130,63 +138,63 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * 
 	 * Default implementation calls Command.untouch() .
 	 */
-	protected func void untouch( Binding binding )
+	protected func void untouch(Binding binding)
 		binding.getCommand().untouch()
 	end
 	
 	
 	
 	/** \brief Process input event. */
-	public func void inputEvent( InputEvent event )
+	public func void inputEvent(InputEvent event)
 		select event.getType()
 		case InputEventType.keyPress, \
 			InputEventType.mousePress, \
 			InputEventType.buttonPress
-				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getSource(), event.getDevice(), event.getCode() )
+				var Binding binding = pBindingManager.findButtonBinding(\
+					event.getSource(), event.getDevice(), event.getCode())
 				if binding != null
-					this.activate( binding )
+					activate(binding)
 				end
 			
 		case InputEventType.keyRelease, \
 			InputEventType.mouseRelease, \
 			InputEventType.buttonRelease
-				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getSource(), event.getDevice(), event.getCode() )
+				var Binding binding = pBindingManager.findButtonBinding(\
+					event.getSource(), event.getDevice(), event.getCode())
 				if binding != null
-					this.deactivate( binding )
+					deactivate(binding)
 				end
 			
 		case InputEventType.mouseMove
 			// first axis is X axis or horizontal axis
-			var Binding binding = this.pBindingManager.findAxisBinding( \
-				event.getSource(), event.getDevice(), event.getCode() )
+			var Binding binding = pBindingManager.findAxisBinding(\
+				event.getSource(), event.getDevice(), event.getCode())
 			if binding != null
 				if binding.getInverseAxis()
-					this.analogRelative( binding, this.pScaleMouseAxis * -event.getX() )
+					analogRelative(binding, pScaleMouseAxis * -event.getX())
 					
 				else
-					this.analogRelative( binding, this.pScaleMouseAxis * event.getX() )
+					analogRelative(binding, pScaleMouseAxis * event.getX())
 				end
 			end
 			
 			// second axis is Y axis or vertical axis
-			binding = this.pBindingManager.findAxisBinding( \
-				event.getSource(), event.getDevice(), event.getCode() + 1 )
+			binding = pBindingManager.findAxisBinding(\
+				event.getSource(), event.getDevice(), event.getCode() + 1)
 			if binding != null
 				if binding.getInverseAxis()
-					this.analogRelative( binding, this.pScaleMouseAxis * -event.getY() )
+					analogRelative(binding, pScaleMouseAxis * -event.getY())
 					
 				else
-					this.analogRelative( binding, this.pScaleMouseAxis * event.getY() )
+					analogRelative(binding, pScaleMouseAxis * event.getY())
 				end
 			end
 			
 		case InputEventType.mouseWheel
-			var Binding bindingPositive = this.pBindingManager.findAxisBinding( \
-				event.getSource(), event.getDevice(), event.getCode(), false )
-			var Binding bindingNegative = this.pBindingManager.findAxisBinding( \
-				event.getSource(), event.getDevice(), event.getCode(), true )
+			var Binding bindingPositive = pBindingManager.findAxisBinding(\
+				event.getSource(), event.getDevice(), event.getCode(), false)
+			var Binding bindingNegative = pBindingManager.findAxisBinding(\
+				event.getSource(), event.getDevice(), event.getCode(), true)
 			if bindingPositive == null and bindingNegative == null
 				break
 			end
@@ -195,26 +203,26 @@ class BindingInputProcessor extends DefaultInputProcessor
 			var int value = event.getX() + event.getY()
 			
 			if bindingPositive != null
-				this.analogRelative( bindingPositive, this.pScaleMouseWheel * value )
+				analogRelative(bindingPositive, pScaleMouseWheel * value)
 				
 			else
-				this.analogRelative( bindingNegative, this.pScaleMouseWheel * -value )
+				analogRelative(bindingNegative, pScaleMouseWheel * -value)
 			end
 			
 			// simulate button presses
 			if value > 0
 				if bindingPositive != null
 					while value-- > 0
-						this.activate( bindingPositive )
-						this.deactivate( bindingPositive )
+						activate(bindingPositive)
+						deactivate(bindingPositive)
 					end
 				end
 				
 			elif value < 0
 				if bindingNegative != null
 					while value++ < 0
-						this.activate( bindingNegative )
-						this.deactivate( bindingNegative )
+						activate(bindingNegative)
+						deactivate(bindingNegative)
 					end
 				end
 			end
@@ -224,10 +232,10 @@ class BindingInputProcessor extends DefaultInputProcessor
 			// the right command to use. to support this properly first check if a binding
 			// exists with the right value range. if this is not the case try the axis
 			// without value range.
-			var Binding bindingPositive = this.pBindingManager.findAxisBinding( \
-				event.getSource(), event.getDevice(), event.getCode(), false )
-			var Binding bindingNegative = this.pBindingManager.findAxisBinding( \
-				event.getSource(), event.getDevice(), event.getCode(), true )
+			var Binding bindingPositive = pBindingManager.findAxisBinding(\
+				event.getSource(), event.getDevice(), event.getCode(), false)
+			var Binding bindingNegative = pBindingManager.findAxisBinding(\
+				event.getSource(), event.getDevice(), event.getCode(), true)
 			if bindingPositive == null and bindingNegative == null
 				break
 			end
@@ -236,10 +244,10 @@ class BindingInputProcessor extends DefaultInputProcessor
 			var float value = event.getValue()
 			
 			if bindingPositive != null
-				this.analogAbsolute( bindingPositive, value )
+				analogAbsolute(bindingPositive, value)
 				
 			else
-				this.analogAbsolute( bindingNegative, -value )
+				analogAbsolute(bindingNegative, -value)
 			end
 			
 			// simulate button presses
@@ -248,13 +256,13 @@ class BindingInputProcessor extends DefaultInputProcessor
 				
 				if simulatePressed != bindingPositive.getSimulateAxisPressed()
 					if simulatePressed
-						this.activate( bindingPositive )
+						activate(bindingPositive)
 						
 					else
-						this.deactivate( bindingPositive )
+						deactivate(bindingPositive)
 					end
 					
-					bindingPositive.setSimulateAxisPressed( simulatePressed )
+					bindingPositive.setSimulateAxisPressed(simulatePressed)
 				end
 			end
 			
@@ -263,28 +271,28 @@ class BindingInputProcessor extends DefaultInputProcessor
 				
 				if simulatePressed != bindingNegative.getSimulateAxisPressed()
 					if simulatePressed
-						this.activate( bindingNegative )
+						activate(bindingNegative)
 						
 					else
-						this.deactivate( bindingNegative )
+						deactivate(bindingNegative)
 					end
 					
-					bindingNegative.setSimulateAxisPressed( simulatePressed )
+					bindingNegative.setSimulateAxisPressed(simulatePressed)
 				end
 			end
 			
 		case InputEventType.buttonTouch
-			var Binding binding = this.pBindingManager.findButtonBinding( \
-				event.getSource(), event.getDevice(), event.getCode() )
+			var Binding binding = pBindingManager.findButtonBinding(\
+				event.getSource(), event.getDevice(), event.getCode())
 			if binding != null
-				this.touch( binding )
+				touch(binding)
 			end
 			
 		case InputEventType.buttonUntouch
-			var Binding binding = this.pBindingManager.findButtonBinding( \
-				event.getSource(), event.getDevice(), event.getCode() )
+			var Binding binding = pBindingManager.findButtonBinding(\
+				event.getSource(), event.getDevice(), event.getCode())
 			if binding != null
-				this.untouch( binding )
+				untouch(binding)
 			end
 		end
 	end
