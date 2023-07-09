@@ -285,7 +285,7 @@ void deClassARMirror::nfAddMatchName::RunFunction( dsRunTime *rt, dsValue *mysel
 	}
 	const deAnimatorRuleMirror::eMatchNameType type = ( deAnimatorRuleMirror::eMatchNameType )
 		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
-			*rt->GetValue( 0 )->GetRealObject() );
+			*rt->GetValue( 2 )->GetRealObject() );
 	
 	nd.rule->AddMatchName( first, second, type );
 	
