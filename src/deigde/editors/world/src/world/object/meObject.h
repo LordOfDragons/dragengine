@@ -33,6 +33,8 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
@@ -53,12 +55,12 @@ class igdeGameDefinition;
 class deCollider;
 class deColliderVolume;
 class deComponent;
+class deComponentTexture;
 class decShape;
 class decStringList;
 class deDebugDrawer;
 class deDecalList;
 class deEngine;
-
 
 
 /**
@@ -72,12 +74,22 @@ public:
 	
 	
 private:
-	class cWOAsyncFinished : public igdeWObject::cAsyncLoadFinished {
+	class cWOAsyncFinished : public igdeWObject::cAsyncLoadFinished{
 		meObject &pObject;
 		
 	public:
 		cWOAsyncFinished( meObject &object );
 		virtual void LoadFinished( igdeWObject &wrapper, bool succeeded );
+	};
+	
+	class cWOTexture : public deObject{
+	public:
+		deSkin::Ref skin;
+		int texture;
+		deDynamicSkin::Ref dynamicSkin;
+		decTexMatrix2 texCoordTransform;
+		
+		cWOTexture( const deComponentTexture &componentTexture );
 	};
 	
 	igdeEnvironment *pEnvironment;
@@ -93,6 +105,7 @@ private:
 	igdeWCoordSysArrows *pDDSCoordSysArrows;
 	
 	igdeWObject *pWObject;
+	decObjectList pWOTextures;
 	deComponent *pEngComponentBroken;
 	deColliderVolume *pColDetCollider;
 	meCamera *pCamera;

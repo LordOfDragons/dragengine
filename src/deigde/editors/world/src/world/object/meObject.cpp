@@ -142,6 +142,18 @@ void meObject::cWOAsyncFinished::LoadFinished( igdeWObject&, bool ){
 
 
 
+// class cWOTexture
+/////////////////////
+
+meObject::cWOTexture::cWOTexture( const deComponentTexture &componentTexture ) :
+skin( componentTexture.GetSkin() ),
+texture( componentTexture.GetTexture() ),
+dynamicSkin( componentTexture.GetDynamicSkin() ),
+texCoordTransform( componentTexture.GetTransform() ){
+}
+
+
+
 // Class meObject
 ///////////////////
 
@@ -967,6 +979,19 @@ void meObject::ShowStateChanged(){
 }
 
 void meObject::WOAsyncFinished(){
+	// store WObject textures to properly apply missing texture
+	pWOTextures.RemoveAll();
+	
+	const deComponent * const component = pWObject->GetComponent();
+	if( component ){
+		const int textureCount = component->GetTextureCount();
+		int i;
+		for( i=0; i<textureCount; i++ ){
+			pWOTextures.Add( deObject::Ref::New( new cWOTexture( component->GetTextureAt( i ) ) ) );
+		}
+	}
+	
+	// continue updating
 	pSizeFromScaling();
 	pUpdateComponent();
 	pUpdateShapes();
@@ -1387,7 +1412,8 @@ void meObject::UpdateComponentTextures(){
 	const int textureCount = engModel->GetTextureCount();
 	int i;
 	
-	deSkin * const defaultSkin = pEnvironment->GetGameProject()->GetGameDefinition()->GetDefaultSkin();
+	// deSkin * const defaultSkin = pEnvironment->GetGameProject()->GetGameDefinition()->GetDefaultSkin();
+	deSkin * const defaultSkin = pEnvironment->GetStockSkin( igdeEnvironment::essTestMap );
 	const int defaultTexture = 0;
 	
 	for( i=0; i<textureCount; i++ ){
@@ -1395,10 +1421,11 @@ void meObject::UpdateComponentTextures(){
 		const decString &textureName = engModel->GetTextureAt( i )->GetName();
 		meObjectTexture * const texture = GetTextureNamed( textureName );
 		
-		deSkin *useSkin = componentTexture.GetSkin();
-		int useTexture = componentTexture.GetTexture();
-		deDynamicSkin *useDynamicSkin = componentTexture.GetDynamicSkin();
-		decTexMatrix2 texCoordTransform = componentTexture.GetTransform();
+		const cWOTexture &wotexture = *( ( cWOTexture* )pWOTextures.GetAt( i ) );
+		deSkin *useSkin = wotexture.skin;
+		int useTexture = wotexture.texture;
+		deDynamicSkin *useDynamicSkin = wotexture.dynamicSkin;
+		decTexMatrix2 texCoordTransform = wotexture.texCoordTransform;
 		
 		if( texture ){
 			if( texture->GetEngineSkin() ){
@@ -1448,7 +1475,7 @@ bool meObject::IsComponentBroken() const{
 		return false;
 	}
 	
-	// if the model is missnig the component is broken
+	// if the model is missing the component is broken
 	const deModel * const engModel = component->GetModel();
 	if( ! engModel ){
 		return false;
