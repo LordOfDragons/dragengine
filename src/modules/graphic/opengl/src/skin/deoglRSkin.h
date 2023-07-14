@@ -34,6 +34,7 @@ class deoglSkinTexture;
 class deoglSkinRenderable;
 class deoglVSRetainImageData;
 class deoglSkinCalculatedProperty;
+class deoglSkinConstructedProperty;
 
 class deSkin;
 
@@ -74,6 +75,7 @@ private:
 	decObjectList pRenderables;
 	int pVideoPlayerCount;
 	decObjectList pCalculatedProperties;
+	decObjectList pConstructedProperties;
 	
 	deoglVSRetainImageData *pVSRetainImageData;
 	bool pTexturePipelinesReady;
@@ -197,6 +199,17 @@ public:
 	 * \returns Index of calculated property.
 	 */
 	int AddCalculatedProperty( deoglSkinCalculatedProperty *calculated );
+	
+	
+	
+	/** Number of constructed properties. */
+	int GetConstructedPropertyCount() const;
+	
+	/** Constructed property. */
+	deoglSkinConstructedProperty *GetConstructedPropertyAt( int index ) const;
+	
+	/** Add constructed property and returns index of property. */
+	int AddConstructedProperty( deoglSkinConstructedProperty *constructed );
 	/*@}*/
 	
 	

@@ -250,7 +250,8 @@ void deoglRComponentTexture::UpdateSkinState( deoglComponent &component ){
 	//   -> the above mentioned case. component has skin state because it has dynamic skin.
 	//      texture needs own skin state since it uses the dynamic skin of the component
 	//      and the component skin state does not match the texture skin
-	if( pSkin && ( pDynamicSkin || pComponent.GetDynamicSkin() || pSkin->GetCalculatedPropertyCount() > 0 ) ){
+	if( pSkin && ( pDynamicSkin || pComponent.GetDynamicSkin()
+	|| pSkin->GetCalculatedPropertyCount() > 0 || pSkin->GetConstructedPropertyCount() > 0 ) ){
 		if( ! pSkinState ){
 			SetSkinState( new deoglSkinState( pComponent.GetRenderThread(), pComponent, pIndex ) );
 			component.DirtyRenderableMapping();

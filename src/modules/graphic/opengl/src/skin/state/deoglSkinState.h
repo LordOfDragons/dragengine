@@ -31,6 +31,7 @@ class deoglRSkin;
 class deoglRVideoPlayer;
 class deoglSkinStateRenderable;
 class deoglSkinStateCalculated;
+class deoglSkinStateConstructed;
 class deoglRDynamicSkin;
 class deoglRComponent;
 class deoglRBillboard;
@@ -66,6 +67,9 @@ private:
 	
 	deoglSkinStateCalculated *pCalculatedProperties;
 	int pCalculatedPropertyCount;
+	
+	deoglSkinStateConstructed *pConstructedProperties;
+	int pConstructedPropertyCount;
 	
 	decPoint pVariationSeed;
 	
@@ -185,6 +189,29 @@ public:
 	
 	/** Update calculated properties. */
 	void UpdateCalculatedProperties();
+	
+	
+	
+	/** Number of constructed properties. */
+	inline int GetConstructedPropertyCount() const{ return pConstructedPropertyCount; }
+	
+	/** Set constructed property count. */
+	void SetConstructedPropertyCount( int count );
+	
+	/** Constructed property at index. */
+	deoglSkinStateConstructed &GetConstructedPropertyAt( int index ) const;
+	
+	/** Initialize constructed properties. */
+	void InitConstructedProperties();
+	
+	/** Map constructed property bones. */
+	void ConstructedPropertiesMapBones( const deComponent &component );
+	
+	/** Update constructed property bones. */
+	void UpdateConstructedPropertiesBones( const deComponent &component );
+	
+	/** Update constructed properties. */
+	void UpdateConstructedProperties();
 	
 	
 	

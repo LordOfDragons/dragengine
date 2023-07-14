@@ -333,7 +333,8 @@ void deoglRBillboard::UpdateSkin( float elapsed ){
 			MarkParamBlocksDirty();
 			MarkTUCsDirty();
 			
-		}else if( pUseSkinTexture->GetCalculatedProperties() ){
+		}else if( pUseSkinTexture->GetCalculatedProperties()
+		|| pUseSkinTexture->GetConstructedProperties() ){
 			MarkParamBlocksDirty();
 		}
 	}
@@ -355,6 +356,16 @@ void deoglRBillboard::InitSkinStateCalculatedProperties(){
 void deoglRBillboard::UpdateSkinStateCalculatedProperties(){
 	if( pSkinState ){
 		pSkinState->UpdateCalculatedProperties();
+	}
+}
+
+void deoglRBillboard::InitSkinStateConstructedProperties(){
+	pSkinState->InitConstructedProperties();
+}
+
+void deoglRBillboard::UpdateSkinStateConstructedProperties(){
+	if( pSkinState ){
+		pSkinState->UpdateConstructedProperties();
 	}
 }
 

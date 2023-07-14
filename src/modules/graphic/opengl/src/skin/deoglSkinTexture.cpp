@@ -25,6 +25,7 @@
 
 #include "deoglRSkin.h"
 #include "deoglSkinCalculatedProperty.h"
+#include "deoglSkinConstructedProperty.h"
 #include "deoglSkinTexture.h"
 #include "deoglSkinPropertyMap.h"
 #include "deoglSkinRenderable.h"
@@ -127,6 +128,7 @@ pSharedSPBElement( nullptr )
 	pQuickTransp = false;
 	pDynamicChannels = false;
 	pCalculatedProperties = false;
+	pConstructedProperties = false;
 	pRenderableChannels = false;
 	pRenderableMaterialProperties = false;
 	
@@ -417,6 +419,10 @@ void deoglSkinTexture::SetDynamicChannels( bool dynamicChannels ){
 
 void deoglSkinTexture::SetCalculatedProperties( bool calculatedProperties ){
 	pCalculatedProperties = calculatedProperties;
+}
+
+void deoglSkinTexture::SetConstructedProperties( bool constructedProperties ){
+	pConstructedProperties = constructedProperties;
 }
 
 void deoglSkinTexture::SetRenderableChannels( bool renderableChannels ){
@@ -2095,6 +2101,20 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 			materialProperty->SetCalculatedProperty( skin.AddCalculatedProperty( &calculated ) );
 			pCalculatedProperties = true;
+		}
+		
+	}else if ( identify.IsConstructed() ){
+		if( false /* if dynamic constructed */ ){
+			const deSkinPropertyConstructed &constructed = identify.CastToConstructed();
+			
+			const deoglSkinConstructedProperty::Ref scproperty(
+				deoglSkinConstructedProperty::Ref::New( new deoglSkinConstructedProperty ) );
+			
+			scproperty->Prepare();
+			
+			// materialProperty->SetConstructedProperty( skin.AddConstructedProperty( scproperty ) );
+				(void)constructed;
+			pConstructedProperties = true;
 		}
 	}
 	

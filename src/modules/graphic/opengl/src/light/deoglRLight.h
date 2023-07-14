@@ -343,6 +343,9 @@ public:
 	void InitSkinStateCalculatedProperties();
 	void UpdateSkinStateCalculatedProperties();
 	
+	void InitSkinStateConstructedProperties();
+	void UpdateSkinStateConstructedProperties();
+	
 	void DirtyPrepareSkinStateRenderables();
 	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );

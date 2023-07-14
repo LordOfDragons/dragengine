@@ -370,6 +370,10 @@ public:
 	void UpdateSkinStateCalculatedPropertiesBones( const deComponent &component );
 	void UpdateSkinStateCalculatedProperties();
 	
+	void InitSkinStateConstructedProperties( const deComponent &component );
+	void UpdateSkinStateConstructedPropertiesBones( const deComponent &component );
+	void UpdateSkinStateConstructedProperties();
+	
 	void DirtyPrepareSkinStateRenderables();
 	
 	

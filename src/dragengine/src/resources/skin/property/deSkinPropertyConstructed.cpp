@@ -19,13 +19,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSkinPropertyConstructed.h"
 #include "deSkinPropertyVisitor.h"
 #include "node/deSkinPropertyNodeGroup.h"
+#include "node/deSkinPropertyNodeMapped.h"
 #include "../../../common/exceptions.h"
 
 
@@ -81,6 +78,48 @@ void deSkinPropertyConstructed::SetBitCount( int bitCount ){
 	default:
 		DETHROW( deeInvalidParam );
 	}
+}
+
+
+
+// Mapped Values
+//////////////////
+
+int deSkinPropertyConstructed::GetMappedCount() const{
+	return pMapped.GetCount();
+}
+
+deSkinPropertyNodeMapped *deSkinPropertyConstructed::GetMappedAt( int index ) const{
+	return ( deSkinPropertyNodeMapped* )pMapped.GetAt( index );
+}
+
+deSkinPropertyNodeMapped *deSkinPropertyConstructed::GetMappedNamed( const char *name ) const{
+	const int count = pMapped.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deSkinPropertyNodeMapped * const mapped = ( deSkinPropertyNodeMapped* )pMapped.GetAt( i );
+		if( mapped->GetName() == name ){
+			return mapped;
+		}
+	}
+	
+	return nullptr;
+}
+
+int deSkinPropertyConstructed::IndexOfMapped( deSkinPropertyNodeMapped *mapped ) const{
+	return pMapped.IndexOf( mapped );
+}
+
+bool deSkinPropertyConstructed::HasMapped( deSkinPropertyNodeMapped *mapped ) const{
+	return pMapped.Has( mapped );
+}
+
+void deSkinPropertyConstructed::AddMapped( deSkinPropertyNodeMapped *mapped ){
+	DEASSERT_NOTNULL( mapped )
+	DEASSERT_FALSE( HasMapped( mapped ) )
+	
+	pMapped.Add( mapped );
 }
 
 

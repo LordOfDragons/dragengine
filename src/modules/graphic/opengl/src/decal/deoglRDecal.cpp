@@ -278,7 +278,7 @@ void deoglRDecal::UpdateSkin( float elapsed ){
 		MarkParamBlocksDirty();
 		MarkTUCsDirty();
 		
-	}else if( pUseSkinTexture->GetCalculatedProperties() ){
+	}else if( pUseSkinTexture->GetCalculatedProperties() || pUseSkinTexture->GetConstructedProperties() ){
 		MarkParamBlocksDirty();
 	}
 }
@@ -320,6 +320,7 @@ void deoglRDecal::SetSkin( deoglRSkin *skin ){
 	UpdateSkinState();
 	if( pSkinState ){
 		pSkinState->InitCalculatedProperties();
+		pSkinState->InitConstructedProperties();
 	}
 	
 	pRequiresPrepareForRender();
@@ -717,7 +718,9 @@ void deoglRDecal::UpdateStaticTexture(){
 		return;
 	}
 	
-	if( pUseSkinState->GetVideoPlayerCount() > 0 || pUseSkinState->GetCalculatedPropertyCount() > 0 ){
+	if( pUseSkinState->GetVideoPlayerCount() > 0
+	|| pUseSkinState->GetCalculatedPropertyCount() > 0
+	|| pUseSkinState->GetConstructedPropertyCount() > 0 ){
 		pStaticTexture = false;
 	}
 }

@@ -1349,6 +1349,12 @@ deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
 		pCanBeCached = false;
 		return;
 	}
+	
+	// TODO if dynamic do instead
+	/*
+	texture.SetConstructedProperties( true );
+	pCanBeCached = false;
+	*/
 }
 
 #ifdef __GNUG__

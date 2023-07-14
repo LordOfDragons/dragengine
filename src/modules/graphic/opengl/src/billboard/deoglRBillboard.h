@@ -200,6 +200,10 @@ public:
 	void InitSkinStateCalculatedProperties();
 	void UpdateSkinStateCalculatedProperties();
 	
+	/** Init skin state constructed properties. */
+	void InitSkinStateConstructedProperties();
+	void UpdateSkinStateConstructedProperties();
+	
 	/** Skin rendered. */
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
 	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }

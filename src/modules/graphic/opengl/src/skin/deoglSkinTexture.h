@@ -130,6 +130,7 @@ private:
 	bool pReflects;
 	bool pDynamicChannels;
 	bool pCalculatedProperties;
+	bool pConstructedProperties;
 	bool pRenderableChannels;
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[ deoglSkinChannel::CHANNEL_COUNT ];
@@ -336,6 +337,12 @@ public:
 	
 	/** Set if texture has calculated properties. */
 	void SetCalculatedProperties( bool calculatedProperties );
+	
+	/** Texture has constructed properties. */
+	inline bool GetConstructedProperties() const{ return pConstructedProperties; }
+	
+	/** Set if texture has constructed properties. */
+	void SetConstructedProperties( bool constructedProperties );
 	
 	/** Texture has renderable channels. */
 	inline bool GetRenderableChannels() const{ return pRenderableChannels; }

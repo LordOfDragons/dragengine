@@ -37,14 +37,15 @@
 ////////////////////////////
 
 deSkinPropertyNodeText::deSkinPropertyNodeText() :
-pFont( NULL ),
-pFontSize( 10.0f ){
+pFontSize( 10.0f )
+{
+	int i;
+	for( i=0; i<TextMappedCount; i++ ){
+		pTextMapped[ i ] = -1;
+	}
 }
 
 deSkinPropertyNodeText::~deSkinPropertyNodeText(){
-	if( pFont ){
-		pFont->FreeReference();
-	}
 }
 
 
@@ -57,19 +58,7 @@ void deSkinPropertyNodeText::SetPath( const char *path ){
 }
 
 void deSkinPropertyNodeText::SetFont( deFont *font ){
-	if( font == pFont ){
-		return;
-	}
-	
-	if( pFont ){
-		pFont->FreeReference();
-	}
-	
 	pFont = font;
-	
-	if( font ){
-		font->AddReference();
-	}
 }
 
 void deSkinPropertyNodeText::SetFontSize( float size ){
@@ -82,6 +71,17 @@ void deSkinPropertyNodeText::SetText( const char *text ){
 
 void deSkinPropertyNodeText::SetColor( const decColor &color ){
 	pColor = color;
+}
+
+
+
+int deSkinPropertyNodeText::GetTextMappedFor( eTextMapped mapped ) const{
+	return pTextMapped[ mapped ];
+}
+
+void deSkinPropertyNodeText::SetTextMappedFor( eTextMapped mapped, int index ){
+	DEASSERT_TRUE( index >= -1 )
+	pTextMapped[ mapped ] = index;
 }
 
 

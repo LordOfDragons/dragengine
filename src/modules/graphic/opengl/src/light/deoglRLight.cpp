@@ -444,6 +444,18 @@ void deoglRLight::UpdateSkinStateCalculatedProperties(){
 	}
 }
 
+void deoglRLight::InitSkinStateConstructedProperties(){
+	if( pSkinState ){
+		pSkinState->InitConstructedProperties();
+	}
+}
+
+void deoglRLight::UpdateSkinStateConstructedProperties(){
+	if( pSkinState ){
+		pSkinState->UpdateConstructedProperties();
+	}
+}
+
 void deoglRLight::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
 	pDirtyRenderSkinStateRenderables = true;

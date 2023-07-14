@@ -23,9 +23,8 @@
 #define _DESKINPROPERTYNODEIMAGE_H_
 
 #include "deSkinPropertyNode.h"
+#include "../../../image/deImage.h"
 #include "../../../../common/string/decString.h"
-
-class deImage;
 
 
 /**
@@ -34,7 +33,7 @@ class deImage;
 class DE_DLL_EXPORT deSkinPropertyNodeImage : public deSkinPropertyNode{
 private:
 	decString pPath;
-	deImage *pImage;
+	deImage::Ref pImage;
 	decPoint pRepeat;
 	
 	
@@ -59,10 +58,10 @@ public:
 	/** \brief Set image path or empty path if not set. */
 	void SetPath( const char *path );
 	
-	/** \brief Image or NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	/** \brief Image or nullptr if not set. */
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
-	/** \brief Set image or NULL if not set. */
+	/** \brief Set image or nullptr if not set. */
 	void SetImage( deImage *image );
 	
 	/** \brief Repeat count. */

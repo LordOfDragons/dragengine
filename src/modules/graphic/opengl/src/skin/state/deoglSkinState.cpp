@@ -26,6 +26,7 @@
 #include "deoglSkinState.h"
 #include "deoglSkinStateRenderable.h"
 #include "deoglSkinStateCalculated.h"
+#include "deoglSkinStateConstructed.h"
 #include "../deoglRSkin.h"
 #include "../deoglSkinRenderable.h"
 #include "../dynamic/deoglRDynamicSkin.h"
@@ -98,6 +99,7 @@ deoglSkinState::~deoglSkinState(){
 	}
 	
 	SetCalculatedPropertyCount( 0 );
+	SetConstructedPropertyCount( 0 );
 }
 
 
@@ -363,6 +365,69 @@ void deoglSkinState::UpdateCalculatedProperties(){
 
 
 
+// Constructed properties
+///////////////////////////
+
+deoglSkinStateConstructed &deoglSkinState::GetConstructedPropertyAt( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pConstructedPropertyCount )
+	return pConstructedProperties[ index ];
+}
+
+void deoglSkinState::SetConstructedPropertyCount( int count ){
+	DEASSERT_TRUE( count >= 0 )
+	
+	if( pConstructedProperties ){
+		delete [] pConstructedProperties;
+		pConstructedProperties = nullptr;
+		pConstructedPropertyCount = 0;
+	}
+	
+	if( count > 0 ){
+		pConstructedProperties = new deoglSkinStateConstructed[ count ];
+		pConstructedPropertyCount = count;
+	}
+}
+
+void deoglSkinState::InitConstructedProperties(){
+	deoglRSkin * const skin = GetOwnerSkin();
+	if( ! skin || skin->GetConstructedPropertyCount() == 0 ){
+		SetConstructedPropertyCount( 0 );
+		return;
+	}
+	
+	SetConstructedPropertyCount( skin->GetConstructedPropertyCount() );
+	
+	int i;
+	for( i=0; i<pConstructedPropertyCount; i++ ){
+		pConstructedProperties[ i ].SetProperty( skin->GetConstructedPropertyAt( i ) );
+		pConstructedProperties[ i ].SetComponent( pOwnerComponent );
+	}
+}
+
+void deoglSkinState::ConstructedPropertiesMapBones( const deComponent &component ){
+	int i;
+	for( i=0; i<pConstructedPropertyCount; i++ ){
+		pConstructedProperties[ i ].MapBones( component );
+	}
+}
+
+void deoglSkinState::UpdateConstructedPropertiesBones( const deComponent &component ){
+	int i;
+	for( i=0; i<pConstructedPropertyCount; i++ ){
+		pConstructedProperties[ i ].UpdateBones( component );
+	}
+}
+
+void deoglSkinState::UpdateConstructedProperties(){
+	int i;
+	for( i=0; i<pConstructedPropertyCount; i++ ){
+		pConstructedProperties[ i ].Update( *this );
+	}
+}
+
+
+
 void deoglSkinState::SetVariationSeed( const decPoint &seed ){
 	pVariationSeed = seed;
 }
@@ -387,6 +452,9 @@ void deoglSkinState::pSharedInit(){
 	
 	pCalculatedProperties = NULL;
 	pCalculatedPropertyCount = 0;
+	
+	pConstructedProperties = nullptr;
+	pConstructedPropertyCount = 0;
 	
 	pVariationSeed.x = ( int )( ( ( float )rand() / ( float )RAND_MAX ) * 100.0f );
 	pVariationSeed.y = ( int )( ( ( float )rand() / ( float )RAND_MAX ) * 100.0f );

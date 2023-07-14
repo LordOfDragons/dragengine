@@ -19,10 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSkinPropertyNodeShape.h"
 #include "deSkinPropertyNodeVisitor.h"
 #include "../../../../common/exceptions.h"
@@ -37,7 +33,12 @@
 
 deSkinPropertyNodeShape::deSkinPropertyNodeShape() :
 pShapeType( estRectangle ),
-pThickness( 1.0f ){
+pThickness( 1.0f )
+{
+	int i;
+	for( i=0; i<ShapeMappedCount; i++ ){
+		pShapeMapped[ i ] = -1;
+	}
 }
 
 deSkinPropertyNodeShape::~deSkinPropertyNodeShape(){
@@ -49,9 +50,6 @@ deSkinPropertyNodeShape::~deSkinPropertyNodeShape(){
 ///////////////
 
 void deSkinPropertyNodeShape::SetShapeType( eShapeTypes type ){
-	if( type < estRectangle || type > estEllipse ){
-		DETHROW( deeInvalidParam );
-	}
 	pShapeType = type;
 }
 
@@ -65,6 +63,17 @@ void deSkinPropertyNodeShape::SetLineColor( const decColor &color ){
 
 void deSkinPropertyNodeShape::SetThickness( float thickness ){
 	pThickness = decMath::max( thickness, 0.0f );
+}
+
+
+
+int deSkinPropertyNodeShape::GetShapeMappedFor( eShapeMapped mapped ) const{
+	return pShapeMapped[ mapped ];
+}
+
+void deSkinPropertyNodeShape::SetShapeMappedFor( eShapeMapped mapped, int index ){
+	DEASSERT_TRUE( index >= -1 )
+	pShapeMapped[ mapped ] = index;
 }
 
 

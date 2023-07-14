@@ -49,7 +49,8 @@
 deoglSkinStateController::deoglSkinStateController() :
 pSharedVideoPlayers( NULL ),
 pSharedVideoPlayerCount( 0 ),
-pHasCalculatedProperties( false ){
+pHasCalculatedProperties( false ),
+pHasConstructedProperties( false ){
 }
 
 deoglSkinStateController::~deoglSkinStateController(){
@@ -136,10 +137,14 @@ void deoglSkinStateController::SetHasCalculatedProperties( bool hasCalculatedPro
 	pHasCalculatedProperties = hasCalculatedProperties;
 }
 
+void deoglSkinStateController::SetHasConstructedProperties( bool hasConstructedProperties ){
+	pHasConstructedProperties = hasConstructedProperties;
+}
+
 
 
 bool deoglSkinStateController::RequiresSyncEveryFrameUpdate() const{
-	return pVideoPlayers.GetCount() > 0 || pHasCalculatedProperties;
+	return pVideoPlayers.GetCount() > 0 || pHasCalculatedProperties || pHasConstructedProperties;
 }
 
 bool deoglSkinStateController::RequiresPrepareRenderables() const{
@@ -151,6 +156,7 @@ void deoglSkinStateController::Init( deoglSkinState &skinState, deoglRSkin *skin
 		skinState.SetVideoPlayerCount( 0 );
 		SetVideoPlayerCount( 0 );
 		pHasCalculatedProperties = false;
+		pHasConstructedProperties = false;
 		return;
 	}
 	
@@ -159,6 +165,7 @@ void deoglSkinStateController::Init( deoglSkinState &skinState, deoglRSkin *skin
 		skinState.SetVideoPlayerCount( 0 );
 		SetVideoPlayerCount( 0 );
 		pHasCalculatedProperties = false;
+		pHasConstructedProperties = false;
 		return;
 	}
 	
@@ -171,6 +178,7 @@ void deoglSkinStateController::Init( deoglSkinState &skinState, deoglRSkin *skin
 	}
 	
 	pHasCalculatedProperties = skin->GetCalculatedPropertyCount() > 0;
+	pHasConstructedProperties = skin->GetConstructedPropertyCount() > 0;
 }
 
 void deoglSkinStateController::Init( deoglSkinState &skinState, deoglRSkin *skin,
@@ -179,6 +187,7 @@ int textureIndex, deoglWorld *world ){
 		skinState.SetVideoPlayerCount( 0 );
 		SetVideoPlayerCount( 0 );
 		pHasCalculatedProperties = false;
+		pHasConstructedProperties = false;
 		return;
 	}
 	
@@ -187,6 +196,7 @@ int textureIndex, deoglWorld *world ){
 		skinState.SetVideoPlayerCount( 0 );
 		SetVideoPlayerCount( 0 );
 		pHasCalculatedProperties = false;
+		pHasConstructedProperties = false;
 		return;
 	}
 	
@@ -195,6 +205,7 @@ int textureIndex, deoglWorld *world ){
 	pUpdateSkinVideoPlayers( skinState, skin->GetTextureAt( textureIndex ), *world );
 	
 	pHasCalculatedProperties = skin->GetCalculatedPropertyCount() > 0;
+	pHasConstructedProperties = skin->GetConstructedPropertyCount() > 0;
 }
 
 void deoglSkinStateController::ResetTime(){
@@ -236,6 +247,7 @@ void deoglSkinStateController::SyncToRender(){
 void deoglSkinStateController::Clear(){
 	SetVideoPlayerCount( 0 );
 	pHasCalculatedProperties = false;
+	pHasConstructedProperties = false;
 }
 
 

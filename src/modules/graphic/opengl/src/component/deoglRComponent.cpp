@@ -616,6 +616,57 @@ void deoglRComponent::UpdateSkinStateCalculatedProperties(){
 	}
 }
 
+
+
+void deoglRComponent::InitSkinStateConstructedProperties( const deComponent &component ){
+	if( pSkinState ){
+		pSkinState->InitConstructedProperties();
+		pSkinState->ConstructedPropertiesMapBones( component );
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+		if( texture.GetSkinState() ){
+			texture.GetSkinState()->InitConstructedProperties();
+			texture.GetSkinState()->ConstructedPropertiesMapBones( component );
+		}
+	}
+}
+
+void deoglRComponent::UpdateSkinStateConstructedPropertiesBones( const deComponent &component ){
+	if( pSkinState ){
+		pSkinState->UpdateConstructedPropertiesBones( component );
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+		if( texture.GetSkinState() ){
+			texture.GetSkinState()->UpdateConstructedPropertiesBones( component );
+		}
+	}
+}
+
+void deoglRComponent::UpdateSkinStateConstructedProperties(){
+	if( pSkinState ){
+		pSkinState->UpdateConstructedProperties();
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+		if( texture.GetSkinState() ){
+			texture.GetSkinState()->UpdateConstructedProperties();
+		}
+	}
+}
+
+
+
 void deoglRComponent::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
 	pDirtyRenderSkinStateRenderables = true;
@@ -797,7 +848,8 @@ void deoglRComponent::UpdateSkin( float elapsed ){
 				texture.MarkParamBlocksDirty();
 				texture.MarkTUCsDirty();
 				
-			}else if( texture.GetUseSkinTexture()->GetCalculatedProperties() ){
+			}else if( texture.GetUseSkinTexture()->GetCalculatedProperties()
+			|| texture.GetUseSkinTexture()->GetConstructedProperties() ){
 				texture.MarkParamBlocksDirty();
 			}
 		}
@@ -1387,7 +1439,9 @@ void deoglRComponent::UpdateStaticTextures(){
 			continue;
 		}
 		
-		if( skinState->GetVideoPlayerCount() > 0 || skinState->GetCalculatedPropertyCount() > 0 ){
+		if( skinState->GetVideoPlayerCount() > 0
+		|| skinState->GetCalculatedPropertyCount() > 0
+		|| skinState->GetConstructedPropertyCount() > 0 ){
 			pStaticTextures = false;
 			break;
 		}

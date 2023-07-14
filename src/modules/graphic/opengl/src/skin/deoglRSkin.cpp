@@ -27,6 +27,7 @@
 #include "deoglSkinTexture.h"
 #include "deoglSkinRenderable.h"
 #include "deoglSkinCalculatedProperty.h"
+#include "deoglSkinConstructedProperty.h"
 #include "channel/deoglSkinChannel.h"
 #include "visitor/deoglVSRetainImageData.h"
 #include "../deoglBasics.h"
@@ -402,6 +403,26 @@ int deoglRSkin::AddCalculatedProperty( deoglSkinCalculatedProperty *calculated )
 	}
 	
 	pCalculatedProperties.Add( calculated );
+	return pCalculatedProperties.GetCount() - 1;
+}
+
+
+
+// Constructed properties
+///////////////////////////
+
+int deoglRSkin::GetConstructedPropertyCount() const{
+	return pConstructedProperties.GetCount();
+}
+
+deoglSkinConstructedProperty *deoglRSkin::GetConstructedPropertyAt( int index ) const{
+	return ( deoglSkinConstructedProperty* )pCalculatedProperties.GetAt( index );
+}
+
+int deoglRSkin::AddConstructedProperty( deoglSkinConstructedProperty *constructed ){
+	DEASSERT_NOTNULL( constructed )
+	
+	pCalculatedProperties.Add( constructed );
 	return pCalculatedProperties.GetCount() - 1;
 }
 

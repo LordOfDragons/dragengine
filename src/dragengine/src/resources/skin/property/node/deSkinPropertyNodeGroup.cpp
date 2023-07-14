@@ -19,10 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSkinPropertyNodeGroup.h"
 #include "deSkinPropertyNodeVisitor.h"
 #include "../../../../common/exceptions.h"
@@ -61,9 +57,7 @@ deSkinPropertyNode *deSkinPropertyNodeGroup::GetNodeAt( int index ) const{
 }
 
 void deSkinPropertyNodeGroup::AddNode( deSkinPropertyNode *node ){
-	if( ! node ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( node )
 	pNodes.Add( node );
 }
 
