@@ -120,6 +120,41 @@ void desmWritePropertyNode::WriteNodeCommon( const deSkinPropertyNode &node ){
 		node.GetMask()->Visit( *this );
 		pWriter.WriteClosingTag( "mask" );
 	}
+	
+	const struct sMapped{
+		deSkinPropertyNode::eMapped mapped;
+		const char *name;
+	} mapped[ 15 ] = {
+		{ deSkinPropertyNode::emPositionX, "positionX" },
+		{ deSkinPropertyNode::emPositionY, "positionY" },
+		{ deSkinPropertyNode::emPositionZ, "positionZ" },
+		{ deSkinPropertyNode::emSizeX, "sizeX" },
+		{ deSkinPropertyNode::emSizeY, "sizeY" },
+		{ deSkinPropertyNode::emSizeZ, "sizeZ" },
+		{ deSkinPropertyNode::emRotation, "rotation" },
+		{ deSkinPropertyNode::emShear, "shear" },
+		{ deSkinPropertyNode::emBrightness, "brightness" },
+		{ deSkinPropertyNode::emContrast, "contrast" },
+		{ deSkinPropertyNode::emGamma, "gamma" },
+		{ deSkinPropertyNode::emColorizeRed, "colorizeR" },
+		{ deSkinPropertyNode::emColorizeGreen, "colorizeG" },
+		{ deSkinPropertyNode::emColorizeBlue, "colorizeB" },
+		{ deSkinPropertyNode::emTransparency, "transparency" }
+	};
+	
+	int i;
+	for( i=0; i<15; i++ ){
+		const int index = node.GetMappedFor( mapped[ i ].mapped );
+		if( index == -1 ){
+			continue;
+		}
+		
+		pWriter.WriteOpeningTagStart( "mapped" );
+		pWriter.WriteAttributeString( "name", mapped[ i ].name );
+		pWriter.WriteOpeningTagEnd( false, false );
+		pWriter.WriteTextInt( index );
+		pWriter.WriteClosingTag( "mapped", false );
+	}
 }
 
 
@@ -206,6 +241,35 @@ void desmWritePropertyNode::VisitShape( deSkinPropertyNodeShape &node ){
 	
 	pWriter.WriteDataTagFloat( "thickness", node.GetThickness() );
 	
+	const struct sMapped{
+		deSkinPropertyNodeShape::eShapeMapped mapped;
+		const char *name;
+	} mapped[ 9 ] = {
+		{ deSkinPropertyNodeShape::esmFillColorRed, "fillColorR" },
+		{ deSkinPropertyNodeShape::esmFillColorGreen, "fillColorG" },
+		{ deSkinPropertyNodeShape::esmFillColorBlue, "fillColorB" },
+		{ deSkinPropertyNodeShape::esmFillColorAlpha, "fillColorA" },
+		{ deSkinPropertyNodeShape::esmLineColorRed, "fillColorR" },
+		{ deSkinPropertyNodeShape::esmLineColorGreen, "fillColorG" },
+		{ deSkinPropertyNodeShape::esmLineColorBlue, "fillColorB" },
+		{ deSkinPropertyNodeShape::esmLineColorAlpha, "fillColorA" },
+		{ deSkinPropertyNodeShape::esmThickness, "thickness" }
+	};
+	
+	int i;
+	for( i=0; i<15; i++ ){
+		const int index = node.GetShapeMappedFor( mapped[ i ].mapped );
+		if( index == -1 ){
+			continue;
+		}
+		
+		pWriter.WriteOpeningTagStart( "shapeMapped" );
+		pWriter.WriteAttributeString( "name", mapped[ i ].name );
+		pWriter.WriteOpeningTagEnd( false, false );
+		pWriter.WriteTextInt( index );
+		pWriter.WriteClosingTag( "shapeMapped", false );
+	}
+	
 	pWriter.WriteClosingTag( "shape" );
 }
 
@@ -227,6 +291,30 @@ void desmWritePropertyNode::VisitText( deSkinPropertyNodeText &node ){
 		pWriter.WriteAttributeFloat( "a", color.a );
 	}
 	pWriter.WriteOpeningTagEnd( true );
+	
+	const struct sMapped{
+		deSkinPropertyNodeText::eTextMapped mapped;
+		const char *name;
+	} mapped[ 4 ] = {
+		{ deSkinPropertyNodeText::etmFontSize, "fontSize" },
+		{ deSkinPropertyNodeText::etmColorRed, "colorR" },
+		{ deSkinPropertyNodeText::etmColorGreen, "colorG" },
+		{ deSkinPropertyNodeText::etmColorBlue, "colorB" }
+	};
+	
+	int i;
+	for( i=0; i<15; i++ ){
+		const int index = node.GetTextMappedFor( mapped[ i ].mapped );
+		if( index == -1 ){
+			continue;
+		}
+		
+		pWriter.WriteOpeningTagStart( "textMapped" );
+		pWriter.WriteAttributeString( "name", mapped[ i ].name );
+		pWriter.WriteOpeningTagEnd( false, false );
+		pWriter.WriteTextInt( index );
+		pWriter.WriteClosingTag( "textMapped", false );
+	}
 	
 	pWriter.WriteClosingTag( "text" );
 }

@@ -40,6 +40,7 @@
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeImage.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeText.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNodeMapped.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>
@@ -726,6 +727,22 @@ deSkinPropertyConstructed& property ){
 					property.SetBitCount( decString( cdata->GetData() ).ToInt() );
 				}
 				
+			}else if( strcmp( tag->GetName(), "mapped" ) == 0 ){
+				const decString &name = pGetAttributeString( *tag, "name" );
+				
+				if( property.HasMappedNamed( name ) ){
+					LogErrorFormat( "mapped(%i:%i): Duplicate mapped '%s'!",
+						tag->GetLineNumber(), tag->GetPositionNumber(), name.GetString() );
+					DETHROW( deeInvalidParam );
+				}
+				
+				const deSkinPropertyNodeMapped::Ref mapped(
+					deSkinPropertyNodeMapped::Ref::New( new deSkinPropertyNodeMapped( name ) ) );
+				
+				pParsePropertyNodeMapped( *tag, mapped );
+				
+				property.AddMapped( mapped );
+				
 			}else{
 				node = pParsePropertyNode( *tag );
 				
@@ -943,6 +960,67 @@ bool deSkinModule::pParsePropertyNodeCommon( const decXmlElementTag &tag, deSkin
 		
 		return true;
 		
+	}else if( tag.GetName() == "mapped" ){
+		const decXmlCharacterData * const cdata = tag.GetFirstData();
+		if( ! cdata ){
+			return true;
+		}
+		
+		const float index = cdata->GetData().ToInt();
+		const char * const name = pGetAttributeString( tag, "name" );
+		
+		if( strcmp( name, "positionX" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emPositionX, index );
+			
+		}else if( strcmp( name, "positionY" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emPositionY, index );
+			
+		}else if( strcmp( name, "positionZ" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emPositionZ, index );
+			
+		}else if( strcmp( name, "sizeX" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emSizeX, index );
+			
+		}else if( strcmp( name, "sizeY" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emSizeY, index );
+			
+		}else if( strcmp( name, "sizeZ" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emSizeZ, index );
+			
+		}else if( strcmp( name, "rotation" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emRotation, index );
+			
+		}else if( strcmp( name, "shear" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emShear, index );
+			
+		}else if( strcmp( name, "brightness" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emBrightness, index );
+			
+		}else if( strcmp( name, "contrast" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emContrast, index );
+			
+		}else if( strcmp( name, "gamma" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emGamma, index );
+			
+		}else if( strcmp( name, "colorizeR" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emColorizeRed, index );
+			
+		}else if( strcmp( name, "colorizeG" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emColorizeGreen, index );
+			
+		}else if( strcmp( name, "colorizeB" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emColorizeBlue, index );
+			
+		}else if( strcmp( name, "transparency" ) == 0 ){
+			node.SetMappedFor( deSkinPropertyNode::emTransparency, index );
+			
+		}else{
+			LogWarnFormat( "node(%i:%i): Unknown Tag %s, ignoring",
+				tag.GetLineNumber(), tag.GetPositionNumber(), tag.GetName().GetString() );
+		}
+		
+		return true;
+		
 	}else{
 		return false;
 	}
@@ -1095,6 +1173,47 @@ void deSkinModule::pParsePropertyNodeShape( const decXmlElementTag &root, deSkin
 			if( cdata ){
 				shape.SetThickness( strtof( cdata->GetData(), NULL ) );
 			}
+		
+		}else if( tagName == "shapeMapped" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( ! cdata ){
+				return;
+			}
+			
+			const float index = cdata->GetData().ToInt();
+			const char * const name = pGetAttributeString( *tag, "name" );
+			
+			if( strcmp( name, "fillColorR" ) == 0 ){
+				shape.SetShapeMappedFor( deSkinPropertyNodeShape::esmFillColorRed, index );
+				
+			}else if( strcmp( name, "fillColorG" ) == 0 ){
+				shape.SetShapeMappedFor( deSkinPropertyNodeShape::esmFillColorGreen, index );
+				
+			}else if( strcmp( name, "fillColorB" ) == 0 ){
+				shape.SetShapeMappedFor( deSkinPropertyNodeShape::esmFillColorBlue, index );
+				
+			}else if( strcmp( name, "fillColorA" ) == 0 ){
+				shape.SetShapeMappedFor( deSkinPropertyNodeShape::esmFillColorAlpha, index );
+				
+			}else if( strcmp( name, "lineColorR" ) == 0 ){
+				shape.SetShapeMappedFor( deSkinPropertyNodeShape::esmLineColorRed, index );
+				
+			}else if( strcmp( name, "lineColorG" ) == 0 ){
+				shape.SetShapeMappedFor( deSkinPropertyNodeShape::esmLineColorGreen, index );
+				
+			}else if( strcmp( name, "lineColorB" ) == 0 ){
+				shape.SetShapeMappedFor( deSkinPropertyNodeShape::esmLineColorBlue, index );
+				
+			}else if( strcmp( name, "lineColorA" ) == 0 ){
+				shape.SetShapeMappedFor( deSkinPropertyNodeShape::esmLineColorAlpha, index );
+				
+			}else if( strcmp( name, "thickness" ) == 0 ){
+				shape.SetShapeMappedFor( deSkinPropertyNodeShape::esmThickness, index );
+			
+			}else{
+				LogWarnFormat( "shape(%i:%i): Unknown Tag %s, ignoring",
+					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );
+			}
 			
 		}else if( ! pParsePropertyNodeCommon( *tag, shape ) ){
 			LogWarnFormat( "shape(%i:%i): Unknown Tag %s, ignoring",
@@ -1151,9 +1270,118 @@ void deSkinModule::pParsePropertyNodeText( const decXmlElementTag &root, deSkinP
 			color.Normalize();
 			
 			text.SetColor( color );
+		
+		}else if( tagName == "textMapped" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( ! cdata ){
+				return;
+			}
+			
+			const float index = cdata->GetData().ToInt();
+			const char * const name = pGetAttributeString( *tag, "name" );
+			
+			if( strcmp( name, "fontSize" ) == 0 ){
+				text.SetTextMappedFor( deSkinPropertyNodeText::etmFontSize, index );
+				
+			}else if( strcmp( name, "colorR" ) == 0 ){
+				text.SetTextMappedFor( deSkinPropertyNodeText::etmColorRed, index );
+				
+			}else if( strcmp( name, "colorG" ) == 0 ){
+				text.SetTextMappedFor( deSkinPropertyNodeText::etmColorGreen, index );
+				
+			}else if( strcmp( name, "colorB" ) == 0 ){
+				text.SetTextMappedFor( deSkinPropertyNodeText::etmColorBlue, index );
+				
+			}else{
+				LogWarnFormat( "text(%i:%i): Unknown Tag %s, ignoring",
+					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );
+			}
 			
 		}else if( ! pParsePropertyNodeCommon( *tag, text ) ){
 			LogWarnFormat( "text(%i:%i): Unknown Tag %s, ignoring",
+				tag->GetLineNumber(), tag->GetPositionNumber(),
+				tag->GetName().GetString() );
+		}
+	}
+}
+
+void deSkinModule::pParsePropertyNodeMapped( const decXmlElementTag &root, deSkinPropertyNodeMapped &mapped ){
+	int i;
+	for( i=0; i<root.GetElementCount(); i++ ){
+		decXmlElementTag * const tag = pGetTagAt( root, i );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( tag->GetName() == "curve" ){
+			pParsePropertyMappedCurve( *tag, mapped.GetCurve() );
+			
+		}else if( tag->GetName() == "inputType" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( ! cdata ){
+				continue;
+			}
+			
+			const decString &type = cdata->GetData();
+			
+			if( type == "time" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitTime );
+				
+			}else if( type == "bonePositionX" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitBonePositionX );
+				
+			}else if( type == "bonePositionY" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitBonePositionY );
+				
+			}else if( type == "bonePositionZ" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitBonePositionZ );
+				
+			}else if( type == "boneRotationX" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitBoneRotationX );
+				
+			}else if( type == "boneRotationY" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitBoneRotationY );
+				
+			}else if( type == "boneRotationZ" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitBoneRotationZ );
+				
+			}else if( type == "boneScaleX" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitBoneScaleX );
+				
+			}else if( type == "boneScaleY" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitBoneScaleY );
+				
+			}else if( type == "boneScaleZ" ){
+				mapped.SetInputType( deSkinPropertyMapped::eitBoneScaleZ );
+			}
+			
+		}else if( tag->GetName() == "inputLower" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped.SetInputLower( cdata->GetData().ToFloat() );
+			}
+			
+		}else if( tag->GetName() == "inputUpper" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped.SetInputUpper( cdata->GetData().ToFloat() );
+			}
+			
+		}else if( tag->GetName() == "inputClamped" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped.SetInputClamped( cdata->GetData() == "true"
+					|| cdata->GetData() == "yes" || cdata->GetData() == "1" );
+			}
+			
+		}else if( tag->GetName() == "bone" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped.SetBone( cdata->GetData() );
+			}
+			
+		}else{
+			LogWarnFormat( "mapped(%i:%i): Unknown Tag %s, ignoring",
 				tag->GetLineNumber(), tag->GetPositionNumber(),
 				tag->GetName().GetString() );
 		}

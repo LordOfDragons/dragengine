@@ -468,6 +468,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglRSkin.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkin.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinCalculatedProperty.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinConstructedProperty.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinPropertyMap.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinRenderable.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTexture.h" />
@@ -511,6 +512,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\shader\deoglSkinShaderManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinState.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCalculated.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateConstructed.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateController.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateRenderable.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\visitor\deoglVSDetermineChannelFormat.h" />
@@ -1077,6 +1079,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglRSkin.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkin.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinCalculatedProperty.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinConstructedProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinPropertyMap.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinRenderable.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTexture.cpp" />
@@ -1120,6 +1123,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\shader\deoglSkinShaderManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinState.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCalculated.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateConstructed.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateRenderable.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\visitor\deoglVSDetermineChannelFormat.cpp" />

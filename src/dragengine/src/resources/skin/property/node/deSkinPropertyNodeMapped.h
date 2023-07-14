@@ -19,12 +19,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DESKINPROPERTYMAPPED_H_
-#define _DESKINPROPERTYMAPPED_H_
+#ifndef _DESKINPROPERTYNODEMAPPED_H_
+#define _DESKINPROPERTYNODEMAPPED_H_
 
+#include "../deSkinPropertyMapped.h"
 #include "../../../../deObject.h"
-#include "../../../../common/curve/decCurveBezier.h"
-#include "../../../../common/math/decMath.h"
 #include "../../../../common/string/decString.h"
 
 
@@ -52,45 +51,15 @@
  */
 class DE_DLL_EXPORT deSkinPropertyNodeMapped : public deObject{
 public:
-	/** \brief Input types. */
-	enum eInputTypes{
-		/** \brief Use elapsed time. */
-		eitTime,
-		
-		/** \brief Use named bone X position. */
-		eitBonePositionX,
-		
-		/** \brief Use named bone Y position. */
-		eitBonePositionY,
-		
-		/** \brief Use named bone Z position. */
-		eitBonePositionZ,
-		
-		/** \brief Use named bone X rotation in degrees. */
-		eitBoneRotationX,
-		
-		/** \brief Use named bone Y rotation in degrees. */
-		eitBoneRotationY,
-		
-		/** \brief Use named bone Z rotation in degrees. */
-		eitBoneRotationZ,
-		
-		/** \brief Use named bone X scale. */
-		eitBoneScaleX,
-		
-		/** \brief Use named bone Y scale. */
-		eitBoneScaleY,
-		
-		/** \brief Use named bone Z scale. */
-		eitBoneScaleZ
-	};
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSkinPropertyNodeMapped> Ref;
 	
 	
 	
 private:
 	decString pName;
 	decCurveBezier pCurve;
-	eInputTypes pInputType;
+	deSkinPropertyMapped::eInputTypes pInputType;
 	float pInputLower;
 	float pInputUpper;
 	bool pInputClamped;
@@ -124,10 +93,10 @@ public:
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** \brief Input type. */
-	inline eInputTypes GetInputType() const{ return pInputType; }
+	inline deSkinPropertyMapped::eInputTypes GetInputType() const{ return pInputType; }
 	
 	/** \brief Set input type. */
-	void SetInputType( eInputTypes inputType );
+	void SetInputType( deSkinPropertyMapped::eInputTypes inputType );
 	
 	/** \brief Lower input range. */
 	inline float GetInputLower() const{ return pInputLower; }

@@ -115,6 +115,19 @@ bool deSkinPropertyConstructed::HasMapped( deSkinPropertyNodeMapped *mapped ) co
 	return pMapped.Has( mapped );
 }
 
+bool deSkinPropertyConstructed::HasMappedNamed( const char *name ) const{
+	const int count = pMapped.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( ( ( deSkinPropertyNodeMapped* )pMapped.GetAt( i ) )->GetName() == name ){
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 void deSkinPropertyConstructed::AddMapped( deSkinPropertyNodeMapped *mapped ){
 	DEASSERT_NOTNULL( mapped )
 	DEASSERT_FALSE( HasMapped( mapped ) )

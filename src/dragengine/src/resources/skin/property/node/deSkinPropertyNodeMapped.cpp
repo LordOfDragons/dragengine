@@ -32,7 +32,7 @@
 
 deSkinPropertyNodeMapped::deSkinPropertyNodeMapped( const char *name ) :
 pName( name ),
-pInputType( deSkinPropertyNodeMapped::eitTime ),
+pInputType( deSkinPropertyMapped::eitTime ),
 pInputLower( 0.0f ),
 pInputUpper( 1.0f ),
 pInputClamped( false ){
@@ -46,7 +46,7 @@ deSkinPropertyNodeMapped::~deSkinPropertyNodeMapped(){
 // Management
 ///////////////
 
-void deSkinPropertyNodeMapped::SetInputType( eInputTypes inputType ){
+void deSkinPropertyNodeMapped::SetInputType( deSkinPropertyMapped::eInputTypes inputType ){
 	pInputType = inputType;
 }
 

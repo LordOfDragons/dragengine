@@ -488,6 +488,7 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVisitorLoad.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNode.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeGroup.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeMapped.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeImage.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeShape.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeText.cpp" />
@@ -1164,6 +1165,7 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVisitorLoad.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNode.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeGroup.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeMapped.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeImage.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeShape.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeText.h" />

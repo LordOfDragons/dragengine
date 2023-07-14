@@ -117,6 +117,9 @@ public:
 	/** \brief Mapped value is present. */
 	bool HasMapped( deSkinPropertyNodeMapped *mapped ) const;
 	
+	/** \brief Named mapped value is present. */
+	bool HasMappedNamed( const char *name ) const;
+	
 	/** \brief Add mapped value. */
 	void AddMapped( deSkinPropertyNodeMapped *mapped );
 	/*@}*/

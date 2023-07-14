@@ -40,6 +40,7 @@ class deSkinPropertyNodeGroup;
 class deSkinPropertyNodeImage;
 class deSkinPropertyNodeShape;
 class deSkinPropertyNodeText;
+class deSkinPropertyNodeMapped;
 
 
 // dragengine skin module
@@ -87,6 +88,7 @@ private:
 	void pParsePropertyNodeImage( const decXmlElementTag &root, deSkinPropertyNodeImage &group );
 	void pParsePropertyNodeShape( const decXmlElementTag &root, deSkinPropertyNodeShape &group );
 	void pParsePropertyNodeText( const decXmlElementTag &root, deSkinPropertyNodeText &group );
+	void pParsePropertyNodeMapped( const decXmlElementTag &root, deSkinPropertyNodeMapped &mapped );
 	
 	decColor pParseColor( const decXmlElementTag &root );
 	void pReadVector2( const decXmlElementTag &tag, decVector2 &vector );
