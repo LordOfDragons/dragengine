@@ -268,6 +268,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetTransparency.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetMapped.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetFillColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -631,6 +634,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetTransparency.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetMapped.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetFillColor.h">

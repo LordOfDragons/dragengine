@@ -47,7 +47,7 @@ class igdeTreeItem;
 
 
 /**
- * \brief Node panel.
+ * Node panel.
  */
 class seWPNode : public igdeContainerScroll{
 private:
@@ -89,16 +89,19 @@ private:
 	igdeTextFieldReference pTextEditText;
 	igdeColorBoxReference pTextClrColor;
 	
+	igdeComboBoxReference pCBMappedType;
+	igdeComboBoxReference pCBMappedTarget;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	seWPNode( seWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~seWPNode();
 	/*@}*/
 	
@@ -107,44 +110,56 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Window properties. */
+	/** Window properties. */
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Skin. */
+	/** Skin. */
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin. */
+	/** Set skin. */
 	void SetSkin( seSkin *skin );
 	
-	/** \brief Skin path changed. */
+	/** Skin path changed. */
 	void OnSkinPathChanged();
 	
-	/** \brief Active texture or \em NULL if none. */
+	/** Active texture or \em NULL if none. */
 	seTexture *GetTexture() const;
 	
-	/** \brief Active property or \em NULL if none. */
+	/** Active property or \em NULL if none. */
 	seProperty *GetProperty() const;
 	
-	/** \brief Active node or \em NULL if none. */
+	/** Active node or \em NULL if none. */
 	sePropertyNode *GetNode() const;
 	
-	/** \brief Show node panel. */
+	/** Selected mapped type. */
+	int GetSelectedMappedType() const;
+	
+	/** Show node panel. */
 	void ShowNodePanel();
 	
-	/** \brief Update node. */
+	/** Update node. */
 	void UpdateNode();
 	
-	/** \brief Update outline. */
+	/** Update outline. */
 	void UpdateOutline();
 	
-	/** \brief Select active node in outliner. */
+	/** Select active node in outliner. */
 	void OutlinerSelectActive();
+	
+	/** Update mapped. */
+	void UpdateMapped();
+	
+	/** Update mapped type list. */
+	void UpdateMappedTypeList();
+	
+	/** Update mapped target list. */
+	void UpdateMappedTargetList();
 	/*@}*/
 	
 	
 	
 private:
-	/** \brief Update outline for tree item. */
+	/** Update outline for tree item. */
 	void UpdateOutline( igdeTreeItem *item, sePropertyNode *node, const decString &prefix );
 };
 

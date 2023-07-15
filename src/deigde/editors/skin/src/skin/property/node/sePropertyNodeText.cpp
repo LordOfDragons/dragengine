@@ -43,7 +43,7 @@
 ////////////////////////////
 
 sePropertyNodeText::sePropertyNodeText( deEngine &engine ) :
-sePropertyNode( entText, engine ),
+sePropertyNode( entText, engine, TextMappedCount ),
 pFont( NULL ),
 pFontSize( 10.0f ){
 }

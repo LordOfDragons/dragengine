@@ -95,6 +95,7 @@ const sePropertyNodeGroup &nodeGroup ){
 
 deSkinPropertyNode *seSkinBuilder::CreateNode( const sePropertyNode &node ){
 	deSkinPropertyNode *engNode = NULL;
+	int i;
 	
 	try{
 		switch( node.GetNodeType() ){
@@ -115,6 +116,29 @@ deSkinPropertyNode *seSkinBuilder::CreateNode( const sePropertyNode &node ){
 			engNodeShape->SetFillColor( nodeShape.GetFillColor() );
 			engNodeShape->SetLineColor( nodeShape.GetLineColor() );
 			engNodeShape->SetThickness( nodeShape.GetThickness() );
+			
+			const struct sMappedShape{
+				sePropertyNodeShape::eShapeMapped from;
+				deSkinPropertyNodeShape::eShapeMapped to;
+			} mappingsShape[ 9 ] = {
+				{ sePropertyNodeShape::esmFillColorRed, deSkinPropertyNodeShape::esmFillColorRed },
+				{ sePropertyNodeShape::esmFillColorGreen, deSkinPropertyNodeShape::esmFillColorGreen },
+				{ sePropertyNodeShape::esmFillColorBlue, deSkinPropertyNodeShape::esmFillColorBlue },
+				{ sePropertyNodeShape::esmFillColorAlpha, deSkinPropertyNodeShape::esmFillColorAlpha },
+				{ sePropertyNodeShape::esmLineColorRed, deSkinPropertyNodeShape::esmLineColorRed },
+				{ sePropertyNodeShape::esmLineColorGreen, deSkinPropertyNodeShape::esmLineColorGreen },
+				{ sePropertyNodeShape::esmLineColorBlue, deSkinPropertyNodeShape::esmLineColorBlue },
+				{ sePropertyNodeShape::esmLineColorAlpha, deSkinPropertyNodeShape::esmLineColorAlpha },
+				{ sePropertyNodeShape::esmThickness, deSkinPropertyNodeShape::esmThickness }
+			};
+			
+			for( i=0; i<9; i++ ){
+				seMapped * const mapped = nodeShape.GetMappedFor( mappingsShape[ i ].from );
+				if( mapped ){
+					engNodeShape->SetShapeMappedFor( mappingsShape[ i ].to, pSkin.GetMappedList().IndexOf( mapped ) );
+				}
+			}
+			
 			}break;
 			
 		case sePropertyNode::entText:{
@@ -126,6 +150,24 @@ deSkinPropertyNode *seSkinBuilder::CreateNode( const sePropertyNode &node ){
 			engNodeText->SetFontSize( nodeText.GetFontSize() );
 			engNodeText->SetText( nodeText.GetText() );
 			engNodeText->SetColor( nodeText.GetColor() );
+			
+			const struct sMappedText{
+				sePropertyNodeText::eTextMapped from;
+				deSkinPropertyNodeText::eTextMapped to;
+			} mappingsText[ 4 ] = {
+				{ sePropertyNodeText::etmFontSize, deSkinPropertyNodeText::etmFontSize },
+				{ sePropertyNodeText::etmColorRed, deSkinPropertyNodeText::etmColorRed },
+				{ sePropertyNodeText::etmColorGreen, deSkinPropertyNodeText::etmColorGreen },
+				{ sePropertyNodeText::etmColorBlue, deSkinPropertyNodeText::etmColorBlue }
+			};
+			
+			for( i=0; i<4; i++ ){
+				seMapped * const mapped = nodeText.GetMappedFor( mappingsText[ i ].from );
+				if( mapped ){
+					engNodeText->SetTextMappedFor( mappingsText[ i ].to, pSkin.GetMappedList().IndexOf( mapped ) );
+				}
+			}
+			
 			}break;
 			
 		case sePropertyNode::entGroup:{
@@ -163,6 +205,34 @@ deSkinPropertyNode *seSkinBuilder::CreateNode( const sePropertyNode &node ){
 					delete engMask;
 				}
 				throw;
+			}
+		}
+		
+		const struct sMapped{
+			sePropertyNode::eMapped from;
+			deSkinPropertyNode::eMapped to;
+		} mappings[ 15 ] = {
+			{ sePropertyNode::emPositionX, deSkinPropertyNode::emPositionX },
+			{ sePropertyNode::emPositionY, deSkinPropertyNode::emPositionY },
+			{ sePropertyNode::emPositionZ, deSkinPropertyNode::emPositionZ },
+			{ sePropertyNode::emSizeX, deSkinPropertyNode::emSizeX },
+			{ sePropertyNode::emSizeY, deSkinPropertyNode::emSizeY },
+			{ sePropertyNode::emSizeZ, deSkinPropertyNode::emSizeZ },
+			{ sePropertyNode::emRotation, deSkinPropertyNode::emRotation },
+			{ sePropertyNode::emShear, deSkinPropertyNode::emShear },
+			{ sePropertyNode::emBrightness, deSkinPropertyNode::emBrightness },
+			{ sePropertyNode::emContrast, deSkinPropertyNode::emContrast },
+			{ sePropertyNode::emGamma, deSkinPropertyNode::emGamma },
+			{ sePropertyNode::emColorizeRed, deSkinPropertyNode::emColorizeRed },
+			{ sePropertyNode::emColorizeGreen, deSkinPropertyNode::emColorizeGreen },
+			{ sePropertyNode::emColorizeBlue, deSkinPropertyNode::emColorizeBlue },
+			{ sePropertyNode::emTransparency, deSkinPropertyNode::emTransparency }
+		};
+		
+		for( i=0; i<15; i++ ){
+			seMapped * const mapped = node.GetMappedFor( mappings[ i ].from );
+			if( mapped ){
+				engNode->SetMappedFor( mappings[ i ].to, pSkin.GetMappedList().IndexOf( mapped ) );
 			}
 		}
 		

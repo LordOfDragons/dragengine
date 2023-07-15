@@ -80,13 +80,13 @@ public:
 	void LoadSkin( seSkin *skin, decBaseFileReader *file, const igdeTexturePropertyList &knownPropertyList );
 	
 	/** \brief Load propery node group. */
-	sePropertyNodeGroup *LoadPropertyNodeGroup( const deSkinPropertyNodeGroup &engNodeGroup );
+	sePropertyNodeGroup *LoadPropertyNodeGroup( seSkin &skin, const deSkinPropertyNodeGroup &engNodeGroup );
 	
 	/** \brief Load propery node. */
-	sePropertyNode *LoadPropertyNode( deSkinPropertyNode &engNode );
+	sePropertyNode *LoadPropertyNode( seSkin &skin, deSkinPropertyNode &engNode );
 	
 	/** \brief Load common propery node parameters. */
-	void LoadPropertyNodeCommon( sePropertyNode &node, const deSkinPropertyNode &engNode );
+	void LoadPropertyNodeCommon( seSkin &skin, sePropertyNode &node, const deSkinPropertyNode &engNode );
 	
 	/** \brief Save skin. */
 	void SaveSkin( seSkin *skin, decBaseFileWriter *file );

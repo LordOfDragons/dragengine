@@ -32,6 +32,23 @@
  * \brief Texture property shape node.
  */
 class sePropertyNodeShape : public sePropertyNode{
+public:
+	enum eShapeMapped{
+		esmFillColorRed = MappedCount, //<! Fill color red component
+		esmFillColorGreen, //<! Fill color green component
+		esmFillColorBlue, //<! Fill color blue component
+		esmFillColorAlpha, //<! Fill color alpha component
+		esmLineColorRed, //<! Line color red component
+		esmLineColorGreen, //<! Line color green component
+		esmLineColorBlue, //<! Line color blue component
+		esmLineColorAlpha, //<! Line color alpha component
+		esmThickness //<! Thickness
+	};
+	
+	static const int ShapeMappedCount = esmThickness + 1;
+	
+	
+	
 private:
 	deSkinPropertyNodeShape::eShapeTypes pShapeType;
 	decColor pFillColor;

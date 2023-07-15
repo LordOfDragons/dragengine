@@ -46,6 +46,7 @@
 #include "../../undosys/property/node/seUPropertyNodeSetSize.h"
 #include "../../undosys/property/node/seUPropertyNodeSetTransparency.h"
 #include "../../undosys/property/node/seUPropertyNodeSetCombineMode.h"
+#include "../../undosys/property/node/seUPropertyNodeSetMapped.h"
 #include "../../undosys/property/node/image/seUPropertyNodeImageSetPath.h"
 #include "../../undosys/property/node/image/seUPropertyNodeImageSetRepeat.h"
 #include "../../undosys/property/node/shape/seUPropertyNodeShapeSetFillColor.h"
@@ -700,6 +701,51 @@ public:
 	}
 };
 
+
+
+class cComboMappedType : public igdeComboBoxListener{
+	seWPNode &pPanel;
+public:
+	cComboMappedType( seWPNode &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeComboBox* ) override{
+		pPanel.UpdateMapped();
+	}
+};
+
+class cComboMappedTarget : public igdeComboBoxListener{
+	seWPNode &pPanel;
+	bool &pPreventUpdate;
+public:
+	cComboMappedTarget( seWPNode &panel, bool &preventUpdate ) :
+	pPanel( panel ), pPreventUpdate( preventUpdate ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ) override{
+		if( pPreventUpdate ){
+			return;
+		}
+		
+		seSkin * const skin = pPanel.GetSkin();
+		seTexture * const texture = pPanel.GetTexture();
+		seProperty * const property = pPanel.GetProperty();
+		sePropertyNode * const node = pPanel.GetNode();
+		if( ! skin || ! texture || ! property || ! node || ! comboBox->GetSelectedItem() ){
+			return;
+		}
+		
+		const int type = pPanel.GetSelectedMappedType();
+		seMapped * const curMapped = node->GetMappedFor( type );
+		seMapped * const newMapped = ( seMapped* )comboBox->GetSelectedItem()->GetData();
+		if( newMapped == curMapped ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new seUPropertyNodeSetMapped( node, type, newMapped ) );
+		skin->GetUndoSystem()->Add( undo );
+	}
+};
+
 }
 
 
@@ -758,6 +804,16 @@ pPreventUpdate( false )
 	
 	helper.EditString( content, "", pLabMask, NULL );
 	pLabMask->SetEditable( false );
+	
+	
+	// dynamic
+	helper.GroupBox( content, groupBox, "Dynamic:" );
+	
+	helper.ComboBox( groupBox, "Property:", "Property to set mapped value for",
+		pCBMappedType, new cComboMappedType( *this ) );
+	
+	helper.ComboBox( groupBox, "Mapped:", "Mapped value to use for property",
+		pCBMappedTarget, new cComboMappedTarget( *this, pPreventUpdate ) );
 	
 	
 	// type specific
@@ -850,6 +906,8 @@ void seWPNode::SetSkin( seSkin *skin ){
 		skin->AddReference();
 	}
 	
+	UpdateMappedTypeList();
+	UpdateMappedTargetList();
 	UpdateNode();
 	ShowNodePanel();
 	UpdateOutline();
@@ -868,17 +926,21 @@ void seWPNode::OnSkinPathChanged(){
 }
 
 seTexture *seWPNode::GetTexture() const{
-	return pSkin ? pSkin->GetActiveTexture() : NULL;
+	return pSkin ? pSkin->GetActiveTexture() : nullptr;
 }
 
 seProperty *seWPNode::GetProperty() const{
 	seTexture * const texture = GetTexture();
-	return texture ? texture->GetActiveProperty() : NULL;
+	return texture ? texture->GetActiveProperty() : nullptr;
 }
 
 sePropertyNode *seWPNode::GetNode() const{
 	seProperty * const property = GetProperty();
-	return property ? property->GetNodeSelection().GetActive() : NULL;
+	return property ? property->GetNodeSelection().GetActive() : nullptr;
+}
+
+int seWPNode::GetSelectedMappedType() const{
+	return pCBMappedType->GetSelectedItem() ? ( int )( intptr_t )pCBMappedType->GetSelectedItem()->GetData() : -1;
 }
 
 void seWPNode::ShowNodePanel(){
@@ -1063,6 +1125,8 @@ void seWPNode::UpdateNode(){
 	pClrColorize->SetEnabled( enabled );
 	pSldTransparency->SetEnabled( enabled );
 	pCBCombineMode->SetEnabled( enabled );
+	
+	UpdateMapped();
 }
 
 void seWPNode::UpdateOutline(){
@@ -1102,6 +1166,8 @@ void seWPNode::UpdateOutline(){
 			pTreeOutline->RemoveItem( removeItem );
 		}
 		
+		OutlinerSelectActive();
+		
 		pPreventUpdate = false;
 		
 	}catch( const deException & ){
@@ -1112,6 +1178,102 @@ void seWPNode::UpdateOutline(){
 
 void seWPNode::OutlinerSelectActive(){
 	pTreeOutline->SetSelectionWithData( GetNode() );
+}
+
+void seWPNode::UpdateMapped(){
+	const int type = GetSelectedMappedType();
+	const sePropertyNode * const node = GetNode();
+	
+	if( node && type != -1 ){
+		pCBMappedTarget->SetSelectionWithData( node->GetMappedFor( type ) );
+		
+	}else{
+		pCBMappedTarget->SetSelectionWithData( nullptr );
+	}
+	
+	pCBMappedTarget->SetEnabled( node && type != -1 );
+}
+
+void seWPNode::UpdateMappedTypeList(){
+	const int selection = GetSelectedMappedType();
+	
+	const sePropertyNode * const node = GetNode();
+	if( ! node ){
+		pCBMappedType->SetEnabled( false );
+		return;
+	}
+	
+	pCBMappedType->RemoveAllItems();
+	
+	pCBMappedType->AddItem( "Position X", nullptr, ( void* )( intptr_t )sePropertyNode::emPositionX );
+	pCBMappedType->AddItem( "Position Y", nullptr, ( void* )( intptr_t )sePropertyNode::emPositionY );
+	pCBMappedType->AddItem( "Position Z", nullptr, ( void* )( intptr_t )sePropertyNode::emPositionZ );
+	pCBMappedType->AddItem( "Size X", nullptr, ( void* )( intptr_t )sePropertyNode::emSizeX );
+	pCBMappedType->AddItem( "Size Y", nullptr, ( void* )( intptr_t )sePropertyNode::emSizeY );
+	pCBMappedType->AddItem( "Size Z", nullptr, ( void* )( intptr_t )sePropertyNode::emSizeZ );
+	pCBMappedType->AddItem( "Rotation", nullptr, ( void* )( intptr_t )sePropertyNode::emRotation );
+	pCBMappedType->AddItem( "Shear", nullptr, ( void* )( intptr_t )sePropertyNode::emShear );
+	pCBMappedType->AddItem( "Brightness", nullptr, ( void* )( intptr_t )sePropertyNode::emBrightness );
+	pCBMappedType->AddItem( "Contrast", nullptr, ( void* )( intptr_t )sePropertyNode::emContrast );
+	pCBMappedType->AddItem( "Gamma", nullptr, ( void* )( intptr_t )sePropertyNode::emGamma );
+	pCBMappedType->AddItem( "Colorize Red", nullptr, ( void* )( intptr_t )sePropertyNode::emColorizeRed );
+	pCBMappedType->AddItem( "Colorize Green", nullptr, ( void* )( intptr_t )sePropertyNode::emColorizeGreen );
+	pCBMappedType->AddItem( "Colorize Blue", nullptr, ( void* )( intptr_t )sePropertyNode::emColorizeBlue );
+	pCBMappedType->AddItem( "Transparency", nullptr, ( void* )( intptr_t )sePropertyNode::emTransparency );
+	
+	switch( node->GetNodeType() ){
+	case sePropertyNode::entShape:
+		pCBMappedType->AddItem( "Fill Color Red", nullptr, ( void* )( intptr_t )sePropertyNodeShape::esmFillColorRed );
+		pCBMappedType->AddItem( "Fill Color Green", nullptr, ( void* )( intptr_t )sePropertyNodeShape::esmFillColorGreen );
+		pCBMappedType->AddItem( "Fill Color Blue", nullptr, ( void* )( intptr_t )sePropertyNodeShape::esmFillColorBlue );
+		pCBMappedType->AddItem( "Fill Color Alpha", nullptr, ( void* )( intptr_t )sePropertyNodeShape::esmFillColorAlpha );
+		pCBMappedType->AddItem( "Line Color Red", nullptr, ( void* )( intptr_t )sePropertyNodeShape::esmLineColorRed );
+		pCBMappedType->AddItem( "Line Color Green", nullptr, ( void* )( intptr_t )sePropertyNodeShape::esmLineColorGreen );
+		pCBMappedType->AddItem( "Line Color Blue", nullptr, ( void* )( intptr_t )sePropertyNodeShape::esmLineColorBlue );
+		pCBMappedType->AddItem( "Line Color Alpha", nullptr, ( void* )( intptr_t )sePropertyNodeShape::esmLineColorAlpha );
+		pCBMappedType->AddItem( "Thickness", nullptr, ( void* )( intptr_t )sePropertyNodeShape::esmThickness );
+		break;
+		
+	case sePropertyNode::entText:
+		pCBMappedType->AddItem( "Font Size", nullptr, ( void* )( intptr_t )sePropertyNodeText::etmFontSize );
+		pCBMappedType->AddItem( "Color Red", nullptr, ( void* )( intptr_t )sePropertyNodeText::etmColorRed );
+		pCBMappedType->AddItem( "Color Green", nullptr, ( void* )( intptr_t )sePropertyNodeText::etmColorGreen );
+		pCBMappedType->AddItem( "Color Blue", nullptr, ( void* )( intptr_t )sePropertyNodeText::etmColorBlue );
+		break;
+		
+	default:
+		break;
+	}
+	
+	pCBMappedType->SetEnabled( true );
+	pCBMappedType->SetSelectionWithData( ( void* )( intptr_t )selection );
+	if( pCBMappedType->GetSelection() == -1 ){
+		pCBMappedType->SetSelection( 0 );
+	}
+}
+
+void seWPNode::UpdateMappedTargetList(){
+	seMapped * const selection = pCBMappedTarget->GetSelectedItem()
+		? ( seMapped* )pCBMappedTarget->GetSelectedItem() : nullptr;
+	
+	pPreventUpdate = true;
+	pCBMappedTarget->RemoveAllItems();
+	
+	if( pSkin ){
+		const seMappedList &list = pSkin->GetMappedList();
+		const int count = list.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			seMapped * const mapped = list.GetAt( i );
+			pCBMappedTarget->AddItem( mapped->GetName(), nullptr, mapped );
+		}
+		pCBMappedTarget->SortItems();
+	}
+	
+	pCBMappedTarget->InsertItem( 0, "< None >", nullptr, nullptr );
+	pCBMappedTarget->SetSelectionWithData( selection );
+	pPreventUpdate = false;
 }
 
 

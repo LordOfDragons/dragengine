@@ -32,6 +32,18 @@ class deFont;
  * \brief Texture property text node.
  */
 class sePropertyNodeText : public sePropertyNode{
+public:
+	enum eTextMapped{
+		etmFontSize = MappedCount, //<! Font size
+		etmColorRed, //<! Color red component
+		etmColorGreen, //<! Color green component
+		etmColorBlue //<! Color blue component
+	};
+	
+	static const int TextMappedCount = etmColorBlue + 1;
+	
+	
+	
 private:
 	decString pPath;
 	deFont *pFont;

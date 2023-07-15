@@ -122,6 +122,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetShear.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetSize.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetTransparency.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetMapped.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetFillColor.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetLineColor.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetThickness.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetShear.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetSize.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetTransparency.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetMapped.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetFillColor.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetLineColor.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetThickness.h" />

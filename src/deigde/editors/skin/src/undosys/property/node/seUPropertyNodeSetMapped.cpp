@@ -19,29 +19,31 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "seUMappedSetBone.h"
+#include "seUPropertyNodeSetMapped.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class seUMappedSetBone
-///////////////////////////
+// Class seUPropertyNodeSetMapped
+///////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetBone::seUMappedSetBone( seMapped *mapped, const char *newBone ) :
-pMapped( mapped ),
-pOldBone( mapped ? mapped->GetBone().GetString() : "" ),
-pNewBone( newBone )
+seUPropertyNodeSetMapped::seUPropertyNodeSetMapped( sePropertyNode *node, int type, seMapped *newValue ) :
+pNode( node ),
+pType( type ),
+pOldValue( node ? node->GetMappedFor( type ) : nullptr ),
+pNewValue( newValue )
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL( node )
+	DEASSERT_NOTNULL( node->GetProperty() )
 	
-	SetShortInfo( "Set Mapped Bone" );
+	SetShortInfo( "Node set mapped" );
 }
 
-seUMappedSetBone::~seUMappedSetBone(){
+seUPropertyNodeSetMapped::~seUPropertyNodeSetMapped(){
 }
 
 
@@ -49,10 +51,10 @@ seUMappedSetBone::~seUMappedSetBone(){
 // Management
 ///////////////
 
-void seUMappedSetBone::Undo(){
-	pMapped->SetBone( pOldBone );
+void seUPropertyNodeSetMapped::Undo(){
+	pNode->SetMappedFor( pType, pOldValue );
 }
 
-void seUMappedSetBone::Redo(){
-	pMapped->SetBone( pNewBone );
+void seUPropertyNodeSetMapped::Redo(){
+	pNode->SetMappedFor( pType, pNewValue );
 }
