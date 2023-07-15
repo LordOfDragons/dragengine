@@ -151,15 +151,15 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureImport.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedAdd.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedRemove.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetBone.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetCurve.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputLower.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputType.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputUpper.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetName.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedToggleInputClamped.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputLower.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputType.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputUpper.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedToggleInputClamped.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataPropertyNode.h" />
@@ -274,15 +274,15 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureImport.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureRemove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedAdd.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedRemove.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetBone.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetCurve.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputLower.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputType.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputUpper.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetName.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedToggleInputClamped.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputLower.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputType.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputUpper.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedToggleInputClamped.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
