@@ -1383,9 +1383,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinMapped.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

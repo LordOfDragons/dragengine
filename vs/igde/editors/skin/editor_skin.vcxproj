@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataPropertyNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataMapped.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfiguration.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfigurationXML.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\interaction\seVCIDragNode.cpp" />
@@ -59,6 +60,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPUndoHistoryListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPView.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPViewListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMapped.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMappedListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seTaskSyncGameDefinition.cpp" />
@@ -81,6 +84,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeText.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\seProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\sePropertyList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMapped.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMappedList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinListener.cpp" />
@@ -146,9 +151,19 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureImport.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputLower.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputType.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputUpper.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedToggleInputClamped.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataPropertyNode.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataMapped.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfiguration.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfigurationXML.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\interaction\seVCIDragNode.h" />
@@ -168,6 +183,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPUndoHistoryListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPView.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPViewListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMapped.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMappedListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddProperty.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddTexture.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seTaskSyncGameDefinition.h" />
@@ -190,6 +207,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeText.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\seProperty.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\sePropertyList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMapped.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMappedList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinListener.h" />
@@ -255,6 +274,15 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureImport.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureRemove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetBone.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetCurve.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputLower.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputType.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputUpper.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedToggleInputClamped.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

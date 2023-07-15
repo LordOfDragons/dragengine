@@ -22,6 +22,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataPropertyNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataMapped.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -77,6 +80,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPViewListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMapped.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMappedListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddProperty.cpp">
@@ -143,6 +152,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMapped.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMappedList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.cpp">
@@ -340,9 +355,39 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputLower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputUpper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedToggleInputClamped.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataPropertyNode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataMapped.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfiguration.h">
@@ -400,6 +445,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPViewListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMapped.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMappedListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddProperty.h">
@@ -466,6 +517,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMapped.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMappedList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.h">
@@ -661,6 +718,33 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetBone.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetCurve.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputLower.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetInputUpper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUMappedToggleInputClamped.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
