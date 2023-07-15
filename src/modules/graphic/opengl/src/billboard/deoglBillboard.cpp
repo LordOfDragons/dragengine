@@ -65,6 +65,7 @@ pDirtyRenderEnvMap( true ),
 pDirtySkin( true ),
 pDirtyDynamicSkin( true ),
 pDirtyRenderableMapping( true ),
+pDirtySkinStateMapped( true ),
 pDirtySkinStateCalculatedProperties( true ),
 pDirtySkinStateConstructedProperties( true ),
 pSkinStatePrepareRenderables( true ),
@@ -143,8 +144,12 @@ void deoglBillboard::SyncToRender(){
 	pAccumUpdate = 0.0f;
 	pCheckRequiresUpdateEverySync();
 	
-	// sync calculated skin state properties. has to come after pSkinStateController->SyncToRender()
+	// sync skin state properties. has to come after pSkinStateController->SyncToRender()
 	// and pRBillboard->UpdateSkin()
+	if( pDirtySkinStateMapped ){
+		pRBillboard->InitSkinStateMapped();
+		pDirtySkinStateMapped = false;
+	}
 	if( pDirtySkinStateCalculatedProperties ){
 		pRBillboard->InitSkinStateCalculatedProperties();
 		pDirtySkinStateCalculatedProperties = false;
@@ -153,11 +158,13 @@ void deoglBillboard::SyncToRender(){
 		pRBillboard->InitSkinStateConstructedProperties();
 		pDirtySkinStateConstructedProperties = false;
 	}
+	
 	if( pSkinStatePrepareRenderables ){
 		pRBillboard->DirtyPrepareSkinStateRenderables();
 		pSkinStatePrepareRenderables = false;
 	}
 	
+	pRBillboard->UpdateSkinStateMapped(); // has to be done better. only some need this
 	pRBillboard->UpdateSkinStateCalculatedProperties(); // has to be done better. only some need this
 	pRBillboard->UpdateSkinStateConstructedProperties(); // has to be done better. only some need this
 	
@@ -286,6 +293,7 @@ void deoglBillboard::OffsetChanged(){
 void deoglBillboard::SkinChanged(){
 	pDirtySkin = true;
 	pDirtySkinStateController = true;
+	pDirtySkinStateMapped = true;
 	pDirtySkinStateCalculatedProperties = true;
 	pDirtySkinStateConstructedProperties = true;
 	pDirtyRenderableMapping = true;

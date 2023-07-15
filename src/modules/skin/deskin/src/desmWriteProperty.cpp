@@ -31,6 +31,8 @@
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/deSkinMapped.h>
 #include <dragengine/resources/skin/property/deSkinPropertyValue.h>
 #include <dragengine/resources/skin/property/deSkinPropertyColor.h>
 #include <dragengine/resources/skin/property/deSkinPropertyImage.h>
@@ -47,13 +49,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-desmWriteProperty::desmWriteProperty( decXmlWriter &writer, const char *propertyType ) :
+desmWriteProperty::desmWriteProperty( decXmlWriter &writer, const deSkin &skin, const char *propertyType ) :
 pWriter( writer ),
+pSkin( skin ),
 pPropertyType( propertyType )
 {
-	if( ! propertyType ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( propertyType )
 }
 
 desmWriteProperty::~desmWriteProperty(){
@@ -178,7 +179,7 @@ void desmWriteProperty::VisitConstructed( deSkinPropertyConstructed &property ){
 		pWriter.WriteDataTagInt( "bitCount", property.GetBitCount() );
 	}
 	
-	desmWritePropertyNode writer( pWriter );
+	desmWritePropertyNode writer( pWriter, pSkin );
 	const int count = content.GetNodeCount();
 	int i;
 	
@@ -197,123 +198,17 @@ void desmWriteProperty::VisitMapped( deSkinPropertyMapped &property ){
 	}
 	pWriter.WriteOpeningTagEnd();
 	
-	const char * const names[] = { "red", "green", "blue", "alpha" };
-	int i;
-	for( i=0; i<4; i++ ){
-		const deSkinPropertyMapped::cComponent &component = property.GetComponent( i );
-		if( component.GetCurve().GetPointCount() == 0
-		&& component.GetInputType() == deSkinPropertyMapped::eitTime
-		&& fabsf( component.GetInputLower() ) < FLOAT_SAFE_EPSILON
-		&& fabsf( component.GetInputUpper() - 1.0f ) < FLOAT_SAFE_EPSILON
-		&& component.GetInputClamped()
-		&& component.GetBone().IsEmpty() ){
-			continue;
-		}
-		
-		pWriter.WriteOpeningTag( names[ i ] );
-		
-		if( component.GetCurve().GetPointCount() > 0 ){
-			const int pointCount = component.GetCurve().GetPointCount();
-			int j;
-			
-			pWriter.WriteOpeningTag( "curve" );
-			
-			switch( component.GetCurve().GetInterpolationMode() ){
-			case decCurveBezier::eimConstant:
-				pWriter.WriteDataTagString( "interpolation", "constant" );
-				break;
-				
-			case decCurveBezier::eimLinear:
-				pWriter.WriteDataTagString( "interpolation", "linear" );
-				break;
-				
-			case decCurveBezier::eimBezier:
-				break;
-			}
-			
-			for( j=0; j<pointCount; j++ ){
-				const decCurveBezierPoint &point = component.GetCurve().GetPointAt( j );
-				pWriter.WriteOpeningTag( "point" );
-				
-				pWriter.WriteOpeningTagStart( "coordinates" );
-				pWriter.WriteAttributeFloat( "x", point.GetPoint().x );
-				pWriter.WriteAttributeFloat( "y", point.GetPoint().y );
-				pWriter.WriteOpeningTagEnd( true );
-				
-				pWriter.WriteOpeningTagStart( "handle1" );
-				pWriter.WriteAttributeFloat( "x", point.GetHandle1().x );
-				pWriter.WriteAttributeFloat( "y", point.GetHandle1().y );
-				pWriter.WriteOpeningTagEnd( true );
-				
-				pWriter.WriteOpeningTagStart( "handle2" );
-				pWriter.WriteAttributeFloat( "x", point.GetHandle2().x );
-				pWriter.WriteAttributeFloat( "y", point.GetHandle2().y );
-				pWriter.WriteOpeningTagEnd( true );
-				
-				pWriter.WriteClosingTag( "point" );
-			}
-			
-			pWriter.WriteClosingTag( "curve" );
-		}
-		
-		switch( component.GetInputType() ){
-		case deSkinPropertyMapped::eitTime:
-			break;
-			
-		case deSkinPropertyMapped::eitBonePositionX:
-			pWriter.WriteDataTagString( "inputType", "bonePositionX" );
-			break;
-			
-		case deSkinPropertyMapped::eitBonePositionY:
-			pWriter.WriteDataTagString( "inputType", "bonePositionY" );
-			break;
-			
-		case deSkinPropertyMapped::eitBonePositionZ:
-			pWriter.WriteDataTagString( "inputType", "bonePositionZ" );
-			break;
-			
-		case deSkinPropertyMapped::eitBoneRotationX:
-			pWriter.WriteDataTagString( "inputType", "boneRotationX" );
-			break;
-			
-		case deSkinPropertyMapped::eitBoneRotationY:
-			pWriter.WriteDataTagString( "inputType", "boneRotationY" );
-			break;
-			
-		case deSkinPropertyMapped::eitBoneRotationZ:
-			pWriter.WriteDataTagString( "inputType", "boneRotationZ" );
-			break;
-			
-		case deSkinPropertyMapped::eitBoneScaleX:
-			pWriter.WriteDataTagString( "inputType", "boneScaleX" );
-			break;
-			
-		case deSkinPropertyMapped::eitBoneScaleY:
-			pWriter.WriteDataTagString( "inputType", "boneScaleY" );
-			break;
-			
-		case deSkinPropertyMapped::eitBoneScaleZ:
-			pWriter.WriteDataTagString( "inputType", "boneScaleZ" );
-			break;
-		}
-		
-		if( fabsf( component.GetInputLower() ) >= FLOAT_SAFE_EPSILON ){
-			pWriter.WriteDataTagFloat( "inputLower", component.GetInputLower() );
-		}
-		
-		if( fabsf( component.GetInputUpper() - 1.0f ) >= FLOAT_SAFE_EPSILON ){
-			pWriter.WriteDataTagFloat( "inputUpper", component.GetInputUpper() );
-		}
-		
-		if( component.GetInputClamped() ){
-			pWriter.WriteDataTagBool( "inputClamped", component.GetInputClamped() );
-		}
-		
-		if( ! component.GetBone().IsEmpty() ){
-			pWriter.WriteDataTagString( "bone", component.GetBone() );
-		}
-		
-		pWriter.WriteClosingTag( names[ i ] );
+	if( property.GetRed() != -1 ){
+		pWriter.WriteDataTagString( "mappedRed", pSkin.GetMappedAt( property.GetRed() )->GetName() );
+	}
+	if( property.GetGreen() != -1 ){
+		pWriter.WriteDataTagString( "mappedGreen", pSkin.GetMappedAt( property.GetGreen() )->GetName() );
+	}
+	if( property.GetBlue() != -1 ){
+		pWriter.WriteDataTagString( "mappedBlue", pSkin.GetMappedAt( property.GetBlue() )->GetName() );
+	}
+	if( property.GetAlpha() != -1 ){
+		pWriter.WriteDataTagString( "mappedAlpha", pSkin.GetMappedAt( property.GetAlpha() )->GetName() );
 	}
 	
 	pWriter.WriteClosingTag( "mapped" );

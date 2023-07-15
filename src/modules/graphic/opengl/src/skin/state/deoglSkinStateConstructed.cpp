@@ -19,19 +19,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSkinStateConstructed.h"
 #include "../deoglSkinConstructedProperty.h"
-#include "../../component/deoglRComponent.h"
 #include "../../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/resources/component/deComponent.h>
-#include <dragengine/resources/component/deComponentBone.h>
-#include <dragengine/resources/rig/deRig.h>
 
 
 
@@ -43,9 +35,7 @@
 
 deoglSkinStateConstructed::deoglSkinStateConstructed() :
 pTexture( nullptr ),
-pProperty( nullptr ),
-pComponent( nullptr )
-{
+pProperty( nullptr ){
 }
 
 deoglSkinStateConstructed::~deoglSkinStateConstructed(){
@@ -72,16 +62,6 @@ void deoglSkinStateConstructed::SetTexture( deoglTexture* texture ) {
 
 void deoglSkinStateConstructed::SetProperty( deoglSkinConstructedProperty *property ){
 	pProperty = property;
-}
-
-void deoglSkinStateConstructed::SetComponent( const deoglRComponent *component ){
-	pComponent = component;
-}
-
-void deoglSkinStateConstructed::MapBones( const deComponent &component ){
-}
-
-void deoglSkinStateConstructed::UpdateBones( const deComponent &component ){
 }
 
 void deoglSkinStateConstructed::Update( deoglSkinState &skinState ){

@@ -349,6 +349,16 @@ void deoglRBillboard::UpdateSkin( float elapsed ){
 	}
 }
 
+void deoglRBillboard::InitSkinStateMapped(){
+	pSkinState->InitMapped();
+}
+
+void deoglRBillboard::UpdateSkinStateMapped(){
+	if( pSkinState ){
+		pSkinState->UpdateMapped();
+	}
+}
+
 void deoglRBillboard::InitSkinStateCalculatedProperties(){
 	pSkinState->InitCalculatedProperties();
 }

@@ -19,16 +19,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DESKINPROPERTYNODEMAPPED_H_
-#define _DESKINPROPERTYNODEMAPPED_H_
+#ifndef _DESKINPMAPPED_H_
+#define _DESKINPMAPPED_H_
 
-#include "../deSkinPropertyMapped.h"
-#include "../../../../deObject.h"
-#include "../../../../common/string/decString.h"
+#include "../../deObject.h"
+#include "../../common/curve/decCurveBezier.h"
+#include "../../common/math/decMath.h"
+#include "../../common/string/decString.h"
 
 
 /**
- * \brief Mapped value for skin property node.
+ * \brief Mapped value for skin properties.
  *
  * Samples curve to produce value to use. Different inputs can be used for the curve:
  * - Time: Use elapsed time.
@@ -49,17 +50,50 @@
  * time based repeating animations. For bone related input it can be useful to enable
  * clamping to avoid values wrapping around.
  */
-class DE_DLL_EXPORT deSkinPropertyNodeMapped : public deObject{
+class DE_DLL_EXPORT deSkinMapped : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSkinPropertyNodeMapped> Ref;
+	typedef deTObjectReference<deSkinMapped> Ref;
+	
+	/** \brief Input types. */
+	enum eInputTypes{
+		/** \brief Use elapsed time. */
+		eitTime,
+		
+		/** \brief Use named bone X position. */
+		eitBonePositionX,
+		
+		/** \brief Use named bone Y position. */
+		eitBonePositionY,
+		
+		/** \brief Use named bone Z position. */
+		eitBonePositionZ,
+		
+		/** \brief Use named bone X rotation in degrees. */
+		eitBoneRotationX,
+		
+		/** \brief Use named bone Y rotation in degrees. */
+		eitBoneRotationY,
+		
+		/** \brief Use named bone Z rotation in degrees. */
+		eitBoneRotationZ,
+		
+		/** \brief Use named bone X scale. */
+		eitBoneScaleX,
+		
+		/** \brief Use named bone Y scale. */
+		eitBoneScaleY,
+		
+		/** \brief Use named bone Z scale. */
+		eitBoneScaleZ
+	};
 	
 	
 	
 private:
 	decString pName;
 	decCurveBezier pCurve;
-	deSkinPropertyMapped::eInputTypes pInputType;
+	eInputTypes pInputType;
 	float pInputLower;
 	float pInputUpper;
 	bool pInputClamped;
@@ -75,10 +109,10 @@ public:
 	 * 
 	 * \param name Name of mapped value.
 	 */
-	deSkinPropertyNodeMapped( const char *name );
+	deSkinMapped ( const char *name );
 	
 	/** \brief Clean up skin property color. */
-	virtual ~deSkinPropertyNodeMapped();
+	virtual ~deSkinMapped();
 	/*@}*/
 	
 	
@@ -93,10 +127,10 @@ public:
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** \brief Input type. */
-	inline deSkinPropertyMapped::eInputTypes GetInputType() const{ return pInputType; }
+	inline eInputTypes GetInputType() const{ return pInputType; }
 	
 	/** \brief Set input type. */
-	void SetInputType( deSkinPropertyMapped::eInputTypes inputType );
+	void SetInputType( eInputTypes inputType );
 	
 	/** \brief Lower input range. */
 	inline float GetInputLower() const{ return pInputLower; }
@@ -125,7 +159,7 @@ public:
 	
 	
 	/** \brief Assign from other mapped value. */
-	deSkinPropertyNodeMapped &operator=( const deSkinPropertyNodeMapped &mapped );
+	deSkinMapped &operator=( const deSkinMapped &mapped );
 	/*@}*/
 };
 

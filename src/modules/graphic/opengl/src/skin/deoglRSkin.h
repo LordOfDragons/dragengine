@@ -33,6 +33,7 @@ class deoglRenderThread;
 class deoglSkinTexture;
 class deoglSkinRenderable;
 class deoglVSRetainImageData;
+class deoglSkinMapped;
 class deoglSkinCalculatedProperty;
 class deoglSkinConstructedProperty;
 
@@ -74,6 +75,7 @@ private:
 	
 	decObjectList pRenderables;
 	int pVideoPlayerCount;
+	decObjectList pMapped;
 	decObjectList pCalculatedProperties;
 	decObjectList pConstructedProperties;
 	
@@ -185,6 +187,14 @@ public:
 	 * \returns Index of video player.
 	 */
 	int AddVideoPlayer();
+	
+	
+	
+	/** Count of mapped. */
+	int GetMappedCount() const;
+	
+	/** Mapped. */
+	deoglSkinMapped *GetMappedAt( int index ) const;
 	
 	
 	

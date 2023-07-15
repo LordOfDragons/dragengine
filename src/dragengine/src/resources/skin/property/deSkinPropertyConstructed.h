@@ -23,11 +23,9 @@
 #define _DESKINPROPERTYCONSTRUCTED_H_
 
 #include "deSkinProperty.h"
-#include "../../../common/collection/decObjectOrderedSet.h"
 #include "../../../common/math/decMath.h"
 
 class deSkinPropertyNodeGroup;
-class deSkinPropertyNodeMapped;
 
 
 /**
@@ -40,7 +38,6 @@ private:
 	bool pTileX;
 	bool pTileY;
 	int pBitCount;
-	decObjectOrderedSet pMapped;
 	
 	
 	
@@ -96,32 +93,6 @@ public:
 	 * Allowed are 8, 16 or 32.
 	 */
 	void SetBitCount( int bitCount );
-	/*@}*/
-	
-	
-	
-	/** \name Mapped Values */
-	/*@{*/
-	/** \brief Count of mapped values. */
-	int GetMappedCount() const;
-	
-	/** \brief Mapped value at index. */
-	deSkinPropertyNodeMapped *GetMappedAt( int index ) const;
-	
-	/** \brief Named mapped value or nullptr. */
-	deSkinPropertyNodeMapped *GetMappedNamed( const char *name ) const;
-	
-	/** \brief Index of mapped value. */
-	int IndexOfMapped( deSkinPropertyNodeMapped *mapped ) const;
-	
-	/** \brief Mapped value is present. */
-	bool HasMapped( deSkinPropertyNodeMapped *mapped ) const;
-	
-	/** \brief Named mapped value is present. */
-	bool HasMappedNamed( const char *name ) const;
-	
-	/** \brief Add mapped value. */
-	void AddMapped( deSkinPropertyNodeMapped *mapped );
 	/*@}*/
 	
 	

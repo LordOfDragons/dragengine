@@ -80,6 +80,7 @@ public:
 	bool pDirtyBoneMatrices;
 	bool pDirtyLODErrorScaling;
 	bool pDirtyMesh;
+	bool pDirtySkinStateMapped;
 	bool pDirtySkinStateCalculatedProperties;
 	bool pDirtySkinStateConstructedProperties;
 	bool pSkinStatePrepareRenderables;

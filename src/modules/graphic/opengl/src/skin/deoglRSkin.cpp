@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglRSkin.h"
+#include "deoglSkinMapped.h"
 #include "deoglSkinTexture.h"
 #include "deoglSkinRenderable.h"
 #include "deoglSkinCalculatedProperty.h"
@@ -49,6 +50,7 @@
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinTexture.h>
+#include <dragengine/resources/skin/deSkinMapped.h>
 #include <dragengine/resources/skin/property/deSkinProperty.h>
 #include <dragengine/threading/deSemaphore.h>
 
@@ -107,9 +109,15 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
 	const int textureCount = skin.GetTextureCount();
+	const int mappedCount = skin.GetMappedCount();
 	int i;
 	
 	try{
+		// created mapped
+		for( i=0; i<mappedCount; i++ ){
+			pMapped.Add( deObject::Ref::New( new deoglSkinMapped( *skin.GetMappedAt( i ) ) ) );
+		}
+		
 		// create textures. we create only what does not require an opengl call.
 		// these are delayed until a time where we can safely create opengl objects.
 		// loads textures from caches. skips already loaded shared images
@@ -404,6 +412,19 @@ int deoglRSkin::AddCalculatedProperty( deoglSkinCalculatedProperty *calculated )
 	
 	pCalculatedProperties.Add( calculated );
 	return pCalculatedProperties.GetCount() - 1;
+}
+
+
+
+// Mapped
+///////////
+
+int deoglRSkin::GetMappedCount() const{
+	return pMapped.GetCount();
+}
+
+deoglSkinMapped *deoglRSkin::GetMappedAt( int index ) const{
+	return ( deoglSkinMapped* )pMapped.GetAt( index );
 }
 
 

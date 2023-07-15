@@ -35,12 +35,12 @@
 #include <dragengine/resources/skin/property/deSkinPropertyColor.h>
 #include <dragengine/resources/skin/property/deSkinPropertyImage.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVideo.h>
+#include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
 #include <dragengine/resources/skin/property/deSkinPropertyConstructed.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeGroup.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeImage.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeText.h>
-#include <dragengine/resources/skin/property/node/deSkinPropertyNodeMapped.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>
@@ -229,13 +229,12 @@ void deSkinModule::pParseSkin( const decXmlElementTag &root, deSkin &skin ){
 		basePath.SetFromUnix( "/" );
 	}
 	
-	// load
 	try{
 		for( i=0; i<root.GetElementCount(); i++ ){
 			tag = pGetTagAt( root, i );
 			
 			if( tag ){
-				if( strcmp( tag->GetName(), "texture" ) == 0 ){
+				if( tag->GetName() == "texture" ){
 					texture = pParseTexture( *tag, basePath, skin );
 					
 					if( skin.IndexOfTextureNamed( texture->GetName() ) != -1 ){
@@ -245,12 +244,22 @@ void deSkinModule::pParseSkin( const decXmlElementTag &root, deSkin &skin ){
 					}
 					
 					skin.AddTexture( texture );
-					texture = NULL;
+					texture = nullptr;
+					
+				}else if( tag->GetName() == "mapped" ){
+					const deSkinMapped::Ref mapped( pParseMapped( *tag ) );
+					
+					if( skin.HasMappedNamed( mapped->GetName() ) ){
+						LogErrorFormat( "mapped(%i:%i): Duplicate mapped!",
+							tag->GetLineNumber(), tag->GetPositionNumber() );
+						DETHROW( deeInvalidParam );
+					}
+					
+					skin.AddMapped( mapped );
 					
 				}else{
-					LogWarnFormat( "skin(%i:%i): Unknown Tag %s, ignoring",
-						tag->GetLineNumber(), tag->GetPositionNumber(),
-						tag->GetName().GetString() );
+					LogWarnFormat( "skin(%i:%i): Unknown Tag %s, ignoring", tag->GetLineNumber(),
+						tag->GetPositionNumber(), tag->GetName().GetString() );
 				}
 			}
 		}
@@ -263,6 +272,161 @@ void deSkinModule::pParseSkin( const decXmlElementTag &root, deSkin &skin ){
 		throw;
 	}
 }
+
+
+
+deSkinMapped::Ref deSkinModule::pParseMapped( const decXmlElementTag &root, const char *forceName ){
+	const deSkinMapped::Ref mapped( deSkinMapped::Ref::New( new deSkinMapped(
+		forceName ? forceName : pGetAttributeString( root, "name" ) ) ) );
+	int i;
+	
+	for( i=0; i<root.GetElementCount(); i++ ){
+		decXmlElementTag * const tag = pGetTagAt( root, i );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( tag->GetName() == "curve" ){
+			pParseMappedCurve( *tag, mapped->GetCurve() );
+			
+		}else if( tag->GetName() == "inputType" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( ! cdata ){
+				continue;
+			}
+			
+			const decString &type = cdata->GetData();
+			
+			if( type == "time" ){
+				mapped->SetInputType( deSkinMapped::eitTime );
+				
+			}else if( type == "bonePositionX" ){
+				mapped->SetInputType( deSkinMapped::eitBonePositionX );
+				
+			}else if( type == "bonePositionY" ){
+				mapped->SetInputType( deSkinMapped::eitBonePositionY );
+				
+			}else if( type == "bonePositionZ" ){
+				mapped->SetInputType( deSkinMapped::eitBonePositionZ );
+				
+			}else if( type == "boneRotationX" ){
+				mapped->SetInputType( deSkinMapped::eitBoneRotationX );
+				
+			}else if( type == "boneRotationY" ){
+				mapped->SetInputType( deSkinMapped::eitBoneRotationY );
+				
+			}else if( type == "boneRotationZ" ){
+				mapped->SetInputType( deSkinMapped::eitBoneRotationZ );
+				
+			}else if( type == "boneScaleX" ){
+				mapped->SetInputType( deSkinMapped::eitBoneScaleX );
+				
+			}else if( type == "boneScaleY" ){
+				mapped->SetInputType( deSkinMapped::eitBoneScaleY );
+				
+			}else if( type == "boneScaleZ" ){
+				mapped->SetInputType( deSkinMapped::eitBoneScaleZ );
+			}
+			
+		}else if( tag->GetName() == "inputLower" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped->SetInputLower( cdata->GetData().ToFloat() );
+			}
+			
+		}else if( tag->GetName() == "inputUpper" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped->SetInputUpper( cdata->GetData().ToFloat() );
+			}
+			
+		}else if( tag->GetName() == "inputClamped" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped->SetInputClamped( cdata->GetData() == "true"
+					|| cdata->GetData() == "yes" || cdata->GetData() == "1" );
+			}
+			
+		}else if( tag->GetName() == "bone" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped->SetBone( cdata->GetData() );
+			}
+			
+		}else{
+			LogWarnFormat( "mapped(%i:%i): Unknown Tag %s, ignoring", tag->GetLineNumber(),
+				tag->GetPositionNumber(), tag->GetName().GetString() );
+		}
+	}
+	
+	return mapped;
+}
+
+void deSkinModule::pParseMappedCurve( const decXmlElementTag &root, decCurveBezier &curve ){
+	int i;
+	for( i=0; i<root.GetElementCount(); i++ ){
+		decXmlElementTag * const tag = pGetTagAt( root, i );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( tag->GetName() == "interpolation" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( ! cdata ){
+				continue;
+			}
+			
+			const decString &type = cdata->GetData();
+			
+			if( type == "constant" ){
+				curve.SetInterpolationMode( decCurveBezier::eimConstant );
+				
+			}else if( type == "linear" ){
+				curve.SetInterpolationMode( decCurveBezier::eimLinear );
+				
+			}else if( type == "bezier" ){
+				curve.SetInterpolationMode( decCurveBezier::eimBezier );
+			}
+			
+		}else if( tag->GetName() == "point" ){
+			pParseMappedCurvePoint ( *tag, curve );
+			
+		}else{
+			LogWarnFormat( "curve(%i:%i): Unknown Tag %s, ignoring", tag->GetLineNumber(),
+				tag->GetPositionNumber(), tag->GetName().GetString() );
+		}
+	}
+}
+
+void deSkinModule::pParseMappedCurvePoint( const decXmlElementTag &root, decCurveBezier &curve ){
+	decVector2 point, handle1, handle2;
+	int i;
+	
+	for( i=0; i<root.GetElementCount(); i++ ){
+		decXmlElementTag * const tag = pGetTagAt( root, i );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( tag->GetName() == "coordinates" ){
+			pReadVector2( *tag, point );
+			
+		}else if( tag->GetName() == "handle1" ){
+			pReadVector2( *tag, handle1 );
+			
+		}else if( tag->GetName() == "handle2" ){
+			pReadVector2( *tag, handle2 );
+			
+		}else{
+			LogWarnFormat( "point(%i:%i): Unknown Tag %s, ignoring", tag->GetLineNumber(),
+				tag->GetPositionNumber(), tag->GetName().GetString() );
+		}
+	}
+	
+	curve.AddPoint( decCurveBezierPoint( point, handle1, handle2 ) );
+}
+
+
 
 deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPath &basePath, deSkin &skin ){
 	deSkinPropertyValue *propertyValue = NULL;
@@ -415,7 +579,7 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 						propertyMapped->SetRenderable( pGetAttributeString( *tag, "renderable" ) );
 					}
 					
-					pParsePropertyMapped( *tag, *propertyMapped );
+					pParsePropertyMapped( *tag, skin, *propertyMapped );
 					
 					texture->AddProperty( propertyMapped );
 					propertyMapped = NULL;
@@ -435,7 +599,7 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 						propertyConstructed->SetRenderable( pGetAttributeString( *tag, "renderable" ) );
 					}
 					
-					pParsePropertyConstructed( *tag, *propertyConstructed );
+					pParsePropertyConstructed( *tag, skin, *propertyConstructed );
 					
 					texture->AddProperty( propertyConstructed );
 					propertyConstructed = NULL;
@@ -490,8 +654,11 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 	return texture;
 }
 
-void deSkinModule::pParsePropertyMapped( const decXmlElementTag &root, deSkinPropertyMapped &property ){
-	int i;
+void deSkinModule::pParsePropertyMapped( const decXmlElementTag &root, deSkin &skin, deSkinPropertyMapped &property ){
+	deSkinMapped::Ref mapped;
+	int i, index;
+	decString name;
+	
 	for( i=0; i<root.GetElementCount(); i++ ){
 		decXmlElementTag * const tag = pGetTagAt( root, i );
 		if( ! tag ){
@@ -499,177 +666,70 @@ void deSkinModule::pParsePropertyMapped( const decXmlElementTag &root, deSkinPro
 		}
 		
 		if( tag->GetName() == "red" ){
-			pParsePropertyMappedComponent( *tag, property.GetRed() );
+			// deprecated
+			index = skin.GetMappedCount();
+			name.Format( "#generated%d", index );
+			mapped = pParseMapped( *tag, name );
+			skin.AddMapped( mapped );
+			property.SetRed( index );
 			
 		}else if( tag->GetName() == "green" ){
-			pParsePropertyMappedComponent( *tag, property.GetGreen() );
+			// deprecated
+			index = skin.GetMappedCount();
+			name.Format( "#generated%d", index );
+			mapped = pParseMapped( *tag, name );
+			skin.AddMapped( mapped );
+			property.SetGreen( index );
 			
 		}else if( tag->GetName() == "blue" ){
-			pParsePropertyMappedComponent( *tag, property.GetBlue() );
+			// deprecated
+			index = skin.GetMappedCount();
+			name.Format( "#generated%d", index );
+			mapped = pParseMapped( *tag, name );
+			skin.AddMapped( mapped );
+			property.SetBlue( index );
 			
 		}else if( tag->GetName() == "alpha" ){
-			pParsePropertyMappedComponent( *tag, property.GetAlpha() );
+			// deprecated
+			index = skin.GetMappedCount();
+			name.Format( "#generated%d", index );
+			mapped = pParseMapped( *tag, name );
+			skin.AddMapped( mapped );
+			property.SetAlpha( index );
 			
-		}else{
-			LogWarnFormat( "mapped(%i:%i): Unknown Tag %s, ignoring",
-				tag->GetLineNumber(), tag->GetPositionNumber(),
-				tag->GetName().GetString() );
-		}
-	}
-}
-
-void deSkinModule::pParsePropertyMappedComponent( const decXmlElementTag &root,
-deSkinPropertyMapped::cComponent &component ){
-	int i;
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = pGetTagAt( root, i );
-		if( ! tag ){
-			continue;
-		}
-		
-		if( tag->GetName() == "curve" ){
-			pParsePropertyMappedCurve( *tag, component.GetCurve() );
-			
-		}else if( tag->GetName() == "inputType" ){
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( ! cdata ){
-				continue;
-			}
-			
-			const decString &type = cdata->GetData();
-			
-			if( type == "time" ){
-				component.SetInputType( deSkinPropertyMapped::eitTime );
-				
-			}else if( type == "bonePositionX" ){
-				component.SetInputType( deSkinPropertyMapped::eitBonePositionX );
-				
-			}else if( type == "bonePositionY" ){
-				component.SetInputType( deSkinPropertyMapped::eitBonePositionY );
-				
-			}else if( type == "bonePositionZ" ){
-				component.SetInputType( deSkinPropertyMapped::eitBonePositionZ );
-				
-			}else if( type == "boneRotationX" ){
-				component.SetInputType( deSkinPropertyMapped::eitBoneRotationX );
-				
-			}else if( type == "boneRotationY" ){
-				component.SetInputType( deSkinPropertyMapped::eitBoneRotationY );
-				
-			}else if( type == "boneRotationZ" ){
-				component.SetInputType( deSkinPropertyMapped::eitBoneRotationZ );
-				
-			}else if( type == "boneScaleX" ){
-				component.SetInputType( deSkinPropertyMapped::eitBoneScaleX );
-				
-			}else if( type == "boneScaleY" ){
-				component.SetInputType( deSkinPropertyMapped::eitBoneScaleY );
-				
-			}else if( type == "boneScaleZ" ){
-				component.SetInputType( deSkinPropertyMapped::eitBoneScaleZ );
-			}
-			
-		}else if( tag->GetName() == "inputLower" ){
+		}else if( tag->GetName() == "mappedRed" ){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if( cdata ){
-				component.SetInputLower( cdata->GetData().ToFloat() );
+				property.SetRed( skin.IndexOfMappedNamed( cdata->GetData() ) );
 			}
 			
-		}else if( tag->GetName() == "inputUpper" ){
+		}else if( tag->GetName() == "mappedGreen" ){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if( cdata ){
-				component.SetInputUpper( cdata->GetData().ToFloat() );
+				property.SetGreen( skin.IndexOfMappedNamed( cdata->GetData() ) );
 			}
 			
-		}else if( tag->GetName() == "inputClamped" ){
+		}else if( tag->GetName() == "mappedBlue" ){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if( cdata ){
-				component.SetInputClamped( cdata->GetData() == "true"
-					|| cdata->GetData() == "yes" || cdata->GetData() == "1" );
+				property.SetBlue( skin.IndexOfMappedNamed( cdata->GetData() ) );
 			}
 			
-		}else if( tag->GetName() == "bone" ){
+		}else if( tag->GetName() == "mappedAlpha" ){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if( cdata ){
-				component.SetBone( cdata->GetData() );
+				property.SetAlpha( skin.IndexOfMappedNamed( cdata->GetData() ) );
 			}
 			
 		}else{
-			LogWarnFormat( "constructed(%i:%i): Unknown Tag %s, ignoring",
-				tag->GetLineNumber(), tag->GetPositionNumber(),
-				tag->GetName().GetString() );
+			LogWarnFormat( "mapped(%i:%i): Unknown Tag %s, ignoring", tag->GetLineNumber(),
+				tag->GetPositionNumber(), tag->GetName().GetString() );
 		}
 	}
-}
-
-void deSkinModule::pParsePropertyMappedCurve( const decXmlElementTag &root, decCurveBezier &curve ){
-	int i;
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = pGetTagAt( root, i );
-		if( ! tag ){
-			continue;
-		}
-		
-		if( tag->GetName() == "interpolation" ){
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( ! cdata ){
-				continue;
-			}
-			
-			const decString &type = cdata->GetData();
-			
-			if( type == "constant" ){
-				curve.SetInterpolationMode( decCurveBezier::eimConstant );
-				
-			}else if( type == "linear" ){
-				curve.SetInterpolationMode( decCurveBezier::eimLinear );
-				
-			}else if( type == "bezier" ){
-				curve.SetInterpolationMode( decCurveBezier::eimBezier );
-			}
-			
-		}else if( tag->GetName() == "point" ){
-			pParsePropertyMappedCurvePoint( *tag, curve );
-			
-		}else{
-			LogWarnFormat( "curve(%i:%i): Unknown Tag %s, ignoring",
-				tag->GetLineNumber(), tag->GetPositionNumber(),
-				tag->GetName().GetString() );
-		}
-	}
-}
-
-void deSkinModule::pParsePropertyMappedCurvePoint( const decXmlElementTag &root, decCurveBezier &curve ){
-	decVector2 point, handle1, handle2;
-	int i;
-	
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = pGetTagAt( root, i );
-		if( ! tag ){
-			continue;
-		}
-		
-		if( tag->GetName() == "coordinates" ){
-			pReadVector2( *tag, point );
-			
-		}else if( tag->GetName() == "handle1" ){
-			pReadVector2( *tag, handle1 );
-			
-		}else if( tag->GetName() == "handle2" ){
-			pReadVector2( *tag, handle2 );
-			
-		}else{
-			LogWarnFormat( "point(%i:%i): Unknown Tag %s, ignoring",
-				tag->GetLineNumber(), tag->GetPositionNumber(),
-				tag->GetName().GetString() );
-		}
-	}
-	
-	curve.AddPoint( decCurveBezierPoint( point, handle1, handle2 ) );
 }
 
 void deSkinModule::pParsePropertyConstructed( const decXmlElementTag& root,
-deSkinPropertyConstructed& property ){
+const deSkin &skin, deSkinPropertyConstructed& property ){
 	deSkinPropertyNode *node = NULL;
 	int i;
 	
@@ -727,24 +787,8 @@ deSkinPropertyConstructed& property ){
 					property.SetBitCount( decString( cdata->GetData() ).ToInt() );
 				}
 				
-			}else if( strcmp( tag->GetName(), "mapped" ) == 0 ){
-				const decString &name = pGetAttributeString( *tag, "name" );
-				
-				if( property.HasMappedNamed( name ) ){
-					LogErrorFormat( "mapped(%i:%i): Duplicate mapped '%s'!",
-						tag->GetLineNumber(), tag->GetPositionNumber(), name.GetString() );
-					DETHROW( deeInvalidParam );
-				}
-				
-				const deSkinPropertyNodeMapped::Ref mapped(
-					deSkinPropertyNodeMapped::Ref::New( new deSkinPropertyNodeMapped( name ) ) );
-				
-				pParsePropertyNodeMapped( *tag, mapped );
-				
-				property.AddMapped( mapped );
-				
 			}else{
-				node = pParsePropertyNode( *tag );
+				node = pParsePropertyNode( *tag, skin );
 				
 				if( node ){
 					property.GetContent().AddNode( node );
@@ -767,26 +811,26 @@ deSkinPropertyConstructed& property ){
 	}
 }
 
-deSkinPropertyNode *deSkinModule::pParsePropertyNode( const decXmlElementTag &tag ){
+deSkinPropertyNode *deSkinModule::pParsePropertyNode( const decXmlElementTag &tag, const deSkin &skin ){
 	deSkinPropertyNode *node = NULL;
 	
 	try{
 		const decString tagName( tag.GetName() );
 		if( tagName == "group" ){
 			node = new deSkinPropertyNodeGroup;
-			pParsePropertyNodeGroup( tag, *( ( deSkinPropertyNodeGroup* )node ) );
+			pParsePropertyNodeGroup( tag, skin, *( ( deSkinPropertyNodeGroup* )node ) );
 			
 		}else if( tagName == "image" ){
 			node = new deSkinPropertyNodeImage;
-			pParsePropertyNodeImage( tag, *( ( deSkinPropertyNodeImage* )node ) );
+			pParsePropertyNodeImage( tag, skin, *( ( deSkinPropertyNodeImage* )node ) );
 			
 		}else if( tagName == "shape" ){
 			node = new deSkinPropertyNodeShape;
-			pParsePropertyNodeShape( tag, *( ( deSkinPropertyNodeShape* )node ) );
+			pParsePropertyNodeShape( tag, skin, *( ( deSkinPropertyNodeShape* )node ) );
 			
 		}else if( tagName == "text" ){
 			node = new deSkinPropertyNodeText;
-			pParsePropertyNodeText( tag, *( ( deSkinPropertyNodeText* )node ) );
+			pParsePropertyNodeText( tag, skin, *( ( deSkinPropertyNodeText* )node ) );
 		}
 		
 	}catch( const deException &e ){
@@ -800,7 +844,8 @@ deSkinPropertyNode *deSkinModule::pParsePropertyNode( const decXmlElementTag &ta
 	return node;
 }
 
-bool deSkinModule::pParsePropertyNodeCommon( const decXmlElementTag &tag, deSkinPropertyNode &node ){
+bool deSkinModule::pParsePropertyNodeCommon( const decXmlElementTag &tag,
+const deSkin &skin, deSkinPropertyNode &node ){
 	const decString tagName( tag.GetName() );
 	
 	if( tagName == "position" ){
@@ -926,19 +971,19 @@ bool deSkinModule::pParsePropertyNodeCommon( const decXmlElementTag &tag, deSkin
 				const decString tagName2( tagMask->GetName() );
 				if( tagName2 == "group" ){
 					nodeMask = new deSkinPropertyNodeGroup;
-					pParsePropertyNodeGroup( *tagMask, *( ( deSkinPropertyNodeGroup* )nodeMask ) );
+					pParsePropertyNodeGroup( *tagMask, skin, *( ( deSkinPropertyNodeGroup* )nodeMask ) );
 					
 				}else if( tagName2 == "image" ){
 					nodeMask = new deSkinPropertyNodeImage;
-					pParsePropertyNodeImage( *tagMask, *( ( deSkinPropertyNodeImage* )nodeMask ) );
+					pParsePropertyNodeImage( *tagMask, skin, *( ( deSkinPropertyNodeImage* )nodeMask ) );
 					
 				}else if( tagName2 == "shape" ){
 					nodeMask = new deSkinPropertyNodeShape;
-					pParsePropertyNodeShape( *tagMask, *( ( deSkinPropertyNodeShape* )nodeMask ) );
+					pParsePropertyNodeShape( *tagMask, skin, *( ( deSkinPropertyNodeShape* )nodeMask ) );
 					
 				}else if( tagName2 == "text" ){
 					nodeMask = new deSkinPropertyNodeText;
-					pParsePropertyNodeText( *tagMask, *( ( deSkinPropertyNodeText* )nodeMask ) );
+					pParsePropertyNodeText( *tagMask, skin, *( ( deSkinPropertyNodeText* )nodeMask ) );
 					
 				}else{
 					LogWarnFormat( "mask(%i:%i): Unknown Tag %s, ignoring",
@@ -966,7 +1011,7 @@ bool deSkinModule::pParsePropertyNodeCommon( const decXmlElementTag &tag, deSkin
 			return true;
 		}
 		
-		const float index = cdata->GetData().ToInt();
+		const int index = skin.IndexOfMappedNamed( cdata->GetData() );
 		const char * const name = pGetAttributeString( tag, "name" );
 		
 		if( strcmp( name, "positionX" ) == 0 ){
@@ -1026,7 +1071,8 @@ bool deSkinModule::pParsePropertyNodeCommon( const decXmlElementTag &tag, deSkin
 	}
 }
 
-void deSkinModule::pParsePropertyNodeGroup( const decXmlElementTag &root, deSkinPropertyNodeGroup &group ){
+void deSkinModule::pParsePropertyNodeGroup( const decXmlElementTag &root,
+const deSkin &skin, deSkinPropertyNodeGroup &group ){
 	const int count = root.GetElementCount();
 	deSkinPropertyNode *node = NULL;
 	int i;
@@ -1040,12 +1086,12 @@ void deSkinModule::pParsePropertyNodeGroup( const decXmlElementTag &root, deSkin
 			
 			const decString tagName( tag->GetName() );
 			
-			node = pParsePropertyNode( *tag );
+			node = pParsePropertyNode( *tag, skin );
 			if( node ){
 				group.AddNode( node );
 				node = NULL;
 				
-			}else if( ! pParsePropertyNodeCommon( *tag, group ) ){
+			}else if( ! pParsePropertyNodeCommon( *tag, skin, group ) ){
 				LogWarnFormat( "group(%i:%i): Unknown Tag %s, ignoring",
 					tag->GetLineNumber(), tag->GetPositionNumber(),
 					tag->GetName().GetString() );
@@ -1061,7 +1107,8 @@ void deSkinModule::pParsePropertyNodeGroup( const decXmlElementTag &root, deSkin
 	}
 }
 
-void deSkinModule::pParsePropertyNodeImage( const decXmlElementTag &root, deSkinPropertyNodeImage &image ){
+void deSkinModule::pParsePropertyNodeImage( const decXmlElementTag &root,
+const deSkin &skin, deSkinPropertyNodeImage &image ){
 	const int count = root.GetElementCount();
 	int i;
 	
@@ -1090,7 +1137,7 @@ void deSkinModule::pParsePropertyNodeImage( const decXmlElementTag &root, deSkin
 			
 			image.SetRepeat( repeat );
 			
-		}else if( ! pParsePropertyNodeCommon( *tag, image ) ){
+		}else if( ! pParsePropertyNodeCommon( *tag, skin, image ) ){
 			LogWarnFormat( "image(%i:%i): Unknown Tag %s, ignoring",
 				tag->GetLineNumber(), tag->GetPositionNumber(),
 				tag->GetName().GetString() );
@@ -1098,7 +1145,8 @@ void deSkinModule::pParsePropertyNodeImage( const decXmlElementTag &root, deSkin
 	}
 }
 
-void deSkinModule::pParsePropertyNodeShape( const decXmlElementTag &root, deSkinPropertyNodeShape &shape ){
+void deSkinModule::pParsePropertyNodeShape( const decXmlElementTag &root,
+const deSkin &skin, deSkinPropertyNodeShape &shape ){
 	const int count = root.GetElementCount();
 	int i;
 	
@@ -1180,7 +1228,7 @@ void deSkinModule::pParsePropertyNodeShape( const decXmlElementTag &root, deSkin
 				return;
 			}
 			
-			const float index = cdata->GetData().ToInt();
+			const int index = skin.IndexOfMappedNamed( cdata->GetData() );
 			const char * const name = pGetAttributeString( *tag, "name" );
 			
 			if( strcmp( name, "fillColorR" ) == 0 ){
@@ -1215,7 +1263,7 @@ void deSkinModule::pParsePropertyNodeShape( const decXmlElementTag &root, deSkin
 					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );
 			}
 			
-		}else if( ! pParsePropertyNodeCommon( *tag, shape ) ){
+		}else if( ! pParsePropertyNodeCommon( *tag, skin, shape ) ){
 			LogWarnFormat( "shape(%i:%i): Unknown Tag %s, ignoring",
 				tag->GetLineNumber(), tag->GetPositionNumber(),
 				tag->GetName().GetString() );
@@ -1223,7 +1271,8 @@ void deSkinModule::pParsePropertyNodeShape( const decXmlElementTag &root, deSkin
 	}
 }
 
-void deSkinModule::pParsePropertyNodeText( const decXmlElementTag &root, deSkinPropertyNodeText &text ){
+void deSkinModule::pParsePropertyNodeText( const decXmlElementTag &root,
+const deSkin &skin, deSkinPropertyNodeText &text ){
 	const int count = root.GetElementCount();
 	int i;
 	
@@ -1277,7 +1326,7 @@ void deSkinModule::pParsePropertyNodeText( const decXmlElementTag &root, deSkinP
 				return;
 			}
 			
-			const float index = cdata->GetData().ToInt();
+			const int index = skin.IndexOfMappedNamed( cdata->GetData() );
 			const char * const name = pGetAttributeString( *tag, "name" );
 			
 			if( strcmp( name, "fontSize" ) == 0 ){
@@ -1297,91 +1346,8 @@ void deSkinModule::pParsePropertyNodeText( const decXmlElementTag &root, deSkinP
 					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );
 			}
 			
-		}else if( ! pParsePropertyNodeCommon( *tag, text ) ){
+		}else if( ! pParsePropertyNodeCommon( *tag, skin, text ) ){
 			LogWarnFormat( "text(%i:%i): Unknown Tag %s, ignoring",
-				tag->GetLineNumber(), tag->GetPositionNumber(),
-				tag->GetName().GetString() );
-		}
-	}
-}
-
-void deSkinModule::pParsePropertyNodeMapped( const decXmlElementTag &root, deSkinPropertyNodeMapped &mapped ){
-	int i;
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = pGetTagAt( root, i );
-		if( ! tag ){
-			continue;
-		}
-		
-		if( tag->GetName() == "curve" ){
-			pParsePropertyMappedCurve( *tag, mapped.GetCurve() );
-			
-		}else if( tag->GetName() == "inputType" ){
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( ! cdata ){
-				continue;
-			}
-			
-			const decString &type = cdata->GetData();
-			
-			if( type == "time" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitTime );
-				
-			}else if( type == "bonePositionX" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitBonePositionX );
-				
-			}else if( type == "bonePositionY" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitBonePositionY );
-				
-			}else if( type == "bonePositionZ" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitBonePositionZ );
-				
-			}else if( type == "boneRotationX" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitBoneRotationX );
-				
-			}else if( type == "boneRotationY" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitBoneRotationY );
-				
-			}else if( type == "boneRotationZ" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitBoneRotationZ );
-				
-			}else if( type == "boneScaleX" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitBoneScaleX );
-				
-			}else if( type == "boneScaleY" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitBoneScaleY );
-				
-			}else if( type == "boneScaleZ" ){
-				mapped.SetInputType( deSkinPropertyMapped::eitBoneScaleZ );
-			}
-			
-		}else if( tag->GetName() == "inputLower" ){
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( cdata ){
-				mapped.SetInputLower( cdata->GetData().ToFloat() );
-			}
-			
-		}else if( tag->GetName() == "inputUpper" ){
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( cdata ){
-				mapped.SetInputUpper( cdata->GetData().ToFloat() );
-			}
-			
-		}else if( tag->GetName() == "inputClamped" ){
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( cdata ){
-				mapped.SetInputClamped( cdata->GetData() == "true"
-					|| cdata->GetData() == "yes" || cdata->GetData() == "1" );
-			}
-			
-		}else if( tag->GetName() == "bone" ){
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( cdata ){
-				mapped.SetBone( cdata->GetData() );
-			}
-			
-		}else{
-			LogWarnFormat( "mapped(%i:%i): Unknown Tag %s, ignoring",
 				tag->GetLineNumber(), tag->GetPositionNumber(),
 				tag->GetName().GetString() );
 		}
@@ -1441,15 +1407,130 @@ void deSkinModule::pReadVector2( const decXmlElementTag &tag, decVector2 &vector
 
 
 void deSkinModule::pWriteSkin( decXmlWriter &writer, const deSkin &skin ){
-	int t, textureCount = skin.GetTextureCount();
+	int i;
 	
 	writer.WriteOpeningTag( "skin" );
 	
-	for( t=0; t<textureCount; t++ ){
-		pWriteTexture( writer, skin, *skin.GetTextureAt( t ) );
+	const int mappedCount = skin.GetMappedCount();
+	for( i=0; i<mappedCount; i++ ){
+		pWriteMapped( writer, *skin.GetMappedAt( i ) );
+	}
+	
+	const int textureCount = skin.GetTextureCount();
+	for( i=0; i<textureCount; i++ ){
+		pWriteTexture( writer, skin, *skin.GetTextureAt( i ) );
 	}
 	
 	writer.WriteClosingTag( "skin", true );
+}
+
+void deSkinModule::pWriteMapped( decXmlWriter &writer, const deSkinMapped &mapped ) {
+	writer.WriteOpeningTagStart( "mapped" );
+	writer.WriteAttributeString( "name", mapped.GetName() );
+	writer.WriteOpeningTagEnd();
+	
+	if( mapped.GetCurve().GetPointCount() > 0 ){
+		const int pointCount = mapped.GetCurve().GetPointCount();
+		int j;
+		
+		writer.WriteOpeningTag( "curve" );
+		
+		switch( mapped.GetCurve().GetInterpolationMode() ){
+		case decCurveBezier::eimConstant:
+			writer.WriteDataTagString( "interpolation", "constant" );
+			break;
+			
+		case decCurveBezier::eimLinear:
+			writer.WriteDataTagString( "interpolation", "linear" );
+			break;
+			
+		case decCurveBezier::eimBezier:
+			break;
+		}
+		
+		for( j=0; j<pointCount; j++ ){
+			const decCurveBezierPoint &point = mapped.GetCurve().GetPointAt( j );
+			writer.WriteOpeningTag( "point" );
+			
+			writer.WriteOpeningTagStart( "coordinates" );
+			writer.WriteAttributeFloat( "x", point.GetPoint().x );
+			writer.WriteAttributeFloat( "y", point.GetPoint().y );
+			writer.WriteOpeningTagEnd( true );
+			
+			writer.WriteOpeningTagStart( "handle1" );
+			writer.WriteAttributeFloat( "x", point.GetHandle1().x );
+			writer.WriteAttributeFloat( "y", point.GetHandle1().y );
+			writer.WriteOpeningTagEnd( true );
+			
+			writer.WriteOpeningTagStart( "handle2" );
+			writer.WriteAttributeFloat( "x", point.GetHandle2().x );
+			writer.WriteAttributeFloat( "y", point.GetHandle2().y );
+			writer.WriteOpeningTagEnd( true );
+			
+			writer.WriteClosingTag( "point" );
+		}
+		
+		writer.WriteClosingTag( "curve" );
+	}
+	
+	switch( mapped.GetInputType() ){
+	case deSkinMapped::eitTime:
+		break;
+		
+	case deSkinMapped::eitBonePositionX:
+		writer.WriteDataTagString( "inputType", "bonePositionX" );
+		break;
+		
+	case deSkinMapped::eitBonePositionY:
+		writer.WriteDataTagString( "inputType", "bonePositionY" );
+		break;
+		
+	case deSkinMapped::eitBonePositionZ:
+		writer.WriteDataTagString( "inputType", "bonePositionZ" );
+		break;
+		
+	case deSkinMapped::eitBoneRotationX:
+		writer.WriteDataTagString( "inputType", "boneRotationX" );
+		break;
+		
+	case deSkinMapped::eitBoneRotationY:
+		writer.WriteDataTagString( "inputType", "boneRotationY" );
+		break;
+		
+	case deSkinMapped::eitBoneRotationZ:
+		writer.WriteDataTagString( "inputType", "boneRotationZ" );
+		break;
+		
+	case deSkinMapped::eitBoneScaleX:
+		writer.WriteDataTagString( "inputType", "boneScaleX" );
+		break;
+		
+	case deSkinMapped::eitBoneScaleY:
+		writer.WriteDataTagString( "inputType", "boneScaleY" );
+		break;
+		
+	case deSkinMapped::eitBoneScaleZ:
+		writer.WriteDataTagString( "inputType", "boneScaleZ" );
+		break;
+	}
+	
+	if( fabsf( mapped.GetInputLower() ) >= FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "inputLower", mapped.GetInputLower() );
+	}
+	
+	if( fabsf( mapped.GetInputUpper() - 1.0f ) >= FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "inputUpper", mapped.GetInputUpper() );
+	}
+	
+	if( mapped.GetInputClamped() ){
+		writer.WriteDataTagBool( "inputClamped", mapped.GetInputClamped() );
+	}
+	
+	if( ! mapped.GetBone().IsEmpty() ){
+		writer.WriteDataTagString( "bone", mapped.GetBone() );
+	}
+	
+	writer.WriteClosingTag( "mapped", true );
 }
 
 void deSkinModule::pWriteTexture( decXmlWriter &writer, const deSkin &skin, const deSkinTexture &texture ){
@@ -1460,14 +1541,14 @@ void deSkinModule::pWriteTexture( decXmlWriter &writer, const deSkin &skin, cons
 	writer.WriteOpeningTagEnd();
 	
 	for( p=0; p<propertyCount; p++ ){
-		pWriteProperty( writer, *texture.GetPropertyAt( p ) );
+		pWriteProperty( writer, skin, *texture.GetPropertyAt( p ) );
 	}
 	
 	writer.WriteClosingTag( "texture", true );
 }
 
-void deSkinModule::pWriteProperty( decXmlWriter &writer, deSkinProperty &property ){
-	desmWriteProperty writeProperty( writer, property.GetType().GetString() );
+void deSkinModule::pWriteProperty( decXmlWriter &writer, const deSkin &skin, deSkinProperty &property ){
+	desmWriteProperty writeProperty( writer, skin, property.GetType() );
 	
 	property.Visit( writeProperty );
 }

@@ -19,26 +19,26 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "deSkinPropertyNodeMapped.h"
-#include "../../../../common/exceptions.h"
+#include "deSkinMapped.h"
+#include "../../common/exceptions.h"
 
 
 
-// Class deSkinPropertyNodeMapped
+// Class deSkinMapped
 ///////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deSkinPropertyNodeMapped::deSkinPropertyNodeMapped( const char *name ) :
+deSkinMapped::deSkinMapped ( const char *name ) :
 pName( name ),
-pInputType( deSkinPropertyMapped::eitTime ),
+pInputType( eitTime ),
 pInputLower( 0.0f ),
 pInputUpper( 1.0f ),
 pInputClamped( false ){
 }
 
-deSkinPropertyNodeMapped::~deSkinPropertyNodeMapped(){
+deSkinMapped::~deSkinMapped(){
 }
 
 
@@ -46,29 +46,29 @@ deSkinPropertyNodeMapped::~deSkinPropertyNodeMapped(){
 // Management
 ///////////////
 
-void deSkinPropertyNodeMapped::SetInputType( deSkinPropertyMapped::eInputTypes inputType ){
+void deSkinMapped::SetInputType( eInputTypes inputType ){
 	pInputType = inputType;
 }
 
-void deSkinPropertyNodeMapped::SetInputLower( float lower ){
+void deSkinMapped::SetInputLower( float lower ){
 	pInputLower = lower;
 }
 
-void deSkinPropertyNodeMapped::SetInputUpper( float upper ){
+void deSkinMapped::SetInputUpper( float upper ){
 	pInputUpper = upper;
 }
 
-void deSkinPropertyNodeMapped::SetInputClamped( bool inputClamped ){
+void deSkinMapped::SetInputClamped( bool inputClamped ){
 	pInputClamped = inputClamped;
 }
 
-void deSkinPropertyNodeMapped::SetBone( const char *bone ){
+void deSkinMapped::SetBone( const char *bone ){
 	pBone = bone;
 }
 
 
 
-deSkinPropertyNodeMapped &deSkinPropertyNodeMapped::operator=( const deSkinPropertyNodeMapped &mapped ){
+deSkinMapped &deSkinMapped::operator=( const deSkinMapped &mapped ){
 	pCurve = mapped.pCurve;
 	pInputType = mapped.pInputType;
 	pInputLower = mapped.pInputLower;

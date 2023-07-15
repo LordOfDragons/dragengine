@@ -25,6 +25,8 @@
 
 #include "seTexture.h"
 #include "seTextureSkinBuilder.h"
+#include "../seSkin.h"
+#include "../mapped/seMapped.h"
 #include "../property/seProperty.h"
 #include "../property/node/sePropertyNodeGroup.h"
 #include "../property/node/sePropertyNodeImage.h"
@@ -56,12 +58,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seTextureSkinBuilder::seTextureSkinBuilder( const seTexture *texture ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pTexture = texture;
+seTextureSkinBuilder::seTextureSkinBuilder( const seSkin &skin, const seTexture &texture ) :
+pSkin( skin ),
+pTexture( texture ){
 }
 
 seTextureSkinBuilder::~seTextureSkinBuilder(){
@@ -73,139 +72,23 @@ seTextureSkinBuilder::~seTextureSkinBuilder(){
 ///////////////
 
 void seTextureSkinBuilder::BuildSkin( deSkin *engSkin ){
-	if( ! engSkin ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( engSkin )
 	
-	deSkinPropertyConstructed *engPropertyConstructed = NULL;
-	deSkinPropertyValue *engPropertyValue = NULL;
-	deSkinPropertyColor *engPropertyColor = NULL;
-	deSkinPropertyImage *engPropertyImage = NULL;
-	deSkinPropertyVideo *engPropertyVideo = NULL;
-	deSkinPropertyMapped *engPropertyMapped = NULL;
-	deSkinTexture *engTexture = NULL;
-	int i;
-	
-	try{
-		const sePropertyList &propertyList = pTexture->GetPropertyList();
-		const int propertyCount = propertyList.GetCount();
-		
-		engTexture = new deSkinTexture( "texture" );
-		
-		for( i=0; i<propertyCount; i++ ){
-			const seProperty &property = *propertyList.GetAt( i );
-			
-			switch( property.GetValueType() ){
-			case seProperty::evtValue:
-				engPropertyValue = new deSkinPropertyValue( property.GetName() );
-				engPropertyValue->SetValue( property.GetValue() );
-				engPropertyValue->SetRenderable( property.GetRenderableName() );
-				
-				engTexture->AddProperty( engPropertyValue );
-				engPropertyValue = NULL;
-				break;
-				
-			case seProperty::evtColor:
-				engPropertyColor = new deSkinPropertyColor( property.GetName() );
-				engPropertyColor->SetColor( property.GetColor() );
-				engPropertyColor->SetRenderable( property.GetRenderableName() );
-				
-				engTexture->AddProperty( engPropertyColor );
-				engPropertyColor = NULL;
-				break;
-				
-			case seProperty::evtImage:
-				engPropertyImage = new deSkinPropertyImage( property.GetName() );
-				engPropertyImage->SetPath( property.GetImagePath() );
-				engPropertyImage->SetImage( property.GetEngineImage() );
-				engPropertyImage->SetRenderable( property.GetRenderableName() );
-				
-				engTexture->AddProperty( engPropertyImage );
-				engPropertyImage = NULL;
-				break;
-				
-			case seProperty::evtVideo:
-				engPropertyVideo = new deSkinPropertyVideo( property.GetName() );
-				engPropertyVideo->SetPath( property.GetVideoPath() );
-				engPropertyVideo->SetVideo( property.GetEngineVideo() );
-				engPropertyVideo->SetRenderable( property.GetRenderableName() );
-				
-				engTexture->AddProperty( engPropertyVideo );
-				engPropertyVideo = NULL;
-				break;
-				
-			case seProperty::evtMapped:
-				engPropertyMapped = new deSkinPropertyMapped( property.GetName() );
-				
-				engPropertyMapped->GetRed() = property.GetMappedComponent( 0 );
-				engPropertyMapped->GetGreen() = property.GetMappedComponent( 1 );
-				engPropertyMapped->GetBlue() = property.GetMappedComponent( 2 );
-				engPropertyMapped->GetAlpha() = property.GetMappedComponent( 3 );
-				
-				engPropertyMapped->SetRenderable( property.GetRenderableName() );
-				
-				engTexture->AddProperty( engPropertyMapped );
-				engPropertyMapped = NULL;
-				break;
-				
-			case seProperty::evtConstructed:
-				engPropertyConstructed = new deSkinPropertyConstructed( property.GetName() );
-				
-				engPropertyConstructed->SetColor( property.GetNodeColor() );
-				engPropertyConstructed->GetContent().SetSize( property.GetNodeGroup()->GetSize() );
-				engPropertyConstructed->SetTileX( property.GetNodeTileX() );
-				engPropertyConstructed->SetTileY( property.GetNodeTileY() );
-				engPropertyConstructed->SetBitCount( property.GetNodeBitCount() );
-				
-				CreateNodeGroup( engPropertyConstructed->GetContent(), *property.GetNodeGroup() );
-				
-				engPropertyConstructed->SetRenderable( property.GetRenderableName() );
-				
-				engTexture->AddProperty( engPropertyConstructed );
-				engPropertyConstructed = NULL;
-				break;
-			}
-		}
-		
-		engSkin->AddTexture( engTexture );
-		engTexture = NULL;
-		
-	}catch( const deException & ){
-		if( engPropertyConstructed ){
-			delete engPropertyConstructed;
-		}
-		if( engPropertyMapped ){
-			delete engPropertyMapped;
-		}
-		if( engPropertyVideo ){
-			delete engPropertyVideo;
-		}
-		if( engPropertyImage ){
-			delete engPropertyImage;
-		}
-		if( engPropertyColor ){
-			delete engPropertyColor;
-		}
-		if( engPropertyValue ){
-			delete engPropertyValue;
-		}
-		if( engTexture ){
-			delete engTexture;
-		}
-	}
+	pAddMapped( *engSkin );
+	pAddTexture( *engSkin );
 }
 
 void seTextureSkinBuilder::CreateNodeGroup( deSkinPropertyNodeGroup &engNodeGroup,
 const sePropertyNodeGroup &nodeGroup ){
 	const int count = nodeGroup.GetNodeCount();
-	deSkinPropertyNode *engNode = NULL;
+	deSkinPropertyNode *engNode = nullptr;
 	int i;
 	
 	try{
 		for( i=0; i<count; i++ ){
 			engNode = CreateNode( *nodeGroup.GetNodeAt( i ) );
 			engNodeGroup.AddNode( engNode );
-			engNode = NULL;
+			engNode = nullptr;
 		}
 		
 	}catch( const deException & ){
@@ -217,7 +100,7 @@ const sePropertyNodeGroup &nodeGroup ){
 }
 
 deSkinPropertyNode *seTextureSkinBuilder::CreateNode( const sePropertyNode &node ){
-	deSkinPropertyNode *engNode = NULL;
+	deSkinPropertyNode *engNode = nullptr;
 	
 	try{
 		switch( node.GetNodeType() ){
@@ -274,7 +157,7 @@ deSkinPropertyNode *seTextureSkinBuilder::CreateNode( const sePropertyNode &node
 		engNode->SetTransparency( node.GetTransparency() );
 		
 		if( node.GetMask() ){
-			deSkinPropertyNode *engMask = NULL;
+			deSkinPropertyNode *engMask = nullptr;
 			
 			try{
 				engMask = CreateNode( *node.GetMask() );
@@ -296,4 +179,159 @@ deSkinPropertyNode *seTextureSkinBuilder::CreateNode( const sePropertyNode &node
 	}
 	
 	return engNode;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void seTextureSkinBuilder::pAddMapped( deSkin &engSkin ){
+	const seMappedList &list = pSkin.GetMappedList();
+	const int count = list.GetCount();
+	deSkinMapped::Ref engMapped;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const seMapped &mapped = *list.GetAt( i );
+		
+		engMapped.TakeOver( new deSkinMapped( mapped.GetName() ) );
+		
+		engMapped->GetCurve() = mapped.GetCurve();
+		engMapped->SetInputType( mapped.GetInputType() );
+		engMapped->SetInputLower( mapped.GetInputLower() );
+		engMapped->SetInputUpper( mapped.GetInputUpper() );
+		engMapped->SetInputClamped( mapped.GetInputClamped() );
+		engMapped->SetBone( mapped.GetBone() );
+		
+		engSkin.AddMapped( engMapped );
+	}
+}
+
+void seTextureSkinBuilder::pAddTexture( deSkin &engSkin ) {
+	const seMappedList &mappedList = pSkin.GetMappedList();
+	deSkinPropertyConstructed *engPropertyConstructed = nullptr;
+	deSkinPropertyValue *engPropertyValue = nullptr;
+	deSkinPropertyColor *engPropertyColor = nullptr;
+	deSkinPropertyImage *engPropertyImage = nullptr;
+	deSkinPropertyVideo *engPropertyVideo = nullptr;
+	deSkinPropertyMapped *engPropertyMapped = nullptr;
+	deSkinTexture *engTexture = nullptr;
+	int i;
+	
+	try{
+		const sePropertyList &propertyList = pTexture.GetPropertyList();
+		const int propertyCount = propertyList.GetCount();
+		
+		engTexture = new deSkinTexture( "texture" );
+		
+		for( i=0; i<propertyCount; i++ ){
+			const seProperty &property = *propertyList.GetAt( i );
+			
+			switch( property.GetValueType() ){
+			case seProperty::evtValue:
+				engPropertyValue = new deSkinPropertyValue( property.GetName() );
+				engPropertyValue->SetValue( property.GetValue() );
+				engPropertyValue->SetRenderable( property.GetRenderableName() );
+				
+				engTexture->AddProperty( engPropertyValue );
+				engPropertyValue = nullptr;
+				break;
+				
+			case seProperty::evtColor:
+				engPropertyColor = new deSkinPropertyColor( property.GetName() );
+				engPropertyColor->SetColor( property.GetColor() );
+				engPropertyColor->SetRenderable( property.GetRenderableName() );
+				
+				engTexture->AddProperty( engPropertyColor );
+				engPropertyColor = nullptr;
+				break;
+				
+			case seProperty::evtImage:
+				engPropertyImage = new deSkinPropertyImage( property.GetName() );
+				engPropertyImage->SetPath( property.GetImagePath() );
+				engPropertyImage->SetImage( property.GetEngineImage() );
+				engPropertyImage->SetRenderable( property.GetRenderableName() );
+				
+				engTexture->AddProperty( engPropertyImage );
+				engPropertyImage = nullptr;
+				break;
+				
+			case seProperty::evtVideo:
+				engPropertyVideo = new deSkinPropertyVideo( property.GetName() );
+				engPropertyVideo->SetPath( property.GetVideoPath() );
+				engPropertyVideo->SetVideo( property.GetEngineVideo() );
+				engPropertyVideo->SetRenderable( property.GetRenderableName() );
+				
+				engTexture->AddProperty( engPropertyVideo );
+				engPropertyVideo = nullptr;
+				break;
+				
+			case seProperty::evtMapped:
+				engPropertyMapped = new deSkinPropertyMapped( property.GetName() );
+				
+				if( property.GetMappedComponent( 0 ) ){
+					engPropertyMapped->SetRed( mappedList.IndexOf( property.GetMappedComponent( 0 ) ) );
+				}
+				if( property.GetMappedComponent( 1 ) ){
+					engPropertyMapped->SetGreen( mappedList.IndexOf( property.GetMappedComponent( 1 ) ) );
+				}
+				if( property.GetMappedComponent( 2 ) ){
+					engPropertyMapped->SetBlue( mappedList.IndexOf( property.GetMappedComponent( 2 ) ) );
+				}
+				if( property.GetMappedComponent( 3 ) ){
+					engPropertyMapped->SetAlpha( mappedList.IndexOf( property.GetMappedComponent( 3 ) ) );
+				}
+				
+				engPropertyMapped->SetRenderable( property.GetRenderableName() );
+				
+				engTexture->AddProperty( engPropertyMapped );
+				engPropertyMapped = nullptr;
+				break;
+				
+			case seProperty::evtConstructed:
+				engPropertyConstructed = new deSkinPropertyConstructed( property.GetName() );
+				
+				engPropertyConstructed->SetColor( property.GetNodeColor() );
+				engPropertyConstructed->GetContent().SetSize( property.GetNodeGroup()->GetSize() );
+				engPropertyConstructed->SetTileX( property.GetNodeTileX() );
+				engPropertyConstructed->SetTileY( property.GetNodeTileY() );
+				engPropertyConstructed->SetBitCount( property.GetNodeBitCount() );
+				
+				CreateNodeGroup( engPropertyConstructed->GetContent(), *property.GetNodeGroup() );
+				
+				engPropertyConstructed->SetRenderable( property.GetRenderableName() );
+				
+				engTexture->AddProperty( engPropertyConstructed );
+				engPropertyConstructed = nullptr;
+				break;
+			}
+		}
+		
+		engSkin.AddTexture( engTexture );
+		engTexture = nullptr;
+		
+	}catch( const deException & ){
+		if( engPropertyConstructed ){
+			delete engPropertyConstructed;
+		}
+		if( engPropertyMapped ){
+			delete engPropertyMapped;
+		}
+		if( engPropertyVideo ){
+			delete engPropertyVideo;
+		}
+		if( engPropertyImage ){
+			delete engPropertyImage;
+		}
+		if( engPropertyColor ){
+			delete engPropertyColor;
+		}
+		if( engPropertyValue ){
+			delete engPropertyValue;
+		}
+		if( engTexture ){
+			delete engTexture;
+		}
+	}
 }

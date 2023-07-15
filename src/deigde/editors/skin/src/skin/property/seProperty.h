@@ -23,6 +23,7 @@
 #define _SEPROPERTY_H_
 
 #include "node/sePropertyNodeSelection.h"
+#include "../mapped/seMapped.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -46,6 +47,8 @@ class igdeTexturePropertyList;
  */
 class seProperty : public deObject{
 public:
+	typedef deTObjectReference<seProperty> Ref;
+	
 	/** \brief Value types. */
 	enum eValueTypes{
 		/** \brief Property is defined by a single value. */
@@ -89,7 +92,7 @@ private:
 	deVideoReference pEngVideo;
 	bool pVideoSharedTime;
 	
-	deSkinPropertyMapped::cComponent pMappedComponents[ 4 ];
+	seMapped::Ref pMappedComponents[ 4 ];
 	
 	sePropertyNodeGroup *pNodeGroup;
 	deSkinPropertyNodeGroup *pEngNodeGroup;
@@ -207,10 +210,10 @@ public:
 	
 	
 	/** \brief Mapped component. */
-	const deSkinPropertyMapped::cComponent &GetMappedComponent( int index ) const;
+	const seMapped::Ref &GetMappedComponent( int index ) const;
 	
 	/** \brief Set mapped component. */
-	void SetMappedComponent( int index, const deSkinPropertyMapped::cComponent &component );
+	void SetMappedComponent( int index, seMapped *mapped );
 	
 	
 	

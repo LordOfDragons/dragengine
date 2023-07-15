@@ -19,17 +19,16 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+
 #include "deSkin.h"
 #include "deSkinTexture.h"
 #include "deSkinManager.h"
+#include "deSkinMapped.h"
+#include "../../common/exceptions.h"
 #include "../../systems/modules/graphic/deBaseGraphicSkin.h"
 #include "../../systems/modules/audio/deBaseAudioSkin.h"
 #include "../../systems/modules/physics/deBasePhysicsSkin.h"
-#include "../../common/exceptions.h"
 
 
 
@@ -62,12 +61,11 @@ deSkin::~deSkin(){
 /////////////
 
 void deSkin::AddTexture( deSkinTexture *tex ){
-	if( ! tex ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( tex )
 	
 	if( pTextureCount == pTextureSize ){
 		int newSize = pTextureSize * 3 / 2 + 1;
 		deSkinTexture **newArray = new deSkinTexture*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
 		if( pTextures ){
 			memcpy( newArray, pTextures, sizeof( deSkinTexture* ) * pTextureSize );
 			delete [] pTextures;
@@ -81,13 +79,14 @@ void deSkin::AddTexture( deSkinTexture *tex ){
 }
 
 deSkinTexture *deSkin::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ) DETHROW( deeOutOfBoundary );
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pTextureCount )
 	
 	return pTextures[ index ];
 }
 
 int deSkin::IndexOfTextureNamed( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( name )
 	int i;
 	
 	for( i=0; i<pTextureCount; i++ ){
@@ -95,6 +94,74 @@ int deSkin::IndexOfTextureNamed( const char *name ) const{
 	}
 	
 	return -1;
+}
+
+
+
+// Mapped Values
+//////////////////
+
+int deSkin::GetMappedCount() const{
+	return pMapped.GetCount();
+}
+
+deSkinMapped *deSkin::GetMappedAt( int index ) const{
+	return ( deSkinMapped * )pMapped.GetAt( index );
+}
+
+deSkinMapped *deSkin::GetMappedNamed( const char *name ) const{
+	const int count = pMapped.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deSkinMapped * const mapped = ( deSkinMapped * )pMapped.GetAt( i );
+		if( mapped->GetName() == name ){
+			return mapped;
+		}
+	}
+	
+	return nullptr;
+}
+
+int deSkin::IndexOfMapped( deSkinMapped *mapped ) const{
+	return pMapped.IndexOf( mapped );
+}
+
+int deSkin::IndexOfMappedNamed( const char *name ) const{
+	const int count = pMapped.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( ( ( deSkinMapped * )pMapped.GetAt( i ) )->GetName() == name ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+bool deSkin::HasMapped( deSkinMapped *mapped ) const{
+	return pMapped.Has( mapped );
+}
+
+bool deSkin::HasMappedNamed( const char *name ) const{
+	const int count = pMapped.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( ( ( deSkinMapped * )pMapped.GetAt( i ) )->GetName() == name ){
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void deSkin::AddMapped( deSkinMapped *mapped ){
+	DEASSERT_NOTNULL( mapped )
+	DEASSERT_FALSE( HasMapped( mapped ) )
+	
+	pMapped.Add( mapped );
 }
 
 
@@ -129,9 +196,15 @@ void deSkin::SetPeerPhysics( deBasePhysicsSkin *peer ){
 //////////////////////
 
 void deSkin::pCleanUp(){
-	if( pPeerPhysics ) delete pPeerPhysics;
-	if( pPeerAudio ) delete pPeerAudio;
-	if( pPeerGraphic ) delete pPeerGraphic;
+	if( pPeerPhysics ){
+		delete pPeerPhysics;
+	}
+	if( pPeerAudio ){
+		delete pPeerAudio;
+	}
+	if( pPeerGraphic ){
+		delete pPeerGraphic;
+	}
 	
 	if( pTextures ){
 		while( pTextureCount > 0 ){

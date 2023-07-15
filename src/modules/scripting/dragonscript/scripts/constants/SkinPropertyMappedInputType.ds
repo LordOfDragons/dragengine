@@ -25,6 +25,7 @@ namespace Dragengine.Scenery
 
 /**
  * \brief SkinPropertyMapped input type.
+ * \deprecated Use SkinMappedInputType instead.
  */
 enum SkinPropertyMappedInputType
 	/** \brief Use elapsed time. */

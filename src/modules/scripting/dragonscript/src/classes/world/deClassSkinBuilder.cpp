@@ -45,6 +45,7 @@
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/skin/deSkinTexture.h>
+#include <dragengine/resources/skin/deSkinMapped.h>
 #include <dragengine/resources/skin/property/deSkinPropertyColor.h>
 #include <dragengine/resources/skin/property/deSkinPropertyConstructed.h>
 #include <dragengine/resources/skin/property/deSkinPropertyImage.h>
@@ -220,6 +221,44 @@ void deClassSkinBuilder::nfBuildSkin::RunFunction( dsRunTime*, dsValue* ){
 }
 
 
+
+// protected func void addMapped(String name, CurveBezier curve,
+// SkinMappedInputType inputType, Vector2 inputRange, bool inputClamped, String bone)
+deClassSkinBuilder::nfAddMapped::nfAddMapped( const sInitData &init ) :
+dsFunction( init.clsSkinBuilder, "addMapped", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // name
+	p_AddParameter( init.clsCurveBezier ); // curve
+	p_AddParameter( init.clsSkinMappedInputType ); // inputType
+	p_AddParameter( init.clsVector2 ); // inputRange
+	p_AddParameter( init.clsBoolean ); // inputClamped
+	p_AddParameter( init.clsString ); // bone
+}
+void deClassSkinBuilder::nfAddMapped::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassSkinBuilder_Builder * const builder = ( ( sMdlBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetSkin() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const deScriptingDragonScript &ds = ( ( deClassSkinBuilder* )GetOwnerClass() )->GetDS();
+	deClassCurveBezier &clsCurveBezier = *ds.GetClassCurveBezier();
+	deClassVector2 &clsVector2 = *ds.GetClassVector2();
+	dsClassEnumeration &clsEnum = *( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() );
+	
+	const deSkinMapped::Ref mapped( deSkinMapped::Ref::New( new deSkinMapped( rt->GetValue( 0 )->GetString() ) ) );
+	mapped->GetCurve() = clsCurveBezier.GetCurve( rt->GetValue( 1 )->GetRealObject() );
+	mapped->SetInputType( ( deSkinMapped::eInputTypes )
+		clsEnum.GetConstantOrder( *rt->GetValue( 2 )->GetRealObject() ) );
+	
+	const decVector2 &inputRange = clsVector2.GetVector2( rt->GetValue( 3 )->GetRealObject() );
+	mapped->SetInputLower( inputRange.x );
+	mapped->SetInputUpper( inputRange.y );
+	
+	mapped->SetInputClamped( rt->GetValue( 4 )->GetBool() );
+	mapped->SetBone( rt->GetValue( 5 )->GetString() );
+	
+	builder->GetSkin()->AddMapped( mapped );
+}
 
 // protected func void addTexture( String name )
 deClassSkinBuilder::nfAddTexture::nfAddTexture( const sInitData &init ) :
@@ -451,61 +490,158 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction( dsRunTime *rt, dsValu
 	const char * const renderable = rt->GetValue( 3 )->GetString();
 	
 	const decCurveBezier &redCurve = clsCurveBezier.GetCurve( rt->GetValue( 4 )->GetRealObject() );
-	const deSkinPropertyMapped::eInputTypes redInputType = ( deSkinPropertyMapped::eInputTypes )
+	const deSkinMapped::eInputTypes redInputType = ( deSkinMapped::eInputTypes )
 		clsEnum.GetConstantOrder( *rt->GetValue( 5 )->GetRealObject() );
 	const decVector2 &redInputRange = clsVector2.GetVector2( rt->GetValue( 6 )->GetRealObject() );
 	const bool redInputClamped = rt->GetValue( 7 )->GetBool();
 	const char * const redBone = rt->GetValue( 8 )->GetString();
 	
 	const decCurveBezier &greenCurve = clsCurveBezier.GetCurve( rt->GetValue( 9 )->GetRealObject() );
-	const deSkinPropertyMapped::eInputTypes greenInputType = ( deSkinPropertyMapped::eInputTypes )
+	const deSkinMapped::eInputTypes greenInputType = ( deSkinMapped::eInputTypes )
 		clsEnum.GetConstantOrder( *rt->GetValue( 10 )->GetRealObject() );
 	const decVector2 &greenInputRange = clsVector2.GetVector2( rt->GetValue( 11 )->GetRealObject() );
 	const bool greenInputClamped = rt->GetValue( 12 )->GetBool();
 	const char * const greenBone = rt->GetValue( 13 )->GetString();
 	
 	const decCurveBezier &blueCurve = clsCurveBezier.GetCurve( rt->GetValue( 14 )->GetRealObject() );
-	const deSkinPropertyMapped::eInputTypes blueInputType = ( deSkinPropertyMapped::eInputTypes )
+	const deSkinMapped::eInputTypes blueInputType = ( deSkinMapped::eInputTypes )
 		clsEnum.GetConstantOrder( *rt->GetValue( 15 )->GetRealObject() );
 	const decVector2 &blueInputRange = clsVector2.GetVector2( rt->GetValue( 16 )->GetRealObject() );
 	const bool blueInputClamped = rt->GetValue( 17 )->GetBool();
 	const char * const blueBone = rt->GetValue( 18 )->GetString();
 	
 	const decCurveBezier &alphaCurve = clsCurveBezier.GetCurve( rt->GetValue( 19 )->GetRealObject() );
-	const deSkinPropertyMapped::eInputTypes alphaInputType = ( deSkinPropertyMapped::eInputTypes )
+	const deSkinMapped::eInputTypes alphaInputType = ( deSkinMapped::eInputTypes )
 		clsEnum.GetConstantOrder( *rt->GetValue( 20 )->GetRealObject() );
 	const decVector2 &alphaInputRange = clsVector2.GetVector2( rt->GetValue( 21 )->GetRealObject() );
 	const bool alphaInputClamped = rt->GetValue( 22 )->GetBool();
 	const char * const alphaBone = rt->GetValue( 23 )->GetString();
 	
+	
+	deSkinPropertyMapped * const property = new deSkinPropertyMapped( type );
+	deSkinMapped::Ref mapped;
+	decString name;
+	int index;
+	
+	try{
+		property->SetTexCoordSet( texCoordSet );
+		property->SetRenderable( renderable );
+		
+		if( redCurve.GetPointCount() > 0 ){
+			index = builder->GetSkin()->GetMappedCount();
+			name.Format( "#generated%d", index );
+			mapped.TakeOver( new deSkinMapped( name ) );
+			mapped->GetCurve() = redCurve;
+			mapped->SetInputType( redInputType );
+			mapped->SetInputLower( redInputRange.x );
+			mapped->SetInputUpper( redInputRange.y );
+			mapped->SetInputClamped( redInputClamped );
+			mapped->SetBone( redBone );
+			property->SetRed( index );
+		}
+		
+		if( greenCurve.GetPointCount() > 0 ){
+			index = builder->GetSkin()->GetMappedCount();
+			name.Format( "#generated%d", index );
+			mapped.TakeOver( new deSkinMapped( name ) );
+			mapped->GetCurve() = greenCurve;
+			mapped->SetInputType( greenInputType );
+			mapped->SetInputLower( greenInputRange.x );
+			mapped->SetInputUpper( greenInputRange.y );
+			mapped->SetInputClamped( greenInputClamped );
+			mapped->SetBone( greenBone );
+			property->SetGreen( index );
+		}
+		
+		if( blueCurve.GetPointCount() > 0 ){
+			index = builder->GetSkin()->GetMappedCount();
+			name.Format( "#generated%d", index );
+			mapped.TakeOver( new deSkinMapped( name ) );
+			mapped->GetCurve() = blueCurve;
+			mapped->SetInputType( blueInputType );
+			mapped->SetInputLower( blueInputRange.x );
+			mapped->SetInputUpper( blueInputRange.y );
+			mapped->SetInputClamped( blueInputClamped );
+			mapped->SetBone( blueBone );
+			property->SetBlue( index );
+		}
+		
+		if( alphaCurve.GetPointCount() > 0 ){
+			index = builder->GetSkin()->GetMappedCount();
+			name.Format( "#generated%d", index );
+			mapped.TakeOver( new deSkinMapped( name ) );
+			mapped->GetCurve() = alphaCurve;
+			mapped->SetInputType( alphaInputType );
+			mapped->SetInputLower( alphaInputRange.x );
+			mapped->SetInputUpper( alphaInputRange.y );
+			mapped->SetInputClamped( alphaInputClamped );
+			mapped->SetBone( alphaBone );
+			property->SetAlpha( index );
+		}
+		
+		texture.AddProperty( property );
+		
+	}catch( ... ){
+		delete property;
+		throw;
+	}
+}
+
+// protected func void addPropertyMapped(int texture, String type, String texCoordSet,
+// String renderable, int red, int green, int blue, int alpha)
+deClassSkinBuilder::nfAddPropertyMapped2::nfAddPropertyMapped2( const sInitData &init ) :
+dsFunction( init.clsSkinBuilder, "addPropertyMapped", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInteger ); // texture
+	p_AddParameter( init.clsString ); // type
+	p_AddParameter( init.clsString ); // texCoordSet
+	p_AddParameter( init.clsString ); // renderable
+	p_AddParameter( init.clsInteger ); // red
+	p_AddParameter( init.clsInteger ); // green
+	p_AddParameter( init.clsInteger ); // blue
+	p_AddParameter( init.clsInteger ); // alpha
+}
+void deClassSkinBuilder::nfAddPropertyMapped2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassSkinBuilder_Builder * const builder = ( ( sMdlBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetSkin() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const int mappedCount = builder->GetSkin()->GetMappedCount();
+	
+	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt( rt->GetValue( 0 )->GetInt() );
+	const char * const type = rt->GetValue( 1 )->GetString();
+	const char * const texCoordSet = rt->GetValue( 2 )->GetString();
+	const char * const renderable = rt->GetValue( 3 )->GetString();
+	
+	const int red = rt->GetValue( 4 )->GetInt();
+	if( red < -1 || red >= mappedCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const int green = rt->GetValue( 5 )->GetInt();
+	if( green < -1 || green >= mappedCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const int blue = rt->GetValue( 6 )->GetInt();
+	if( blue < -1 || blue >= mappedCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const int alpha = rt->GetValue( 7 )->GetInt();
+	if( alpha < -1 || alpha >= mappedCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	deSkinPropertyMapped * const property = new deSkinPropertyMapped( type );
 	try{
 		property->SetTexCoordSet( texCoordSet );
 		property->SetRenderable( renderable );
-		property->GetRed().GetCurve() = redCurve;
-		property->GetRed().SetInputType( redInputType );
-		property->GetRed().SetInputLower( redInputRange.x );
-		property->GetRed().SetInputUpper( redInputRange.y );
-		property->GetRed().SetInputClamped( redInputClamped );
-		property->GetRed().SetBone( redBone );
-		property->GetGreen().GetCurve() = greenCurve;
-		property->GetGreen().SetInputType( greenInputType );
-		property->GetGreen().SetInputLower( greenInputRange.x );
-		property->GetGreen().SetInputUpper( greenInputRange.y );
-		property->GetGreen().SetInputClamped( greenInputClamped );
-		property->GetGreen().SetBone( greenBone );
-		property->GetBlue().GetCurve() = blueCurve;
-		property->GetBlue().SetInputType( blueInputType );
-		property->GetBlue().SetInputLower( blueInputRange.x );
-		property->GetBlue().SetInputUpper( blueInputRange.y );
-		property->GetBlue().SetInputClamped( blueInputClamped );
-		property->GetBlue().SetBone( blueBone );
-		property->GetAlpha().GetCurve() = alphaCurve;
-		property->GetAlpha().SetInputType( alphaInputType );
-		property->GetAlpha().SetInputLower( alphaInputRange.x );
-		property->GetAlpha().SetInputUpper( alphaInputRange.y );
-		property->GetAlpha().SetInputClamped( alphaInputClamped );
-		property->GetAlpha().SetBone( alphaBone );
+		property->SetRed( red );
+		property->SetGreen( green );
+		property->SetBlue( blue );
+		property->SetAlpha( alpha );
 		texture.AddProperty( property );
 		
 	}catch( ... ){
@@ -959,6 +1095,7 @@ void deClassSkinBuilder::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfBuild( init ) );
 	AddFunction( new nfBuildSkin( init ) );
+	AddFunction( new nfAddMapped( init ) );
 	AddFunction( new nfAddTexture( init ) );
 	AddFunction( new nfAddPropertyValue( init ) );
 	AddFunction( new nfAddPropertyColor( init ) );
@@ -966,6 +1103,7 @@ void deClassSkinBuilder::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfAddPropertyVideo( init ) );
 	AddFunction( new nfAddPropertyConstructed( init ) );
 	AddFunction( new nfAddPropertyMapped( init ) );
+	AddFunction( new nfAddPropertyMapped2( init ) );
 	AddFunction( new nfConstructedOpenContent( init ) );
 	AddFunction( new nfAddNodeImage( init ) );
 	AddFunction( new nfAddNodeText( init ) );

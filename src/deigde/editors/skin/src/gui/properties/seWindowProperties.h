@@ -38,6 +38,7 @@ class seWindowProperties : public igdeTabBook{
 private:
 	seWindowMain &pWindowMain;
 	
+	igdeWidgetReference pPanelMapped;
 	igdeWidgetReference pPanelTexture;
 	igdeWidgetReference pPanelNode;
 	igdeWidgetReference pPanelDynamicSkin;

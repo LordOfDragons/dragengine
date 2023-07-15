@@ -27,10 +27,7 @@
 class deoglRenderThread;
 class deoglTexture;
 class deoglSkinState;
-class deoglRComponent;
 class deoglSkinConstructedProperty;
-
-class deComponent;
 
 
 /**
@@ -40,7 +37,6 @@ class deoglSkinStateConstructed{
 private:
 	deoglTexture *pTexture;
 	deoglSkinConstructedProperty *pProperty;
-	const deoglRComponent *pComponent;
 	
 	
 	
@@ -69,18 +65,6 @@ public:
 	
 	/** Set skin constructed property. */
 	void SetProperty( deoglSkinConstructedProperty *property );
-	
-	/** Component for bone calculate or NULL. */
-	inline const deoglRComponent *GetComponent() const{ return pComponent; }
-	
-	/** Set component for bone calculate or NULL. */
-	void SetComponent( const deoglRComponent *component );
-	
-	/** Map bones. */
-	void MapBones( const deComponent &component );
-	
-	/** Update bones. */
-	void UpdateBones( const deComponent &component );
 	
 	/** Update. */
 	void Update( deoglSkinState &skinState );

@@ -432,6 +432,18 @@ bool deoglRLight::StaticMatchesCamera( const decLayerMask &layerMask ) const{
 
 
 
+void deoglRLight::InitSkinStateMapped(){
+	if( pSkinState ){
+		pSkinState->InitMapped();
+	}
+}
+
+void deoglRLight::UpdateSkinStateMapped(){
+	if( pSkinState ){
+		pSkinState->UpdateMapped();
+	}
+}
+
 void deoglRLight::InitSkinStateCalculatedProperties(){
 	if( pSkinState ){
 		pSkinState->InitCalculatedProperties();

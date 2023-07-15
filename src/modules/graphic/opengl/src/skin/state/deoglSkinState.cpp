@@ -25,6 +25,7 @@
 
 #include "deoglSkinState.h"
 #include "deoglSkinStateRenderable.h"
+#include "deoglSkinStateMapped.h"
 #include "deoglSkinStateCalculated.h"
 #include "deoglSkinStateConstructed.h"
 #include "../deoglRSkin.h"
@@ -100,6 +101,7 @@ deoglSkinState::~deoglSkinState(){
 	
 	SetCalculatedPropertyCount( 0 );
 	SetConstructedPropertyCount( 0 );
+	SetMappedCount( 0 );
 }
 
 
@@ -299,6 +301,70 @@ void deoglSkinState::RemoveAllRenderables(){
 
 
 
+// Mapped
+///////////
+
+deoglSkinStateMapped &deoglSkinState::GetMappedAt( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pMappedCount )
+	
+	return pMapped[ index ];
+}
+
+void deoglSkinState::SetMappedCount( int count ){
+	DEASSERT_TRUE( count >= 0 )
+	
+	if( pMapped ){
+		delete [] pMapped;
+		pMapped = nullptr;
+		pMappedCount = 0;
+	}
+	
+	if( count > 0 ){
+		pMapped = new deoglSkinStateMapped[ count ];
+		pMappedCount = count;
+	}
+}
+
+void deoglSkinState::InitMapped(){
+	deoglRSkin * const skin = GetOwnerSkin();
+	if( ! skin || skin->GetMappedCount() == 0 ){
+		SetMappedCount( 0 );
+		return;
+	}
+	
+	SetMappedCount( skin->GetMappedCount() );
+	
+	int i;
+	for( i=0; i<pMappedCount; i++ ){
+		pMapped[ i ].SetMapped( skin->GetMappedAt( i ) );
+		pMapped[ i ].SetComponent( pOwnerComponent );
+	}
+}
+
+void deoglSkinState::MappedMapBones( const deComponent &component ){
+	int i;
+	for( i=0; i<pMappedCount; i++ ){
+		pMapped[ i ].MapBone( component );
+	}
+}
+
+void deoglSkinState::UpdateMappedBones( const deComponent &component ){
+	int i;
+	for( i=0; i<pMappedCount; i++ ){
+		pMapped[ i ].UpdateBone( component );
+	}
+}
+
+void deoglSkinState::UpdateMapped(){
+	int i;
+	for( i=0; i<pMappedCount; i++ ){
+		pMapped[ i ].Update( *this );
+	}
+}
+
+
+
 // Calculated properties
 //////////////////////////
 
@@ -338,21 +404,6 @@ void deoglSkinState::InitCalculatedProperties(){
 	int i;
 	for( i=0; i<pCalculatedPropertyCount; i++ ){
 		pCalculatedProperties[ i ].SetProperty( skin->GetCalculatedPropertyAt( i ) );
-		pCalculatedProperties[ i ].SetComponent( pOwnerComponent );
-	}
-}
-
-void deoglSkinState::CalculatedPropertiesMapBones( const deComponent &component ){
-	int i;
-	for( i=0; i<pCalculatedPropertyCount; i++ ){
-		pCalculatedProperties[ i ].MapBones( component );
-	}
-}
-
-void deoglSkinState::UpdateCalculatedPropertiesBones( const deComponent &component ){
-	int i;
-	for( i=0; i<pCalculatedPropertyCount; i++ ){
-		pCalculatedProperties[ i ].UpdateBones( component );
 	}
 }
 
@@ -401,21 +452,6 @@ void deoglSkinState::InitConstructedProperties(){
 	int i;
 	for( i=0; i<pConstructedPropertyCount; i++ ){
 		pConstructedProperties[ i ].SetProperty( skin->GetConstructedPropertyAt( i ) );
-		pConstructedProperties[ i ].SetComponent( pOwnerComponent );
-	}
-}
-
-void deoglSkinState::ConstructedPropertiesMapBones( const deComponent &component ){
-	int i;
-	for( i=0; i<pConstructedPropertyCount; i++ ){
-		pConstructedProperties[ i ].MapBones( component );
-	}
-}
-
-void deoglSkinState::UpdateConstructedPropertiesBones( const deComponent &component ){
-	int i;
-	for( i=0; i<pConstructedPropertyCount; i++ ){
-		pConstructedProperties[ i ].UpdateBones( component );
 	}
 }
 
@@ -449,6 +485,9 @@ void deoglSkinState::pSharedInit(){
 	pRenderables = NULL;
 	pRenderableCount = 0;
 	pRenderableSize = 0;
+	
+	pMapped = nullptr;
+	pMappedCount = 0;
 	
 	pCalculatedProperties = NULL;
 	pCalculatedPropertyCount = 0;

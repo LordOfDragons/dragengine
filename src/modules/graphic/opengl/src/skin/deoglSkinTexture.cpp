@@ -2088,18 +2088,16 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		if( materialProperty ){
 			const deSkinPropertyMapped &mapped = identify.CastToMapped();
 			
-			deObjectReference refCalculated;
-			refCalculated.TakeOver( new deoglSkinCalculatedProperty );
+			const deoglSkinCalculatedProperty::Ref calculated(
+				deoglSkinCalculatedProperty::Ref::New( new deoglSkinCalculatedProperty ) );
 			
-			deoglSkinCalculatedProperty &calculated = ( deoglSkinCalculatedProperty& )( deObject& )refCalculated;
-			calculated.GetMappedComponent( 0 ) = mapped.GetRed();
-			calculated.GetMappedComponent( 1 ) = mapped.GetGreen();
-			calculated.GetMappedComponent( 2 ) = mapped.GetBlue();
-			calculated.GetMappedComponent( 3 ) = mapped.GetAlpha();
-			calculated.SetRequiresTexture( requiresTexture );
-			calculated.Prepare();
+			calculated->SetMappedComponent( 0, mapped.GetRed() );
+			calculated->SetMappedComponent( 1, mapped.GetGreen() );
+			calculated->SetMappedComponent( 2, mapped.GetBlue() );
+			calculated->SetMappedComponent( 3, mapped.GetAlpha() );
+			calculated->SetRequiresTexture( requiresTexture );
 			
-			materialProperty->SetCalculatedProperty( skin.AddCalculatedProperty( &calculated ) );
+			materialProperty->SetCalculatedProperty( skin.AddCalculatedProperty( calculated ) );
 			pCalculatedProperties = true;
 		}
 		

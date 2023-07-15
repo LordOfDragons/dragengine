@@ -1383,7 +1383,7 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeMapped.cpp">
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinMapped.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeImage.cpp">
@@ -3392,7 +3392,7 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeMapped.h">
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinMapped.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeImage.h">

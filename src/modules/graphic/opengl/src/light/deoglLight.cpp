@@ -114,6 +114,7 @@ pDirtyEnvMapNotifyLightChanged( true ),
 
 pDirtyRenderableMapping( true ),
 pDirtySkinStateController( true ),
+pDirtySkinStateMapped( true ),
 pDirtySkinStateCalculatedProperties( true ),
 pDirtySkinStateConstructedProperties( true ),
 pSkinStatePrepareRenderables( true ),
@@ -255,8 +256,12 @@ void deoglLight::SyncToRender(){
 		pAccumUpdate = 0.0f;
 	}
 	
-	// sync calculated/constructed skin state properties. has to come after
-	// pSkinStateController->SyncToRender() and pRComponent->UpdateSkin()
+	// sync skin state properties. has to come after pSkinStateController->SyncToRender()
+	// and pRComponent->UpdateSkin()
+	if( pDirtySkinStateMapped ){
+		pRLight->InitSkinStateMapped();
+		pDirtySkinStateMapped = false;
+	}
 	if( pDirtySkinStateCalculatedProperties ){
 		pRLight->InitSkinStateCalculatedProperties();
 		pDirtySkinStateCalculatedProperties = false;
@@ -271,6 +276,7 @@ void deoglLight::SyncToRender(){
 		pSkinStatePrepareRenderables = false;
 	}
 	
+	pRLight->UpdateSkinStateMapped(); // has to be done better. only some need this
 	pRLight->UpdateSkinStateCalculatedProperties(); // has to be done better. only some need this
 	pRLight->UpdateSkinStateConstructedProperties(); // has to be done better. only some need this
 	
@@ -544,6 +550,7 @@ void deoglLight::SourceChanged(){
 	if( lightSkin != pLightSkin ){
 		pLightSkin = lightSkin;
 		
+		pDirtySkinStateMapped = true;
 		pDirtySkinStateCalculatedProperties = true;
 		pDirtySkinStateConstructedProperties = true;
 	}

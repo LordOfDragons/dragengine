@@ -22,6 +22,8 @@
 #ifndef _SEUPROPERTYSETMAPPEDCOMPONENT_H_
 #define _SEUPROPERTYSETMAPPEDCOMPONENT_H_
 
+#include "../../skin/mapped/seMapped.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
@@ -29,40 +31,42 @@
 class seProperty;
 
 
-
 /**
- * \brief Undo Action Property Set Video Path.
+ * Undo Action Property Set Video Path.
  */
 class seUPropertySetMappedComponent : public igdeUndo{
 private:
 	seProperty *pProperty;
 	
 	int pIndex;
-	deSkinPropertyMapped::cComponent pOldValue;
-	deSkinPropertyMapped::cComponent pNewValue;
+	const seMapped::Ref pOldValue;
+	seMapped::Ref pNewValue;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
-	seUPropertySetMappedComponent( seProperty *property, int index, const deSkinPropertyMapped::cComponent &newValue );
+	/** Create undo. */
+	seUPropertySetMappedComponent( seProperty *property, int index, seMapped *newValue );
 	
 protected:
-	/** \brief Clean up undo. */
+	/** Clean up undo. */
 	virtual ~seUPropertySetMappedComponent();
 	/*@}*/
+	
 	
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Set new value. */
-	void SetNewValue( const deSkinPropertyMapped::cComponent &newValue );
+	/** Set new value. */
+	void SetNewValue( seMapped *newValue );
 	
-	/** \brief Undo action. */
+	/** Undo action. */
 	virtual void Undo();
 	
-	/** \brief Redo action. */
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };

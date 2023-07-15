@@ -25,6 +25,7 @@
 
 #include "seLoadSaveSkin.h"
 #include "../skin/seSkin.h"
+#include "../skin/mapped/seMapped.h"
 #include "../skin/texture/seTexture.h"
 #include "../skin/property/seProperty.h"
 #include "../skin/property/node/sePropertyNodeImage.h"
@@ -126,6 +127,7 @@ const igdeTexturePropertyList &knownPropertyList ){
 	deSkin *engSkin = NULL;
 	int p, propertyCount;
 	int t, textureCount;
+	int i;
 	
 	deSkinBuilder builder;
 	
@@ -133,6 +135,26 @@ const igdeTexturePropertyList &knownPropertyList ){
 		engSkin = engine->GetSkinManager()->CreateSkin( "", builder );
 		pModule->LoadSkin( *file, *engSkin );
 		
+		// mapped
+		const int mappedCount = engSkin->GetMappedCount();
+		for( i=0; i<mappedCount; i++ ){
+			const deSkinMapped &engMapped = *engSkin->GetMappedAt( i );
+			
+			const seMapped::Ref mapped( seMapped::Ref::New( new seMapped( engMapped.GetName() ) ) );
+			
+			mapped->SetCurve( engMapped.GetCurve() );
+			mapped->SetInputType( engMapped.GetInputType() );
+			mapped->SetInputLower( engMapped.GetInputLower() );
+			mapped->SetInputUpper( engMapped.GetInputUpper() );
+			mapped->SetInputClamped( engMapped.GetInputClamped() );
+			mapped->SetBone( engMapped.GetBone() );
+			
+			skin->AddMapped( mapped );
+		}
+		
+		const seMappedList &listMapped = skin->GetMappedList();
+		
+		// textures
 		textureCount = engSkin->GetTextureCount();
 		
 		for( t=0; t<textureCount; t++ ){
@@ -176,13 +198,22 @@ const igdeTexturePropertyList &knownPropertyList ){
 					property->SetVideoSharedTime( identifyProperty.CastToVideo().GetSharedTime() );
 					break;
 					
-				case deSkinPropertyVisitorIdentify::eptMapped:
+				case deSkinPropertyVisitorIdentify::eptMapped:{
+					const deSkinPropertyMapped &mapped = identifyProperty.CastToMapped();
 					property->SetValueType( seProperty::evtMapped );
-					property->SetMappedComponent( 0, identifyProperty.CastToMapped().GetRed() );
-					property->SetMappedComponent( 1, identifyProperty.CastToMapped().GetGreen() );
-					property->SetMappedComponent( 2, identifyProperty.CastToMapped().GetBlue() );
-					property->SetMappedComponent( 3, identifyProperty.CastToMapped().GetAlpha() );
-					break;
+					if( mapped.GetRed() != -1 ){
+						property->SetMappedComponent( 0, listMapped.GetAt( mapped.GetRed() ) );
+					}
+					if( mapped.GetGreen() != -1 ){
+						property->SetMappedComponent( 1, listMapped.GetAt( mapped.GetGreen() ) );
+					}
+					if( mapped.GetBlue() != -1 ){
+						property->SetMappedComponent( 2, listMapped.GetAt( mapped.GetBlue() ) );
+					}
+					if( mapped.GetAlpha() != -1 ){
+						property->SetMappedComponent( 3, listMapped.GetAt( mapped.GetAlpha() ) );
+					}
+					}break;
 					
 				case deSkinPropertyVisitorIdentify::eptConstructed:{
 					const deSkinPropertyConstructed &constructed = identifyProperty.CastToConstructed();

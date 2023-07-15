@@ -167,7 +167,7 @@ void seTexture::UpdateEngineSkin(){
 	
 	// build new skin. for this we use an empty name which creates an unnamed skin.
 	// named skins can only exist once but unnamed skins can exist multiple times.
-	seTextureSkinBuilder builder( this );
+	seTextureSkinBuilder builder( *pSkin, *this );
 	
 	pEngSkin = GetEngine()->GetSkinManager()->CreateSkin( "", builder );
 	

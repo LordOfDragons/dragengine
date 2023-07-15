@@ -23,9 +23,12 @@
 #define _DESKIN_H_
 
 #include "../deFileResource.h"
+#include "../../common/collection/decObjectOrderedSet.h"
 
 class deSkinTexture;
 class deSkinManager;
+class deSkinMapped;
+
 class deBaseGraphicSkin;
 class deBaseAudioSkin;
 class deBasePhysicsSkin;
@@ -56,6 +59,8 @@ public:
 private:
 	deSkinTexture **pTextures;
 	int pTextureCount, pTextureSize;
+	
+	decObjectOrderedSet pMapped;
 	
 	deBaseGraphicSkin *pPeerGraphic;
 	deBaseAudioSkin *pPeerAudio;
@@ -96,6 +101,35 @@ public:
 	
 	/** \brief Index of the texture with the given name or -1 if not found. */
 	int IndexOfTextureNamed( const char *name ) const;
+	/*@}*/
+	
+	
+	
+	/** \name Mapped Values */
+	/*@{*/
+	/** \brief Count of mapped values. */
+	int GetMappedCount() const;
+	
+	/** \brief Mapped value at index. */
+	deSkinMapped *GetMappedAt( int index ) const;
+	
+	/** \brief Named mapped value or nullptr. */
+	deSkinMapped *GetMappedNamed( const char *name ) const;
+	
+	/** \brief Index of mapped value or -1 if absent. */
+	int IndexOfMapped( deSkinMapped *mapped ) const;
+	
+	/** \brief Index of named mapped value or -1 if absent. */
+	int IndexOfMappedNamed( const char *name ) const;
+	
+	/** \brief Mapped value is present. */
+	bool HasMapped( deSkinMapped *mapped ) const;
+	
+	/** \brief Named mapped value is present. */
+	bool HasMappedNamed( const char *name ) const;
+	
+	/** \brief Add mapped value. */
+	void AddMapped( deSkinMapped *mapped );
 	/*@}*/
 	
 	

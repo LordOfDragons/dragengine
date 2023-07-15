@@ -340,6 +340,9 @@ public:
 	/** Skin texture to use or \em NULL. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
+	void InitSkinStateMapped();
+	void UpdateSkinStateMapped();
+	
 	void InitSkinStateCalculatedProperties();
 	void UpdateSkinStateCalculatedProperties();
 	

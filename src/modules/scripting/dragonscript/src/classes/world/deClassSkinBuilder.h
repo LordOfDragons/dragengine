@@ -84,6 +84,7 @@ private:
 		dsClass *clsCurveBezier;
 		dsClass *clsSkinPropertyNodeCombineMode;
 		dsClass *clsSkinPropertyMappedInputType;
+		dsClass *clsSkinMappedInputType;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -96,6 +97,7 @@ private:
 	
 	DEF_NATFUNC( nfBuild );
 	DEF_NATFUNC( nfBuildSkin );
+	DEF_NATFUNC( nfAddMapped );
 	DEF_NATFUNC( nfAddTexture );
 	DEF_NATFUNC( nfAddPropertyValue );
 	DEF_NATFUNC( nfAddPropertyColor );
@@ -103,6 +105,7 @@ private:
 	DEF_NATFUNC( nfAddPropertyVideo );
 	DEF_NATFUNC( nfAddPropertyConstructed );
 	DEF_NATFUNC( nfAddPropertyMapped );
+	DEF_NATFUNC( nfAddPropertyMapped2 );
 	DEF_NATFUNC( nfConstructedOpenContent );
 	DEF_NATFUNC( nfAddNodeImage );
 	DEF_NATFUNC( nfAddNodeText );

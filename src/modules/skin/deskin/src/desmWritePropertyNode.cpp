@@ -29,6 +29,8 @@
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/deSkinMapped.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeGroup.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeImage.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
@@ -42,8 +44,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-desmWritePropertyNode::desmWritePropertyNode( decXmlWriter &writer ) :
-pWriter( writer ){
+desmWritePropertyNode::desmWritePropertyNode( decXmlWriter &writer, const deSkin &skin ) :
+pWriter( writer ),
+pSkin( skin ){
 }
 
 desmWritePropertyNode::~desmWritePropertyNode(){
@@ -152,7 +155,7 @@ void desmWritePropertyNode::WriteNodeCommon( const deSkinPropertyNode &node ){
 		pWriter.WriteOpeningTagStart( "mapped" );
 		pWriter.WriteAttributeString( "name", mapped[ i ].name );
 		pWriter.WriteOpeningTagEnd( false, false );
-		pWriter.WriteTextInt( index );
+		pWriter.WriteTextString( pSkin.GetMappedAt( index )->GetName() );
 		pWriter.WriteClosingTag( "mapped", false );
 	}
 }
@@ -266,7 +269,7 @@ void desmWritePropertyNode::VisitShape( deSkinPropertyNodeShape &node ){
 		pWriter.WriteOpeningTagStart( "shapeMapped" );
 		pWriter.WriteAttributeString( "name", mapped[ i ].name );
 		pWriter.WriteOpeningTagEnd( false, false );
-		pWriter.WriteTextInt( index );
+		pWriter.WriteTextString( pSkin.GetMappedAt( index )->GetName() );
 		pWriter.WriteClosingTag( "shapeMapped", false );
 	}
 	
@@ -312,7 +315,7 @@ void desmWritePropertyNode::VisitText( deSkinPropertyNodeText &node ){
 		pWriter.WriteOpeningTagStart( "textMapped" );
 		pWriter.WriteAttributeString( "name", mapped[ i ].name );
 		pWriter.WriteOpeningTagEnd( false, false );
-		pWriter.WriteTextInt( index );
+		pWriter.WriteTextString( pSkin.GetMappedAt( index )->GetName() );
 		pWriter.WriteClosingTag( "textMapped", false );
 	}
 	

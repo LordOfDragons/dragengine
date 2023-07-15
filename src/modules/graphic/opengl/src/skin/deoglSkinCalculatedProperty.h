@@ -38,10 +38,12 @@ class decCurveBezierEvaluator;
  * Skin calculated property.
  */
 class deoglSkinCalculatedProperty : public deObject{
+public:
+	typedef deTObjectReference<deoglSkinCalculatedProperty> Ref;
+	
+	
 private:
-	deSkinPropertyMapped::cComponent pMappedComponent[ 4 ];
-	decCurveBezierEvaluator *pMappedComponentEvaluator[ 4 ];
-	bool pCopyFromFirst[ 3 ];
+	int pMappedComponent[ 4 ];
 	bool pRequiresTexture;
 	
 	
@@ -62,8 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Mapped component. */
-	deSkinPropertyMapped::cComponent &GetMappedComponent( int index );
-	const deSkinPropertyMapped::cComponent &GetMappedComponent( int index ) const;
+	int GetMappedComponent( int index ) const;
+	
+	/** Set mapped component. */
+	void SetMappedComponent( int index, int mapped );
 	
 	/** Requires texture. */
 	inline bool GetRequiresTexture() const{ return pRequiresTexture; }
@@ -71,19 +75,9 @@ public:
 	/** Set if texture is required. */
 	void SetRequiresTexture( bool requiresTexture );
 	
-	/** Prepare. */
-	void Prepare();
-	
 	/** Calculated value. */
-	decColor Calculate( const deoglSkinState &skinState, const deoglSkinStateCalculated &calculated );
+	decColor Calculate( const deoglSkinState &skinState ) const;
 	/*@}*/
-	
-	
-	
-private:
-	float pCalculateInputValue( int index, const deoglSkinState &skinState,
-		const deoglSkinStateCalculated &calculated );
-	float pCalculateOutputValue( int index, float inputValue );
 };
 
 #endif

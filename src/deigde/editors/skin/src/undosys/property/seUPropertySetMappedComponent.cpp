@@ -35,20 +35,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetMappedComponent::seUPropertySetMappedComponent( seProperty *property, int index,
-const deSkinPropertyMapped::cComponent &newValue ) :
-pProperty( NULL ),
+seUPropertySetMappedComponent::seUPropertySetMappedComponent(
+	seProperty *property, int index, seMapped *newValue ) :
+pProperty( nullptr ),
 pIndex( index ),
+pOldValue( property ? property->GetMappedComponent( index ) : nullptr ),
 pNewValue( newValue )
 {
-	if( ! property || index < 0 || index > 3 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( property )
 	
 	SetShortInfo( "Property Set Mapped Component" );
-	
-	pOldValue = property->GetMappedComponent( index );
-	pNewValue = newValue;
 	
 	pProperty = property;
 	property->AddReference();
@@ -65,7 +61,7 @@ seUPropertySetMappedComponent::~seUPropertySetMappedComponent(){
 // Management
 ///////////////
 
-void seUPropertySetMappedComponent::SetNewValue( const deSkinPropertyMapped::cComponent &newValue ){
+void seUPropertySetMappedComponent::SetNewValue( seMapped *newValue ){
 	pNewValue = newValue;
 }
 

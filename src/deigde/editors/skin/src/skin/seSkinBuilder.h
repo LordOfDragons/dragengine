@@ -34,7 +34,7 @@ class deSkinPropertyNodeGroup;
 
 
 /**
- * \brief Skin builder.
+ * Skin builder.
  */
 class seSkinBuilder : public deSkinBuilder{
 private:
@@ -45,10 +45,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin builder. */
+	/** Create skin builder. */
 	seSkinBuilder( const seSkin &skin );
 	
-	/** \brief Clean up skin builder. */
+	/** Clean up skin builder. */
 	virtual ~seSkinBuilder();
 	/*@}*/
 	
@@ -56,15 +56,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Build skin into the provided skin object. */
+	/** Build skin into the provided skin object. */
     virtual void BuildSkin( deSkin *engSkin );
 	
-	/** \brief Create skin property node group. */
+	/** Create skin property node group. */
 	void CreateNodeGroup( deSkinPropertyNodeGroup &engNodeGroup, const sePropertyNodeGroup &nodeGroup );
 	
-	/** \brief Create skin property node. */
+	/** Create skin property node. */
 	deSkinPropertyNode *CreateNode( const sePropertyNode &node );
 	/*@}*/
+	
+	
+	
+protected:
+	void pAddMapped( deSkin &engSkin );
+	void pAddTextures( deSkin &engSkin );
 };
 
 #endif

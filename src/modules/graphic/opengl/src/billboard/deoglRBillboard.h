@@ -196,6 +196,10 @@ public:
 	/** Skin state. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
+	/** Init skin state mapped. */
+	void InitSkinStateMapped();
+	void UpdateSkinStateMapped();
+	
 	/** Init skin state calculated properties. */
 	void InitSkinStateCalculatedProperties();
 	void UpdateSkinStateCalculatedProperties();
