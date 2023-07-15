@@ -154,10 +154,10 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMapped.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMapped.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMappedList.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMappedList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.cpp">
@@ -519,10 +519,10 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMapped.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMapped.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMappedList.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMappedList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.h">

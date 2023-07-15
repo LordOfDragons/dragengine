@@ -84,8 +84,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeText.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\seProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\sePropertyList.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMapped.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMappedList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMapped.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMappedList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinListener.cpp" />
@@ -207,8 +207,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeText.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\seProperty.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\sePropertyList.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMapped.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seMappedList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMapped.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMappedList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinListener.h" />
