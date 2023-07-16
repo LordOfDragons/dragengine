@@ -33,7 +33,7 @@
 
 seUMappedSetName::seUMappedSetName( seMapped *mapped, const char *newName ) :
 pMapped( mapped ),
-pOldName( mapped ? mapped->GetName() : "" ),
+pOldName( mapped ? mapped->GetName().GetString() : "" ),
 pNewName( newName )
 {
 	DEASSERT_NOTNULL( pMapped )
