@@ -22,6 +22,8 @@
 #ifndef _DEOGLSKINSTATECONSTRUCTED_H_
 #define _DEOGLSKINSTATECONSTRUCTED_H_
 
+#include "node/deoglSkinStateCNGroup.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
@@ -37,6 +39,7 @@ class deoglSkinStateConstructed{
 private:
 	deoglTexture *pTexture;
 	deoglSkinConstructedProperty *pProperty;
+	deoglSkinStateCNGroup::Ref pContent;
 	
 	
 	
@@ -65,6 +68,10 @@ public:
 	
 	/** Set skin constructed property. */
 	void SetProperty( deoglSkinConstructedProperty *property );
+	
+	/** Content. */
+	inline deoglSkinStateCNGroup &GetContent(){ return pContent; }
+	inline const deoglSkinStateCNGroup &GetContent() const{ return pContent; }
 	
 	/** Update. */
 	void Update( deoglSkinState &skinState );

@@ -19,37 +19,42 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLSKINCONSTRUCTEDPROPERTY_H_
-#define _DEOGLSKINCONSTRUCTEDPROPERTY_H_
+#ifndef _DEOGLSKINSTATECNGROUP_H_
+#define _DEOGLSKINSTATECNGROUP_H_
 
-#include "state/node/deoglSkinStateCNGroup.h"
+#include <dragengine/common/collection/decObjectList.h>
 
-#include <dragengine/resources/skin/property/deSkinPropertyConstructed.h>
+#include "deoglSkinStateConstructedNode.h"
 
-
-class deoglSkinStateConstructed;
+class deSkinPropertyNodeGroup;
 
 
 /**
- * Skin constructed property.
+ * Skin state constructed node.
  */
-class deoglSkinConstructedProperty : public deObject{
+class deoglSkinStateCNGroup : public deoglSkinStateConstructedNode{
 public:
-	typedef deTObjectReference<deoglSkinConstructedProperty> Ref;
+	typedef deTObjectReference<deoglSkinStateCNGroup> Ref;
+	
+	
 	
 private:
-	const deoglSkinStateCNGroup::Ref pContent;
+	decObjectList pNodes;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new skin constructed property. */
-	deoglSkinConstructedProperty( deoglSkinStateCNGroup *content );
+	/** Create skin state constructed node. */
+	deoglSkinStateCNGroup( deSkinPropertyNodeGroup &node );
+	
+	/** Create skin state constructed node. */
+	deoglSkinStateCNGroup( const deoglSkinStateCNGroup &node );
 	
 protected:
-	/** Cleans up the skin constructed property. */
-	virtual ~deoglSkinConstructedProperty();
+	/** Clean up skin state mapped. */
+	virtual ~deoglSkinStateCNGroup() override;
 	/*@}*/
 	
 	
@@ -57,8 +62,19 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Node. */
-	inline const deoglSkinStateCNGroup &GetContent() const{ return pContent; }
+	/** Count of child nodes. */
+	int GetNodeCount() const;
+	
+	/** Child node at index. */
+	deoglSkinStateConstructedNode *GetNodeAt( int index ) const;
+	
+	
+	
+	/** Update. */
+	virtual void Update( deoglSkinState &state ) override;
+	
+	/** Create copy. */
+	virtual deoglSkinStateConstructedNode::Ref Copy() const override;
 	/*@}*/
 };
 

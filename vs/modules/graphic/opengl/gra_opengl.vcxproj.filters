@@ -1464,6 +1464,21 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateMapped.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNGroup.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNImage.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNShape.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNText.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateConstructedNode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\visitor\deoglVSDetermineChannelFormat.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -3289,6 +3304,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateMapped.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCNGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCNImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCNShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCNText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateConstructedNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\visitor\deoglVSDetermineChannelFormat.cpp">

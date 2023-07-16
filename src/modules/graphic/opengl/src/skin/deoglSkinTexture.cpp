@@ -1819,7 +1819,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		}
 		
 	}else if( identify.IsMapped() ){
-		deoglSkinTextureProperty *materialProperty = NULL;
+		deoglSkinTextureProperty *materialProperty = nullptr;
 		bool requiresTexture = false;
 		
 		switch( propertyType ){
@@ -2102,17 +2102,86 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		}
 		
 	}else if ( identify.IsConstructed() ){
-		if( false /* if dynamic constructed */ ){
+		deoglSkinTextureProperty *materialProperty = nullptr;
+		
+		switch( propertyType ){
+		case deoglSkinPropertyMap::eptColor:
+			materialProperty = pMaterialProperties + empColor;
+			break;
+			
+		case deoglSkinPropertyMap::eptColorOmnidir:
+			materialProperty = pMaterialProperties + empColorOmnidirCube;
+			break;
+			
+		case deoglSkinPropertyMap::eptColorOmnidirEquirect:
+			materialProperty = pMaterialProperties + empColorOmnidirEquirect;
+			break;
+			
+		case deoglSkinPropertyMap::eptColorTintMask:
+			materialProperty = pMaterialProperties + empColorTintMask;
+			break;
+			
+		case deoglSkinPropertyMap::eptAmbientOcclusion:
+			materialProperty = pMaterialProperties + empAmbientOcclusion;
+			break;
+			
+		case deoglSkinPropertyMap::eptTransparency:
+			materialProperty = pMaterialProperties + empTransparency;
+			break;
+			
+		case deoglSkinPropertyMap::eptSolidity:
+			materialProperty = pMaterialProperties + empSolidity;
+			break;
+			
+		case deoglSkinPropertyMap::eptNormal:
+			materialProperty = pMaterialProperties + empNormal;
+			break;
+			
+		case deoglSkinPropertyMap::eptRoughness:
+			materialProperty = pMaterialProperties + empRoughness;
+			break;
+			
+		case deoglSkinPropertyMap::eptReflectivity:
+			materialProperty = pMaterialProperties + empReflectivity;
+			break;
+			
+		case deoglSkinPropertyMap::eptEmissivity:
+			materialProperty = pMaterialProperties + empEmissivity;
+			break;
+			
+		case deoglSkinPropertyMap::eptAbsorption:
+			materialProperty = pMaterialProperties + empAbsorption;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivity:
+			materialProperty = pMaterialProperties + empRimEmissivity;
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrAlbedo:
+			materialProperty = pMaterialProperties + empNonPbrAlbedo;
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrMetalness:
+			materialProperty = pMaterialProperties + empNonPbrMetalness;
+			break;
+			
+		default:
+			break;
+		}
+		
+		if( materialProperty ){
 			const deSkinPropertyConstructed &constructed = identify.CastToConstructed();
 			
-			const deoglSkinConstructedProperty::Ref scproperty(
-				deoglSkinConstructedProperty::Ref::New( new deoglSkinConstructedProperty ) );
+			// TODO visit constructed content to see if any node uses mapped
 			
-			scproperty->Prepare();
-			
-			// materialProperty->SetConstructedProperty( skin.AddConstructedProperty( scproperty ) );
-				(void)constructed;
-			pConstructedProperties = true;
+			if( false /* if dynamic constructed */ ){
+				materialProperty->SetConstructedProperty( skin.AddConstructedProperty( 
+					deoglSkinConstructedProperty::Ref::New( new deoglSkinConstructedProperty(
+						deoglSkinStateCNGroup::Ref::New( new deoglSkinStateCNGroup(
+							constructed.GetContent() ) ) ) ) ) );
+				
+				pConstructedProperties = true;
+			}
 		}
 	}
 	

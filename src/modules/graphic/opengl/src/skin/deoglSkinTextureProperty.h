@@ -38,6 +38,7 @@ class deoglSkinTextureProperty{
 private:
 	int pRenderable;
 	int pCalculatedProperty;
+	int pConstructedProperty;
 	
 	
 	
@@ -66,6 +67,12 @@ public:
 	
 	/** Set calculated property index or -1. */
 	void SetCalculatedProperty( int index );
+	
+	/** Constructed property index or -1. */
+	inline int GetConstructedProperty() const{ return pConstructedProperty; }
+	
+	/** Set constructed property index or -1. */
+	void SetConstructedProperty( int index );
 	
 	/** Property is dynamic. */
 	bool IsDynamic() const;

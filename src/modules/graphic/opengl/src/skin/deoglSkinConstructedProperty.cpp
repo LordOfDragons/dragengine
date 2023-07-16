@@ -19,17 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSkinConstructedProperty.h"
-#include "state/deoglSkinState.h"
-#include "state/deoglSkinStateConstructed.h"
-
-#include <dragengine/common/exceptions.h>
-#include <dragengine/common/curve/decCurveBezierEvaluator.h>
-
 
 
 // Class deoglSkinConstructedProperty
@@ -38,25 +28,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinConstructedProperty::deoglSkinConstructedProperty(){
+deoglSkinConstructedProperty::deoglSkinConstructedProperty( deoglSkinStateCNGroup *content ) :
+pContent( content ){
 }
 
 deoglSkinConstructedProperty::~deoglSkinConstructedProperty(){
 }
-
-
-
-// Management
-///////////////
-
-void deoglSkinConstructedProperty::Prepare(){
-}
-
-void deoglSkinConstructedProperty::Render( const deoglSkinState &skinState,
-const deoglSkinStateConstructed &constructed ){
-}
-
-
-
-// Private Functions
-//////////////////////

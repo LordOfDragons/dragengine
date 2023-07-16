@@ -42,7 +42,8 @@
 
 deoglSkinTextureProperty::deoglSkinTextureProperty() :
 pRenderable( -1 ),
-pCalculatedProperty( -1 ){
+pCalculatedProperty( -1 ),
+pConstructedProperty( -1 ){
 }
 
 deoglSkinTextureProperty::~deoglSkinTextureProperty(){
@@ -54,21 +55,22 @@ deoglSkinTextureProperty::~deoglSkinTextureProperty(){
 ///////////////
 
 void deoglSkinTextureProperty::SetRenderable( int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= -1 )
 	pRenderable = index;
 }
 
 void deoglSkinTextureProperty::SetCalculatedProperty( int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= -1 )
 	pCalculatedProperty = index;
 }
 
+void deoglSkinTextureProperty::SetConstructedProperty( int index ){
+	DEASSERT_TRUE( index >= -1 )
+	pConstructedProperty = index;
+}
+
 bool deoglSkinTextureProperty::IsDynamic() const{
-	return pRenderable != -1 || pCalculatedProperty != -1;
+	return pRenderable != -1 || pCalculatedProperty != -1 || pConstructedProperty != -1;
 }
 
 

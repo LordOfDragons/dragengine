@@ -61,11 +61,20 @@ void deoglSkinStateConstructed::SetTexture( deoglTexture* texture ) {
 }
 
 void deoglSkinStateConstructed::SetProperty( deoglSkinConstructedProperty *property ){
+	if( property == pProperty ){
+		return;
+	}
+	
 	pProperty = property;
+	pContent.TakeOver( new deoglSkinStateCNGroup( property->GetContent() ) );
 }
 
 void deoglSkinStateConstructed::Update( deoglSkinState &skinState ){
-	if( pProperty ){
-		//pColor = pProperty->Calculate( skinState, *this );
+	if( ! pContent ){
+		return;
 	}
+	
+	pContent->Update( skinState );
+
+	// TODO Render
 }
