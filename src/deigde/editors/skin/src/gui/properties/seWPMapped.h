@@ -95,6 +95,9 @@ public:
 	
 	/** Update mapped parameters. */
 	void UpdateMapped();
+	
+	/** Fit view to curve. */
+	void FitViewToCurve();
 	/*@}*/
 };
 

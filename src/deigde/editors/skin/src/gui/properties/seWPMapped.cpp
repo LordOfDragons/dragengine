@@ -502,6 +502,9 @@ void seWPMapped::SetSkin( seSkin *skin ){
 	}
 	
 	UpdateMappedList();
+	SelectActiveMapped();
+	UpdateMapped();
+	FitViewToCurve();
 }
 
 seMapped *seWPMapped::GetMapped() const{
@@ -565,4 +568,8 @@ void seWPMapped::UpdateMapped(){
 	pEditInputLower->SetEnabled( enabled );
 	pEditInputUpper->SetEnabled( enabled );
 	pEditBone->SetEnabled( enabled );
+}
+
+void seWPMapped::FitViewToCurve(){
+	pEditCurve->FitViewToCurve();
 }

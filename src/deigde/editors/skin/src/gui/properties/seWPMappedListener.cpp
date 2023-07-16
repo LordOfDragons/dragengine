@@ -76,4 +76,5 @@ void seWPMappedListener::ActiveMappedChanged( seSkin *skin ){
 	
 	pPanel.SelectActiveMapped();
 	pPanel.UpdateMapped();
+	pPanel.FitViewToCurve();
 }
