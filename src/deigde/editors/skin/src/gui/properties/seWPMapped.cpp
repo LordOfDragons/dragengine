@@ -490,8 +490,10 @@ pSkin( nullptr )
 	helper.EditFloat( form, "Input Upper:", "Upper input range", pEditInputUpper, new cTextInputUpper( *this ) );
 	helper.CheckBox( form, pChkInputClamped, new cActionInputClamped( *this ), true );
 	
-	helper.EditFloat( form, "Output Lower:", "Lower output range", pEditOutputLower, new cTextOutputLower( *this ) );
-	helper.EditFloat( form, "Output Upper:", "Upper output range", pEditOutputUpper, new cTextOutputUpper( *this ) );
+	helper.EditFloat( form, "Output Lower:", "Lower output range. 0 Y-curve value maps to lower value."
+		" Values outside range are extrapolated", pEditOutputLower, new cTextOutputLower( *this ) );
+	helper.EditFloat( form, "Output Upper:", "Upper output range. 1 Y-curve value maps to upper value."
+		" Values outside range are extrapolated", pEditOutputUpper, new cTextOutputUpper( *this ) );
 	
 	helper.EditString( form, "Bone:", "Name of the bone to use if bone related input type is used",
 		pEditBone, new cTextBone( *this ) );
@@ -499,7 +501,7 @@ pSkin( nullptr )
 	helper.ViewCurveBezier( groupBox, pEditCurve, new cEditCurve( *this ) );
 	pEditCurve->SetDefaultSize( decPoint( 200, 250 ) );
 	pEditCurve->ClearCurve();
-	//pEditCurve->SetClamp( true ); // better not clamp mapped values as they often go beyond range
+	pEditCurve->SetClamp( true );
 	pEditCurve->SetClampMin( decVector2( 0.0f, 0.0f ) );
 	pEditCurve->SetClampMax( decVector2( 1.0f, 1.0f ) );
 }

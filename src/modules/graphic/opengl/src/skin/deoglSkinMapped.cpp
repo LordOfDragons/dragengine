@@ -89,7 +89,8 @@ const deoglSkinStateMapped &mapped ) const{
 }
 
 float deoglSkinMapped::pCalculateOutputValue( float inputValue ) const{
-	float value = pCurveEvaluator.EvaluateAt( inputValue );
+	const float lower = pMapped.GetOutputLower();
+	const float upper = pMapped.GetOutputUpper();
 	
-	return decMath::linearStep( value, pMapped.GetOutputLower(), pMapped.GetOutputUpper() );
+	return lower + ( upper - lower ) * pCurveEvaluator.EvaluateAt( inputValue );
 }
