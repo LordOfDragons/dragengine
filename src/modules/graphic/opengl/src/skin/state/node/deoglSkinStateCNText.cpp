@@ -23,6 +23,10 @@
 #include "../deoglSkinState.h"
 #include "../deoglSkinStateMapped.h"
 #include "../../../font/deoglFont.h"
+#include "../../../rendering/deoglRenderCanvasContext.h"
+#include "../../../rendering/deoglRenderConstructed.h"
+#include "../../../renderthread/deoglRenderThread.h"
+#include "../../../renderthread/deoglRTRenderers.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -75,6 +79,12 @@ int deoglSkinStateCNText::GetTextMappedFor( deSkinPropertyNodeText::eTextMapped 
 
 
 void deoglSkinStateCNText::Update( deoglSkinState &state ){
+	if( pText.IsEmpty() || ! pFont || pFontSize <= 0.01f ){
+		return;
+	}
+	
+	deoglSkinStateConstructedNode::Update( state );
+	
 	if( pTextMapped[ deSkinPropertyNodeText::etmFontSize ] != -1 ){
 		pFontSize = state.GetMappedAt( pTextMapped[ deSkinPropertyNodeText::etmFontSize ] ).GetValue();
 	}
@@ -87,6 +97,17 @@ void deoglSkinStateCNText::Update( deoglSkinState &state ){
 	if( pTextMapped[ deSkinPropertyNodeText::etmColorBlue ] != -1 ){
 		pColor.b = state.GetMappedAt( pTextMapped[ deSkinPropertyNodeText::etmColorBlue ] ).GetValue();
 	}
+}
+
+void deoglSkinStateCNText::Render( deoglSkinState &state, const deoglRenderCanvasContext &context ){
+	if( pText.IsEmpty() || ! pFont || pFontSize <= 0.01f ){
+		return;
+	}
+	
+	deoglSkinStateConstructedNode::Render( state, context );
+	
+	const deoglRenderCanvasContext textContext( context, *this );
+	state.GetRenderThread().GetRenderers().GetConstructed().DrawNodeText( textContext, *this );
 }
 
 deoglSkinStateConstructedNode::Ref deoglSkinStateCNText::Copy() const{

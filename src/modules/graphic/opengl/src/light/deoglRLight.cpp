@@ -486,6 +486,12 @@ void deoglRLight::RenderSkinStateRenderables( const deoglRenderPlanMasked *rende
 	}
 }
 
+void deoglRLight::PrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
+	}
+}
+
 void deoglRLight::DynamicSkinRenderablesChanged(){
 // 	if( ! pDynamicSkin || ! pLightSkin || ! pLightSkin->GetHasRenderables() ){
 // 		return;
@@ -700,6 +706,8 @@ void deoglRLight::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask 
 		}
 		pDirtyPrepareLightCanvas = false;
 	}
+	
+	PrepareSkinStateConstructed();
 	
 	if( pDirtyPrepareSkinStateRenderables ){
 		PrepareSkinStateRenderables( renderPlanMask );

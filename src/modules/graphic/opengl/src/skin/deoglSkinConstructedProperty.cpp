@@ -21,6 +21,8 @@
 
 #include "deoglSkinConstructedProperty.h"
 
+#include <dragengine/resources/skin/property/deSkinPropertyConstructed.h>
+
 
 // Class deoglSkinConstructedProperty
 ///////////////////////////////////////
@@ -28,8 +30,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinConstructedProperty::deoglSkinConstructedProperty( deoglSkinStateCNGroup *content ) :
-pContent( content ){
+deoglSkinConstructedProperty::deoglSkinConstructedProperty( const deSkinPropertyConstructed &constructed ) :
+pContent( deoglSkinStateCNGroup::Ref::New( new deoglSkinStateCNGroup( constructed.GetContent() ) ) ),
+pBitCount( constructed.GetBitCount() ),
+pColor( constructed.GetColor() ){
 }
 
 deoglSkinConstructedProperty::~deoglSkinConstructedProperty(){

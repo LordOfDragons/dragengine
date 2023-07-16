@@ -416,6 +416,12 @@ void deoglRBillboard::RenderSkinStateRenderables( const deoglRenderPlanMasked *r
 	}
 }
 
+void deoglRBillboard::PrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
+	}
+}
+
 void deoglRBillboard::AddSkinStateRenderPlans( deoglRenderPlan &plan ){
 	pSkinState->AddRenderPlans( plan );
 	pSkinRendered.AddRenderPlans( plan );
@@ -902,6 +908,8 @@ void deoglRBillboard::WorldReferencePointChanged(){
 
 
 void deoglRBillboard::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMasked *mask ){
+	PrepareSkinStateConstructed();
+	
 	if( pDirtyPrepareSkinStateRenderables ){
 		PrepareSkinStateRenderables( mask );
 		pDirtyPrepareSkinStateRenderables = false;

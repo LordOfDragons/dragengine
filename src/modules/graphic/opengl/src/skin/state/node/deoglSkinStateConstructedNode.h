@@ -22,12 +22,15 @@
 #ifndef _DEOGLSKINSTATECONSTRUCTEDNODE_H_
 #define _DEOGLSKINSTATECONSTRUCTEDNODE_H_
 
+#include "../../../target/deoglRenderTarget.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
 
 class deoglRenderThread;
 class deoglSkinState;
+class deoglRenderCanvasContext;
 
 
 /**
@@ -46,7 +49,7 @@ public:
 	
 	
 	
-private:
+protected:
 	const eType pType;
 	
 	decPoint3 pPosition;
@@ -61,6 +64,14 @@ private:
 	const deSkinPropertyNode::eCombineModes pCombineMode;
 	Ref pMask;
 	int pMapped[ deSkinPropertyNode::MappedCount ];
+	
+	decTexMatrix2 pTransform;
+	bool pDirtyTransform;
+	
+	decColorMatrix pColorTransform;
+	bool pDirtyColorTransform;
+	
+	deoglRenderTarget::Ref pMaskRenderTarget;
 	
 	
 	
@@ -123,8 +134,30 @@ public:
 	
 	
 	
-	/** Update. */
+	/** Transformation matrix. */
+	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
+	
+	/** Color transformation matrix. */
+	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
+	
+	
+	
+	/** Mask render target or nullptr. */
+	inline const deoglRenderTarget::Ref &GetMaskRenderTarget() const{ return pMaskRenderTarget; }
+	
+	
+	
+	/**
+	 * Update.
+	 * \warning Called from main thread.
+	 */
 	virtual void Update( deoglSkinState &state );
+	
+	/** Prepare for render. */
+	virtual void PrepareForRender( deoglSkinState &state );
+	
+	/** Render. */
+	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context );
 	
 	/** Create copy. */
 	virtual Ref Copy() const = 0;
@@ -134,6 +167,12 @@ public:
 	/** Create node. */
 	static Ref CreateNode( deSkinPropertyNode &node );
 	/*@}*/
+	
+	
+	
+protected:
+	void pUpdateTransform();
+	void pUpdateColorTransform();
 };
 
 #endif

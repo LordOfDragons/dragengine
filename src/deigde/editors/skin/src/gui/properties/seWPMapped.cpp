@@ -472,7 +472,7 @@ pSkin( nullptr )
 	helper.ViewCurveBezier( groupBox, pEditCurve, new cEditCurve( *this ) );
 	pEditCurve->SetDefaultSize( decPoint( 200, 250 ) );
 	pEditCurve->ClearCurve();
-	pEditCurve->SetClamp( true );
+	//pEditCurve->SetClamp( true ); // better not clamp mapped values as they often go beyond range
 	pEditCurve->SetClampMin( decVector2( 0.0f, 0.0f ) );
 	pEditCurve->SetClampMax( decVector2( 1.0f, 1.0f ) );
 }

@@ -55,6 +55,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
+#include "../skin/channel/deoglSCConstructedDynamic.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/compression/deoglTextureCompression.h"
 #include "../texture/cubemap/deoglCubeMap.h"
@@ -80,7 +81,9 @@
 #include <dragengine/resources/skin/property/deSkinPropertyValue.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVideo.h>
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
+#include <dragengine/resources/skin/property/deSkinPropertyConstructed.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVisitorIdentify.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNodeGroup.h>
 
 
 
@@ -2099,89 +2102,6 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 			materialProperty->SetCalculatedProperty( skin.AddCalculatedProperty( calculated ) );
 			pCalculatedProperties = true;
-		}
-		
-	}else if ( identify.IsConstructed() ){
-		deoglSkinTextureProperty *materialProperty = nullptr;
-		
-		switch( propertyType ){
-		case deoglSkinPropertyMap::eptColor:
-			materialProperty = pMaterialProperties + empColor;
-			break;
-			
-		case deoglSkinPropertyMap::eptColorOmnidir:
-			materialProperty = pMaterialProperties + empColorOmnidirCube;
-			break;
-			
-		case deoglSkinPropertyMap::eptColorOmnidirEquirect:
-			materialProperty = pMaterialProperties + empColorOmnidirEquirect;
-			break;
-			
-		case deoglSkinPropertyMap::eptColorTintMask:
-			materialProperty = pMaterialProperties + empColorTintMask;
-			break;
-			
-		case deoglSkinPropertyMap::eptAmbientOcclusion:
-			materialProperty = pMaterialProperties + empAmbientOcclusion;
-			break;
-			
-		case deoglSkinPropertyMap::eptTransparency:
-			materialProperty = pMaterialProperties + empTransparency;
-			break;
-			
-		case deoglSkinPropertyMap::eptSolidity:
-			materialProperty = pMaterialProperties + empSolidity;
-			break;
-			
-		case deoglSkinPropertyMap::eptNormal:
-			materialProperty = pMaterialProperties + empNormal;
-			break;
-			
-		case deoglSkinPropertyMap::eptRoughness:
-			materialProperty = pMaterialProperties + empRoughness;
-			break;
-			
-		case deoglSkinPropertyMap::eptReflectivity:
-			materialProperty = pMaterialProperties + empReflectivity;
-			break;
-			
-		case deoglSkinPropertyMap::eptEmissivity:
-			materialProperty = pMaterialProperties + empEmissivity;
-			break;
-			
-		case deoglSkinPropertyMap::eptAbsorption:
-			materialProperty = pMaterialProperties + empAbsorption;
-			break;
-			
-		case deoglSkinPropertyMap::eptRimEmissivity:
-			materialProperty = pMaterialProperties + empRimEmissivity;
-			break;
-			
-		case deoglSkinPropertyMap::eptNonPbrAlbedo:
-			materialProperty = pMaterialProperties + empNonPbrAlbedo;
-			break;
-			
-		case deoglSkinPropertyMap::eptNonPbrMetalness:
-			materialProperty = pMaterialProperties + empNonPbrMetalness;
-			break;
-			
-		default:
-			break;
-		}
-		
-		if( materialProperty ){
-			const deSkinPropertyConstructed &constructed = identify.CastToConstructed();
-			
-			// TODO visit constructed content to see if any node uses mapped
-			
-			if( false /* if dynamic constructed */ ){
-				materialProperty->SetConstructedProperty( skin.AddConstructedProperty( 
-					deoglSkinConstructedProperty::Ref::New( new deoglSkinConstructedProperty(
-						deoglSkinStateCNGroup::Ref::New( new deoglSkinStateCNGroup(
-							constructed.GetContent() ) ) ) ) ) );
-				
-				pConstructedProperties = true;
-			}
 		}
 	}
 	

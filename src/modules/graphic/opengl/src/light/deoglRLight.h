@@ -352,6 +352,7 @@ public:
 	void DirtyPrepareSkinStateRenderables();
 	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareSkinStateConstructed();
 	
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();

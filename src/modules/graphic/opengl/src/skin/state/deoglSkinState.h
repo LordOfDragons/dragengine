@@ -95,6 +95,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
 	/** Owner component or NULL. */
 	inline deoglRComponent *GetOwnerComponent() const{ return pOwnerComponent; }
 	
@@ -227,6 +230,9 @@ public:
 	
 	/** Update constructed properties. */
 	void UpdateConstructedProperties();
+	
+	/** Prepare constructed properties for rendering. */
+	void PrepareConstructedProperties();
 	
 	
 	

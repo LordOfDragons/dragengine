@@ -38,6 +38,8 @@ class deFontGlyph;
  */
 class deoglRFont : public deObject{
 public:
+	typedef deTObjectReference<deoglRFont> Ref;
+	
 	struct sGlyph{
 		float x1;
 		float y1;

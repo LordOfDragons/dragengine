@@ -989,6 +989,14 @@ void deoglRComponentTexture::RenderSkinStateRenderables( const deoglRenderPlanMa
 	}
 }
 
+void deoglRComponentTexture::PrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
+	}
+	
+	pUpdateIsRendered();
+}
+
 void deoglRComponentTexture::UpdateRenderableMapping(){
 	if( ! pSkinState ){
 		return;

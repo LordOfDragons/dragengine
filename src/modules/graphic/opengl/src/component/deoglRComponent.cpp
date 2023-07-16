@@ -1289,6 +1289,7 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRender
 	pPrepareRenderEnvMap(); PFRT_SAMPLE(RenderEnvMap)
 	
 	pCheckRenderModifier( plan.GetCamera() );
+	pPrepareSkinStateConstructed(); PFRT_SAMPLE(SkinStateConstructed)
 	pPrepareSkinStateRenderables( mask ); PFRT_SAMPLE(SkinStateRenderables)
 	pPrepareSolidity(); PFRT_SAMPLE(Solidity)
 	
@@ -2261,6 +2262,18 @@ void deoglRComponent::pRenderSkinStateRenderables( const deoglRenderPlanMasked *
 	int i;
 	for( i=0; i<textureCount; i++ ){
 		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->RenderSkinStateRenderables( plan );
+	}
+}
+
+void deoglRComponent::pPrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateConstructed();
 	}
 }
 

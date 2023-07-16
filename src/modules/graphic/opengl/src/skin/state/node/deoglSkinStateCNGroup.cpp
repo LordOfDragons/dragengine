@@ -20,6 +20,10 @@
  */
 
 #include "deoglSkinStateCNGroup.h"
+#include "../../../rendering/deoglRenderCanvasContext.h"
+#include "../../../rendering/deoglRenderConstructed.h"
+#include "../../../renderthread/deoglRenderThread.h"
+#include "../../../renderthread/deoglRTRenderers.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/image/deImage.h>
@@ -72,9 +76,46 @@ deoglSkinStateConstructedNode *deoglSkinStateCNGroup::GetNodeAt( int index ) con
 
 void deoglSkinStateCNGroup::Update( deoglSkinState &state ){
 	const int count = pNodes.GetCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	deoglSkinStateConstructedNode::Update( state );
+	
 	int i;
 	for( i=0; i<count; i++ ){
 		( ( deoglSkinStateConstructedNode* )pNodes.GetAt( i ) )->Update( state );
+	}
+}
+
+void deoglSkinStateCNGroup::PrepareForRender( deoglSkinState &state ){
+	const int count = pNodes.GetCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	deoglSkinStateConstructedNode::PrepareForRender( state );
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglSkinStateConstructedNode* )pNodes.GetAt( i ) )->PrepareForRender( state );
+	}
+}
+
+void deoglSkinStateCNGroup::Render( deoglSkinState &state, const deoglRenderCanvasContext &context ){
+	const int count = pNodes.GetCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	const deoglRenderCanvasContext childContext( context, *this );
+	if( childContext.IsZeroClip() ){
+		return;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglSkinStateConstructedNode* )pNodes.GetAt( i ) )->Render( state, childContext );
 	}
 }
 

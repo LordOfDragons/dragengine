@@ -437,14 +437,14 @@ int deoglRSkin::GetConstructedPropertyCount() const{
 }
 
 deoglSkinConstructedProperty *deoglRSkin::GetConstructedPropertyAt( int index ) const{
-	return ( deoglSkinConstructedProperty* )pCalculatedProperties.GetAt( index );
+	return ( deoglSkinConstructedProperty* )pConstructedProperties.GetAt( index );
 }
 
 int deoglRSkin::AddConstructedProperty( deoglSkinConstructedProperty *constructed ){
 	DEASSERT_NOTNULL( constructed )
 	
-	pCalculatedProperties.Add( constructed );
-	return pCalculatedProperties.GetCount() - 1;
+	pConstructedProperties.Add( constructed );
+	return pConstructedProperties.GetCount() - 1;
 }
 
 

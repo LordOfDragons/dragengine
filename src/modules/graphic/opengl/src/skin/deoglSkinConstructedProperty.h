@@ -24,10 +24,9 @@
 
 #include "state/node/deoglSkinStateCNGroup.h"
 
-#include <dragengine/resources/skin/property/deSkinPropertyConstructed.h>
-
 
 class deoglSkinStateConstructed;
+class deSkinPropertyConstructed;
 
 
 /**
@@ -39,13 +38,15 @@ public:
 	
 private:
 	const deoglSkinStateCNGroup::Ref pContent;
+	const int pBitCount;
+	const decColor pColor;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin constructed property. */
-	deoglSkinConstructedProperty( deoglSkinStateCNGroup *content );
+	deoglSkinConstructedProperty( const deSkinPropertyConstructed &constructed );
 	
 protected:
 	/** Cleans up the skin constructed property. */
@@ -59,6 +60,12 @@ public:
 	/*@{*/
 	/** Node. */
 	inline const deoglSkinStateCNGroup &GetContent() const{ return pContent; }
+	
+	/** Bit count. */
+	inline int GetBitCount() const{ return pBitCount; }
+	
+	/** Base color. */
+	inline const decColor &GetColor() const{ return pColor; }
 	/*@}*/
 };
 

@@ -23,11 +23,11 @@
 #define _DEOGLSKINSTATECONSTRUCTED_H_
 
 #include "node/deoglSkinStateCNGroup.h"
+#include "../../target/deoglRenderTarget.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
-class deoglTexture;
 class deoglSkinState;
 class deoglSkinConstructedProperty;
 
@@ -37,9 +37,10 @@ class deoglSkinConstructedProperty;
  */
 class deoglSkinStateConstructed{
 private:
-	deoglTexture *pTexture;
+	deoglRenderTarget::Ref pRenderTarget;
 	deoglSkinConstructedProperty *pProperty;
 	deoglSkinStateCNGroup::Ref pContent;
+	bool pDirty;
 	
 	
 	
@@ -57,11 +58,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Texture. */
-	inline deoglTexture *GetTexture() const{ return pTexture; }
-	
-	/** Set texture. */
-	void SetTexture( deoglTexture *texture );
+	/** Render target. */
+	inline const deoglRenderTarget::Ref &GetRenderTarget() const{ return pRenderTarget; }
 	
 	/** Skin constructed property. */
 	deoglSkinConstructedProperty *GetProperty() const{ return pProperty; }
@@ -73,9 +71,20 @@ public:
 	inline deoglSkinStateCNGroup &GetContent(){ return pContent; }
 	inline const deoglSkinStateCNGroup &GetContent() const{ return pContent; }
 	
-	/** Update. */
+	/**
+	 * Update.
+	 * \warning Called from main thread.
+	 */
 	void Update( deoglSkinState &skinState );
+	
+	/** Prepare for render. */
+	void PrepareForRender( deoglSkinState &skinState );
 	/*@}*/
+	
+	
+	
+private:
+	void pPrepareRenderTarget( deoglSkinState &skinState );
 };
 
 #endif

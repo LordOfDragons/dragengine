@@ -903,6 +903,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvas.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderConstructed.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1297,6 +1300,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDefinition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDynamic.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSkinChannel.h">
@@ -2748,6 +2754,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderConstructed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3139,6 +3148,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDynamic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSkinChannel.cpp">

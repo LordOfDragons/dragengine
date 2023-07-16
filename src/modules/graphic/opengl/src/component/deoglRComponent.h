@@ -762,6 +762,7 @@ private:
 	void pPrepareRenderEnvMap();
 	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *mask );
 	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *mask );
+	void pPrepareSkinStateConstructed();
 	void pPrepareTextureTUCs();
 	void pPrepareParamBlocks();
 	void pPrepareTextureParamBlocks();

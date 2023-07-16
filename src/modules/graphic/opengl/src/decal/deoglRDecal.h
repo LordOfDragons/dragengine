@@ -373,6 +373,7 @@ private:
 	void pPrepareParamBlocks();
 	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void pPrepareSkinStateConstructed();
 	void pUpdateRTSInstance();
 	void pUpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
 		int element, deoglSkinShader &skinShader );

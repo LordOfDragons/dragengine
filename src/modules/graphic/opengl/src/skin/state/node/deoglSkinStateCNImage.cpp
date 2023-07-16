@@ -20,7 +20,12 @@
  */
 
 #include "deoglSkinStateCNImage.h"
+#include "../deoglSkinState.h"
 #include "../../../texture/deoglImage.h"
+#include "../../../rendering/deoglRenderCanvasContext.h"
+#include "../../../rendering/deoglRenderConstructed.h"
+#include "../../../renderthread/deoglRenderThread.h"
+#include "../../../renderthread/deoglRTRenderers.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/image/deImage.h>
@@ -35,15 +40,20 @@
 
 deoglSkinStateCNImage::deoglSkinStateCNImage( deSkinPropertyNodeImage &node ) :
 deoglSkinStateConstructedNode( node, etImage ),
-pImage( node.GetImage() && node.GetImage()->GetPeerGraphic()
-	? ( ( deoglImage* )node.GetImage()->GetPeerGraphic() )->GetRImage() : nullptr ),
-pRepeat( node.GetRepeat() ){
+pSyncImage( node.GetImage() ),
+pImage( pSyncImage && pSyncImage->GetPeerGraphic()
+	? ( ( deoglImage* )pSyncImage->GetPeerGraphic() )->GetRImage() : nullptr ),
+pRepeat( node.GetRepeat() ),
+pDirtyTCTransform( true ){
 }
 
 deoglSkinStateCNImage::deoglSkinStateCNImage( const deoglSkinStateCNImage &node ) :
 deoglSkinStateConstructedNode( node ),
+pSyncImage( node.pSyncImage ),
 pImage( node.pImage ),
-pRepeat( node.pRepeat ){
+pRepeat( node.pRepeat ),
+pTCTransform( node.pTCTransform ),
+pDirtyTCTransform( true ){
 }
 
 deoglSkinStateCNImage::~deoglSkinStateCNImage(){
@@ -54,6 +64,66 @@ deoglSkinStateCNImage::~deoglSkinStateCNImage(){
 // Management
 ///////////////
 
+void deoglSkinStateCNImage::Update( deoglSkinState &state ){
+	if( ! pImage ){
+		return;
+	}
+	
+	deoglSkinStateConstructedNode::Update( state );
+	
+	pUpdateTCTransform();
+	
+	deoglImage * const peer = ( deoglImage* )pSyncImage->GetPeerGraphic();
+	if( peer ){
+		peer->SyncToRender();
+	}
+}
+
+void deoglSkinStateCNImage::PrepareForRender( deoglSkinState &state ){
+	if( ! pImage ){
+		return;
+	}
+	
+	deoglSkinStateConstructedNode::PrepareForRender( state );
+	
+	pImage->PrepareForRender();
+}
+
+void deoglSkinStateCNImage::Render( deoglSkinState &state, const deoglRenderCanvasContext &context ){
+	if( ! pImage ){
+		return;
+	}
+	
+	deoglSkinStateConstructedNode::Render( state, context );
+	
+	deoglRenderCanvasContext imageContext( context, *this );
+	imageContext.SetTCClampMinimum( pTCClampMin );
+	imageContext.SetTCClampMaximum( pTCClampMax );
+	state.GetRenderThread().GetRenderers().GetConstructed().DrawNodeImage( imageContext, *this );
+}
+
 deoglSkinStateConstructedNode::Ref deoglSkinStateCNImage::Copy() const{
 	return deoglSkinStateConstructedNode::Ref::New( new deoglSkinStateCNImage( *this ) );
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglSkinStateCNImage::pUpdateTCTransform(){
+	if( ! pDirtyTCTransform ){
+		return;
+	}
+	
+	pDirtyTCTransform = false;
+	
+	const decVector2 halfPixel( 0.5f / ( float )pImage->GetWidth(), 0.5f / ( float )pImage->GetHeight() );
+	
+	const float repeatScaleU = ( float )pRepeat.x;
+	const float repeatScaleV = ( float )pRepeat.y;
+	
+	pTCTransform = decTexMatrix2::CreateScale( repeatScaleU, repeatScaleV );
+	pTCClampMin = halfPixel;
+	pTCClampMax = decVector2( repeatScaleU, repeatScaleV ) - halfPixel;
 }

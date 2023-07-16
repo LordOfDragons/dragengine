@@ -50,7 +50,9 @@ pContrast( node.GetContrast() ),
 pGamma( node.GetGamma() ),
 pColorize( node.GetColorize() ),
 pTransparency( node.GetTransparency() ),
-pCombineMode( node.GetCombineMode() )
+pCombineMode( node.GetCombineMode() ),
+pDirtyTransform( true ),
+pDirtyColorTransform( true )
 {
 	int i;
 	for( i=0; i<deSkinPropertyNode::MappedCount; i++ ){
@@ -73,7 +75,9 @@ pContrast( node.pContrast ),
 pGamma( node.pGamma ),
 pColorize( node.pColorize ),
 pTransparency( node.pTransparency ),
-pCombineMode( node.pCombineMode )
+pCombineMode( node.pCombineMode ),
+pDirtyTransform( true ),
+pDirtyColorTransform( true )
 {
 	int i;
 	for( i=0; i<deSkinPropertyNode::MappedCount; i++ ){
@@ -100,48 +104,87 @@ int deoglSkinStateConstructedNode::GetMappedFor( deSkinPropertyNode::eMapped typ
 void deoglSkinStateConstructedNode::Update( deoglSkinState &state ){
 	if( pMapped[ deSkinPropertyNode::emPositionX ] != -1 ){
 		pPosition.x = state.GetMappedAt( pMapped[ deSkinPropertyNode::emPositionX ] ).GetValue();
+		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emPositionY ] != -1 ){
 		pPosition.y = state.GetMappedAt( pMapped[ deSkinPropertyNode::emPositionY ] ).GetValue();
+		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emPositionZ ] != -1 ){
 		pPosition.z = state.GetMappedAt( pMapped[ deSkinPropertyNode::emPositionZ ] ).GetValue();
+		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emSizeX ] != -1 ){
 		pSize.x = state.GetMappedAt( pMapped[ deSkinPropertyNode::emSizeX ] ).GetValue();
+		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emSizeY ] != -1 ){
 		pSize.y = state.GetMappedAt( pMapped[ deSkinPropertyNode::emSizeY ] ).GetValue();
+		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emSizeZ ] != -1 ){
 		pSize.z = state.GetMappedAt( pMapped[ deSkinPropertyNode::emSizeZ ] ).GetValue();
+		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emRotation ] != -1 ){
-		pRotation = state.GetMappedAt( pMapped[ deSkinPropertyNode::emRotation ] ).GetValue();
+		pRotation = state.GetMappedAt( pMapped[ deSkinPropertyNode::emRotation ] ).GetValue() * TWO_PI;
+		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emShear ] != -1 ){
-		pShear = state.GetMappedAt( pMapped[ deSkinPropertyNode::emShear ] ).GetValue();
+		pShear = state.GetMappedAt( pMapped[ deSkinPropertyNode::emShear ] ).GetValue() * TWO_PI;
+		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emBrightness ] != -1 ){
 		pBrightness = state.GetMappedAt( pMapped[ deSkinPropertyNode::emBrightness ] ).GetValue();
+		pDirtyColorTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emContrast ] != -1 ){
 		pContrast = state.GetMappedAt( pMapped[ deSkinPropertyNode::emContrast ] ).GetValue();
+		pDirtyColorTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emGamma ] != -1 ){
 		pGamma = state.GetMappedAt( pMapped[ deSkinPropertyNode::emGamma ] ).GetValue();
 	}
 	if( pMapped[ deSkinPropertyNode::emColorizeRed ] != -1 ){
 		pColorize.r = state.GetMappedAt( pMapped[ deSkinPropertyNode::emColorizeRed ] ).GetValue();
+		pDirtyColorTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emColorizeGreen ] != -1 ){
 		pColorize.g = state.GetMappedAt( pMapped[ deSkinPropertyNode::emColorizeGreen ] ).GetValue();
+		pDirtyColorTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emColorizeBlue ] != -1 ){
 		pColorize.b = state.GetMappedAt( pMapped[ deSkinPropertyNode::emColorizeBlue ] ).GetValue();
+		pDirtyColorTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emTransparency ] != -1 ){
 		pTransparency = state.GetMappedAt( pMapped[ deSkinPropertyNode::emTransparency ] ).GetValue();
+	}
+	
+	pUpdateTransform();
+	pUpdateColorTransform();
+}
+
+void deoglSkinStateConstructedNode::PrepareForRender( deoglSkinState &state ){
+	if( ! pMask ){
+		return;
+	}
+	
+	pMask->PrepareForRender( state );
+}
+
+void deoglSkinStateConstructedNode::Render( deoglSkinState &state, const deoglRenderCanvasContext & ){
+	if( ! pMask ){
+		return;
+	}
+	
+	const decPoint size( pSize.x, pSize.y );
+	
+	if( pMaskRenderTarget ){
+		pMaskRenderTarget->SetSize( size );
+		
+	}else{
+		pMaskRenderTarget = new deoglRenderTarget( state.GetRenderThread(), size, 1, 8 );
 	}
 }
 
@@ -167,4 +210,42 @@ deoglSkinStateConstructedNode::Ref deoglSkinStateConstructedNode::CreateNode( de
 	default:
 		DETHROW( deeInvalidParam );
 	}
+}
+
+
+
+// Protected Functions
+////////////////////////
+
+void deoglSkinStateConstructedNode::pUpdateTransform(){
+	if( ! pDirtyTransform ){
+		return;
+	}
+	
+	pDirtyTransform = false;
+	
+	const decPoint sizeAbs( abs( pSize.x ), abs( pSize.y ) );
+	// clamp.x = decMath::max( sizeAbs.x - 1, 0 );
+	// clamp.y = decMath::max( sizeAbs.y - 1, 0 );
+	
+	const decVector2 offset( ( float )sizeAbs.x * 0.5f, ( float )sizeAbs.y * 0.5f );
+	const decVector2 position( decPoint( pPosition.x, pPosition.y ) );
+	
+	pTransform = decTexMatrix2::CreateScale( pSize.x < 0.0f ? -1.0f : 1.0f, pSize.y < 0.0f ? -1.0f : 1.0f )
+		* decTexMatrix2::CreateTranslation( -offset )
+		* decTexMatrix2::CreateShear( tanf( pShear ), 0.0f )
+		* decTexMatrix2::CreateRotation( pRotation )
+		* decTexMatrix2::CreateTranslation( offset + position );
+}
+
+void deoglSkinStateConstructedNode::pUpdateColorTransform(){
+	if( ! pDirtyColorTransform ){
+		return;
+	}
+	
+	pDirtyColorTransform = false;
+	
+	pColorTransform = decColorMatrix::CreateContrast( pContrast )
+		* decColorMatrix::CreateBrightness( pBrightness )
+		* decColorMatrix::CreateScaling( pColorize );
 }

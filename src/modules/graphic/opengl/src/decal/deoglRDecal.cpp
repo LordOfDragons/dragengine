@@ -540,6 +540,7 @@ void deoglRDecal::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMaske
 	pPrepareVBO();
 	pPrepareParamBlocks();
 	pPrepareTUCs();
+	pPrepareSkinStateConstructed();
 	pPrepareSkinStateRenderables( mask );
 }
 
@@ -1064,6 +1065,12 @@ void deoglRDecal::pRenderSkinStateRenderables( const deoglRenderPlanMasked *rend
 	
 	if( pSkinState ){
 		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRDecal::pPrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
 	}
 }
 

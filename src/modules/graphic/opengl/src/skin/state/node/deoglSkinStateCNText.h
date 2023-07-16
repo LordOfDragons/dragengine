@@ -83,8 +83,14 @@ public:
 	
 	
 	
-	/** Update. */
+	/**
+	 * Update.
+	 * \warning Called from main thread.
+	 */
 	virtual void Update( deoglSkinState &state ) override;
+	
+	/** Render. */
+	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
 	
 	/** Create copy. */
 	virtual deoglSkinStateConstructedNode::Ref Copy() const override;

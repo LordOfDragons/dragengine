@@ -330,6 +330,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\defren\deoglDRDepthMinMax.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderBase.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderConstructed.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCompute.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDepthPass.h" />
@@ -462,6 +463,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeSphere.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCBuildConstructed.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDefinition.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDynamic.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSkinChannel.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\combinedTexture\deoglCombinedTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\combinedTexture\deoglCombinedTextureList.h" />
@@ -949,6 +951,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\defren\deoglDRDepthMinMax.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderBase.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderConstructed.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCompute.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDepthPass.cpp" />
@@ -1080,6 +1083,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeSphere.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCBuildConstructed.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDefinition.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDynamic.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSkinChannel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\combinedTexture\deoglCombinedTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\combinedTexture\deoglCombinedTextureList.cpp" />

@@ -462,6 +462,13 @@ void deoglSkinState::UpdateConstructedProperties(){
 	}
 }
 
+void deoglSkinState::PrepareConstructedProperties(){
+	int i;
+	for( i=0; i<pConstructedPropertyCount; i++ ){
+		pConstructedProperties[ i ].PrepareForRender( *this );
+	}
+}
+
 
 
 void deoglSkinState::SetVariationSeed( const decPoint &seed ){

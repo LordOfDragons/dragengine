@@ -162,9 +162,9 @@ pTaskFindContent( NULL )
 	pFlipCulling = false;
 	
 	pDisableLights = false;
-	pShadowMapSize = 0;
-	pShadowCubeSize = 0;
-	pShadowSkySize = 0;
+	pShadowMapSize = 128;
+	pShadowCubeSize = 128;
+	pShadowSkySize = 128;
 	
 	pEnvMaps = new deoglRenderPlanEnvMap[ 16 ];
 	pEnvMapCount = 8; //4;

@@ -27,6 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deSkinPropertyNodeImage;
 
@@ -41,8 +42,14 @@ public:
 	
 	
 private:
+	const deImage::Ref pSyncImage;
 	const deoglRImage::Ref pImage;
 	const decPoint pRepeat;
+	
+	decTexMatrix2 pTCTransform;
+	decVector2 pTCClampMin;
+	decVector2 pTCClampMax;
+	bool pDirtyTCTransform;
 	
 	
 	
@@ -71,11 +78,37 @@ public:
 	/** Repeat. */
 	inline const decPoint &GetRepeat() const{ return pRepeat; }
 	
+	/** TC Transform. */
+	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
 	
+	/** Texture coordinates clamp minimum. */
+	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
+	
+	/** Texture coordinates clamp maximum. */
+	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
+	
+	
+	
+	/**
+	 * Update.
+	 * \warning Called from main thread.
+	 */
+	virtual void Update( deoglSkinState &state ) override;
+	
+	/** Prepare for render. */
+	virtual void PrepareForRender( deoglSkinState &state ) override;
+	
+	/** Render. */
+	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
 	
 	/** Create copy. */
 	virtual deoglSkinStateConstructedNode::Ref Copy() const override;
 	/*@}*/
+	
+	
+	
+private:
+	void pUpdateTCTransform();
 };
 
 #endif

@@ -22,9 +22,12 @@
 #ifndef _DEOGLSKINSTATECNSHAPE_H_
 #define _DEOGLSKINSTATECNSHAPE_H_
 
+#include "../../../deoglGL.h"
 #include "deoglSkinStateConstructedNode.h"
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
+
+class deoglSharedVBOBlock;
 
 
 /**
@@ -43,6 +46,20 @@ private:
 	float pThickness;
 	
 	int pShapeMapped[ deSkinPropertyNodeShape::ShapeMappedCount ];
+	
+	bool pIsThick;
+	
+	deoglSharedVBOBlock *pVBOBlock;
+	bool pDirtyVBOBlock;
+	int pVBOBlockPointCount;
+	
+	GLenum pDrawModeFill;
+	int pDrawOffsetFill;
+	int pDrawCountFill;
+	
+	GLenum pDrawModeLine;
+	int pDrawOffsetLine;
+	int pDrawCountLine;
 	
 	
 	
@@ -82,12 +99,59 @@ public:
 	
 	
 	
-	/** Update. */
+	/**
+	 * Update.
+	 * \warning Called from main thread.
+	 */
 	virtual void Update( deoglSkinState &state ) override;
+	
+	/** Prepare for render. */
+	virtual void PrepareForRender( deoglSkinState &state ) override;
+	
+	/** Render. */
+	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
 	
 	/** Create copy. */
 	virtual deoglSkinStateConstructedNode::Ref Copy() const override;
+	
+	
+	
+	/** \name Points */
+	/*@{*/
+	/** VBO block. */
+	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	
+	
+	
+	/** Fill draw mode. */
+	inline GLenum GetDrawModeFill() const{ return pDrawModeFill; }
+	
+	/** VBO fill offset. */
+	inline int GetDrawOffsetFill() const{ return pDrawOffsetFill; }
+	
+	/** VBO fill count. */
+	inline int GetDrawCountFill() const{ return pDrawCountFill; }
+	
+	
+	
+	/** Line draw mode. */
+	inline GLenum GetDrawModeLine() const{ return pDrawModeLine; }
+	
+	/** VBO line offset. */
+	inline int GetDrawOffsetLine() const{ return pDrawOffsetLine; }
+	
+	/** VBO line count. */
+	inline int GetDrawCountLine() const{ return pDrawCountLine; }
 	/*@}*/
+	
+	
+	
+private:
+	int pRequiredPointCount();
+	void pPrepareVBOBlock( deoglSkinState &state );
+	void pWriteVBOData( deoglSkinState &state );
+	void pCalcArc( decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
+		float startAngle, float stopAngle, int stepCount );
 };
 
 #endif
