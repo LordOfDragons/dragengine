@@ -30,7 +30,7 @@
 #include <dragengine/resources/skin/deSkinMapped.h>
 
 class seSkin;
-
+class seMappedList;
 
 
 /**
@@ -66,7 +66,7 @@ public:
 	seMapped( const char *name = "Mapped" );
 	
 	/** Create copy of mapped. */
-	seMapped( const seMapped &texture );
+	seMapped( const seMapped &mapped );
 	
 protected:
 	/** Clean up mapped. */
@@ -91,6 +91,9 @@ public:
 	
 	/** Set name. */
 	void SetName( const char *name );
+	
+	/** Make name uniqueu. */
+	void MakeNameUnique( const seMappedList &list );
 	
 	/** Curve. */
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }

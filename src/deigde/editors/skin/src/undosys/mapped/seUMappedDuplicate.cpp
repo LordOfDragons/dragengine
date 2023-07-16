@@ -19,50 +19,21 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _SEUMAPPEDADD_H_
-#define _SEUMAPPEDADD_H_
+#include "seUMappedDuplicate.h"
 
-#include "../../skin/seSkin.h"
-#include "../../skin/mapped/seMapped.h"
-
-#include <deigde/undo/igdeUndo.h>
-
-class seSkin;
+#include <dragengine/common/exceptions.h>
 
 
 
-/**
- * Undo action add mapped.
- */
-class seUMappedAdd : public igdeUndo{
-protected:
-	const seMapped::Ref pMapped;
-	const seSkin::Ref pSkin;
-	
-	
-	
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create undo. */
-	seUMappedAdd( seSkin *skin, seMapped *mapped );
-	
-protected:
-	/** Clean up undo. */
-	virtual ~seUMappedAdd();
-	/*@}*/
-	
-	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	/** Undo action. */
-	virtual void Undo();
-	
-	/** Redo action. */
-	virtual void Redo();
-	/*@}*/
-};
+// Class seUMappedDuplicate
+/////////////////////////////
 
-#endif
+// Constructor, destructor
+////////////////////////////
+
+seUMappedDuplicate::seUMappedDuplicate( seSkin *skin, const seMapped &mapped ) :
+seUMappedAdd( skin, seMapped::Ref::New( new seMapped( mapped ) ) )
+{
+	pMapped->MakeNameUnique( skin->GetMappedList() );
+	SetShortInfo( "Duplicate Mapped" );
+}

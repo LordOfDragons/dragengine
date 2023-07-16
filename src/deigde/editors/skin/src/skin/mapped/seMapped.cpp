@@ -50,6 +50,7 @@ pActive( false )
 seMapped::seMapped( const seMapped &mapped ) :
 pSkin( nullptr ),
 pName( mapped.pName ),
+pCurve( mapped.pCurve ),
 pInputType( mapped.pInputType ),
 pInputLower( mapped.pInputLower ),
 pInputUpper( mapped.pInputUpper ),
@@ -79,6 +80,21 @@ void seMapped::SetName( const char *name ){
 	
 	pName = name;
 	NotifyNameChanged();
+}
+
+void seMapped::MakeNameUnique( const seMappedList &list ){
+	if( ! list.HasNamed( pName ) ){
+		return;
+	}
+	
+	decString name( pName );
+	int counter = 2;
+	
+	while( list.HasNamed( name ) ){
+		name.Format( "%s #%d", pName.GetString(), counter++ );
+	}
+	
+	SetName( name );
 }
 
 void seMapped::SetCurve( const decCurveBezier &curve ){

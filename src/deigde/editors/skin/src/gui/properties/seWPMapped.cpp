@@ -24,6 +24,7 @@
 #include "seWindowProperties.h"
 #include "../seWindowMain.h"
 #include "../../skin/mapped/seMapped.h"
+#include "../../clipboard/seClipboardDataMapped.h"
 #include "../../undosys/mapped/seUMappedSetBone.h"
 #include "../../undosys/mapped/seUMappedSetCurve.h"
 #include "../../undosys/mapped/seUMappedSetInputLower.h"
@@ -31,8 +32,13 @@
 #include "../../undosys/mapped/seUMappedSetInputUpper.h"
 #include "../../undosys/mapped/seUMappedSetName.h"
 #include "../../undosys/mapped/seUMappedToggleInputClamped.h"
+#include "../../undosys/mapped/seUMappedPaste.h"
+#include "../../undosys/mapped/seUMappedRemove.h"
+#include "../../undosys/mapped/seUMappedDuplicate.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/clipboard/igdeClipboard.h>
+#include <deigde/clipboard/igdeClipboardDataReference.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
@@ -71,36 +77,33 @@
 
 namespace{
 
-class cBaseAction : public igdeAction{
+class cBaseActionSkin : public igdeAction{
 protected:
 	seWPMapped &pPanel;
 	
 public:
-	cBaseAction( seWPMapped &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseActionSkin( seWPMapped &panel, const char *text, igdeIcon *icon, const char *description ) :
+	igdeAction( text, icon, description ), pPanel( panel ){ }
 	
 	virtual void OnAction() override{
 		seSkin * const skin = pPanel.GetSkin();
-		seMapped * const mapped = pPanel.GetMapped();
-		if( ! skin || ! mapped ){
+		if( ! skin ){
 			return;
 		}
 		
 		igdeUndoReference undo;
-		undo.TakeOver( OnAction( skin, mapped ) );
+		undo.TakeOver( OnAction( skin ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
 	}
 	
-	virtual igdeUndo *OnAction( seSkin *skin, seMapped *mapped ) = 0;
+	virtual igdeUndo *OnAction( seSkin *skin ) = 0;
 	
 	virtual void Update() override{
 		seSkin * const skin = pPanel.GetSkin();
-		seMapped * const mapped = pPanel.GetMapped();
-		if( skin && mapped ){
-			Update( *skin, *mapped );
+		if( skin ){
+			Update( *skin );
 			
 		}else{
 			SetEnabled( false );
@@ -108,7 +111,35 @@ public:
 		}
 	}
 	
-	virtual void Update( const seSkin &, const seMapped & ){
+	virtual void Update( const seSkin & ){
+		SetEnabled( true );
+		SetSelected( false );
+	}
+};
+
+class cBaseActionMapped : public cBaseActionSkin{
+public:
+	cBaseActionMapped( seWPMapped &panel, const char *text, igdeIcon *icon, const char *description ) :
+	cBaseActionSkin( panel, text, icon, description ){ }
+	
+	virtual igdeUndo *OnAction( seSkin *skin ) override{
+		seMapped * const mapped = pPanel.GetMapped();
+		return mapped ? OnActionMapped( skin, mapped ) : nullptr;
+	}
+	
+	virtual igdeUndo *OnActionMapped( seSkin *skin, seMapped *mapped ) = 0;
+	
+	virtual void Update( const seSkin &skin ) override{
+		seMapped * const mapped = pPanel.GetMapped();
+		if( mapped ){
+			UpdateMapped( skin, *mapped );
+			
+		}else{
+			cBaseActionSkin::Update( skin );
+		}
+	}
+	
+	virtual void UpdateMapped( const seSkin &, const seMapped & ){
 		SetEnabled( true );
 		SetSelected( false );
 	}
@@ -139,6 +170,77 @@ public:
 };
 
 
+class cActionCopy : public cBaseActionMapped{
+public:
+	cActionCopy( seWPMapped &panel ) : cBaseActionMapped ( panel, "Copy Mapped",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy mapped" ){}
+	
+	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ) override{
+		igdeClipboardDataReference data;
+		seMappedList list;
+		list.Add( mapped );
+		data.TakeOver( new seClipboardDataMapped( list ) );
+		
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( data );
+		return nullptr;
+	}
+};
+
+class cActionCut : public cBaseActionMapped{
+public:
+	cActionCut( seWPMapped &panel ) : cBaseActionMapped ( panel, "Cut Mapped",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ), "Cut mapped" ){}
+	
+	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ) override{
+		igdeClipboardDataReference data;
+		seMappedList list;
+		list.Add( mapped );
+		data.TakeOver( new seClipboardDataMapped( list ) );
+		
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( data );
+		
+		seUMappedRemove * const undo = new seUMappedRemove( mapped );
+		
+		if( undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat( &pPanel,
+		igdeCommonDialogs::ebsYesNo, "Cut Mapped", "Mapped is used by %d dependencies. "
+		"Cutting mapped will also unset it from all dependencies.", undo->GetDependencyCount() )
+		== igdeCommonDialogs::ebNo ){
+			undo->FreeReference();
+			return nullptr;
+		}
+		
+		return undo;
+	}
+};
+
+class cActionPaste : public cBaseActionSkin{
+public:
+	cActionPaste( seWPMapped &panel ) : cBaseActionSkin( panel, "Paste Mapped",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ), "Paste mapped" ){}
+	
+	virtual igdeUndo *OnAction( seSkin *skin ) override{
+		const seClipboardDataMapped * const data = ( seClipboardDataMapped* )
+			pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			GetWithTypeName( seClipboardDataMapped::TYPE_NAME );
+		return data ? new seUMappedPaste( skin, *data ) : nullptr;
+	}
+	
+	virtual void Update( const seSkin & ) override{
+		SetEnabled( pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			HasWithTypeName( seClipboardDataMapped::TYPE_NAME ) );
+	}
+};
+
+class cActionDuplicate : public cBaseActionMapped{
+public:
+	cActionDuplicate( seWPMapped &panel ) : cBaseActionMapped( panel, "Duplicate Mapped",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiDuplicate ), "Duplicate mapped" ){}
+	
+	virtual igdeUndo *OnActionMapped( seSkin *skin, seMapped *mapped ) override{
+		return new seUMappedDuplicate( skin, *mapped );
+	}
+};
+
 class cListMapped : public igdeListBoxListener{
 	seWPMapped &pPanel;
 public:
@@ -159,6 +261,14 @@ public:
 		
 		helper.MenuCommand( menu, windowMain.GetActionMappedAdd() );
 		helper.MenuCommand( menu, windowMain.GetActionMappedRemove() );
+		
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionCopy( pPanel ), true );
+		helper.MenuCommand( menu, new cActionCut( pPanel ), true );
+		helper.MenuCommand( menu, new cActionPaste( pPanel ), true );
+		
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionDuplicate( pPanel ), true );
 	}
 };
 
@@ -280,17 +390,17 @@ public:
 	}
 };
 
-class cActionInputClamped : public cBaseAction{
+class cActionInputClamped : public cBaseActionMapped {
 public:
-	cActionInputClamped( seWPMapped &panel ) : cBaseAction( panel,
+	cActionInputClamped( seWPMapped &panel ) : cBaseActionMapped ( panel,
 		"Input Clamped:", nullptr, "Input value is clamperd to input range instead od wrapping around" ){ }
 	
-	virtual igdeUndo *OnAction( seSkin*, seMapped *mapped ) override{
+	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ) override{
 		return new seUMappedToggleInputClamped( mapped );
 	}
 	
-	virtual void Update( const seSkin &skin, const seMapped &mapped ) override{
-		cBaseAction::Update( skin, mapped );
+	virtual void UpdateMapped( const seSkin &skin, const seMapped &mapped ) override{
+		cBaseActionMapped::UpdateMapped( skin, mapped );
 		SetSelected( mapped.GetInputClamped() );
 	}
 };

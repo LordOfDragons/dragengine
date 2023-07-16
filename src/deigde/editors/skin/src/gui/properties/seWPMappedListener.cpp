@@ -74,5 +74,6 @@ void seWPMappedListener::ActiveMappedChanged( seSkin *skin ){
 		return;
 	}
 	
+	pPanel.SelectActiveMapped();
 	pPanel.UpdateMapped();
 }

@@ -153,6 +153,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedPaste.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedDuplicate.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.cpp" />
@@ -277,6 +279,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureRemove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedPaste.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedDuplicate.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedRemove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.h" />

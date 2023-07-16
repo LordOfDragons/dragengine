@@ -19,49 +19,23 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _SEUMAPPEDADD_H_
-#define _SEUMAPPEDADD_H_
+#ifndef _SEUMAPPEDPASTE_H_
+#define _SEUMAPPEDPASTE_H_
 
-#include "../../skin/seSkin.h"
-#include "../../skin/mapped/seMapped.h"
+#include "seUMappedAdd.h"
 
-#include <deigde/undo/igdeUndo.h>
-
-class seSkin;
-
+class seClipboardDataMapped;
 
 
 /**
- * Undo action add mapped.
+ * Undo action paste mapped.
  */
-class seUMappedAdd : public igdeUndo{
-protected:
-	const seMapped::Ref pMapped;
-	const seSkin::Ref pSkin;
-	
-	
-	
+class seUMappedPaste : public seUMappedAdd{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedAdd( seSkin *skin, seMapped *mapped );
-	
-protected:
-	/** Clean up undo. */
-	virtual ~seUMappedAdd();
-	/*@}*/
-	
-	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	/** Undo action. */
-	virtual void Undo();
-	
-	/** Redo action. */
-	virtual void Redo();
+	seUMappedPaste( seSkin *skin, const seClipboardDataMapped &data  );
 	/*@}*/
 };
 
