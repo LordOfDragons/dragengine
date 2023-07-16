@@ -217,6 +217,11 @@ void igdeNativeFoxViewCurveBezierView::FitViewToCurve(){
 		}
 	}
 	
+	// ensure the view is not shrunk too small
+	const decVector2 enlarge( ( decVector2( 0.1f, 0.1f ) - ( maxExtend - minExtend ) / 2 ).Largest( decVector2() ) );
+	minExtend -= enlarge;
+	maxExtend += enlarge;
+	
 	// set the origin and scaling to fit the curve
 	pGridCenter = ( minExtend + maxExtend ) * 0.5f;
 	pDirtyGridParams = true;
