@@ -52,8 +52,6 @@ private:
 	float pInputLower;
 	float pInputUpper;
 	bool pInputClamped;
-	float pOutputLower;
-	float pOutputUpper;
 	decString pBone;
 	
 	bool pSelected;
@@ -126,18 +124,6 @@ public:
 	
 	/** Set if input value is clamped to range instead of wrapping around. */
 	void SetInputClamped( bool inputClamped );
-	
-	/** Lower output range. */
-	inline float GetOutputLower() const{ return pOutputLower; }
-	
-	/** Set lower output range. */
-	void SetOutputLower( float lower );
-	
-	/** Upper output range. */
-	inline float GetOutputUpper() const{ return pOutputUpper; }
-	
-	/** Set upper output range. */
-	void SetOutputUpper( float upper );
 	
 	/** Bone name if bone related input type is used. */
 	inline const decString &GetBone() const{ return pBone; }

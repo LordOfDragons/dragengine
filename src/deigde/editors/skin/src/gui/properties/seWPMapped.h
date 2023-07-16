@@ -55,8 +55,6 @@ private:
 	igdeTextFieldReference pEditInputLower;
 	igdeTextFieldReference pEditInputUpper;
 	igdeCheckBoxReference pChkInputClamped;
-	igdeTextFieldReference pEditOutputLower;
-	igdeTextFieldReference pEditOutputUpper;
 	igdeTextFieldReference pEditBone;
 	
 	

@@ -43,7 +43,7 @@
  * - Bone Scale Y: Use named bone Y scale.
  * - Bone Scale Z: Use named bone Z scale.
  * 
- * The input range maps the input value to the output value range used to sample the curve.
+ * The input range maps the input value to the 0->1 range used to sample the curve.
  * This allows to easily modify play speed (for the elapsed time case) or bone state range
  * (for bone related types). For bone related times the bone name has to be set too.
  * By default input values are wrapped around inside input range. This is best used for
@@ -97,8 +97,6 @@ private:
 	float pInputLower;
 	float pInputUpper;
 	bool pInputClamped;
-	float pOutputLower;
-	float pOutputUpper;
 	decString pBone;
 	
 	
@@ -151,18 +149,6 @@ public:
 	
 	/** \brief Set if input value is clamped to range instead of wrapping around. */
 	void SetInputClamped( bool inputClamped );
-	
-	/** \brief Lower output range. */
-	inline float GetOutputLower() const{ return pOutputLower; }
-	
-	/** \brief Set lower output range. */
-	void SetOutputLower( float lower );
-	
-	/** \brief Upper output range. */
-	inline float GetOutputUpper() const{ return pOutputUpper; }
-	
-	/** \brief Set upper output range. */
-	void SetOutputUpper( float upper );
 	
 	/** \brief Bone name if bone related input type is used. */
 	inline const decString &GetBone() const{ return pBone; }

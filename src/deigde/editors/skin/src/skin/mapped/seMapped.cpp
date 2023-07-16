@@ -41,8 +41,6 @@ pInputType( deSkinMapped::eitTime ),
 pInputLower( 0.0f ),
 pInputUpper( 1.0f ),
 pInputClamped( false ),
-pOutputLower( 0.0f ),
-pOutputUpper( 1.0f ),
 pSelected( false ),
 pActive( false )
 {
@@ -57,8 +55,6 @@ pInputType( mapped.pInputType ),
 pInputLower( mapped.pInputLower ),
 pInputUpper( mapped.pInputUpper ),
 pInputClamped( mapped.pInputClamped ),
-pOutputLower( mapped.pOutputLower ),
-pOutputUpper( mapped.pOutputUpper ),
 pSelected( false ),
 pActive( false ){
 }
@@ -143,24 +139,6 @@ void seMapped::SetInputClamped( bool inputClamped ){
 	}
 	
 	pInputClamped = inputClamped;
-	NotifyChanged();
-}
-
-void seMapped::SetOutputLower( float lower ){
-	if( fabsf( lower - pOutputLower ) < FLOAT_SAFE_EPSILON ){
-		return;
-	}
-	
-	pOutputLower = lower;
-	NotifyChanged();
-}
-
-void seMapped::SetOutputUpper( float upper ){
-	if( fabsf( upper - pOutputUpper ) < FLOAT_SAFE_EPSILON ){
-		return;
-	}
-	
-	pOutputUpper = upper;
 	NotifyChanged();
 }
 

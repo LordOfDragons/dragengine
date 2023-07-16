@@ -222,8 +222,8 @@ void deClassSkinBuilder::nfBuildSkin::RunFunction( dsRunTime*, dsValue* ){
 
 
 
-// protected func void addMapped(String name, CurveBezier curve, SkinMappedInputType inputType,
-// Vector2 inputRange, bool inputClamped, Vector2 outputRange, String bone)
+// protected func void addMapped(String name, CurveBezier curve,
+// SkinMappedInputType inputType, Vector2 inputRange, bool inputClamped, String bone)
 deClassSkinBuilder::nfAddMapped::nfAddMapped( const sInitData &init ) :
 dsFunction( init.clsSkinBuilder, "addMapped", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
@@ -232,7 +232,6 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsSkinMappedInputType ); // inputType
 	p_AddParameter( init.clsVector2 ); // inputRange
 	p_AddParameter( init.clsBoolean ); // inputClamped
-	p_AddParameter( init.clsVector2 ); // outputRange
 	p_AddParameter( init.clsString ); // bone
 }
 void deClassSkinBuilder::nfAddMapped::RunFunction( dsRunTime *rt, dsValue *myself ){
@@ -256,12 +255,7 @@ void deClassSkinBuilder::nfAddMapped::RunFunction( dsRunTime *rt, dsValue *mysel
 	mapped->SetInputUpper( inputRange.y );
 	
 	mapped->SetInputClamped( rt->GetValue( 4 )->GetBool() );
-	
-	const decVector2 &outputRange = clsVector2.GetVector2( rt->GetValue( 5 )->GetRealObject() );
-	mapped->SetOutputLower( outputRange.x );
-	mapped->SetOutputUpper( outputRange.y );
-	
-	mapped->SetBone( rt->GetValue( 6 )->GetString() );
+	mapped->SetBone( rt->GetValue( 5 )->GetString() );
 	
 	builder->GetSkin()->AddMapped( mapped );
 }
