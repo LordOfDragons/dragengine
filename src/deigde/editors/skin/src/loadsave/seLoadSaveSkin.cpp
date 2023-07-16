@@ -147,6 +147,8 @@ const igdeTexturePropertyList &knownPropertyList ){
 			mapped->SetInputLower( engMapped.GetInputLower() );
 			mapped->SetInputUpper( engMapped.GetInputUpper() );
 			mapped->SetInputClamped( engMapped.GetInputClamped() );
+			mapped->SetOutputLower( engMapped.GetOutputLower() );
+			mapped->SetOutputUpper( engMapped.GetOutputUpper() );
 			mapped->SetBone( engMapped.GetBone() );
 			
 			skin->AddMapped( mapped );

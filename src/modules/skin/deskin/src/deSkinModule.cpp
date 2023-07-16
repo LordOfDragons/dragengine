@@ -347,6 +347,18 @@ deSkinMapped::Ref deSkinModule::pParseMapped( const decXmlElementTag &root, cons
 					|| cdata->GetData() == "yes" || cdata->GetData() == "1" );
 			}
 			
+		}else if( tag->GetName() == "outputLower" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped->SetOutputLower( cdata->GetData().ToFloat() );
+			}
+			
+		}else if( tag->GetName() == "outputUpper" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped->SetOutputUpper( cdata->GetData().ToFloat() );
+			}
+			
 		}else if( tag->GetName() == "bone" ){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if( cdata ){
@@ -1517,13 +1529,19 @@ void deSkinModule::pWriteMapped( decXmlWriter &writer, const deSkinMapped &mappe
 	if( fabsf( mapped.GetInputLower() ) >= FLOAT_SAFE_EPSILON ){
 		writer.WriteDataTagFloat( "inputLower", mapped.GetInputLower() );
 	}
-	
 	if( fabsf( mapped.GetInputUpper() - 1.0f ) >= FLOAT_SAFE_EPSILON ){
 		writer.WriteDataTagFloat( "inputUpper", mapped.GetInputUpper() );
 	}
 	
 	if( mapped.GetInputClamped() ){
 		writer.WriteDataTagBool( "inputClamped", mapped.GetInputClamped() );
+	}
+	
+	if( fabsf( mapped.GetOutputLower() ) >= FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "outputLower", mapped.GetOutputLower() );
+	}
+	if( fabsf( mapped.GetOutputUpper() - 1.0f ) >= FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "outputUpper", mapped.GetOutputUpper() );
 	}
 	
 	if( ! mapped.GetBone().IsEmpty() ){
