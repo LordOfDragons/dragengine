@@ -3318,19 +3318,19 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateMapped.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCNGroup.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCNImage.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCNShape.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCNText.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateConstructedNode.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateConstructedNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\visitor\deoglVSDetermineChannelFormat.cpp">
