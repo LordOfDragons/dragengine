@@ -28,8 +28,10 @@
 #include "../../undosys/mapped/seUMappedSetBone.h"
 #include "../../undosys/mapped/seUMappedSetCurve.h"
 #include "../../undosys/mapped/seUMappedSetInputLower.h"
+#include "../../undosys/mapped/seUMappedSetOutputLower.h"
 #include "../../undosys/mapped/seUMappedSetInputType.h"
 #include "../../undosys/mapped/seUMappedSetInputUpper.h"
+#include "../../undosys/mapped/seUMappedSetOutputUpper.h"
 #include "../../undosys/mapped/seUMappedSetName.h"
 #include "../../undosys/mapped/seUMappedToggleInputClamped.h"
 #include "../../undosys/mapped/seUMappedPaste.h"
@@ -405,6 +407,28 @@ public:
 	}
 };
 
+class cTextOutputLower : public cBaseTextFieldListener{
+public:
+	cTextOutputLower( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seMapped *mapped ) override{
+		const float value = textField.GetFloat();
+		return fabsf( value - mapped->GetOutputLower() ) > FLOAT_SAFE_EPSILON
+			? new seUMappedSetOutputLower( mapped, value ) : nullptr;
+	}
+};
+
+class cTextOutputUpper : public cBaseTextFieldListener{
+public:
+	cTextOutputUpper( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seMapped *mapped ) override{
+		const float value = textField.GetFloat();
+		return fabsf( value - mapped->GetOutputUpper() ) > FLOAT_SAFE_EPSILON
+			? new seUMappedSetOutputUpper( mapped, value ) : nullptr;
+	}
+};
+
 class cTextBone : public cBaseTextFieldListener{
 public:
 	cTextBone( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
@@ -465,6 +489,9 @@ pSkin( nullptr )
 	helper.EditFloat( form, "Input Lower:", "Lower input range", pEditInputLower, new cTextInputLower( *this ) );
 	helper.EditFloat( form, "Input Upper:", "Upper input range", pEditInputUpper, new cTextInputUpper( *this ) );
 	helper.CheckBox( form, pChkInputClamped, new cActionInputClamped( *this ), true );
+	
+	helper.EditFloat( form, "Output Lower:", "Lower output range", pEditOutputLower, new cTextOutputLower( *this ) );
+	helper.EditFloat( form, "Output Upper:", "Upper output range", pEditOutputUpper, new cTextOutputUpper( *this ) );
 	
 	helper.EditString( form, "Bone:", "Name of the bone to use if bone related input type is used",
 		pEditBone, new cTextBone( *this ) );
@@ -543,6 +570,8 @@ void seWPMapped::UpdateMapped(){
 		pCBInputType->SetSelectionWithData( ( void* )( intptr_t )mapped->GetInputType() );
 		pEditInputLower->SetFloat( mapped->GetInputLower() );
 		pEditInputUpper->SetFloat( mapped->GetInputUpper() );
+		pEditOutputLower->SetFloat( mapped->GetOutputLower() );
+		pEditOutputUpper->SetFloat( mapped->GetOutputUpper() );
 		pEditBone->SetText( mapped->GetBone() );
 		
 	}else{
@@ -551,6 +580,8 @@ void seWPMapped::UpdateMapped(){
 		pCBInputType->SetSelectionWithData( ( void* )( intptr_t )deSkinMapped::eitTime );
 		pEditInputLower->ClearText();
 		pEditInputUpper->ClearText();
+		pEditOutputLower->ClearText();
+		pEditOutputUpper->ClearText();
 		pEditBone->ClearText();
 	}
 	
@@ -564,5 +595,7 @@ void seWPMapped::UpdateMapped(){
 	pCBInputType->SetEnabled( enabled );
 	pEditInputLower->SetEnabled( enabled );
 	pEditInputUpper->SetEnabled( enabled );
+	pEditOutputLower->SetEnabled( enabled );
+	pEditOutputUpper->SetEnabled( enabled );
 	pEditBone->SetEnabled( enabled );
 }

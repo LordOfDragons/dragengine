@@ -35,7 +35,9 @@ pName( name ),
 pInputType( eitTime ),
 pInputLower( 0.0f ),
 pInputUpper( 1.0f ),
-pInputClamped( false ){
+pInputClamped( false ),
+pOutputLower( 0.0f ),
+pOutputUpper( 1.0f ){
 }
 
 deSkinMapped::~deSkinMapped(){
@@ -62,6 +64,14 @@ void deSkinMapped::SetInputClamped( bool inputClamped ){
 	pInputClamped = inputClamped;
 }
 
+void deSkinMapped::SetOutputLower( float lower ){
+	pOutputLower = lower;
+}
+
+void deSkinMapped::SetOutputUpper( float upper ){
+	pOutputUpper = upper;
+}
+
 void deSkinMapped::SetBone( const char *bone ){
 	pBone = bone;
 }
@@ -74,6 +84,8 @@ deSkinMapped &deSkinMapped::operator=( const deSkinMapped &mapped ){
 	pInputLower = mapped.pInputLower;
 	pInputUpper = mapped.pInputUpper;
 	pInputClamped = mapped.pInputClamped;
+	pOutputLower = mapped.pOutputLower;
+	pOutputUpper = mapped.pOutputUpper;
 	pBone = mapped.pBone;
 	return *this;
 }
