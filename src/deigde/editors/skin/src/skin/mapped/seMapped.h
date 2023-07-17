@@ -55,6 +55,8 @@ private:
 	float pOutputLower;
 	float pOutputUpper;
 	decString pBone;
+	decString pRenderable;
+	deSkinMapped::eRenderableComponent pRenderableComponent;
 	
 	bool pSelected;
 	bool pActive;
@@ -144,6 +146,18 @@ public:
 	
 	/** Set bone name if bone related input type is used. */
 	void SetBone( const char *bone );
+	
+	/** Renderable name if renderable related input type is used. */
+	inline const decString &GetRenderable() const{ return pRenderable; }
+	
+	/** Set renderable name if renderable related input type is used. */
+	void SetRenderable( const char *renderable );
+	
+	/** Color component to use if renderable is of color type. */
+	inline deSkinMapped::eRenderableComponent GetRenderableComponent() const{ return pRenderableComponent; }
+	
+	/** Set color component to use if renderable is of color type. */
+	void SetRenderableComponent( deSkinMapped::eRenderableComponent component );
 	
 	
 	

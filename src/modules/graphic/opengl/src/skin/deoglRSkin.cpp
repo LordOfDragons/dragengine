@@ -115,7 +115,14 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 	try{
 		// created mapped
 		for( i=0; i<mappedCount; i++ ){
-			pMapped.Add( deObject::Ref::New( new deoglSkinMapped( *skin.GetMappedAt( i ) ) ) );
+			const deSkinMapped &mapped = *skin.GetMappedAt( i );
+			const deoglSkinMapped::Ref oglMapped( deoglSkinMapped::Ref::New( new deoglSkinMapped( mapped ) ) );
+			
+			if( mapped.GetInputType() == deSkinMapped::eitRenderable && ! mapped.GetRenderable().IsEmpty() ){
+				oglMapped->SetRenderable( AddRenderable( mapped.GetRenderable() ) );
+			}
+			
+			pMapped.Add( oglMapped );
 		}
 		
 		// create textures. we create only what does not require an opengl call.

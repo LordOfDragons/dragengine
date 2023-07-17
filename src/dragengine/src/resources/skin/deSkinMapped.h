@@ -85,7 +85,25 @@ public:
 		eitBoneScaleY,
 		
 		/** \brief Use named bone Z scale. */
-		eitBoneScaleZ
+		eitBoneScaleZ,
+		
+		/** \brief Use renderable (value or color type). */
+		eitRenderable
+	};
+	
+	/** \brief Renderable component. */
+	enum eRenderableComponent{
+		/** \brief Red component if renderable is of color type. */
+		ercRed,
+		
+		/** \brief Green component if renderable is of color type. */
+		ercGreen,
+		
+		/** \brief Blue component if renderable is of color type. */
+		ercBlue,
+		
+		/** \brief Alpha component if renderable is of color type. */
+		ercAlpha
 	};
 	
 	
@@ -100,6 +118,8 @@ private:
 	float pOutputLower;
 	float pOutputUpper;
 	decString pBone;
+	decString pRenderable;
+	eRenderableComponent pRenderableComponent;
 	
 	
 	
@@ -169,6 +189,18 @@ public:
 	
 	/** \brief Set bone name if bone related input type is used. */
 	void SetBone( const char *bone );
+	
+	/** \brief Renderable name if renderable related input type is used. */
+	inline const decString &GetRenderable() const{ return pRenderable; }
+	
+	/** \brief Set renderable name if renderable related input type is used. */
+	void SetRenderable( const char *renderable );
+	
+	/** \brief Color component to use if renderable is of color type. */
+	inline eRenderableComponent GetRenderableComponent() const{ return pRenderableComponent; }
+	
+	/** \brief Set color component to use if renderable is of color type. */
+	void SetRenderableComponent( eRenderableComponent component );
 	
 	
 	

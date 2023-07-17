@@ -22,6 +22,9 @@
 #include "deoglSkinMapped.h"
 #include "state/deoglSkinState.h"
 #include "state/deoglSkinStateMapped.h"
+#include "state/deoglSkinStateRenderable.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/dynamic/renderables/render/deoglRDSRenderable.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/curve/decCurveBezierEvaluator.h>
@@ -36,7 +39,8 @@
 
 deoglSkinMapped::deoglSkinMapped( const deSkinMapped &mapped ) :
 pMapped( mapped ),
-pCurveEvaluator( mapped.GetCurve() ){
+pCurveEvaluator( mapped.GetCurve() ),
+pRenderable( -1 ){
 }
 
 deoglSkinMapped::~deoglSkinMapped(){
@@ -46,6 +50,12 @@ deoglSkinMapped::~deoglSkinMapped(){
 
 // Management
 ///////////////
+
+void deoglSkinMapped::SetRenderable( int renderable ){
+	DEASSERT_TRUE( renderable >= -1 )
+	
+	pRenderable = renderable;
+}
 
 float deoglSkinMapped::Calculate( const deoglSkinState &skinState, const deoglSkinStateMapped &mapped ) const{
 	return pCalculateOutputValue( pCalculateInputValue( skinState, mapped ) );
@@ -76,6 +86,57 @@ const deoglSkinStateMapped &mapped ) const{
 	case deSkinMapped::eitBoneScaleZ:
 		input = mapped.GetBoneInputValue();
 		break;
+		
+	case deSkinMapped::eitRenderable:{
+		if( pRenderable == -1 || pRenderable >= skinState.GetRenderableCount() ){
+			break;
+		}
+		
+		const deoglSkinStateRenderable * const renderable = skinState.GetRenderableAt( pRenderable );
+		if( ! renderable ){
+			break;
+		}
+		
+		const deoglRDynamicSkin * const dynamicSkin = skinState.GetOwnerDynamicSkin();
+		if( ! dynamicSkin ){
+			break;
+		}
+		
+		const int hostRenderable = renderable->GetHostRenderable();
+		if( hostRenderable == -1 ){
+			break;
+		}
+		
+		deoglRDSRenderable * const dsrenderable = dynamicSkin->GetRenderableAt( hostRenderable );
+		if( ! dsrenderable ){
+			break;
+		}
+		
+		if( dsrenderable->GetType() == deoglRDSRenderable::etColor ){
+			const decColor color( dsrenderable->GetRenderColor( decColor() ) );
+			
+			switch( pMapped.GetRenderableComponent() ){
+			case deSkinMapped::ercRed:
+				input = color.r;
+				break;
+				
+			case deSkinMapped::ercGreen:
+				input = color.g;
+				break;
+				
+			case deSkinMapped::ercBlue:
+				input = color.b;
+				break;
+				
+			case deSkinMapped::ercAlpha:
+				input = color.a;
+				break;
+			}
+			
+		}else{
+			input = dsrenderable->GetRenderValue( 0.0f );
+		}
+		}break;
 		
 	default:
 		break;

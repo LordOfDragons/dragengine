@@ -58,6 +58,8 @@ private:
 	igdeTextFieldReference pEditOutputLower;
 	igdeTextFieldReference pEditOutputUpper;
 	igdeTextFieldReference pEditBone;
+	igdeTextFieldReference pEditRenderable;
+	igdeComboBoxReference pCBRenderableComponent;
 	
 	
 	

@@ -38,15 +38,30 @@ class deoglRenderPlanMasked;
  * Render dynamic skin renderable.
  */
 class deoglRDSRenderable : public deObject{
+public:
+	enum eType{
+		etValue,
+		etColor,
+		etImage,
+		etVideoFrame,
+		etCanvas,
+		etCamera
+	};
+	
+	
+	
 private:
+	const eType pType;
 	decString pName;
 	deoglRDynamicSkin &pDynamicSkin;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin renderable. */
-	deoglRDSRenderable( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderable( eType type, deoglRDynamicSkin &dynamicSkin );
 	
 	/** Clean up render dynamic skin renderable. */
 	virtual ~deoglRDSRenderable();
@@ -56,6 +71,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Type. */
+	inline const eType GetType() const{ return pType; }
+	
 	/** Dynamic skin. */
 	inline deoglRDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	

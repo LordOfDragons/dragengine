@@ -223,7 +223,8 @@ void deClassSkinBuilder::nfBuildSkin::RunFunction( dsRunTime*, dsValue* ){
 
 
 // protected func void addMapped(String name, CurveBezier curve, SkinMappedInputType inputType,
-// Vector2 inputRange, bool inputClamped, Vector2 outputRange, String bone)
+// Vector2 inputRange, bool inputClamped, Vector2 outputRange, String bone, String renderable,
+// SkinMappedRenderableComponent renderableComponent)
 deClassSkinBuilder::nfAddMapped::nfAddMapped( const sInitData &init ) :
 dsFunction( init.clsSkinBuilder, "addMapped", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
@@ -234,6 +235,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsBoolean ); // inputClamped
 	p_AddParameter( init.clsVector2 ); // outputRange
 	p_AddParameter( init.clsString ); // bone
+	p_AddParameter( init.clsString ); // renderable
+	p_AddParameter( init.clsSkinMappedRenderableComponent ); // renderableComponent
 }
 void deClassSkinBuilder::nfAddMapped::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassSkinBuilder_Builder * const builder = ( ( sMdlBldNatDat* )p_GetNativeData( myself ) )->builder;
@@ -262,6 +265,10 @@ void deClassSkinBuilder::nfAddMapped::RunFunction( dsRunTime *rt, dsValue *mysel
 	mapped->SetOutputUpper( outputRange.y );
 	
 	mapped->SetBone( rt->GetValue( 6 )->GetString() );
+	
+	mapped->SetRenderable( rt->GetValue( 7 )->GetString() );
+	mapped->SetRenderableComponent( ( deSkinMapped::eRenderableComponent )
+		clsEnum.GetConstantOrder( *rt->GetValue( 8 )->GetRealObject() ) );
 	
 	builder->GetSkin()->AddMapped( mapped );
 }
@@ -1075,6 +1082,8 @@ deClassSkinBuilder::~deClassSkinBuilder(){
 void deClassSkinBuilder::CreateClassMembers( dsEngine *engine ){
 	pClsSkinPropertyNodeCombineMode = engine->GetClass( "Dragengine.Scenery.SkinPropertyNodeCombineMode" );
 	pClsSkinPropertyMappedInputType = engine->GetClass( "Dragengine.Scenery.SkinPropertyMappedInputType" );
+	pClsSkinMappedInputType = engine->GetClass( "Dragengine.Scenery.SkinMappedInputType" );
+	pClsSkinMappedRenderableComponent = engine->GetClass( "Dragengine.Scenery.SkinMappedRenderableComponent" );
 	
 	sInitData init;
 	init.clsSkinBuilder = this;
@@ -1095,6 +1104,8 @@ void deClassSkinBuilder::CreateClassMembers( dsEngine *engine ){
 	init.clsCurveBezier = pDS.GetClassCurveBezier();
 	init.clsSkinPropertyNodeCombineMode = pClsSkinPropertyNodeCombineMode;
 	init.clsSkinPropertyMappedInputType = pClsSkinPropertyMappedInputType;
+	init.clsSkinMappedInputType = pClsSkinMappedInputType;
+	init.clsSkinMappedRenderableComponent = pClsSkinMappedRenderableComponent;
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );

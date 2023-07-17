@@ -326,6 +326,9 @@ deSkinMapped::Ref deSkinModule::pParseMapped( const decXmlElementTag &root, cons
 				
 			}else if( type == "boneScaleZ" ){
 				mapped->SetInputType( deSkinMapped::eitBoneScaleZ );
+				
+			}else if( type == "renderable" ){
+				mapped->SetInputType( deSkinMapped::eitRenderable );
 			}
 			
 		}else if( tag->GetName() == "inputLower" ){
@@ -363,6 +366,33 @@ deSkinMapped::Ref deSkinModule::pParseMapped( const decXmlElementTag &root, cons
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if( cdata ){
 				mapped->SetBone( cdata->GetData() );
+			}
+			
+		}else if( tag->GetName() == "renderable" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				mapped->SetRenderable( cdata->GetData() );
+			}
+			
+		}else if( tag->GetName() == "renderableComponent" ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( ! cdata ){
+				continue;
+			}
+			
+			const decString &type = cdata->GetData();
+			
+			if( type == "red" ){
+				mapped->SetRenderableComponent( deSkinMapped::ercRed );
+				
+			}else if( type == "green" ){
+				mapped->SetRenderableComponent( deSkinMapped::ercGreen );
+				
+			}else if( type == "blue" ){
+				mapped->SetRenderableComponent( deSkinMapped::ercBlue );
+				
+			}else if( type == "alpha" ){
+				mapped->SetRenderableComponent( deSkinMapped::ercAlpha );
 			}
 			
 		}else{
@@ -1532,6 +1562,10 @@ void deSkinModule::pWriteMapped( decXmlWriter &writer, const deSkinMapped &mappe
 	case deSkinMapped::eitBoneScaleZ:
 		writer.WriteDataTagString( "inputType", "boneScaleZ" );
 		break;
+		
+	case deSkinMapped::eitRenderable:
+		writer.WriteDataTagString( "inputType", "renderable" );
+		break;
 	}
 	
 	if( fabsf( mapped.GetInputLower() ) >= FLOAT_SAFE_EPSILON ){
@@ -1554,6 +1588,27 @@ void deSkinModule::pWriteMapped( decXmlWriter &writer, const deSkinMapped &mappe
 	
 	if( ! mapped.GetBone().IsEmpty() ){
 		writer.WriteDataTagString( "bone", mapped.GetBone() );
+	}
+	
+	if( ! mapped.GetRenderable().IsEmpty() ){
+		writer.WriteDataTagString( "renderable", mapped.GetRenderable() );
+	}
+	
+	switch( mapped.GetRenderableComponent() ){
+	case deSkinMapped::ercRed:
+		break;
+		
+	case deSkinMapped::ercGreen:
+		writer.WriteDataTagString( "renderableComponent", "green" );
+		break;
+		
+	case deSkinMapped::ercBlue:
+		writer.WriteDataTagString( "renderableComponent", "blue" );
+		break;
+		
+	case deSkinMapped::ercAlpha:
+		writer.WriteDataTagString( "renderableComponent", "alpha" );
+		break;
 	}
 	
 	writer.WriteClosingTag( "mapped", true );

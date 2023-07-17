@@ -373,6 +373,12 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderableComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -751,6 +757,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderableComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.h">

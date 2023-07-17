@@ -34,6 +34,8 @@
 #include "../../undosys/mapped/seUMappedSetOutputUpper.h"
 #include "../../undosys/mapped/seUMappedSetName.h"
 #include "../../undosys/mapped/seUMappedToggleInputClamped.h"
+#include "../../undosys/mapped/seUMappedSetRenderable.h"
+#include "../../undosys/mapped/seUMappedSetRenderableComponent.h"
 #include "../../undosys/mapped/seUMappedPaste.h"
 #include "../../undosys/mapped/seUMappedRemove.h"
 #include "../../undosys/mapped/seUMappedDuplicate.h"
@@ -439,6 +441,40 @@ public:
 	}
 };
 
+class cTextRenderable : public cBaseTextFieldListener{
+public:
+	cTextRenderable( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seMapped *mapped ) override{
+		const decString &renderable = textField.GetText();
+		return renderable != mapped->GetRenderable() ? new seUMappedSetRenderable( mapped, renderable ) : nullptr;
+	}
+};
+
+class cComboRenderableComponent : public igdeComboBoxListener{
+	seWPMapped &pPanel;
+public:
+	cComboRenderableComponent( seWPMapped &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ) override{
+		seSkin * const skin = pPanel.GetSkin();
+		seMapped * const mapped = pPanel.GetMapped();
+		if( ! skin || ! mapped || ! comboBox->GetSelectedItem() ){
+			return;
+		}
+		
+		const deSkinMapped::eRenderableComponent component = ( deSkinMapped::eRenderableComponent )
+			( intptr_t )comboBox->GetSelectedItem()->GetData();
+		if( component == mapped->GetRenderableComponent() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new seUMappedSetRenderableComponent( mapped, component ) );
+		skin->GetUndoSystem()->Add( undo );
+	}
+};
+
 }
 
 
@@ -485,6 +521,7 @@ pSkin( nullptr )
 	pCBInputType->AddItem( "BoneScaleX", nullptr, ( void* )( intptr_t )deSkinMapped::eitBoneScaleX );
 	pCBInputType->AddItem( "BoneScaleY", nullptr, ( void* )( intptr_t )deSkinMapped::eitBoneScaleY );
 	pCBInputType->AddItem( "BoneScaleZ", nullptr, ( void* )( intptr_t )deSkinMapped::eitBoneScaleZ );
+	pCBInputType->AddItem( "Renderable", nullptr, ( void* )( intptr_t )deSkinMapped::eitRenderable );
 	
 	helper.EditFloat( form, "Input Lower:", "Lower input range", pEditInputLower, new cTextInputLower( *this ) );
 	helper.EditFloat( form, "Input Upper:", "Upper input range", pEditInputUpper, new cTextInputUpper( *this ) );
@@ -497,6 +534,17 @@ pSkin( nullptr )
 	
 	helper.EditString( form, "Bone:", "Name of the bone to use if bone related input type is used",
 		pEditBone, new cTextBone( *this ) );
+	
+	helper.EditString( form, "Renderable:", "Name of the renderable to use if renderable input type is used",
+		pEditRenderable, new cTextRenderable( *this ) );
+	
+	helper.ComboBox( form, "Renderable Component:",
+		"Color component to use if renderable is used and is of color type",
+		pCBRenderableComponent, new cComboRenderableComponent( *this ) );
+	pCBRenderableComponent->AddItem( "Red", nullptr, ( void* )( intptr_t )deSkinMapped::ercRed );
+	pCBRenderableComponent->AddItem( "Green", nullptr, ( void* )( intptr_t )deSkinMapped::ercGreen );
+	pCBRenderableComponent->AddItem( "Blue", nullptr, ( void* )( intptr_t )deSkinMapped::ercBlue );
+	pCBRenderableComponent->AddItem( "Alpha", nullptr, ( void* )( intptr_t )deSkinMapped::ercAlpha );
 	
 	helper.ViewCurveBezier( groupBox, pEditCurve, new cEditCurve( *this ) );
 	pEditCurve->SetDefaultSize( decPoint( 200, 250 ) );
@@ -578,6 +626,8 @@ void seWPMapped::UpdateMapped(){
 		pEditOutputLower->SetFloat( mapped->GetOutputLower() );
 		pEditOutputUpper->SetFloat( mapped->GetOutputUpper() );
 		pEditBone->SetText( mapped->GetBone() );
+		pEditRenderable->SetText( mapped->GetRenderable() );
+		pCBRenderableComponent->SetSelectionWithData( ( void* )( intptr_t )mapped->GetRenderableComponent() );
 		
 	}else{
 		pEditName->ClearText();
@@ -588,6 +638,8 @@ void seWPMapped::UpdateMapped(){
 		pEditOutputLower->ClearText();
 		pEditOutputUpper->ClearText();
 		pEditBone->ClearText();
+		pEditRenderable->ClearText();
+		pCBRenderableComponent->SetSelectionWithData( ( void* )( intptr_t )deSkinMapped::ercRed );
 	}
 	
 	const bool enabled = mapped;
@@ -603,6 +655,8 @@ void seWPMapped::UpdateMapped(){
 	pEditOutputLower->SetEnabled( enabled );
 	pEditOutputUpper->SetEnabled( enabled );
 	pEditBone->SetEnabled( enabled );
+	pEditRenderable->SetEnabled( enabled );
+	pCBRenderableComponent->SetEnabled( enabled );
 }
 
 void seWPMapped::FitViewToCurve(){

@@ -150,6 +150,8 @@ const igdeTexturePropertyList &knownPropertyList ){
 			mapped->SetOutputLower( engMapped.GetOutputLower() );
 			mapped->SetOutputUpper( engMapped.GetOutputUpper() );
 			mapped->SetBone( engMapped.GetBone() );
+			mapped->SetRenderable( engMapped.GetRenderable() );
+			mapped->SetRenderableComponent( engMapped.GetRenderableComponent() );
 			
 			skin->AddMapped( mapped );
 		}

@@ -76,7 +76,8 @@ abstract class SkinBuilder
 	 * \version 1.18
 	 */
 	protected func void addMapped(String name, CurveBezier curve, SkinMappedInputType inputType,\
-	Vector2 inputRange, bool inputClamped, Vector2 outputRange, String bone)
+	Vector2 inputRange, bool inputClamped, Vector2 outputRange, String bone, String renderable,\
+	SkinMappedRenderableComponent renderableComponent)
 	end
 	
 	/**

@@ -42,7 +42,7 @@
 ////////////////////////////
 
 deoglRDSRenderableColor::deoglRDSRenderableColor( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( dynamicSkin ),
+deoglRDSRenderable( etColor, dynamicSkin ),
 pTexture( NULL ),
 pDirty( true )
 {

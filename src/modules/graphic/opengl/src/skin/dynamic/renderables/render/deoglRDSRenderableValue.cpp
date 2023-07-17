@@ -42,7 +42,7 @@
 ////////////////////////////
 
 deoglRDSRenderableValue::deoglRDSRenderableValue( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( dynamicSkin ),
+deoglRDSRenderable( etValue, dynamicSkin ),
 pTexture( NULL ),
 pValue( 0.0f ),
 pDirty( true )

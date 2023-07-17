@@ -157,6 +157,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedDuplicate.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderable.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderableComponent.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputLower.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetOutputLower.cpp" />
@@ -285,6 +287,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedDuplicate.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedRemove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderable.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderableComponent.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputLower.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetOutputLower.h" />

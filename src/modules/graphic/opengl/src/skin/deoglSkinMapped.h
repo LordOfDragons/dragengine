@@ -40,6 +40,7 @@ public:
 private:
 	const deSkinMapped &pMapped;
 	decCurveBezierEvaluator pCurveEvaluator;
+	int pRenderable;
 	
 	
 	
@@ -61,6 +62,9 @@ public:
 	/*@{*/
 	/** Skin mapped. */
 	const deSkinMapped &GetMapped() const{ return pMapped; }
+	
+	/** Set renderable index. */
+	void SetRenderable( int renderable );
 	
 	/** Mapped value. */
 	float Calculate( const deoglSkinState &skinState, const deoglSkinStateMapped &mapped ) const;

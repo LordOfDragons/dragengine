@@ -43,6 +43,7 @@ pInputUpper( 1.0f ),
 pInputClamped( false ),
 pOutputLower( 0.0f ),
 pOutputUpper( 1.0f ),
+pRenderableComponent( deSkinMapped::ercRed ),
 pSelected( false ),
 pActive( false )
 {
@@ -59,6 +60,8 @@ pInputUpper( mapped.pInputUpper ),
 pInputClamped( mapped.pInputClamped ),
 pOutputLower( mapped.pOutputLower ),
 pOutputUpper( mapped.pOutputUpper ),
+pRenderable( mapped.pRenderable ),
+pRenderableComponent( mapped.pRenderableComponent ),
 pSelected( false ),
 pActive( false ){
 }
@@ -170,6 +173,24 @@ void seMapped::SetBone( const char *bone ){
 	}
 	
 	pBone = bone;
+	NotifyChanged();
+}
+
+void seMapped::SetRenderable( const char *renderable ){
+	if( pRenderable == renderable ){
+		return;
+	}
+	
+	pRenderable = renderable;
+	NotifyChanged();
+}
+
+void seMapped::SetRenderableComponent( deSkinMapped::eRenderableComponent component ){
+	if( pRenderableComponent == component ){
+		return;
+	}
+	
+	pRenderableComponent = component;
 	NotifyChanged();
 }
 

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglRDSRenderableCamera::deoglRDSRenderableCamera( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( dynamicSkin ),
+deoglRDSRenderable( etCamera, dynamicSkin ),
 pCamera( NULL )
 {
 	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableCamera );

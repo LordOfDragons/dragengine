@@ -24,40 +24,19 @@ namespace Dragengine.Scenery
 
 
 /**
- * \brief SkinMapped input type.
+ * \brief SkinPropertyMapped renderable component.
  * \version 1.18
  */
-enum SkinMappedInputType
-	/** \brief Use elapsed time. */
-	time
+enum SkinMappedRenderableComponent
+	/** \brief Red component if renderable is of color type. */
+	red
 	
-	/** \brief Use named bone X position. */
-	bonePositionX
+	/** \brief Green component if renderable is of color type. */
+	green
 	
-	/** \brief Use named bone Y position. */
-	bonePositionY
+	/** \brief Blue component if renderable is of color type. */
+	blu
 	
-	/** \brief Use named bone Z position. */
-	bonePositionZ
-	
-	/** \brief Use named bone X rotation in degrees. */
-	boneRotationX
-	
-	/** \brief Use named bone Y rotation in degrees. */
-	boneRotationY
-	
-	/** \brief Use named bone Z rotation in degrees. */
-	boneRotationZ
-	
-	/** \brief Use named bone X scale. */
-	boneScaleX
-	
-	/** \brief Use named bone Y scale. */
-	boneScaleY
-	
-	/** \brief Use named bone Z scale. */
-	boneScaleZ
-	
-	/** \brief Use renderable (value or color type). */
-	renderable
+	/** \brief Alpha component if renderable is of color type. */
+	alpha
 end

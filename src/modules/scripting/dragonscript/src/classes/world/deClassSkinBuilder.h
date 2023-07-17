@@ -36,6 +36,8 @@ private:
 	deScriptingDragonScript &pDS;
 	dsClass *pClsSkinPropertyNodeCombineMode;
 	dsClass *pClsSkinPropertyMappedInputType;
+	dsClass *pClsSkinMappedInputType;
+	dsClass *pClsSkinMappedRenderableComponent;
 	
 	
 	
@@ -85,6 +87,7 @@ private:
 		dsClass *clsSkinPropertyNodeCombineMode;
 		dsClass *clsSkinPropertyMappedInputType;
 		dsClass *clsSkinMappedInputType;
+		dsClass *clsSkinMappedRenderableComponent;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \

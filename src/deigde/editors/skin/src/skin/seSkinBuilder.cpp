@@ -270,6 +270,8 @@ void seSkinBuilder::pAddMapped( deSkin &engSkin ){
 		engMapped->SetOutputLower( mapped.GetOutputLower() );
 		engMapped->SetOutputUpper( mapped.GetOutputUpper() );
 		engMapped->SetBone( mapped.GetBone() );
+		engMapped->SetRenderable( mapped.GetRenderable() );
+		engMapped->SetRenderableComponent( mapped.GetRenderableComponent() );
 		
 		engSkin.AddMapped( engMapped );
 	}

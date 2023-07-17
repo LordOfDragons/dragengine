@@ -37,7 +37,8 @@ pInputLower( 0.0f ),
 pInputUpper( 1.0f ),
 pInputClamped( false ),
 pOutputLower( 0.0f ),
-pOutputUpper( 1.0f ){
+pOutputUpper( 1.0f ),
+pRenderableComponent( ercRed ){
 }
 
 deSkinMapped::~deSkinMapped(){
@@ -76,6 +77,14 @@ void deSkinMapped::SetBone( const char *bone ){
 	pBone = bone;
 }
 
+void deSkinMapped::SetRenderable( const char *renderable ){
+	pRenderable = renderable;
+}
+
+void deSkinMapped::SetRenderableComponent( eRenderableComponent component ){
+	pRenderableComponent = component;
+}
+
 
 
 deSkinMapped &deSkinMapped::operator=( const deSkinMapped &mapped ){
@@ -87,5 +96,7 @@ deSkinMapped &deSkinMapped::operator=( const deSkinMapped &mapped ){
 	pOutputLower = mapped.pOutputLower;
 	pOutputUpper = mapped.pOutputUpper;
 	pBone = mapped.pBone;
+	pRenderable = mapped.pRenderable;
+	pRenderableComponent = mapped.pRenderableComponent;
 	return *this;
 }
