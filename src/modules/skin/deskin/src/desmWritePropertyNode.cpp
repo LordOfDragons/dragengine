@@ -260,7 +260,7 @@ void desmWritePropertyNode::VisitShape( deSkinPropertyNodeShape &node ){
 	};
 	
 	int i;
-	for( i=0; i<15; i++ ){
+	for( i=0; i<9; i++ ){
 		const int index = node.GetShapeMappedFor( mapped[ i ].mapped );
 		if( index == -1 ){
 			continue;
@@ -306,7 +306,7 @@ void desmWritePropertyNode::VisitText( deSkinPropertyNodeText &node ){
 	};
 	
 	int i;
-	for( i=0; i<15; i++ ){
+	for( i=0; i<4; i++ ){
 		const int index = node.GetTextMappedFor( mapped[ i ].mapped );
 		if( index == -1 ){
 			continue;

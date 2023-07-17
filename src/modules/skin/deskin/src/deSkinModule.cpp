@@ -682,32 +682,40 @@ void deSkinModule::pParsePropertyMapped( const decXmlElementTag &root, deSkin &s
 			index = skin.GetMappedCount();
 			name.Format( "#generated%d", index );
 			mapped = pParseMapped( *tag, name );
-			skin.AddMapped( mapped );
-			property.SetRed( index );
+			if( mapped->GetCurve().GetPointCount() > 0 ){
+				skin.AddMapped( mapped );
+				property.SetRed( index );
+			}
 			
 		}else if( tag->GetName() == "green" ){
 			// deprecated
 			index = skin.GetMappedCount();
 			name.Format( "#generated%d", index );
 			mapped = pParseMapped( *tag, name );
-			skin.AddMapped( mapped );
-			property.SetGreen( index );
+			if( mapped->GetCurve().GetPointCount() > 0 ){
+				skin.AddMapped( mapped );
+				property.SetGreen( index );
+			}
 			
 		}else if( tag->GetName() == "blue" ){
 			// deprecated
 			index = skin.GetMappedCount();
 			name.Format( "#generated%d", index );
 			mapped = pParseMapped( *tag, name );
-			skin.AddMapped( mapped );
-			property.SetBlue( index );
+			if( mapped->GetCurve().GetPointCount() > 0 ){
+				skin.AddMapped( mapped );
+				property.SetBlue( index );
+			}
 			
 		}else if( tag->GetName() == "alpha" ){
 			// deprecated
 			index = skin.GetMappedCount();
 			name.Format( "#generated%d", index );
 			mapped = pParseMapped( *tag, name );
-			skin.AddMapped( mapped );
-			property.SetAlpha( index );
+			if( mapped->GetCurve().GetPointCount() > 0 ){
+				skin.AddMapped( mapped );
+				property.SetAlpha( index );
+			}
 			
 		}else if( tag->GetName() == "mappedRed" ){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
