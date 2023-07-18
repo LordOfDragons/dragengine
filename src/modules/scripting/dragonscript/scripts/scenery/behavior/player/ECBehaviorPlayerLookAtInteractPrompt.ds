@@ -337,12 +337,17 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		/**
 		 * \brief Get prompts to shows as Array of ECBehaviorInteractPrompt.Instance.
 		 * 
-		 * Default implementation gets all enabled instances. If look-at bone name is
-		 * also present ignores instances having bones defined where the look-at bone
-		 * is not part of the bones list.
+		 * Default implementation gets all enabled instances which are closer than the maximum
+		 * distance set for each interact prompt. If look-at bone name is also present ignores
+		 * instances having bones defined where the look-at bone is not part of the bones list.
 		 */
 		public func Array getPromptsFrom(BehaviorElement element)
 			var Array prompts = ECBehaviorInteractPrompt.getAllEnabledInstancesIn(element)
+			
+			var float hitDistance = pLookAt.getLookAtDistance()
+			prompts = prompts.collect(block ECBehaviorInteractPrompt.Instance each
+				return hitDistance <= each.getMaximumDistance()
+			end)
 			
 			var String bone = pLookAt.getLookAtBoneName()
 			if bone != null
