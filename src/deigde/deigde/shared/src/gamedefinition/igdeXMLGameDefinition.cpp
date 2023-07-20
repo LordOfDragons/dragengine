@@ -1921,7 +1921,7 @@ void igdeXMLGameDefinition::pParseProperty( const decXmlElementTag &root, igdeGD
 				
 		}else if( tagName == "idUsage" ){
 			property.SetIdentifierUsage( GetCDataBool( *tag ) );
-		
+			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}

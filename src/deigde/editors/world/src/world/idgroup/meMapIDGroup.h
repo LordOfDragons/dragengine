@@ -23,29 +23,35 @@
 #define _MEMAPIDGROUP_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/string/decString.h>
 
 class meIDGroup;
 class igdeGDProperty;
 
 
-
 /**
- * \brief Mapping between game definition property and Identifier group.
+ * Mapping between game definition property and Identifier group.
  */
 class meMapIDGroup : public deObject{
+public:
+	typedef deTObjectReference<meMapIDGroup> Ref;
+	
+	
+	
 private:
 	igdeGDProperty *pProperty;
 	meIDGroup *pGroup;
+	const decString pPropertyPrefix;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create mapping between game definition property and Identifier group. */
-	meMapIDGroup( igdeGDProperty *property, meIDGroup *group );
+	/** Create mapping between game definition property and Identifier group. */
+	meMapIDGroup( igdeGDProperty *property, meIDGroup *group, const decString &propertyPrefix );
 	
-	/** \brief Clean up mapping between game definition property and Identifier group. */
+	/** Clean up mapping between game definition property and Identifier group. */
 	virtual ~meMapIDGroup();
 	/*@}*/
 	
@@ -53,11 +59,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition property. */
+	/** Game definition property. */
 	inline igdeGDProperty *GetProperty() const{ return pProperty; }
 	
-	/** \brief Identifier group. */
+	/** Identifier group. */
 	inline meIDGroup *GetGroup() const{ return pGroup; }
+	
+	/** Property prefix. */
+	inline const decString &GetPropertyPrefix() const{ return pPropertyPrefix; }
 	/*@}*/
 };
 

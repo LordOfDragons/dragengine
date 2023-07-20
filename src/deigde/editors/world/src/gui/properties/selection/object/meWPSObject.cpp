@@ -923,6 +923,7 @@ public:
 			object->SetActiveProperty( key );
 		}
 		pPanel.UpdateLight();
+		pPanel.UpdateIdentifierLists();
 	}
 	
 	virtual void AddContextMenuEntries( igdeUIHelper &helper, igdeMenuCascade &menu ){
