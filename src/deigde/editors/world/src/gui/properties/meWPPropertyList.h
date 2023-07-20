@@ -185,6 +185,9 @@ public:
 	/** \brief Set trigger target list with updating. */
 	void SetTriggerTargetList( igdeTriggerTargetList *list );
 	
+	/** \brief Game project game definition changed. */
+	void OnGameDefinitionChanged();
+	
 	
 	
 	/** \brief Actions. */

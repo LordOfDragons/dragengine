@@ -843,6 +843,10 @@ void meWPPropertyList::SetTriggerTargetList( igdeTriggerTargetList *list ){
 	pEditPropertyValue->SetTriggerTargets( list );
 }
 
+void meWPPropertyList::OnGameDefinitionChanged(){
+	UpdateList();
+}
+
 
 
 void meWPPropertyList::AddContextMenuEntries( igdeUIHelper&, igdeMenuCascade& ){

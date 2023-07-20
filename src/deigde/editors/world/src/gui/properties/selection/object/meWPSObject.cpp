@@ -1836,9 +1836,11 @@ void meWPSObject::OnGameDefinitionChanged(){
 	UpdateLight();
 	UpdatePropertyKeys();
 	UpdateProperties();
+	( ( meWPPropertyList& )( igdeWidget&  )pEditProperties ).OnGameDefinitionChanged();
 	
 	UpdateTexPropertyKeys();
 	UpdateTexProperties();
+	( ( meWPPropertyList& )( igdeWidget&  )pEditTexProperties ).OnGameDefinitionChanged();
 }
 
 void meWPSObject::SlideLightProperty( igdeGDCLight::eProperties property, const char *value, bool scrubbing ){
