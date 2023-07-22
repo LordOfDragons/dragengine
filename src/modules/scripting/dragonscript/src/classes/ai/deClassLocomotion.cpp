@@ -1942,6 +1942,18 @@ void deClassLocomotion::nfUpdateAICollider::RunFunction( dsRunTime *rt, dsValue 
 	locomotion.UpdateAICollider();
 }
 
+// public func void adjustOrientation(float angle)
+deClassLocomotion::nfAdjustOrientation::nfAdjustOrientation( const sInitData &init ) :
+dsFunction( init.clsLoco, "adjustOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // angle
+	p_AddParameter( init.clsBool ); // withConstraints
+}
+
+void deClassLocomotion::nfAdjustOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	dedsLocomotion &locomotion = *( ( ( const sLocoNatDat * )p_GetNativeData( myself ) )->locomotion );
+	locomotion.AdjustOrientation( rt->GetValue( 0 )->GetFloat() * DEG2RAD );
+}
+
 
 
 // File Handling
@@ -2242,6 +2254,7 @@ void deClassLocomotion::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfUpdateTilt( init ) );
 	AddFunction( new nfUpdateAnimatorInstance( init ) );
 	AddFunction( new nfUpdateAICollider( init ) );
+	AddFunction( new nfAdjustOrientation( init ) );
 	
 	AddFunction( new nfReadFromFile( init ) );
 	AddFunction( new nfWriteToFile( init ) );

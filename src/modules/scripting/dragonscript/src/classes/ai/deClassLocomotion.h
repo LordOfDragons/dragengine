@@ -260,6 +260,7 @@ private:
 	DEF_NATFUNC( nfUpdateTilt );
 	DEF_NATFUNC( nfUpdateAnimatorInstance );
 	DEF_NATFUNC( nfUpdateAICollider );
+	DEF_NATFUNC( nfAdjustOrientation );
 	
 	DEF_NATFUNC( nfReadFromFile );
 	DEF_NATFUNC( nfWriteToFile );

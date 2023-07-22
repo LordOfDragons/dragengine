@@ -698,13 +698,15 @@ void dedsLocomotion::UpdateOrientation( float elapsed ){
 		pAnalogMovingHorizontal.SetGoal( pAnalogMovingHorizontal.GetGoal() - adjustOrientation );
 	}
 	
-//	SetTurnHorizontal( pTurnHorizontal - adjustOrientation );
+	SetTurnHorizontal( pTurnHorizontal - adjustOrientation );
+	/*
 	if( adjustOrientation > 0.0f ){
 		SetTurnHorizontal( decMath::max( pTurnHorizontal - adjustOrientation, 0.0f ) );
 		
 	}else{
 		SetTurnHorizontal( decMath::min( pTurnHorizontal - adjustOrientation, 0.0f ) );
 	}
+	*/
 	
 	SetTurningSpeed( adjustOrientation / elapsed );
 }
@@ -1028,6 +1030,30 @@ void dedsLocomotion::UpdateAICollider(){
 			pAICollider->SetAngularVelocity( pAngularVelocity * DEG2RAD );
 		}
 	}
+}
+
+void dedsLocomotion::AdjustOrientation( float angle ){
+	CheckLookingRangeViolation( angle );
+	
+	SetOrientation( pOrientation + angle );
+	
+	pLookHorizontal.SetValue( pLookHorizontal.GetValue() - angle );
+	pAnalogMovingHorizontal.SetValue( pAnalogMovingHorizontal.GetValue() - angle );
+	
+	if( pTurnAdjustLookHorizontal ){
+		pLookHorizontal.SetGoal( pLookHorizontal.GetGoal() - angle );
+		pAnalogMovingHorizontal.SetGoal( pAnalogMovingHorizontal.GetGoal() - angle );
+	}
+	
+	SetTurnHorizontal( pTurnHorizontal - angle );
+	/*
+	if( angle > 0.0f ){
+		SetTurnHorizontal( decMath::max( pTurnHorizontal - angle, 0.0f ) );
+		
+	}else{
+		SetTurnHorizontal( decMath::min( pTurnHorizontal - angle, 0.0f ) );
+	}
+	*/
 }
 
 
