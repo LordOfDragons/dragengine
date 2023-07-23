@@ -698,15 +698,13 @@ void dedsLocomotion::UpdateOrientation( float elapsed ){
 		pAnalogMovingHorizontal.SetGoal( pAnalogMovingHorizontal.GetGoal() - adjustOrientation );
 	}
 	
-	SetTurnHorizontal( pTurnHorizontal - adjustOrientation );
-	/*
+	// SetTurnHorizontal( pTurnHorizontal - adjustOrientation );
 	if( adjustOrientation > 0.0f ){
 		SetTurnHorizontal( decMath::max( pTurnHorizontal - adjustOrientation, 0.0f ) );
 		
 	}else{
 		SetTurnHorizontal( decMath::min( pTurnHorizontal - adjustOrientation, 0.0f ) );
 	}
-	*/
 	
 	SetTurningSpeed( adjustOrientation / elapsed );
 }
@@ -1045,15 +1043,13 @@ void dedsLocomotion::AdjustOrientation( float angle ){
 		pAnalogMovingHorizontal.SetGoal( pAnalogMovingHorizontal.GetGoal() - angle );
 	}
 	
-	SetTurnHorizontal( pTurnHorizontal - angle );
-	/*
+	//SetTurnHorizontal( pTurnHorizontal - angle );
 	if( angle > 0.0f ){
 		SetTurnHorizontal( decMath::max( pTurnHorizontal - angle, 0.0f ) );
 		
 	}else{
 		SetTurnHorizontal( decMath::min( pTurnHorizontal - angle, 0.0f ) );
 	}
-	*/
 }
 
 
