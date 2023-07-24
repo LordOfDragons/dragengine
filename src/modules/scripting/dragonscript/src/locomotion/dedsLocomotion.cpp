@@ -687,25 +687,7 @@ void dedsLocomotion::UpdateOrientation( float elapsed ){
 	}
 	
 	CheckLookingRangeViolation( adjustOrientation );
-	
-	SetOrientation( pOrientation + adjustOrientation );
-	
-	pLookHorizontal.SetValue( pLookHorizontal.GetValue() - adjustOrientation );
-	pAnalogMovingHorizontal.SetValue( pAnalogMovingHorizontal.GetValue() - adjustOrientation );
-	
-	if( pTurnAdjustLookHorizontal ){
-		pLookHorizontal.SetGoal( pLookHorizontal.GetGoal() - adjustOrientation );
-		pAnalogMovingHorizontal.SetGoal( pAnalogMovingHorizontal.GetGoal() - adjustOrientation );
-	}
-	
-	// SetTurnHorizontal( pTurnHorizontal - adjustOrientation );
-	if( adjustOrientation > 0.0f ){
-		SetTurnHorizontal( decMath::max( pTurnHorizontal - adjustOrientation, 0.0f ) );
-		
-	}else{
-		SetTurnHorizontal( decMath::min( pTurnHorizontal - adjustOrientation, 0.0f ) );
-	}
-	
+	AdjustOrientation( adjustOrientation );
 	SetTurningSpeed( adjustOrientation / elapsed );
 }
 
@@ -1031,8 +1013,6 @@ void dedsLocomotion::UpdateAICollider(){
 }
 
 void dedsLocomotion::AdjustOrientation( float angle ){
-	CheckLookingRangeViolation( angle );
-	
 	SetOrientation( pOrientation + angle );
 	
 	pLookHorizontal.SetValue( pLookHorizontal.GetValue() - angle );

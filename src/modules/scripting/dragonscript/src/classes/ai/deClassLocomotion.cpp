@@ -1946,12 +1946,11 @@ void deClassLocomotion::nfUpdateAICollider::RunFunction( dsRunTime *rt, dsValue 
 deClassLocomotion::nfAdjustOrientation::nfAdjustOrientation( const sInitData &init ) :
 dsFunction( init.clsLoco, "adjustOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsFloat ); // angle
-	p_AddParameter( init.clsBool ); // withConstraints
 }
 
 void deClassLocomotion::nfAdjustOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dedsLocomotion &locomotion = *( ( ( const sLocoNatDat * )p_GetNativeData( myself ) )->locomotion );
-	locomotion.AdjustOrientation( rt->GetValue( 0 )->GetFloat() * DEG2RAD );
+	locomotion.AdjustOrientation( rt->GetValue( 0 )->GetFloat() );
 }
 
 
