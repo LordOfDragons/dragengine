@@ -144,6 +144,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetImagePath.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetMappedComponent.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetRenderableName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetBoneName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetValue.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetValueType.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetVideoPath.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetImagePath.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetMappedComponent.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetRenderableName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetBoneName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetValue.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetValueType.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetVideoPath.h" />
