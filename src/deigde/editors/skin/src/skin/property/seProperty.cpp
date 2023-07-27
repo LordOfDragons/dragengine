@@ -91,6 +91,7 @@ pTexture( NULL ),
 pName( property.pName ),
 pValueType( property.pValueType ),
 pRenderableName( property.pRenderableName ),
+pBoneName( property.pBoneName ),
 
 pValue( property.pValue ),
 
@@ -160,6 +161,15 @@ void seProperty::SetRenderableName( const char *name ){
 	}
 	
 	pRenderableName = name;
+	NotifyChanged();
+}
+
+void seProperty::SetBoneName( const char *name ){
+	if( pBoneName.Equals( name ) ){
+		return;
+	}
+	
+	pBoneName = name;
 	NotifyChanged();
 }
 

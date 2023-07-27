@@ -1,5 +1,5 @@
 /* 
- * Drag[en]gine Game Engine
+ * Drag[en]gine IGDE Skin Editor
  *
  * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
  * 
@@ -18,27 +18,33 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include "deSkinProperty.h"
-#include "deSkinPropertyVisitor.h"
-#include "../../../common/exceptions.h"
+#include <stdlib.h>
+
+#include "seUPropertySetBoneName.h"
+#include "../../skin/property/seProperty.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 
-// Class deSkinProperty
-/////////////////////////
+// Class seUPropertySetBoneName
+//////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deSkinProperty::deSkinProperty( const char *type ) :
-pType( type ){
+seUPropertySetBoneName::seUPropertySetBoneName( seProperty *property, const char *newName ) :
+pProperty( property ),
+pOldName( property ? property->GetBoneName().GetString() : "" ),
+pNewName( newName )
+{
+	DEASSERT_NOTNULL( property )
+	SetShortInfo( "Property Set Bone" );
 }
 
-deSkinProperty::~deSkinProperty(){
+seUPropertySetBoneName::~seUPropertySetBoneName(){
 }
 
 
@@ -46,23 +52,10 @@ deSkinProperty::~deSkinProperty(){
 // Management
 ///////////////
 
-void deSkinProperty::SetTexCoordSet( const char *name ){
-	pTexCoordSet = name;
+void seUPropertySetBoneName::Undo(){
+	pProperty->SetBoneName( pOldName );
 }
 
-void deSkinProperty::SetRenderable( const char *renderable ){
-	pRenderable = renderable;
-}
-
-void deSkinProperty::SetBone( const char *bone ){
-	pBone = bone;
-}
-
-
-
-// Visiting
-/////////////
-
-void deSkinProperty::Visit( deSkinPropertyVisitor &visitor ){
-	visitor.VisitProperty( *this );
+void seUPropertySetBoneName::Redo(){
+	pProperty->SetBoneName( pNewName );
 }

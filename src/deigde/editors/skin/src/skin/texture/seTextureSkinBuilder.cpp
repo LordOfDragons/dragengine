@@ -306,6 +306,7 @@ void seTextureSkinBuilder::pAddTexture( deSkin &engSkin ) {
 				engPropertyValue = new deSkinPropertyValue( property.GetName() );
 				engPropertyValue->SetValue( property.GetValue() );
 				engPropertyValue->SetRenderable( property.GetRenderableName() );
+				engPropertyValue->SetBone( property.GetBoneName() );
 				
 				engTexture->AddProperty( engPropertyValue );
 				engPropertyValue = nullptr;
@@ -315,6 +316,7 @@ void seTextureSkinBuilder::pAddTexture( deSkin &engSkin ) {
 				engPropertyColor = new deSkinPropertyColor( property.GetName() );
 				engPropertyColor->SetColor( property.GetColor() );
 				engPropertyColor->SetRenderable( property.GetRenderableName() );
+				engPropertyColor->SetBone( property.GetBoneName() );
 				
 				engTexture->AddProperty( engPropertyColor );
 				engPropertyColor = nullptr;
@@ -325,6 +327,7 @@ void seTextureSkinBuilder::pAddTexture( deSkin &engSkin ) {
 				engPropertyImage->SetPath( property.GetImagePath() );
 				engPropertyImage->SetImage( property.GetEngineImage() );
 				engPropertyImage->SetRenderable( property.GetRenderableName() );
+				engPropertyImage->SetBone( property.GetBoneName() );
 				
 				engTexture->AddProperty( engPropertyImage );
 				engPropertyImage = nullptr;
@@ -335,6 +338,7 @@ void seTextureSkinBuilder::pAddTexture( deSkin &engSkin ) {
 				engPropertyVideo->SetPath( property.GetVideoPath() );
 				engPropertyVideo->SetVideo( property.GetEngineVideo() );
 				engPropertyVideo->SetRenderable( property.GetRenderableName() );
+				engPropertyVideo->SetBone( property.GetBoneName() );
 				
 				engTexture->AddProperty( engPropertyVideo );
 				engPropertyVideo = nullptr;
@@ -357,6 +361,7 @@ void seTextureSkinBuilder::pAddTexture( deSkin &engSkin ) {
 				}
 				
 				engPropertyMapped->SetRenderable( property.GetRenderableName() );
+				engPropertyMapped->SetBone( property.GetBoneName() );
 				
 				engTexture->AddProperty( engPropertyMapped );
 				engPropertyMapped = nullptr;
@@ -374,6 +379,7 @@ void seTextureSkinBuilder::pAddTexture( deSkin &engSkin ) {
 				CreateNodeGroup( engPropertyConstructed->GetContent(), *property.GetNodeGroup() );
 				
 				engPropertyConstructed->SetRenderable( property.GetRenderableName() );
+				engPropertyConstructed->SetBone( property.GetBoneName() );
 				
 				engTexture->AddProperty( engPropertyConstructed );
 				engPropertyConstructed = nullptr;

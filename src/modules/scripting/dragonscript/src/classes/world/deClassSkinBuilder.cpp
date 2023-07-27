@@ -709,6 +709,25 @@ void deClassSkinBuilder::nfAddPropertyConstructed::RunFunction( dsRunTime *rt, d
 	}
 }
 
+// protected func void setPropertyBone(int texture, int property, String bone)
+deClassSkinBuilder::nfSetPropertyBone::nfSetPropertyBone( const sInitData &init ) :
+dsFunction( init.clsSkinBuilder, "setPropertyBone",
+DSFT_FUNCTION, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInteger ); // texture
+	p_AddParameter( init.clsInteger ); // property
+	p_AddParameter( init.clsString ); // bone
+}
+void deClassSkinBuilder::nfSetPropertyBone::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassSkinBuilder_Builder * const builder = ( ( sMdlBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetSkin() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt( rt->GetValue( 0 )->GetInt() );
+	deSkinProperty &property = *texture.GetPropertyAt( rt->GetValue( 1 )->GetInt() );
+	property.SetBone( rt->GetValue( 2 )->GetString() );
+}
+
 // protected func void constructedOpenContent( int texture, int property )
 deClassSkinBuilder::nfConstructedOpenContent::nfConstructedOpenContent( const sInitData &init ) :
 dsFunction( init.clsSkinBuilder, "constructedOpenContent", DSFT_FUNCTION,
@@ -1121,6 +1140,7 @@ void deClassSkinBuilder::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfAddPropertyConstructed( init ) );
 	AddFunction( new nfAddPropertyMapped( init ) );
 	AddFunction( new nfAddPropertyMapped2( init ) );
+	AddFunction( new nfSetPropertyBone( init ) );
 	AddFunction( new nfConstructedOpenContent( init ) );
 	AddFunction( new nfAddNodeImage( init ) );
 	AddFunction( new nfAddNodeText( init ) );

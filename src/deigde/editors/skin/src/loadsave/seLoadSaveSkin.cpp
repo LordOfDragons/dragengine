@@ -173,10 +173,11 @@ const igdeTexturePropertyList &knownPropertyList ){
 				deSkinProperty &engProperty = *engTexture.GetPropertyAt( p );
 				
 				property = new seProperty( engine );
-				property->SetName( engProperty.GetType().GetString() );
+				property->SetName( engProperty.GetType() );
 				property->InitDefaults( knownPropertyList );
 				
-				property->SetRenderableName( engProperty.GetRenderable().GetString() );
+				property->SetRenderableName( engProperty.GetRenderable() );
+				property->SetBoneName( engProperty.GetBone() );
 				
 				engProperty.Visit( identifyProperty );
 				

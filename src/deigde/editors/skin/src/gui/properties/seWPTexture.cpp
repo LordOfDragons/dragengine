@@ -43,6 +43,7 @@
 #include "../../undosys/property/seUPropertyConstructedToggleTileY.h"
 #include "../../undosys/property/seUPropertyConstructedSetBitCount.h"
 #include "../../undosys/property/seUPropertySetRenderableName.h"
+#include "../../undosys/property/seUPropertySetBoneName.h"
 #include "../../undosys/property/seUPropertySetConstructedSize.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -394,6 +395,16 @@ public:
 	}
 };
 
+class cTextPropertyBone : public cBaseTextFieldListener{
+public:
+	cTextPropertyBone( seWPTexture &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ) override{
+		return property->GetBoneName() != textField.GetText()
+			? new seUPropertySetBoneName( property, textField.GetText() ) : nullptr;
+	}
+};
+
 
 class cTextPropertyValue : public cBaseTextFieldListener{
 public:
@@ -637,8 +648,12 @@ pPreventUpdateMappedTarget( false )
 	helper.EditString( form, "Name:", "Name of property", pEditPropName, nullptr );
 	pEditPropName->SetEditable( false );
 	
-	helper.EditString( form, "Renderable:", "Name of the renderable to use or an empty string to use none",
+	helper.EditString( form, "Renderable:", "Name of renderable to use or empty string to use none",
 		pEditPropRenderable, new cTextPropertyRenderable( *this ) );
+	
+	helper.EditString( form, "Bone:", "Name of bone to use or empty string. "
+		"Used by properties using vertex position instead of texture coordinates.",
+		pEditPropBone, new cTextPropertyBone( *this ) );
 	
 	helper.ComboBox( form, "Value Type:", "Type of value to use for the property",
 		pCBPropertyType, new cComboPropertyValueType( *this ) );
@@ -930,6 +945,7 @@ void seWPTexture::UpdateProperty(){
 	if( property ){
 		pEditPropName->SetText( property->GetName() );
 		pEditPropRenderable->SetText( property->GetRenderableName() );
+		pEditPropBone->SetText( property->GetBoneName() );
 		pCBPropertyType->SetSelectionWithData( ( void* )( intptr_t )property->GetValueType() );
 		
 		pEditPvtValue->SetFloat( property->GetValue() );
@@ -1004,6 +1020,7 @@ void seWPTexture::UpdateProperty(){
 	}else{
 		pEditPropName->ClearText();
 		pEditPropRenderable->ClearText();
+		pEditPropBone->ClearText();
 		pCBPropertyType->SetSelectionWithData( ( void* )( intptr_t )seProperty::evtValue );
 		
 		pEditPvtValue->ClearText();
@@ -1025,6 +1042,7 @@ void seWPTexture::UpdateProperty(){
 	pSpinPvtMappedComponent->SetEnabled( enabled );
 	pEditPropName->SetEnabled( enabled );
 	pEditPropRenderable->SetEnabled( enabled );
+	pEditPropBone->SetEnabled( enabled );
 	
 	pEditPvtValue->SetEnabled( enabled );
 	

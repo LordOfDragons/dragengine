@@ -63,6 +63,7 @@ private:
 	igdeListBoxReference pListProperty;
 	igdeTextFieldReference pEditPropName;
 	igdeTextFieldReference pEditPropRenderable;
+	igdeTextFieldReference pEditPropBone;
 	
 	igdeComboBoxReference pCBPropertyType;
 	igdeSwitcherReference pSwitcher;

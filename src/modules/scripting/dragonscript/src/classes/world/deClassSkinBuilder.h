@@ -109,6 +109,7 @@ private:
 	DEF_NATFUNC( nfAddPropertyConstructed );
 	DEF_NATFUNC( nfAddPropertyMapped );
 	DEF_NATFUNC( nfAddPropertyMapped2 );
+	DEF_NATFUNC( nfSetPropertyBone );
 	DEF_NATFUNC( nfConstructedOpenContent );
 	DEF_NATFUNC( nfAddNodeImage );
 	DEF_NATFUNC( nfAddNodeText );

@@ -72,7 +72,10 @@ void desmWriteProperty::VisitValue( deSkinPropertyValue &property ){
 	pWriter.WriteOpeningTagStart( "value" );
 	pWriter.WriteAttributeString( "property", pPropertyType );
 	if( ! property.GetRenderable().IsEmpty() ){
-		pWriter.WriteAttributeString( "renderable", property.GetRenderable().GetString() );
+		pWriter.WriteAttributeString( "renderable", property.GetRenderable() );
+	}
+	if( ! property.GetBone().IsEmpty() ){
+		pWriter.WriteAttributeString( "bone", property.GetBone() );
 	}
 	pWriter.WriteOpeningTagEnd( false, false );
 	
@@ -99,7 +102,10 @@ void desmWriteProperty::VisitColor( deSkinPropertyColor &property ){
 		pWriter.WriteAttributeFloat( "a", color.a );
 	}
 	if( ! property.GetRenderable().IsEmpty() ){
-		pWriter.WriteAttributeString( "renderable", property.GetRenderable().GetString() );
+		pWriter.WriteAttributeString( "renderable", property.GetRenderable() );
+	}
+	if( ! property.GetBone().IsEmpty() ){
+		pWriter.WriteAttributeString( "bone", property.GetBone() );
 	}
 	pWriter.WriteOpeningTagEnd( true );
 }
@@ -108,7 +114,10 @@ void desmWriteProperty::VisitImage( deSkinPropertyImage &property ){
 	pWriter.WriteOpeningTagStart( "image" );
 	pWriter.WriteAttributeString( "property", pPropertyType );
 	if( ! property.GetRenderable().IsEmpty() ){
-		pWriter.WriteAttributeString( "renderable", property.GetRenderable().GetString() );
+		pWriter.WriteAttributeString( "renderable", property.GetRenderable() );
+	}
+	if( ! property.GetBone().IsEmpty() ){
+		pWriter.WriteAttributeString( "bone", property.GetBone() );
 	}
 	pWriter.WriteOpeningTagEnd( false, false );
 	
@@ -121,7 +130,10 @@ void desmWriteProperty::VisitVideo( deSkinPropertyVideo &property ){
 	pWriter.WriteOpeningTagStart( "video" );
 	pWriter.WriteAttributeString( "property", pPropertyType );
 	if( ! property.GetRenderable().IsEmpty() ){
-		pWriter.WriteAttributeString( "renderable", property.GetRenderable().GetString() );
+		pWriter.WriteAttributeString( "renderable", property.GetRenderable() );
+	}
+	if( ! property.GetBone().IsEmpty() ){
+		pWriter.WriteAttributeString( "bone", property.GetBone() );
 	}
 	if( ! property.GetSharedTime() ){
 		pWriter.WriteAttributeBool( "sharedTime", property.GetSharedTime() );
@@ -138,6 +150,9 @@ void desmWriteProperty::VisitConstructed( deSkinPropertyConstructed &property ){
 	pWriter.WriteAttributeString( "property", pPropertyType );
 	if( ! property.GetRenderable().IsEmpty() ){
 		pWriter.WriteAttributeString( "renderable", property.GetRenderable() );
+	}
+	if( ! property.GetBone().IsEmpty() ){
+		pWriter.WriteAttributeString( "bone", property.GetBone() );
 	}
 	pWriter.WriteOpeningTagEnd();
 	
@@ -194,7 +209,10 @@ void desmWriteProperty::VisitMapped( deSkinPropertyMapped &property ){
 	pWriter.WriteOpeningTagStart( "mapped" );
 	pWriter.WriteAttributeString( "property", pPropertyType );
 	if( ! property.GetRenderable().IsEmpty() ){
-		pWriter.WriteAttributeString( "renderable", property.GetRenderable().GetString() );
+		pWriter.WriteAttributeString( "renderable", property.GetRenderable() );
+	}
+	if( ! property.GetBone().IsEmpty() ){
+		pWriter.WriteAttributeString( "bone", property.GetBone() );
 	}
 	pWriter.WriteOpeningTagEnd();
 	

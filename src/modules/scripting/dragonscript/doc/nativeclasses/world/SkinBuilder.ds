@@ -148,6 +148,16 @@ abstract class SkinBuilder
 	end
 	
 	/**
+	 * \brief Set bone name of texture property.
+	 * \version 1.18
+	 * 
+	 * Used by texture properties using vertex position instead of texture coordinates.
+	 * The vertex position is evaluated relative to the bone coordinate system.
+	 */
+	protected func void setPropertyBone(int texture, int property, String bone)
+	end
+	
+	/**
 	 * \brief Open constructed property content node.
 	 * 
 	 * Content node becomes open node to operate on. Call closeNode() to close it.

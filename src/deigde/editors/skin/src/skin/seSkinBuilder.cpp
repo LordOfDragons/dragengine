@@ -308,6 +308,7 @@ void seSkinBuilder::pAddTextures( deSkin &engSkin ){
 					engPropertyValue->SetValue( property.GetValue() );
 					
 					engPropertyValue->SetRenderable( property.GetRenderableName() );
+					engPropertyValue->SetBone( property.GetBoneName() );
 					
 					engTexture->AddProperty( engPropertyValue );
 					engPropertyValue = NULL;
@@ -319,6 +320,7 @@ void seSkinBuilder::pAddTextures( deSkin &engSkin ){
 					engPropertyColor->SetColor( property.GetColor() );
 					
 					engPropertyColor->SetRenderable( property.GetRenderableName() );
+					engPropertyColor->SetBone( property.GetBoneName() );
 					
 					engTexture->AddProperty( engPropertyColor );
 					engPropertyColor = NULL;
@@ -331,6 +333,7 @@ void seSkinBuilder::pAddTextures( deSkin &engSkin ){
 					engPropertyImage->SetImage( property.GetEngineImage() );
 					
 					engPropertyImage->SetRenderable( property.GetRenderableName() );
+					engPropertyImage->SetBone( property.GetBoneName() );
 					
 					engTexture->AddProperty( engPropertyImage );
 					engPropertyImage = NULL;
@@ -344,6 +347,7 @@ void seSkinBuilder::pAddTextures( deSkin &engSkin ){
 					engPropertyVideo->SetSharedTime( property.GetVideoSharedTime() );
 					
 					engPropertyVideo->SetRenderable( property.GetRenderableName() );
+					engPropertyVideo->SetBone( property.GetBoneName() );
 					
 					engTexture->AddProperty( engPropertyVideo );
 					engPropertyVideo = NULL;
@@ -358,6 +362,7 @@ void seSkinBuilder::pAddTextures( deSkin &engSkin ){
 					engPropertyMapped->SetAlpha( listMapped.IndexOf( property.GetMappedComponent( 3 ) ) );
 					
 					engPropertyMapped->SetRenderable( property.GetRenderableName() );
+					engPropertyMapped->SetBone( property.GetBoneName() );
 					
 					engTexture->AddProperty( engPropertyMapped );
 					engPropertyMapped = NULL;
@@ -375,6 +380,7 @@ void seSkinBuilder::pAddTextures( deSkin &engSkin ){
 					CreateNodeGroup( engPropertyConstructed->GetContent(), *property.GetNodeGroup() );
 					
 					engPropertyConstructed->SetRenderable( property.GetRenderableName() );
+					engPropertyConstructed->SetBone( property.GetBoneName() );
 					
 					engTexture->AddProperty( engPropertyConstructed );
 					engPropertyConstructed = NULL;

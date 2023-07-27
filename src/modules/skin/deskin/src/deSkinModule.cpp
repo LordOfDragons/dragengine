@@ -496,7 +496,7 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 			tag = pGetTagAt( root, i );
 			
 			if( tag ){
-				if( strcmp( tag->GetName(), "value" ) == 0 ){
+				if( tag->GetName() == "value" ){
 					name = pGetAttributeString( *tag, "property" );
 					
 					if( texture->HasPropertyWithType( name ) ){
@@ -518,11 +518,14 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 					if( pFindAttribute( *tag, "renderable" ) ){
 						propertyValue->SetRenderable( pGetAttributeString( *tag, "renderable" ) );
 					}
+					if( pFindAttribute( *tag, "bone" ) ){
+						propertyValue->SetBone( pGetAttributeString( *tag, "bone" ) );
+					}
 					
 					texture->AddProperty( propertyValue );
 					propertyValue = NULL;
 					
-				}else if( strcmp( tag->GetName(), "color" ) == 0 ){
+				}else if( tag->GetName() == "color" ){
 					name = pGetAttributeString( *tag, "property" );
 					
 					if( texture->HasPropertyWithType( name ) ){
@@ -552,11 +555,14 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 					if( pFindAttribute( *tag, "renderable" ) ){
 						propertyColor->SetRenderable( pGetAttributeString( *tag, "renderable" ) );
 					}
+					if( pFindAttribute( *tag, "bone" ) ){
+						propertyColor->SetBone( pGetAttributeString( *tag, "bone" ) );
+					}
 					
 					texture->AddProperty( propertyColor );
 					propertyColor = NULL;
 					
-				}else if( strcmp( tag->GetName(), "image" ) == 0 ){
+				}else if( tag->GetName() == "image" ){
 					name = pGetAttributeString( *tag, "property" );
 					
 					if( texture->HasPropertyWithType( name ) ){
@@ -575,11 +581,14 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 					if( pFindAttribute( *tag, "renderable" ) ){
 						propertyImage->SetRenderable( pGetAttributeString( *tag, "renderable" ) );
 					}
+					if( pFindAttribute( *tag, "bone" ) ){
+						propertyImage->SetBone( pGetAttributeString( *tag, "bone" ) );
+					}
 					
 					texture->AddProperty( propertyImage );
 					propertyImage = NULL;
 					
-				}else if( strcmp( tag->GetName(), "video" ) == 0 ){
+				}else if( tag->GetName() == "video" ){
 					name = pGetAttributeString( *tag, "property" );
 					
 					if( texture->HasPropertyWithType( name ) ){
@@ -598,7 +607,9 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 					if( pFindAttribute( *tag, "renderable" ) ){
 						propertyVideo->SetRenderable( pGetAttributeString( *tag, "renderable" ) );
 					}
-					
+					if( pFindAttribute( *tag, "bone" ) ){
+						propertyVideo->SetBone( pGetAttributeString( *tag, "bone" ) );
+					}
 					if( pFindAttribute( *tag, "sharedTime" ) ){
 						propertyVideo->SetSharedTime( pGetAttributeBool( *tag, "sharedTime" ) );
 					}
@@ -606,7 +617,7 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 					texture->AddProperty( propertyVideo );
 					propertyVideo = NULL;
 					
-				}else if( strcmp( tag->GetName(), "mapped" ) == 0 ){
+				}else if( tag->GetName() == "mapped" ){
 					name = pGetAttributeString( *tag, "property" );
 					
 					if( texture->HasPropertyWithType( name ) ){
@@ -620,13 +631,16 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 					if( pFindAttribute( *tag, "renderable" ) ){
 						propertyMapped->SetRenderable( pGetAttributeString( *tag, "renderable" ) );
 					}
+					if( pFindAttribute( *tag, "bone" ) ){
+						propertyMapped->SetBone( pGetAttributeString( *tag, "bone" ) );
+					}
 					
 					pParsePropertyMapped( *tag, skin, *propertyMapped );
 					
 					texture->AddProperty( propertyMapped );
 					propertyMapped = NULL;
 					
-				}else if( strcmp( tag->GetName(), "constructed" ) == 0 ){
+				}else if( tag->GetName() == "constructed" ){
 					name = pGetAttributeString( *tag, "property" );
 					
 					if( texture->HasPropertyWithType( name ) ){
@@ -640,13 +654,16 @@ deSkinTexture *deSkinModule::pParseTexture( const decXmlElementTag &root, decPat
 					if( pFindAttribute( *tag, "renderable" ) ){
 						propertyConstructed->SetRenderable( pGetAttributeString( *tag, "renderable" ) );
 					}
+					if( pFindAttribute( *tag, "bone" ) ){
+						propertyConstructed->SetBone( pGetAttributeString( *tag, "bone" ) );
+					}
 					
 					pParsePropertyConstructed( *tag, skin, *propertyConstructed );
 					
 					texture->AddProperty( propertyConstructed );
 					propertyConstructed = NULL;
 					
-				}else if( strcmp( tag->GetName(), "fullAlpha" ) == 0 ){
+				}else if( tag->GetName() == "fullAlpha" ){
 					LogWarnFormat( "%s: texture(%i:%i): tag fullAlpha is deprecated. adding transparency.type=1 property instead",
 						skin.GetFilename().GetString(), tag->GetLineNumber(), tag->GetPositionNumber() );
 					

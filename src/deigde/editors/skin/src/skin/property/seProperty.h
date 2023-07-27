@@ -80,6 +80,7 @@ private:
 	decString pName;
 	eValueTypes pValueType;
 	decString pRenderableName;
+	decString pBoneName;
 	
 	float pValue;
 	
@@ -156,6 +157,12 @@ public:
 	
 	/** \brief Set name of renderable. */
 	void SetRenderableName( const char *name );
+	
+	/** \brief Name of bone. */
+	inline const decString &GetBoneName() const{ return pBoneName; }
+	
+	/** \brief Set name of bone. */
+	void SetBoneName( const char *name );
 	
 	
 	
