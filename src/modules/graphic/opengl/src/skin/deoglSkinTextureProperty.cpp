@@ -27,6 +27,7 @@
 #include "dynamic/deoglRDynamicSkin.h"
 #include "dynamic/renderables/render/deoglRDSRenderable.h"
 #include "state/deoglSkinState.h"
+#include "state/deoglSkinStateBone.h"
 #include "state/deoglSkinStateRenderable.h"
 #include "state/deoglSkinStateCalculated.h"
 
@@ -42,7 +43,8 @@
 
 deoglSkinTextureProperty::deoglSkinTextureProperty() :
 pRenderable( -1 ),
-pCalculatedProperty( -1 ){
+pCalculatedProperty( -1 ),
+pBone( -1 ){
 }
 
 deoglSkinTextureProperty::~deoglSkinTextureProperty(){
@@ -61,6 +63,11 @@ void deoglSkinTextureProperty::SetRenderable( int index ){
 void deoglSkinTextureProperty::SetCalculatedProperty( int index ){
 	DEASSERT_TRUE( index >= -1 )
 	pCalculatedProperty = index;
+}
+
+void deoglSkinTextureProperty::SetBone( int index ){
+	DEASSERT_TRUE( index >= -1 )
+	pBone = index;
 }
 
 bool deoglSkinTextureProperty::IsDynamic() const{
@@ -175,5 +182,13 @@ const deoglRDynamicSkin *dynamicSkin, const decVector &defaultValue ) const{
 		return decVector( color.r, color.g, color.b );
 	}
 	
+	return defaultValue;
+}
+
+decMatrix deoglSkinTextureProperty::ResolveMatrix( const deoglSkinState *skinState,
+const decMatrix &defaultValue ) const{
+	if( skinState && pBone >= 0 && pBone < skinState->GetBoneCount() ){
+		return skinState->GetBoneAt( pRenderable ).GetBoneMatrix();
+	}
 	return defaultValue;
 }

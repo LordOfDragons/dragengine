@@ -1341,6 +1341,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinMapped.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinBone.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1468,6 +1471,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateMapped.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateBone.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNGroup.h">
@@ -3189,6 +3195,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinMapped.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3316,6 +3325,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateMapped.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateBone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNGroup.cpp">

@@ -135,7 +135,10 @@ namespace deoglSkinPropertyMap{
 		eptNonPbrAlbedo,
 		eptNonPbrMetalness,
 		
-		eptXRay
+		eptXRay,
+		
+		eptClipPlane,
+		eptClipPlaneBorder
 	};
 	
 	/** Type for texture property number. */

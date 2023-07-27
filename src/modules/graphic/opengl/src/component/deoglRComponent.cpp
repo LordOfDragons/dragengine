@@ -569,10 +569,10 @@ void deoglRComponent::MeshChanged(){
 
 
 
-void deoglRComponent::InitSkinStateMapped( const deComponent &component ){
+void deoglRComponent::InitSkinStateStates( const deComponent &component ){
 	if( pSkinState ){
-		pSkinState->InitMapped();
-		pSkinState->MappedMapBones( component );
+		pSkinState->InitAll();
+		pSkinState->MapBonesAll( component );
 	}
 	
 	const int textureCount = pTextures.GetCount();
@@ -580,15 +580,15 @@ void deoglRComponent::InitSkinStateMapped( const deComponent &component ){
 	for( i=0; i<textureCount; i++ ){
 		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
 		if( texture.GetSkinState() ){
-			texture.GetSkinState()->InitMapped();
-			texture.GetSkinState()->MappedMapBones( component );
+			texture.GetSkinState()->InitAll();
+			texture.GetSkinState()->MapBonesAll( component );
 		}
 	}
 }
 
-void deoglRComponent::UpdateSkinStateMappedBones( const deComponent &component ){
+void deoglRComponent::UpdateSkinStateBones( const deComponent &component ){
 	if( pSkinState ){
-		pSkinState->UpdateMappedBones( component );
+		pSkinState->UpdateBonesAll( component );
 	}
 	
 	const int textureCount = pTextures.GetCount();
@@ -596,14 +596,14 @@ void deoglRComponent::UpdateSkinStateMappedBones( const deComponent &component )
 	for( i=0; i<textureCount; i++ ){
 		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
 		if( texture.GetSkinState() ){
-			texture.GetSkinState()->UpdateMappedBones( component );
+			texture.GetSkinState()->UpdateBonesAll( component );
 		}
 	}
 }
 
-void deoglRComponent::UpdateSkinStateMapped(){
+void deoglRComponent::UpdateSkinStateStates(){
 	if( pSkinState ){
-		pSkinState->UpdateMapped();
+		pSkinState->UpdateAll();
 	}
 	
 	const int textureCount = pTextures.GetCount();
@@ -611,71 +611,7 @@ void deoglRComponent::UpdateSkinStateMapped(){
 	for( i=0; i<textureCount; i++ ){
 		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
 		if( texture.GetSkinState() ){
-			texture.GetSkinState()->UpdateMapped();
-		}
-	}
-}
-
-
-
-void deoglRComponent::InitSkinStateCalculatedProperties( const deComponent &component ){
-	if( pSkinState ){
-		pSkinState->InitCalculatedProperties();
-	}
-	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		if( texture.GetSkinState() ){
-			texture.GetSkinState()->InitCalculatedProperties();
-		}
-	}
-}
-
-void deoglRComponent::UpdateSkinStateCalculatedProperties(){
-	if( pSkinState ){
-		pSkinState->UpdateCalculatedProperties();
-	}
-	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		if( texture.GetSkinState() ){
-			texture.GetSkinState()->UpdateCalculatedProperties();
-		}
-	}
-}
-
-
-
-void deoglRComponent::InitSkinStateConstructedProperties( const deComponent &component ){
-	if( pSkinState ){
-		pSkinState->InitConstructedProperties();
-	}
-	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		if( texture.GetSkinState() ){
-			texture.GetSkinState()->InitConstructedProperties();
-		}
-	}
-}
-
-void deoglRComponent::UpdateSkinStateConstructedProperties(){
-	if( pSkinState ){
-		pSkinState->UpdateConstructedProperties();
-	}
-	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		if( texture.GetSkinState() ){
-			texture.GetSkinState()->UpdateConstructedProperties();
+			texture.GetSkinState()->UpdateAll();
 		}
 	}
 }

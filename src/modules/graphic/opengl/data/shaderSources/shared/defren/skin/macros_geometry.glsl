@@ -24,7 +24,7 @@ precision highp int;
 	#define WITH_REFLECTIVITY 1
 #endif
 
-#if defined TEXTURE_SOLIDITY || defined WITH_OUTLINE
+#if defined TEXTURE_SOLIDITY || defined WITH_OUTLINE || defined SKIN_CLIP_PLANE
 	#define WITH_SOLIDITY 1
 #endif
 

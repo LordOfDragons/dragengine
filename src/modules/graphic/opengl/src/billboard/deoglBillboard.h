@@ -63,9 +63,7 @@ public:
 	bool pDirtySkin;
 	bool pDirtyDynamicSkin;
 	bool pDirtyRenderableMapping;
-	bool pDirtySkinStateMapped;
-	bool pDirtySkinStateCalculatedProperties;
-	bool pDirtySkinStateConstructedProperties;
+	bool pDirtySkinStateStates;
 	bool pSkinStatePrepareRenderables;
 	
 	bool pDynamicSkinRenderablesChanged;

@@ -108,6 +108,8 @@ public:
 		empRimExponent,
 		empNonPbrAlbedo,
 		empNonPbrMetalness,
+		empSkinClipPlane,
+		empSkinClipPlaneBorder,
 		EMP_COUNT
 	};
 	
@@ -221,6 +223,9 @@ private:
 	float pNonPbrMetalness;
 	
 	bool pXRay;
+	
+	float pSkinClipPlane;
+	float pSkinClipPlaneBorder;
 	
 	bool pQuickTransp;
 	
@@ -609,9 +614,15 @@ public:
 	
 	/** Rim exponent. */
 	inline float GetRimExponent() const{ return pRimExponent; }
-	
-	/** Set rim exponent. */
 	void SetRimExponent( float exponent );
+	
+	/** Clip plane. */
+	inline float GetSkinClipPlane() const{ return pSkinClipPlane; }
+	void SetSkinClipPlane( float clipPlane );
+	
+	/** Clip plane border. */
+	inline float GetSkinClipPlaneBorder() const{ return pSkinClipPlaneBorder; }
+	void SetSkinClipPlaneBorder( float border );
 	
 	/** Determines if the texture is shadeless. */
 	inline bool GetShadeless() const{ return pShadeless; }

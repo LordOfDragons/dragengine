@@ -476,6 +476,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTextureProperty.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinMapped.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinBone.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkin.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkinListener.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglRDynamicSkin.h" />
@@ -519,6 +520,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateController.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateRenderable.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateMapped.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateBone.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNGroup.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNImage.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNShape.h" />
@@ -1096,6 +1098,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTextureProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinMapped.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinBone.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkin.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkinListener.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglRDynamicSkin.cpp" />
@@ -1139,6 +1142,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateRenderable.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateMapped.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateBone.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNGroup.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNImage.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\node\deoglSkinStateCNShape.cpp" />

@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglRSkin.h"
+#include "deoglSkinBone.h"
 #include "deoglSkinMapped.h"
 #include "deoglSkinTexture.h"
 #include "deoglSkinRenderable.h"
@@ -452,6 +453,26 @@ int deoglRSkin::AddConstructedProperty( deoglSkinConstructedProperty *constructe
 	
 	pConstructedProperties.Add( constructed );
 	return pConstructedProperties.GetCount() - 1;
+}
+
+
+
+// Bones
+/////////
+
+int deoglRSkin::GetBoneCount() const{
+	return pBones.GetCount();
+}
+
+deoglSkinBone *deoglRSkin::GetBoneAt( int index ) const{
+	return ( deoglSkinBone* )pBones.GetAt( index );
+}
+
+int deoglRSkin::AddBone( const char *name ){
+	DEASSERT_NOTNULL( name )
+	
+	pBones.Add( deoglSkinBone::Ref::New( new deoglSkinBone( name ) ) );
+	return pBones.GetCount() - 1;
 }
 
 

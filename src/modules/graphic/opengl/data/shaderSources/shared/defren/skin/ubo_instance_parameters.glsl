@@ -60,7 +60,6 @@ struct sInstanceParameters{
 	
 	vec3 instRimEmissivityIntensity; // rim.emissivity.intensity
 	float instRimAngle; // rim.angle
-	
 	float instRimExponent; // rim.exponent
 	
 	vec3 instOutlineColor;
@@ -71,6 +70,10 @@ struct sInstanceParameters{
 	
 	vec3 instOutlineEmissivity;
 	vec3 instOutlineEmissivityTint;
+	
+	vec4 instClipPlaneNormal; // clip.plane : xyz=normal, w=distance
+	float instClipPlane; // clip.plane
+	float instClipPlaneBorder; // clip.plane.border
 	
 	#ifdef SHARED_SPB_PADDING
 	vec4 padding[ SHARED_SPB_PADDING ];
@@ -180,7 +183,6 @@ UBOLAYOUT uniform InstanceParameters{
 	
 	vec3 pInstRimEmissivityIntensity; // rim.emissivity.intensity
 	float pInstRimAngle; // rim.angle
-	
 	float pInstRimExponent; // rim.exponent
 	
 	vec3 pInstOutlineColor;
@@ -192,6 +194,10 @@ UBOLAYOUT uniform InstanceParameters{
 	float pInstOutlineSolidity;
 	
 	vec3 pInstOutlineEmissivityTint;
+	
+	vec4 pInstSkinClipPlaneNormal; // clip.plane : xyz=normal, w=distance
+	float pInstSkinClipPlane; // clip.plane
+	float pInstSkinClipPlaneBorder; // clip.plane.border
 };
 
 #ifdef PARTICLE

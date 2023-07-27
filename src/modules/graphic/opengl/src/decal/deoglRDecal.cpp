@@ -319,8 +319,7 @@ void deoglRDecal::SetSkin( deoglRSkin *skin ){
 	
 	UpdateSkinState();
 	if( pSkinState ){
-		pSkinState->InitCalculatedProperties();
-		pSkinState->InitConstructedProperties();
+		pSkinState->InitAll();
 	}
 	
 	pRequiresPrepareForRender();
@@ -1150,6 +1149,11 @@ int element, deoglSkinShader &skinShader ){
 		}else{
 			paramBlock.SetParameterDataVec2( target, element, 0.0f, 0.0f );
 		}
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, element, 0.0f, 0.0f, 1.0f, 0.0f );
 	}
 	
 	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );

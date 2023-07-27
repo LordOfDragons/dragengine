@@ -88,6 +88,9 @@
 #ifdef CLIP_PLANE
 	out vec3 vClipCoord;
 #endif
+#ifdef SKIN_CLIP_PLANE
+	out vec3 vSkinClipCoord;
+#endif
 #ifdef DEPTH_DISTANCE
 	out vec3 vPosition;
 #endif
@@ -170,6 +173,10 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		#else
 			vClipCoord = pMatrixV[ layer ] * position;
 		#endif
+	#endif
+	
+	#ifdef SKIN_CLIP_PLANE
+		vSkinClipCoord = vec3( position );
 	#endif
 	
 	#ifdef FADEOUT_RANGE

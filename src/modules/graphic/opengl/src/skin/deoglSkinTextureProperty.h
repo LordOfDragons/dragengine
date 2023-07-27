@@ -38,6 +38,7 @@ class deoglSkinTextureProperty{
 private:
 	int pRenderable;
 	int pCalculatedProperty;
+	int pBone;
 	
 	
 	
@@ -66,6 +67,12 @@ public:
 	
 	/** Set calculated property index or -1. */
 	void SetCalculatedProperty( int index );
+	
+	/** Bone index or -1. */
+	inline int GetBone() const{ return pBone; }
+	
+	/** Set bone index or -1. */
+	void SetBone( int index );
 	
 	/** Property is dynamic. */
 	bool IsDynamic() const;
@@ -119,6 +126,9 @@ public:
 	 */
 	decVector ResolveVector( const deoglSkinState *skinState,
 		const deoglRDynamicSkin *dynamicSkin, const decVector &defaultValue ) const;
+	
+	/** Resolve as matrix. */
+	decMatrix ResolveMatrix( const deoglSkinState *skinState, const decMatrix &defaultValue ) const;
 	/*@}*/
 };
 

@@ -142,6 +142,9 @@ static const char *vTextureUniformTargetNames[ deoglSkinShader::ETUT_COUNT ] = {
 	"pTexOutlineEmissivityTint", // etutTexOutlineEmissivityTint
 	
 	"pTexEmissivityCameraAdapted", // etutTexEmissivityCameraAdapted
+	
+	"pTexSkinClipPlane", // etutTexClipPlane
+	"pTexSkinClipPlaneBorder", // etutTexClipPlaneBorder
 };
 
 static const char *vInstanceUniformTargetNames[ deoglSkinShader::EIUT_COUNT ] = {
@@ -200,6 +203,9 @@ static const char *vInstanceUniformTargetNames[ deoglSkinShader::EIUT_COUNT ] = 
 	"pInstOutlineEmissivity", // eiutInstOutlineEmissivity
 	"pInstOutlineSolidity", // eiutInstOutlineSolidity
 	"pInstOutlineEmissivityTint", // eiutInstOutlineEmissivityTint
+	"pInstSkinClipPlaneNormal", // eiutInstClipPlaneNormal
+	"pInstSkinClipPlane", // eiutInstClipPlane
+	"pInstSkinClipPlaneBorder", // eiutInstClipPlaneBorder
 };
 
 
@@ -264,7 +270,9 @@ static const sSPBParameterDefinition vTextureSPBParamDefs[ deoglSkinShader::ETUT
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivity ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivityTint ( vec3 )
 	
-	{ deoglSPBParameter::evtBool, 1, 1, 1 }  // etutTexEmissivityCameraAdapted ( bool )
+	{ deoglSPBParameter::evtBool, 1, 1, 1 },  // etutTexEmissivityCameraAdapted ( bool )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 },  // etutTexClipPlane( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }  // etutTexClipPlaneBorder( float )
 };
 
 static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIUT_COUNT ] = {
@@ -322,10 +330,13 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIU
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineColorTint ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineEmissivity ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstOutlineSolidity ( float )
-	{ deoglSPBParameter::evtFloat, 3, 1, 1 }  // eiutInstOutlineEmissivityTint ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 },  // eiutInstOutlineEmissivityTint ( vec3 )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 },  // eiutInstClipPlaneNormal ( vec4 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstClipPlane ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 } // eiutInstClipPlaneBorder ( float )
 };
 
-static const int vUBOInstParamMapCount = 44;
+static const int vUBOInstParamMapCount = 47;
 static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInstParamMapCount ] = {
 	deoglSkinShader::eiutMatrixModel, // eiutMatrixModel ( mat4x3 )
 	deoglSkinShader::eiutMatrixNormal, // eiutMatrixNormal ( mat3 )
@@ -386,6 +397,7 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	
 	deoglSkinShader::eiutInstRimEmissivityIntensity, // eiutInstRimEmissivityIntensity ( vec3 )
 	deoglSkinShader::eiutInstRimAngle, // eiutInstRimAngle ( float )
+	
 	deoglSkinShader::eiutInstRimExponent, // eiutInstRimExponent ( float )
 	
 	deoglSkinShader::eiutInstOutlineColor, // eiutInstOutlineColor ( vec3 )
@@ -395,7 +407,11 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	deoglSkinShader::eiutInstOutlineSolidity, // eiutInstOutlineSolidity ( float )
 	
 	deoglSkinShader::eiutInstOutlineEmissivity, // eiutInstOutlineEmissivity ( vec3 )
-	deoglSkinShader::eiutInstOutlineEmissivityTint // eiutInstOutlineEmissivityTint ( vec3 )
+	deoglSkinShader::eiutInstOutlineEmissivityTint, // eiutInstOutlineEmissivityTint ( vec3 )
+	
+	deoglSkinShader::eiutInstSkinClipPlaneNormal, // eiutInstSkinClipPlaneNormal ( vec4 )
+	deoglSkinShader::eiutInstSkinClipPlane, // eiutInstSkinClipPlane ( float )
+	deoglSkinShader::eiutInstSkinClipPlaneBorder // eiutInstSkinClipPlaneBorder ( float )
 };
 
 // cache revision. if skin config or skin unit sources change in any way increment this
@@ -1116,6 +1132,19 @@ deoglRDynamicSkin *dynamicSkin ) const{
 		tint.b = powf( decMath::max( tint.b, 0.0f ), 2.2f );
 		
 		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstOutlineEmissivityTint ], element, tint );
+	}
+	
+	if( pInstanceUniformTargets[ eiutInstSkinClipPlane ] != -1 ){
+		const deoglSkinTextureProperty &property = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empSkinClipPlane );
+		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstSkinClipPlane ], element,
+			property.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetSkinClipPlane() ) );
+	}
+	
+	if( pInstanceUniformTargets[ eiutInstSkinClipPlaneBorder ] != -1 ){
+		const deoglSkinTextureProperty &property = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empSkinClipPlaneBorder );
+		const float value = property.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetSkinClipPlaneBorder() );
+		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstSkinClipPlaneBorder ], element,
+			value > 0.0f ? value + 0.0001f : value - 0.0001f ); // small offset to avoid smoothStep undefined
 	}
 }
 
@@ -1948,6 +1977,10 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.SetDefines( "LUMINANCE_ONLY" );
 	}
 	
+	if( pConfig.GetSkinClipPlane() ){
+		defines.SetDefines( "SKIN_CLIP_PLANE" );
+	}
+	
 	// dynamic texture property usage definitions
 	if( pConfig.GetDynamicColorTint() ){
 		defines.SetDefines( "DYNAMIC_COLOR_TINT" );
@@ -2035,6 +2068,12 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	if( pConfig.GetDynamicOutlineEmissivityTint() ){
 		defines.SetDefines( "DYNAMIC_OUTLINE_EMISSIVITY_TINT" );
+	}
+	if( pConfig.GetDynamicSkinClipPlane() ){
+		defines.SetDefines( "DYNAMIC_SKIN_CLIP_PLANE" );
+	}
+	if( pConfig.GetDynamicSkinClipPlaneBorder() ){
+		defines.SetDefines( "DYNAMIC_SKIN_CLIP_PLANE_BORDER" );
 	}
 }
 
@@ -2376,6 +2415,9 @@ void deoglSkinShader::UpdateUniformTargets(){
 		pInstanceUniformTargets[ eiutInstOutlineEmissivity ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstOutlineSolidity ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstOutlineEmissivityTint ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstSkinClipPlaneNormal ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstSkinClipPlane ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstSkinClipPlaneBorder ] = pUsedInstanceUniformTargetCount++;
 	}
 	
 	// shared parameter block support

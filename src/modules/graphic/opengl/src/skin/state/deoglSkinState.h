@@ -31,6 +31,7 @@ class deoglRSkin;
 class deoglRVideoPlayer;
 class deoglSkinStateRenderable;
 class deoglSkinStateMapped;
+class deoglSkinStateBone;
 class deoglSkinStateCalculated;
 class deoglSkinStateConstructed;
 class deoglRDynamicSkin;
@@ -74,6 +75,9 @@ private:
 	
 	deoglSkinStateConstructed *pConstructedProperties;
 	int pConstructedPropertyCount;
+	
+	deoglSkinStateBone *pBones;
+	int pBoneCount;
 	
 	decPoint pVariationSeed;
 	
@@ -185,18 +189,6 @@ public:
 	/** Mapped at index. */
 	deoglSkinStateMapped &GetMappedAt( int index ) const;
 	
-	/** Initialize mapped. */
-	void InitMapped();
-	
-	/** Map mapped bones. */
-	void MappedMapBones( const deComponent &component );
-	
-	/** Update mapped bones. */
-	void UpdateMappedBones( const deComponent &component );
-	
-	/** Update mapped. */
-	void UpdateMapped();
-	
 	
 	
 	/** Number of calculated properties. */
@@ -207,12 +199,6 @@ public:
 	
 	/** Calculated property at index. */
 	deoglSkinStateCalculated &GetCalculatedPropertyAt( int index ) const;
-	
-	/** Initialize calculated properties. */
-	void InitCalculatedProperties();
-	
-	/** Update calculated properties. */
-	void UpdateCalculatedProperties();
 	
 	
 	
@@ -225,14 +211,33 @@ public:
 	/** Constructed property at index. */
 	deoglSkinStateConstructed &GetConstructedPropertyAt( int index ) const;
 	
-	/** Initialize constructed properties. */
-	void InitConstructedProperties();
-	
-	/** Update constructed properties. */
-	void UpdateConstructedProperties();
-	
 	/** Prepare constructed properties for rendering. */
 	void PrepareConstructedProperties();
+	
+	
+	
+	/** Count of bones. */
+	inline int GetBoneCount() const{ return pBoneCount; }
+	
+	/** Set bones count. */
+	void SetBoneCount( int count );
+	
+	/** Bones at index. */
+	deoglSkinStateBone &GetBoneAt( int index ) const;
+	
+	
+	
+	/** Init all states. */
+	void InitAll();
+	
+	/** Update all states. */
+	void UpdateAll();
+	
+	/** Map bones. */
+	void MapBonesAll( const deComponent &component );
+	
+	/** Update bones. */
+	void UpdateBonesAll( const deComponent &component );
 	
 	
 	

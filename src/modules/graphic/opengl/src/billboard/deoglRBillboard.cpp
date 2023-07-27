@@ -349,33 +349,13 @@ void deoglRBillboard::UpdateSkin( float elapsed ){
 	}
 }
 
-void deoglRBillboard::InitSkinStateMapped(){
-	pSkinState->InitMapped();
+void deoglRBillboard::InitSkinStateStates(){
+	pSkinState->InitAll();
 }
 
-void deoglRBillboard::UpdateSkinStateMapped(){
+void deoglRBillboard::UpdateSkinStateStates(){
 	if( pSkinState ){
-		pSkinState->UpdateMapped();
-	}
-}
-
-void deoglRBillboard::InitSkinStateCalculatedProperties(){
-	pSkinState->InitCalculatedProperties();
-}
-
-void deoglRBillboard::UpdateSkinStateCalculatedProperties(){
-	if( pSkinState ){
-		pSkinState->UpdateCalculatedProperties();
-	}
-}
-
-void deoglRBillboard::InitSkinStateConstructedProperties(){
-	pSkinState->InitConstructedProperties();
-}
-
-void deoglRBillboard::UpdateSkinStateConstructedProperties(){
-	if( pSkinState ){
-		pSkinState->UpdateConstructedProperties();
+		pSkinState->UpdateAll();
 	}
 }
 
@@ -620,6 +600,11 @@ int element, deoglSkinShader &skinShader ){
 		}else{
 			paramBlock.SetParameterDataVec2( target, element, 0.0f, 0.0f );
 		}
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, element, 0.0f, 0.0f, 1.0f, 0.0f );
 	}
 	
 	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );

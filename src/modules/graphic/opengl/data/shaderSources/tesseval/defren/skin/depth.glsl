@@ -86,6 +86,9 @@ layout( triangles, equal_spacing, ccw ) in;
 	#ifdef CLIP_PLANE
 		out vec3 vClipCoord;
 	#endif
+	#ifdef SKIN_CLIP_PLANE
+		out vec3 vSkinClipCoord;
+	#endif
 	#ifdef DEPTH_DISTANCE
 		out vec3 vPosition;
 	#endif
@@ -161,24 +164,27 @@ void main(){
 		#ifdef REQUIRES_NORMAL
 			#ifdef DEPTH_DISTANCE
 				#ifdef BILLBOARD
-					vPosition = gl_Position.xyz;
+					vPosition = vec3( gl_Position );
 				#else
 					vPosition = pMatrixV[ 0 ] * gl_Position;
 				#endif
 			#endif
 			#ifdef WITH_REFLECT_DIR
 				#ifdef BILLBOARD
-					vReflectDir = gl_Position.xyz;
+					vReflectDir = vec3( gl_Position );
 				#else
 					vReflectDir = pMatrixV[ 0 ] * gl_Position;
 				#endif
 			#endif
 			#ifdef CLIP_PLANE
 				#ifdef BILLBOARD
-					vClipCoord = gl_Position.xyz;
+					vClipCoord = vec3( gl_Position );
 				#else
 					vClipCoord = pMatrixV[ 0 ] * gl_Position;
 				#endif
+			#endif
+			#ifdef SKIN_CLIP_PLANE
+				vSkinClipCoord = vec3( gl_Position );
 			#endif
 			#ifdef FADEOUT_RANGE
 				#ifdef BILLBOARD

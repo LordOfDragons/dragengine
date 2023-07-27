@@ -125,6 +125,9 @@
 	#ifdef CLIP_PLANE
 		out vec3 vClipCoord;
 	#endif
+	#ifdef SKIN_CLIP_PLANE
+		out vec3 vSkinClipCoord;
+	#endif
 	#ifdef DEPTH_DISTANCE
 		out vec3 vPosition;
 	#endif
@@ -232,6 +235,10 @@ void main( void ){
 			#else
 				vClipCoord = pMatrixV[ inLayer ] * vec4( position, 1 );
 			#endif
+		#endif
+		
+		#ifdef SKIN_CLIP_PLANE
+			vSkinClipCoord = position;
 		#endif
 		
 		// fade range requires non-perspective z. and when we are at it already spare some calculations

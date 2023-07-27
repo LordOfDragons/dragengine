@@ -366,15 +366,9 @@ public:
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
 	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
-	void InitSkinStateMapped( const deComponent &component );
-	void UpdateSkinStateMappedBones( const deComponent &component );
-	void UpdateSkinStateMapped();
-	
-	void InitSkinStateCalculatedProperties( const deComponent &component );
-	void UpdateSkinStateCalculatedProperties();
-	
-	void InitSkinStateConstructedProperties( const deComponent &component );
-	void UpdateSkinStateConstructedProperties();
+	void InitSkinStateStates( const deComponent &component );
+	void UpdateSkinStateBones( const deComponent &component );
+	void UpdateSkinStateStates();
 	
 	void DirtyPrepareSkinStateRenderables();
 	

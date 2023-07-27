@@ -65,9 +65,7 @@ pDirtyRenderEnvMap( true ),
 pDirtySkin( true ),
 pDirtyDynamicSkin( true ),
 pDirtyRenderableMapping( true ),
-pDirtySkinStateMapped( true ),
-pDirtySkinStateCalculatedProperties( true ),
-pDirtySkinStateConstructedProperties( true ),
+pDirtySkinStateStates( true ),
 pSkinStatePrepareRenderables( true ),
 
 pDynamicSkinRenderablesChanged( true ),
@@ -146,17 +144,9 @@ void deoglBillboard::SyncToRender(){
 	
 	// sync skin state properties. has to come after pSkinStateController->SyncToRender()
 	// and pRBillboard->UpdateSkin()
-	if( pDirtySkinStateMapped ){
-		pRBillboard->InitSkinStateMapped();
-		pDirtySkinStateMapped = false;
-	}
-	if( pDirtySkinStateCalculatedProperties ){
-		pRBillboard->InitSkinStateCalculatedProperties();
-		pDirtySkinStateCalculatedProperties = false;
-	}
-	if( pDirtySkinStateConstructedProperties ){
-		pRBillboard->InitSkinStateConstructedProperties();
-		pDirtySkinStateConstructedProperties = false;
+	if( pDirtySkinStateStates ){
+		pRBillboard->InitSkinStateStates();
+		pDirtySkinStateStates = false;
 	}
 	
 	if( pSkinStatePrepareRenderables ){
@@ -164,9 +154,7 @@ void deoglBillboard::SyncToRender(){
 		pSkinStatePrepareRenderables = false;
 	}
 	
-	pRBillboard->UpdateSkinStateMapped(); // has to be done better. only some need this
-	pRBillboard->UpdateSkinStateCalculatedProperties(); // has to be done better. only some need this
-	pRBillboard->UpdateSkinStateConstructedProperties(); // has to be done better. only some need this
+	pRBillboard->UpdateSkinStateStates(); // has to be done better. only some need this
 	
 	// octree, extends and matrices. order is important
 	if( pDirtyExtends ){
@@ -293,9 +281,7 @@ void deoglBillboard::OffsetChanged(){
 void deoglBillboard::SkinChanged(){
 	pDirtySkin = true;
 	pDirtySkinStateController = true;
-	pDirtySkinStateMapped = true;
-	pDirtySkinStateCalculatedProperties = true;
-	pDirtySkinStateConstructedProperties = true;
+	pDirtySkinStateStates = true;
 	pDirtyRenderableMapping = true;
 	pSkinStatePrepareRenderables = true;
 	

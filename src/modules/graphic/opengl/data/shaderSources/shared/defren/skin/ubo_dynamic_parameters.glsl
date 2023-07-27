@@ -175,3 +175,15 @@
 #endif
 
 #define pEmissivityCameraAdapted pTexEmissivityCameraAdapted
+
+#ifdef DYNAMIC_SKIN_CLIP_PLANE
+	#define pSkinClipPlane pInstSkinClipPlane
+#else
+	#define pSkinClipPlane pTexSkinClipPlane
+#endif
+
+#ifdef DYNAMIC_SKIN_CLIP_PLANE_BORDER
+	#define pSkinClipPlaneBorder pInstSkinClipPlaneBorder
+#else
+	#define pSkinClipPlaneBorder pTexSkinClipPlaneBorder
+#endif

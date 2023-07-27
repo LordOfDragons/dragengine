@@ -153,6 +153,8 @@ void deoglSTPipelinesOutline::pSetGeometry( deoglSkinShaderConfig &config, const
 	config.SetDynamicOutlineEmissivity( ISPROPDYN( empOutlineEmissivity )
 		|| ISPROPDYN( empOutlineEmissivityIntensity ) );
 	config.SetDynamicOutlineEmissivityTint( ISPROPDYN( empOutlineEmissivityTint ) );
+	
+	pSetSkinClipping( config );
 }
 
 void deoglSTPipelinesOutline::pSetDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
@@ -174,6 +176,8 @@ void deoglSTPipelinesOutline::pSetDepth( deoglSkinShaderConfig &config, const Ch
 	// emissivity is required to avoid discarding non-solid fragments
 	config.SetDynamicOutlineEmissivity( ISPROPDYN( empOutlineEmissivity )
 		|| ISPROPDYN( empOutlineEmissivityIntensity ) );
+	
+	pSetSkinClipping( config );
 }
 
 void deoglSTPipelinesOutline::pSetCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){

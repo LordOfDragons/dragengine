@@ -218,6 +218,10 @@ pSharedSPBElement( nullptr )
 	
 	pNonPbrAlbedo.Set( 0.0f, 0.0f, 0.0f );
 	pNonPbrMetalness = 0.0f;
+	
+	pSkinClipPlane = 0.0f;
+	pSkinClipPlaneBorder = 0.0f;
+	
 	pXRay = false;
 	
 	pMirror = false;
@@ -646,6 +650,14 @@ void deoglSkinTexture::SetRimAngle( float angle ){
 
 void deoglSkinTexture::SetRimExponent( float exponent ){
 	pRimExponent = decMath::max( exponent, 0.0f );
+}
+
+void deoglSkinTexture::SetSkinClipPlane( float clipPlane ){
+	pSkinClipPlane = decMath::clamp( clipPlane, 0.0f, 1.0f );
+}
+
+void deoglSkinTexture::SetSkinClipPlaneBorder( float border ){
+	pSkinClipPlaneBorder = border;
 }
 
 
@@ -1716,6 +1728,15 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pXRay = value > 0.5f;
 			break;
 			
+		case deoglSkinPropertyMap::eptClipPlane:
+			pSkinClipPlane = decMath::clamp( value, 0.0f, 1.0f );
+			pHasSolidity = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlaneBorder:
+			pSkinClipPlaneBorder = value;
+			break;
+			
 		default:
 			break;
 		}
@@ -2084,6 +2105,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			requiresTexture = true;
 			break;
 			
+		case deoglSkinPropertyMap::eptClipPlane:
+			materialProperty = pMaterialProperties + empSkinClipPlane;
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlaneBorder:
+			materialProperty = pMaterialProperties + empSkinClipPlaneBorder;
+			break;
+			
 		default:
 			break;
 		}
@@ -2107,7 +2136,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 	
 	// check if the property has a renderable
 	if( ! property.GetRenderable().IsEmpty() ){
-		const char * const renderable = property.GetRenderable().GetString();
+		const decString &renderable = property.GetRenderable();
 		
 		switch( propertyType ){
 		case deoglSkinPropertyMap::eptColor:
@@ -2380,6 +2409,26 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			skin.GetRenderableAt( pMaterialProperties[ empNonPbrMetalness ].GetRenderable() ).SetRequiresTexture( true );
 			break;
 			
+		case deoglSkinPropertyMap::eptClipPlane:
+			pMaterialProperties[ empSkinClipPlane ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlaneBorder:
+			pMaterialProperties[ empSkinClipPlaneBorder ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		default:
+			break;
+		}
+	}
+	
+	// check if the property has a boner
+	if( ! property.GetBone().IsEmpty() ){
+		switch( propertyType ){
+		case deoglSkinPropertyMap::eptClipPlane:
+			pMaterialProperties[ empSkinClipPlane ].SetBone( skin.AddBone( property.GetBone() ) );
+			break;
+			
 		default:
 			break;
 		}
@@ -2495,6 +2544,9 @@ void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int el
 	
 	spb.SetParameterDataBool( deoglSkinShader::etutTexEmissivityCameraAdapted, element,
 		pEmissivityCameraAdapted );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexSkinClipPlane, element, pSkinClipPlane );
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexSkinClipPlaneBorder, element, pSkinClipPlaneBorder );
 }
 
 void deoglSkinTexture::pUpdateRenderTaskFilters(){

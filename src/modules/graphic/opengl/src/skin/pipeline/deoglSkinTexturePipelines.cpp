@@ -577,6 +577,7 @@ void deoglSkinTexturePipelines::pSetGeometry( deoglSkinShaderConfig &config, con
 	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
 	
 	pSetMaskedSolidity( config );
+	pSetSkinClipping( config );
 	pSetTypeGeometry( config, cinfo );
 	pSetTexturesGeometry( config, cinfo );
 	pSetDynamicGeometry( config, cinfo );
@@ -594,6 +595,7 @@ void deoglSkinTexturePipelines::pSetDepth( deoglSkinShaderConfig &config, const 
 	config.SetDepthTestMode( deoglSkinShaderConfig::edtmLarger );
 	
 	pSetMaskedSolidity( config );
+	pSetSkinClipping( config );
 	pSetTypeDepth( config, cinfo );
 	pSetDynamicDepth( config, cinfo );
 }
@@ -603,6 +605,7 @@ void deoglSkinTexturePipelines::pSetCounter( deoglSkinShaderConfig &config, cons
 	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
 	
 	pSetMaskedSolidity( config );
+	pSetSkinClipping( config );
 	pSetTypeCounter( config, cinfo );
 	pSetDynamicCounter( config, cinfo );
 }
@@ -616,6 +619,7 @@ void deoglSkinTexturePipelines::pSetShadowProjection( deoglSkinShaderConfig &con
 	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
 	
 	pSetMaskedSolidity( config );
+	pSetSkinClipping( config );
 	pSetTypeShadow( config, cinfo );
 }
 
@@ -657,6 +661,7 @@ void deoglSkinTexturePipelines::pSetEnvMap( deoglSkinShaderConfig &config, const
 	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
 	
 	pSetMaskedSolidity( config );
+	pSetSkinClipping( config );
 }
 
 void deoglSkinTexturePipelines::pSetLuminance( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
@@ -682,6 +687,14 @@ void deoglSkinTexturePipelines::pSetGIMaterial( deoglSkinShaderConfig &config, c
 
 void deoglSkinTexturePipelines::pSetMaskedSolidity( deoglSkinShaderConfig &config ){
 	config.SetMaskedSolidity( pTexture.GetSolidityMasked() || pTexture.GetHasZeroSolidity() );
+}
+
+void deoglSkinTexturePipelines::pSetSkinClipping( deoglSkinShaderConfig &config ){
+	if( pTexture.GetSkinClipPlane() > 0.001f || ISPROPDYN( empSkinClipPlane ) ){
+		config.SetSkinClipPlane( true );
+		config.SetDynamicSkinClipPlane( ISPROPDYN( empSkinClipPlane ) );
+		config.SetDynamicSkinClipPlaneBorder( ISPROPDYN( empSkinClipPlaneBorder ) );
+	}
 }
 
 
@@ -876,6 +889,8 @@ void deoglSkinTexturePipelines::pSetDynamicGeometry( deoglSkinShaderConfig &conf
 	config.SetDynamicRimEmissivityIntensity( ISPROPDYN( empRimEmissivityIntensity ) );
 	config.SetDynamicRimAngle( ISPROPDYN( empRimAngle ) );
 	config.SetDynamicRimExponent( ISPROPDYN( empRimExponent ) );
+	config.SetDynamicSkinClipPlane( ISPROPDYN( empSkinClipPlane ) );
+	config.SetDynamicSkinClipPlaneBorder( ISPROPDYN( empSkinClipPlaneBorder ) );
 	
 	// required to be compatible with outline shaders if used to build parameter block
 	config.SetDynamicOutlineColor( ISPROPDYN( empOutlineColor ) );

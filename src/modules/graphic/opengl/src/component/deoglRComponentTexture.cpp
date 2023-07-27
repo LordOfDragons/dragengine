@@ -884,17 +884,12 @@ int element, const deoglSkinShader &skinShader ){
 		return;
 	}
 	
-	deoglRDynamicSkin *useDynamicSkin = NULL;
-	deoglSkinState *useSkinState = NULL;
+	deoglRDynamicSkin *useDynamicSkin = nullptr;
+	deoglSkinState *useSkinState = nullptr;
 	
 	if( pSkinState ){
 		useSkinState = pSkinState;
-		if( pDynamicSkin ){
-			useDynamicSkin = pDynamicSkin;
-			
-		}else{
-			useDynamicSkin = pComponent.GetDynamicSkin();
-		}
+		useDynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
 	}else{
 		// for texture with no own skin
@@ -950,6 +945,16 @@ int element, const deoglSkinShader &skinShader ){
 		}else{
 			paramBlock.SetParameterDataVec2( target, element, 0.0f, 0.0f );
 		}
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
+	if( target != -1 ){
+		const decMatrix matrix( pUseSkinTexture->GetMaterialPropertyAt(
+			deoglSkinTexture::empSkinClipPlane ).ResolveMatrix( useSkinState, decMatrix() ) );
+		const decVector view( matrix.TransformView().Normalized() );
+		const decVector position( matrix.GetPosition() );
+		
+		paramBlock.SetParameterDataVec4( target, element, view, view * position );
 	}
 	
 	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );
