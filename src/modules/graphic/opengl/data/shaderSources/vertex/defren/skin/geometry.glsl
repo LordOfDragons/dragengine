@@ -293,7 +293,11 @@ void main( void ){
 		
 		// cliping
 		#ifdef SKIN_CLIP_PLANE
-			vSkinClipCoord = position;
+			#ifdef HEIGHT_MAP
+				vSkinClipCoord = vec3( inPosition.x, inHeight, inPosition.y );
+			#else
+				vSkinClipCoord = vec3( inPosition );
+			#endif
 		#endif
 	#endif
 	

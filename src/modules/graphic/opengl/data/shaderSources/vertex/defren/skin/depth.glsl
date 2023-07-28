@@ -238,7 +238,11 @@ void main( void ){
 		#endif
 		
 		#ifdef SKIN_CLIP_PLANE
-			vSkinClipCoord = position;
+			#ifdef HEIGHT_MAP
+				vSkinClipCoord = vec3( inPosition.x, inHeight, inPosition.y );
+			#else
+				vSkinClipCoord = vec3( inPosition );
+			#endif
 		#endif
 		
 		// fade range requires non-perspective z. and when we are at it already spare some calculations
