@@ -132,6 +132,7 @@ pSharedSPBElement( nullptr )
 	pDynamicChannels = false;
 	pCalculatedProperties = false;
 	pConstructedProperties = false;
+	pBoneProperties = false;
 	pRenderableChannels = false;
 	pRenderableMaterialProperties = false;
 	
@@ -430,6 +431,10 @@ void deoglSkinTexture::SetCalculatedProperties( bool calculatedProperties ){
 
 void deoglSkinTexture::SetConstructedProperties( bool constructedProperties ){
 	pConstructedProperties = constructedProperties;
+}
+
+void deoglSkinTexture::SetBoneProperties( bool boneProperties ){
+	pBoneProperties = boneProperties;
 }
 
 void deoglSkinTexture::SetRenderableChannels( bool renderableChannels ){
@@ -1731,7 +1736,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		case deoglSkinPropertyMap::eptClipPlane:
 			pSkinClipPlane = decMath::clamp( value, 0.0f, 1.0f );
 			pHasSolidity = true;
-			pDynamicChannels = true;
+			pBoneProperties = true;
 			break;
 			
 		case deoglSkinPropertyMap::eptClipPlaneBorder:

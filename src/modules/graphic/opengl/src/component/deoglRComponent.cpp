@@ -799,7 +799,8 @@ void deoglRComponent::UpdateSkin( float elapsed ){
 				texture.MarkTUCsDirty();
 				
 			}else if( texture.GetUseSkinTexture()->GetCalculatedProperties()
-			|| texture.GetUseSkinTexture()->GetConstructedProperties() ){
+			|| texture.GetUseSkinTexture()->GetConstructedProperties()
+			|| texture.GetUseSkinTexture()->GetBoneProperties() ){
 				texture.MarkParamBlocksDirty();
 			}
 		}

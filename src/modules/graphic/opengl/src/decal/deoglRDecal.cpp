@@ -278,7 +278,8 @@ void deoglRDecal::UpdateSkin( float elapsed ){
 		MarkParamBlocksDirty();
 		MarkTUCsDirty();
 		
-	}else if( pUseSkinTexture->GetCalculatedProperties() || pUseSkinTexture->GetConstructedProperties() ){
+	}else if( pUseSkinTexture->GetCalculatedProperties()
+	|| pUseSkinTexture->GetConstructedProperties() ){
 		MarkParamBlocksDirty();
 	}
 }

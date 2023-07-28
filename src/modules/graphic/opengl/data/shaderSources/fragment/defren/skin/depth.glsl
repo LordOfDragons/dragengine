@@ -282,7 +282,7 @@ void main( void ){
 				? smoothstep( pInstSkinClipPlaneNormal.w, pInstSkinClipPlaneNormal.w + pSkinClipPlaneBorder, skinClipDist )
 				: smoothstep( pInstSkinClipPlaneNormal.w + pSkinClipPlaneBorder, pInstSkinClipPlaneNormal.w, skinClipDist );
 			
-			solidity = mix( solidity, skinClipSolidity, pSkinClipPlane );
+			solidity *= mix( 1, skinClipSolidity, pSkinClipPlane );
 		#endif
 	#endif
 	
