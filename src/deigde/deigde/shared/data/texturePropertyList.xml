@@ -1666,7 +1666,7 @@
 	
 	<property name='clip.plane'>
 		<description>
-			Defines blend factor for cliping model geometry based on the distance to a clip plane.
+			Defines blend factor for clipping model geometry based on the distance to a clip plane.
 			The clip plane is defined by the coordinate system of a named bone. The position of
 			the bone is the origin of the clip plane. The positive Z axis of the bone is the plane
 			normal. Vertices in front of the clip plane (along the positive bone Z axis) are
