@@ -432,11 +432,11 @@ void main( void ){
 		#endif
 		
 		#ifdef SKIN_CLIP_PLANE
-			float skinClipDist = dot( vSkinClipCoord, pInstSkinClipPlaneNormal );
+			float skinClipDist = dot( vSkinClipCoord, vec3( pInstSkinClipPlaneNormal ) );
 			
 			float skinClipSolidity = pSkinClipPlaneBorder > 0
-				? smoothStep( pInstSkinClipPlaneDistance, pInstSkinClipPlaneDistance + pSkinClipPlaneBorder, skinClipDist )
-				: smoothStep( pInstSkinClipPlaneDistance + pSkinClipPlaneBorder, pInstSkinClipPlaneDistance, skinClipDist );
+				? smoothstep( pInstSkinClipPlaneNormal.w, pInstSkinClipPlaneNormal.w + pSkinClipPlaneBorder, skinClipDist )
+				: smoothstep( pInstSkinClipPlaneNormal.w + pSkinClipPlaneBorder, pInstSkinClipPlaneNormal.w, skinClipDist );
 			
 			solidity = mix( solidity, skinClipSolidity, pSkinClipPlane );
 		#endif

@@ -71,9 +71,9 @@ struct sInstanceParameters{
 	vec3 instOutlineEmissivity;
 	vec3 instOutlineEmissivityTint;
 	
-	vec4 instClipPlaneNormal; // clip.plane : xyz=normal, w=distance
-	float instClipPlane; // clip.plane
-	float instClipPlaneBorder; // clip.plane.border
+	vec4 instSkinClipPlaneNormal; // clip.plane : xyz=normal, w=distance
+	float instSkinClipPlane; // clip.plane
+	float instSkinClipPlaneBorder; // clip.plane.border
 	
 	#ifdef SHARED_SPB_PADDING
 	vec4 padding[ SHARED_SPB_PADDING ];

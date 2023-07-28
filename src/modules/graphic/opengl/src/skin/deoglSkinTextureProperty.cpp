@@ -188,7 +188,7 @@ const deoglRDynamicSkin *dynamicSkin, const decVector &defaultValue ) const{
 decMatrix deoglSkinTextureProperty::ResolveMatrix( const deoglSkinState *skinState,
 const decMatrix &defaultValue ) const{
 	if( skinState && pBone >= 0 && pBone < skinState->GetBoneCount() ){
-		return skinState->GetBoneAt( pRenderable ).GetBoneMatrix();
+		return skinState->GetBoneAt( pBone ).GetBoneMatrix();
 	}
 	return defaultValue;
 }

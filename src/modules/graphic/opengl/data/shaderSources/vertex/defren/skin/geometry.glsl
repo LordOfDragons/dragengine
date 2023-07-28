@@ -205,6 +205,9 @@ NODE_VERTEX_INPUTS
 	#ifdef FADEOUT_RANGE
 		out float vFadeZ;
 	#endif
+	#ifdef SKIN_CLIP_PLANE
+		out vec3 vSkinClipCoord;
+	#endif
 	
 	#ifdef SHARED_SPB
 		flat out int vSPBIndex;
@@ -286,6 +289,11 @@ void main( void ){
 			#else
 				vFadeZ = ( pMatrixV[ inLayer ] * vec4( position, 1 ) ).z;
 			#endif
+		#endif
+		
+		// cliping
+		#ifdef SKIN_CLIP_PLANE
+			vSkinClipCoord = position;
 		#endif
 	#endif
 	
