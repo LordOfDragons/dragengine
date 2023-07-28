@@ -1731,6 +1731,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		case deoglSkinPropertyMap::eptClipPlane:
 			pSkinClipPlane = decMath::clamp( value, 0.0f, 1.0f );
 			pHasSolidity = true;
+			pDynamicChannels = true;
 			break;
 			
 		case deoglSkinPropertyMap::eptClipPlaneBorder:

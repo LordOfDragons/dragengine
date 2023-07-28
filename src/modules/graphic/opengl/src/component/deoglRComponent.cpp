@@ -649,12 +649,11 @@ int element ){
 
 
 
-void deoglRComponent::UpdateBoneMatrices( deComponent &component ){
+void deoglRComponent::UpdateBoneMatrices( const deComponent &component ){
 	const deRig * const rig = component.GetRig();
 	int i;
 	
 	pUpdateModelRigMappings( component );
-	component.PrepareBones();
 	
 	for( i=0; i<pBoneMatrixCount; i++ ){
 		oglMatrix3x4 &boneMatrix = pBoneMatrices[ i ];
@@ -1869,7 +1868,7 @@ void deoglRComponent::pResizeModelSkinMappings(){
 	}
 }
 
-void deoglRComponent::pUpdateModelRigMappings( deComponent &component ){
+void deoglRComponent::pUpdateModelRigMappings( const deComponent &component ){
 	if( ! pDirtyModelRigMappings ){
 		return;
 	}

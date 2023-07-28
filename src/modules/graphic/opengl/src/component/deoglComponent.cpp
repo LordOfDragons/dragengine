@@ -303,6 +303,7 @@ void deoglComponent::SyncToRender(){
 	}
 	
 	if( pDirtyBoneMatrices ){
+		pComponent.PrepareBones();
 		pRComponent->UpdateBoneMatrices( pComponent );
 		pRComponent->UpdateSkinStateBones( pComponent );
 		pDirtyBoneMatrices = false;
