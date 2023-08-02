@@ -49,6 +49,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Mapped have been added or removed. */
+	virtual void MappedStructureChanged( seSkin *skin );
+	
+	/** Mapped name changed. */
+	virtual void MappedNameChanged( seSkin *skin, seMapped *mapped );
+	
+	
+	
 	/** \brief Texture added or removed. */
 	virtual void TextureStructureChanged( seSkin *skin );
 	

@@ -31,7 +31,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeWindow.h>
@@ -591,7 +591,7 @@ pEnabled( true )
 	
 	
 	helper.FormLineStretchFirst( *this, "Property:", "Property to add", frameLine );
-	helper.ComboBox( frameLine, true, "Property to add", pCBKeys, new cComboKey( *this ) );
+	helper.ComboBoxFilter( frameLine, true, "Property to add", pCBKeys, new cComboKey( *this ) );
 	pCBKeys->SetDefaultSorter();
 	helper.Button( frameLine, pBtnKeyAdd, pActionPropertyAdd );
 	
@@ -683,6 +683,8 @@ void meWPPropertyList::UpdateKeys(){
 	}
 	
 	pCBKeys->SortItems();
+	pCBKeys->StoreFilterItems();
+	
 	pCBKeys->SetText( selection );
 }
 
@@ -839,6 +841,10 @@ void meWPPropertyList::SetIdentifiers( const decStringSet &identifiers ){
 
 void meWPPropertyList::SetTriggerTargetList( igdeTriggerTargetList *list ){
 	pEditPropertyValue->SetTriggerTargets( list );
+}
+
+void meWPPropertyList::OnGameDefinitionChanged(){
+	UpdateList();
 }
 
 

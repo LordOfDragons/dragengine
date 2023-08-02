@@ -566,6 +566,9 @@ public:
 	/** \brief Update AI collider linear and angular velocity. */
 	void UpdateAICollider();
 	
+	/** \brief Adjust orientation. */
+	void AdjustOrientation( float angle );
+	
 	
 	
 	/** \brief Read from file reader. */

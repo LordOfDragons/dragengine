@@ -57,7 +57,7 @@ private:
 	bool pNoNotify;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new camera. */
 	aeCamera( aeAnimator *animator, deEngine *engine );
@@ -65,7 +65,7 @@ public:
 	virtual ~aeCamera();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Bone name. */
 	inline const decString &GetBone() const{ return pBone; }

@@ -250,7 +250,8 @@ void deoglRComponentTexture::UpdateSkinState( deoglComponent &component ){
 	//   -> the above mentioned case. component has skin state because it has dynamic skin.
 	//      texture needs own skin state since it uses the dynamic skin of the component
 	//      and the component skin state does not match the texture skin
-	if( pSkin && ( pDynamicSkin || pComponent.GetDynamicSkin() || pSkin->GetCalculatedPropertyCount() > 0 ) ){
+	if( pSkin && ( pDynamicSkin || pComponent.GetDynamicSkin()
+	|| pSkin->GetCalculatedPropertyCount() > 0 || pSkin->GetConstructedPropertyCount() > 0 ) ){
 		if( ! pSkinState ){
 			SetSkinState( new deoglSkinState( pComponent.GetRenderThread(), pComponent, pIndex ) );
 			component.DirtyRenderableMapping();
@@ -883,17 +884,12 @@ int element, const deoglSkinShader &skinShader ){
 		return;
 	}
 	
-	deoglRDynamicSkin *useDynamicSkin = NULL;
-	deoglSkinState *useSkinState = NULL;
+	deoglRDynamicSkin *useDynamicSkin = nullptr;
+	deoglSkinState *useSkinState = nullptr;
 	
 	if( pSkinState ){
 		useSkinState = pSkinState;
-		if( pDynamicSkin ){
-			useDynamicSkin = pDynamicSkin;
-			
-		}else{
-			useDynamicSkin = pComponent.GetDynamicSkin();
-		}
+		useDynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
 	}else{
 		// for texture with no own skin
@@ -951,6 +947,16 @@ int element, const deoglSkinShader &skinShader ){
 		}
 	}
 	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
+	if( target != -1 ){
+		const decMatrix matrix( pUseSkinTexture->GetMaterialPropertyAt(
+			deoglSkinTexture::empSkinClipPlane ).ResolveMatrix( useSkinState, decMatrix() ) );
+		const decVector view( matrix.TransformView().Normalized() );
+		const decVector position( matrix.GetPosition() );
+		
+		paramBlock.SetParameterDataVec4( target, element, view, view * position );
+	}
+	
 	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );
 	
 	// per texture dynamic texture properties
@@ -986,6 +992,14 @@ void deoglRComponentTexture::RenderSkinStateRenderables( const deoglRenderPlanMa
 	}else{
 		pSkinState->RenderRenderables( pSkin, pComponent.GetDynamicSkin(), renderPlanMask );
 	}
+}
+
+void deoglRComponentTexture::PrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
+	}
+	
+	pUpdateIsRendered();
 }
 
 void deoglRComponentTexture::UpdateRenderableMapping(){

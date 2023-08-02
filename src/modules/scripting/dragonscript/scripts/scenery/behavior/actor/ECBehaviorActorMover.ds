@@ -54,19 +54,19 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Actor starts moving towards goal. */
-		func void startMoving( Instance instance )
+		func void startMoving(Instance instance)
 		
 		/** \brief Actor stops moving. */
-		func void stopMoving( Instance instance )
+		func void stopMoving(Instance instance)
 		
 		/**
 		 * \brief Actor arrived at goal position.
 		 * \note stopMoving() will be called before arrivedAtGoal() is called.
 		 */
-		func void arrivedAtGoal( Instance instance, DVector goalPosition )
+		func void arrivedAtGoal(Instance instance, DVector goalPosition)
 		
 		/** \brief Modify locomotion values set by moveTowards(). */
-		func void modifyMoveTowards( Instance instance, DVector position, float elapsed )
+		func void modifyMoveTowards(Instance instance, DVector position, float elapsed)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
@@ -76,29 +76,29 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 		
 		/** \brief Actor starts moving towards goal. */
-		public func void startMoving( Instance instance )
+		public func void startMoving(Instance instance)
 		end
 		
 		/** \brief Actor stops moving. */
-		public func void stopMoving( Instance instance )
+		public func void stopMoving(Instance instance)
 		end
 		
 		/**
 		 * \brief Actor arrived at goal position.
 		 * \note stopMoving() will be called before arrivedAtGoal() is called.
 		 */
-		public func void arrivedAtGoal( Instance instance, DVector goalPosition )
+		public func void arrivedAtGoal(Instance instance, DVector goalPosition)
 		end
 		
 		/** \brief Modify locomotion values set by moveTowards(). */
-		public func void modifyMoveTowards( Instance instance, DVector position, float elapsed )
+		public func void modifyMoveTowards(Instance instance, DVector position, float elapsed)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
@@ -106,16 +106,16 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		private var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		public func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
@@ -136,59 +136,59 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	class ConvoCondition implements ECBehaviorConversationActor.ConversationCondition
 		private var Instance pInstance
 		
-		public func new( Instance instance )
-			this.pInstance = instance
+		public func new(Instance instance)
+			pInstance = instance
 		end
 		
-		public func bool evaluateCondition( ECBehaviorConversationActor.Instance instance, Array arguments )
-			var String action = arguments.getAt( 1 ) cast String
+		public func bool evaluateCondition(ECBehaviorConversationActor.Instance instance, Array arguments)
+			var String action = arguments.getAt(1) cast String
 			
-			if action.equals( "hasGoal" )
-				return this.evaluateHasGoal( instance, arguments )
+			if action.equals("hasGoal")
+				return evaluateHasGoal(instance, arguments)
 				
-			elif action.equals( "hasNoGoal" )
-				return this.evaluateHasNoGoal( instance, arguments )
+			elif action.equals("hasNoGoal")
+				return evaluateHasNoGoal(instance, arguments)
 				
-			elif action.equals( "paused" )
-				return this.evaluatePaused( instance, arguments )
+			elif action.equals("paused")
+				return evaluatePaused(instance, arguments)
 				
-			elif action.equals( "closerThan" )
-				return this.evaluateCloserThan( instance, arguments )
+			elif action.equals("closerThan")
+				return evaluateCloserThan(instance, arguments)
 				
 			else
-				throw EInvalidParam.new( "Unknown action '" + action + "'" )
+				throw EInvalidParam.new("Unknown action '" + action + "'")
 			end
 		end
 		
-		protected func bool evaluateHasGoal( ECBehaviorConversationActor.Instance instance, Array arguments )
-			return this.pInstance.hasGoal()
+		protected func bool evaluateHasGoal(ECBehaviorConversationActor.Instance instance, Array arguments)
+			return pInstance.hasGoal()
 		end
 		
-		protected func bool evaluateHasNoGoal( ECBehaviorConversationActor.Instance instance, Array arguments )
-			return this.pInstance.hasNoGoal()
+		protected func bool evaluateHasNoGoal(ECBehaviorConversationActor.Instance instance, Array arguments)
+			return pInstance.hasNoGoal()
 		end
 		
-		protected func bool evaluatePaused( ECBehaviorConversationActor.Instance instance, Array arguments )
-			return this.pInstance.getPause()
+		protected func bool evaluatePaused(ECBehaviorConversationActor.Instance instance, Array arguments)
+			return pInstance.getPause()
 		end
 		
-		protected func bool evaluateCloserThan( ECBehaviorConversationActor.Instance instance, Array arguments )
-			if this.pInstance.hasNoGoal()
+		protected func bool evaluateCloserThan(ECBehaviorConversationActor.Instance instance, Array arguments)
+			if pInstance.hasNoGoal()
 				return true
 			end
 			
-			var String action = arguments.getAt( 2 ) cast String
-			var float distance = ( arguments.getAt( 3 ) cast String ).toFloat()
+			var String action = arguments.getAt(2) cast String
+			var float distance = (arguments.getAt(3) cast String).toFloat()
 			
-			if action.equals( "goal" )
-				return this.pInstance.getGoalDistance() <= distance
+			if action.equals("goal")
+				return pInstance.getGoalDistance() <= distance
 				
-			elif action.equals( "direct" )
-				return ( instance.getElement().getPosition() - this.pInstance.getGoalPosition() ) \
+			elif action.equals("direct")
+				return (instance.getElement().getPosition() - pInstance.getGoalPosition()) \
 					.getLength() <= distance
 				
 			else
-				throw EInvalidParam.new( "closerThan: Unknown keyword '" + action + "'" )
+				throw EInvalidParam.new("closerThan: Unknown keyword '" + action + "'")
 			end
 		end
 	end
@@ -242,136 +242,136 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	class ConvoCommand implements ECBehaviorConversationActor.ConversationCommand
 		private var Instance pInstance
 		
-		public func new( Instance instance )
-			this.pInstance = instance
+		public func new(Instance instance)
+			pInstance = instance
 		end
 		
-		public func void runCommand( ECBehaviorConversationActor.Instance instance, Array arguments )
-			var String action = arguments.getAt( 1 ) cast String
+		public func void runCommand(ECBehaviorConversationActor.Instance instance, Array arguments)
+			var String action = arguments.getAt(1) cast String
 			
-			if action.equals( "pause" )
-				this.runPause( instance, arguments )
+			if action.equals("pause")
+				runPause(instance, arguments)
 				
-			elif action.equals( "continue" )
-				this.runContinue( instance, arguments )
+			elif action.equals("continue")
+				runContinue(instance, arguments)
 				
-			elif action.equals( "stop" )
-				this.runStop( instance, arguments )
+			elif action.equals("stop")
+				runStop(instance, arguments)
 				
-			elif action.equals( "position" )
-				this.runPosition( instance, arguments )
+			elif action.equals("position")
+				runPosition(instance, arguments)
 				
-			elif action.equals( "relative" )
-				this.runRelative( instance, arguments )
+			elif action.equals("relative")
+				runRelative(instance, arguments)
 				
-			elif action.equals( "actor" )
-				this.runActor( instance, arguments )
+			elif action.equals("actor")
+				runActor(instance, arguments)
 				
-			elif action.equals( "coordsys" )
-				this.runCoordSystem( instance, arguments )
+			elif action.equals("coordsys")
+				runCoordSystem(instance, arguments)
 				
-			elif action.equals( "spawn" )
-				this.runSpawn( instance, arguments )
+			elif action.equals("spawn")
+				runSpawn(instance, arguments)
 				
-			elif action.equals( "anchor" )
-				this.runAnchor( instance, arguments )
+			elif action.equals("anchor")
+				runAnchor(instance, arguments)
 				
 			else
-				throw EInvalidParam.new( "Unknown action '" + action + "'" )
+				throw EInvalidParam.new("Unknown action '" + action + "'")
 			end
 		end
 		
-		protected func void runPause( ECBehaviorConversationActor.Instance instance, Array arguments )
-			this.pInstance.pauseMoving()
+		protected func void runPause(ECBehaviorConversationActor.Instance instance, Array arguments)
+			pInstance.pauseMoving()
 		end
 		
-		protected func void runContinue( ECBehaviorConversationActor.Instance instance, Array arguments )
-			this.pInstance.continueMoving()
+		protected func void runContinue(ECBehaviorConversationActor.Instance instance, Array arguments)
+			pInstance.continueMoving()
 		end
 		
-		protected func void runStop( ECBehaviorConversationActor.Instance instance, Array arguments )
-			this.pInstance.stopMoving()
+		protected func void runStop(ECBehaviorConversationActor.Instance instance, Array arguments)
+			pInstance.stopMoving()
 		end
 		
-		protected func void runPosition( ECBehaviorConversationActor.Instance instance, Array arguments )
+		protected func void runPosition(ECBehaviorConversationActor.Instance instance, Array arguments)
 			// TODO we can not handle double precision values like this
-			var float x = ( arguments.getAt( 2 ) cast String ).toFloat()
-			var float y = ( arguments.getAt( 3 ) cast String ).toFloat()
-			var float z = ( arguments.getAt( 4 ) cast String ).toFloat()
-			var float distance = ( arguments.getAt( 5 ) cast String ).toFloat()
-			this.pInstance.moveTo( DVector.new( x, y, z ), distance )
+			var float x = (arguments.getAt(2) cast String).toFloat()
+			var float y = (arguments.getAt(3) cast String).toFloat()
+			var float z = (arguments.getAt(4) cast String).toFloat()
+			var float distance = (arguments.getAt(5) cast String).toFloat()
+			pInstance.moveTo(DVector.new(x, y, z), distance)
 		end
 		
-		protected func void runRelative( ECBehaviorConversationActor.Instance instance, Array arguments )
-			var float x = ( arguments.getAt( 2 ) cast String ).toFloat()
-			var float y = ( arguments.getAt( 3 ) cast String ).toFloat()
-			var float z = ( arguments.getAt( 4 ) cast String ).toFloat()
-			var float distance = ( arguments.getAt( 5 ) cast String ).toFloat()
-			this.pInstance.moveTo( instance.getElement().getElementMatrix() * DVector.new( x, y, z ), distance )
+		protected func void runRelative(ECBehaviorConversationActor.Instance instance, Array arguments)
+			var float x = (arguments.getAt(2) cast String).toFloat()
+			var float y = (arguments.getAt(3) cast String).toFloat()
+			var float z = (arguments.getAt(4) cast String).toFloat()
+			var float distance = (arguments.getAt(5) cast String).toFloat()
+			pInstance.moveTo(instance.getElement().getElementMatrix() * DVector.new(x, y, z), distance)
 		end
 		
-		protected func void runActor( ECBehaviorConversationActor.Instance instance, Array arguments )
+		protected func void runActor(ECBehaviorConversationActor.Instance instance, Array arguments)
 			var ConversationPlayback playback = instance.getConversationActor().getPlayback()
 			if playback == null
-				throw EInvalidParam.new( "Playback is null" )
+				throw EInvalidParam.new("Playback is null")
 			end
 			
-			var String id = arguments.getAt( 2 ) cast String
-			var ConversationActor actor = playback.getActorMatching( StringID.new( id ) )
+			var String id = arguments.getAt(2) cast String
+			var ConversationActor actor = playback.getActorMatching(StringID.new(id))
 			if actor == null
-				throw EInvalidParam.new( "No conversation actor found with id/alias '" + id + "'" )
+				throw EInvalidParam.new("No conversation actor found with id/alias '" + id + "'")
 			end
 			
-			var float distance = ( arguments.getAt( 3 ) cast String ).toFloat()
-			this.pInstance.moveTo( actor.getMatrix().getPosition(), distance )
+			var float distance = (arguments.getAt(3) cast String).toFloat()
+			pInstance.moveTo(actor.getMatrix().getPosition(), distance)
 		end
 		
-		protected func void runCoordSystem( ECBehaviorConversationActor.Instance instance, Array arguments )
+		protected func void runCoordSystem(ECBehaviorConversationActor.Instance instance, Array arguments)
 			var ConversationPlayback playback = instance.getConversationActor().getPlayback()
 			if playback == null
-				throw EInvalidParam.new( "Playback is null" )
+				throw EInvalidParam.new("Playback is null")
 			end
 			
-			var String id = arguments.getAt( 2 ) cast String
-			var ConversationCoordSystem coordSys = playback.createConversationCoordSystem( StringID.new( id ) )
+			var String id = arguments.getAt(2) cast String
+			var ConversationCoordSystem coordSys = playback.createConversationCoordSystem(StringID.new(id))
 			if coordSys == null
-				throw EInvalidParam.new( "No conversation system found with id '" + id + "'" )
+				throw EInvalidParam.new("No conversation system found with id '" + id + "'")
 			end
 			
-			var float distance = ( arguments.getAt( 3 ) cast String ).toFloat()
-			this.pInstance.moveTo( coordSys.getMatrix().getPosition(), distance )
+			var float distance = (arguments.getAt(3) cast String).toFloat()
+			pInstance.moveTo(coordSys.getMatrix().getPosition(), distance)
 		end
 		
-		protected func void runSpawn( ECBehaviorConversationActor.Instance instance, Array arguments )
+		protected func void runSpawn(ECBehaviorConversationActor.Instance instance, Array arguments)
 			var GameWorld gameWorld = instance.getElement().getGameWorld()
 			if gameWorld == null
-				throw EInvalidParam.new( "Element game world is null" )
+				throw EInvalidParam.new("Element game world is null")
 			end
 			
-			var String name = arguments.getAt( 2 ) cast String
-			var SpawnPoint spawn = gameWorld.getSpawnPoints().getNamed( name )
+			var String name = arguments.getAt(2) cast String
+			var SpawnPoint spawn = gameWorld.getSpawnPoints().getNamed(name)
 			if spawn == null
-				throw EInvalidParam.new( "No spawn point found with name '" + name + "'" )
+				throw EInvalidParam.new("No spawn point found with name '" + name + "'")
 			end
 			
-			var float distance = ( arguments.getAt( 3 ) cast String ).toFloat()
-			this.pInstance.moveTo( spawn.getPosition(), distance )
+			var float distance = (arguments.getAt(3) cast String).toFloat()
+			pInstance.moveTo(spawn.getPosition(), distance)
 		end
 		
-		protected func void runAnchor( ECBehaviorConversationActor.Instance instance, Array arguments )
+		protected func void runAnchor(ECBehaviorConversationActor.Instance instance, Array arguments)
 			var GameWorld gameWorld = instance.getElement().getGameWorld()
 			if gameWorld == null
-				throw EInvalidParam.new( "Element game world is null" )
+				throw EInvalidParam.new("Element game world is null")
 			end
 			
-			var String id = arguments.getAt( 2 ) cast String
-			var Element anchor = gameWorld.getAnchoredElementList().getAt( StringID.new( id ) )
+			var String id = arguments.getAt(2) cast String
+			var Element anchor = gameWorld.getAnchoredElementList().getAt(StringID.new(id))
 			if anchor == null
-				throw EInvalidParam.new( "No anchor found with identifier '" + id + "'" )
+				throw EInvalidParam.new("No anchor found with identifier '" + id + "'")
 			end
 			
-			var float distance = ( arguments.getAt( 3 ) cast String ).toFloat()
-			this.pInstance.moveTo( anchor.getPosition(), distance )
+			var float distance = (arguments.getAt(3) cast String).toFloat()
+			pInstance.moveTo(anchor.getPosition(), distance)
 		end
 	end
 	
@@ -383,12 +383,12 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		protected class RidableChanged extends ECBehaviorRideOn.DefaultListener
 			private var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			public func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void ridableChanged( ECBehaviorRideOn.Instance instance )
-				this.pInstance.onRidableChanged()
+			public func void ridableChanged(ECBehaviorRideOn.Instance instance)
+				pInstance.onRidableChanged()
 			end
 		end
 		
@@ -422,31 +422,31 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		
 		/** \brief Create behavior instance. */
-		public func new( ECBehaviorActorMover ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pGoalDistance = 0
-			this.pNextPathPoint = 0
-			this.pPause = false
-			this.pEnableLimitTurnAngle = false
-			this.pLimitTurnAngle = 89
-			this.pListeners = Array.new()
+		public func new(ECBehaviorActorMover ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pGoalDistance = 0
+			pNextPathPoint = 0
+			pPause = false
+			pEnableLimitTurnAngle = false
+			pLimitTurnAngle = 89
+			pListeners = Array.new()
 			
-			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
-			this.pNavigator = ecbehavior.getNavigator().instance( element )
+			pLocomotion = ecbehavior.getLocomotion().instance(element)
+			pNavigator = ecbehavior.getNavigator().instance(element)
 			
-			this.setRequiresThink( true )
+			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of behavior instance. */
 		public func void dispose()
-			this.pConversationActor = null
-			this.pRidable = null
-			this.pRidableCollider = null
-			this.pRideOn = null
-			this.pNavigator = null
-			this.pLocomotion = null
-			this.pListeners = null
-			this.pElementResolver = null
+			pConversationActor = null
+			pRidable = null
+			pRidableCollider = null
+			pRideOn = null
+			pNavigator = null
+			pLocomotion = null
+			pListeners = null
+			pElementResolver = null
 			
 			super.dispose()
 		end
@@ -454,206 +454,206 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init( StubElement stub )
-			var BehaviorElement element = this.getElement()
+		public func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			
-			this.pSpeed = this.pECBehavior.getSpeed().getValue( stub )
+			pSpeed = pECBehavior.getSpeed().getValue(stub)
 			
-			if this.pECBehavior.getRideOn() != null
-				this.pRideOn = this.pECBehavior.getRideOn().instance( element )
+			if pECBehavior.getRideOn() != null
+				pRideOn = pECBehavior.getRideOn().instance(element)
 			end
-			if this.pECBehavior.getConversationActor() != null
-				this.pConversationActor = this.pECBehavior.getConversationActor().instance( element )
-			end
-			
-			if this.pRideOn != null
-				this.pRideOn.addListener( RidableChanged.new( this ) )
-			end
-			if this.pConversationActor != null
-				this.pConversationActor.addCondition( "actorMover", ConvoCondition.new( this ) )
-				this.pConversationActor.addCommand( "actorMover", ConvoCommand.new( this ) )
+			if pECBehavior.getConversationActor() != null
+				pConversationActor = pECBehavior.getConversationActor().instance(element)
 			end
 			
-			this.pECBehavior.createListeners( this )
+			if pRideOn != null
+				pRideOn.addListener(RidableChanged.new(this))
+			end
+			if pConversationActor != null
+				pConversationActor.addCondition("actorMover", ConvoCondition.new(this))
+				pConversationActor.addCommand("actorMover", ConvoCommand.new(this))
+			end
+			
+			pECBehavior.createListeners(this)
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorActorMover getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Locomotion behavior. */
 		public func ECBehaviorLocomotion.Instance getLocomotion()
-			return this.pLocomotion
+			return pLocomotion
 		end
 		
 		/** \brief Navigator behavior. */
 		public func ECBehaviorNavigator.Instance getNavigator()
-			return this.pNavigator
+			return pNavigator
 		end
 		
 		/** \brief Conversation actor if present. */
 		public func ECBehaviorConversationActor.Instance getConversationActor()
-			return this.pConversationActor
+			return pConversationActor
 		end
 		
 		/** \brief Ride on behavior if present. */
 		public func ECBehaviorRideOn.Instance getRideOn()
-			return this.pRideOn
+			return pRideOn
 		end
 		
 		
 		
 		/** \brief Goal to move to or \em null if not set. */
 		public func DVector getGoalPosition()
-			return this.pGoalPosition
+			return pGoalPosition
 		end
 		
 		/** \brief Set goal to move to. */
-		public func void setGoalPosition( DVector goal )
-			if this.pRidableCollider != null
-				goal = this.pRidableCollider.getCollider().getInverseMatrix() * goal
+		public func void setGoalPosition(DVector goal)
+			if pRidableCollider != null
+				goal = pRidableCollider.getCollider().getInverseMatrix() * goal
 			end
 			
-			if goal.equals( this.pGoalPosition )
+			if goal.equals(pGoalPosition)
 				return
 			end
 			
-			this.pGoalPosition = goal
-			this.pPath = null
-			this.pNextPathPoint = 0
+			pGoalPosition = goal
+			pPath = null
+			pNextPathPoint = 0
 		end
 		
 		/** \brief Distance along path below which actor arrive at target is triggered. */
 		public func float getGoalDistance()
-			return this.pGoalDistance
+			return pGoalDistance
 		end
 		
 		/** \brief Set distance along path below which actor arrive at target is triggered. */
-		public func void setGoalDistance( float distance )
-			this.pGoalDistance = DEMath.max( distance, 0.0 )
+		public func void setGoalDistance(float distance)
+			pGoalDistance = DEMath.max(distance, 0.0)
 		end
 		
 		/** \brief Path or \em null if not calculated. */
 		public func NavigatorPath getPath()
-			return this.pPath
+			return pPath
 		end
 		
 		
 		
 		/** \brief Enable limit turning angle. */
 		public func bool getEnableLimitTurnAngle()
-			return this.pEnableLimitTurnAngle
+			return pEnableLimitTurnAngle
 		end
 		
 		/** \brief Set if limit turning angle is enabled. */
-		public func void setEnableLimitTurnAngle( bool enabled )
-			this.pEnableLimitTurnAngle = enabled
+		public func void setEnableLimitTurnAngle(bool enabled)
+			pEnableLimitTurnAngle = enabled
 		end
 		
 		/** \brief Turning angle limit in degrees if enabled. */
 		public func float getLimitTurnAngle()
-			return this.pLimitTurnAngle
+			return pLimitTurnAngle
 		end
 		
 		/** \brief Set turning angle limit in degrees if enabled. */
-		public func void setLimitTurnAngle( float angle )
-			this.pLimitTurnAngle = DEMath.max( angle, 0.0 )
+		public func void setLimitTurnAngle(float angle)
+			pLimitTurnAngle = DEMath.max(angle, 0.0)
 		end
 		
 		/** \brief Movement speed. */
 		public func float getSpeed()
-			return this.pSpeed
+			return pSpeed
 		end
 		
 		/** \brief Set movement speed. */
-		public func void setSpeed( float speed )
-			this.pSpeed = DEMath.max( speed, 0.0 )
+		public func void setSpeed(float speed)
+			pSpeed = DEMath.max(speed, 0.0)
 		end
 		
 		
 		
 		/** \brief Element resolver used during loading or \em null if not set. */
 		public func ElementResolver getElementResolver()
-			return this.pElementResolver
+			return pElementResolver
 		end
 		
 		
 		
 		/** \brief Goal is set and actor is moved by this mover. */
 		public func bool hasGoal()
-			return this.pGoalPosition != null
+			return pGoalPosition != null
 		end
 		
 		/** \brief Goal is not set and actor is not moved by this mover. */
 		public func bool hasNoGoal()
-			return this.pGoalPosition == null
+			return pGoalPosition == null
 		end
 		
 		/** \brief Pause moving. */
 		public func bool getPause()
-			return this.pPause
+			return pPause
 		end
 		
 		/** \brief Pause moving. */
 		public func void pauseMoving()
-			if this.pPause
+			if pPause
 				return
 			end
 			
-			this.pLocomotion.getLocomotion().setAnalogMovingSpeed( 0 )
-			this.pPause = true
+			pLocomotion.getLocomotion().setAnalogMovingSpeed(0)
+			pPause = true
 		end
 		
 		/** \brief Continue moving. */
 		public func void continueMoving()
-			this.pPause = false
+			pPause = false
 		end
 		
 		
 		
 		/** \brief Move to goal. */
-		public func void moveTo( DVector goal )
-			this.moveTo( goal, 0.001 )
+		public func void moveTo(DVector goal)
+			moveTo(goal, 0.001)
 		end
 		
 		/**
 		 * \brief Move to goal.
 		 */
-		public func void moveTo( DVector goal, float distance )
-			this.setGoalPosition( goal )
-			this.pGoalDistance = DEMath.max( distance, 0.001 )
-			this.pPause = false
-			this.pPath = null
+		public func void moveTo(DVector goal, float distance)
+			setGoalPosition(goal)
+			pGoalDistance = DEMath.max(distance, 0.001)
+			pPause = false
+			pPath = null
 			
 			if goal != null
-				this.updatePath()
+				updatePath()
 			end
 			
-			this.pListeners.forEach( block Listener each
-				each.startMoving( this )
-			end )
+			pListeners.forEach(block Listener each
+				each.startMoving(this)
+			end)
 		end
 		
 		/** \brief Stop moving. */
 		public func void stopMoving()
-			if this.pGoalPosition == null
+			if pGoalPosition == null
 				return
 			end
 			
-			this.pListeners.forEach( block Listener each
-				each.stopMoving( this )
-			end )
+			pListeners.forEach(block Listener each
+				each.stopMoving(this)
+			end)
 			
-			this.pLocomotion.getLocomotion().setAnalogMovingSpeed( 0 )
+			pLocomotion.getLocomotion().setAnalogMovingSpeed(0)
 			
-			this.pGoalPosition = null
+			pGoalPosition = null
 			
-			this.pPath = null
-			this.pNextPathPoint = 0
-			this.pRemainingDistance = 0
+			pPath = null
+			pNextPathPoint = 0
+			pRemainingDistance = 0
 		end
 		
 		
@@ -662,84 +662,90 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * \brief Update move to path.
 		 */
 		public func bool updatePath()
-			if this.pGoalPosition == null
-				this.pPath = null
-				this.pNextPathPoint = 0
-				this.pNextPlaneNormal = null
-				this.pRemainingDistance = 0
+			if pGoalPosition == null
+				pPath = null
+				pNextPathPoint = 0
+				pNextPlaneNormal = null
+				pRemainingDistance = 0
 				return false
 			end
 			
 			// check if actor is already at target
-			var DVector actorPosition = this.getElement().getPosition()
-			var DVector goalPosition = this.pGoalPosition
+			var DVector actorPosition = getElement().getPosition()
+			var DVector goalPosition = pGoalPosition
 			var Collider ridableCollider
-			if this.pRidableCollider != null
-				ridableCollider = this.pRidableCollider.getCollider()
+			if pRidableCollider != null
+				ridableCollider = pRidableCollider.getCollider()
 				goalPosition = ridableCollider.getMatrix() * goalPosition
 			end
 			
-			var DVector goalToActor = ( goalPosition - actorPosition ).compSelect( true, false, true )
+			// this check fails if actor is exactly below or above target on a different floor.
+			// for this reason removed this optimization. it would be possible to re-enable this
+			// optimization if the height of the actor is known. in this case the y distance would
+			// have to be inside half the actor height for this check to be correct
+			/*
+			var DVector goalToActor = (goalPosition - actorPosition).compSelect(true, false, true)
 			if goalToActor.getLength() <= 0.001  // add an option for this
-				this.arrivedAtGoal()
+				arrivedAtGoal()
 				return false
 			end
+			*/
 			
 			// calculate path
-			var Navigator navigator = this.pNavigator.getNavigator()
+			var Navigator navigator = pNavigator.getNavigator()
 			var NavigatorPath path = NavigatorPath.new()
-			navigator.findPath( path, actorPosition, goalPosition )
+			navigator.findPath(path, actorPosition, goalPosition)
 			
 			var int i, pointCount = path.getCount()
 			var DVector point, prevPoint = actorPosition
-			this.pPath = NavigatorPath.new()
+			pPath = NavigatorPath.new()
 			for i = 0 to pointCount
-				point = path.getAt( i )
-				if not point.isEqualTo( prevPoint, 0.01 )
-					this.pPath.add( point )
+				point = path.getAt(i)
+				if not point.isEqualTo(prevPoint, 0.01)
+					pPath.add(point)
 				end
 			end
 			
-			pointCount = this.pPath.getCount()
-			if pointCount == 0 or not this.pPath.getAt( pointCount - 1 ).equals( goalPosition )
-				this.pPath.add( goalPosition )
+			pointCount = pPath.getCount()
+			if pointCount == 0 or not pPath.getAt(pointCount - 1).equals(goalPosition)
+				pPath.add(goalPosition)
 			end
 			
 			if ridableCollider != null
-				this.pPath.transform( ridableCollider.getInverseMatrix() )
+				pPath.transform(ridableCollider.getInverseMatrix())
 			end
 			
-			this.pNextPathPoint = 0
+			pNextPathPoint = 0
 			
 			// otherwise find the next path point to head for
 			var DVector nextPoint
 			
-			while this.pNextPathPoint < pointCount
-				nextPoint = this.pPath.getAt( this.pNextPathPoint )
+			while pNextPathPoint < pointCount
+				nextPoint = pPath.getAt(pNextPathPoint)
 				if ridableCollider != null
 					nextPoint = ridableCollider.getMatrix() * nextPoint
 				end
 				
-				this.pNextPlaneNormal = nextPoint - actorPosition
+				pNextPlaneNormal = nextPoint - actorPosition
 				if ridableCollider != null
-					this.pNextPlaneNormal = ridableCollider.getInverseMatrix().transformNormal( this.pNextPlaneNormal )
+					pNextPlaneNormal = ridableCollider.getInverseMatrix().transformNormal(pNextPlaneNormal)
 				end
 				
-				if this.pNextPlaneNormal.isEqualTo( DVector.new(), 0.001 )
-					this.pNextPathPoint++
+				if pNextPlaneNormal.getLength() <= 0.001
+					pNextPathPoint++
 					
 				else
-					this.pNextPlaneNormal = this.pNextPlaneNormal.normalize()
+					pNextPlaneNormal = pNextPlaneNormal.normalize()
 					break
 				end
 			end
 			
-			if this.pNextPathPoint == pointCount
-				this.arrivedAtGoal()
+			if pNextPathPoint == pointCount
+				arrivedAtGoal()
 				return false
 			end
 			
-			this.calculateRemainingDistance()
+			calculateRemainingDistance()
 			return true
 		end
 		
@@ -747,12 +753,12 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		/** \brief Next path point to move to or path point count if the actor is at the goal. */
 		public func int getNextPathPoint()
-			return this.pNextPathPoint
+			return pNextPathPoint
 		end
 		
 		/** \brief Move to next path plane normal. */
 		public func DVector getNextPlaneNormal()
-			return this.pNextPlaneNormal
+			return pNextPlaneNormal
 		end
 		
 		/**
@@ -762,7 +768,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * and getWorldDistanceNextPoint() will return non-null/non-0 value.
 		 */
 		public func bool hasNextPathPoint()
-			return this.pPath != null and this.pNextPathPoint < this.pPath.getCount()
+			return pPath != null and pNextPathPoint < pPath.getCount()
 		end
 		
 		/**
@@ -771,13 +777,13 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * If present point is in world space (transformed by relative collider if present).
 		 */
 		public func DVector getWorldNextPathPoint()
-			if this.pPath == null or this.pNextPathPoint >= this.pPath.getCount()
+			if pPath == null or pNextPathPoint >= pPath.getCount()
 				return null
 			end
 			
-			var DVector point = this.pPath.getAt( this.pNextPathPoint )
-			if this.pRidableCollider != null
-				point = this.pRidableCollider.getCollider().getMatrix() * point
+			var DVector point = pPath.getAt(pNextPathPoint)
+			if pRidableCollider != null
+				point = pRidableCollider.getCollider().getMatrix() * point
 			end
 			return point
 		end
@@ -788,15 +794,15 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * If present normal is in world space (transformed by relative collider if present).
 		 */
 		public func DVector getWorldNextPlaneNormal()
-			if this.pPath == null or this.pNextPathPoint >= this.pPath.getCount()
+			if pPath == null or pNextPathPoint >= pPath.getCount()
 				return null
 			end
 			
-			if this.pRidableCollider != null
-				return this.pRidableCollider.getCollider().getMatrix().transformNormal( this.pNextPlaneNormal )
+			if pRidableCollider != null
+				return pRidableCollider.getCollider().getMatrix().transformNormal(pNextPlaneNormal)
 				
 			else
-				return this.pNextPlaneNormal
+				return pNextPlaneNormal
 			end
 		end
 		
@@ -806,27 +812,27 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * Returns 0 if next corner or normal is not present.
 		 */
 		public func float getWorldDistanceNextPoint()
-			if this.pPath == null or this.pNextPathPoint >= this.pPath.getCount()
+			if pPath == null or pNextPathPoint >= pPath.getCount()
 				return 0
 			end
 			
-			var DVector point = this.pPath.getAt( this.pNextPathPoint )
-			var DVector normal = this.pNextPlaneNormal
+			var DVector point = pPath.getAt(pNextPathPoint)
+			var DVector normal = pNextPlaneNormal
 			
-			if this.pRidableCollider != null
-				var DMatrix matrix = this.pRidableCollider.getCollider().getMatrix()
+			if pRidableCollider != null
+				var DMatrix matrix = pRidableCollider.getCollider().getMatrix()
 				point = matrix * point
-				normal = matrix.transformNormal( normal )
+				normal = matrix.transformNormal(normal)
 			end
 			
-			return normal * ( point - this.getElement().getPosition() )
+			return normal * (point - getElement().getPosition())
 		end
 		
 		
 		
 		/** \brief Rideable the actor is standing upon or \em null. */
 		public func ECBehaviorRidable.Instance getRidable()
-			return this.pRidable
+			return pRidable
 		end
 		
 		/**
@@ -834,7 +840,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * \version 1.5
 		 */
 		public func ECBehaviorCollider.Instance getRidableCollider()
-			return this.pRidableCollider
+			return pRidableCollider
 		end
 		
 		/**
@@ -843,29 +849,29 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * Called by RidableChanged. If overwritten do not forget to super-call.
 		 */
 		public func void onRidableChanged()
-			var ECBehaviorRidable.Instance ridable = this.pRideOn.getRidable()
+			var ECBehaviorRidable.Instance ridable = pRideOn.getRidable()
 			var DMatrix matrix = DMatrix.new()
 			
-			if this.pRidableCollider != null
-				matrix = this.pRidableCollider.getCollider().getMatrix()
+			if pRidableCollider != null
+				matrix = pRidableCollider.getCollider().getMatrix()
 			end
 			
-			this.pRidable = ridable
-			this.pRidableCollider = null
+			pRidable = ridable
+			pRidableCollider = null
 			
 			if ridable != null
-				this.pRidableCollider = ridable.getCollider()
-				matrix = matrix * this.pRidableCollider.getCollider().getInverseMatrix()
+				pRidableCollider = ridable.getCollider()
+				matrix = matrix * pRidableCollider.getCollider().getInverseMatrix()
 			end
 			
-			if this.pGoalPosition != null
-				this.pGoalPosition = matrix * this.pGoalPosition
+			if pGoalPosition != null
+				pGoalPosition = matrix * pGoalPosition
 			end
-			if this.pNextPlaneNormal != null
-				this.pNextPlaneNormal = matrix.transformNormal( this.pNextPlaneNormal )
+			if pNextPlaneNormal != null
+				pNextPlaneNormal = matrix.transformNormal(pNextPlaneNormal)
 			end
-			if this.pPath != null
-				this.pPath.transform( matrix )
+			if pPath != null
+				pPath.transform(matrix)
 			end
 		end
 		
@@ -877,50 +883,50 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * Calls stopMoving() and arrivedAtGoal() on listeners.
 		 */
 		public func void arrivedAtGoal()
-			var DVector goalPosition = this.pGoalPosition
+			var DVector goalPosition = pGoalPosition
 			
-			this.stopMoving()
+			stopMoving()
 			
-			this.pListeners.forEach( block Listener each
-				each.arrivedAtGoal( this, goalPosition )
-			end )
+			pListeners.forEach(block Listener each
+				each.arrivedAtGoal(this, goalPosition)
+			end)
 		end
 		
 		
 		
 		/** \brief Update. */
-		public func void update( float elapsed )
-			if this.pGoalPosition == null or this.pPause or this.pPath == null
+		public func void update(float elapsed)
+			if pGoalPosition == null or pPause or pPath == null
 				return
 			end
 			
-			var Locomotion locomotion = this.pLocomotion.getLocomotion()
-			var DVector actorPosition = this.getElement().getPosition()
-			var int pointCount = this.pPath.getCount()
+			var Locomotion locomotion = pLocomotion.getLocomotion()
+			var DVector actorPosition = getElement().getPosition()
+			var int pointCount = pPath.getCount()
 			var DVector nextCorner, nextNextCorner
 			var DMatrix matrix, invMatrix
 			var DVector nextNormal
 			var float distance
 			
-			if this.pRidableCollider != null
-				var Collider collider = this.pRidableCollider.getCollider()
+			if pRidableCollider != null
+				var Collider collider = pRidableCollider.getCollider()
 				matrix = collider.getMatrix()
 				invMatrix = collider.getInverseMatrix()
 			end
 			
-			while this.pGoalPosition != null and not this.pPause
-				nextCorner = this.pPath.getAt( this.pNextPathPoint )
-				nextNormal = this.pNextPlaneNormal
+			while pGoalPosition != null and not pPause
+				nextCorner = pPath.getAt(pNextPathPoint)
+				nextNormal = pNextPlaneNormal
 				if matrix != null
 					nextCorner = matrix * nextCorner
-					nextNormal = matrix.transformNormal( nextNormal )
+					nextNormal = matrix.transformNormal(nextNormal)
 				end
 				
-				distance = nextNormal * ( nextCorner - actorPosition )
+				distance = nextNormal * (nextCorner - actorPosition)
 				
 				// actor is close enough to target
-				if this.pRemainingDistance + distance <= this.pGoalDistance
-					this.arrivedAtGoal()
+				if pRemainingDistance + distance <= pGoalDistance
+					arrivedAtGoal()
 					break
 				end
 				
@@ -928,39 +934,39 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				if distance < locomotion.getAbsMovingSpeed() * 0.1   // add option for this
 					// sanity check. if the position is more than 1m away from the corner the actor is most probably stuck
 					// due to some unholy combination of circumstances. recalculate the path to get out of the mess
-// 					if ( nextCorner - position ).getLength() > 1.0
-// 						this.pDirtyPath = true
-// 						this.update( elapsed )
+// 					if (nextCorner - position).getLength() > 1.0
+// 						pDirtyPath = true
+// 						update(elapsed)
 // 						return
 // 					end
 					
 					// continue with next corner unless we are at the end of the path
-					this.pNextPathPoint++
-					if this.pNextPathPoint == pointCount
-						this.arrivedAtGoal()
+					pNextPathPoint++
+					if pNextPathPoint == pointCount
+						arrivedAtGoal()
 						break
 					end
 					
 					// head for the next path point
-					nextNextCorner = this.pPath.getAt( this.pNextPathPoint )
+					nextNextCorner = pPath.getAt(pNextPathPoint)
 					if matrix != null
 						nextNextCorner = matrix * nextNextCorner
 					end
 					
-					this.pNextPlaneNormal = ( nextNextCorner - nextCorner ).normalize()
+					pNextPlaneNormal = (nextNextCorner - nextCorner).normalize()
 					if invMatrix != null
-						this.pNextPlaneNormal = invMatrix.transformNormal( this.pNextPlaneNormal )
+						pNextPlaneNormal = invMatrix.transformNormal(pNextPlaneNormal)
 					end
-					this.pRemainingDistance -= ( nextNextCorner - nextCorner ).getLength()
+					pRemainingDistance -= (nextNextCorner - nextCorner).getLength()
 					
 					continue
 				end
 				
 				// move towards next path corner. calls listeners to allow modify the result
-				this.moveTowards( nextCorner, elapsed )
-				this.pListeners.forEach( block Listener each
-					each.modifyMoveTowards( this, nextCorner, elapsed )
-				end )
+				moveTowards(nextCorner, elapsed)
+				pListeners.forEach(block Listener each
+					each.modifyMoveTowards(this, nextCorner, elapsed)
+				end)
 				break
 			end
 		end
@@ -977,54 +983,54 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * 
 		 * Caller is responsible to allow listeners to modify the result.
 		 */
-		public func void moveTowards( DVector position, float elapsed )
-			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+		public func void moveTowards(DVector position, float elapsed)
+			var Locomotion locomotion = pLocomotion.getLocomotion()
 			
 			// adjust moving direction towards next corner point
-			var DVector moveDirection = position - this.getElement().getPosition()
+			var DVector moveDirection = position - getElement().getPosition()
 			var float elevation = moveDirection.getY()
 			
-			moveDirection = moveDirection.compSelect( true, false, true ).normalize()
-			var float targetOrientation = DEMath.atan2( -moveDirection.getX(), moveDirection.getZ() )
+			moveDirection = moveDirection.compSelect(true, false, true).normalize()
+			var float targetOrientation = DEMath.atan2(-moveDirection.getX(), moveDirection.getZ())
 			
-			locomotion.setLookVerticalGoal( DEMath.atan2( elevation, moveDirection.getLength() ) )
+			locomotion.setLookVerticalGoal(DEMath.atan2(elevation, moveDirection.getLength()))
 			
 			// this limitation of the look left-right goal to angles slightly less than 90
 			// degrees prevents the actor from trying to walk backward in cases of sharp
 			// turns. it has to be applied after the normalize otherwise the result is wrong
-			var float turnAngle = DEMath.normalize( targetOrientation - locomotion.getOrientation(), -180.0, 180.0 )
-			if this.pEnableLimitTurnAngle
-				turnAngle = DEMath.clamp( turnAngle, -this.pLimitTurnAngle, this.pLimitTurnAngle )
+			var float turnAngle = DEMath.normalize(targetOrientation - locomotion.getOrientation(), -180.0, 180.0)
+			if pEnableLimitTurnAngle
+				turnAngle = DEMath.clamp(turnAngle, -pLimitTurnAngle, pLimitTurnAngle)
 			end
 			
-			locomotion.setLookHorizontalGoal( turnAngle )
-			locomotion.setTurnHorizontal( turnAngle )
-			locomotion.setAnalogMovingHorizontalGoal( turnAngle )
-			locomotion.setAnalogMovingSpeed( this.pSpeed )
+			locomotion.setLookHorizontalGoal(turnAngle)
+			locomotion.setTurnHorizontal(turnAngle)
+			locomotion.setAnalogMovingHorizontalGoal(turnAngle)
+			locomotion.setAnalogMovingSpeed(pSpeed)
 		end
 		
 		
 		
 		/** \brief Remaining distance from current position to goal position along path in meters. */
 		public func float getDistanceToGoal()
-			if this.pGoalPosition == null or this.pPath == null
+			if pGoalPosition == null or pPath == null
 				return 0
 			end
 			
-			var DVector nextCorner = this.pPath.getAt( this.pNextPathPoint )
-			if this.pRidableCollider != null
-				nextCorner = this.pRidableCollider.getCollider().getMatrix() * nextCorner
+			var DVector nextCorner = pPath.getAt(pNextPathPoint)
+			if pRidableCollider != null
+				nextCorner = pRidableCollider.getCollider().getMatrix() * nextCorner
 			end
 			
-			return this.pRemainingDistance + ( nextCorner - this.getElement().getPosition() ).getLength()
+			return pRemainingDistance + (nextCorner - getElement().getPosition()).getLength()
 		end
 		
 		/** \brief Calculate remaining distance from next path point to goal position along meters. */
 		public func void calculateRemainingDistance()
-			this.pRemainingDistance = 0
+			pRemainingDistance = 0
 			
-			if this.pGoalPosition != null and this.pPath != null and this.pNextPathPoint < this.pPath.getCount()
-				this.pRemainingDistance = this.pPath.getLengthFrom( this.pNextPathPoint )
+			if pGoalPosition != null and pPath != null and pNextPathPoint < pPath.getCount()
+				pRemainingDistance = pPath.getLengthFrom(pNextPathPoint)
 			end
 		end
 		
@@ -1034,16 +1040,16 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * \brief Place actor on position relative on remaining path.
 		 * \param position Value in range 0 (current position) to 1 (goal position) along path.
 		 */
-		public func void placeOnPath( float position )
-			if this.pGoalPosition == null or this.pPath == null
+		public func void placeOnPath(float position)
+			if pGoalPosition == null or pPath == null
 				return
 			end
 			
-			var float remainingDistance = this.getDistanceToGoal() * position
-			var int pointCount = this.pPath.getCount()
+			var float remainingDistance = getDistanceToGoal() * position
+			var int pointCount = pPath.getCount()
 			
-			var Locomotion locomotion = this.pLocomotion.getLocomotion()
-			var DVector actorPosition = this.getElement().getPosition()
+			var Locomotion locomotion = pLocomotion.getLocomotion()
+			var DVector actorPosition = getElement().getPosition()
 			var DVector nextCorner, nextNextCorner
 			var DMatrix matrix, invMatrix
 			
@@ -1054,15 +1060,15 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			var float elevation
 			var float distance
 			
-			if this.pRidableCollider != null
-				var Collider collider = this.pRidableCollider.getCollider()
+			if pRidableCollider != null
+				var Collider collider = pRidableCollider.getCollider()
 				matrix = collider.getMatrix()
 				invMatrix = collider.getInverseMatrix()
 			end
 			
 			var bool hitGoal = false
-			while this.pGoalPosition != null and not this.pPause
-				nextCorner = this.pPath.getAt( this.pNextPathPoint )
+			while pGoalPosition != null and not pPause
+				nextCorner = pPath.getAt(pNextPathPoint)
 				if matrix != null
 					nextCorner = matrix * nextCorner
 				end
@@ -1071,12 +1077,12 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				distance = moveDirection.getLength()
 				elevation = moveDirection.getY()
 				
-				orientationDirection = moveDirection.compSelect( true, false, true ).normalize()
-				targetOrientation = DEMath.atan2( -orientationDirection.getX(), orientationDirection.getZ() )
-				targetVertical = DEMath.atan2( elevation, distance )
+				orientationDirection = moveDirection.compSelect(true, false, true).normalize()
+				targetOrientation = DEMath.atan2(-orientationDirection.getX(), orientationDirection.getZ())
+				targetVertical = DEMath.atan2(elevation, distance)
 				
 				if remainingDistance < distance
-					actorPosition = actorPosition + moveDirection * ( remainingDistance / distance )
+					actorPosition = actorPosition + moveDirection * (remainingDistance / distance)
 				end
 				
 				if remainingDistance < distance
@@ -1086,129 +1092,129 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				actorPosition = nextCorner
 				remainingDistance -= distance
 				
-				this.pNextPathPoint++
-				if this.pNextPathPoint == pointCount
+				pNextPathPoint++
+				if pNextPathPoint == pointCount
 					hitGoal = true
 					break
 				end
 				
-				nextNextCorner = this.pPath.getAt( this.pNextPathPoint )
+				nextNextCorner = pPath.getAt(pNextPathPoint)
 				if matrix != null
 					nextNextCorner = matrix * nextNextCorner
 				end
 				
-				this.pNextPlaneNormal = ( nextNextCorner - nextCorner ).normalize()
+				pNextPlaneNormal = (nextNextCorner - nextCorner).normalize()
 				if invMatrix != null
-					this.pNextPlaneNormal = invMatrix.transformNormal( this.pNextPlaneNormal )
+					pNextPlaneNormal = invMatrix.transformNormal(pNextPlaneNormal)
 				end
 			end
 			
-			this.calculateRemainingDistance()
+			calculateRemainingDistance()
 			
 			// update the locomotion and actor with the found results
-			var float turnAngle = DEMath.normalize( targetOrientation - locomotion.getOrientation(), -180.0, 180.0 )
-			if this.pEnableLimitTurnAngle
-				turnAngle = DEMath.clamp( turnAngle, -this.pLimitTurnAngle, this.pLimitTurnAngle )
+			var float turnAngle = DEMath.normalize(targetOrientation - locomotion.getOrientation(), -180.0, 180.0)
+			if pEnableLimitTurnAngle
+				turnAngle = DEMath.clamp(turnAngle, -pLimitTurnAngle, pLimitTurnAngle)
 			end
 			
-			locomotion.setLookVerticalGoal( targetVertical )
-			locomotion.setLookHorizontalGoal( turnAngle )
-			locomotion.setTurnHorizontal( turnAngle )
-			locomotion.setAnalogMovingHorizontalGoal( turnAngle )
-			locomotion.setAnalogMovingSpeed( this.pSpeed )
+			locomotion.setLookVerticalGoal(targetVertical)
+			locomotion.setLookHorizontalGoal(turnAngle)
+			locomotion.setTurnHorizontal(turnAngle)
+			locomotion.setAnalogMovingHorizontalGoal(turnAngle)
+			locomotion.setAnalogMovingSpeed(pSpeed)
 			
-			this.getElement().setPosition( actorPosition )
+			getElement().setPosition(actorPosition)
 			
 			// actor is close enough to target
 			if hitGoal
-				this.arrivedAtGoal()
+				arrivedAtGoal()
 				return
 			end
 			
-			nextCorner = this.pPath.getAt( this.pNextPathPoint )
+			nextCorner = pPath.getAt(pNextPathPoint)
 			if matrix != null
 				nextCorner = matrix * nextCorner
 			end
 			
-			if this.pRemainingDistance + ( nextCorner - actorPosition ).getLength() <= this.pGoalDistance
-				this.arrivedAtGoal()
+			if pRemainingDistance + (nextCorner - actorPosition).getLength() <= pGoalDistance
+				arrivedAtGoal()
 			end
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		public func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Frame update started. */
 		public func void enterFrame()
-			if this.pElementResolver != null
-				this.pElementResolver.resolve( this.getElement().getGameWorld() )
-				this.pElementResolver = null
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
 			end
 		end
 		
 		/** \brief Think about what to do for the next frame update. */
-		public func void think( float elapsed )
-			this.update( elapsed )
+		public func void think(float elapsed)
+			update(elapsed)
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			this.stopMoving()
+			stopMoving()
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
-				this.pPause = flags.getAt( 0 )
-				this.pEnableLimitTurnAngle = flags.getAt( 1 )
+				var PersistencyFlags flags = PersistencyFlags.new(6, reader)
+				pPause = flags.getAt(0)
+				pEnableLimitTurnAngle = flags.getAt(1)
 				
-				if flags.getAt( 2 )
-					this.pGoalPosition = DVector.readFromFile( reader )
+				if flags.getAt(2)
+					pGoalPosition = DVector.readFromFile(reader)
 				end
-				this.pGoalDistance = reader.readFloat()
+				pGoalDistance = reader.readFloat()
 				
-				if flags.getAt( 4 )
-					this.pPath = NavigatorPath.readFromFile( reader )
+				if flags.getAt(4)
+					pPath = NavigatorPath.readFromFile(reader)
 				end
-				this.pNextPathPoint = reader.readUShort()
+				pNextPathPoint = reader.readUShort()
 				
-				if flags.getAt( 3 )
-					this.pNextPlaneNormal = DVector.readFromFile( reader )
+				if flags.getAt(3)
+					pNextPlaneNormal = DVector.readFromFile(reader)
 				end
-				this.pRemainingDistance = reader.readFloat()
+				pRemainingDistance = reader.readFloat()
 				
-				this.pLimitTurnAngle = reader.readFloat()
-				this.pSpeed = reader.readFloat()
+				pLimitTurnAngle = reader.readFloat()
+				pSpeed = reader.readFloat()
 				
-				if flags.getAt( 5 )
-					this.pElementResolver = ElementResolver.new()
-					this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance behavior
-						this.pRidable = behavior
-						this.pRidableCollider = behavior.getCollider()
-					end )
-					this.setRequiresEnterFrame( true )
+				if flags.getAt(5)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorRidable.Instance behavior
+						pRidable = behavior
+						pRidableCollider = behavior.getCollider()
+					end)
+					setRequiresEnterFrame(true)
 				end
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
@@ -1219,38 +1225,38 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * being written. The relative collider is not saved. During loading the  base actor is
 		 * responsible to restore the relative collider. This has to be done any.
 		 */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 6 )
-			flags.setAt( 0, this.pPause )
-			flags.setAt( 1, this.pEnableLimitTurnAngle )
-			flags.setAt( 2, this.pGoalPosition != null )
-			flags.setAt( 3, this.pNextPlaneNormal != null )
-			flags.setAt( 4, this.pPath != null )
-			flags.setAt( 5, this.pRidable != null )
-			flags.writeToFile( writer )
+			var PersistencyFlags flags = PersistencyFlags.new(6)
+			flags.setAt(0, pPause)
+			flags.setAt(1, pEnableLimitTurnAngle)
+			flags.setAt(2, pGoalPosition != null)
+			flags.setAt(3, pNextPlaneNormal != null)
+			flags.setAt(4, pPath != null)
+			flags.setAt(5, pRidable != null)
+			flags.writeToFile(writer)
 			
-			if this.pGoalPosition != null
-				this.pGoalPosition.writeToFile( writer )
+			if pGoalPosition != null
+				pGoalPosition.writeToFile(writer)
 			end
-			writer.writeFloat( this.pGoalDistance )
+			writer.writeFloat(pGoalDistance)
 			
-			if this.pPath != null
-				this.pPath.writeToFile( writer )
+			if pPath != null
+				pPath.writeToFile(writer)
 			end
-			writer.writeUShort( this.pNextPathPoint )
+			writer.writeUShort(pNextPathPoint)
 			
-			if this.pNextPlaneNormal != null
-				this.pNextPlaneNormal.writeToFile( writer )
+			if pNextPlaneNormal != null
+				pNextPlaneNormal.writeToFile(writer)
 			end
-			writer.writeFloat( this.pRemainingDistance )
+			writer.writeFloat(pRemainingDistance)
 			
-			writer.writeFloat( this.pLimitTurnAngle )
-			writer.writeFloat( this.pSpeed )
+			writer.writeFloat(pLimitTurnAngle)
+			writer.writeFloat(pSpeed)
 			
-			if this.pRidable != null
-				ElementResolver.writeToFileBehavior( writer, this.pRidable )
+			if pRidable != null
+				ElementResolver.writeToFileBehavior(writer, pRidable)
 			end
 		end
 	end
@@ -1271,38 +1277,38 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em rideOn.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
-	ECBehaviorNavigator navigator, ECBehaviorRideOn rideOn ) \
-	this( eclass, locomotion, navigator, rideOn, "actorMover." )
+	public func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	ECBehaviorNavigator navigator, ECBehaviorRideOn rideOn) \
+	this(eclass, locomotion, navigator, rideOn, "actorMover.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
-	ECBehaviorNavigator navigator, ECBehaviorRideOn rideOn, String prefix ) super( eclass )
+	public func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	ECBehaviorNavigator navigator, ECBehaviorRideOn rideOn, String prefix) super(eclass)
 		if locomotion == null
-			throw ENullPointer.new( "locomotion" )
+			throw ENullPointer.new("locomotion")
 		end
 		if navigator == null
-			throw ENullPointer.new( "navigator" )
+			throw ENullPointer.new("navigator")
 		end
 		
-		this.pLocomotion = locomotion
-		this.pNavigator = navigator
-		this.pRideOn = rideOn
-		this.pListenerFactories = Array.new()
+		pLocomotion = locomotion
+		pNavigator = navigator
+		pRideOn = rideOn
+		pListenerFactories = Array.new()
 		
-		this.pSpeed = ECPFloat.new( prefix + "speed", 1.25, 0 )
-		eclass.addProperty( this.pSpeed )
+		pSpeed = ECPFloat.new(prefix + "speed", 1.25, 0)
+		eclass.addProperty(pSpeed)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pRideOn = null
-		this.pNavigator = null
-		this.pLocomotion = null
-		this.pConversationActor = null
-		this.pListenerFactories = null
+		pRideOn = null
+		pNavigator = null
+		pLocomotion = null
+		pConversationActor = null
+		pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -1310,22 +1316,22 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	
 	/** \brief Locomotion behavior to use. */
 	public func ECBehaviorLocomotion getLocomotion()
-		return this.pLocomotion
+		return pLocomotion
 	end
 	
 	/** \brief Navigator behavior to use. */
 	public func ECBehaviorNavigator getNavigator()
-		return this.pNavigator
+		return pNavigator
 	end
 	
 	/** \brief Ride on behavior to use or null. */
 	public func ECBehaviorRideOn getRideOn()
-		return this.pRideOn
+		return pRideOn
 	end
 	
 	/** \brief Conversation actor behavior or null. */
 	public func ECBehaviorConversationActor getConversationActor()
-		return this.pConversationActor
+		return pConversationActor
 	end
 	
 	/**
@@ -1333,21 +1339,21 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	 * 
 	 * If set conversation conditions and commands are added.
 	 */
-	public func void setConversationActor( ECBehaviorConversationActor conversationActor )
-		this.pConversationActor = conversationActor
+	public func void setConversationActor(ECBehaviorConversationActor conversationActor)
+		pConversationActor = conversationActor
 	end
 	
 	/** \brief Movement speed. */
 	public func ECPFloat getSpeed()
-		return this.pSpeed
+		return pSpeed
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	public func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -1355,27 +1361,27 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -1386,10 +1392,10 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorActorMover.
 	 */
-	static public func ECBehaviorActorMover getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorActorMover each
+	static public func ECBehaviorActorMover getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorActorMover each
 			return true
-		end ) cast ECBehaviorActorMover
+		end) cast ECBehaviorActorMover
 	end
 	
 	/**
@@ -1398,16 +1404,16 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorActorMover.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

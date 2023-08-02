@@ -114,6 +114,9 @@ out vec2 vTCColor;
 #ifdef CLIP_PLANE
 	out vec3 vClipCoord;
 #endif
+#ifdef SKIN_CLIP_PLANE
+	out vec3 vSkinClipCoord;
+#endif
 #ifdef DEPTH_DISTANCE
 	out vec3 vPosition;
 #endif
@@ -204,16 +207,19 @@ void emitCorner( in int corner, in vec4 position, in vec3 offset, in vec2 tc, in
 		vTCAO = tc;
 	#endif
 	#ifdef WITH_REFLECT_DIR
-		vReflectDir = position.xyz;
+		vReflectDir = vec3( position );
 	#endif
 	#ifdef FADEOUT_RANGE
 		vFadeZ = position.z;
 	#endif
 	#ifdef CLIP_PLANE
-		vClipCoord = position.xyz;
+		vClipCoord = vec3( position );
+	#endif
+	#ifdef SKIN_CLIP_PLANE
+		vSkinClipCoord = vec3( position );
 	#endif
 	#ifdef DEPTH_DISTANCE
-		vPosition = position.xyz;
+		vPosition = vec3( position );
 	#endif
 	
 	vNormal = particleNormal;

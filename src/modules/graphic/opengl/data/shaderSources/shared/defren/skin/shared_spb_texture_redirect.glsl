@@ -51,3 +51,6 @@
 #define pTexOutlineEmissivityTint pSharedSPBTexture[ pIndexSPBTexParams ].texOutlineEmissivityTint
 
 #define pTexEmissivityCameraAdapted pSharedSPBTexture[ pIndexSPBTexParams ].texEmissivityCameraAdapted
+
+#define pTexSkinClipPlane pSharedSPBTexture[ pIndexSPBTexParams ].texSkinClipPlane
+#define pTexSkinClipPlaneBorder pSharedSPBTexture[ pIndexSPBTexParams ].texSkinClipPlaneBorder

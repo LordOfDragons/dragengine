@@ -19,11 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "seWindowProperties.h"
+#include "seWPMapped.h"
 #include "seWPTexture.h"
 #include "seWPNode.h"
 #include "seWPView.h"
@@ -52,6 +49,9 @@ pWindowMain( windowMain )
 {
 	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
 	
+	pPanelMapped.TakeOver( new seWPMapped( *this ) );
+	AddChild( pPanelMapped, "Mapped" );
+	
 	pPanelTexture.TakeOver( new seWPTexture( *this ) );
 	AddChild( pPanelTexture, "Texture" );
 	
@@ -67,7 +67,7 @@ pWindowMain( windowMain )
 	pPanelUndoHistory.TakeOver( new seWPUndoHistory( GetEnvironment() ) );
 	AddChild( pPanelUndoHistory, "Undo" );
 	
-	SetActivePanel( 0 ); // texture
+	SetActivePanel( 1 ); // texture
 }
 
 seWindowProperties::~seWindowProperties(){
@@ -79,6 +79,7 @@ seWindowProperties::~seWindowProperties(){
 ///////////////
 
 void seWindowProperties::SetSkin( seSkin *skin ){
+	( ( seWPMapped& )( igdeWidget& )pPanelMapped ).SetSkin( skin );
 	( ( seWPTexture& )( igdeWidget& )pPanelTexture ).SetSkin( skin );
 	( ( seWPNode& )( igdeWidget& )pPanelNode ).SetSkin( skin );
 	( ( seWPDynamicSkin& )( igdeWidget& )pPanelDynamicSkin ).SetSkin( skin );

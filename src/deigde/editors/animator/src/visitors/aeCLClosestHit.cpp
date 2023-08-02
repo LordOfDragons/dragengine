@@ -24,13 +24,17 @@
 #include <string.h>
 
 #include "aeCLClosestHit.h"
+#include "aeElementVisitable.h"
+
+#include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrainSector.h>
-#include <dragengine/common/exceptions.h>
 
 
 
@@ -40,9 +44,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeCLClosestHit::aeCLClosestHit(){
-	pHitDistance = 0.0f;
-	pHasHit = false;
+aeCLClosestHit::aeCLClosestHit() :
+pHitDistance( 0.0f ),
+pHasHit( false ),
+pHitCollider( nullptr ),
+pHitBone( -1 ),
+pHitShape( -1 ),
+pHitGizmo( nullptr ){
 }
 
 aeCLClosestHit::~aeCLClosestHit(){
@@ -56,6 +64,23 @@ aeCLClosestHit::~aeCLClosestHit(){
 void aeCLClosestHit::Reset(){
 	pHitDistance = 0.0f;
 	pHasHit = false;
+	pHitCollider = nullptr;
+	pHitBone = -1;
+	pHitShape = -1;
+	pHitGizmo = nullptr;
+}
+
+void aeCLClosestHit::IdentifyHitElement( igdeEnvironment &environment ){
+	if( ! pHitCollider ){
+		return;
+	}
+	
+	aeElementVisitable * const visitable =
+		( aeElementVisitable* )environment.GetColliderUserPointer( pHitCollider );
+	
+	if( visitable ){
+		visitable->VisitElement( *this );
+	}
 }
 
 
@@ -63,30 +88,33 @@ void aeCLClosestHit::Reset(){
 // Notifications
 //////////////////
 
-void aeCLClosestHit::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
+void aeCLClosestHit::CollisionResponse( deCollider*, deCollisionInfo *info ){
 	float distance = info->GetDistance();
 	
-	/*
-	if( info->GetHTSector() ){
-		printf( "hit height terrain: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0 );
-	}else if( info->GetCollider() ){
-		printf( "hit collider: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0 );
-	}else{
-		printf( "hit something else: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0 );
+	if( pHasHit && distance >= pHitDistance ){
+		return;
 	}
-	*/
-	
-	if( pHasHit && distance >= pHitDistance ) return;
 	
 	pHitDistance = distance;
 	pHitNormal = info->GetNormal();
-	
+	pHitCollider = info->GetCollider();
+	pHitBone = info->GetBone();
+	pHitShape = info->GetShape();
 	pHasHit = true;
 }
 
-bool aeCLClosestHit::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool aeCLClosestHit::CanHitCollider( deCollider*, deCollider* ){
 	return true;
 }
 
-void aeCLClosestHit::ColliderChanged( deCollider *owner ){
+void aeCLClosestHit::ColliderChanged( deCollider* ){
+}
+
+
+
+// Visiting
+/////////////
+
+void aeCLClosestHit::VisitGizmo( igdeGizmo *gizmo ){
+	pHitGizmo = gizmo;
 }

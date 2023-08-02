@@ -156,6 +156,7 @@ public:
 	bool pOutlineThicknessScreen;
 	bool pLuminanceOnly;
 	bool pGIMaterial;
+	bool pSkinClipPlane;
 	
 	bool pDynamicColorTint;
 	bool pDynamicColorGamma;
@@ -191,6 +192,8 @@ public:
 	bool pDynamicRimEmissivityIntensity;
 	bool pDynamicRimAngle;
 	bool pDynamicRimExponent;
+	bool pDynamicSkinClipPlane;
+	bool pDynamicSkinClipPlaneBorder;
 	
 	bool pTextureColor;
 	bool pTextureColorTintMask;
@@ -425,9 +428,11 @@ public:
 	
 	/** GI material. */
 	inline bool GetGIMaterial() const{ return pGIMaterial; }
-	
-	/** Set GI material. */
 	void SetGIMaterial( bool gimaterial );
+	
+	/** Use skin clip plane. */
+	inline bool GetSkinClipPlane() const{ return pSkinClipPlane; }
+	void SetSkinClipPlane( bool skinClipPlane );
 	
 	
 	
@@ -631,9 +636,15 @@ public:
 	
 	/** Rim exponent property is dynamic. */
 	inline bool GetDynamicRimExponent() const{ return pDynamicRimExponent; }
-	
-	/** Set if rim exponent property is dynamic. */
 	void SetDynamicRimExponent( bool dynamic );
+	
+	/** Clip plane property is dynamic. */
+	inline bool GetDynamicSkinClipPlane() const{ return pDynamicSkinClipPlane; }
+	void SetDynamicSkinClipPlane( bool dynamic );
+	
+	/** Clip plane border property is dynamic. */
+	inline bool GetDynamicSkinClipPlaneBorder() const{ return pDynamicSkinClipPlaneBorder; }
+	void SetDynamicSkinClipPlaneBorder( bool dynamic );
 	
 	
 	

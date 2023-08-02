@@ -125,6 +125,9 @@
 	#ifdef CLIP_PLANE
 		out vec3 vClipCoord;
 	#endif
+	#ifdef SKIN_CLIP_PLANE
+		out vec3 vSkinClipCoord;
+	#endif
 	#ifdef DEPTH_DISTANCE
 		out vec3 vPosition;
 	#endif
@@ -231,6 +234,14 @@ void main( void ){
 				vClipCoord = position;
 			#else
 				vClipCoord = pMatrixV[ inLayer ] * vec4( position, 1 );
+			#endif
+		#endif
+		
+		#ifdef SKIN_CLIP_PLANE
+			#ifdef HEIGHT_MAP
+				vSkinClipCoord = vec3( inPosition.x, inHeight, inPosition.y );
+			#else
+				vSkinClipCoord = vec3( inPosition );
 			#endif
 		#endif
 		

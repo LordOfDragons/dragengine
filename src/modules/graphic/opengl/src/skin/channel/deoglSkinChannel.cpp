@@ -26,9 +26,11 @@
 #include "deoglSkinChannel.h"
 #include "deoglSCBuildConstructed.h"
 #include "deoglSCConstructedDefinition.h"
+#include "deoglSCConstructedDynamic.h"
 #include "../deoglRSkin.h"
 #include "../deoglSkinTexture.h"
 #include "../deoglSkinPropertyMap.h"
+#include "../deoglSkinConstructedProperty.h"
 #include "../combinedTexture/deoglCombinedTexture.h"
 #include "../visitor/deoglVSDetermineChannelFormat.h"
 #include "../../deGraphicOpenGl.h"
@@ -107,6 +109,7 @@ pVideo( NULL ),
 pVideoPlayer( -1 ),
 pSharedVideoPlayer( true ),
 pRenderable( -1 ),
+pDynamicConstructed( -1 ),
 
 pSolidityFilterPriority( 0.5f ){
 }
@@ -277,6 +280,10 @@ void deoglSkinChannel::SetSharedVideoPlayer( bool shared ){
 
 void deoglSkinChannel::SetRenderable( int index ){
 	pRenderable = index;
+}
+
+void deoglSkinChannel::SetDynamicConstructed( int index ){
+	pDynamicConstructed = index;
 }
 
 
@@ -936,7 +943,7 @@ deSkinProperty &property ){
 		pPreparePropertyVideo( propertyType, skin, texture, identify.CastToVideo() );
 		
 	}else if( identify.IsConstructed() ){
-		pPreparePropertyConstructed( propertyType, texture, identify.CastToConstructed() );
+		pPreparePropertyConstructed( propertyType, skin, texture, identify.CastToConstructed() );
 		
 	}else if( identify.IsMapped() ){
 		pPreparePropertyMapped( propertyType, skin, texture, identify.CastToMapped() );
@@ -1234,7 +1241,7 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyMapped &propert
 }
 
 void deoglSkinChannel::pPreparePropertyConstructed( deoglSkinPropertyMap::ePropertyTypes propertyType,
-deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
+deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
 	int targetRed = 100;
 	int targetGreen = 100;
 	int targetBlue = 100;
@@ -1342,6 +1349,16 @@ deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
 		memoryFileVerify = pCacheConstrVerifySource1;
 	}
 	
+	// dynamic constructed
+	if( deoglSCConstructedDynamic::IsDynamic( property.GetContent() ) ){
+		pDynamicConstructed = skin.AddConstructedProperty( deoglSkinConstructedProperty::Ref::New(
+			new deoglSkinConstructedProperty( property ) ) );
+		texture.SetConstructedProperties( true );
+		pCanBeCached = false;
+		return;
+	}
+	
+	// caching
 	deoglSCConstructedDefinition visitor( *pRenderThread.GetOgl().GetGameEngine(),
 		memoryFileDef, memoryFileVerify, property );
 	property.GetContent().Visit( visitor );

@@ -23,21 +23,35 @@
 #define _DESKINPROPERTYNODETEXT_H_
 
 #include "deSkinPropertyNode.h"
+#include "../../../font/deFont.h"
 #include "../../../../common/string/decString.h"
-
-class deFont;
 
 
 /**
  * \brief Skin property text node for constructed texture property.
  */
 class DE_DLL_EXPORT deSkinPropertyNodeText : public deSkinPropertyNode{
+public:
+	/** \brief Mapped. */
+	enum eTextMapped{
+		etmFontSize, //<! Font size
+		etmColorRed, //<! Color red component
+		etmColorGreen, //<! Color green component
+		etmColorBlue //<! Color blue component
+	};
+	
+	static const int TextMappedCount = etmColorBlue + 1;
+	
+	
+	
 private:
 	decString pPath;
-	deFont *pFont;
+	deFont::Ref pFont;
 	float pFontSize;
 	decString pText;
 	decColor pColor;
+	
+	int pTextMapped[ TextMappedCount ];
 	
 	
 	
@@ -61,10 +75,10 @@ public:
 	/** \brief Set font path or empty path if not set. */
 	void SetPath( const char *path );
 	
-	/** \brief Font or NULL if not set. */
-	inline deFont *GetFont() const{ return pFont; }
+	/** \brief Font or nullptr if not set. */
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
-	/** \brief Set font or NULL to unset. */
+	/** \brief Set font or nullptr to unset. */
 	void SetFont( deFont *font );
 	
 	/** \brief Font size in canvas units. */
@@ -88,6 +102,14 @@ public:
 	
 	/** \brief Set text color. */
 	void SetColor( const decColor &color );
+	
+	
+	
+	/** \brief Index of mapped value or -1 to use static value. */
+	int GetTextMappedFor( eTextMapped mapped ) const;
+	
+	/** \brief Set index of mapped value or -1 to use static value. */
+	void SetTextMappedFor( eTextMapped mapped, int index );
 	/*@}*/
 	
 	

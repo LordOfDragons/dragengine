@@ -19,10 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "aeView3D.h"
 #include "aeWindowMain.h"
 #include "../animator/aeCamera.h"
@@ -30,8 +26,11 @@
 #include "../animator/locomotion/aeAnimatorLocomotion.h"
 #include "../animator/wakeboard/aeWakeboard.h"
 #include "../configuration/aeConfiguration.h"
+#include "../visitors/aeCLClosestHit.h"
+#include "../visitors/aeElementVisitor.h"
 
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
@@ -39,12 +38,14 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/utils/decCollisionFilter.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/camera/deCameraManager.h>
 #include <dragengine/resources/world/deWorld.h>
+#include <dragengine/systems/modules/physics/deBasePhysicsWorld.h>
 
 
 
@@ -260,6 +261,122 @@ public:
 	}
 };
 
+class cEditorInteraction : public igdeMouseKeyListener {
+	aeView3D &pView;
+	
+public:
+	cEditorInteraction( aeView3D &view ) : pView( view ){ }
+	
+public:
+	void OnButtonPress( igdeWidget*, int button, const decPoint &position, int modifiers ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnButtonPress( pView, *animator->GetCamera(), button, position, modifiers );
+		if( pView.GetGizoms().HasEditingGizmo() ){
+			return;
+		}
+		
+		switch( button ){
+		case deInputEvent::embcLeft:
+			{
+			deBasePhysicsWorld * const peer = animator->GetEngineWorld()->GetPeerPhysics();
+			if( ! peer ){
+				return;
+			}
+			
+			const decDMatrix viewMatrix( animator->GetCamera()->GetViewMatrix() );
+			const decDVector rayPosition = viewMatrix.GetPosition();
+			const decVector rayDirection = animator->GetCamera()->GetDirectionFor(
+				pView.GetRenderAreaSize().x, pView.GetRenderAreaSize().y, position.x, position.y ) * 500.0f;
+			
+			decLayerMask layerMask;
+			layerMask.SetBit( aeAnimator::eclTerrain );
+			layerMask.SetBit( aeAnimator::eclElements );
+			layerMask.SetBit( aeAnimator::eclAI );
+			layerMask.SetBit( aeAnimator::eclGround );
+			
+			aeCLClosestHit visitor;
+			peer->RayHits( rayPosition, rayDirection, &visitor, decCollisionFilter( layerMask ) );
+			if( visitor.GetHasHit() ){
+				visitor.IdentifyHitElement( pView.GetEnvironment() );
+				// TODO
+			}
+			} break;
+			
+		case deInputEvent::embcRight:
+			break;
+			
+		default:
+			break;
+		}
+	}
+	
+	void OnButtonRelease( igdeWidget*, int button, const decPoint &position, int modifiers ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnButtonRelease( pView, *animator->GetCamera(), button, position, modifiers );
+		if( pView.GetGizoms().HasEditingGizmo() ){
+			return;
+		}
+		
+		switch( button ){
+		case deInputEvent::embcLeft:
+			break;
+			
+		case deInputEvent::embcRight:
+			break;
+			
+		default:
+			break;
+		}
+	}
+	
+	void OnMouseMoved(igdeWidget*, const decPoint &position, int modifiers ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnMouseMoved( pView, *animator->GetCamera(), position, modifiers );
+		if( pView.GetGizoms().HasEditingGizmo() ){
+			return;
+		}
+	}
+	
+	void OnMouseWheeled( igdeWidget*, const decPoint &position, const decPoint &change, int modifiers ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnMouseWheeled( pView, *animator->GetCamera(), position, change, modifiers );
+	}
+	
+	void OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int key ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnKeyPress( keyCode, key );
+	}
+	
+	void OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes keyCode, int key ) override{
+		aeAnimator * const animator = pView.GetAnimator();
+		if( ! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled() ){
+			return;
+		}
+		
+		pView.GetGizoms().OnKeyRelease( keyCode, key );
+	}
+};
+
 }
 
 
@@ -278,14 +395,16 @@ pAnimator( NULL )
 	pCameraInteraction.TakeOver( new cCameraInteraction( *this ) );
 	pLocomotionInteraction.TakeOver( new cLocomotionInteraction( *this ) );
 	pWakeboardInteraction.TakeOver( new cWakeboardInteraction( *this ) );
+	pEditorInteraction.TakeOver( new cEditorInteraction( *this ) );
 	
 	AddListener( pCameraInteraction );
 	AddListener( pLocomotionInteraction );
 	AddListener( pWakeboardInteraction );
+	AddListener( pEditorInteraction );
 }
 
 aeView3D::~aeView3D(){
-	SetAnimator( NULL );
+	SetAnimator( nullptr );
 }
 
 
@@ -354,6 +473,8 @@ void aeView3D::OnFrameUpdate( float elapsed ){
 	if( pAnimator ){
 		pAnimator->UpdateWorld( elapsed );
 	}
+	
+	pGizmos.OnFrameUpdate( elapsed );
 }
 
 void aeView3D::CreateCanvas(){

@@ -67,7 +67,7 @@ pTextOffsetV( 0.0f ),
 pUseDepthPass( true ),
 pLightCutOffIntensity( 0.01f ),
 pUseTextureCompression( true ),
-pTranspLayerLimit( 4 ),
+pTranspLayerLimit( 8 ),
 
 pUseOneFBO( false ),
 pUseEncodeDepth( false ),

@@ -36,8 +36,11 @@
 #include "../loadsave/seLoadSaveSystem.h"
 #include "../loadsave/seLoadSaveSkin.h"
 #include "../skin/seSkin.h"
+#include "../skin/mapped/seMapped.h"
 #include "../skin/texture/seTexture.h"
 #include "../skin/property/seProperty.h"
+#include "../undosys/mapped/seUMappedAdd.h"
+#include "../undosys/mapped/seUMappedRemove.h"
 #include "../undosys/texture/seUTextureAdd.h"
 #include "../undosys/texture/seUTextureRemove.h"
 #include "../undosys/texture/seUTextureImport.h"
@@ -678,6 +681,75 @@ public:
 };
 
 
+class cActionBaseMapped : public cActionBase{
+public:
+	cActionBaseMapped( seWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
+		cActionBase( window, text, icon, description, mnemonic ){}
+	
+	virtual igdeUndo *OnAction( seSkin *skin ){
+		return skin->GetActiveMapped() ? OnActionMapped( skin, skin->GetActiveMapped() ) : nullptr;
+	}
+	
+	virtual igdeUndo *OnActionMapped( seSkin *skin, seMapped *mapped ) = 0;
+	
+	virtual void Update( const seSkin &skin ){
+		if( skin.GetActiveMapped() ){
+			UpdateMapped( skin, *skin.GetActiveMapped() );
+			
+		}else{
+			SetEnabled( false );
+		}
+	}
+	
+	virtual void UpdateMapped( const seSkin &, const seMapped & ){
+		SetEnabled( true );
+	}
+};
+
+class cActionMappedAdd : public cActionBase{
+public:
+	cActionMappedAdd( seWindowMain &window ) : cActionBase( window,
+		"Add...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
+		"Add mapped", deInputEvent::ekcA ){}
+	
+	virtual igdeUndo *OnAction( seSkin *skin ){
+		decString name( "Mapped" );
+		while( igdeCommonDialogs::GetString( &pWindow, "Add Mapped", "Name:", name ) ){
+			if( skin->GetMappedList().HasNamed( name ) ){
+				igdeCommonDialogs::Error( &pWindow, "Add Mapped", "A mapped with this name exists already." );
+				
+			}else{
+				return new seUMappedAdd( skin, seMapped::Ref::New( new seMapped( name ) ) );
+			}
+		}
+		
+		return nullptr;
+	}
+};
+
+class cActionMappedRemove : public cActionBaseMapped{
+public:
+	cActionMappedRemove( seWindowMain &window ) : cActionBaseMapped( window,
+		"Remove", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
+		"Remove mapped", deInputEvent::ekcR ){}
+	
+	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ){
+		seUMappedRemove *undo = new seUMappedRemove( mapped );
+		
+		if( undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat( &pWindow,
+		igdeCommonDialogs::ebsYesNo, "Remove Mapped", "Mapped is used by %d dependencies. "
+		"Removing the mapped will also unset it from all dependencies.", undo->GetDependencyCount() )
+		== igdeCommonDialogs::ebNo ){
+			undo->FreeReference();
+			return nullptr;
+		}
+		
+		return undo;
+	}
+};
+
+
 class cActionBaseTexture : public cActionBase{
 public:
 	cActionBaseTexture( seWindowMain &window, const char *text, igdeIcon *icon,
@@ -986,6 +1058,9 @@ void seWindowMain::pCreateActions(){
 	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
 	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
 	
+	pActionMappedAdd.TakeOver( new cActionMappedAdd( *this ) );
+	pActionMappedRemove.TakeOver( new cActionMappedRemove( *this ) );
+	
 	pActionTextureAdd.TakeOver( new cActionTextureAdd( *this ) );
 	pActionTextureRemove.TakeOver( new cActionTextureRemove( *this ) );
 	pActionTextureImportFromGDef.TakeOver( new cActionTextureImportFromGDef( *this ) );
@@ -1008,6 +1083,9 @@ void seWindowMain::pCreateActions(){
 	AddUpdateAction( pActionEditCut );
 	AddUpdateAction( pActionEditCopy );
 	AddUpdateAction( pActionEditPaste );
+	
+	AddUpdateAction( pActionMappedAdd );
+	AddUpdateAction( pActionMappedRemove );
 	
 	AddUpdateAction( pActionTextureAdd );
 	AddUpdateAction( pActionTextureRemove );
@@ -1044,6 +1122,10 @@ void seWindowMain::pCreateToolBarEdit(){
 	helper.ToolBarButton( pTBEdit, pActionEditPaste );
 	
 	helper.ToolBarSeparator( pTBEdit );
+	helper.ToolBarButton( pTBEdit, pActionMappedAdd );
+	helper.ToolBarButton( pTBEdit, pActionMappedRemove );
+	
+	helper.ToolBarSeparator( pTBEdit );
 	helper.ToolBarButton( pTBEdit, pActionTextureAdd );
 	helper.ToolBarButton( pTBEdit, pActionTextureRemove );
 	
@@ -1064,6 +1146,10 @@ void seWindowMain::pCreateMenu(){
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "Edit", deInputEvent::ekcE ) );
 	pCreateMenuEdit( cascade );
+	AddSharedMenu( cascade );
+	
+	cascade.TakeOver( new igdeMenuCascade( env, "Mapped", deInputEvent::ekcM ) );
+	pCreateMenuMapped( cascade );
 	AddSharedMenu( cascade );
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "Texture", deInputEvent::ekcT ) );
@@ -1092,6 +1178,13 @@ void seWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
 	helper.MenuCommand( menu, pActionEditCut );
 	helper.MenuCommand( menu, pActionEditCopy );
 	helper.MenuCommand( menu, pActionEditPaste );
+}
+
+void seWindowMain::pCreateMenuMapped( igdeMenuCascade &menu ){
+	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
+	
+	helper.MenuCommand( menu, pActionMappedAdd );
+	helper.MenuCommand( menu, pActionMappedRemove );
 }
 
 void seWindowMain::pCreateMenuTexture( igdeMenuCascade &menu ){

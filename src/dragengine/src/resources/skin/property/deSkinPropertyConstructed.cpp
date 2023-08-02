@@ -19,10 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSkinPropertyConstructed.h"
 #include "deSkinPropertyVisitor.h"
 #include "node/deSkinPropertyNodeGroup.h"

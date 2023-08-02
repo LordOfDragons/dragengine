@@ -63,6 +63,13 @@ private:
 	decQuaternion pLimitZeroQuat;
 	decQuaternion pLimitZeroQuatInv;
 	decVector pLockedRotation;
+	float pWeight;
+	float pLength;
+	decVector pEndPosition;
+	decQuaternion pRigLocalRot;
+	decQuaternion pInvRigLocalRot;
+	decQuaternion pLastGlobalOrientation;
+	decQuaternion pInvLastGlobalOrientation;
 	
 	
 	
@@ -98,6 +105,9 @@ public:
 	/** Set inverse global matrix. */
 	void SetInverseGlobalMatrix( const decMatrix &matrix );
 	
+	/** Transform global matrix and optionally update inverse. */
+	void TransformGlobalMatrix( const decMatrix &matrix, bool updateInverse );
+	
 	
 	
 	/** X axis type. */
@@ -131,7 +141,7 @@ public:
 	void SetDampening( const decVector &resistance );
 	
 	/** Has dampening. */
-	inline bool HasDampening() const{ return pHasDampening; }
+	inline bool GetHasDampening() const{ return pHasDampening; }
 	
 	/** Lower limit. */
 	inline const decVector &GetLimitLower() const{ return pLimitLower; }
@@ -153,6 +163,45 @@ public:
 	
 	/** Set locked rotation. */
 	void SetLockedRotation( const decVector &rotation );
+	
+	/** Weight. */
+	inline float GetWeight() const{ return pWeight; }
+	
+	/** Set weight. */
+	void SetWeight( float weight );
+	
+	/** Length. */
+	inline float GetLength() const{ return pLength; }
+	
+	/** Set length. */
+	void SetLength( float length );
+	
+	/** End position. */
+	const decVector &GetEndPosition() const{ return pEndPosition; }
+	
+	/** Set end position. */
+	void SetEndPosition( const decVector &position );
+	
+	/** End position in component space. */
+	decVector GetGlobalEnd() const;
+	
+	/** Rig local rotation. */
+	inline const decQuaternion &GetRigLocalRotation() const{ return pRigLocalRot; }
+	
+	/** Inverse rig local rotation. */
+	inline const decQuaternion &GetInverseRigLocalRotation() const{ return pInvRigLocalRot; }
+	
+	/** Set rig local rotation. */
+	void SetRigLocalRotation( const decQuaternion &rotation );
+	
+	/** Last global orientation. */
+	inline const decQuaternion &GetLastGlobalOrientation() const{ return pLastGlobalOrientation; }
+	
+	/** Inverse last global orientation. */
+	inline const decQuaternion &GetInvLastGlobalOrientation() const{ return pInvLastGlobalOrientation; }
+	
+	/** Set last global orientation. */
+	void SetLastGlobalOrientation( const decQuaternion &orientation );
 	/*@}*/
 };
 

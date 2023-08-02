@@ -24,6 +24,7 @@
 
 #include "property/sePropertyList.h"
 #include "texture/seTextureList.h"
+#include "mapped/seMappedList.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 
@@ -36,7 +37,6 @@ class seDynamicSkinRenderable;
 class seProperty;
 class sePropertyNode;
 class seSkinListener;
-class seTexture;
 
 class igdeWSky;
 class igdeWObject;
@@ -60,6 +60,8 @@ class deWorld;
  */
 class seSkin : public igdeEditableEntity{
 public:
+	typedef deTObjectReference<seSkin> Ref;
+	
 	enum ePreviewMode{
 		epmModel,
 		epmLight
@@ -92,6 +94,9 @@ private:
 	
 	igdeCamera *pCamera;
 	
+	seMappedList pMappedList;
+	seMapped *pActiveMapped;
+	
 	seTextureList pTextureList;
 	seTexture *pActiveTexture;
 	
@@ -107,7 +112,7 @@ private:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin. */
 	seSkin( igdeEnvironment *environment );
@@ -115,7 +120,7 @@ public:
 	virtual ~seSkin();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine world. */
 	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
@@ -205,7 +210,35 @@ public:
 	void UpdateResources();
 	/*@}*/
 	
-	/** @name Textures */
+	
+	
+	/** \name Mapped */
+	/*@{*/
+	/** Mapped list. */
+	inline const seMappedList &GetMappedList() const{ return pMappedList; }
+	
+	/** Add mapped. */
+	void AddMapped( seMapped *mapped );
+	
+	/** Remove mapped. */
+	void RemoveMapped( seMapped *mapped );
+	
+	/** Remove all mappeds. */
+	void RemoveAllMapped();
+	
+	/** Active mapped or nullptr. */
+	inline seMapped *GetActiveMapped() const{ return pActiveMapped; }
+	
+	/** Active mapped is present. */
+	bool HasActiveMapped() const;
+	
+	/** Set active mapped or nullptr. */
+	void SetActiveMapped( seMapped *mapped );
+	/*@}*/
+	
+	
+	
+	/** \name Textures */
 	/*@{*/
 	/** Retrieves the texture list read-only. */
 	inline const seTextureList &GetTextureList() const{ return pTextureList; }
@@ -223,41 +256,60 @@ public:
 	void SetActiveTexture( seTexture *texture );
 	/*@}*/
 	
-	/** @name Notifiers */
+	
+	
+	/** \name Notifiers */
 	/*@{*/
 	/** Adds a listener. */
 	void AddListener( seSkinListener *listener );
 	/** Removes a listener. */
 	void RemoveListener( seSkinListener *listener );
 	
-	/** Notifies all listeners that the changed or saved state changed. */
+	/** Notify all listeners that the changed or saved state changed. */
 	virtual void NotifyStateChanged();
-	/** Notifies all listeners that the undo system changed. */
+	/** Notify all listeners that the undo system changed. */
 	virtual void NotifyUndoChanged();
 	
-	/** Notifies all that a skin parameter changed. */
+	/** Notify all that a skin parameter changed. */
 	void NotifySkinChanged();
-	/** Notifies all that the sky changed. */
+	/** Notify all that the sky changed. */
 	void NotifySkyChanged();
-	/** Notifies all that the environment object changed. */
+	/** Notify all that the environment object changed. */
 	void NotifyEnvObjectChanged();
-	/** Notifies all that the view changed. */
+	/** Notify all that the view changed. */
 	void NotifyViewChanged();
-	/** Notifies all that the camera changed. */
+	/** Notify all that the camera changed. */
 	void NotifyCameraChanged();
 	
-	/** Notifies all that textures have been added or removed. */
+	
+	
+	/** Notify all mapped have been added or removed. */
+	void NotifyMappedStructureChanged();
+	
+	/** Notify all mapped changed. */
+	void NotifyMappedChanged( seMapped *mapped );
+	
+	/** Notify all mapped name changed. */
+	void NotifyMappedNameChanged( seMapped *mapped );
+	
+	/** Active mapped changed. */
+	void NotifyActiveMappedChanged();
+	
+	
+	
+	/** Notify all that textures have been added or removed. */
 	void NotifyTextureStructureChanged();
-	/** Notifies all that a texture changed. */
+	/** Notify all that a texture changed. */
 	void NotifyTextureChanged( seTexture *texture );
-	/** Notifies all that a texture name changed. */
+	/** Notify all that a texture name changed. */
 	void NotifyTextureNameChanged( seTexture *texture );
 	/** Active texture changed. */
 	void NotifyActiveTextureChanged();
 	
-	/** Notifies all that properties have been added or removed. */
+	
+	/** Notify all that properties have been added or removed. */
 	void NotifyPropertyStructureChanged( seTexture *texture );
-	/** Notifies all that a property changed. */
+	/** Notify all that a property changed. */
 	void NotifyPropertyChanged( seTexture *texture, seProperty *property );
 	/** Active property changed. */
 	void NotifyActivePropertyChanged( seTexture *texture );

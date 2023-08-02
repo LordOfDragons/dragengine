@@ -27,25 +27,15 @@
 class deoglRenderThread;
 class deoglTexture;
 class deoglSkinState;
-class deoglRComponent;
 class deoglSkinCalculatedProperty;
 
-class deComponent;
 
-
-/**
- * Skin State Calculated.
- * 
- * Stores the calculated property state.
- */
+/** Skin state calculated. */
 class deoglSkinStateCalculated{
 private:
 	decColor pColor;
 	deoglTexture *pTexture;
 	deoglSkinCalculatedProperty *pProperty;
-	const deoglRComponent *pComponent;
-	int pBone[ 4 ];
-	float pBoneInputValue[ 4 ];
 	
 	
 	
@@ -69,10 +59,10 @@ public:
 	/** Set calculated color. */
 	void SetColor( const decColor &color );
 	
-	/** Temporary texture or NULL if not existing. */
+	/** Temporary texture or nullptr if not existing. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** Set temporary texture or NULL if not existing. */
+	/** Set temporary texture or nullptr if not existing. */
 	void SetTexture( deoglTexture *texture );
 	
 	/** Skin calculated property. */
@@ -80,24 +70,6 @@ public:
 	
 	/** Set skin calculated property. */
 	void SetProperty( deoglSkinCalculatedProperty *property );
-	
-	/** Component for bone calculate or NULL. */
-	inline const deoglRComponent *GetComponent() const{ return pComponent; }
-	
-	/** Set component for bone calculate or NULL. */
-	void SetComponent( const deoglRComponent *component );
-	
-	/** Bone index or -1 if not found. */
-	int GetBone( int component ) const;
-	
-	/** Bone input value. */
-	float GetBoneInputValue( int component ) const;
-	
-	/** Map bones. */
-	void MapBones( const deComponent &component );
-	
-	/** Update bones. */
-	void UpdateBones( const deComponent &component );
 	
 	/** Update. */
 	void Update( deoglSkinState &skinState );

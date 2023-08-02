@@ -46,12 +46,12 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 		public class ShowMessageListener extends ECBehaviorTriggered.DefaultListener
 			private var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			public func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
-				this.pInstance.showMessage()
+			public func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+				pInstance.showMessage()
 			end
 		end
 		
@@ -64,64 +64,64 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorShowMessage ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		public func new(ECBehaviorShowMessage ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		/** \brief Dispose of composeable instance. */
 		public func void dispose()
-			this.pTrigger = null
+			pTrigger = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			if this.pECBehavior.getTriggerTable() == null
+		public func void init(StubElement stub)
+			if pECBehavior.getTriggerTable() == null
 				return
 			end
 			
-			this.pTrigger = this.pECBehavior.getTriggered().instance( this.getElement() )
-			this.pTrigger.addListener( ShowMessageListener.new( this ) )
+			pTrigger = pECBehavior.getTriggered().instance(getElement())
+			pTrigger.addListener(ShowMessageListener.new(this))
 			
-			this.pMessage = this.pECBehavior.getMessage().getValue( stub )
+			pMessage = pECBehavior.getMessage().getValue(stub)
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorShowMessage getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Trigger or \em null. */
 		public func ECBehaviorTriggered.Instance getTrigger()
-			return this.pTrigger
+			return pTrigger
 		end
 		
 		/** \brief Message to show or \em null. */
 		public func String getMessage()
-			return this.pMessage
+			return pMessage
 		end
 		
 		
 		
 		/** \brief Show message. */
 		public func void showMessage()
-			if this.pMessage.equals( "" )
+			if pMessage.equals("")
 				return
 			end
 			
-			this.showConsoleMessage()
-			this.showSubtitleMessage()
+			showConsoleMessage()
+			showSubtitleMessage()
 		end
 		
 		/** \brief Show console message. */
 		public func void showConsoleMessage()
-			var Console console = this.pECBehavior.getConsole()
+			var Console console = pECBehavior.getConsole()
 			if console != null
-				console.addMessage( this.pMessage )
+				console.addMessage(pMessage)
 			end
 		end
 		
@@ -141,72 +141,72 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) \
-	this( eclass, BaseGameApp.getApp().getTriggerTable(), BaseGameApp.getApp().getConsole(), "" )
+	public func new(BehaviorElementClass eclass) \
+	this(eclass, BaseGameApp.getApp().getTriggerTable(), BaseGameApp.getApp().getConsole(), "")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id ) \
-	this( eclass, BaseGameApp.getApp().getTriggerTable(), BaseGameApp.getApp().getConsole(), id )
+	public func new(BehaviorElementClass eclass, String id) \
+	this(eclass, BaseGameApp.getApp().getTriggerTable(), BaseGameApp.getApp().getConsole(), id)
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console ) \
-	this( eclass, triggerTable, console, "" )
+	public func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console) \
+	this(eclass, triggerTable, console, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console, String id ) \
-	this( eclass, triggerTable, console, id, id.empty() if "showMessage." else "showMessage(" + id + ")." )
+	public func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console, String id) \
+	this(eclass, triggerTable, console, id, id.empty() if "showMessage." else "showMessage(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console, \
-	String id, String prefix ) super( eclass, id )
-		this.pTriggerTable = triggerTable
-		this.pConsole = console
+	public func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console, \
+	String id, String prefix) super(eclass, id)
+		pTriggerTable = triggerTable
+		pConsole = console
 		
-		this.pTriggered = ECBehaviorTriggered.new( eclass, triggerTable, id, prefix + "trigger" )
+		pTriggered = ECBehaviorTriggered.new(eclass, triggerTable, id, prefix + "trigger")
 		
-		this.pMessage = ECPString.new( prefix + "message", "" )
-		eclass.addProperty( this.pMessage )
+		pMessage = ECPString.new(prefix + "message", "")
+		eclass.addProperty(pMessage)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	
 	
 	/** \brief Trigger to show message. */
 	public func ECBehaviorTriggered getTriggered()
-		return this.pTriggered
+		return pTriggered
 	end
 	
 	/** \brief Message to show. */
 	public func ECPString getMessage()
-		return this.pMessage
+		return pMessage
 	end
 	
 	/** \brief Trigger table or \em null if not used. */
 	public func TSTriggerTable getTriggerTable()
-		return this.pTriggerTable
+		return pTriggerTable
 	end
 	
 	/** \brief Set trigger table or \em null if not used. */
-	protected func void setTriggerTable( TSTriggerTable triggerTable )
-		this.pTriggerTable = triggerTable
+	protected func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
 	end
 	
 	/** \brief Console. */
 	public func Console getConsole()
-		return this.pConsole
+		return pConsole
 	end
 	
 	/** \brief Set console. */
-	public func void setConsole( Console console )
-		this.pConsole = console
+	public func void setConsole(Console console)
+		pConsole = console
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -217,10 +217,10 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorShowMessage getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorShowMessage each
+	static public func ECBehaviorShowMessage getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorShowMessage each
 			return true
-		end ) cast ECBehaviorShowMessage
+		end) cast ECBehaviorShowMessage
 	end
 	
 	/**
@@ -229,10 +229,10 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorShowMessage with specific identifier.
 	 */
-	static public func ECBehaviorShowMessage getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorShowMessage each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorShowMessage
+	static public func ECBehaviorShowMessage getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorShowMessage each
+			return each.getID().equals(id)
+		end) cast ECBehaviorShowMessage
 	end
 	
 	/**
@@ -241,10 +241,10 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	 * Returns list contains ECBehaviorShowMessage behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorShowMessage each
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorShowMessage each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -256,10 +256,10 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	 * of type ECBehaviorShowMessage.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -268,10 +268,10 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorShowMessage.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -280,16 +280,16 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	 * Returns list contains ECBehaviorShowMessage.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

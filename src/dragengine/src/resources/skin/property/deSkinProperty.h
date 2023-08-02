@@ -71,12 +71,18 @@ class deSkinPropertyVisitor;
  * \par
  * Properties can be interprated by one or more modules. So far the
  * graphic, audio and physics module can use texture properties.
+ * 
+ * \par
+ * In addition a bone name can be set. This is used by texture properties using vertex position
+ * instead of texture coordinates as input. The vertex position is evaluated relative to the
+ * bone coordinate system. Texture properties not using vertex position ignore this parameter.
  */
 class DE_DLL_EXPORT deSkinProperty{
 private:
 	decString pType;
 	decString pTexCoordSet;
 	decString pRenderable;
+	decString pBone;
 	
 	
 	
@@ -107,11 +113,17 @@ public:
 	/** \brief Set texture coordinate set name or an empty string to use the default one. */
 	void SetTexCoordSet( const char *name );
 	
-	/** \brief Renderable name an empty string to use none. */
+	/** \brief Renderable name or empty string to use none. */
 	inline const decString &GetRenderable() const{ return pRenderable; }
 	
-	/** \brief Set renderable name an empty string to use none. */
+	/** \brief Set renderable name or empty string to use none. */
 	void SetRenderable( const char *renderable );
+	
+	/** \brief Bone name or empty string. */
+	inline const decString &GetBone() const{ return pBone; }
+	
+	/** \brief Set bone name or empty string. */
+	void SetBone( const char *bone );
 	/*@}*/
 	
 	

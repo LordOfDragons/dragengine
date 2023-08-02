@@ -25,6 +25,7 @@
 #include <dragengine/resources/skin/property/deSkinPropertyVisitor.h>
 #include <dragengine/common/math/decMath.h>
 
+class deSkin;
 class decXmlWriter;
 
 
@@ -35,6 +36,7 @@ class decXmlWriter;
 class desmWriteProperty : public deSkinPropertyVisitor{
 private:
 	decXmlWriter &pWriter;
+	const deSkin &pSkin;
 	const char * const pPropertyType;
 	
 	
@@ -43,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	desmWriteProperty( decXmlWriter &writer, const char *propertyType );
+	desmWriteProperty( decXmlWriter &writer, const deSkin &skin, const char *propertyType );
 	
 	/** \brief Clean up visitor. */
 	virtual ~desmWriteProperty();

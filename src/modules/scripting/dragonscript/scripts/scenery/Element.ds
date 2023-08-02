@@ -210,6 +210,7 @@ class Element
 		this.pPosition = position
 		this.pOrientation = orientation
 		this.pScaling = scaling
+		pIsScaled = not Vector.new(1, 1, 1).equals(scaling)
 		this.pMatrix = null
 		this.pMatrixInverse = null
 		

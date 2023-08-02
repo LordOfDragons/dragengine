@@ -19,10 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSkinPropertyNodeImage.h"
 #include "deSkinPropertyNodeVisitor.h"
 #include "../../../image/deImage.h"
@@ -37,14 +33,10 @@
 ////////////////////////////
 
 deSkinPropertyNodeImage::deSkinPropertyNodeImage() :
-pImage( NULL ),
 pRepeat( 1, 1 ){
 }
 
 deSkinPropertyNodeImage::~deSkinPropertyNodeImage(){
-	if( pImage ){
-		pImage->FreeReference();
-	}
 }
 
 
@@ -57,26 +49,11 @@ void deSkinPropertyNodeImage::SetPath( const char *path ){
 }
 
 void deSkinPropertyNodeImage::SetImage( deImage *image ){
-	if( image == pImage ){
-		return;
-	}
-	
-	if( pImage ){
-		pImage->FreeReference();
-	}
-	
 	pImage = image;
-	
-	if( image ){
-		image->AddReference();
-	}
 }
 
 void deSkinPropertyNodeImage::SetRepeat( const decPoint &count ){
-	if( ! ( count >= decPoint( 1, 1 ) ) ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( count >= decPoint( 1, 1 ) )
 	pRepeat = count;
 }
 

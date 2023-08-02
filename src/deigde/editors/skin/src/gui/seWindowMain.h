@@ -37,6 +37,7 @@ class seIGDEModule;
 class seLoadSaveSystem;
 class seSkin;
 class seTexture;
+class seMapped;
 class seViewConstructed;
 class seViewSkin;
 class seWindowMainListener;
@@ -66,6 +67,9 @@ private:
 	igdeActionReference pActionEditCut;
 	igdeActionReference pActionEditCopy;
 	igdeActionReference pActionEditPaste;
+	
+	igdeActionReference pActionMappedAdd;
+	igdeActionReference pActionMappedRemove;
 	
 	igdeActionReference pActionTextureAdd;
 	igdeActionReference pActionTextureRemove;
@@ -142,6 +146,9 @@ public:
 	
 	
 	/** \brief Actions. */
+	inline igdeAction *GetActionMappedAdd() const{ return pActionMappedAdd; }
+	inline igdeAction *GetActionMappedRemove() const{ return pActionMappedRemove; }
+	
 	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
 	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
 	inline igdeAction *GetActionTextureImportFromGDef() const{ return pActionTextureImportFromGDef; }
@@ -239,6 +246,7 @@ private:
 	void pCreateMenu();
 	void pCreateMenuSkin( igdeMenuCascade &menu );
 	void pCreateMenuEdit( igdeMenuCascade &menu );
+	void pCreateMenuMapped( igdeMenuCascade &menu );
 	void pCreateMenuTexture( igdeMenuCascade &menu );
 };
 

@@ -43,6 +43,7 @@
 #include "../../skin/dynamic/renderables/render/deoglRDSRenderable.h"
 #include "../../skin/state/deoglSkinState.h"
 #include "../../skin/state/deoglSkinStateRenderable.h"
+#include "../../skin/state/deoglSkinStateConstructed.h"
 #include "../../video/deoglRVideoPlayer.h"
 
 #include <dragengine/common/exceptions.h>
@@ -222,14 +223,16 @@ void deoglTexUnitConfig::EnableTextureFromChannel( deoglRenderThread &renderThre
 const deoglSkinTexture &skinTexture, deoglSkinChannel::eChannelTypes skinChannel,
 const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglTexture *defaultTexture ){
 	deoglTexture *useTexture = defaultTexture;
-	deoglTexSamplerConfig *useSampler = NULL;
+	deoglTexSamplerConfig *useSampler = nullptr;
+	bool found = false;
 	
 	// determine texture to use
 	const deoglSkinChannel * const schan = skinTexture.GetChannelAt( skinChannel );
 	
 	if( schan ){
+		// try renderable
 		const int skinRenderable = schan->GetRenderable();
-		deoglTexture *renderableTexture = NULL;
+		deoglTexture *renderableTexture = nullptr;
 		
 		if( dynamicSkin && skinState ){
 			if( skinRenderable != -1 && skinRenderable < skinState->GetRenderableCount() ){
@@ -244,10 +247,13 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		
 		if( renderableTexture ){
 			useTexture = renderableTexture;
-			
-		}else{
+			found = true;
+		}
+		
+		// try video player
+		if( ! found ){
 			const int skinVideoPlayer = schan->GetVideoPlayer();
-			deoglRVideoPlayer *videoPlayer = NULL;
+			deoglRVideoPlayer *videoPlayer = nullptr;
 			
 			if( skinVideoPlayer != -1 && skinState && skinVideoPlayer < skinState->GetVideoPlayerCount() ){
 				videoPlayer = skinState->GetVideoPlayerAt( skinVideoPlayer );
@@ -255,20 +261,38 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 			
 			if( videoPlayer ){
 				useTexture = videoPlayer->GetTexture();
-				
-			}else{
-				deoglTexture *texture = schan->GetTexture();
-				
-				if( schan->GetImage() ){
-					texture = schan->GetImage()->GetTexture();
-					
-				}else if( schan->GetCombinedTexture() ){
-					texture = schan->GetCombinedTexture()->GetTexture();
+				found = true;
+			}
+		}
+		
+		// try dynamic constructed
+		if( ! found ){
+			const int dynamicConstructed = schan->GetDynamicConstructed();
+			
+			if( dynamicConstructed != -1 && skinState
+			&& dynamicConstructed < skinState->GetConstructedPropertyCount() ){
+				const deoglRenderTarget::Ref &renderTarget =
+					skinState->GetConstructedPropertyAt( dynamicConstructed ).GetRenderTarget();
+				if( renderTarget ){
+					useTexture = renderTarget->GetTexture();
 				}
+				found = true;
+			}
+		}
+		
+		// otherwise use channel texture
+		if( ! found ){
+			deoglTexture *texture = schan->GetTexture();
+			
+			if( schan->GetImage() ){
+				texture = schan->GetImage()->GetTexture();
 				
-				if( texture ){
-					useTexture = texture;
-				}
+			}else if( schan->GetCombinedTexture() ){
+				texture = schan->GetCombinedTexture()->GetTexture();
+			}
+			
+			if( texture ){
+				useTexture = texture;
 			}
 		}
 	}
@@ -325,11 +349,13 @@ const deoglSkinTexture &skinTexture, deoglSkinChannel::eChannelTypes skinChannel
 const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCubeMap *defaultCubemap ){
 	deoglCubeMap *useCubemap = defaultCubemap;
 	deoglTexSamplerConfig *useSampler = NULL;
+	bool found = false;
 	
 	// determine texture to use
 	const deoglSkinChannel * const schan = skinTexture.GetChannelAt( skinChannel );
 	
 	if( schan ){
+		// try renderable
 		const int skinRenderable = schan->GetRenderable();
 		deoglCubeMap *renderableCubemap = NULL;
 		
@@ -346,8 +372,11 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCube
 		
 		if( renderableCubemap ){
 			useCubemap = renderableCubemap;
-			
-		}else{
+			found = true;
+		}
+		
+		// otherwise us channel texture
+		if( ! found ){
 			deoglCubeMap *cubemap = schan->GetCubeMap();
 			
 			if( schan->GetImage() ){

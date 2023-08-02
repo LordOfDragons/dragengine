@@ -114,7 +114,7 @@ pDirtyEnvMapNotifyLightChanged( true ),
 
 pDirtyRenderableMapping( true ),
 pDirtySkinStateController( true ),
-pDirtySkinStateCalculatedProperties( true ),
+pDirtySkinStateStates( true ),
 pSkinStatePrepareRenderables( true ),
 pDynamicSkinRenderablesChanged( true ),
 pDynamicSkinRequiresSync( false ),
@@ -254,18 +254,19 @@ void deoglLight::SyncToRender(){
 		pAccumUpdate = 0.0f;
 	}
 	
-	// sync calculated skin state properties. has to come after pSkinStateController->SyncToRender()
+	// sync skin state properties. has to come after pSkinStateController->SyncToRender()
 	// and pRComponent->UpdateSkin()
-	if( pDirtySkinStateCalculatedProperties ){
-		pRLight->InitSkinStateCalculatedProperties();
-		pDirtySkinStateCalculatedProperties = false;
+	if( pDirtySkinStateStates ){
+		pRLight->InitSkinStateStates();
+		pDirtySkinStateStates = false;
 	}
+	
 	if( pSkinStatePrepareRenderables ){
 		pRLight->DirtyPrepareSkinStateRenderables();
 		pSkinStatePrepareRenderables = false;
 	}
 	
-	pRLight->UpdateSkinStateCalculatedProperties(); // has to be done better. only some need this
+	pRLight->UpdateSkinStateStates(); // has to be done better. only some need this
 	
 	if( pDirtyMatrices ){
 		pRLight->SetMatrix( decDMatrix::CreateWorld( pLight.GetPosition(), pLight.GetOrientation() ) );
@@ -536,8 +537,7 @@ void deoglLight::SourceChanged(){
 	
 	if( lightSkin != pLightSkin ){
 		pLightSkin = lightSkin;
-		
-		pDirtySkinStateCalculatedProperties = true;
+		pDirtySkinStateStates = true;
 	}
 	
 	// light canvas

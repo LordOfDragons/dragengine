@@ -46,7 +46,7 @@ class seWPTextureListener;
 
 
 /**
- * \brief Texture panel.
+ * Texture panel.
  */
 class seWPTexture : public igdeContainerScroll{
 private:
@@ -55,6 +55,7 @@ private:
 	
 	seSkin *pSkin;
 	bool pRequiresUpdate;
+	bool pPreventUpdateMappedTarget;
 	
 	igdeListBoxReference pListTexture;
 	igdeTextFieldReference pEditTexName;
@@ -62,6 +63,7 @@ private:
 	igdeListBoxReference pListProperty;
 	igdeTextFieldReference pEditPropName;
 	igdeTextFieldReference pEditPropRenderable;
+	igdeTextFieldReference pEditPropBone;
 	
 	igdeComboBoxReference pCBPropertyType;
 	igdeSwitcherReference pSwitcher;
@@ -78,12 +80,7 @@ private:
 	igdeCheckBoxReference pChkPvtVideoSharedTime;
 	
 	igdeSpinTextFieldReference pSpinPvtMappedComponent;
-	igdeViewCurveBezierReference pEditPvtMappedCurve;
-	igdeComboBoxReference pCBPvtMappedInputType;
-	igdeTextFieldReference pEditPvtMappedInputLower;
-	igdeTextFieldReference pEditPvtMappedInputUpper;
-	igdeCheckBoxReference pChkPvtMappedInputClamped;
-	igdeTextFieldReference pEditPvtMappedBone;
+	igdeComboBoxReference pCBPvtMappedTarget;
 	
 	igdeColorBoxReference pConstructedClrColor;
 	igdeEditPoint3Reference pConstructedEditSize;
@@ -100,11 +97,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	seWPTexture( seWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~seWPTexture();
 	/*@}*/
 	
@@ -113,53 +110,56 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Skin. */
+	/** Skin. */
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin. */
+	/** Set skin. */
 	void SetSkin( seSkin *skin );
 	
-	/** \brief Skin path changed. */
+	/** Skin path changed. */
 	void OnSkinPathChanged();
 	
-	/** \brief Active texture. */
+	/** Active texture. */
 	seTexture *GetTexture() const;
 	
-	/** \brief Active property. */
+	/** Active property. */
 	seProperty *GetProperty() const;
 	
-	/** \brief Update texture list. */
+	/** Update texture list. */
 	void UpdateTextureList();
 	
-	/** \brief Change selection to the active texture. */
+	/** Change selection to the active texture. */
 	void SelectActiveTexture();
 	
-	/** \brief Update texture parameters. */
+	/** Update texture parameters. */
 	void UpdateTexture();
 	
-	/** \brief Update property list. */
+	/** Update property list. */
 	void UpdatePropertyList();
 	
-	/** \brief Update preview parameters. */
+	/** Update preview parameters. */
 	void UpdatePreviewParameters();
 	
-	/** \brief Change selection to the active property. */
+	/** Change selection to the active property. */
 	void SelectActiveProperty();
 	
-	/** \brief Show active property panel. */
+	/** Show active property panel. */
 	void ShowPropertyPanel();
 	
-	/** \brief Update property parameters. */
+	/** Update property parameters. */
 	void UpdateProperty();
 	
-	/** \brief Selected mapped component index. */
+	/** Selected mapped component index. */
 	int GetPropertyMappedComponentIndex() const;
 	
-	/** \brief Update property parameter mapped component. */
+	/** Update property parameter mapped component. */
 	void UpdatePropertyMappedComponent();
+	
+	/** Update mapped component target list. */
+	void UpdatePropertyMappedTargetList();
 	/*@}*/
 };
 

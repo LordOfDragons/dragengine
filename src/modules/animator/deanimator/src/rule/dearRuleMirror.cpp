@@ -28,6 +28,7 @@
 #include "../dearVPSState.h"
 #include "../dearVPSStateList.h"
 #include "../dearAnimatorInstance.h"
+#include "../deDEAnimator.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
@@ -106,6 +107,16 @@ DEBUG_RESET_TIMERS;
 		return;
 	}
 	
+	
+	// update global matrices of all affected bones.
+	const int mappingCount = GetBoneMappingCount();
+	int i;
+	
+	for( i=0; i<mappingCount; i++ ){
+		stalist.GetStateAt( GetBoneMappingFor( i ) )->UpdateMatrices();
+	}
+	
+	
 	// prepare transformation matrix
 	decMatrix transformMatrix( pMirrorMatrix );
 	
@@ -116,10 +127,8 @@ DEBUG_RESET_TIMERS;
 			.QuickMultiply( bstate.GetGlobalMatrix() );
 	}
 	
-	// step through all bone pairs and apply transformation
-	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
-	int i;
 	
+	// mirror global matrices of all bone pairs and single bones
 	for( i=0; i<pBonePairCount; i++ ){
 		const sBonePair &pair = pBonePairs[ i ];
 		
@@ -127,52 +136,47 @@ DEBUG_RESET_TIMERS;
 		if( pair.first != pair.second ){
 			// store first bone global matrix
 			dearBoneState &bstate1 = *stalist.GetStateAt( pair.first );
-			bstate1.UpdateMatrices();
 			const decMatrix orgMatrix1( bstate1.GetGlobalMatrix() );
 			
 			// store second bone global matrix
 			dearBoneState &bstate2 = *stalist.GetStateAt( pair.second );
-			bstate2.UpdateMatrices();
 			const decMatrix orgMatrix2( bstate2.GetGlobalMatrix() );
 			
 			// mirror first bone
-			decMatrix matrix1( orgMatrix2.QuickMultiply( transformMatrix ).Normalized() );
-			if( bstate2.GetParentState() ){
-				matrix1 = matrix1.QuickMultiply( bstate2.GetParentState()->GetGlobalMatrix()
-					.QuickMultiply( transformMatrix ).Normalized().QuickInvert() );
-			}
-			matrix1 = matrix1.QuickMultiply( bstate1.GetInverseRigLocalMatrix() );
-			
-			bstate1.BlendWith( matrix1.GetPosition(), matrix1.ToQuaternion(), matrix1.GetScale(),
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			bstate1.SetGlobalMatrix( orgMatrix2.QuickMultiply( transformMatrix ).Normalized() );
+			bstate1.SetInverseGlobalMatrix( bstate1.GetGlobalMatrix().QuickInvert() );
 			
 			// mirror second bone
-			decMatrix matrix2( orgMatrix1.QuickMultiply( transformMatrix ).Normalized() );
-			if( bstate1.GetParentState() ){
-				matrix2 = matrix2.QuickMultiply( bstate1.GetParentState()->GetGlobalMatrix()
-					.QuickMultiply( transformMatrix ).Normalized().QuickInvert() );
-			}
-			matrix2 = matrix2.QuickMultiply( bstate2.GetInverseRigLocalMatrix() );
-			
-			bstate2.BlendWith( matrix2.GetPosition(), matrix2.ToQuaternion(), matrix2.GetScale(),
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			bstate2.SetGlobalMatrix( orgMatrix1.QuickMultiply( transformMatrix ).Normalized() );
+			bstate2.SetInverseGlobalMatrix( bstate2.GetGlobalMatrix().QuickInvert() );
 			
 		// single bone
 		}else{
 			dearBoneState &bstate = *stalist.GetStateAt( pair.first );
-			bstate.UpdateMatrices();
 			
-			decMatrix matrix( bstate.GetGlobalMatrix().QuickMultiply( transformMatrix ).Normalized() );
-			if( bstate.GetParentState() ){
-				matrix = matrix.QuickMultiply( bstate.GetParentState()->GetGlobalMatrix()
-					.QuickMultiply( transformMatrix ).Normalized().QuickInvert() );
-			}
-			matrix = matrix.QuickMultiply( bstate.GetInverseRigLocalMatrix() );
-			
-			bstate.BlendWith( matrix.GetPosition(), matrix.ToQuaternion(), matrix.GetScale(),
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			bstate.SetGlobalMatrix( bstate.GetGlobalMatrix().QuickMultiply( transformMatrix ).Normalized() );
+			bstate.SetInverseGlobalMatrix( bstate.GetGlobalMatrix().QuickInvert() );
 		}
 	}
+	
+	
+	// apply changes to state. by doing this in a separate step it is not necessary to sort
+	// bones up front to process them in the correct order (from children to parents)
+	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
+	
+	for( i=0; i<mappingCount; i++ ){
+		dearBoneState &bstate = *stalist.GetStateAt( GetBoneMappingFor( i ) );
+		
+		decMatrix matrix( bstate.GetGlobalMatrix() );
+		if( bstate.GetParentState() ){
+			matrix = matrix.QuickMultiply( bstate.GetParentState()->GetInverseGlobalMatrix() );
+		}
+		matrix = matrix.QuickMultiply( bstate.GetInverseRigLocalMatrix() );
+		
+		bstate.BlendWith( matrix.GetPosition(), matrix.ToQuaternion(), matrix.GetScale(),
+			blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+	}
+	
 	
 	// step through all vertex position set pairs and apply transformation
 	for( i=0; i<pVPSPairCount; i++ ){
@@ -222,7 +226,9 @@ void dearRuleMirror::RuleChanged(){
 //////////////////////
 
 void dearRuleMirror::pUpdateBones(){
-	pMirrorBone = GetInstance().GetBoneStateList().IndexOfStateNamed( pMirror.GetMirrorBone() );
+	const dearBoneStateList &slist = GetInstance().GetBoneStateList();
+	
+	pMirrorBone = slist.IndexOfStateNamed( pMirror.GetMirrorBone() );
 	
 	if( pBonePairs ){
 		delete [] pBonePairs;
@@ -235,6 +241,8 @@ void dearRuleMirror::pUpdateBones(){
 		return;
 	}
 	
+	
+	// find affected bones
 	struct sBone{
 		int index;
 		decString name;
@@ -245,10 +253,12 @@ void dearRuleMirror::pUpdateBones(){
 	int i;
 	for( i=0; i<mappingCount; i++ ){
 		bones[ i ].index = GetBoneMappingFor( i );
-		bones[ i ].name = GetInstance().GetBoneStateList().GetStateAt( bones[ i ].index )->GetRigBoneName();
+		bones[ i ].name = slist.GetStateAt( bones[ i ].index )->GetRigBoneName();
 		bones[ i ].paired = false;
 	}
 	
+	
+	// find matching pairs
 	struct sMatch{
 		sBone *bone;
 		const char *before;
@@ -378,6 +388,7 @@ void dearRuleMirror::pUpdateBones(){
 		}
 	}
 	
+	
 	// add all non-paired bones
 	for( i=0; i<mappingCount; i++ ){
 		if( bones[ i ].paired ){
@@ -389,34 +400,39 @@ void dearRuleMirror::pUpdateBones(){
 		pBonePairCount++;
 	}
 	
-	// we have to sort the pairs to ensure parents follow after their children
-	const dearBoneStateList &slist = GetInstance().GetBoneStateList();
-	
-	for( i=1; i<pBonePairCount; i++ ){
-		const sBonePair &prevPair = pBonePairs[ i - 1 ];
-		const sBonePair &pair = pBonePairs[ i ];
-		
-		const dearBoneState * const prevState = slist.GetStateAt( prevPair.first );
-		const dearBoneState *state = slist.GetStateAt( pair.first );
-		while( state ){
-			if( state == prevState ){
-				const sBonePair exchange( pBonePairs[ i ] );
-				pBonePairs[ i ] = pBonePairs[ i - 1 ];
-				pBonePairs[ i - 1 ] = exchange;
-				
-				if( i > 1 ){
-					i -= 2;
-				}
-				break;
-			}
-			
-			state = state->GetParentState();
-		}
-	}
 	
 	delete [] bones;
 	delete [] matchesFirst;
 	delete [] matchesSecond;
+	
+	
+#if 0
+	// debug
+	GetModule().LogInfoFormat( "Mirror: matchNames %d:", pMirror.GetMatchNameCount() );
+	for( i=0; i<pRootParentCount; i++ ){
+		const deAnimatorRuleMirror::sMatchName &m = pMirror.GetMatchNameAt( i );
+		GetModule().LogInfoFormat( "- '%s' -> '%s' (%d)", m.first.GetString(), m.second.GetString(), m.type );
+	}
+	
+	GetModule().LogInfoFormat( "Mirror: bonePairs %d:", pBonePairCount );
+	for( i=0; i<pBonePairCount; i++ ){
+		const dearBoneState &s1 = *slist.GetStateAt( pBonePairs[ i ].first );
+		if( pBonePairs[ i ].first != pBonePairs[ i ].second ){
+			const dearBoneState &s2 = *slist.GetStateAt( pBonePairs[ i ].second );
+			GetModule().LogInfoFormat( "- %d (%s) -> %d (%s)", pBonePairs[ i ].first,
+				s1.GetRigBoneName(), pBonePairs[ i ].second, s2.GetRigBoneName() );
+			
+		}else{
+			GetModule().LogInfoFormat( "- %d (%s)", pBonePairs[ i ].first, s1.GetRigBoneName() );
+		}
+	}
+	
+	GetModule().LogInfoFormat( "Mirror: rootParents %d:", pRootParentCount );
+	for( i=0; i<pRootParentCount; i++ ){
+		const dearBoneState &s = *slist.GetStateAt( pRootParents[ i ] );
+		GetModule().LogInfoFormat( "- %d (%s)", pRootParents[ i ], s.GetRigBoneName() );
+	}
+#endif
 }
 
 void dearRuleMirror::pUpdateVPS(){

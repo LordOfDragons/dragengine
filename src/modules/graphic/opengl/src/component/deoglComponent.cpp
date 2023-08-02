@@ -94,7 +94,7 @@ pDirtyRenderableMapping( true ),
 pDirtyBoneMatrices( true ),
 pDirtyLODErrorScaling( true ),
 pDirtyMesh( true ),
-pDirtySkinStateCalculatedProperties( true ),
+pDirtySkinStateStates( true ),
 pSkinStatePrepareRenderables( true ),
 pDirtyStaticTexture( true ),
 pNotifyTexturesChanged( false ),
@@ -272,18 +272,19 @@ void deoglComponent::SyncToRender(){
 	hackCSAccumCount++; hackCSAccumTime += timer.GetElapsedTime();
 	#endif
 	
-	// sync calculated skin state properties. has to come after pSkinStateController->SyncToRender()
+	// sync skin state properties. has to come after pSkinStateController->SyncToRender()
 	// and pRComponent->UpdateSkin()
-	if( pDirtySkinStateCalculatedProperties ){
-		pRComponent->InitSkinStateCalculatedProperties( pComponent );
-		pDirtySkinStateCalculatedProperties = false;
+	if( pDirtySkinStateStates ){
+		pRComponent->InitSkinStateStates( pComponent );
+		pDirtySkinStateStates = false;
 	}
+	
 	if( pSkinStatePrepareRenderables ){
 		pRComponent->DirtyPrepareSkinStateRenderables();
 		pSkinStatePrepareRenderables = false;
 	}
 	
-	pRComponent->UpdateSkinStateCalculatedProperties(); // has to be done better. only some need this
+	pRComponent->UpdateSkinStateStates(); // has to be done better. only some need this
 	
 	if( pDirtySolid ){
 		pRComponent->DirtySolid();
@@ -302,8 +303,9 @@ void deoglComponent::SyncToRender(){
 	}
 	
 	if( pDirtyBoneMatrices ){
+		pComponent.PrepareBones();
 		pRComponent->UpdateBoneMatrices( pComponent );
-		pRComponent->UpdateSkinStateCalculatedPropertiesBones( pComponent );
+		pRComponent->UpdateSkinStateBones( pComponent );
 		pDirtyBoneMatrices = false;
 		#ifdef HACK_TEST_CS
 		hackCSBoneMapCount++; hackCSBoneMapTime += timer.GetElapsedTime();
@@ -571,7 +573,7 @@ void deoglComponent::SkinChanged(){
 	pDirtyResetStatic = true;
 	pDirtySkinStateController = true;
 	pDirtyRenderableMapping = true;
-	pDirtySkinStateCalculatedProperties = true;
+	pDirtySkinStateStates = true;
 	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
 	pDirtyTextureUseSkin = true;
@@ -602,7 +604,7 @@ void deoglComponent::ModelAndSkinChanged(){
 	pDirtyResetStatic = true;
 	pDirtySkinStateController = true;
 	pDirtyRenderableMapping = true;
-	pDirtySkinStateCalculatedProperties = true;
+	pDirtySkinStateStates = true;
 	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
 	pDirtyTextureUseSkin = true;
@@ -624,7 +626,7 @@ void deoglComponent::RigChanged(){
 	pDirtyResetStatic = true;
 	pDirtyMesh = true;
 	pDirtyBoneMatrices = true;
-	pDirtySkinStateCalculatedProperties = true;
+	pDirtySkinStateStates = true;
 	pSkinStatePrepareRenderables = true;
 	
 	pRequiresSync();
@@ -694,7 +696,7 @@ void deoglComponent::TextureChanged( int index, deComponentTexture &texture ){
 	pDirtyResetStatic = true;
 	pTextureDynamicSkinRequiresSync = true;
 	pDirtySkinStateController = true;
-	pDirtySkinStateCalculatedProperties = true;
+	pDirtySkinStateStates = true;
 	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;

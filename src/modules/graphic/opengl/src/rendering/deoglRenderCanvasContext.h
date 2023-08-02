@@ -30,6 +30,7 @@ class deoglRCanvasView;
 class deoglRenderTarget;
 class deoglTexture;
 class deoglRenderPlanMasked;
+class deoglSkinStateConstructedNode;
 
 
 
@@ -71,6 +72,15 @@ public:
 	/** Create render canvas context for a child canvas. */
 	deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext,
 		const deoglRCanvas &childCanvas );
+	
+	/** Create render canvas context for an initial constructed node. */
+	deoglRenderCanvasContext( const deoglSkinStateConstructedNode &node, deoglFramebuffer *fbo,
+		const decPoint &viewportOffset, const decPoint &viewportSize, bool upsideDown,
+		const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Create render canvas context for a child constructed node. */
+	deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext,
+		const deoglSkinStateConstructedNode &childNode );
 	
 	/** Clean up render canvas context. */
 	~deoglRenderCanvasContext();

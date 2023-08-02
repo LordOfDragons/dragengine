@@ -38,7 +38,7 @@
 ////////////////////////////
 
 deoglRDSRenderableImage::deoglRDSRenderableImage( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( dynamicSkin )
+deoglRDSRenderable( etImage, dynamicSkin )
 {
 	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableImage );
 }

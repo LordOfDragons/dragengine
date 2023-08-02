@@ -28,6 +28,7 @@
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../target/deoglRenderTarget.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../skin/state/node/deoglSkinStateConstructedNode.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -124,6 +125,76 @@ pTransformMask( parentContext.pTransformMask )
 	// mask. child mask replaces parent mask. this is not correct but right now the only solution
 	if( childCanvas.GetMaskRenderTarget() ){
 		pMask = childCanvas.GetMaskRenderTarget()->GetTexture();
+		UpdateTransformMask();
+	}
+}
+
+deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglSkinStateConstructedNode &node,
+deoglFramebuffer *fbo, const decPoint &viewportOffset, const decPoint &viewportSize,
+bool upsideDown, const deoglRenderPlanMasked *renderPlanMask ) :
+pFBO( fbo ),
+pViewportOffset( viewportOffset ),
+pViewportSize( viewportSize ),
+pRenderPlanMask( renderPlanMask ),
+
+pClipMin( -1.0f, -1.0f ),
+pClipMax( 1.0f, 1.0f ),
+
+//pTransform( canvas.GetTransform() ), // initial render to fbo context needs identity transform
+pTCClampMin( 0.0f, 0.0f ),
+pTCClampMax( 1.0f, 1.0f ),
+pColorTransform( node.GetColorTransform() ),
+pTransparency( node.GetTransparency() ),
+pMask( nullptr )
+{
+	// set clip factor to obtain correct clipping coordinates for the shaders
+	pClipFactor.x = ( float )viewportSize.x * 0.5f;
+	pClipFactor.y = ( float )viewportSize.y * 0.5f;
+	
+	// account for upside down and shifting to pixel center to not hit pixel edges
+	const float biasScaleU = 2.0f / ( float )viewportSize.x;
+	const float biasScaleV = 2.0f / ( float )viewportSize.y;
+	const float biasOffsetU = -1.0f;
+	const float biasOffsetV = -1.0f;
+	
+	if( upsideDown ){
+		pTransform = decTexMatrix2::CreateST( biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV );
+		
+	}else{
+		pTransform = decTexMatrix2::CreateST( biasScaleU, biasScaleV, biasOffsetU, biasOffsetV );
+	}
+	
+	// mask
+	if( node.GetMaskRenderTarget() ){
+		pMask = node.GetMaskRenderTarget()->GetTexture();
+		UpdateTransformMask();
+	}
+}
+
+deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext,
+const deoglSkinStateConstructedNode &childNode ) :
+pFBO( parentContext.pFBO ),
+pViewportOffset( parentContext.pViewportOffset ),
+pViewportSize( parentContext.pViewportSize ),
+pRenderPlanMask( parentContext.pRenderPlanMask ),
+
+pClipFactor( parentContext.pClipFactor ),
+
+pTransform( childNode.GetTransform() * parentContext.pTransform ),
+pTCClampMin( 0.0f, 0.0f ),
+pTCClampMax( 1.0f, 1.0f ),
+pColorTransform( childNode.GetColorTransform() * parentContext.pColorTransform ),
+pTransparency( childNode.GetTransparency() * parentContext.pTransparency ),
+pMask( parentContext.pMask ),
+pTransformMask( parentContext.pTransformMask )
+{
+	pCalculateClipping( decPoint( childNode.GetSize().x, childNode.GetSize().y ) );
+	pClipMin.SetLargest( parentContext.pClipMin );
+	pClipMax.SetSmallest( parentContext.pClipMax );
+	
+	// mask. child mask replaces parent mask. this is not correct but right now the only solution
+	if( childNode.GetMaskRenderTarget() ){
+		pMask = childNode.GetMaskRenderTarget()->GetTexture();
 		UpdateTransformMask();
 	}
 }

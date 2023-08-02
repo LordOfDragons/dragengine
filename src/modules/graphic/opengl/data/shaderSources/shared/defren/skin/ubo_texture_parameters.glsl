@@ -52,6 +52,8 @@ struct sTextureParameters{
 	vec3 texOutlineEmissivityTint;
 	
 	bool texEmissivityCameraAdapted;
+	float texSkinClipPlane; // clip.plane
+	float texSkinClipPlaneBorder; // clip.plane.border
 	
 	#ifdef SHARED_SPB_TEXTURE_PADDING
 	vec4 padding[ SHARED_SPB_TEXTURE_PADDING ];

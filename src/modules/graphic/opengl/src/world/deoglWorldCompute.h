@@ -213,6 +213,9 @@ private:
 	void pUpdateFullUpdateGeometryLimits();
 	
 	void pDebugPrintElements();
+	void pDebugPrintUpdateElements();
+	void pDebugPrintUpdateGeometries();
+	void pDebugPrintClearGeometries();
 };
 
 #endif

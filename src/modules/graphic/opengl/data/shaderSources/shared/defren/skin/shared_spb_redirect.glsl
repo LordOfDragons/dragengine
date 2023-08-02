@@ -33,6 +33,8 @@
 
 #define pIndexSPBTexParams pSharedSPB[ spbIndex ].indexSPBTexParams
 
+#define pInstSkinClipPlaneNormal pSharedSPB[ spbIndex ].instSkinClipPlaneNormal
+
 // texture coordinate transformations used for dynamic textures only
 /*
 #define pTCTransformColor pSharedSPB[ spbIndex ].tcTransformColor
@@ -140,6 +142,12 @@
 #endif
 #ifdef DYNAMIC_OUTLINE_SOLIDITY
 	#define pInstOutlineSolidity pSharedSPB[ spbIndex ].instOutlineSolidity
+#endif
+#ifdef DYNAMIC_SKIN_CLIP_PLANE
+	#define pInstClipPlane pSharedSPB[ spbIndex ].instClipPlane
+#endif
+#ifdef DYNAMIC_SKIN_CLIP_PLANE_BORDER
+	#define pInstSkinClipPlaneBorder pSharedSPB[ spbIndex ].instSkinClipPlaneBorder
 #endif
 
 

@@ -22,6 +22,8 @@
 #ifndef _AEVIEW3D_H_
 #define _AEVIEW3D_H_
 
+#include "gizmo/aeGizmoManager.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseKeyListenerReference.h>
 #include <deigde/gui/event/igdeMouseCameraListenerReference.h>
@@ -45,6 +47,9 @@ private:
 	igdeMouseCameraListenerReference pCameraInteraction;
 	igdeMouseKeyListenerReference pLocomotionInteraction;
 	igdeMouseKeyListenerReference pWakeboardInteraction;
+	igdeMouseKeyListenerReference pEditorInteraction;
+	
+	aeGizmoManager pGizmos;
 	
 	
 	
@@ -93,6 +98,9 @@ public:
 	
 	/** Create canvas. */
 	virtual void CreateCanvas();
+	
+	/** Gizmos. */
+	inline aeGizmoManager &GetGizoms(){ return pGizmos; }
 	/*@}*/
 };
 

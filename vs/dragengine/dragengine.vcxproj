@@ -464,6 +464,7 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinReference.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinTexture.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinMapped.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkin.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinReference.cpp" />
@@ -1140,6 +1141,7 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinReference.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinTexture.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinMapped.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkin.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinReference.h" />

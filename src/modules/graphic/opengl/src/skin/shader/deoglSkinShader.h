@@ -193,6 +193,9 @@ public:
 		
 		etutTexEmissivityCameraAdapted,
 		
+		etutTexSkinClipPlane,
+		etutTexSkinClipPlaneBorder,
+		
 		ETUT_COUNT
 	};
 	
@@ -253,6 +256,9 @@ public:
 		eiutInstOutlineEmissivity,
 		eiutInstOutlineSolidity,
 		eiutInstOutlineEmissivityTint,
+		eiutInstSkinClipPlaneNormal,
+		eiutInstSkinClipPlane,
+		eiutInstSkinClipPlaneBorder,
 		
 		EIUT_COUNT
 	};

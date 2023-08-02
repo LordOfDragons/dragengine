@@ -43,7 +43,7 @@
 ////////////////////////////
 
 sePropertyNodeImage::sePropertyNodeImage( deEngine &engine ) :
-sePropertyNode( entImage, engine ),
+sePropertyNode( entImage, engine, MappedCount ),
 pImage( NULL ),
 pRepeat( 1, 1 ){
 }

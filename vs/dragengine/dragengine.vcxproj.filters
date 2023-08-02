@@ -1311,6 +1311,9 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinMapped.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3315,6 +3318,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinMapped.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkin.h">

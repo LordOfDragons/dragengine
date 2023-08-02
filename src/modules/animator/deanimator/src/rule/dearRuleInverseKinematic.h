@@ -34,9 +34,26 @@ class deAnimatorRuleInverseKinematic;
  */
 class dearRuleInverseKinematic : public dearRule{
 private:
+	struct sParameters{
+		float blendFactor;
+		decVector goalPosition;
+		decQuaternion goalOrientation;
+		decVector localPosition;
+		decQuaternion localOrientation;
+		float reachRange;
+		decVector reachCenter;
+		bool hasSolverBone;
+		bool hasIKLimits;
+		float rotationCrossThreshold;
+		float goalReachedThreshold;
+		float improvedThreshold;
+	};
+	
+	
 	const deAnimatorRuleInverseKinematic &pInverseKinematic;
 	dearIKWorkState *pChain;
 	int pChainCount;
+	float pChainLength;
 	
 	dearControllerTarget pTargetGoalPosition;
 	dearControllerTarget pTargetGoalOrientation;
@@ -59,6 +76,8 @@ private:
 	
 	const float pReachRange;
 	const decVector pReachCenter;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -91,9 +110,40 @@ private:
 	void pUpdateChain();
 	void pSetChainCount( int count );
 	void pInitIKLimits();
+	void pUpdateChainWeights();
 	void pUpdateReachBone();
 	void pLimitReach( dearBoneStateList &stalist, decVector &goalPosition,
 		float range, const decVector &center );
+	void pApplyAdjustOrientation( decMatrix &goalMatrix,
+		decVector &tipPosition, const decVector &localPosition );
+	void pInitWorkingStates( dearBoneStateList &stalist, const sParameters &params );
+	void pUpdateInverseGlobal();
+	void pInitLength( const decVector &localPosition );
+	
+	void pSolveSingleBone( dearBoneStateList &stalist, const sParameters &params );
+	void pSolveCCD( dearBoneStateList &stalist, const sParameters &params );
+	void pSolveFabrik( dearBoneStateList &stalist, const sParameters &params );
+	void pUpdateBonesFromWorkingState( dearBoneStateList &stalist, const sParameters &params );
+	bool pCalcRotation( const sParameters &params, const decVector &goalPosition,
+		const decVector &tipPosition, const decVector &bonePosition,
+		decVector &rotationAxis, float &rotationAngle );
+	decMatrix pGlobalRotationMatrix( const decVector &pivot, const decQuaternion &rotation ) const;
+	decMatrix pGlobalRotationMatrix( const decVector &pivot, const decVector &axis, float angle ) const;
+	
+	decQuaternion pGlobalOrientationToBoneOrientation( int index,
+		const decQuaternion &globalOrientation, const decQuaternion &baseInverseRotation ) const;
+	
+	decQuaternion pApplyIKResistance( int index, const decQuaternion &globalOrientation,
+		const decQuaternion &baseInverseRotation, const decQuaternion &rotation ) const;
+	
+	decQuaternion pApplyIKLimits( int index, const decQuaternion &orientation ) const;
+	
+	decQuaternion pBoneOrientationToGlobalOrientation( int index,
+		const decQuaternion &baseRotation, const decQuaternion &orientation ) const;
+	
+	decQuaternion pApplyIKRestrictions( int index, const decMatrix &globalMatrix,
+		const decQuaternion &baseRotation, const decQuaternion &baseInverseRotation,
+		const decQuaternion &rotation ) const;
 };
 
 #endif

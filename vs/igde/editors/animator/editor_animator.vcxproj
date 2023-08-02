@@ -85,6 +85,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMain.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\dialog\aeDialogMirrorMatchName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoManager.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWindowProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimator.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimatorListener.cpp" />
@@ -317,6 +319,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableVertexPositionSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitable.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\aeIGDEModule.h" />
@@ -365,6 +369,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMain.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\dialog\aeDialogMirrorMatchName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoManager.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWindowProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimator.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimatorListener.h" />
@@ -597,6 +603,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxVertexPositionSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinVertexPositionSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableVertexPositionSet.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitable.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitor.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

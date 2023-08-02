@@ -40,14 +40,14 @@ deoglPTranspLayerLimit::deoglPTranspLayerLimit( deGraphicOpenGl &ogl ) : deoglPa
 	SetName( "transpLayerLimit" );
 	SetDescription( "Limits transparency rendering to N layers. Lower values increase performance"
 		" but can introduce visual errors. Higher values are more accurate but more expensive."
-		" Values ranges from 1 to 15 with good values between 4 to 8. Default is 4." );
+		" Values ranges from 1 to 15 with good values between 4 to 12. Default is 8." );
 	SetType( deModuleParameter::eptRanged );
 	SetMinimumValue( 1.0f );
 	SetMaximumValue( 15.0f );
 	SetValueStepSize( 1.0f );
 	SetCategory( ecBasic );
 	SetDisplayName( "Transparency Layer Limit" );
-	SetDefaultValue( "4" );
+	SetDefaultValue( "8" );
 }
 
 deoglPTranspLayerLimit::~deoglPTranspLayerLimit(){

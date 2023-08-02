@@ -80,12 +80,12 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 		public class DefaultAttachElement extends ElementVisitor
 			private var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			public func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void visitBehaviorElement( BehaviorElement element )
-				this.pInstance.attachToBehaviorElement( element )
+			public func void visitBehaviorElement(BehaviorElement element)
+				pInstance.attachToBehaviorElement(element)
 			end
 		end
 		
@@ -103,94 +103,94 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorAttachToParent ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		public func new(ECBehaviorAttachToParent ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 			
-			this.pCollider = ecbehavior.getCollider().instance( element )
+			pCollider = ecbehavior.getCollider().instance(element)
 		end
 		
 		/** \brief Dispose of behavior instance. */
 		public func void dispose()
-			this.pAttachVisitor = null
-			this.pCollider = null
-			this.pAttachable = null
+			pAttachVisitor = null
+			pCollider = null
+			pAttachable = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			if this.pECBehavior.getAttachable() != null
-				this.pAttachable = this.pECBehavior.getAttachable().instance( this.getElement() )
+		public func void init(StubElement stub)
+			if pECBehavior.getAttachable() != null
+				pAttachable = pECBehavior.getAttachable().instance(getElement())
 			end
 			
-			var CodecPropertyString codec = this.getElement().getClass().getCodecPropertyString()
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
 			
-			this.pBone = this.pECBehavior.getBone().getValue( stub )
-			this.pAttachSlot = this.pECBehavior.getAttachSlot().getValue( stub )
-			this.pRelative = this.pECBehavior.getRelative().getValue( stub )
-			this.pRigMode = this.pECBehavior.getRigMode().getValue( stub )
-			this.pPosition = this.pECBehavior.getPosition().getVector( stub, codec )
-			this.pOrientation = Quaternion.newFromEuler( \
-				this.pECBehavior.getOrientation().getVector( stub, codec ) )
+			pBone = pECBehavior.getBone().getValue(stub)
+			pAttachSlot = pECBehavior.getAttachSlot().getValue(stub)
+			pRelative = pECBehavior.getRelative().getValue(stub)
+			pRigMode = pECBehavior.getRigMode().getValue(stub)
+			pPosition = pECBehavior.getPosition().getVector(stub, codec)
+			pOrientation = Quaternion.newFromEuler(\
+				pECBehavior.getOrientation().getVector(stub, codec))
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorAttachToParent getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Collider behavior. */
 		public func ECBehaviorCollider.Instance getCollider()
-			return this.pCollider
+			return pCollider
 		end
 		
 		/** \brief Attachable behavior. */
 		public func ECBehaviorAttachable.Instance getAttachable()
-			return this.pAttachable
+			return pAttachable
 		end
 		
 		/** \brief Name of bone to attach to or empty string to attach statically. */
 		public func String getBone()
-			return this.pBone
+			return pBone
 		end
 		
 		/** \brief Attach slot to attach to. */
 		public func String getAttachSlot()
-			return this.pAttachSlot
+			return pAttachSlot
 		end
 		
 		/** \brief Attach relative to world position or using explicit position. */
 		public func bool getRelative()
-			return this.pRelative
+			return pRelative
 		end
 		
 		/** \brief Attach using rig mode if supported by colliders. */
 		public func bool getRigMode()
-			return this.pRigMode
+			return pRigMode
 		end
 		
 		/** \brief Explicit attach position. */
 		public func Vector getPosition()
-			return this.pPosition
+			return pPosition
 		end
 		
 		/** \brief Explicit attach rotation. */
 		public func Quaternion getOrientation()
-			return this.pOrientation
+			return pOrientation
 		end
 		
 		/** \brief Element visitor used to attach elements or \em null to use default behavior. */
 		protected func ElementVisitor getAttachVisitor()
-			return this.pAttachVisitor
+			return pAttachVisitor
 		end
 		
 		/** \brief Set element visitor used to attach elements or \em null to use default behavior. */
-		protected func void setAttachVisitor( ElementVisitor visitor )
-			this.pAttachVisitor = visitor
+		protected func void setAttachVisitor(ElementVisitor visitor)
+			pAttachVisitor = visitor
 		end
 		
 		
@@ -208,16 +208,16 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 		 * Furthermore If the parent has ECBehaviorAttachments behavior add element as attachment.
 		 * This is not done if special attaching is used like ECBehaviorAttachSlot.
 		 */
-		public func void attachToParent( Element parent )
-			if this.pCollider.getCollider() == null
+		public func void attachToParent(Element parent)
+			if pCollider.getCollider() == null
 				return
 			end
 			
-			if this.pAttachVisitor != null
-				parent.visit( this.pAttachVisitor )
+			if pAttachVisitor != null
+				parent.visit(pAttachVisitor)
 				
 			elif parent castable BehaviorElement
-				this.attachToBehaviorElement( parent cast BehaviorElement )
+				attachToBehaviorElement(parent cast BehaviorElement)
 			end
 		end
 		
@@ -227,24 +227,24 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 		 * Calls attachToCollider() if behavior element has ECBehaviorCollider. Overwrite in
 		 * subclass if you use only behavior elements and you do not want to use custom visitor.
 		 */
-		public func void attachToBehaviorElement( BehaviorElement parent )
-			if this.pAttachSlot != null
-				this.attachToAttachSlot( parent )
+		public func void attachToBehaviorElement(BehaviorElement parent)
+			if pAttachSlot != null
+				attachToAttachSlot(parent)
 				return
 			end
 			
-			if this.pCollider.getCollider() == null
+			if pCollider.getCollider() == null
 				return
 			end
 			
-			var ECBehaviorCollider.Instance parentCollider = ECBehaviorCollider.getInstanceIn( parent )
+			var ECBehaviorCollider.Instance parentCollider = ECBehaviorCollider.getInstanceIn(parent)
 			if parentCollider == null or parentCollider.getCollider() == null
 				return
- 			end
- 			
- 			this.attachToCollider( parentCollider.getCollider() )
-			this.getElement().setParent( parent )
-			this.addToAttachments( parent )
+			end
+			
+			attachToCollider(parentCollider.getCollider())
+			getElement().setParent(parent)
+			addToAttachments(parent)
 		end
 		
 		/**
@@ -253,38 +253,38 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 		 * If collider is castable to ColliderRig and bone is not null the element is attach
 		 * to the collider bone. Otherwise the element is attached statically.
 		 */
-		public func void attachToCollider( Collider collider )
-			var Collider thisCollider = this.pCollider.getCollider()
+		public func void attachToCollider(Collider collider)
+			var Collider thisCollider = pCollider.getCollider()
 			
 			if collider castable ColliderRig
 				var ColliderRig colliderRig = collider cast ColliderRig
 				
-				if this.pBone.empty()
-					if this.pRigMode and colliderRig.getRig() != null \
+				if pBone.empty()
+					if pRigMode and colliderRig.getRig() != null \
 					and colliderRig.getRig().getBoneCount() > 0 and thisCollider castable ColliderRig
 						var ColliderRig thisColliderRig = thisCollider cast ColliderRig
 						if thisColliderRig.getRig() != null and thisColliderRig.getRig().getBoneCount() > 0
-							colliderRig.attachRig( thisColliderRig )
+							colliderRig.attachRig(thisColliderRig)
 							return
 						end
 					end
 					
 				else
-					if this.pRelative
-						colliderRig.attachBone( thisCollider, this.pBone )
+					if pRelative
+						colliderRig.attachBone(thisCollider, pBone)
 						
 					else
-						colliderRig.attachBone( thisCollider, this.pBone, this.pPosition, this.pOrientation )
+						colliderRig.attachBone(thisCollider, pBone, pPosition, pOrientation)
 					end
 					return
 				end
 			end
 			
-			if this.pRelative
-				collider.attachStatic( thisCollider )
+			if pRelative
+				collider.attachStatic(thisCollider)
 				
 			else
-				collider.attachStatic( thisCollider, this.pPosition, this.pOrientation )
+				collider.attachStatic(thisCollider, pPosition, pOrientation)
 			end
 		end
 		
@@ -293,25 +293,24 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 		 * 
 		 * Element has to be in the correct position before attaching.
 		 */
-		public func void attachToAttachSlot( BehaviorElement parent )
+		public func void attachToAttachSlot(BehaviorElement parent)
 			// ECBehaviorAttachSlot calls BehaviorElement.setParent() if successfull
-			if this.pRelative
-				ECBehaviorAttachSlot.getInstanceIn( parent, this.pAttachSlot ) \
-					.attachWorld( this.pAttachable )
+			if pRelative
+				ECBehaviorAttachSlot.getInstanceIn(parent, pAttachSlot).attachWorld(pAttachable)
 				
 			else
-				ECBehaviorAttachSlot.getInstanceIn( parent, this.pAttachSlot ) \
-					.attach( this.pAttachable, this.pPosition, this.pOrientation )
+				ECBehaviorAttachSlot.getInstanceIn(parent, pAttachSlot) \
+					.attach(pAttachable, pPosition, pOrientation)
 			end
 		end
 		
 		/**
 		 * \brief Add as attachment to ECBehaviorAttachments if parent has this behavior.
 		 */
-		public func void addToAttachments( BehaviorElement parent )
-			var ECBehaviorAttachments.Instance behavior = ECBehaviorAttachments.getInstanceIn( parent )
+		public func void addToAttachments(BehaviorElement parent)
+			var ECBehaviorAttachments.Instance behavior = ECBehaviorAttachments.getInstanceIn(parent)
 			if behavior != null
-				behavior.addAttachment( this.getElement() )
+				behavior.addAttachment(getElement())
 			end
 		end
 	end
@@ -334,47 +333,47 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em attachable.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	ECBehaviorAttachable attachable ) this( eclass, collider, attachable, "attachToParent." )
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorAttachable attachable) this(eclass, collider, attachable, "attachToParent.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	ECBehaviorAttachable attachable, String prefix ) super( eclass )
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorAttachable attachable, String prefix) super(eclass)
 		if collider == null
-			throw ENullPointer.new( "collider" )
+			throw ENullPointer.new("collider")
 		end
-		if getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pCollider = collider
-		this.pAttachable = attachable
+		pCollider = collider
+		pAttachable = attachable
 		
-		this.pBone = ECPString.new( prefix + "bone", "" )
-		eclass.addProperty( this.pBone )
+		pBone = ECPString.new(prefix + "bone", "")
+		eclass.addProperty(pBone)
 		
-		this.pAttachSlot = ECPString.new( prefix + "attachSlot", null )
-		eclass.addProperty( this.pAttachSlot )
+		pAttachSlot = ECPString.new(prefix + "attachSlot", null)
+		eclass.addProperty(pAttachSlot)
 		
-		this.pRelative = ECPBoolean.new( prefix + "relative", true )
-		eclass.addProperty( this.pRelative )
+		pRelative = ECPBoolean.new(prefix + "relative", true)
+		eclass.addProperty(pRelative)
 		
-		this.pRigMode = ECPBoolean.new( prefix + "rigMode", true )
-		eclass.addProperty( this.pRigMode )
+		pRigMode = ECPBoolean.new(prefix + "rigMode", true)
+		eclass.addProperty(pRigMode)
 		
-		this.pPosition = ECPVector.new( prefix + "position", Vector.new() )
-		eclass.addProperty( this.pPosition )
+		pPosition = ECPVector.new(prefix + "position", Vector.new())
+		eclass.addProperty(pPosition)
 		
-		this.pOrientation = ECPVector.new( prefix + "orientation", Vector.new() )
-		eclass.addProperty( this.pOrientation )
+		pOrientation = ECPVector.new(prefix + "orientation", Vector.new())
+		eclass.addProperty(pOrientation)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pCollider = null
-		this.pAttachable = null
+		pCollider = null
+		pAttachable = null
 		super.dispose()
 	end
 	
@@ -382,49 +381,49 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 	
 	/** \brief Collider behavior. */
 	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+		return pCollider
 	end
 	
 	/** \brief Attachable behavior or null if not used. */
 	public func ECBehaviorAttachable getAttachable()
-		return this.pAttachable
+		return pAttachable
 	end
 	
 	/** \brief Bone to attach to. */
 	public func ECPString getBone()
-		return this.pBone
+		return pBone
 	end
 	
 	/** \brief Attach slot to attach to. */
 	public func ECPString getAttachSlot()
-		return this.pAttachSlot
+		return pAttachSlot
 	end
 	
 	/** \brief Attach relative to world position or using explicit position. */
 	public func ECPBoolean getRelative()
-		return this.pRelative
+		return pRelative
 	end
 	
 	/** \brief Attach using rig mode if supported by colliders. */
 	public func ECPBoolean getRigMode()
-		return this.pRigMode
+		return pRigMode
 	end
 	
 	/** \brief Explicit attach position. */
 	public func ECPVector getPosition()
-		return this.pPosition
+		return pPosition
 	end
 	
 	/** \brief Explicit attach rotation. */
 	public func ECPVector getOrientation()
-		return this.pOrientation
+		return pOrientation
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -435,10 +434,10 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorAttachToParent getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorAttachToParent each
+	static public func ECBehaviorAttachToParent getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorAttachToParent each
 			return true
-		end ) cast ECBehaviorAttachToParent
+		end) cast ECBehaviorAttachToParent
 	end
 	
 	/**
@@ -448,16 +447,16 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 	 * of type ECBehaviorAttachToParent.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

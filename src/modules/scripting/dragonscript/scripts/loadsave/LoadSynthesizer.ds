@@ -68,6 +68,7 @@ class LoadSynthesizer extends BaseXmlLoader
 			definition = SynthesizerDefinition.new( filename )
 			this.pParseSynthesizer( root, definition )
 			this.pDefinitions.setAt( filename, definition )
+			return definition
 		end ) cast SynthesizerDefinition
 	end
 	

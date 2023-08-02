@@ -142,6 +142,18 @@ void meObject::cWOAsyncFinished::LoadFinished( igdeWObject&, bool ){
 
 
 
+// class cWOTexture
+/////////////////////
+
+meObject::cWOTexture::cWOTexture( const deComponentTexture &componentTexture ) :
+skin( componentTexture.GetSkin() ),
+texture( componentTexture.GetTexture() ),
+dynamicSkin( componentTexture.GetDynamicSkin() ),
+texCoordTransform( componentTexture.GetTransform() ){
+}
+
+
+
 // Class meObject
 ///////////////////
 
@@ -746,7 +758,7 @@ void meObject::DecrementIDGroupIDUsage(){
 	
 	for( i=0; i<mapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pMapIDGroup.GetAt( i ) );
-		const decString &name = map.GetProperty()->GetName();
+		const decString name( map.GetPropertyPrefix() + map.GetProperty()->GetName() );
 		
 		if( ! pProperties.Has( name ) ){
 			continue;
@@ -768,7 +780,7 @@ void meObject::DecrementIDGroupIDUsage(){
 	
 	for( i=0; i<texMapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pTexMapIDGroup.GetAt( i ) );
-		const decString &name = map.GetProperty()->GetName();
+		const decString name( map.GetPropertyPrefix() + map.GetProperty()->GetName() );
 		
 		for( j=0; j<pTextureCount; j++ ){
 			const meObjectTexture &texture = *pTextures[ j ];
@@ -803,7 +815,7 @@ void meObject::IncrementIDGroupIDUsage(){
 	
 	for( i=0; i<mapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pMapIDGroup.GetAt( i ) );
-		const decString &name = map.GetProperty()->GetName();
+		const decString name( map.GetPropertyPrefix() + map.GetProperty()->GetName() );
 		const decString *value = NULL;
 		
 		if( ! pProperties.GetAt( name, &value ) ){
@@ -814,9 +826,9 @@ void meObject::IncrementIDGroupIDUsage(){
 			continue; // ignore empty identifier
 		}
 		
-		//printf( "Object %p Class '%s' IDGroup %s Add '%s' (%i)\n", this, pClassDef->GetName().GetString(),
-		//	map.GetGroup()->GetName().GetString(), value, map.GetGroup()->GetUsageCountFor( value ) );
 		map.GetGroup()->Add( value->GetString() );
+		// printf( "Object %p Class '%s' IDGroup %s Add '%s' (%i)\n", this, pClassDef->GetName().GetString(),
+			// map.GetGroup()->GetName().GetString(), value->GetString(), map.GetGroup()->GetUsageCountFor( *value ) );
 	}
 	
 	// texture properties
@@ -825,7 +837,7 @@ void meObject::IncrementIDGroupIDUsage(){
 	
 	for( i=0; i<texMapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pTexMapIDGroup.GetAt( i ) );
-		const decString &name = map.GetProperty()->GetName();
+		const decString name( map.GetPropertyPrefix() + map.GetProperty()->GetName() );
 		
 		for( j=0; j<pTextureCount; j++ ){
 			const meObjectTexture &texture = *pTextures[ j ];
@@ -853,77 +865,8 @@ void meObject::UpdateIDGroupList(){
 	pMapIDGroup.RemoveAll();
 	pTexMapIDGroup.RemoveAll();
 	
-	if( ! pClassDef || ! pWorld ){
-		return;
-	}
-	
-	meIDGroupList &groupList = pWorld->GetIDGroupList();
-	igdeGDClass *gdClass = pClassDef;
-	meMapIDGroup *mapIDGroup = NULL;
-	
-	try{
-		while( gdClass ){
-			// object properties
-			const igdeGDPropertyList &gdProperties = gdClass->GetListProperties();
-			const int gdPropertyCount = gdProperties.GetCount();
-			int i;
-			
-			for( i=0; i<gdPropertyCount; i++ ){
-				igdeGDProperty * const gdProperty = gdProperties.GetAt( i );
-				
-				if( gdProperty->GetType() != igdeGDProperty::eptIdentifier ){
-					continue;
-				}
-				if( gdProperty->GetIdentifierGroup().IsEmpty() ){
-					continue;
-				}
-				if( ! gdProperty->GetIdentifierUsage() ){
-					continue;
-				}
-				
-				//printf( "Object %p Class '%s' Add IDGroup '%s'\n", this, pClassDef->GetName().GetString(),
-				//	gdProperty->GetIdentifierGroup().GetString() );
-				mapIDGroup = new meMapIDGroup( gdProperty, groupList.GetOrAddNamed( gdProperty->GetIdentifierGroup() ) );
-				pMapIDGroup.Add( mapIDGroup );
-				mapIDGroup->FreeReference();
-				mapIDGroup = NULL;
-			}
-			
-			// texture properties
-			const igdeGDPropertyList &gdTexProperties = gdClass->GetTextureProperties();
-			const int gdTexPropertyCount = gdTexProperties.GetCount();
-			
-			for( i=0; i<gdTexPropertyCount; i++ ){
-				igdeGDProperty * const gdProperty = gdTexProperties.GetAt( i );
-				
-				if( gdProperty->GetType() != igdeGDProperty::eptIdentifier ){
-					continue;
-				}
-				if( gdProperty->GetIdentifierGroup().IsEmpty() ){
-					continue;
-				}
-				if( ! gdProperty->GetIdentifierUsage() ){
-					continue;
-				}
-				
-				//printf( "Object %p Class '%s' Texture Add IDGroup '%s'\n", this,
-				//	pClassDef->GetName().GetString(), gdProperty->GetIdentifierGroup().GetString() );
-				mapIDGroup = new meMapIDGroup( gdProperty, groupList.GetOrAddNamed( gdProperty->GetIdentifierGroup() ) );
-				pTexMapIDGroup.Add( mapIDGroup );
-				mapIDGroup->FreeReference();
-				mapIDGroup = NULL;
-			}
-			
-			// go to parent class
-// 			gdClass = gdClass->GetParentClass(); // TODO support inherited classes
-			break;
-		}
-		
-	}catch( const deException & ){
-		if( mapIDGroup ){
-			mapIDGroup->FreeReference();
-		}
-		throw;
+	if( pClassDef && pWorld ){
+		pUpdateIDGroupList( *pClassDef, decString() );
 	}
 }
 
@@ -967,6 +910,19 @@ void meObject::ShowStateChanged(){
 }
 
 void meObject::WOAsyncFinished(){
+	// store WObject textures to properly apply missing texture
+	pWOTextures.RemoveAll();
+	
+	const deComponent * const component = pWObject->GetComponent();
+	if( component ){
+		const int textureCount = component->GetTextureCount();
+		int i;
+		for( i=0; i<textureCount; i++ ){
+			pWOTextures.Add( deObject::Ref::New( new cWOTexture( component->GetTextureAt( i ) ) ) );
+		}
+	}
+	
+	// continue updating
 	pSizeFromScaling();
 	pUpdateComponent();
 	pUpdateShapes();
@@ -1387,7 +1343,8 @@ void meObject::UpdateComponentTextures(){
 	const int textureCount = engModel->GetTextureCount();
 	int i;
 	
-	deSkin * const defaultSkin = pEnvironment->GetGameProject()->GetGameDefinition()->GetDefaultSkin();
+	// deSkin * const defaultSkin = pEnvironment->GetGameProject()->GetGameDefinition()->GetDefaultSkin();
+	deSkin * const defaultSkin = pEnvironment->GetStockSkin( igdeEnvironment::essTestMap );
 	const int defaultTexture = 0;
 	
 	for( i=0; i<textureCount; i++ ){
@@ -1395,10 +1352,11 @@ void meObject::UpdateComponentTextures(){
 		const decString &textureName = engModel->GetTextureAt( i )->GetName();
 		meObjectTexture * const texture = GetTextureNamed( textureName );
 		
-		deSkin *useSkin = componentTexture.GetSkin();
-		int useTexture = componentTexture.GetTexture();
-		deDynamicSkin *useDynamicSkin = componentTexture.GetDynamicSkin();
-		decTexMatrix2 texCoordTransform = componentTexture.GetTransform();
+		const cWOTexture &wotexture = *( ( cWOTexture* )pWOTextures.GetAt( i ) );
+		deSkin *useSkin = wotexture.skin;
+		int useTexture = wotexture.texture;
+		deDynamicSkin *useDynamicSkin = wotexture.dynamicSkin;
+		decTexMatrix2 texCoordTransform = wotexture.texCoordTransform;
 		
 		if( texture ){
 			if( texture->GetEngineSkin() ){
@@ -1448,7 +1406,7 @@ bool meObject::IsComponentBroken() const{
 		return false;
 	}
 	
-	// if the model is missnig the component is broken
+	// if the model is missing the component is broken
 	const deModel * const engModel = component->GetModel();
 	if( ! engModel ){
 		return false;
@@ -2486,4 +2444,54 @@ bool meObject::pAnyGDClassHasAnyPartialVisOf( const igdeGDClass &gdclass, const 
 	}
 	
 	return false;
+}
+
+void meObject::pUpdateIDGroupList ( const igdeGDClass &gdclass, const decString &prefix ){
+	meIDGroupList &groupList = pWorld->GetIDGroupList();
+	
+	// object properties
+	const igdeGDPropertyList &gdProperties = gdclass.GetListProperties();
+	const int gdPropertyCount = gdProperties.GetCount();
+	int i;
+	
+	for( i=0; i<gdPropertyCount; i++ ){
+		igdeGDProperty &gdProperty = *gdProperties.GetAt( i );
+		
+		if( gdProperty.GetType() != igdeGDProperty::eptIdentifier
+		|| gdProperty.GetIdentifierGroup().IsEmpty() || ! gdProperty.GetIdentifierUsage() ){
+			continue;
+		}
+		
+		// printf( "Object %p Class '%s' Add IDGroup '%s'\n", this, pClassDef->GetName().GetString(),
+		// 	gdProperty.GetIdentifierGroup().GetString() );
+		pMapIDGroup.Add( meMapIDGroup::Ref::New( new meMapIDGroup( &gdProperty,
+			groupList.GetOrAddNamed( gdProperty.GetIdentifierGroup() ), prefix ) ) );
+	}
+	
+	// texture properties
+	const igdeGDPropertyList &gdTexProperties = gdclass.GetTextureProperties();
+	const int gdTexPropertyCount = gdTexProperties.GetCount();
+	
+	for( i=0; i<gdTexPropertyCount; i++ ){
+		igdeGDProperty &gdProperty = *gdTexProperties.GetAt( i );
+		
+		if( gdProperty.GetType() != igdeGDProperty::eptIdentifier
+		|| gdProperty.GetIdentifierGroup().IsEmpty() || ! gdProperty.GetIdentifierUsage() ){
+			continue;
+		}
+		
+		//printf( "Object %p Class '%s' Texture Add IDGroup '%s'\n", this,
+		//	pClassDef->GetName().GetString(), gdProperty->GetIdentifierGroup().GetString() );
+		pTexMapIDGroup.Add( meMapIDGroup::Ref::New( new meMapIDGroup( &gdProperty,
+			groupList.GetOrAddNamed( gdProperty.GetIdentifierGroup() ), prefix ) ) );
+	}
+	
+	// inherits
+	const int inheritCount = gdclass.GetInheritClassCount();
+	for( i=0; i<inheritCount; i++ ){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
+		if( inherit.GetClass() ){
+			pUpdateIDGroupList( *inherit.GetClass(), prefix + inherit.GetPropertyPrefix() );
+		}
+	}
 }

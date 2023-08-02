@@ -39,9 +39,15 @@ class igdeMouseKeyListener;
 
 
 /**
- * \brief IGD UI Widget using Game Engine Render Window.
+ * \brief IGDE UI Widget using Game Engine Render Window.
  */
 class DE_DLL_EXPORT igdeViewRenderWindow : public igdeWidget{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeViewRenderWindow> Ref;
+	
+	
+	
 private:
 	deRenderWindowReference pRenderWindow;
 	deCanvasReference pCanvasRenderWorld;
@@ -111,7 +117,8 @@ public:
 	
 	/**
 	 * \brief Set camera to render.
-	 * \details Convenience call to not deal with deCanvasRenderWorld.
+	 * 
+	 * Convenience call to not deal with deCanvasRenderWorld.
 	 */
 	void SetRenderWorld( deCamera *camera );
 	

@@ -30,7 +30,10 @@ class deoglRenderThread;
 class deoglRSkin;
 class deoglRVideoPlayer;
 class deoglSkinStateRenderable;
+class deoglSkinStateMapped;
+class deoglSkinStateBone;
 class deoglSkinStateCalculated;
+class deoglSkinStateConstructed;
 class deoglRDynamicSkin;
 class deoglRComponent;
 class deoglRBillboard;
@@ -64,8 +67,17 @@ private:
 	
 	decObjectList pVideoPlayers;
 	
+	deoglSkinStateMapped *pMapped;
+	int pMappedCount;
+	
 	deoglSkinStateCalculated *pCalculatedProperties;
 	int pCalculatedPropertyCount;
+	
+	deoglSkinStateConstructed *pConstructedProperties;
+	int pConstructedPropertyCount;
+	
+	deoglSkinStateBone *pBones;
+	int pBoneCount;
 	
 	decPoint pVariationSeed;
 	
@@ -87,6 +99,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
 	/** Owner component or NULL. */
 	inline deoglRComponent *GetOwnerComponent() const{ return pOwnerComponent; }
 	
@@ -165,6 +180,17 @@ public:
 	
 	
 	
+	/** Count of mapped. */
+	inline int GetMappedCount() const{ return pMappedCount; }
+	
+	/** Set mapped count. */
+	void SetMappedCount( int count );
+	
+	/** Mapped at index. */
+	deoglSkinStateMapped &GetMappedAt( int index ) const;
+	
+	
+	
 	/** Number of calculated properties. */
 	inline int GetCalculatedPropertyCount() const{ return pCalculatedPropertyCount; }
 	
@@ -174,17 +200,44 @@ public:
 	/** Calculated property at index. */
 	deoglSkinStateCalculated &GetCalculatedPropertyAt( int index ) const;
 	
-	/** Initialize calculated properties. */
-	void InitCalculatedProperties();
 	
-	/** Map calculated property bones. */
-	void CalculatedPropertiesMapBones( const deComponent &component );
 	
-	/** Update calculated property bones. */
-	void UpdateCalculatedPropertiesBones( const deComponent &component );
+	/** Number of constructed properties. */
+	inline int GetConstructedPropertyCount() const{ return pConstructedPropertyCount; }
 	
-	/** Update calculated properties. */
-	void UpdateCalculatedProperties();
+	/** Set constructed property count. */
+	void SetConstructedPropertyCount( int count );
+	
+	/** Constructed property at index. */
+	deoglSkinStateConstructed &GetConstructedPropertyAt( int index ) const;
+	
+	/** Prepare constructed properties for rendering. */
+	void PrepareConstructedProperties();
+	
+	
+	
+	/** Count of bones. */
+	inline int GetBoneCount() const{ return pBoneCount; }
+	
+	/** Set bones count. */
+	void SetBoneCount( int count );
+	
+	/** Bones at index. */
+	deoglSkinStateBone &GetBoneAt( int index ) const;
+	
+	
+	
+	/** Init all states. */
+	void InitAll();
+	
+	/** Update all states. */
+	void UpdateAll();
+	
+	/** Map bones. */
+	void MapBonesAll( const deComponent &component );
+	
+	/** Update bones. */
+	void UpdateBonesAll( const deComponent &component );
 	
 	
 	

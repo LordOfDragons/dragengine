@@ -84,6 +84,7 @@ void deoglSkinShaderConfig::Reset(){
 	pOutlineThicknessScreen = false;
 	pLuminanceOnly = false;
 	pGIMaterial = false;
+	pSkinClipPlane = false;
 	
 	pDynamicColorTint = false;
 	pDynamicColorGamma = false;
@@ -119,6 +120,8 @@ void deoglSkinShaderConfig::Reset(){
 	pDynamicRimEmissivityIntensity = false;
 	pDynamicRimAngle = false;
 	pDynamicRimExponent = false;
+	pDynamicSkinClipPlane = false;
+	pDynamicSkinClipPlaneBorder = false;
 	
 	pTextureColor = false;
 	pTextureColorTintMask = false;
@@ -269,6 +272,10 @@ void deoglSkinShaderConfig::SetGIMaterial( bool gimaterial ){
 	pGIMaterial = gimaterial;
 }
 
+void deoglSkinShaderConfig::SetSkinClipPlane( bool skinClipPlane ){
+	pSkinClipPlane = skinClipPlane;
+}
+
 
 
 void deoglSkinShaderConfig::SetDynamicColorTint( bool dynamic ){
@@ -407,6 +414,14 @@ void deoglSkinShaderConfig::SetDynamicRimExponent( bool dynamic ){
 	pDynamicRimExponent = dynamic;
 }
 
+void deoglSkinShaderConfig::SetDynamicSkinClipPlane( bool dynamic ){
+	pDynamicSkinClipPlane = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicSkinClipPlaneBorder( bool dynamic ){
+	pDynamicSkinClipPlaneBorder = dynamic;
+}
+
 
 
 void deoglSkinShaderConfig::SetTextureColor( bool hasTexture ){
@@ -529,6 +544,7 @@ void deoglSkinShaderConfig::UpdateKey(){
 	if( pOutlineThicknessScreen ) pKey2 |= ( uint32_t )1 << 19;
 	if( pLuminanceOnly ) pKey2 |= ( uint32_t )1 << 20;
 	if( pGIMaterial ) pKey2 |= ( uint32_t )1 << 21;
+	if( pSkinClipPlane ) pKey2 |= ( uint32_t )1 << 22;
 	
 	pKey3 = ( uint64_t )0;
 	if( pDynamicColorTint ) pKey3 |= ( uint64_t )1 << 0;
@@ -565,6 +581,8 @@ void deoglSkinShaderConfig::UpdateKey(){
 	if( pDynamicRimEmissivityIntensity ) pKey3 |= ( uint64_t )1 << 31;
 	if( pDynamicRimAngle ) pKey3 |= ( uint64_t )1 << 32;
 	if( pDynamicRimExponent ) pKey3 |= ( uint64_t )1 << 33;
+	if( pDynamicSkinClipPlane ) pKey3 |= ( uint64_t )1 << 34;
+	if( pDynamicSkinClipPlaneBorder ) pKey3 |= ( uint64_t )1 << 35;
 	
 	pKey4 = ( uint32_t )0;
 	if( pTextureColor ) pKey4 |= ( uint32_t )1 << 0;
@@ -722,6 +740,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pGIMaterial ){
 		string.Append( " giMaterial" );
 	}
+	if( pSkinClipPlane ){
+		string.Append( " skinClpPl" );
+	}
 	
 	if( pDynamicColorTint ){
 		string.Append( " dynClrTint" );
@@ -824,6 +845,12 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	}
 	if( pDynamicRimExponent ){
 		string.Append( " dynRimExp" );
+	}
+	if( pDynamicSkinClipPlane ){
+		string.Append( " dynSkClpPl" );
+	}
+	if( pDynamicSkinClipPlaneBorder ){
+		string.Append( " dynSkClpPlBrd" );
 	}
 	
 	if( pTextureColor ){
@@ -931,6 +958,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pOutlineThicknessScreen = config.pOutlineThicknessScreen;
 	pLuminanceOnly = config.pLuminanceOnly;
 	pGIMaterial = config.pGIMaterial;
+	pSkinClipPlane = config.pSkinClipPlane;
 	
 	pDynamicColorTint = config.pDynamicColorTint;
 	pDynamicColorGamma = config.pDynamicColorGamma;
@@ -966,6 +994,8 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pDynamicRimEmissivityIntensity = config.pDynamicRimEmissivityIntensity;
 	pDynamicRimAngle = config.pDynamicRimAngle;
 	pDynamicRimExponent = config.pDynamicRimExponent;
+	pDynamicSkinClipPlane = config.pDynamicSkinClipPlane;
+	pDynamicSkinClipPlaneBorder = config.pDynamicSkinClipPlaneBorder;
 	
 	pTextureColor = config.pTextureColor;
 	pTextureColorTintMask = config.pTextureColorTintMask;

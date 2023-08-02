@@ -39,7 +39,7 @@
 ////////////////////////////
 
 deoglRDSRenderableVideoFrame::deoglRDSRenderableVideoFrame( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( dynamicSkin ),
+deoglRDSRenderable( etVideoFrame, dynamicSkin ),
 pVideoPlayer( NULL )
 {
 	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableVideoFrame );

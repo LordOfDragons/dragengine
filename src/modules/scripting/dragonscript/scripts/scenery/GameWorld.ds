@@ -45,6 +45,7 @@ class GameWorld
 	private var SafeArray pThinkers
 	private var Dictionary pElementIDMap
 	private var Array pEnterFrameOnce
+	private var bool pLockEnterFrameOnce
 	private var SpawnPointList pSpawnPoints
 	private var TemporaryDecalManager pTempDecalMgr
 	private var CachedVegetation pCachedVegetation
@@ -337,6 +338,7 @@ class GameWorld
 		var int index = pEnterFrameOnce.indexOf(element)
 		if index != -1
 			BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind enter frame once")
+			pPrepareUpdateEnterFrameOnce()
 			pEnterFrameOnce.removeFrom(index)
 		end
 	end
@@ -407,7 +409,9 @@ class GameWorld
 		if element == null
 			throw EInvalidParam.new()
 		end
+		
 		if not pEnterFrameOnce.has(element)
+			pPrepareUpdateEnterFrameOnce()
 			pEnterFrameOnce.add(element)
 		end
 	end
@@ -416,6 +420,7 @@ class GameWorld
 	public func void removeEnterFrameOnce(Element element)
 		var int index = pEnterFrameOnce.indexOf(element)
 		if index != -1
+			pPrepareUpdateEnterFrameOnce()
 			pEnterFrameOnce.removeFrom(index)
 		end
 	end
@@ -536,17 +541,20 @@ class GameWorld
 	
 	/**
 	 * \brief Call Element.enterFrame() on registered elements then unregister all elements.
-	 * \warning Do not call addEnterFrameOnce or removeEnterFrameOnce from inside enterFrame().
+	 * 
+	 * Calling addEnterFrameOnce and removeEnterFrameOnce from inside enterFrame() is allowed.
 	 */
 	public func void enterFrame()
-		if pEnterFrameOnce.getCount() == 0
-			return
+		while pEnterFrameOnce.getCount() > 0
+			var Array list = pEnterFrameOnce
+			pLockEnterFrameOnce = true
+			
+			list.forEach(block Element each
+				each.enterFrame()
+			end)
+			list.removeAll()
+			pLockEnterFrameOnce = false
 		end
-		
-		pEnterFrameOnce.forEach(block Element each
-			each.enterFrame()
-		end)
-		pEnterFrameOnce.removeAll()
 	end
 	
 	/**
@@ -866,6 +874,15 @@ class GameWorld
 			throw EInvalidParam.new()
 		end
 		pTempDecalMgr = manager
+	end
+	
+	
+	
+	private func void pPrepareUpdateEnterFrameOnce()
+		if pLockEnterFrameOnce
+			pEnterFrameOnce = Array.new()
+			pLockEnterFrameOnce = false
+		end
 	end
 	
 	

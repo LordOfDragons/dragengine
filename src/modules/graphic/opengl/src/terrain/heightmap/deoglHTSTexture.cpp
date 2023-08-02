@@ -298,6 +298,11 @@ void deoglHTSTexture::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deo
 		}
 	}
 	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, 0.0f, 0.0f, 1.0f, 0.0f );
+	}
+	
 	skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
 	
 	// per texture dynamic texture properties

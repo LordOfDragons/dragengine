@@ -569,10 +569,10 @@ void deoglRComponent::MeshChanged(){
 
 
 
-void deoglRComponent::InitSkinStateCalculatedProperties( const deComponent &component ){
+void deoglRComponent::InitSkinStateStates( const deComponent &component ){
 	if( pSkinState ){
-		pSkinState->InitCalculatedProperties();
-		pSkinState->CalculatedPropertiesMapBones( component );
+		pSkinState->InitAll();
+		pSkinState->MapBonesAll( component );
 	}
 	
 	const int textureCount = pTextures.GetCount();
@@ -580,15 +580,15 @@ void deoglRComponent::InitSkinStateCalculatedProperties( const deComponent &comp
 	for( i=0; i<textureCount; i++ ){
 		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
 		if( texture.GetSkinState() ){
-			texture.GetSkinState()->InitCalculatedProperties();
-			texture.GetSkinState()->CalculatedPropertiesMapBones( component );
+			texture.GetSkinState()->InitAll();
+			texture.GetSkinState()->MapBonesAll( component );
 		}
 	}
 }
 
-void deoglRComponent::UpdateSkinStateCalculatedPropertiesBones( const deComponent &component ){
+void deoglRComponent::UpdateSkinStateBones( const deComponent &component ){
 	if( pSkinState ){
-		pSkinState->UpdateCalculatedPropertiesBones( component );
+		pSkinState->UpdateBonesAll( component );
 	}
 	
 	const int textureCount = pTextures.GetCount();
@@ -596,14 +596,14 @@ void deoglRComponent::UpdateSkinStateCalculatedPropertiesBones( const deComponen
 	for( i=0; i<textureCount; i++ ){
 		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
 		if( texture.GetSkinState() ){
-			texture.GetSkinState()->UpdateCalculatedPropertiesBones( component );
+			texture.GetSkinState()->UpdateBonesAll( component );
 		}
 	}
 }
 
-void deoglRComponent::UpdateSkinStateCalculatedProperties(){
+void deoglRComponent::UpdateSkinStateStates(){
 	if( pSkinState ){
-		pSkinState->UpdateCalculatedProperties();
+		pSkinState->UpdateAll();
 	}
 	
 	const int textureCount = pTextures.GetCount();
@@ -611,10 +611,12 @@ void deoglRComponent::UpdateSkinStateCalculatedProperties(){
 	for( i=0; i<textureCount; i++ ){
 		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
 		if( texture.GetSkinState() ){
-			texture.GetSkinState()->UpdateCalculatedProperties();
+			texture.GetSkinState()->UpdateAll();
 		}
 	}
 }
+
+
 
 void deoglRComponent::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
@@ -647,12 +649,11 @@ int element ){
 
 
 
-void deoglRComponent::UpdateBoneMatrices( deComponent &component ){
+void deoglRComponent::UpdateBoneMatrices( const deComponent &component ){
 	const deRig * const rig = component.GetRig();
 	int i;
 	
 	pUpdateModelRigMappings( component );
-	component.PrepareBones();
 	
 	for( i=0; i<pBoneMatrixCount; i++ ){
 		oglMatrix3x4 &boneMatrix = pBoneMatrices[ i ];
@@ -797,7 +798,9 @@ void deoglRComponent::UpdateSkin( float elapsed ){
 				texture.MarkParamBlocksDirty();
 				texture.MarkTUCsDirty();
 				
-			}else if( texture.GetUseSkinTexture()->GetCalculatedProperties() ){
+			}else if( texture.GetUseSkinTexture()->GetCalculatedProperties()
+			|| texture.GetUseSkinTexture()->GetConstructedProperties()
+			|| texture.GetUseSkinTexture()->GetBoneProperties() ){
 				texture.MarkParamBlocksDirty();
 			}
 		}
@@ -1222,6 +1225,7 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRender
 	pPrepareRenderEnvMap(); PFRT_SAMPLE(RenderEnvMap)
 	
 	pCheckRenderModifier( plan.GetCamera() );
+	pPrepareSkinStateConstructed(); PFRT_SAMPLE(SkinStateConstructed)
 	pPrepareSkinStateRenderables( mask ); PFRT_SAMPLE(SkinStateRenderables)
 	pPrepareSolidity(); PFRT_SAMPLE(Solidity)
 	
@@ -1387,7 +1391,9 @@ void deoglRComponent::UpdateStaticTextures(){
 			continue;
 		}
 		
-		if( skinState->GetVideoPlayerCount() > 0 || skinState->GetCalculatedPropertyCount() > 0 ){
+		if( skinState->GetVideoPlayerCount() > 0
+		|| skinState->GetCalculatedPropertyCount() > 0
+		|| skinState->GetConstructedPropertyCount() > 0 ){
 			pStaticTextures = false;
 			break;
 		}
@@ -1863,7 +1869,7 @@ void deoglRComponent::pResizeModelSkinMappings(){
 	}
 }
 
-void deoglRComponent::pUpdateModelRigMappings( deComponent &component ){
+void deoglRComponent::pUpdateModelRigMappings( const deComponent &component ){
 	if( ! pDirtyModelRigMappings ){
 		return;
 	}
@@ -2192,6 +2198,18 @@ void deoglRComponent::pRenderSkinStateRenderables( const deoglRenderPlanMasked *
 	int i;
 	for( i=0; i<textureCount; i++ ){
 		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->RenderSkinStateRenderables( plan );
+	}
+}
+
+void deoglRComponent::pPrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateConstructed();
 	}
 }
 
