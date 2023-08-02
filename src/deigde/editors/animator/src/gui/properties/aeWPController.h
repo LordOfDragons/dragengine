@@ -59,6 +59,7 @@ private:
 	igdeCheckBoxReference pChkFrozen;
 	igdeComboBoxReference pCBLocoAttr;
 	igdeTextFieldReference pEditLocoLeg;
+	igdeComboBoxReference pCBVectorSimulation;
 	
 	
 	

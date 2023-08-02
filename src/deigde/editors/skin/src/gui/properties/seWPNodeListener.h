@@ -29,7 +29,7 @@ class seWPNode;
 
 
 /**
- * \brief Node panel listener.
+ * Node panel listener.
  */
 class seWPNodeListener : public seSkinListener{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	seWPNodeListener( seWPNode &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~seWPNodeListener();
 	/*@}*/
 	
@@ -51,25 +51,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Active texture changed. */
+	/** Mapped have been added or removed. */
+	virtual void MappedStructureChanged( seSkin *skin );
+	
+	/** Mapped name changed. */
+	virtual void MappedNameChanged( seSkin *skin, seMapped *mapped );
+	
+	
+	
+	/** Active texture changed. */
 	virtual void ActiveTextureChanged( seSkin *skin );
 	
-	/** \brief Property changed. */
+	/** Property changed. */
 	virtual void PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property );
 	
-	/** \brief Active property changed. */
+	/** Active property changed. */
 	virtual void ActivePropertyChanged( seSkin *skin, seTexture *texture );
 	
-	/** \brief Property node changed. */
+	/** Property node changed. */
 	virtual void PropertyNodeChanged( seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node );
 	
-	/** \brief Property node structre changed. */
+	/** Property node structre changed. */
 	virtual void PropertyNodeStructureChanged( seSkin *skin, seTexture *texture, seProperty *property );
 	
-	/** \brief Property selected nodes changed. */
+	/** Property selected nodes changed. */
 	virtual void PropertyNodeSelectionChanged( seSkin *skin, seTexture *texture, seProperty *property );
 	
-	/** \brief Active property node changed. */
+	/** Active property node changed. */
 	virtual void PropertyActiveNodeChanged( seSkin *skin, seTexture *texture, seProperty *property );
 	/*@}*/
 };

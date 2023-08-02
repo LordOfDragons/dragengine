@@ -29,7 +29,7 @@
 
 
 deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const char *type ){
-	static const int entryCount = 80;
+	static const int entryCount = 82;
 	static struct sEntry{
 		const char *name;
 		deoglSkinPropertyMap::ePropertyTypes type;
@@ -137,7 +137,10 @@ deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const cha
 		{ "nonpbr.albedo", eptNonPbrAlbedo },
 		{ "nonpbr.metalness", eptNonPbrMetalness },
 		
-		{ "xray", eptXRay }
+		{ "xray", eptXRay },
+		
+		{ "clip.plane", eptClipPlane },
+		{ "clip.plane.border", eptClipPlaneBorder }
 	};
 	
 	int i;

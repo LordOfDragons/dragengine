@@ -25,6 +25,7 @@
 #include "../deoglBasics.h"
 
 class deoglRenderCanvas;
+class deoglRenderConstructed;
 class deoglRenderCompute;
 class deoglRenderDebug;
 class deoglRenderDebugDrawer;
@@ -51,6 +52,7 @@ class deoglRenderWorld;
 class deoglRTRenderers{
 private:
 	deoglRenderCanvas *pCanvas;
+	deoglRenderConstructed *pConstructed;
 	deoglRenderCompute *pCompute;
 	deoglRenderDebugDrawer *pDebugDrawer;
 	deoglRenderDebug *pDebug;
@@ -87,6 +89,9 @@ public:
 	/*@{*/
 	/** Canvas renderer. */
 	inline deoglRenderCanvas &GetCanvas() const{ return *pCanvas; }
+	
+	/** Constructed renderer. */
+	inline deoglRenderConstructed &GetConstructed() const{ return *pConstructed; }
 	
 	/** Compute renderer. */
 	inline deoglRenderCompute &GetCompute() const{ return *pCompute; }

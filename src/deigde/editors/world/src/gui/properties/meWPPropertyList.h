@@ -27,7 +27,7 @@
 #include <dragengine/common/string/decStringSet.h>
 
 #include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeIconListBoxReference.h>
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/composed/igdeEditPropertyValueReference.h>
@@ -60,7 +60,7 @@ private:
 	igdeIconReference pIconUnknownKey;
 	igdeIconReference pIconInvalidValue;
 	
-	igdeComboBoxReference pCBKeys;
+	igdeComboBoxFilterReference pCBKeys;
 	igdeButtonReference pBtnKeyAdd;
 	
 	igdeIconListBoxReference pListProperties;
@@ -184,6 +184,9 @@ public:
 	
 	/** \brief Set trigger target list with updating. */
 	void SetTriggerTargetList( igdeTriggerTargetList *list );
+	
+	/** \brief Game project game definition changed. */
+	void OnGameDefinitionChanged();
 	
 	
 	

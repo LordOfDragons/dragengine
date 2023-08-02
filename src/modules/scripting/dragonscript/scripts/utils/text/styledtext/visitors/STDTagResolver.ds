@@ -262,7 +262,7 @@ class STDTagResolver extends DefaultSTDNodeVisitor
 				
 			else
 				tagEnd = text.find(pCharTagEnd, tagBegin + 1)
-				if not accumText.empty()
+				if not accumText.empty() or (first and source.getImage() != null)
 					target.addSpan(STDNTextSpan.new(accumText, style, first if source.getImage() else null))
 					accumText = ""
 					first = false
@@ -279,7 +279,7 @@ class STDTagResolver extends DefaultSTDNodeVisitor
 		if position < len
 			accumText = accumText + text.substring(position)
 		end
-		if not accumText.empty()
+		if not accumText.empty() or (first and source.getImage() != null)
 			target.addSpan(STDNTextSpan.new(accumText, style, first if source.getImage() else null))
 		end
 	end

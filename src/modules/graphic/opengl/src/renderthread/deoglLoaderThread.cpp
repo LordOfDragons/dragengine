@@ -247,7 +247,9 @@ bool deoglLoaderThread::AwaitTask( deoglLoaderThreadTask *task ){
 //////////////////////
 
 void deoglLoaderThread::pInit(){
+	#ifndef OS_BEOS
 	deoglRTContext &context = pRenderThread.GetContext();
+	#endif
 	
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( context.GetDisplay(),

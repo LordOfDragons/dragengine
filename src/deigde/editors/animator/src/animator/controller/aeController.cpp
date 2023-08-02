@@ -28,6 +28,7 @@
 #include "../locomotion/aeAnimatorLocomotion.h"
 #include "../locomotion/aeAnimatorLocomotionLeg.h"
 #include "../wakeboard/aeWakeboard.h"
+#include "../../visitors/aeElementVisitor.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
@@ -52,7 +53,8 @@ pCurValue( 0.0f ),
 pClamp( true ),
 pFrozen( false ),
 pLocoAttr( aeAnimatorLocomotion::eaNone ),
-pLocoLeg( 0 ){
+pLocoLeg( 0 ),
+pVectorSimulation( evsNone ){
 }
 
 aeController::aeController( const aeController &copy ) :
@@ -65,7 +67,8 @@ pCurValue( copy.pCurValue ),
 pClamp( copy.pClamp ),
 pFrozen( copy.pFrozen ),
 pLocoAttr( copy.pLocoAttr ),
-pLocoLeg( copy.pLocoLeg ){
+pLocoLeg( copy.pLocoLeg ),
+pVectorSimulation( copy.pVectorSimulation ){
 }
 
 aeController::~aeController(){
@@ -78,10 +81,16 @@ aeController::~aeController(){
 ///////////////
 
 void aeController::SetAnimator( aeAnimator *animator ){
-	if( animator != pAnimator ){
-		pAnimator = animator;
-		pEngControllerIndex = -1;
+	if( animator == pAnimator ){
+		return;
 	}
+	
+	pReleaseGizmos();
+	
+	pAnimator = animator;
+	pEngControllerIndex = -1;
+	
+	pCreateGizmos();
 }
 
 void aeController::SetEngineControllerIndex( int index ){
@@ -242,28 +251,33 @@ void aeController::SetClamp( bool clamp ){
 }
 
 void aeController::SetVector( const decVector &vector ){
-	if( ! vector.IsEqualTo( pVector ) ){
-		pVector = vector;
+	if( vector.IsEqualTo( pVector ) ){
+		return;
+	}
+	
+	pVector = vector;
+	
+	if( pEngControllerIndex != -1 ){
+		deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
+		deAnimatorController &controller = instance.GetControllerAt( pEngControllerIndex );
 		
-		if( pEngControllerIndex != -1 ){
-			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			deAnimatorController &controller = instance.GetControllerAt( pEngControllerIndex );
-			
-			controller.SetVector( vector );
-			
-			instance.NotifyControllerChangedAt( pEngControllerIndex );
-		}
+		controller.SetVector( vector );
 		
-		if( pAnimator ){
-			pAnimator->NotifyControllerValueChanged( this );
-		}
+		instance.NotifyControllerChangedAt( pEngControllerIndex );
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyControllerValueChanged( this );
+	}
+	if( pGizmoIKPosition ){
+		pGizmoIKPosition->OnObjectGeometryChanged();
 	}
 }
 
 void aeController::SetLocomotionAttribute( int attribute ){
 	if( attribute != pLocoAttr ){
 		pLocoAttr = attribute;
-			
+		
 		if( pAnimator ){
 			pAnimator->NotifyControllerChanged( this );
 		}
@@ -272,6 +286,22 @@ void aeController::SetLocomotionAttribute( int attribute ){
 
 void aeController::SetLocomotionLeg( int leg ){
 	pLocoLeg = leg;
+}
+
+void aeController::SetVectorSimulation( eVectorSimulation simulation ){
+	if( simulation == pVectorSimulation ){
+		return;
+	}
+	
+	pReleaseGizmos();
+	
+	pVectorSimulation = simulation;
+	
+	pCreateGizmos();
+	
+	if( pAnimator ){
+		pAnimator->NotifyControllerChanged( this );
+	}
 }
 
 
@@ -533,4 +563,29 @@ float aeController::pCheckValue( float value ){
 	}
 	
 	return value;
+}
+
+void aeController::pReleaseGizmos(){
+	if( ! pGizmoIKPosition ){
+		return;
+	}
+	
+	pGizmoIKPosition->SetWorld( nullptr );
+	pGizmoIKPosition = nullptr;
+}
+
+void aeController::pCreateGizmos(){
+	if( pGizmoIKPosition || ! pAnimator ){
+		return;
+	}
+	
+	switch( pVectorSimulation ){
+	case evsPosition:
+		pGizmoIKPosition.TakeOver( new aeGizmoControllerIKPosition( *pAnimator->GetEnvironment(), *this ) );
+		pGizmoIKPosition->SetWorld( pAnimator->GetEngineWorld() );
+		break;
+		
+	default:
+		break;
+	}
 }

@@ -108,6 +108,8 @@ public:
 		empRimExponent,
 		empNonPbrAlbedo,
 		empNonPbrMetalness,
+		empSkinClipPlane,
+		empSkinClipPlaneBorder,
 		EMP_COUNT
 	};
 	
@@ -130,6 +132,8 @@ private:
 	bool pReflects;
 	bool pDynamicChannels;
 	bool pCalculatedProperties;
+	bool pConstructedProperties;
+	bool pBoneProperties;
 	bool pRenderableChannels;
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[ deoglSkinChannel::CHANNEL_COUNT ];
@@ -220,6 +224,9 @@ private:
 	float pNonPbrMetalness;
 	
 	bool pXRay;
+	
+	float pSkinClipPlane;
+	float pSkinClipPlaneBorder;
 	
 	bool pQuickTransp;
 	
@@ -333,9 +340,15 @@ public:
 	
 	/** Texture has calculated properties. */
 	inline bool GetCalculatedProperties() const{ return pCalculatedProperties; }
-	
-	/** Set if texture has calculated properties. */
 	void SetCalculatedProperties( bool calculatedProperties );
+	
+	/** Texture has constructed properties. */
+	inline bool GetConstructedProperties() const{ return pConstructedProperties; }
+	void SetConstructedProperties( bool constructedProperties );
+	
+	/** Texture has bone properties. */
+	inline bool GetBoneProperties() const{ return pBoneProperties; }
+	void SetBoneProperties( bool boneProperties );
 	
 	/** Texture has renderable channels. */
 	inline bool GetRenderableChannels() const{ return pRenderableChannels; }
@@ -602,9 +615,15 @@ public:
 	
 	/** Rim exponent. */
 	inline float GetRimExponent() const{ return pRimExponent; }
-	
-	/** Set rim exponent. */
 	void SetRimExponent( float exponent );
+	
+	/** Clip plane. */
+	inline float GetSkinClipPlane() const{ return pSkinClipPlane; }
+	void SetSkinClipPlane( float clipPlane );
+	
+	/** Clip plane border. */
+	inline float GetSkinClipPlaneBorder() const{ return pSkinClipPlaneBorder; }
+	void SetSkinClipPlaneBorder( float border );
 	
 	/** Determines if the texture is shadeless. */
 	inline bool GetShadeless() const{ return pShadeless; }

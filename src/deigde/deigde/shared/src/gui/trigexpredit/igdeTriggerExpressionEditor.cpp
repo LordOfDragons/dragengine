@@ -642,7 +642,7 @@ void igdeTriggerExpressionEditor::UpdateFromTargetList(){
 		
 		for( i=0; i<count; i++ ){
 			const decString &targetName = pTargetList->GetAt( i )->GetName();
-			if( hasFilter && targetName.GetLower() != filter.GetString() ){
+			if( hasFilter && targetName.GetLower().FindString( filter ) == -1 ){
 				continue;
 			}
 			pListTargetName->AddItem( targetName );

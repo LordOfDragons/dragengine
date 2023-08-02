@@ -22,8 +22,8 @@
 #ifndef _DESKINPROPERTYCONSTRUCTED_H_
 #define _DESKINPROPERTYCONSTRUCTED_H_
 
-#include "../../../common/math/decMath.h"
 #include "deSkinProperty.h"
+#include "../../../common/math/decMath.h"
 
 class deSkinPropertyNodeGroup;
 

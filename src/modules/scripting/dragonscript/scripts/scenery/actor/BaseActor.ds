@@ -111,28 +111,28 @@ class BaseActor extends BehaviorElement
 	
 	
 	/** \brief Create element. */
-	public func new( BaseActorClass eclass ) super( eclass )
-		this.pComponent = eclass.getComponent().instance( this )
-		this.pCollider = eclass.getCollider().instance( this )
-		this.pColliderAI = eclass.getColliderAI().instance( this )
-		this.pParameterTable = eclass.getParameterTable().instance( this )
-		this.pProjectToGround = eclass.getProjectToGround().instance( this )
-		this.pLocomotion = eclass.getLocomotion().instance( this )
-		this.pActorAnimated = eclass.getActorAnimated().instance( this )
-		this.pConversationActor = eclass.getConversationActor().instance( this )
-		this.pNavigator = eclass.getNavigator().instance( this )
-		this.pFootSteps = eclass.getFootSteps().instance( this )
-		this.pRideOn = eclass.getRideOn().instance( this )
-		this.pActorMover = eclass.getActorMover().instance( this )
-		this.pAlignActor = eclass.getAlignActor().instance( this )
-		this.pAvoidedByActor = eclass.getAvoidedByActor().instance( this )
-		this.pAvoidCollision = eclass.getAvoidCollision().instance( this )
-		this.pPlayerInputLook = eclass.getPlayerInputLook().instance( this )
-		this.pPlayerInputTurn = eclass.getPlayerInputTurn().instance( this )
-		this.pPlayerInputCrouch = eclass.getPlayerInputCrouch().instance( this )
-		this.pPlayerInputMove = eclass.getPlayerInputMove().instance( this )
-		this.pPlayerControllable = eclass.getPlayerControllable().instance( this )
-		this.pAIAction = eclass.getAIAction().instance( this )
+	public func new(BaseActorClass eclass) super(eclass)
+		pComponent = eclass.getComponent().instance(this)
+		pCollider = eclass.getCollider().instance(this)
+		pColliderAI = eclass.getColliderAI().instance(this)
+		pParameterTable = eclass.getParameterTable().instance(this)
+		pProjectToGround = eclass.getProjectToGround().instance(this)
+		pLocomotion = eclass.getLocomotion().instance(this)
+		pActorAnimated = eclass.getActorAnimated().instance(this)
+		pConversationActor = eclass.getConversationActor().instance(this)
+		pNavigator = eclass.getNavigator().instance(this)
+		pFootSteps = eclass.getFootSteps().instance(this)
+		pRideOn = eclass.getRideOn().instance(this)
+		pActorMover = eclass.getActorMover().instance(this)
+		pAlignActor = eclass.getAlignActor().instance(this)
+		pAvoidedByActor = eclass.getAvoidedByActor().instance(this)
+		pAvoidCollision = eclass.getAvoidCollision().instance(this)
+		pPlayerInputLook = eclass.getPlayerInputLook().instance(this)
+		pPlayerInputTurn = eclass.getPlayerInputTurn().instance(this)
+		pPlayerInputCrouch = eclass.getPlayerInputCrouch().instance(this)
+		pPlayerInputMove = eclass.getPlayerInputMove().instance(this)
+		pPlayerControllable = eclass.getPlayerControllable().instance(this)
+		pAIAction = eclass.getAIAction().instance(this)
 	end
 	
 	
@@ -146,13 +146,13 @@ class BaseActor extends BehaviorElement
 	 * - initAvoidCollisionShape()
 	 * - initNavigator()
 	 */
-	public func void init( StubElement stub )
-		super.init( stub )
+	public func void init(StubElement stub)
+		super.init(stub)
 		
-		this.initColliderShape( stub )
-		this.initProjectToGroundShapes( stub )
-		this.initAvoidCollisionShape( stub )
-		this.initNavigator( stub )
+		initColliderShape(stub)
+		initProjectToGroundShapes(stub)
+		initAvoidCollisionShape(stub)
+		initNavigator(stub)
 	end
 	
 	/**
@@ -161,8 +161,8 @@ class BaseActor extends BehaviorElement
 	 * Assigns a capsule shape to the collider AI. The capsule has a total height of 1.8m
 	 * and is 0.6m wide. This is a reasonable collider AI shape for a humanoid actor.
 	 */
-	protected func void initColliderShape( StubElement stub )
-		this.pColliderAI.setShapeHumanoid( 0.3, 1.8 )
+	protected func void initColliderShape(StubElement stub)
+		pColliderAI.setShapeHumanoid(0.3, 1.8)
 	end
 	
 	/**
@@ -170,8 +170,8 @@ class BaseActor extends BehaviorElement
 	 * 
 	 * Sets sphere shape with the same size as used for the collider AI shape.
 	 */
-	protected func void initAvoidCollisionShape( StubElement stub )
-		this.pAvoidCollision.setShapesSphere( 0.3, 0.6 )
+	protected func void initAvoidCollisionShape(StubElement stub)
+		pAvoidCollision.setShapesSphere(0.3, 0.6)
 	end
 	
 	/**
@@ -188,8 +188,8 @@ class BaseActor extends BehaviorElement
 	 * the matching radius. The default implementation does apply this optimization and
 	 * uses a sphere with the same radius as used for the collider AI capsule.
 	 */
-	protected func void initProjectToGroundShapes( StubElement stub )
-		this.pProjectToGround.setShapesHumanoid( 0.3 )
+	protected func void initProjectToGroundShapes(StubElement stub)
+		pProjectToGround.setShapesHumanoid(0.3)
 	end
 	
 	/**
@@ -201,114 +201,114 @@ class BaseActor extends BehaviorElement
 	 * 
 	 * Subclass should add type specific costs if required.
 	 */
-	protected func void initNavigator( StubElement stub )
+	protected func void initNavigator(StubElement stub)
 	end
 	
 	
 	
 	/** \brief Component behavio instance. */
 	public func ECBehaviorComponent.Instance getComponent()
-		return this.pComponent
+		return pComponent
 	end
 	
 	/** \brief Collider behavior instance. */
 	public func ECBehaviorCollider.Instance getCollider()
-		return this.pCollider
+		return pCollider
 	end
 	
 	/** \brief Collider AI behavior instance. */
 	public func ECBehaviorColliderAI.Instance getColliderAI()
-		return this.pColliderAI
+		return pColliderAI
 	end
 	
 	/** \brief Parameter table instance. */
 	public func ECBehaviorParameterTable.Instance getParameterTable()
-		return this.pParameterTable
+		return pParameterTable
 	end
 	
 	/** \brief Project to ground behavior instance. */
 	public func ECBehaviorProjectToGround.Instance getProjectToGround()
-		return this.pProjectToGround
+		return pProjectToGround
 	end
 	
 	/** \brief Locomotion behavior instance. */
 	public func ECBehaviorLocomotion.Instance getLocomotion()
-		return this.pLocomotion
+		return pLocomotion
 	end
 	
 	/** \brief Actor animated behavior instance. */
 	public func ECBehaviorActorAnimated.Instance getActorAnimated()
-		return this.pActorAnimated
+		return pActorAnimated
 	end
 	
 	/** \brief Conversation actor instance. */
 	public func ECBehaviorConversationActor.Instance getConversationActor()
-		return this.pConversationActor
+		return pConversationActor
 	end
 	
 	/** \brief Navigator instance. */
 	public func ECBehaviorNavigator.Instance getNavigator()
-		return this.pNavigator
+		return pNavigator
 	end
 	
 	/** \brief Foot steps instance. */
 	public func ECBehaviorFootSteps.Instance getFootSteps()
-		return this.pFootSteps
+		return pFootSteps
 	end
 	
 	/** \brief Ride on instance. */
 	public func ECBehaviorRideOn.Instance getRideOn()
-		return this.pRideOn
+		return pRideOn
 	end
 	
 	/** \brief Actor mover instance. */
 	public func ECBehaviorActorMover.Instance getActorMover()
-		return this.pActorMover
+		return pActorMover
 	end
 	
 	/** \brief Align actor instance. */
 	public func ECBehaviorAlignActor.Instance getAlignActor()
-		return this.pAlignActor
+		return pAlignActor
 	end
 	
 	/** \brief Avoided by actor instance. */
 	public func ECBehaviorAvoidedByActor.Instance getAvoidedByActor()
-		return this.pAvoidedByActor
+		return pAvoidedByActor
 	end
 	
 	/** \brief Avoid collision instance. */
 	public func ECBehaviorAvoidCollision.Instance getAvoidCollision()
-		return this.pAvoidCollision
+		return pAvoidCollision
 	end
 	
 	/** \brief Player input looking around behavior instance. */
 	public func ECBehaviorPlayerInputLook.Instance getPlayerInputLook()
-		return this.pPlayerInputLook
+		return pPlayerInputLook
 	end
 	
 	/** \brief Player input turning behavior instance. */
 	public func ECBehaviorPlayerInputTurn.Instance getPlayerInputTurn()
-		return this.pPlayerInputTurn
+		return pPlayerInputTurn
 	end
 	
 	/** \brief Player input crouching behavior instance. */
 	public func ECBehaviorPlayerInputCrouch.Instance getPlayerInputCrouch()
-		return this.pPlayerInputCrouch
+		return pPlayerInputCrouch
 	end
 	
 	/** \brief Player input moving behavior instance. */
 	public func ECBehaviorPlayerInputMove.Instance getPlayerInputMove()
-		return this.pPlayerInputMove
+		return pPlayerInputMove
 	end
 	
 	/** \brief Player controllable instance. */
 	public func ECBehaviorPlayerControllable.Instance getPlayerControllable()
-		return this.pPlayerControllable
+		return pPlayerControllable
 	end
 	
 	/** \brief AI-Action instance. */
 	public func ECBehaviorActorAIAction.Instance getAIAction()
-		return this.pAIAction
+		return pAIAction
 	end
 	
 	
@@ -319,7 +319,7 @@ class BaseActor extends BehaviorElement
 	 * Calls spawnAdjustActor().
 	 */
 	public func void teleportAdjustActor()
-		this.spawnAdjustActor()
+		spawnAdjustActor()
 	end
 	
 	/**
@@ -330,58 +330,58 @@ class BaseActor extends BehaviorElement
 	 */
 	protected func void spawnAdjustActor()
 		// ensure actor is oriented upright. just in case a spawn point is miss-aligned
-		var float turnAngle = this.getOrientation().getEulerAngles().getY()
-		this.setOrientation( Quaternion.newFromEulerY( turnAngle ) )
+		var float turnAngle = getOrientation().getEulerAngles().getY()
+		setOrientation(Quaternion.newFromEulerY(turnAngle))
 		
 		// the behaviors below do spawn adjusting already on their own if added to a game
 		// world. we include them here for situations where actors want to trigger an
 		// adjustment outside addToGameWorld().
-		this.pColliderAI.getCollider().setLinearVelocity( Vector.new() )
-		this.pLocomotion.setOrientation( turnAngle )
-		this.pConversationActor.clearAllPlayback()
-		this.pPlayerInputLook.reset()
-		this.pPlayerInputTurn.reset()
-		this.pPlayerInputCrouch.reset()
-		this.pPlayerInputMove.reset()
+		pColliderAI.getCollider().setLinearVelocity(Vector.new())
+		pLocomotion.setOrientation(turnAngle)
+		pConversationActor.clearAllPlayback()
+		pPlayerInputLook.reset()
+		pPlayerInputTurn.reset()
+		pPlayerInputCrouch.reset()
+		pPlayerInputMove.reset()
 	end
 	
 	/** \brief Add to game world. */
 	public func void addToGameWorld()
-		this.spawnAdjustActor()
+		spawnAdjustActor()
 		super.addToGameWorld()
 	end
 	
 	
 	
 	/** \brief Read element from file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		super.readFromFile( env, reader )
+	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		super.readFromFile(env, reader)
 		
 		select reader.readByte() // version
 		case 0
-			var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
-			this.setVisible( flags.getAt( 0 ) )
+			var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+			setVisible(flags.getAt(0))
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** Writes the element to a file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeToFile( env, writer )
+	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeToFile(env, writer)
 		
-		writer.writeByte( 0 ) // version
+		writer.writeByte(0) // version
 		
-		var PersistencyFlags flags = PersistencyFlags.new( 1 )
-		flags.setAt( 0, this.getVisible() )
-		flags.writeToFile( writer )
+		var PersistencyFlags flags = PersistencyFlags.new(1)
+		flags.setAt(0, getVisible())
+		flags.writeToFile(writer)
 	end
 	
 	
 	
 	/** \brief Visit element. */
-	public func void visit( ElementVisitor visitor )
-		visitor.visitBaseActor( this )
+	public func void visit(ElementVisitor visitor)
+		visitor.visitBaseActor(this)
 	end
 end

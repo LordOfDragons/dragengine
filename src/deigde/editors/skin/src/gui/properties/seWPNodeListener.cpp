@@ -51,7 +51,26 @@ seWPNodeListener::~seWPNodeListener(){
 // Management
 ///////////////
 
-void seWPNodeListener::ActiveTextureChanged( seSkin* ){
+void seWPNodeListener::MappedStructureChanged( seSkin *skin ){
+	if( skin != pPanel.GetSkin() ){
+		return;
+	}
+	
+	pPanel.UpdateMappedTargetList();
+}
+
+void seWPNodeListener::MappedNameChanged( seSkin *skin, seMapped* ){
+	MappedStructureChanged( skin );
+}
+
+
+
+void seWPNodeListener::ActiveTextureChanged( seSkin *skin ){
+	if( skin != pPanel.GetSkin() ){
+		return;
+	}
+	
+	pPanel.UpdateMappedTypeList();
 	pPanel.UpdateNode();
 }
 
@@ -71,6 +90,7 @@ void seWPNodeListener::ActivePropertyChanged( seSkin *skin, seTexture *texture )
 	
 	pPanel.UpdateOutline();
 	pPanel.ShowNodePanel();
+	pPanel.UpdateMappedTypeList();
 	pPanel.UpdateNode();
 }
 
@@ -110,6 +130,7 @@ seProperty *property ){
 	}
 	
 	pPanel.OutlinerSelectActive();
+	pPanel.UpdateMappedTypeList();
 	pPanel.UpdateNode();
 	pPanel.ShowNodePanel();
 }

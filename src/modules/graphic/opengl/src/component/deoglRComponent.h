@@ -366,9 +366,9 @@ public:
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
 	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
-	void InitSkinStateCalculatedProperties( const deComponent &component );
-	void UpdateSkinStateCalculatedPropertiesBones( const deComponent &component );
-	void UpdateSkinStateCalculatedProperties();
+	void InitSkinStateStates( const deComponent &component );
+	void UpdateSkinStateBones( const deComponent &component );
+	void UpdateSkinStateStates();
 	
 	void DirtyPrepareSkinStateRenderables();
 	
@@ -389,7 +389,7 @@ public:
 	inline int GetBoneMatrixCount() const{ return pBoneMatrixCount; }
 	
 	/** Update the bone matrices if required. */
-	void UpdateBoneMatrices( deComponent &component );
+	void UpdateBoneMatrices( const deComponent &component );
 	
 	
 	
@@ -743,7 +743,7 @@ private:
 	
 	void pUpdateModelSkinMappings();
 	void pResizeModelSkinMappings();
-	void pUpdateModelRigMappings( deComponent &component );
+	void pUpdateModelRigMappings( const deComponent &component );
 	void pResizeModelRigMappings();
 	void pCheckRenderModifier( deoglRCamera *oglCamera );
 	void pUpdateRenderMode();
@@ -756,6 +756,7 @@ private:
 	void pPrepareRenderEnvMap();
 	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *mask );
 	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *mask );
+	void pPrepareSkinStateConstructed();
 	void pPrepareTextureTUCs();
 	void pPrepareParamBlocks();
 	void pPrepareTextureParamBlocks();

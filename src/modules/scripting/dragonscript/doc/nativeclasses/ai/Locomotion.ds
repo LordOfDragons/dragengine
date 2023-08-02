@@ -796,6 +796,23 @@ class Locomotion
 	/** \brief Update AI collider linear and angular velocity. */
 	public func void updateAICollider()
 	end
+	
+	/**
+	 * \brief Adjust orientation.
+	 * \version 1.18
+	 * 
+	 * Adjusts various orientation parameters to rotate by a given angle ensuring all relationships
+	 * between the various parameters are still correct. Use this method if you want to manually
+	 * rotate an actor while keeping the looking and movement direction intact. In particular this
+	 * method adjust the following parameters without taking limitations into account:
+	 * - Orientation
+	 * - Look horizontal
+	 * - Look horizontal goal
+	 * - Analog move horizontal
+	 * - Turn horizontal
+	 */
+	public func void adjustOrientation(float angle)
+	end
 	/*@}*/
 	
 	

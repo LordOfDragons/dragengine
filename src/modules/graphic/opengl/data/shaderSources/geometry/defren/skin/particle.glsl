@@ -74,6 +74,9 @@ out vec2 vTCColor;
 #ifdef CLIP_PLANE
 	out vec3 vClipCoord;
 #endif
+#ifdef SKIN_CLIP_PLANE
+	out vec3 vSkinClipCoord;
+#endif
 #ifdef DEPTH_DISTANCE
 	out vec3 vPosition;
 #endif
@@ -156,16 +159,19 @@ void emitParticle( in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent
 		#endif
 		
 		#ifdef WITH_REFLECT_DIR
-			vReflectDir = position.xyz;
+			vReflectDir = vec3( position );
 		#endif
 		#ifdef FADEOUT_RANGE
 			vFadeZ = position.z;
 		#endif
 		#ifdef CLIP_PLANE
-			vClipCoord = position.xyz;
+			vClipCoord = vec3( position );
+		#endif
+		#ifdef SKIN_CLIP_PLANE
+			vSkinClipCoord = vec3( position );
 		#endif
 		#ifdef DEPTH_DISTANCE
-			vPosition = position.xyz;
+			vPosition = vec3( position );
 		#endif
 		
 		vParticleColor = vParticle1[ 0 ];

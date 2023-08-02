@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-sePropertyNode::sePropertyNode( eNodeTypes nodeType, deEngine &engine ) :
+sePropertyNode::sePropertyNode( eNodeTypes nodeType, deEngine &engine, int mappedCount ) :
 pEngine( engine ),
 
-pParent( NULL ),
-pMaskParent( NULL ),
+pParent( nullptr ),
+pMaskParent( nullptr ),
 
 pNodeType( nodeType ),
 
@@ -59,8 +59,11 @@ pGamma( 1.0f ),
 pColorize( 1.0f, 1.0f, 1.0f ),
 
 pTransparency( 1.0f ),
-pMask( NULL ),
+pMask( nullptr ),
 pCombineMode( deSkinPropertyNode::ecmBlend ),
+
+pMapped( new seMapped::Ref[ mappedCount ] ),
+pMappedCount( mappedCount ),
 
 pSelected( false ),
 pActive( false ){
@@ -69,8 +72,8 @@ pActive( false ){
 sePropertyNode::sePropertyNode( const sePropertyNode &node ) :
 pEngine( node.pEngine ),
 
-pParent( NULL ),
-pMaskParent( NULL ),
+pParent( nullptr ),
+pMaskParent( nullptr ),
 
 pNodeType( node.pNodeType ),
 
@@ -85,8 +88,11 @@ pGamma( node.pGamma ),
 pColorize( node.pColorize ),
 
 pTransparency( node.pTransparency ),
-pMask( NULL ),
+pMask( nullptr ),
 pCombineMode( node.pCombineMode ),
+
+pMapped( new seMapped::Ref[ node.pMappedCount ] ),
+pMappedCount( node.pMappedCount ),
 
 pSelected( false ),
 pActive( false )
@@ -95,12 +101,21 @@ pActive( false )
 		pMask = node.pMask->Copy();
 		pMask->SetMaskParent( this );
 	}
+	
+	int i;
+	for( i=0; i<node.pMappedCount; i++ ){
+		pMapped[ i ] = node.pMapped[ i ];
+	}
 }
 
 sePropertyNode::~sePropertyNode(){
 	if( pMask ){
-		pMask->SetMaskParent( NULL );
+		pMask->SetMaskParent( nullptr );
 		pMask->FreeReference();
+	}
+	
+	if( pMapped ){
+		delete [] pMapped;
 	}
 }
 
@@ -335,6 +350,26 @@ void sePropertyNode::SetCombineMode( deSkinPropertyNode::eCombineModes mode ){
 	}
 	
 	pCombineMode = mode;
+	
+	NotifyChanged();
+}
+
+const seMapped::Ref &sePropertyNode::GetMappedFor( int type ) const{
+	DEASSERT_TRUE( type >= 0 )
+	DEASSERT_TRUE( type < pMappedCount )
+	
+	return pMapped[ type ];
+}
+
+void sePropertyNode::SetMappedFor( int type, seMapped *mapped ){
+	DEASSERT_TRUE( type >= 0 )
+	DEASSERT_TRUE( type < pMappedCount )
+	
+	if( pMapped[ type ] == mapped ){
+		return;
+	}
+	
+	pMapped[ type ] = mapped;
 	
 	NotifyChanged();
 }

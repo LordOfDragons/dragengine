@@ -27,6 +27,7 @@
 #include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/model/deModel.h>
 
 class igdeEngineController;
 class igdeFilePatternList;
@@ -192,6 +193,12 @@ public:
 		essEditRimOutline
 	};
 	
+	/** \brief Stock models. */
+	enum eStockModels{
+		/** \brief Gizmo move. */
+		esmGizmoMove
+	};
+	
 	/** \brief Stock rigs. */
 	enum eStockRigs{
 		/**
@@ -206,7 +213,10 @@ public:
 		 * 
 		 * This rig uses no collision.
 		 */
-		esrGhostCollision
+		esrGhostCollision,
+		
+		/** \brief Gizmo move. */
+		esrGizmoMove
 	};
 	
 	
@@ -254,6 +264,14 @@ public:
 	 * first time. If not available nullptr is returned.
 	 */
 	virtual deRig::Ref GetStockRig( eStockRigs rig ) = 0;
+	
+	/**
+	 * \brief Stock model.
+	 * 
+	 * Stock models are only available after the engine controller has been started for the
+	 * first time. If not available nullptr is returned.
+	 */
+	virtual deModel::Ref GetStockModel( eStockModels model ) = 0;
 	
 	/** \brief Engine controller. */
 	virtual igdeEngineController *GetEngineController() = 0;

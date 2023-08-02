@@ -333,7 +333,8 @@ void deoglRBillboard::UpdateSkin( float elapsed ){
 			MarkParamBlocksDirty();
 			MarkTUCsDirty();
 			
-		}else if( pUseSkinTexture->GetCalculatedProperties() ){
+		}else if( pUseSkinTexture->GetCalculatedProperties()
+		|| pUseSkinTexture->GetConstructedProperties() ){
 			MarkParamBlocksDirty();
 		}
 	}
@@ -348,13 +349,13 @@ void deoglRBillboard::UpdateSkin( float elapsed ){
 	}
 }
 
-void deoglRBillboard::InitSkinStateCalculatedProperties(){
-	pSkinState->InitCalculatedProperties();
+void deoglRBillboard::InitSkinStateStates(){
+	pSkinState->InitAll();
 }
 
-void deoglRBillboard::UpdateSkinStateCalculatedProperties(){
+void deoglRBillboard::UpdateSkinStateStates(){
 	if( pSkinState ){
-		pSkinState->UpdateCalculatedProperties();
+		pSkinState->UpdateAll();
 	}
 }
 
@@ -392,6 +393,12 @@ void deoglRBillboard::PrepareSkinStateRenderables( const deoglRenderPlanMasked *
 void deoglRBillboard::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pSkinState ){
 		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRBillboard::PrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
 	}
 }
 
@@ -593,6 +600,11 @@ int element, deoglSkinShader &skinShader ){
 		}else{
 			paramBlock.SetParameterDataVec2( target, element, 0.0f, 0.0f );
 		}
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, element, 0.0f, 0.0f, 1.0f, 0.0f );
 	}
 	
 	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );
@@ -881,6 +893,8 @@ void deoglRBillboard::WorldReferencePointChanged(){
 
 
 void deoglRBillboard::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMasked *mask ){
+	PrepareSkinStateConstructed();
+	
 	if( pDirtyPrepareSkinStateRenderables ){
 		PrepareSkinStateRenderables( mask );
 		pDirtyPrepareSkinStateRenderables = false;

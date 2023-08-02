@@ -432,15 +432,15 @@ bool deoglRLight::StaticMatchesCamera( const decLayerMask &layerMask ) const{
 
 
 
-void deoglRLight::InitSkinStateCalculatedProperties(){
+void deoglRLight::InitSkinStateStates(){
 	if( pSkinState ){
-		pSkinState->InitCalculatedProperties();
+		pSkinState->InitAll();
 	}
 }
 
-void deoglRLight::UpdateSkinStateCalculatedProperties(){
+void deoglRLight::UpdateSkinStateStates(){
 	if( pSkinState ){
-		pSkinState->UpdateCalculatedProperties();
+		pSkinState->UpdateAll();
 	}
 }
 
@@ -459,6 +459,12 @@ void deoglRLight::PrepareSkinStateRenderables( const deoglRenderPlanMasked *rend
 void deoglRLight::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pSkinState ){
 		pSkinState->RenderRenderables( pLightSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRLight::PrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
 	}
 }
 
@@ -676,6 +682,8 @@ void deoglRLight::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask 
 		}
 		pDirtyPrepareLightCanvas = false;
 	}
+	
+	PrepareSkinStateConstructed();
 	
 	if( pDirtyPrepareSkinStateRenderables ){
 		PrepareSkinStateRenderables( renderPlanMask );

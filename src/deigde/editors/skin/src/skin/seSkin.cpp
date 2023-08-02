@@ -27,6 +27,7 @@
 #include "seSkin.h"
 #include "seSkinBuilder.h"
 #include "seSkinListener.h"
+#include "mapped/seMapped.h"
 #include "texture/seTexture.h"
 #include "property/seProperty.h"
 #include "dynamicskin/seDynamicSkin.h"
@@ -125,7 +126,8 @@ pPreviewMode( epmModel )
 	pRewindTextures = 0;
 	pEnableSkinUpdate = true;
 	
-	pActiveTexture = NULL;
+	pActiveMapped = nullptr;
+	pActiveTexture = nullptr;
 	
 	try{
 		SetFilePath( "new.deskin" );
@@ -347,6 +349,7 @@ void seSkin::SetEnableSkinUpdate( bool enableSkinUpdate ){
 
 void seSkin::Dispose(){
 	RemoveAllTextures();
+	RemoveAllMapped();
 	
 	GetUndoSystem()->RemoveAll();
 }
@@ -459,6 +462,82 @@ void seSkin::UpdateResources(){
 	for( i=0; i<count; i++ ){
 		pTextureList.GetAt( i )->UpdateResources();
 	}
+}
+
+
+
+// Mapped
+///////////
+
+void seSkin::AddMapped( seMapped *mapped ){
+	pMappedList.Add( mapped );
+	mapped->SetSkin( this );
+	NotifyMappedStructureChanged();
+	
+	if( ! pActiveMapped ){
+		SetActiveMapped( mapped );
+	}
+}
+
+void seSkin::RemoveMapped( seMapped *mapped ){
+	DEASSERT_NOTNULL( mapped )
+	DEASSERT_TRUE( mapped->GetSkin() == this )
+	
+	if( mapped->GetActive() ){
+		if( pMappedList.GetCount() > 1 ){
+			seMapped *activeMapped = pMappedList.GetAt( 0 );
+			
+			if( activeMapped == mapped ){
+				activeMapped = pMappedList.GetAt( 1 );
+			}
+			
+			SetActiveMapped( activeMapped );
+			
+		}else{
+			SetActiveMapped( nullptr );
+		}
+	}
+	
+	mapped->SetSkin( nullptr );
+	pMappedList.Remove( mapped );
+	NotifyMappedStructureChanged();
+}
+
+void seSkin::RemoveAllMapped(){
+	const int count = pMappedList.GetCount();
+	int i;
+	
+	SetActiveMapped( nullptr );
+	
+	for( i=0; i<count; i++ ){
+		pMappedList.GetAt( i )->SetSkin( nullptr );
+	}
+	pMappedList.RemoveAll();
+	NotifyMappedStructureChanged();
+}
+
+bool seSkin::HasActiveMapped() const{
+	return pActiveMapped != nullptr;
+}
+
+void seSkin::SetActiveMapped( seMapped *mapped ){
+	if( mapped == pActiveMapped ){
+		return;
+	}
+	
+	if( pActiveMapped ){
+		pActiveMapped->SetActive( false );
+		pActiveMapped->FreeReference();
+	}
+	
+	pActiveMapped = mapped;
+	
+	if( mapped ){
+		mapped->AddReference();
+		mapped->SetActive( true );
+	}
+	
+	NotifyActiveMappedChanged();
 }
 
 
@@ -614,6 +693,58 @@ void seSkin::NotifyCameraChanged(){
 	
 	for( l=0; l<listenerCount; l++ ){
 		( ( seSkinListener* )pListeners.GetAt( l ) )->CameraChanged( this );
+	}
+}
+
+
+
+void seSkin::NotifyMappedStructureChanged(){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( seSkinListener* )pListeners.GetAt( i ) )->MappedStructureChanged( this );
+	}
+	
+	SetChanged( true );
+	Invalidate();
+}
+
+void seSkin::NotifyMappedChanged( seMapped *mapped ){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( seSkinListener* )pListeners.GetAt( i ) )->MappedChanged( this, mapped );
+	}
+	
+	SetChanged( true );
+	Invalidate();
+	
+	const int textureCount = pTextureList.GetCount();
+	for( i=0; i<textureCount; i++ ){
+		pTextureList.GetAt( i )->InvalidateEngineSkin();
+	}
+}
+
+void seSkin::NotifyMappedNameChanged( seMapped *mapped ){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( seSkinListener* )pListeners.GetAt( i ) )->MappedNameChanged( this, mapped );
+	}
+	
+	SetChanged( true );
+	Invalidate();
+}
+
+void seSkin::NotifyActiveMappedChanged(){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( seSkinListener* )pListeners.GetAt( i ) )->ActiveMappedChanged( this );
 	}
 }
 
@@ -818,8 +949,11 @@ void seSkin::pCleanUp(){
 	
 	if( pCamera ) delete pCamera;
 	
-	SetActiveTexture( NULL );
+	SetActiveTexture( nullptr );
 	RemoveAllTextures();
+	
+	SetActiveMapped( nullptr );
+	RemoveAllMapped();
 	
 	if( pEngSkin ){
 		pEngSkin->FreeReference();

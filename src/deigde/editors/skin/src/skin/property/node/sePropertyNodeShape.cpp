@@ -41,7 +41,7 @@
 ////////////////////////////
 
 sePropertyNodeShape::sePropertyNodeShape( deEngine &engine ) :
-sePropertyNode( entShape, engine ),
+sePropertyNode( entShape, engine, ShapeMappedCount ),
 pShapeType( deSkinPropertyNodeShape::estRectangle ),
 pThickness( 1.0f ){
 }

@@ -63,6 +63,27 @@ public:
 		ecmOverlay
 	};
 	
+	/** \brief Mapped. */
+	enum eMapped{
+		emPositionX, //<! Position X-Component
+		emPositionY, //<! Position Y-Component
+		emPositionZ, //<! Position Z-Component
+		emSizeX, //<! Size X-Component
+		emSizeY, //<! Size Y-Component
+		emSizeZ, //<! Size Z-Component
+		emRotation, //<! Rotation
+		emShear, //<! Shear
+		emBrightness, //<! Brightness
+		emContrast, //<! Constrast
+		emGamma, //<! Gamma
+		emColorizeRed, //<! Colorize red component
+		emColorizeGreen, //<! Colorize green component
+		emColorizeBlue, //<! Colorize blue component
+		emTransparency //<! Transparency
+	};
+	
+	static const int MappedCount = emTransparency + 1;
+	
 	
 	
 private:
@@ -79,6 +100,8 @@ private:
 	float pTransparency;
 	deSkinPropertyNode *pMask;
 	eCombineModes pCombineMode;
+	
+	int pMapped[ MappedCount ];
 	
 	
 	
@@ -165,6 +188,14 @@ public:
 	
 	/** \brief Set combien mode. */
 	void SetCombineMode( eCombineModes mode );
+	
+	
+	
+	/** \brief Index of mapped value or -1 to use static value. */
+	int GetMappedFor( eMapped mapped ) const;
+	
+	/** \brief Set index of mapped value or -1 to use static value. */
+	void SetMappedFor( eMapped mapped, int index );
 	/*@}*/
 	
 	

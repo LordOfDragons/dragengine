@@ -340,12 +340,13 @@ public:
 	/** Skin texture to use or \em NULL. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
-	void InitSkinStateCalculatedProperties();
-	void UpdateSkinStateCalculatedProperties();
+	void InitSkinStateStates();
+	void UpdateSkinStateStates();
 	
 	void DirtyPrepareSkinStateRenderables();
 	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareSkinStateConstructed();
 	
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();

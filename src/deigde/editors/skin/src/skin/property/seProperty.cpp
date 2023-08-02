@@ -91,6 +91,7 @@ pTexture( NULL ),
 pName( property.pName ),
 pValueType( property.pValueType ),
 pRenderableName( property.pRenderableName ),
+pBoneName( property.pBoneName ),
 
 pValue( property.pValue ),
 
@@ -160,6 +161,15 @@ void seProperty::SetRenderableName( const char *name ){
 	}
 	
 	pRenderableName = name;
+	NotifyChanged();
+}
+
+void seProperty::SetBoneName( const char *name ){
+	if( pBoneName.Equals( name ) ){
+		return;
+	}
+	
+	pBoneName = name;
 	NotifyChanged();
 }
 
@@ -253,19 +263,18 @@ void seProperty::SetVideoSharedTime( bool shareTime ){
 
 
 
-const deSkinPropertyMapped::cComponent &seProperty::GetMappedComponent( int index ) const{
-	if( index < 0 || index > 3 ){
-		DETHROW( deeInvalidParam );
-	}
+const seMapped::Ref &seProperty::GetMappedComponent( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index <= 3 )
+	
 	return pMappedComponents[ index ];
 }
 
-void seProperty::SetMappedComponent( int index, const deSkinPropertyMapped::cComponent &component ){
-	if( index < 0 || index > 3 ){
-		DETHROW( deeInvalidParam );
-	}
+void seProperty::SetMappedComponent( int index, seMapped *mapped ){
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index <= 3 )
 	
-	pMappedComponents[ index ] = component;
+	pMappedComponents[ index ] = mapped;
 	NotifyChanged();
 }
 

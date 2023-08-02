@@ -34,8 +34,8 @@ pin Dragengine.Utils
  * Allows actor to perform cutscene actions controlled by conversation scripts.
  * 
  * Loads a custom animator and applies it to ECBehaviorConversationActor. Controller mappings
- * assigned to ECBehaviorConversationActor do affect the loaded animator so cutscene animators can
- * integrate into switched animators. In addition this behavior adds a controller named
+ * assigned to ECBehaviorConversationActor do affect the loaded animator so cutscene animators
+ * can integrate into switched animators. In addition this behavior adds a controller named
  * "cutscene" which is used to play back the cutscene.
  * 
  * Upon starting the animation captures the current animation state into state number 0.
@@ -47,6 +47,11 @@ pin Dragengine.Utils
  * while the cutscene controller is frozen at the break point value.
  * 
  * Also supports loading a sound or synthesizer to play back while the cutscene is running.
+ * 
+ * When using this behavior make sure the BaseActorAction subclass used supports changing
+ * animator assigned to ECBehaviorActorAnimated while the action is in used. If this is not
+ * the case the BaseActorAction subclass can access AnimatorController of the previous
+ * animator causing problems.
  * 
  * Adds these conversation condition and command named "cutscene".
  *

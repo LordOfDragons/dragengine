@@ -432,6 +432,30 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			collider.addIgnoreCollider(pCCTCheckRight.getCollider())
 		end
 		
+		/**
+		 * \brief Add collider to ignore to colliders required for avoiding.
+		 * \version 1.17
+		 */
+		public func void addIgnoreCollider(Collider collider)
+			pCCTAvoidCollision.getCollider().addIgnoreCollider(collider)
+			pCCTCheckLeft.getCollider().addIgnoreCollider(collider)
+			pCCTCheckRight.getCollider().addIgnoreCollider(collider)
+		end
+		
+		/**
+		 * \brief Mutually ignore colliders.
+		 * \version 1.17
+		 * 
+		 * Same as calling addIgnoreCollidersTo() and addIgnoreCollider() for the same collider.
+		 * Use this call to make sure the given collider is ignored by all colliders required
+		 * or avoiding and vice versa. The ECBehaviorColliderAI reachable from
+		 * ECBehaviorActorMover is automatically made mutually ignore.
+		 */
+		public func void mutualIgnoreColliders(Collider collider)
+			addIgnoreCollidersTo(collider)
+			addIgnoreCollider(collider)
+		end
+		
 		
 		
 		/** \brief Collision test is armed. */

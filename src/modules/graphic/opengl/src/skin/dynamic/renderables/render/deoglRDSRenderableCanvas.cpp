@@ -42,7 +42,7 @@
 
 deoglRDSRenderableCanvas::deoglRDSRenderableCanvas(
 	deoglRDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable ) :
-deoglRDSRenderable( dynamicSkin ),
+deoglRDSRenderable( etCanvas, dynamicSkin ),
 pCanvas( NULL ),
 pComponentCount( renderable.GetComponentCount() ),
 pBitCount( renderable.GetBitCount() )

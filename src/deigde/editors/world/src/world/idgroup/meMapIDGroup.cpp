@@ -35,13 +35,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meMapIDGroup::meMapIDGroup( igdeGDProperty *property, meIDGroup *group ) :
-pProperty( NULL ),
-pGroup( NULL )
+meMapIDGroup::meMapIDGroup( igdeGDProperty *property, meIDGroup *group, const decString &propertyPrefix ) :
+pProperty( nullptr ),
+pGroup( nullptr ),
+pPropertyPrefix( propertyPrefix )
 {
-	if( ! property || ! group ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( property )
+	DEASSERT_NOTNULL( group )
 	
 	pProperty = property;
 	property->AddReference();

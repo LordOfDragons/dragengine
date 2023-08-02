@@ -278,7 +278,8 @@ void deoglRDecal::UpdateSkin( float elapsed ){
 		MarkParamBlocksDirty();
 		MarkTUCsDirty();
 		
-	}else if( pUseSkinTexture->GetCalculatedProperties() ){
+	}else if( pUseSkinTexture->GetCalculatedProperties()
+	|| pUseSkinTexture->GetConstructedProperties() ){
 		MarkParamBlocksDirty();
 	}
 }
@@ -319,7 +320,7 @@ void deoglRDecal::SetSkin( deoglRSkin *skin ){
 	
 	UpdateSkinState();
 	if( pSkinState ){
-		pSkinState->InitCalculatedProperties();
+		pSkinState->InitAll();
 	}
 	
 	pRequiresPrepareForRender();
@@ -539,6 +540,7 @@ void deoglRDecal::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMaske
 	pPrepareVBO();
 	pPrepareParamBlocks();
 	pPrepareTUCs();
+	pPrepareSkinStateConstructed();
 	pPrepareSkinStateRenderables( mask );
 }
 
@@ -717,7 +719,9 @@ void deoglRDecal::UpdateStaticTexture(){
 		return;
 	}
 	
-	if( pUseSkinState->GetVideoPlayerCount() > 0 || pUseSkinState->GetCalculatedPropertyCount() > 0 ){
+	if( pUseSkinState->GetVideoPlayerCount() > 0
+	|| pUseSkinState->GetCalculatedPropertyCount() > 0
+	|| pUseSkinState->GetConstructedPropertyCount() > 0 ){
 		pStaticTexture = false;
 	}
 }
@@ -1064,6 +1068,12 @@ void deoglRDecal::pRenderSkinStateRenderables( const deoglRenderPlanMasked *rend
 	}
 }
 
+void deoglRDecal::pPrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
+	}
+}
+
 void deoglRDecal::pUpdateRTSInstance(){
 	if( ! pRTSInstance || ! pVBOBlock ){
 		return;
@@ -1140,6 +1150,11 @@ int element, deoglSkinShader &skinShader ){
 		}else{
 			paramBlock.SetParameterDataVec2( target, element, 0.0f, 0.0f );
 		}
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, element, 0.0f, 0.0f, 1.0f, 0.0f );
 	}
 	
 	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );

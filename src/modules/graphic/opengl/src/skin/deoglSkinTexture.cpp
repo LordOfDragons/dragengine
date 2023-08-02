@@ -25,6 +25,7 @@
 
 #include "deoglRSkin.h"
 #include "deoglSkinCalculatedProperty.h"
+#include "deoglSkinConstructedProperty.h"
 #include "deoglSkinTexture.h"
 #include "deoglSkinPropertyMap.h"
 #include "deoglSkinRenderable.h"
@@ -54,6 +55,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
+#include "../skin/channel/deoglSCConstructedDynamic.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/compression/deoglTextureCompression.h"
 #include "../texture/cubemap/deoglCubeMap.h"
@@ -79,7 +81,9 @@
 #include <dragengine/resources/skin/property/deSkinPropertyValue.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVideo.h>
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
+#include <dragengine/resources/skin/property/deSkinPropertyConstructed.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVisitorIdentify.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNodeGroup.h>
 
 
 
@@ -127,6 +131,8 @@ pSharedSPBElement( nullptr )
 	pQuickTransp = false;
 	pDynamicChannels = false;
 	pCalculatedProperties = false;
+	pConstructedProperties = false;
+	pBoneProperties = false;
 	pRenderableChannels = false;
 	pRenderableMaterialProperties = false;
 	
@@ -213,6 +219,10 @@ pSharedSPBElement( nullptr )
 	
 	pNonPbrAlbedo.Set( 0.0f, 0.0f, 0.0f );
 	pNonPbrMetalness = 0.0f;
+	
+	pSkinClipPlane = 0.0f;
+	pSkinClipPlaneBorder = 0.0f;
+	
 	pXRay = false;
 	
 	pMirror = false;
@@ -417,6 +427,14 @@ void deoglSkinTexture::SetDynamicChannels( bool dynamicChannels ){
 
 void deoglSkinTexture::SetCalculatedProperties( bool calculatedProperties ){
 	pCalculatedProperties = calculatedProperties;
+}
+
+void deoglSkinTexture::SetConstructedProperties( bool constructedProperties ){
+	pConstructedProperties = constructedProperties;
+}
+
+void deoglSkinTexture::SetBoneProperties( bool boneProperties ){
+	pBoneProperties = boneProperties;
 }
 
 void deoglSkinTexture::SetRenderableChannels( bool renderableChannels ){
@@ -637,6 +655,14 @@ void deoglSkinTexture::SetRimAngle( float angle ){
 
 void deoglSkinTexture::SetRimExponent( float exponent ){
 	pRimExponent = decMath::max( exponent, 0.0f );
+}
+
+void deoglSkinTexture::SetSkinClipPlane( float clipPlane ){
+	pSkinClipPlane = decMath::clamp( clipPlane, 0.0f, 1.0f );
+}
+
+void deoglSkinTexture::SetSkinClipPlaneBorder( float border ){
+	pSkinClipPlaneBorder = border;
 }
 
 
@@ -1707,6 +1733,16 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pXRay = value > 0.5f;
 			break;
 			
+		case deoglSkinPropertyMap::eptClipPlane:
+			pSkinClipPlane = decMath::clamp( value, 0.0f, 1.0f );
+			pHasSolidity = true;
+			pBoneProperties = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlaneBorder:
+			pSkinClipPlaneBorder = value;
+			break;
+			
 		default:
 			break;
 		}
@@ -1813,7 +1849,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		}
 		
 	}else if( identify.IsMapped() ){
-		deoglSkinTextureProperty *materialProperty = NULL;
+		deoglSkinTextureProperty *materialProperty = nullptr;
 		bool requiresTexture = false;
 		
 		switch( propertyType ){
@@ -2075,6 +2111,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			requiresTexture = true;
 			break;
 			
+		case deoglSkinPropertyMap::eptClipPlane:
+			materialProperty = pMaterialProperties + empSkinClipPlane;
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlaneBorder:
+			materialProperty = pMaterialProperties + empSkinClipPlaneBorder;
+			break;
+			
 		default:
 			break;
 		}
@@ -2082,25 +2126,23 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		if( materialProperty ){
 			const deSkinPropertyMapped &mapped = identify.CastToMapped();
 			
-			deObjectReference refCalculated;
-			refCalculated.TakeOver( new deoglSkinCalculatedProperty );
+			const deoglSkinCalculatedProperty::Ref calculated(
+				deoglSkinCalculatedProperty::Ref::New( new deoglSkinCalculatedProperty ) );
 			
-			deoglSkinCalculatedProperty &calculated = ( deoglSkinCalculatedProperty& )( deObject& )refCalculated;
-			calculated.GetMappedComponent( 0 ) = mapped.GetRed();
-			calculated.GetMappedComponent( 1 ) = mapped.GetGreen();
-			calculated.GetMappedComponent( 2 ) = mapped.GetBlue();
-			calculated.GetMappedComponent( 3 ) = mapped.GetAlpha();
-			calculated.SetRequiresTexture( requiresTexture );
-			calculated.Prepare();
+			calculated->SetMappedComponent( 0, mapped.GetRed() );
+			calculated->SetMappedComponent( 1, mapped.GetGreen() );
+			calculated->SetMappedComponent( 2, mapped.GetBlue() );
+			calculated->SetMappedComponent( 3, mapped.GetAlpha() );
+			calculated->SetRequiresTexture( requiresTexture );
 			
-			materialProperty->SetCalculatedProperty( skin.AddCalculatedProperty( &calculated ) );
+			materialProperty->SetCalculatedProperty( skin.AddCalculatedProperty( calculated ) );
 			pCalculatedProperties = true;
 		}
 	}
 	
 	// check if the property has a renderable
 	if( ! property.GetRenderable().IsEmpty() ){
-		const char * const renderable = property.GetRenderable().GetString();
+		const decString &renderable = property.GetRenderable();
 		
 		switch( propertyType ){
 		case deoglSkinPropertyMap::eptColor:
@@ -2373,6 +2415,26 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			skin.GetRenderableAt( pMaterialProperties[ empNonPbrMetalness ].GetRenderable() ).SetRequiresTexture( true );
 			break;
 			
+		case deoglSkinPropertyMap::eptClipPlane:
+			pMaterialProperties[ empSkinClipPlane ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlaneBorder:
+			pMaterialProperties[ empSkinClipPlaneBorder ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		default:
+			break;
+		}
+	}
+	
+	// check if the property has a boner
+	if( ! property.GetBone().IsEmpty() ){
+		switch( propertyType ){
+		case deoglSkinPropertyMap::eptClipPlane:
+			pMaterialProperties[ empSkinClipPlane ].SetBone( skin.AddBone( property.GetBone() ) );
+			break;
+			
 		default:
 			break;
 		}
@@ -2488,6 +2550,9 @@ void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int el
 	
 	spb.SetParameterDataBool( deoglSkinShader::etutTexEmissivityCameraAdapted, element,
 		pEmissivityCameraAdapted );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexSkinClipPlane, element, pSkinClipPlane );
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexSkinClipPlaneBorder, element, pSkinClipPlaneBorder );
 }
 
 void deoglSkinTexture::pUpdateRenderTaskFilters(){

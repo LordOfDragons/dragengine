@@ -19,20 +19,18 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _AECONTROLLER_H_
 #define _AECONTROLLER_H_
 
-// includes
+#include "../../gui/gizmo/aeGizmoControllerIKPosition.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
 #include <dragengine/common/string/decString.h>
 
-// predefinitions
 class aeAnimator;
 class deAnimatorController;
-
 
 
 /**
@@ -43,6 +41,12 @@ class deAnimatorController;
 class aeController : public deObject{
 public:
 	typedef deTObjectReference<aeController> Ref;
+	
+	enum eVectorSimulation{
+		evsNone,
+		evsPosition,
+		evsRotation
+	};
 	
 	
 private:
@@ -59,9 +63,14 @@ private:
 	decVector pVector;
 	int pLocoAttr;
 	int pLocoLeg;
+	eVectorSimulation pVectorSimulation;
+	
+	aeGizmoControllerIKPosition::Ref pGizmoIKPosition;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create controller. */
 	aeController( const char *name = "Controller" );
@@ -69,11 +78,15 @@ public:
 	/** Create copy of controller. */
 	aeController( const aeController &copy );
 	
+protected:
 	/** Cleans up the animator controller. */
-	virtual ~aeController();
+	virtual ~aeController() override;
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
@@ -132,12 +145,23 @@ public:
 	inline int GetLocomotionLeg() const{ return pLocoLeg; }
 	/** Sets the locomotion leg this target is controlled by. */
 	void SetLocomotionLeg( int leg );
+	
+	/** Vector simulation. */
+	inline eVectorSimulation GetVectorSimulation() const{ return pVectorSimulation; }
+	
+	/** Set vector simulation. */
+	void SetVectorSimulation( eVectorSimulation simulation );
+	
+	inline const aeGizmoControllerIKPosition::Ref &GetGizmoIKPosition() const{ return pGizmoIKPosition; }
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();
 	float pCheckValue( float value );
+	void pReleaseGizmos();
+	void pCreateGizmos();
 };
 
-// end of include only once
 #endif

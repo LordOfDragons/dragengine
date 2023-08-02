@@ -45,6 +45,7 @@ private:
 	decObjectList pVideoPlayers;
 	
 	bool pHasCalculatedProperties;
+	bool pHasConstructedProperties;
 	
 	
 	
@@ -87,6 +88,14 @@ public:
 	
 	/** Set if has calculated properties. */
 	void SetHasCalculatedProperties( bool hasCalculatedProperties );
+	
+	
+	
+	/** Has constructed properties. */
+	inline bool GetHasConstructedProperties() const{ return pHasConstructedProperties; }
+	
+	/** Set if has constructed properties. */
+	void SetHasConstructedProperties( bool hasConstructedProperties );
 	
 	
 	

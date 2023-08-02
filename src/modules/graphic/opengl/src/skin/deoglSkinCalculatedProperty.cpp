@@ -19,16 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSkinCalculatedProperty.h"
 #include "state/deoglSkinState.h"
 #include "state/deoglSkinStateCalculated.h"
+#include "state/deoglSkinStateMapped.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/curve/decCurveBezierEvaluator.h>
 
 
 
@@ -43,20 +39,11 @@ pRequiresTexture( false )
 {
 	int i;
 	for( i=0; i<4; i++ ){
-		pMappedComponentEvaluator[ i ] = NULL;
-	}
-	for( i=0; i<3; i++ ){
-		pCopyFromFirst[ i ] = true;
+		pMappedComponent[ i ] = -1;
 	}
 }
 
 deoglSkinCalculatedProperty::~deoglSkinCalculatedProperty(){
-	int i;
-	for( i=0; i<4; i++ ){
-		if( pMappedComponentEvaluator[ i ] ){
-			delete pMappedComponentEvaluator[ i ];
-		}
-	}
 }
 
 
@@ -64,118 +51,50 @@ deoglSkinCalculatedProperty::~deoglSkinCalculatedProperty(){
 // Management
 ///////////////
 
-deSkinPropertyMapped::cComponent &deoglSkinCalculatedProperty::GetMappedComponent( int index ){
-	if( index < 0 || index > 3 ){
-		DETHROW( deeInvalidParam );
-	}
+int deoglSkinCalculatedProperty::GetMappedComponent( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index <= 3 )
 	return pMappedComponent[ index ];
 }
 
-const deSkinPropertyMapped::cComponent &deoglSkinCalculatedProperty::GetMappedComponent( int index ) const{
-	if( index < 0 || index > 3 ){
-		DETHROW( deeInvalidParam );
-	}
-	return pMappedComponent[ index ];
+void deoglSkinCalculatedProperty::SetMappedComponent( int index, int mapped ){
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index <= 3 )
+	DEASSERT_TRUE( mapped >= -1 )
+	pMappedComponent[ index ] = mapped;
 }
 
 void deoglSkinCalculatedProperty::SetRequiresTexture( bool requiresTexture ){
 	pRequiresTexture = requiresTexture;
 }
 
-void deoglSkinCalculatedProperty::Prepare(){
-	int i;
-	for( i=0; i<3; i++ ){
-		pCopyFromFirst[ i ] = true;
-	}
-	for( i=0; i<4; i++ ){
-		if( pMappedComponentEvaluator[ i ] ){
-			delete pMappedComponentEvaluator[ i ];
-			pMappedComponentEvaluator[ i ] = NULL;
-		}
-		
-		if( pMappedComponent[ i ].GetCurve().GetPointCount() > 0 ){
-			pMappedComponentEvaluator[ i ] = new decCurveBezierEvaluator( pMappedComponent[ i ].GetCurve() );
-			if( i > 0 ){
-				pCopyFromFirst[ i - 1 ] = false;
-			}
-		}
-	}
-}
-
-decColor deoglSkinCalculatedProperty::Calculate( const deoglSkinState &skinState,
-const deoglSkinStateCalculated &calculated ){
+decColor deoglSkinCalculatedProperty::Calculate( const deoglSkinState &skinState ) const{
 	decColor color;
 	
-	color.r = pCalculateOutputValue( 0, pCalculateInputValue( 0, skinState, calculated ) );
+	if( pMappedComponent[ 0 ] != -1 ){
+		color.r = skinState.GetMappedAt( pMappedComponent[ 0 ] ).GetValue();
+	}
 	
-	if( pCopyFromFirst[ 0 ] ){
+	if( pMappedComponent[ 1 ] != -1 ){
+		color.g = skinState.GetMappedAt( pMappedComponent[ 1 ] ).GetValue();
+		
+	}else{
 		color.g = color.r;
-		
-	}else{
-		color.g = pCalculateOutputValue( 1, pCalculateInputValue( 1, skinState, calculated ) );
 	}
 	
-	if( pCopyFromFirst[ 1 ] ){
+	if ( pMappedComponent[ 2 ] != -1 ){
+		color.b = skinState.GetMappedAt( pMappedComponent[ 2 ] ).GetValue();
+		
+	}else{
 		color.b = color.r;
-		
-	}else{
-		color.b = pCalculateOutputValue( 2, pCalculateInputValue( 2, skinState, calculated ) );
 	}
 	
-	if( pCopyFromFirst[ 2 ] ){
-		color.a = color.r;
+	if( pMappedComponent[ 3 ] != -1 ){
+		color.a = skinState.GetMappedAt( pMappedComponent[ 3 ] ).GetValue();
 		
 	}else{
-		color.a = pCalculateOutputValue( 3, pCalculateInputValue( 3, skinState, calculated ) );
+		color.a = color.r;
 	}
 	
 	return color;
-}
-
-
-
-// Private Functions
-//////////////////////
-
-float deoglSkinCalculatedProperty::pCalculateInputValue( int index, const deoglSkinState &skinState,
-const deoglSkinStateCalculated &calculated ){
-	float input = 0.0f;
-	
-	switch( pMappedComponent[ index ].GetInputType() ){
-	case deSkinPropertyMapped::eitTime:
-		input = skinState.GetTime();
-		break;
-		
-	case deSkinPropertyMapped::eitBonePositionX:
-	case deSkinPropertyMapped::eitBonePositionY:
-	case deSkinPropertyMapped::eitBonePositionZ:
-	case deSkinPropertyMapped::eitBoneRotationX:
-	case deSkinPropertyMapped::eitBoneRotationY:
-	case deSkinPropertyMapped::eitBoneRotationZ:
-	case deSkinPropertyMapped::eitBoneScaleX:
-	case deSkinPropertyMapped::eitBoneScaleY:
-	case deSkinPropertyMapped::eitBoneScaleZ:
-		input = calculated.GetBoneInputValue( index );
-		break;
-		
-	default:
-		break;
-	}
-	
-	if( ! pMappedComponent[ index ].GetInputClamped() ){
-		input = decMath::normalize( input, pMappedComponent[ index ].GetInputLower(),
-			pMappedComponent[ index ].GetInputUpper() );
-	}
-	
-	return decMath::linearStep( input, pMappedComponent[ index ].GetInputLower(),
-		pMappedComponent[ index ].GetInputUpper() );
-}
-
-float deoglSkinCalculatedProperty::pCalculateOutputValue( int index, float inputValue ){
-	if( pMappedComponentEvaluator[ index ] ){
-		return pMappedComponentEvaluator[ index ]->EvaluateAt( inputValue );
-		
-	}else{
-		return 0.0f;
-	}
 }

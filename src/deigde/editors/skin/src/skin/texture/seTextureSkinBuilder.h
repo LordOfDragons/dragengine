@@ -24,6 +24,7 @@
 
 #include <dragengine/resources/skin/deSkinBuilder.h>
 
+class seSkin;
 class seTexture;
 class sePropertyNode;
 class sePropertyNodeGroup;
@@ -37,7 +38,8 @@ class deSkinPropertyNodeGroup;
  */
 class seTextureSkinBuilder : public deSkinBuilder{
 private:
-	const seTexture *pTexture;
+	const seSkin &pSkin;
+	const seTexture &pTexture;
 	
 	
 	
@@ -45,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create texture skin builder. */
-	seTextureSkinBuilder( const seTexture *texture );
+	seTextureSkinBuilder( const seSkin &skin, const seTexture &texture );
 	
 	/** \brief Clean up texture skin builder. */
 	virtual ~seTextureSkinBuilder();
@@ -64,6 +66,12 @@ public:
 	/** \brief Create skin property node. */
 	deSkinPropertyNode *CreateNode( const sePropertyNode &node );
 	/*@}*/
+	
+	
+	
+private:
+	void pAddMapped( deSkin &engSkin );
+	void pAddTexture( deSkin &engSkin );
 };
 
 #endif

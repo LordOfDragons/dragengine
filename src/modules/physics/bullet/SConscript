@@ -21,7 +21,7 @@ if not buildModule:
 useDebugSnapshot = True
 
 # fetch values in expanded form for later use
-versionString = '1.17'
+versionString = '1.18'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

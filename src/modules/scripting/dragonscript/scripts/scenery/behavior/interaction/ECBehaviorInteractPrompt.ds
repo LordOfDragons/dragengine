@@ -79,6 +79,7 @@ pin Dragengine.Utils
  * - "interactPrompt{(id)}.command": ECPString
  * - "interactPrompt{(id)}.enabled": ECPBoolean
  * - "interactPrompt{(id)}.bones": ECPStringList
+ * - "interactPrompt{(id)}.maximumDistance": ECPFloat
  */
 class ECBehaviorInteractPrompt extends DefaultECBehavior
 	/** \brief Behavior instance. */
@@ -92,6 +93,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		private var String pCommand
 		private var bool pEnabled
 		private var Array pBones
+		private var float pMaximumDistance
 		
 		
 		
@@ -113,17 +115,18 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 			pCommand = pECBehavior.getCommand().getValue(stub)
 			pEnabled = pECBehavior.getEnabled().getValue(stub)
 			pBones = pECBehavior.getBones().getList(stub, codec)
-
+			pMaximumDistance = pECBehavior.getMaximumDistance().getValue(stub)
+			
 			var TranslationManager tm = pECBehavior.getTranslationManager()
 			if tm != null
 				var String translate = pECBehavior.getVerbTranslate().getValue(stub)
 				if translate.empty()
 					pVerb = pECBehavior.getVerb().getValue(stub)
-
+					
 				else
 					pVerb = tm.translate(translate)
 				end
-
+				
 				translate = pECBehavior.getDescriptionTranslate().getValue(stub)
 				if translate.empty()
 					pDescription = pECBehavior.getDescription().getValue(stub)
@@ -131,7 +134,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 				else
 					pDescription = tm.translate(translate)
 				end
-
+				
 			else
 				pVerb = pECBehavior.getVerb().getValue(stub)
 				pDescription = pECBehavior.getDescription().getValue(stub)
@@ -227,6 +230,22 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 			pEnabled = enabled
 		end
 		
+		/**
+		 * \brief Maximum distance to show interact prompt for when looking at it.
+		 * \version 1.18
+		 */
+		public func float getMaximumDistance()
+			return pMaximumDistance
+		end
+		
+		/**
+		 * \brief Set maximum distance to show interact prompt for when looking at it.
+		 * \version 1.18
+		 */
+		public func void setMaximumDistance(float distance)
+			pMaximumDistance = DEMath.max(distance, 0.0)
+		end
+		
 		
 		
 		/** \brief Count of bones this prompt is limited to. */
@@ -271,6 +290,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	private var ECPString pCommand
 	private var ECPBoolean pEnabled
 	private var ECPStringList pBones
+	private var ECPFloat pMaximumDistance
 	private var TranslationManager pTranslationManager
 	
 	
@@ -324,6 +344,9 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		
 		pBones = ECPStringList.new(prefix + "bones")
 		eclass.addProperty(pBones)
+		
+		pMaximumDistance = ECPFloat.new(prefix + "maximumDistance", 1000, 0)
+		eclass.addProperty(pMaximumDistance)
 		
 		eclass.addBehavior(this)
 	end
@@ -400,6 +423,14 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 */
 	public func void setTranslationManager(TranslationManager manager)
 		pTranslationManager = manager
+	end
+	
+	/**
+	 * \brief Maximum distance to show interact prompt for when looking at it.
+	 * \version 1.18
+	 */
+	public func ECPFloat getMaximumDistance()
+		return pMaximumDistance
 	end
 
 	

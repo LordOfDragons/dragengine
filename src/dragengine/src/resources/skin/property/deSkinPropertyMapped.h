@@ -52,99 +52,8 @@
  * clamping to avoid values wrapping around.
  */
 class DE_DLL_EXPORT deSkinPropertyMapped : public deSkinProperty{
-public:
-	/** \brief Input types. */
-	enum eInputTypes{
-		/** \brief Use elapsed time. */
-		eitTime,
-		
-		/** \brief Use named bone X position. */
-		eitBonePositionX,
-		
-		/** \brief Use named bone Y position. */
-		eitBonePositionY,
-		
-		/** \brief Use named bone Z position. */
-		eitBonePositionZ,
-		
-		/** \brief Use named bone X rotation in degrees. */
-		eitBoneRotationX,
-		
-		/** \brief Use named bone Y rotation in degrees. */
-		eitBoneRotationY,
-		
-		/** \brief Use named bone Z rotation in degrees. */
-		eitBoneRotationZ,
-		
-		/** \brief Use named bone X scale. */
-		eitBoneScaleX,
-		
-		/** \brief Use named bone Y scale. */
-		eitBoneScaleY,
-		
-		/** \brief Use named bone Z scale. */
-		eitBoneScaleZ
-	};
-	
-	/** \brief Component. */
-	class DE_DLL_EXPORT cComponent{
-	private:
-		decCurveBezier pCurve;
-		eInputTypes pInputType;
-		float pInputLower;
-		float pInputUpper;
-		bool pInputClamped;
-		decString pBone;
-		
-	public:
-		/** \brief Create component. */
-		cComponent();
-		
-		/** \brief Create copy of component. */
-		cComponent( const cComponent &component );
-		
-		/** \brief Curve. */
-		inline decCurveBezier &GetCurve(){ return pCurve; }
-		inline const decCurveBezier &GetCurve() const{ return pCurve; }
-		
-		/** \brief Input type. */
-		inline eInputTypes GetInputType() const{ return pInputType; }
-		
-		/** \brief Set input type. */
-		void SetInputType( eInputTypes inputType );
-		
-		/** \brief Lower input range. */
-		inline float GetInputLower() const{ return pInputLower; }
-		
-		/** \brief Set lower input range. */
-		void SetInputLower( float lower );
-		
-		/** \brief Upper input range. */
-		inline float GetInputUpper() const{ return pInputUpper; }
-		
-		/** \brief Set upper input range. */
-		void SetInputUpper( float upper );
-		
-		/** \brief Input value is clamped to range instead of wrapping around. */
-		inline bool GetInputClamped() const{ return pInputClamped; }
-		
-		/** \brief Set if input value is clamped to range instead of wrapping around. */
-		void SetInputClamped( bool inputClamped );
-		
-		/** \brief Bone name if bone related input type is used. */
-		inline const decString &GetBone() const{ return pBone; }
-		
-		/** \brief Set bone name if bone related input type is used. */
-		void SetBone( const char *bone );
-		
-		/** \brief Copy component. */
-		cComponent &operator=( const cComponent &component );
-	};
-	
-	
-	
 private:
-	cComponent pComponents[ 4 ];
+	int pComponents[ 4 ];
 	
 	
 	
@@ -167,24 +76,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Red component. */
-	inline cComponent &GetRed(){ return pComponents[ 0 ]; }
-	inline const cComponent &GetRed() const{ return pComponents[ 0 ]; }
+	inline int GetRed() const{ return pComponents[ 0 ]; }
+	
+	/** \brief Set red component. */
+	void SetRed( int mapped );
 	
 	/** \brief Green component. */
-	inline cComponent &GetGreen(){ return pComponents[ 1 ]; }
-	inline const cComponent &GetGreen() const{ return pComponents[ 1 ]; }
+	inline int GetGreen() const{ return pComponents[ 1 ]; }
+	
+	/** \brief Set green component. */
+	void SetGreen( int mapped );
 	
 	/** \brief Blue component. */
-	inline cComponent &GetBlue(){ return pComponents[ 2 ]; }
-	inline const cComponent &GetBlue() const{ return pComponents[ 2 ]; }
+	inline int GetBlue() const{ return pComponents[ 2 ]; }
+	
+	/** \brief Set blue component. */
+	void SetBlue( int mapped );
 	
 	/** \brief Alpha component. */
-	inline cComponent &GetAlpha(){ return pComponents[ 3 ]; }
-	inline const cComponent &GetAlpha() const{ return pComponents[ 3 ]; }
+	inline int GetAlpha() const{ return pComponents[ 3 ]; }
+	
+	/** \brief Set alpha component. */
+	void SetAlpha( int mapped );
 	
 	/** \brief Component. */
-	cComponent &GetComponent( int component );
-	const cComponent &GetComponent( int component ) const;
+	int GetComponent( int component ) const;
+	
+	/** \brief Set component. */
+	void SetComponent( int component, int mapped );
 	/*@}*/
 	
 	

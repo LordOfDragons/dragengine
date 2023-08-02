@@ -63,6 +63,21 @@ void seSkinListener::CameraChanged( seSkin* ){
 
 
 
+void seSkinListener::MappedStructureChanged( seSkin* ){
+}
+
+void seSkinListener::MappedChanged( seSkin*, seMapped* ){
+}
+
+void seSkinListener::MappedNameChanged( seSkin *skin, seMapped *mapped ){
+	MappedChanged( skin, mapped );
+}
+
+void seSkinListener::ActiveMappedChanged( seSkin* ){
+}
+
+
+
 void seSkinListener::TextureStructureChanged( seSkin* ){
 }
 

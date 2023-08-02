@@ -185,6 +185,7 @@ private:
 	int pVideoPlayer;
 	bool pSharedVideoPlayer;
 	int pRenderable;
+	int pDynamicConstructed;
 	
 	float pSolidityFilterPriority;
 	
@@ -367,6 +368,12 @@ public:
 	/** Set index of the renderable or -1 if not dynamic. */
 	void SetRenderable( int index );
 	
+	/** Index of the dynamic constructed or -1. */
+	inline int GetDynamicConstructed() const{ return pDynamicConstructed; }
+	
+	/** Set index of the dynamic constructed or -1. */
+	void SetDynamicConstructed( int index );
+	
 	
 	
 	/**
@@ -442,7 +449,7 @@ private:
 		deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyVideo &property );
 	
 	void pPreparePropertyConstructed( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		deoglSkinTexture &texture, const deSkinPropertyConstructed &property );
+		deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &property );
 	
 	void pPreparePropertyMapped( deoglSkinPropertyMap::ePropertyTypes propertyType,
 		deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyMapped &property );

@@ -1,0 +1,30 @@
+diff -rupN libwebm-libwebm-1.0.0.29/CMakeLists.txt libwebm-libwebm-1.0.0.29-patched/CMakeLists.txt
+--- libwebm-libwebm-1.0.0.29/CMakeLists.txt	2022-10-21 19:32:14.021495808 +0000
++++ libwebm-libwebm-1.0.0.29-patched/CMakeLists.txt	2023-06-04 18:10:35.364642304 +0000
+@@ -344,11 +344,11 @@ add_executable(mkvmuxer_sample ${mkvmuxe
+                $<TARGET_OBJECTS:webvtt_common>)
+ target_link_libraries(mkvmuxer_sample LINK_PUBLIC webm)
+ 
+-add_executable(dumpvtt ${dumpvtt_sources} $<TARGET_OBJECTS:webvtt_common>)
+-target_link_libraries(dumpvtt LINK_PUBLIC webm)
++# add_executable(dumpvtt ${dumpvtt_sources} $<TARGET_OBJECTS:webvtt_common>)
++# target_link_libraries(dumpvtt LINK_PUBLIC webm)
+ 
+-add_executable(vttdemux ${vttdemux_sources})
+-target_link_libraries(vttdemux LINK_PUBLIC webm)
++# add_executable(vttdemux ${vttdemux_sources})
++# target_link_libraries(vttdemux LINK_PUBLIC webm)
+ 
+ if (ENABLE_WEBMINFO)
+   add_executable(webm_info ${webm_info_sources})
+@@ -362,8 +362,8 @@ if (ENABLE_WEBM_PARSER)
+   set_target_properties(webm PROPERTIES PUBLIC_HEADER
+                         "${webm_parser_public_headers}")
+ 
+-  add_executable(webm_parser_demo ${webm_parser_demo_sources})
+-  target_link_libraries(webm_parser_demo LINK_PUBLIC webm)
++  # add_executable(webm_parser_demo ${webm_parser_demo_sources})
++  # target_link_libraries(webm_parser_demo LINK_PUBLIC webm)
+ 
+   install(TARGETS webm
+           ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

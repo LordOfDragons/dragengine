@@ -39,6 +39,11 @@ class deSkin;
  * @brief Skin Texture.
  */
 class seTexture : public deObject{
+public:
+	typedef deTObjectReference<seTexture> Ref;
+	
+	
+	
 private:
 	deEngine *pEngine;
 	deSkin *pEngSkin;

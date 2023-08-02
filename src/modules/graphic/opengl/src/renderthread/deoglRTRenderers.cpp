@@ -27,6 +27,7 @@
 #include "../rendering/debug/deoglRenderDebugDrawer.h"
 #include "../rendering/debug/deoglRenderDebug.h"
 #include "../rendering/deoglRenderCanvas.h"
+#include "../rendering/deoglRenderConstructed.h"
 #include "../rendering/deoglRenderCompute.h"
 #include "../rendering/deoglRenderDepthPass.h"
 #include "../rendering/deoglRenderDevMode.h"
@@ -55,6 +56,7 @@
 
 deoglRTRenderers::deoglRTRenderers( deoglRenderThread &renderThread ) :
 pCanvas( nullptr ),
+pConstructed( nullptr ),
 pCompute( nullptr ),
 pDebugDrawer( nullptr ),
 pDebug( nullptr ),
@@ -75,6 +77,7 @@ pWorld( nullptr )
 {
 	try{
 		pCanvas = new deoglRenderCanvas( renderThread );
+		pConstructed = new deoglRenderConstructed( renderThread );
 		pCompute = new deoglRenderCompute( renderThread );
 		pWorld = new deoglRenderWorld( renderThread );
 		pDepthPass = new deoglRenderDepthPass( renderThread );
@@ -97,6 +100,7 @@ pWorld( nullptr )
 		pToneMap = new deoglRenderToneMap( renderThread );
 		
 		pCanvas->AddTopLevelDebugInfo();
+		pConstructed->AddTopLevelDebugInfo();
 		pWorld->AddTopLevelDebugInfo();
 		pLight->AddTopLevelDebugInfo();
 		
@@ -117,6 +121,7 @@ deoglRTRenderers::~deoglRTRenderers(){
 
 void deoglRTRenderers::DevModeDebugInfoChanged(){
 	pCanvas->DevModeDebugInfoChanged();
+	pConstructed->DevModeDebugInfoChanged();
 	pDebugDrawer->DevModeDebugInfoChanged();
 	pDebug->DevModeDebugInfoChanged();
 	pDepthPass->DevModeDebugInfoChanged();
@@ -191,6 +196,9 @@ void deoglRTRenderers::pCleanUp(){
 	}
 	if( pCompute ){
 		delete pCompute;
+	}
+	if( pConstructed ){
+		delete pConstructed;
 	}
 	if( pCanvas ){
 		delete pCanvas;

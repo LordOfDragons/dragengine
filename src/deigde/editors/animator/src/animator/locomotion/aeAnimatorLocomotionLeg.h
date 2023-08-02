@@ -77,7 +77,7 @@ private:
 	decString pVisBoneName;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	aeAnimatorLocomotionLeg( aeAnimatorLocomotion *locomotion );
@@ -85,7 +85,7 @@ public:
 	~aeAnimatorLocomotionLeg();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }

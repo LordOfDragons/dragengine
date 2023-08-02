@@ -42,7 +42,7 @@
 ////////////////////////////
 
 sePropertyNodeGroup::sePropertyNodeGroup( deEngine &engine ) :
-sePropertyNode( entGroup, engine ),
+sePropertyNode( entGroup, engine, MappedCount ),
 pProperty( NULL ),
 pActiveGroup( false ){
 }

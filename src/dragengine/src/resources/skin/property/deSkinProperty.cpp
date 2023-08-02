@@ -34,12 +34,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinProperty::deSkinProperty( const char *type ){
-	if( ! type  ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pType = type;
+deSkinProperty::deSkinProperty( const char *type ) :
+pType( type ){
 }
 
 deSkinProperty::~deSkinProperty(){
@@ -51,19 +47,15 @@ deSkinProperty::~deSkinProperty(){
 ///////////////
 
 void deSkinProperty::SetTexCoordSet( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pTexCoordSet = name;
 }
 
 void deSkinProperty::SetRenderable( const char *renderable ){
-	if( ! renderable ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pRenderable = renderable;
+}
+
+void deSkinProperty::SetBone( const char *bone ){
+	pBone = bone;
 }
 
 

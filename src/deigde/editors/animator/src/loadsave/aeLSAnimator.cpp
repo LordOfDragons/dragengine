@@ -379,66 +379,99 @@ void aeLSAnimator::pSaveController( decXmlWriter &writer, const aeController &co
 		writer.WriteDataTagBool( "clamp", controller.GetClamp() );
 	}
 	
-	if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaElapsedTime ){
+	switch( controller.GetLocomotionAttribute() ){
+	case aeAnimatorLocomotion::eaElapsedTime:
 		writer.WriteDataTagString( "locomotionAttribute", "elapsedTime" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLookUpDown ){
+	case aeAnimatorLocomotion::eaLookUpDown:
 		writer.WriteDataTagString( "locomotionAttribute", "lookUpDown" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLookLeftRight ){
+	case aeAnimatorLocomotion::eaLookLeftRight:
 		writer.WriteDataTagString( "locomotionAttribute", "lookLeftRight" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaMovingSpeed ){
+	case aeAnimatorLocomotion::eaMovingSpeed:
 		writer.WriteDataTagString( "locomotionAttribute", "movingSpeed" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaMovingDirection ){
+	case aeAnimatorLocomotion::eaMovingDirection:
 		writer.WriteDataTagString( "locomotionAttribute", "movingDirection" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaRelativeMovingSpeed ){
+	case aeAnimatorLocomotion::eaRelativeMovingSpeed:
 		writer.WriteDataTagString( "locomotionAttribute", "relativeMovingSpeed" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaTurningSpeed ){
+	case aeAnimatorLocomotion::eaTurningSpeed:
 		writer.WriteDataTagString( "locomotionAttribute", "turningSpeed" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaStance ){
+	case aeAnimatorLocomotion::eaStance:
 		writer.WriteDataTagString( "locomotionAttribute", "stance" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaDisplacement ){
+	case aeAnimatorLocomotion::eaDisplacement:
 		writer.WriteDataTagString( "locomotionAttribute", "displacement" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaRelativeDisplacement ){
+	case aeAnimatorLocomotion::eaRelativeDisplacement:
 		writer.WriteDataTagString( "locomotionAttribute", "relativeDisplacement" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltOffset ){
+	case aeAnimatorLocomotion::eaBodyTiltOffset:
 		writer.WriteDataTagString( "locomotionAttribute", "bodyTiltOffset" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltUpDown ){
+	case aeAnimatorLocomotion::eaBodyTiltUpDown:
 		writer.WriteDataTagString( "locomotionAttribute", "bodyTiltUpDown" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltRightLeft ){
+	case aeAnimatorLocomotion::eaBodyTiltRightLeft:
 		writer.WriteDataTagString( "locomotionAttribute", "bodyTiltLeftRight" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaTimeTurnIP ){
+	case aeAnimatorLocomotion::eaTimeTurnIP:
 		writer.WriteDataTagString( "locomotionAttribute", "timeTurnIP" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegGroundPosition ){
+	case aeAnimatorLocomotion::eaLegGroundPosition:
 		writer.WriteDataTagString( "locomotionAttribute", "legGroundPosition" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegGroundNormal ){
+	case aeAnimatorLocomotion::eaLegGroundNormal:
 		writer.WriteDataTagString( "locomotionAttribute", "legGroundNormal" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegInfluence ){
+	case aeAnimatorLocomotion::eaLegInfluence:
 		writer.WriteDataTagString( "locomotionAttribute", "legInfluence" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegPosition ){
+	case aeAnimatorLocomotion::eaLegPosition:
 		writer.WriteDataTagString( "locomotionAttribute", "legPosition" );
+		break;
 		
-	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegOrientation ){
+	case aeAnimatorLocomotion::eaLegOrientation:
 		writer.WriteDataTagString( "locomotionAttribute", "legOrientation" );
+		break;
 	}
 	
 	if( controller.GetLocomotionLeg() > 0 ){
 		writer.WriteDataTagInt( "locomotionLeg", controller.GetLocomotionLeg() );
+	}
+	
+	switch( controller.GetVectorSimulation() ){
+	case aeController::evsPosition:
+		writer.WriteDataTagString( "vectorSimulation", "position" );
+		break;
+		
+	case aeController::evsRotation:
+		writer.WriteDataTagString( "vectorSimulation", "rotation" );
+		break;
+		
+	case aeController::evsNone:
+		break;
 	}
 	
 	writer.WriteClosingTag( "controller" );
@@ -1817,6 +1850,20 @@ void aeLSAnimator::pLoadController( decXmlElementTag *root, aeAnimator &animator
 				
 				if( leg >= 0 && leg < animator.GetLocomotion().GetLegCount() ){
 					controller->SetLocomotionLeg( leg );
+				}
+				
+			}else if( strcmp( tag->GetName(), "vectorSimulation" ) == 0 ){
+				cdata = GetCDataString( *tag );
+				
+				if( strcmp( cdata, "position" ) == 0 ){
+					controller->SetVectorSimulation( aeController::evsPosition );
+					
+				}else if( strcmp( cdata, "rotation" ) == 0 ){
+					controller->SetVectorSimulation( aeController::evsRotation );
+					
+				}else{
+					logger.LogWarnFormat( LOGSOURCE, "controller(%i:%i): Unknown vector simulation %s, ignoring",
+						tag->GetLineNumber(), tag->GetPositionNumber(), cdata );
 				}
 				
 			}else{

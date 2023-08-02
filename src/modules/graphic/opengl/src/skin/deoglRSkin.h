@@ -33,7 +33,10 @@ class deoglRenderThread;
 class deoglSkinTexture;
 class deoglSkinRenderable;
 class deoglVSRetainImageData;
+class deoglSkinBone;
+class deoglSkinMapped;
 class deoglSkinCalculatedProperty;
+class deoglSkinConstructedProperty;
 
 class deSkin;
 
@@ -73,7 +76,10 @@ private:
 	
 	decObjectList pRenderables;
 	int pVideoPlayerCount;
+	decObjectList pMapped;
 	decObjectList pCalculatedProperties;
+	decObjectList pConstructedProperties;
+	decObjectList pBones;
 	
 	deoglVSRetainImageData *pVSRetainImageData;
 	bool pTexturePipelinesReady;
@@ -186,6 +192,14 @@ public:
 	
 	
 	
+	/** Count of mapped. */
+	int GetMappedCount() const;
+	
+	/** Mapped. */
+	deoglSkinMapped *GetMappedAt( int index ) const;
+	
+	
+	
 	/** Number of calculated properties. */
 	int GetCalculatedPropertyCount() const;
 	
@@ -197,6 +211,28 @@ public:
 	 * \returns Index of calculated property.
 	 */
 	int AddCalculatedProperty( deoglSkinCalculatedProperty *calculated );
+	
+	
+	
+	/** Number of constructed properties. */
+	int GetConstructedPropertyCount() const;
+	
+	/** Constructed property. */
+	deoglSkinConstructedProperty *GetConstructedPropertyAt( int index ) const;
+	
+	/** Add constructed property and returns index of property. */
+	int AddConstructedProperty( deoglSkinConstructedProperty *constructed );
+	
+	
+	
+	/** Count of bones. */
+	int GetBoneCount() const;
+	
+	/** Bones. */
+	deoglSkinBone *GetBoneAt( int index ) const;
+	
+	/** Add bone and returns index. */
+	int AddBone( const char *name );
 	/*@}*/
 	
 	

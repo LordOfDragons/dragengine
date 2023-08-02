@@ -26,7 +26,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class decXmlWriter;
-
+class deSkin;
 
 
 /**
@@ -35,12 +35,15 @@ class decXmlWriter;
 class desmWritePropertyNode : public deSkinPropertyNodeVisitor{
 private:
 	decXmlWriter &pWriter;
+	const deSkin &pSkin;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	desmWritePropertyNode( decXmlWriter &writer );
+	desmWritePropertyNode( decXmlWriter &writer, const deSkin &skin );
 	
 	/** \brief Clean up visitor. */
 	virtual ~desmWritePropertyNode();

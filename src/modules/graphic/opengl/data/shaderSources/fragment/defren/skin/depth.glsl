@@ -65,6 +65,9 @@
 #ifdef CLIP_PLANE
 	in vec3 vClipCoord;
 #endif
+#ifdef SKIN_CLIP_PLANE
+	in vec3 vSkinClipCoord;
+#endif
 #ifdef DEPTH_DISTANCE
 	in vec3 vPosition;
 #endif
@@ -270,6 +273,16 @@ void main( void ){
 			solidity = pOutlineSolidity;
 		#else
 			solidity = pSolidityMultiplier;
+		#endif
+		
+		#ifdef SKIN_CLIP_PLANE
+			float skinClipDist = dot( vSkinClipCoord, vec3( pInstSkinClipPlaneNormal ) );
+			
+			float skinClipSolidity = pSkinClipPlaneBorder > 0
+				? smoothstep( pInstSkinClipPlaneNormal.w, pInstSkinClipPlaneNormal.w + pSkinClipPlaneBorder, skinClipDist )
+				: smoothstep( pInstSkinClipPlaneNormal.w + pSkinClipPlaneBorder, pInstSkinClipPlaneNormal.w, skinClipDist );
+			
+			solidity *= mix( 1, skinClipSolidity, pSkinClipPlane );
 		#endif
 	#endif
 	

@@ -120,6 +120,12 @@ class BaseGameApp extends Game
 	public static fixed var String settingInputInvertLookVertical = "input.invertLookVertical"
 	
 	/**
+	 * \brief Mouse sensitivity.
+	 * \version 1.18
+	 */
+	public static fixed var String settingInputMouseSensitivity = "input/mouseSensitivity"
+	
+	/**
 	 * \brief Collision filter bits.
 	 * 
 	 * Use like \code{.ds} filter.setBit(BaseGameApp.CollisionFilterBit.geometry) \endcode .
@@ -321,6 +327,22 @@ class BaseGameApp extends Game
 	 */
 	protected var int defaultConsoleBufferSize
 	
+	/**
+	 * \brief Default binding input processor mouse axis scale factor.
+	 * \version 1.18
+	 * 
+	 * Default value is 0.2.
+	 */
+	protected var float defaultInputMouseAxisScale
+	
+	/**
+	 * \brief Default binding input processor mouse wheel scale factor.
+	 * \version 1.18
+	 * 
+	 * Default value is 0.2.
+	 */
+	protected var float defaultInputMouseWheelScale
+	
 	
 	
 	private var ParameterTree pConfiguration
@@ -368,6 +390,8 @@ class BaseGameApp extends Game
 		pathSavedBindings = "/config/bindings.xml"
 		pathSavedSettings = "/config/settings.ptree.xml"
 		defaultConsoleBufferSize = 50
+		defaultInputMouseAxisScale = 0.2
+		defaultInputMouseWheelScale = 0.2
 			// TODO: make the config path used by the game available to the script
 			//       then this value can be calculated requiring less setting up
 	end
@@ -801,12 +825,31 @@ class BaseGameApp extends Game
 	
 	/** \brief Set input processor to forward events to desktop widget. */
 	public func void setInputProcessorDesktop()
-		setInputProcessor(WidgetInputProcessor.new(pDesktop))
+		setInputProcessor(createInputProcessorDesktop())
+	end
+	
+	/**
+	 * \brief Create input processor to forward events to desktop widget.
+	 * \version 1.18
+	 */
+	public func InputProcessor createInputProcessorDesktop()
+		return WidgetInputProcessor.new(pDesktop)
 	end
 	
 	/** \brief Set input processor to forward events to binding manager. */
 	public func void setInputProcessorBindings()
-		setInputProcessor(BindingInputProcessor.new(pBindingManager))
+		setInputProcessor(createInputProcessorBindings())
+	end
+	
+	/**
+	 * \brief Create input processor to forward events to binding manager.
+	 * \version 1.18
+	 */
+	public func InputProcessor createInputProcessorBindings()
+		var BindingInputProcessor processor = BindingInputProcessor.new(pBindingManager)
+		processor.setScaleMouseAxis(defaultInputMouseAxisScale)
+		processor.setScaleMouseWheel(defaultInputMouseWheelScale)
+		return processor
 	end
 	
 	/**
@@ -845,6 +888,24 @@ class BaseGameApp extends Game
 	 */
 	public func void setInverseLookVertical(bool inverseLookVertical)
 		pSettings.setAt(BaseGameApp.settingInputInvertLookVertical, inverseLookVertical)
+	end
+	
+	/**
+	 * \brief Mouse sensitivity.
+	 * \version 1.18
+	 */
+	public func float getMouseSensitivity()
+		return DEMath.max(pSettings.getFloatAt(BaseGameApp.settingInputMouseSensitivity, 1), 0.01)
+	end
+	
+	/**
+	 * \brief Set mouse sensitivity.
+	 * \version 1.18
+	 * 
+	 * Call saveSettings() after changing value. Not called automatically.
+	 */
+	public func void setMouseSensitivity(float sensitivity)
+		pSettings.setAt(BaseGameApp.settingInputMouseSensitivity, DEMath.max(sensitivity, 0.01))
 	end
 	
 	

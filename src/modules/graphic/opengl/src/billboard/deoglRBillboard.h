@@ -196,9 +196,9 @@ public:
 	/** Skin state. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
-	/** Init skin state calculated properties. */
-	void InitSkinStateCalculatedProperties();
-	void UpdateSkinStateCalculatedProperties();
+	/** Init skin state states. */
+	void InitSkinStateStates();
+	void UpdateSkinStateStates();
 	
 	/** Skin rendered. */
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
@@ -207,6 +207,7 @@ public:
 	void DirtyPrepareSkinStateRenderables();
 	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareSkinStateConstructed();
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();
 	

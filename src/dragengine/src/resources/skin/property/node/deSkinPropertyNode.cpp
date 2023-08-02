@@ -47,7 +47,12 @@ pColorize( 1.0f, 1.0f, 1.0f ),
 
 pTransparency( 1.0f ),
 pMask( NULL ),
-pCombineMode( ecmBlend ){
+pCombineMode( ecmBlend )
+{
+	int i;
+	for( i=0; i<MappedCount; i++ ){
+		pMapped[ i ] = -1;
+	}
 }
 
 deSkinPropertyNode::~deSkinPropertyNode(){
@@ -114,6 +119,17 @@ void deSkinPropertyNode::SetMask( deSkinPropertyNode *mask ){
 
 void deSkinPropertyNode::SetCombineMode( eCombineModes mode ){
 	pCombineMode = mode;
+}
+
+
+
+int deSkinPropertyNode::GetMappedFor( eMapped mapped ) const{
+	return pMapped[ mapped ];
+}
+
+void deSkinPropertyNode::SetMappedFor( eMapped mapped, int index ){
+	DEASSERT_TRUE( index >= -1 )
+	pMapped[ mapped ] = index;
 }
 
 

@@ -251,6 +251,28 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			collider.addIgnoreCollider(pCollisionTest.getCollider())
 		end
 		
+		/**
+		 * \brief Add collider to ignore to collider required for collision test.
+		 * \version 1.17
+		 */
+		public func void addIgnoreCollider(Collider collider)
+			pCollisionTest.getCollider().addIgnoreCollider(collider)
+		end
+		
+		/**
+		 * \brief Mutually ignore colliders.
+		 * \version 1.17
+		 * 
+		 * Same as calling addIgnoreCollidersTo() and addIgnoreCollider() for the same collider.
+		 * Use this call to make sure the given collider is ignored by collider required for
+		 * collision test and vice versa. The ECBehaviorColliderAI from ECBehaviorLocomotion
+		 * is automatically made mutually ignore.
+		 */
+		public func void mutualIgnoreColliders(Collider collider)
+			addIgnoreColliderTo(collider)
+			addIgnoreCollider(collider)
+		end
+		
 		
 		
 		/** \brief Collision test is armed. */

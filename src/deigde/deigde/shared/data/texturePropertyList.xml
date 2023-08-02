@@ -1664,6 +1664,54 @@
 		</affects>
 	</property>
 	
+	<property name='clip.plane'>
+		<description>
+			Defines blend factor for clipping model geometry based on the distance to a clip plane.
+			The clip plane is defined by the coordinate system of a named bone. The position of
+			the bone is the origin of the clip plane. The positive Z axis of the bone is the plane
+			normal. Vertices in front of the clip plane (along the positive bone Z axis) are
+			rendered while vertices on the back side are hidden. Using the "clip.plane.border"
+			texture property allows to create a smooth transition between the two sides. Cliping
+			is multiplied with the "solidity" texture property. This property is specified using
+			a single value in the range from 0 to 1. A value of 0 disables clipping. A value of
+			1 enables clipping. Values in between gradually blend between clipped and unclipped.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='clip.plane.border'>
+		<description>
+			Defines size in meters of the blend zone between clipped and unclipped geometry.
+			The clip plane is defined by the coordinate system of a named bone. The position of
+			the bone is the origin of the clip plane. The positive Z axis of the bone is the plane
+			normal. Vertices in front of the clip plane (along the positive bone Z axis) are
+			rendered while vertices on the back side are hidden. This property is specified using
+			a single value. A value of 0 creates a hard break between clipped and unclipped
+			geometry. Values larger or smaller than 0 create a soft transition between clipped
+			and unclipped geometry. With values larger than 0 geometry is fully clipped at the
+			clip plane origin and fully unclipped "value" meters in front of the clip plane.
+			With values smaller than 0 geometry is fully unclipped at the clip plane origin and
+			fully clipped "-value" meters behind the clip plane. Hence using positive values
+			the border zone expands into the positive side of the clip plane while negative
+			values expand into the negative side of the clip plane.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='bounciness'>
 		<description>
 			Defines the bounciness of a surface. This is used by the physics module to determine

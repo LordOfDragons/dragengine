@@ -65,7 +65,7 @@ pDirtyRenderEnvMap( true ),
 pDirtySkin( true ),
 pDirtyDynamicSkin( true ),
 pDirtyRenderableMapping( true ),
-pDirtySkinStateCalculatedProperties( true ),
+pDirtySkinStateStates( true ),
 pSkinStatePrepareRenderables( true ),
 
 pDynamicSkinRenderablesChanged( true ),
@@ -142,18 +142,19 @@ void deoglBillboard::SyncToRender(){
 	pAccumUpdate = 0.0f;
 	pCheckRequiresUpdateEverySync();
 	
-	// sync calculated skin state properties. has to come after pSkinStateController->SyncToRender()
+	// sync skin state properties. has to come after pSkinStateController->SyncToRender()
 	// and pRBillboard->UpdateSkin()
-	if( pDirtySkinStateCalculatedProperties ){
-		pRBillboard->InitSkinStateCalculatedProperties();
-		pDirtySkinStateCalculatedProperties = false;
+	if( pDirtySkinStateStates ){
+		pRBillboard->InitSkinStateStates();
+		pDirtySkinStateStates = false;
 	}
+	
 	if( pSkinStatePrepareRenderables ){
 		pRBillboard->DirtyPrepareSkinStateRenderables();
 		pSkinStatePrepareRenderables = false;
 	}
 	
-	pRBillboard->UpdateSkinStateCalculatedProperties(); // has to be done better. only some need this
+	pRBillboard->UpdateSkinStateStates(); // has to be done better. only some need this
 	
 	// octree, extends and matrices. order is important
 	if( pDirtyExtends ){
@@ -280,7 +281,7 @@ void deoglBillboard::OffsetChanged(){
 void deoglBillboard::SkinChanged(){
 	pDirtySkin = true;
 	pDirtySkinStateController = true;
-	pDirtySkinStateCalculatedProperties = true;
+	pDirtySkinStateStates = true;
 	pDirtyRenderableMapping = true;
 	pSkinStatePrepareRenderables = true;
 	

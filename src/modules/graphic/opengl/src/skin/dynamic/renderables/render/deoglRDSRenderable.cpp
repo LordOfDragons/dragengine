@@ -35,7 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRDSRenderable::deoglRDSRenderable( deoglRDynamicSkin &dynamicSkin ) :
+deoglRDSRenderable::deoglRDSRenderable( eType type, deoglRDynamicSkin &dynamicSkin ) :
+pType( type ),
 pDynamicSkin( dynamicSkin ){
 }
 

@@ -40,7 +40,7 @@ class decXmlElementTag;
  */
 class aeConfigurationXML : public igdeBaseXML{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new configuration xml read/save. */
 	aeConfigurationXML( deLogger *logger, const char *loggerSource );
@@ -48,7 +48,7 @@ public:
 	virtual ~aeConfigurationXML();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Read from XML file. */
 	void ReadFromFile( decBaseFileReader &reader, aeConfiguration &config );

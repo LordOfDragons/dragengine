@@ -89,7 +89,7 @@ public:
 	virtual void OnButtonPress( igdeWidget *widget, int button, const decPoint &position, int modifiers );
 	
 	/**
-	 * \brief User released down mouse button.
+	 * \brief User released mouse button.
 	 * 
 	 * \param[in] widget Widget sending the event.
 	 * \param[in] button Button code which is deInputEvent::eMouseButtonCodes for engine

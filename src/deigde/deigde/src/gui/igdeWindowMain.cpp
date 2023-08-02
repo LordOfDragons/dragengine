@@ -118,6 +118,8 @@
 #include <dragengine/logger/deLoggerChain.h>
 #include <dragengine/logger/deLoggerReference.h>
 #include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigBuilder.h>
@@ -511,6 +513,7 @@ pTaskSyncGameDefinition( NULL )
 		
 		pCreateSharedModelCollisionRig();
 		pLoadStockSkins();
+		pLoadStockModels();
 		pLoadStockRigs();
 		
 		pAddIGDEEngineModules();
@@ -1536,6 +1539,12 @@ const deRig::Ref &igdeWindowMain::GetStockRig( igdeEnvironment::eStockRigs rig )
 	return pStockRigs[ rig ];
 }
 
+const deModel::Ref &igdeWindowMain::GetStockModel( igdeEnvironment::eStockModels model ) const{
+	DEASSERT_TRUE( model >= 0 )
+	DEASSERT_TRUE( model < pStockModelCount )
+	return pStockModels[ model ];
+}
+
 
 
 bool igdeWindowMain::CloseWindow(){
@@ -1829,6 +1838,15 @@ void igdeWindowMain::pLoadStockRigs(){
 		manager.LoadRig( "/igde/models/modelCollision.derig", "/" ) );
 	pStockRigs[ igdeEnvironment::esrGhostCollision ].TakeOver(
 		manager.LoadRig( "/igde/models/ghostCollision.derig", "/" ) );
+	pStockRigs[ igdeEnvironment::esrGizmoMove ].TakeOver(
+		manager.LoadRig( "/igde/models/gizmo/move.derig", "/" ) );
+}
+
+void igdeWindowMain::pLoadStockModels(){
+	deModelManager &manager = *GetEngine()->GetModelManager();
+	
+	pStockModels[ igdeEnvironment::esmGizmoMove ].TakeOver(
+		manager.LoadModel( "/igde/models/gizmo/move.demodel", "/" ) );
 }
 
 void igdeWindowMain::pCreateGuiThemes(){

@@ -19,9 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "seWPTexture.h"
 #include "seWPTextureListener.h"
 #include "../../skin/seSkin.h"
@@ -50,6 +47,18 @@ seWPTextureListener::~seWPTextureListener(){
 
 // Management
 ///////////////
+
+void seWPTextureListener::MappedStructureChanged( seSkin *skin ){
+	if( skin != pPanel.GetSkin() ){
+		return;
+	}
+	
+	pPanel.UpdatePropertyMappedTargetList();
+}
+
+void seWPTextureListener::MappedNameChanged( seSkin *skin, seMapped* ){
+	MappedStructureChanged( skin );
+}
 
 void seWPTextureListener::TextureStructureChanged( seSkin *skin ){
 	if( skin != pPanel.GetSkin() ){
