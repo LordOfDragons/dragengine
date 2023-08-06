@@ -45,68 +45,68 @@ namespace Dragengine.Utils
  * TagResolver. Before processing text set the variables you want to be used to this rule.
  */
 class TRRVariable implements TagResolverRule
-	private var Dictionary pVariables
-	private var byte pSeparatorDefaultValue
+	var Dictionary pVariables
+	var byte pSeparatorDefaultValue
 	
 	
 	
 	/** \brief Create resolve variable rule with empty variable table. */
-	public func new()
-		this.pVariables = Dictionary.new()
-		this.pSeparatorDefaultValue = ','
+	func new()
+		pVariables = Dictionary.new()
+		pSeparatorDefaultValue = ','
 	end
 	
 	/** \brief Create copy of resolve variable rule. */
-	public func new( TRRVariable rule )
-		this.pVariables = Dictionary.new( rule.pVariables )
-		this.pSeparatorDefaultValue = rule.pSeparatorDefaultValue
+	func new(TRRVariable rule)
+		pVariables = Dictionary.new(rule.pVariables)
+		pSeparatorDefaultValue = rule.pSeparatorDefaultValue
 	end
 	
 	
 	
 	/** \brief Separate character between variable name and default value. */
-	public func byte getSeparatorDefaultValue()
-		return this.pSeparatorDefaultValue
+	func byte getSeparatorDefaultValue()
+		return pSeparatorDefaultValue
 	end
 	
 	/** \brief Set separate character between variable name and default value. */
-	public func void setSeparatorDefaultValue( byte separator )
-		this.pSeparatorDefaultValue = separator
+	func void setSeparatorDefaultValue(byte separator)
+		pSeparatorDefaultValue = separator
 	end
 	
 	
 	
 	/** \brief Count of variables. */
-	public func int getCount()
-		return this.pVariables.getCount()
+	func int getCount()
+		return pVariables.getCount()
 	end
 	
 	/** \brief Variable is present. */
-	public func bool has( String variable )
-		return this.pVariables.has( variable )
+	func bool has(String variable)
+		return pVariables.has(variable)
 	end
 	
 	/** \brief Value of variable or default value if absent. */
-	public func String getAt( String variable, String defaultValue )
-		return this.pVariables.getAt( variable, defaultValue ) cast String
+	func String getAt(String variable, String defaultValue)
+		return pVariables.getAt(variable, defaultValue) cast String
 	end
 	
 	/** \brief Set value of variable. */
-	public func void setAt( String variable, String value )
+	func void setAt(String variable, String value)
 		if value == null
-			throw ENullPointer.new( "value" )
+			throw ENullPointer.new("value")
 		end
-		this.pVariables.setAt( variable, value )
+		pVariables.setAt(variable, value)
 	end
 	
 	/** \brief Remove value if present. */
-	public func void remove( String variable )
-		this.pVariables.removeIfExisting( variable )
+	func void remove(String variable)
+		pVariables.removeIfExisting(variable)
 	end
 	
 	/** \brief Remove all variables. */
-	public func void removeAll()
-		this.pVariables.removeAll()
+	func void removeAll()
+		pVariables.removeAll()
 	end
 	
 	/**
@@ -114,8 +114,18 @@ class TRRVariable implements TagResolverRule
 	 * 
 	 * Block receives as first argument String name and as second argument String value.
 	 */
-	public func void forEach( Block ablock )
-		this.pVariables.forEach( ablock )
+	func void forEach(Block ablock)
+		pVariables.forEach(ablock)
+	end
+	
+	/**
+	 * \brief List of all variables names.
+	 * \version 1.19
+	 * 
+	 * Returns Array with String for each key.
+	 */
+	func Array getKeys()
+		return pVariables.getKeys()
 	end
 	
 	
@@ -125,19 +135,19 @@ class TRRVariable implements TagResolverRule
 	 * \param parameters Parameters inside tag.
 	 * \param context Object in the context of which the resolving is done. Context is not used.
 	 */
-	public func String resolveTag( String parameters, Object context )
-		var int index = parameters.find( this.pSeparatorDefaultValue )
+	func String resolveTag(String parameters, Object context)
+		var int index = parameters.find(pSeparatorDefaultValue)
 		var String variableName, defaultValue
 		
 		if index != -1
-			variableName = parameters.substring( 0, index )
-			defaultValue = parameters.substring( index + 1 )
+			variableName = parameters.substring(0, index)
+			defaultValue = parameters.substring(index + 1)
 			
 		else
 			variableName = parameters
 			defaultValue = ""
 		end
 		
-		return this.getAt( variableName, defaultValue )
+		return getAt(variableName, defaultValue)
 	end
 end
