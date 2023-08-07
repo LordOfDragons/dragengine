@@ -43,6 +43,7 @@
 #include "../terrain/heightmap/debpHeightTerrain.h"
 #include "../visitors/debpCreateBulletShape.h"
 #include "../visitors/debpClosestConvexResultCallback.h"
+#include "../visitors/debpShapeToLog.h"
 #include "../world/debpCollisionWorld.h"
 #include "../world/debpWorld.h"
 #include "../debpBulletShape.h"
@@ -581,6 +582,67 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 			}
 			text.Append( "]" );
 			bullet.LogWarn( text );
+			
+			bullet.LogWarnFormat( "   hit normal=(%f,%f,%f)", hitNormal.x, hitNormal.y, hitNormal.z );
+			
+			if( colinfo->GetCollider() ){
+				const deCollider &hc = *colinfo->GetCollider();
+				const decDVector &p2 = hc.GetPosition();
+				const decVector o2( hc.GetOrientation().GetEulerAngles() * RAD2DEG );
+				const decVector &lv2 = hc.GetLinearVelocity();
+				const decVector av2( hc.GetAngularVelocity() / DEG2RAD );
+				const debpCollider * const bpcol = ( debpCollider* )hc.GetPeerPhysics();
+				
+				if( bpcol ){
+					if( bpcol->IsVolume() ){
+						bullet.LogWarnFormat( "   hit colliderVolume=%p shape=%d",
+							&hc, colinfo->GetShape() );
+						
+					}else if( bpcol->IsRigged() ){
+						bullet.LogWarnFormat( "   hit colliderRigged=%p bone=%d face=%d",
+							&hc, colinfo->GetBone(), colinfo->GetFace() );
+						
+					}else if( bpcol->IsComponent() ){
+						bullet.LogWarnFormat(
+							"   hit colliderComponent=%p bone=%d face=%d shape=%d",
+							&hc, colinfo->GetBone(), colinfo->GetFace(), colinfo->GetShape() );
+						
+					}else{
+						bullet.LogWarnFormat( "   hit collider=%p", &hc );
+					}
+					
+				}else{
+					bullet.LogWarnFormat( "   hit collider=%p", &hc );
+				}
+				
+				bullet.LogWarnFormat( "      position=(%f,%f,%f) orientation=(%f,%f,%f)",
+					p2.x, p2.y, p2.z, o2.x, o2.y, o2.z );
+				bullet.LogWarnFormat( "      linearVelocity=(%f,%f,%f) angularVelocity=(%f,%f,%f)",
+					lv2.x, lv2.y, lv2.z, av2.x, av2.y, av2.z );
+				
+				if( bpcol ){
+					if( bpcol->IsVolume() ){
+						const debpColliderVolume &bpcv = *bpcol->CastToVolume();
+						const decShapeList &sl = bpcv.GetColliderVolume().GetShapes();
+						const int count = sl.GetCount();
+						debpShapeToLog visitor;
+						
+						bullet.LogWarn( "      shapes:" );
+						
+						for( i=0; i<count; i++ ){
+							visitor.Reset();
+							sl.GetAt( i )->Visit( visitor );
+							bullet.LogWarnFormat( "         %d: %s", i, visitor.GetLog().GetString() );
+						}
+					}
+				}
+				
+			}else if( colinfo->GetHTSector() ){
+				bullet.LogWarnFormat( "   hit htsector=%p", colinfo->GetHTSector() );
+				
+			}else{
+				bullet.LogWarn( "   hit ??" );
+			}
 			#endif
 			
 			pColliderVolume.SetLinearVelocity( decVector() );
