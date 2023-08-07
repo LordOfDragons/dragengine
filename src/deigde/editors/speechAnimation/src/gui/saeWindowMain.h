@@ -228,7 +228,6 @@ private:
 	void pCreateMenuFile( igdeMenuCascade &menu );
 	void pCreateMenuEdit( igdeMenuCascade &menu );
 	void pCreateMenuView( igdeMenuCascade &menu );
-	void pCreateMenuViseme( igdeMenuCascade &menu );
 	void pCreateMenuPhoneme( igdeMenuCascade &menu );
 	void pCreateMenuWord( igdeMenuCascade &menu );
 };
