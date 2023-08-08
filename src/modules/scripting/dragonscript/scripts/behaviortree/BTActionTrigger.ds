@@ -52,16 +52,16 @@ class BTActionTrigger implements BTAction
 	
 	
 	/** \brief Trigger table. */
-	private var TSTriggerTable pTriggerTable
+	var TSTriggerTable pTriggerTable
 	
 	/** \brief Name of trigger target to manipulate. */
-	private var StringID pName
+	var StringID pName
 	
 	/** \brief Cached trigger target. */
-	private var TSTriggerTarget pTriggerTarget
+	var TSTriggerTarget pTriggerTarget
 	
 	/** \brief Action to apply to trigger target. */
-	private var Action pAction
+	var Action pAction
 	
 	
 	

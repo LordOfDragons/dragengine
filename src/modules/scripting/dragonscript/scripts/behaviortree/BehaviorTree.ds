@@ -34,10 +34,10 @@ pin Dragengine.Utils
  */
 class BehaviorTree
 	/** \brief Root rule. */
-	private var BTRule pRootRule
+	var BTRule pRootRule
 	
 	/** \brief Dictionary mapping String rule identifier to BTRule. */
-	private var Dictionary pRuleMap
+	var Dictionary pRuleMap
 	
 	
 	

@@ -50,16 +50,16 @@ class BTConditionTrigger implements BTCondition
 	
 	
 	/** \brief Trigger table. */
-	private var TSTriggerTable pTriggerTable
+	var TSTriggerTable pTriggerTable
 	
 	/** \brief Trigger target name. */
-	private var StringID pName
+	var StringID pName
 	
 	/** \brief Cached trigger target. */
-	private var TSTriggerTarget pTriggerTarget
+	var TSTriggerTarget pTriggerTarget
 	
 	/** \brief Trigger test mode. */
-	private var TestMode pTestMode
+	var TestMode pTestMode
 	
 	
 	

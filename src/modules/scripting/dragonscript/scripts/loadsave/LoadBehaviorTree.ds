@@ -227,6 +227,13 @@ class LoadBehaviorTree extends BaseXmlLoader
 		if root.hasAttributeNamed("loop")
 			rule.setLooping(root.getAttributeNamed("loop").equals("true"))
 		end
+		if root.hasAttributeNamed("doNotFail")
+			rule.setDoNotFail(root.getAttributeNamed("doNotFail").equals("true"))
+		end
+		
+		if rule.getID() != null
+			parentID = rule.getID()
+		end
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			childRule = readRule(element, behaviorTree, idPrefix, parentID, basePath)
@@ -253,6 +260,13 @@ class LoadBehaviorTree extends BaseXmlLoader
 		
 		if root.hasAttributeNamed("loop")
 			rule.setLooping(root.getAttributeNamed("loop").equals("true"))
+		end
+		if root.hasAttributeNamed("doNotFail")
+			rule.setDoNotFail(root.getAttributeNamed("doNotFail").equals("true"))
+		end
+		
+		if rule.getID() != null
+			parentID = rule.getID()
 		end
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
@@ -325,6 +339,9 @@ class LoadBehaviorTree extends BaseXmlLoader
 		if root.hasAttributeNamed("loop")
 			rule.setLooping(root.getAttributeNamed("loop").equals("true"))
 		end
+		if root.hasAttributeNamed("doNotFail")
+			rule.setDoNotFail(root.getAttributeNamed("doNotFail").equals("true"))
+		end
 		
 		var String filename = File.absolutePath(root.getFirstCData(), basePath).getPath()
 		var String subBasePath = File.new(filename).getParent().getPath()
@@ -340,6 +357,10 @@ class LoadBehaviorTree extends BaseXmlLoader
 			if not subRoot.getTagName().equals("behaviorTree")
 				logUnknownTag(subRoot)
 				throw EInvalidParam.new()
+			end
+			
+			if rule.getID() != null
+				idPrefix = rule.getID() + "."
 			end
 			
 			subRoot.forEachTag(block EasyXMLElement subElement, String subTagName

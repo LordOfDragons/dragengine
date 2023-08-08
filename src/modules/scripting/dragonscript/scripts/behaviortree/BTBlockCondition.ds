@@ -44,7 +44,7 @@ pin Dragengine.Utils
  */
 class BTBlockCondition implements BTCondition
 	/** \brief Block to use. */
-	private var Block pBlock
+	var Block pBlock
 	
 	
 	

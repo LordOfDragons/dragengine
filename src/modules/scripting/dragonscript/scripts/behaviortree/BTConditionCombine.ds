@@ -52,13 +52,13 @@ class BTConditionCombine implements BTCondition
 	
 	
 	/** \brief Conditions as Array of String identifiers. */
-	private var Array pConditions
+	var Array pConditions
 	
 	/** \brief Resolved conditions as Array of BTCondition. */
-	private var Array pResolvedConditions
+	var Array pResolvedConditions
 	
 	/** \brief Combine mode from eCombineModes. */
-	private var Mode pMode
+	var Mode pMode
 	
 	
 	

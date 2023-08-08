@@ -32,22 +32,22 @@ pin Dragengine.Utils
  */
 class BTConditionParameterTableBool implements BTCondition
 	/** \brief Parameter table entry to compare. */
-	private var ParameterTableEntry pEntry
+	var ParameterTableEntry pEntry
 	
 	/** \brief Default value if entry to compare is not null. */
-	private var bool pDefaultValue
+	var bool pDefaultValue
 	
 	/** \brief Parameter table entry to compare against. */
-	private var ParameterTableEntry pEntryCompareValue
+	var ParameterTableEntry pEntryCompareValue
 	
 	/** \brief Use named parameter as source of compare value if not null. */
-	private var String pParameterNameCompareValue
+	var String pParameterNameCompareValue
 	
 	/** \brief Default compare against value. */
-	private var bool pCompareValue
+	var bool pCompareValue
 	
 	/** \brief Evaluates to true if values are equal. */
-	private var bool pEqual
+	var bool pEqual
 	
 	
 	

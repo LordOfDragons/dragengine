@@ -34,16 +34,16 @@ pin Dragengine.Utils
  */
 class BTActionSendGlobalEvent implements BTAction
 	/** \brief Global event instance to send event to. */
-	private var GlobalEvents pGlobalEvents
+	var GlobalEvents pGlobalEvents
 	
 	/** \brief Event to send. */
-	private var String pEvent
+	var String pEvent
 	
 	/** \brief Optional source of event. */
-	private var Object pSource
+	var Object pSource
 	
 	/** \brief Optional parameter to send with event. */
-	private var Object pData
+	var Object pData
 	
 	
 	

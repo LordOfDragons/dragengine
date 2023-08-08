@@ -44,10 +44,10 @@ pin Dragengine.Utils
  */
 class BTRuleAction extends BTRule
 	/** \brief Action identifier. */
-	private var String pActionID
+	var String pActionID
 	
 	/** \brief Action or \em null if not cached. */
-	private var BTAction pAction
+	var BTAction pAction
 	
 	
 	

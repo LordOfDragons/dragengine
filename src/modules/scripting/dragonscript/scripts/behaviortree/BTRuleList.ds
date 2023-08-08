@@ -32,7 +32,7 @@ pin Dragengine.Utils
  */
 abstract class BTRuleList extends BTRule
 	/** \brief Array of BTRule. */
-	private var Array pRules
+	var Array pRules
 	
 	
 	

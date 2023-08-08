@@ -48,22 +48,22 @@ class BTActionParameterTable implements BTAction
 	
 	
 	/** \brief Parameter table entry to update. */
-	private var ParameterTableEntry pEntry
+	var ParameterTableEntry pEntry
 	
 	/** \brief Default value if entry is not null. */
-	private var float pDefaultValue
+	var float pDefaultValue
 	
 	/** \brief Update operator from eOperators. */
-	private var Operator pOperator
+	var Operator pOperator
 	
 	/** \brief Parameter table entry to use as update value. */
-	private var ParameterTableEntry pEntryUpdateValue
+	var ParameterTableEntry pEntryUpdateValue
 	
 	/** \brief Update value. */
-	private var float pUpdateValue
+	var float pUpdateValue
 	
 	/** \brief Use named parameter as source of update value if not null. */
-	private var String pParameterNameUpdateValue
+	var String pParameterNameUpdateValue
 	
 	
 	

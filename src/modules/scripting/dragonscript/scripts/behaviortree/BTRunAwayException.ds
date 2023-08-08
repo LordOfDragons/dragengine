@@ -36,7 +36,7 @@ pin Dragengine.Utils
  */
 class BTRunAwayException extends Exception
 	/** \brief Run away list as Array of BTRule. */
-	private var Array pRunAwayList
+	var Array pRunAwayList
 	
 	
 	
