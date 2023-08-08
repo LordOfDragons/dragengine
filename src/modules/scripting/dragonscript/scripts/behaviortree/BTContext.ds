@@ -526,6 +526,7 @@ class BTContext
 		var PersistencyFlags flags = PersistencyFlags.new(2)
 		flags.setAt(0, pCurrentRule != null)
 		flags.setAt(1, pActionFirstRun)
+		flags.writeToFile(writer)
 		
 		if pCurrentRule != null
 			writer.writeString8(pCurrentRule.getID())
