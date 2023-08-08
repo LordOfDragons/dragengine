@@ -64,74 +64,74 @@ class BTConditionTrigger implements BTCondition
 	
 	
 	/** \brief Create condition. */
-	public func new( StringID name, TestMode testMode ) \
-	this( BaseGameApp.getApp().getTriggerTable(), name, testMode )
+	func new(StringID name, TestMode testMode) \
+	this(BaseGameApp.getApp().getTriggerTable(), name, testMode)
 	end
 	
 	/** \brief Create condition. */
-	public func new( TSTriggerTable triggerTable, StringID name, TestMode testMode )
+	func new(TSTriggerTable triggerTable, StringID name, TestMode testMode)
 		if triggerTable == null
-			throw ENullPointer.new( "triggerTable" )
+			throw ENullPointer.new("triggerTable")
 		end
 		if name == null
-			throw ENullPointer.new( "name" )
+			throw ENullPointer.new("name")
 		end
 		if testMode == null
-			throw ENullPointer.new( "testMode" )
+			throw ENullPointer.new("testMode")
 		end
 		
-		this.pTriggerTable = triggerTable
-		this.pName = name
-		this.pTestMode = testMode
+		pTriggerTable = triggerTable
+		pName = name
+		pTestMode = testMode
 	end
 	
 	
 	
 	/** \brief Trigger table. */
-	public func TSTriggerTable getTriggerTable()
-		return this.pTriggerTable
+	func TSTriggerTable getTriggerTable()
+		return pTriggerTable
 	end
 	
 	/** \brief Set trigger table. */
-	protected func void setTriggerTable( TSTriggerTable triggerTable )
-		this.pTriggerTable = triggerTable
-		this.pTriggerTarget = null
+	protected func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
+		pTriggerTarget = null
 	end
 	
 	/** \brief Name of the trigger to evaluate. */
-	public func StringID getName()
-		return this.pName
+	func StringID getName()
+		return pName
 	end
 	
 	/** \brief Set name of the trigger to evaluate. */
-	public func void setName( StringID name )
-		this.pName = name
-		this.pTriggerTarget = null
+	func void setName(StringID name)
+		pName = name
+		pTriggerTarget = null
 	end
 	
 	/** \brief Cached trigger target. */
-	public func TSTriggerTarget getTriggerTarget()
-		if this.pTriggerTarget == null
-			this.pTriggerTarget = pTriggerTable.getOrAddNamed( this.pName )
+	func TSTriggerTarget getTriggerTarget()
+		if pTriggerTarget == null
+			pTriggerTarget = pTriggerTable.getOrAddNamed(pName)
 		end
-		return this.pTriggerTarget
+		return pTriggerTarget
 	end
 	
 	/** \brief TestMode. */
-	public func TestMode getTestMode()
-		return this.pTestMode
+	func TestMode getTestMode()
+		return pTestMode
 	end
 	
 	/** \brief Set action. */
-	public func void setTestMode( TestMode testMode )
-		this.pTestMode = testMode
+	func void setTestMode(TestMode testMode)
+		pTestMode = testMode
 	end
 	
 	
 	
 	/** \brief Create condition testing the exact opposite. */
-	public func BTConditionTrigger negated()
-		var TestMode testMode = this.pTestMode
+	func BTConditionTrigger negated()
+		var TestMode testMode = pTestMode
 		
 		select testMode
 		case TestMode.fired
@@ -147,7 +147,7 @@ class BTConditionTrigger implements BTCondition
 			testMode = TestMode.everFired
 		end
 		
-		return BTConditionTrigger.new( this.pTriggerTable, this.pName, testMode )
+		return BTConditionTrigger.new(pTriggerTable, pName, testMode)
 	end
 	
 	
@@ -157,19 +157,19 @@ class BTConditionTrigger implements BTCondition
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func bool evaluateCondition( BTContext context, Dictionary parameters )
-		select this.pTestMode
+	func bool evaluateCondition(BTContext context, Dictionary parameters)
+		select pTestMode
 		case TestMode.fired
-			return this.getTriggerTarget().getFired()
+			return getTriggerTarget().getFired()
 			
 		case TestMode.notFired
-			return not this.getTriggerTarget().getFired()
+			return not getTriggerTarget().getFired()
 			
 		case TestMode.everFired
-			return this.getTriggerTarget().getHasFired()
+			return getTriggerTarget().getHasFired()
 			
 		case TestMode.neverFired
-			return not this.getTriggerTarget().getHasFired()
+			return not getTriggerTarget().getHasFired()
 			
 		else
 			return false

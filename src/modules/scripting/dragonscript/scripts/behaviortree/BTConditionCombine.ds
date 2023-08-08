@@ -63,97 +63,97 @@ class BTConditionCombine implements BTCondition
 	
 	
 	/** \brief Create condition. */
-	public func new( Mode mode )
-		this.pConditions = Array.new()
-		this.pMode = mode
+	func new(Mode mode)
+		pConditions = Array.new()
+		pMode = mode
 	end
 	
 	/** \brief Create condition using two conditions. */
-	public func new( Mode mode, String condition1, String condition2 )
+	func new(Mode mode, String condition1, String condition2)
 		if condition1 == null or condition2 == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pMode = mode
-		this.pConditions = Array.newWith( condition1, condition2 )
+		pMode = mode
+		pConditions = Array.newWith(condition1, condition2)
 	end
 	
 	/** \brief Create condition using three conditions. */
-	public func new( Mode mode, String condition1, String condition2, String condition3 )
+	func new(Mode mode, String condition1, String condition2, String condition3)
 		if condition1 == null or condition2 == null or condition3 == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pMode = mode
-		this.pConditions = Array.newWith( condition1, condition2, condition3 )
+		pMode = mode
+		pConditions = Array.newWith(condition1, condition2, condition3)
 	end
 	
 	/** \brief Create condition using four conditions. */
-	public func new( Mode mode, String condition1, String condition2, String condition3, String condition4 )
+	func new(Mode mode, String condition1, String condition2, String condition3, String condition4)
 		if condition1 == null or condition2 == null or condition3 == null or condition4 == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pMode = mode
-		this.pConditions = Array.newWith( condition1, condition2, condition3, condition4 )
+		pMode = mode
+		pConditions = Array.newWith(condition1, condition2, condition3, condition4)
 	end
 	
 	
 	
 	/** \brief Number of conditions. */
-	public func int getConditionCount()
-		return this.pConditions.getCount()
+	func int getConditionCount()
+		return pConditions.getCount()
 	end
 	
 	/** \brief Get condition at index. */
-	public func String getConditionAt( int index )
-		return this.pConditions.getAt( index ) cast String
+	func String getConditionAt(int index)
+		return pConditions.getAt(index) cast String
 	end
 	
 	/** \brief Index of condition or -1 if absent. */
-	public func int indexOfCondition( String condition )
-		return this.pConditions.indexOf( condition )
+	func int indexOfCondition(String condition)
+		return pConditions.indexOf(condition)
 	end
 	
 	/** \brief Add condition. */
-	public func void addCondition( String condition )
+	func void addCondition(String condition)
 		if condition == null
 			throw EInvalidParam.new()
 		end
-		this.pConditions.add( condition )
-		this.pResolvedConditions = null
+		pConditions.add(condition)
+		pResolvedConditions = null
 	end
 	
 	/** \brief Remove condition. */
-	public func void removeCondition( String condition )
-		this.pConditions.remove( condition )
-		this.pResolvedConditions = null
+	func void removeCondition(String condition)
+		pConditions.remove(condition)
+		pResolvedConditions = null
 	end
 	
 	/** \brief Remove all conditions. */
-	public func void removeAllConditions()
-		this.pConditions.removeAll()
-		this.pResolvedConditions = null
+	func void removeAllConditions()
+		pConditions.removeAll()
+		pResolvedConditions = null
 	end
 	
 	/** \brief Visit conditions with block with parameter String. */
-	public func void forEachCondition( Block ablock )
-		this.pConditions.forEach( ablock )
+	func void forEachCondition(Block ablock)
+		pConditions.forEach(ablock)
 	end
 	
 	/** \brief Find condition with block with parameter String. */
-	public func String findCondition( Block ablock )
-		return this.pConditions.find( ablock ) cast String
+	func String findCondition(Block ablock)
+		return pConditions.find(ablock) cast String
 	end
 	
 	/** \brief Combine mode from eCombineModes. */
-	public func Mode getMode()
-		return this.pMode
+	func Mode getMode()
+		return pMode
 	end
 	
 	/** \brief Set combine mode from eCombineModes. */
-	public func void setMode( Mode mode )
-		this.pMode = mode
+	func void setMode(Mode mode)
+		pMode = mode
 	end
 	
 	
@@ -163,37 +163,37 @@ class BTConditionCombine implements BTCondition
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func bool evaluateCondition( BTContext context, Dictionary parameters )
-		if this.pResolvedConditions == null
-			this.pResolvedConditions = this.pConditions.map( block String each
-				return context.getCondition( each )
-			end )
+	func bool evaluateCondition(BTContext context, Dictionary parameters)
+		if pResolvedConditions == null
+			pResolvedConditions = pConditions.map(block String each
+				return context.getCondition(each)
+			end)
 		end
 		
-		if this.pResolvedConditions.getCount() == 0
+		if pResolvedConditions.getCount() == 0
 			return true
 		end
 		
-		select this.pMode
+		select pMode
 		case Mode.allTrue
-			return this.pResolvedConditions.find( block BTCondition each
-				return each == null or not each.evaluateCondition( context, parameters )
-			end ) == null
+			return pResolvedConditions.find(block BTCondition each
+				return each == null or not each.evaluateCondition(context, parameters)
+			end) == null
 			
 		case Mode.anyTrue
-			return this.pResolvedConditions.find( block BTCondition each
-				return each != null and each.evaluateCondition( context, parameters )
-			end ) != null
+			return pResolvedConditions.find(block BTCondition each
+				return each != null and each.evaluateCondition(context, parameters)
+			end) != null
 			
 		case Mode.anyFalse
-			return this.pResolvedConditions.find( block BTCondition each
-				return each == null or not each.evaluateCondition( context, parameters )
-			end ) != null
+			return pResolvedConditions.find(block BTCondition each
+				return each == null or not each.evaluateCondition(context, parameters)
+			end) != null
 			
 		case Mode.allFalse
-			return this.pResolvedConditions.find( block BTCondition each
-				return each != null and each.evaluateCondition( context, parameters )
-			end ) == null
+			return pResolvedConditions.find(block BTCondition each
+				return each != null and each.evaluateCondition(context, parameters)
+			end) == null
 			
 		else
 			return false

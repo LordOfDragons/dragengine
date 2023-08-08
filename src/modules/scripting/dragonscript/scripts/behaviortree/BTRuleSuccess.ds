@@ -28,12 +28,12 @@ pin Dragengine.Utils
 /** \brief Behavior tree rule succeeding if no condition evaluates to false. */
 class BTRuleSuccess extends BTRule
 	/** \brief Create behavior tree rule. */
-	public func new(String id) super(id)
+	func new(String id) super(id)
 	end
 	
 	
 	/** \brief Run action. */
-	public func BTResult run(BTContext context)
+	func BTResult run(BTContext context)
 		return evaluateConditions(context) if BTResult.success else BTResult.failure
 	end
 end

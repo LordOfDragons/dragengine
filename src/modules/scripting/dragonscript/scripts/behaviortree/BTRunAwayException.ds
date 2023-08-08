@@ -45,42 +45,42 @@ class BTRunAwayException extends Exception
 	 * 
 	 * \param list Array of BTRule. A copy of the list is stored.
 	 */
-	public func new( Array list ) super( "Behavior Tree Run-Away" )
+	func new(Array list) super("Behavior Tree Run-Away")
 		if list == null
 			throw EInvalidParam.new()
 		end
-		this.pRunAwayList = Array.new( list )
+		pRunAwayList = Array.new(list)
 	end
 	
 	
 	
 	/** \brief Number of entries in run away list. */
-	public func int getEntryCount()
-		return this.pRunAwayList.getCount()
+	func int getEntryCount()
+		return pRunAwayList.getCount()
 	end
 	
 	/** \brief Entry at index. */
-	public func BTRule getEntryAt( int index )
-		return this.pRunAwayList.getAt( index ) cast BTRule
+	func BTRule getEntryAt(int index)
+		return pRunAwayList.getAt(index) cast BTRule
 	end
 	
 	/** \brief Visit entries using block with parameter BTRule. */
-	public func void forEachEntry( Block ablock )
-		this.pRunAwayList.forEach( ablock )
+	func void forEachEntry(Block ablock)
+		pRunAwayList.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Run away back-trace in string format. */
-	public func String getRunAwayBacktrace()
-		var int i, count = this.pRunAwayList.getCount()
+	func String getRunAwayBacktrace()
+		var int i, count = pRunAwayList.getCount()
 		var String string = ""
 		
 		for i = 0 to count
 			if i > 0
 				string = string + "\n"
 			end
-			string = string + ( i + 1 ) + ") " + ( this.pRunAwayList.getAt( i ) cast BTRule ).getID()
+			string = string + (i + 1) + ") " + (pRunAwayList.getAt(i) cast BTRule).getID()
 		end
 		
 		return string

@@ -52,23 +52,23 @@ class BTRuleAction extends BTRule
 	
 	
 	/** \brief Create behavior tree rule. */
-	public func new( String id, String actionID ) super( id )
+	func new(String id, String actionID) super(id)
 		if actionID == null
 			throw EInvalidParam.new()
 		end
-		this.pActionID = actionID
+		pActionID = actionID
 	end
 	
 	
 	
 	/** \brief Action identifier. */
-	public func String getActionID()
-		return this.pActionID
+	func String getActionID()
+		return pActionID
 	end
 	
 	/** \brief Action or \em null if not cached. */
-	public func BTAction getAction()
-		return this.pAction
+	func BTAction getAction()
+		return pAction
 	end
 	
 	
@@ -78,17 +78,17 @@ class BTRuleAction extends BTRule
 	 * \returns Action return value if no rule condition evaluates to false and the named
 	 *          action is found in the BTContext. Otherwise BTResult.failure is returned.
 	 */
-	public func BTResult run( BTContext context )
-		if this.pAction == null
-			this.pAction = context.getAction( this.pActionID )
+	func BTResult run(BTContext context)
+		if pAction == null
+			pAction = context.getAction(pActionID)
 		end
 		
-		if this.pAction == null or not this.evaluateConditions( context )
+		if pAction == null or not evaluateConditions(context)
 			return BTResult.failure
 		end
 		
-		var BTResult result = this.pAction.runAction( context, this.getParameters() )
-		context.setActionFirstRun( false )
+		var BTResult result = pAction.runAction(context, getParameters())
+		context.setActionFirstRun(false)
 		return result
 	end
 end

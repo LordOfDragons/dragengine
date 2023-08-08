@@ -36,7 +36,7 @@ class BTRuleRunning extends BTRule
 	
 	
 	/** \brief Run action. */
-	public func BTResult run(BTContext context)
+	func BTResult run(BTContext context)
 		return evaluateConditions(context) if BTResult.running else BTResult.failure
 	end
 end

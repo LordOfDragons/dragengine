@@ -66,74 +66,74 @@ class BTActionTrigger implements BTAction
 	
 	
 	/** \brief Create action using BaseGameApp trigger table. */
-	public func new( StringID name, Action action ) \
-	this( BaseGameApp.getApp().getTriggerTable(), name, action )
+	func new(StringID name, Action action) \
+	this(BaseGameApp.getApp().getTriggerTable(), name, action)
 	end
 	
 	/** \brief Create action. */
-	public func new( TSTriggerTable triggerTable, StringID name, Action action )
+	func new(TSTriggerTable triggerTable, StringID name, Action action)
 		if triggerTable == null
-			throw ENullPointer.new( "triggerTable" )
+			throw ENullPointer.new("triggerTable")
 		end
 		if name == null
-			throw ENullPointer.new( "name" )
+			throw ENullPointer.new("name")
 		end
 		if action == null
-			throw ENullPointer.new( "action" )
+			throw ENullPointer.new("action")
 		end
 		
-		this.pTriggerTable = triggerTable
-		this.pName = name
-		this.pAction = action
+		pTriggerTable = triggerTable
+		pName = name
+		pAction = action
 	end
 	
 	/** \brief Create copy of action. */
-	public func new( BTActionTrigger action )
-		this.pTriggerTable = action.pTriggerTable
-		this.pName = action.pName
-		this.pAction = action.pAction
+	func new(BTActionTrigger action)
+		pTriggerTable = action.pTriggerTable
+		pName = action.pName
+		pAction = action.pAction
 	end
 	
 	
 	
 	/** \brief Trigger table. */
-	public func TSTriggerTable getTriggerTable()
-		return this.pTriggerTable
+	func TSTriggerTable getTriggerTable()
+		return pTriggerTable
 	end
 	
 	/** \brief Set trigger table. */
-	protected func void setTriggerTable( TSTriggerTable triggerTable )
-		this.pTriggerTable = triggerTable
-		this.pTriggerTarget = null
+	protected func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
+		pTriggerTarget = null
 	end
 	
 	/** \brief Name of the trigger to set. */
-	public func StringID getName()
-		return this.pName
+	func StringID getName()
+		return pName
 	end
 	
 	/** \brief Set name of the trigger to set. */
-	public func void setName( StringID name )
-		this.pName = name
-		this.pTriggerTarget = null
+	func void setName(StringID name)
+		pName = name
+		pTriggerTarget = null
 	end
 	
 	/** \brief Cached trigger target. */
-	public func TSTriggerTarget getTriggerTarget()
-		if this.pTriggerTarget == null
-			this.pTriggerTarget = pTriggerTable.getOrAddNamed( this.pName )
+	func TSTriggerTarget getTriggerTarget()
+		if pTriggerTarget == null
+			pTriggerTarget = pTriggerTable.getOrAddNamed(pName)
 		end
-		return this.pTriggerTarget
+		return pTriggerTarget
 	end
 	
 	/** \brief Action. */
-	public func Action getAction()
-		return this.pAction
+	func Action getAction()
+		return pAction
 	end
 	
 	/** \brief Set action. */
-	public func void setAction( Action action )
-		this.pAction = action
+	func void setAction(Action action)
+		pAction = action
 	end
 	
 	
@@ -143,10 +143,10 @@ class BTActionTrigger implements BTAction
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func BTResult runAction( BTContext context, Dictionary parameters )
-		var TSTriggerTarget target = this.getTriggerTarget()
+	func BTResult runAction(BTContext context, Dictionary parameters)
+		var TSTriggerTarget target = getTriggerTarget()
 		
-		select this.pAction
+		select pAction
 		case Action.fire
 			target.fire()
 			

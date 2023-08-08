@@ -36,10 +36,10 @@ pin Dragengine.Utils
  * BTAction.eReturnValues. Do not change the content of the dictionary as it is shared.
  * 
  * \code{.ds}
- * new BTBlockAction( block BTContext context, Dictionary parameters
+ * new BTBlockAction(block BTContext context, Dictionary parameters
  *    // do something
  *    return BTResult.running // or .success or .failure
- * end )
+ * end)
  * \endcode
  */
 class BTBlockAction implements BTAction
@@ -49,17 +49,17 @@ class BTBlockAction implements BTAction
 	
 	
 	/** \brief Create action. */
-	public func new( Block ablock )
+	func new(Block ablock)
 		if ablock == null
 			throw EInvalidParam.new()
 		end
-		this.pBlock = ablock
+		pBlock = ablock
 	end
 	
 	
 	/** \brief Block to use. */
-	public func Block getBlock()
-		return this.pBlock
+	func Block getBlock()
+		return pBlock
 	end
 	
 	
@@ -69,7 +69,7 @@ class BTBlockAction implements BTAction
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func BTResult runAction( BTContext context, Dictionary parameters )
-		return this.pBlock.run( context, parameters ) cast BTResult
+	func BTResult runAction(BTContext context, Dictionary parameters)
+		return pBlock.run(context, parameters) cast BTResult
 	end
 end
