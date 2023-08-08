@@ -40,7 +40,7 @@ pin Dragengine.Utils
  */
 class BTRuleChoice extends BTRuleList
 	var bool pLooping
-	var bool pDoNoFail
+	var bool pDoNotFail
 	
 	
 	/** \brief Create behavior tree rule. */
@@ -64,7 +64,7 @@ class BTRuleChoice extends BTRuleList
 	 * \version 1.19
 	 */
 	func bool getDoNotFail()
-		return pDoNoFail
+		return pDoNotFail
 	end
 	
 	/**
@@ -72,7 +72,7 @@ class BTRuleChoice extends BTRuleList
 	 * \version 1.19
 	 */
 	func void setDoNotFail(bool doNotFail)
-		pDoNoFail = doNotFail
+		pDoNotFail = doNotFail
 	end
 	
 	
@@ -88,7 +88,7 @@ class BTRuleChoice extends BTRuleList
 		if rule == this
 			// first time the rule is run
 			if getRuleCount() == 0 or not evaluateConditions(context)
-				return pDoNoFail if BTResult.success else BTResult.failure  // context does another step
+				return pDoNotFail if BTResult.success else BTResult.failure  // context does another step
 			end
 			
 			context.setCurrentRule(getRuleAt(0))
@@ -103,7 +103,7 @@ class BTRuleChoice extends BTRuleList
 				return BTResult.running  // context stops stepping
 				
 			case BTResult.failure
-				if index < getRuleCount()
+				if index < getRuleCount() - 1
 					// more actions to run
 					if evaluateConditions(context)
 						context.setCurrentRule(getRuleAt(index + 1))
@@ -117,7 +117,7 @@ class BTRuleChoice extends BTRuleList
 					// finished all actions with failure. pass up to parent
 					context.setCurrentRule(this)
 				end
-				return pDoNoFail if BTResult.success else BTResult.failure  // context does another step
+				return pDoNotFail if BTResult.success else BTResult.failure  // context does another step
 				
 			case BTResult.success
 				// choice finished. pass up to parent unless looping
@@ -128,7 +128,7 @@ class BTRuleChoice extends BTRuleList
 					else
 						// condition failed. pass up to parent
 						context.setCurrentRule(this)
-						return pDoNoFail if BTResult.success else BTResult.failure
+						return pDoNotFail if BTResult.success else BTResult.failure
 					end
 					
 				else

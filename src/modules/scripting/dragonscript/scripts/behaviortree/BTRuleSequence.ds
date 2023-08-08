@@ -110,7 +110,7 @@ class BTRuleSequence extends BTRuleList
 					return pDoNoFail if BTResult.success else BTResult.failure
 				end
 				
-				if index < getRuleCount()
+				if index < getRuleCount() - 1
 					// more actions to run
 					context.setCurrentRule(getRuleAt(index + 1))
 					
