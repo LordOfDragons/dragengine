@@ -26,7 +26,6 @@ pin Dragengine.Scenery
 pin Dragengine.Utils
 
 
-
 /**
  * \brief Behavior tree action interface.
  * 
@@ -39,5 +38,5 @@ interface BTAction
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	func BTResult runAction( BTContext context, Dictionary parameters )
+	func BTResult runAction(BTContext context, Dictionary parameters)
 end
