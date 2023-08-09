@@ -59,22 +59,10 @@ abstract class BTRule
 	
 	
 	
-	/** \brief Unique rule identifier or \em null. */
 	var String pID
-	
-	/** \brief Parent rule or \em null if this is the root rule in a behavior tree. */
 	var WeakReference pParent
-	
-	/** \brief Conditions as Array of String identifiers. */
 	var Array pConditions
-	
-	/** \brief Resolved conditions as Array of BTCondition. */
-	var Array pResolvedConditions
-	
-	/** \brief Condition mode from eConditionModes. */
 	var ConditionMode pConditionMode
-	
-	/** \brief Parameters as Dictionary of type String key and String value. */
 	var Dictionary pParameters
 	
 	
@@ -144,19 +132,16 @@ abstract class BTRule
 			throw EInvalidParam.new()
 		end
 		pConditions.add(condition)
-		pResolvedConditions = null
 	end
 	
 	/** \brief Remove condition. */
 	func void removeCondition(String condition)
 		pConditions.remove(condition)
-		pResolvedConditions = null
 	end
 	
 	/** \brief Remove all conditions. */
 	func void removeAllConditions()
 		pConditions.removeAll()
-		pResolvedConditions = null
 	end
 	
 	/** \brief Visit conditions with block with parameter String. */
@@ -188,35 +173,33 @@ abstract class BTRule
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
 	func bool evaluateConditions(BTContext context)
-		if pResolvedConditions == null
-			pResolvedConditions = pConditions.map(block String each
-				return context.getCondition(each)
-			end)
-		end
-		
-		if pResolvedConditions.getCount() == 0
+		if pConditions.getCount() == 0
 			return true
 		end
 		
 		select pConditionMode
 		case ConditionMode.allTrue
-			return pResolvedConditions.find(block BTCondition each
-				return each == null or not each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
 			end) == null
 			
 		case ConditionMode.anyTrue
-			return pResolvedConditions.find(block BTCondition each
-				return each != null and each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
 			end) != null
 			
 		case ConditionMode.anyFalse
-			return pResolvedConditions.find(block BTCondition each
-				return each == null or not each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
 			end) != null
 			
 		case ConditionMode.allFalse
-			return pResolvedConditions.find(block BTCondition each
-				return each != null and each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
 			end) == null
 			
 		else

@@ -51,13 +51,7 @@ class BTConditionCombine implements BTCondition
 	
 	
 	
-	/** \brief Conditions as Array of String identifiers. */
 	var Array pConditions
-	
-	/** \brief Resolved conditions as Array of BTCondition. */
-	var Array pResolvedConditions
-	
-	/** \brief Combine mode from eCombineModes. */
 	var Mode pMode
 	
 	
@@ -121,19 +115,16 @@ class BTConditionCombine implements BTCondition
 			throw EInvalidParam.new()
 		end
 		pConditions.add(condition)
-		pResolvedConditions = null
 	end
 	
 	/** \brief Remove condition. */
 	func void removeCondition(String condition)
 		pConditions.remove(condition)
-		pResolvedConditions = null
 	end
 	
 	/** \brief Remove all conditions. */
 	func void removeAllConditions()
 		pConditions.removeAll()
-		pResolvedConditions = null
 	end
 	
 	/** \brief Visit conditions with block with parameter String. */
@@ -164,35 +155,33 @@ class BTConditionCombine implements BTCondition
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
 	func bool evaluateCondition(BTContext context, Dictionary parameters)
-		if pResolvedConditions == null
-			pResolvedConditions = pConditions.map(block String each
-				return context.getCondition(each)
-			end)
-		end
-		
-		if pResolvedConditions.getCount() == 0
+		if pConditions.getCount() == 0
 			return true
 		end
 		
 		select pMode
 		case Mode.allTrue
-			return pResolvedConditions.find(block BTCondition each
-				return each == null or not each.evaluateCondition(context, parameters)
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, parameters)
 			end) == null
 			
 		case Mode.anyTrue
-			return pResolvedConditions.find(block BTCondition each
-				return each != null and each.evaluateCondition(context, parameters)
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, parameters)
 			end) != null
 			
 		case Mode.anyFalse
-			return pResolvedConditions.find(block BTCondition each
-				return each == null or not each.evaluateCondition(context, parameters)
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, parameters)
 			end) != null
 			
 		case Mode.allFalse
-			return pResolvedConditions.find(block BTCondition each
-				return each != null and each.evaluateCondition(context, parameters)
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, parameters)
 			end) == null
 			
 		else

@@ -51,16 +51,9 @@ class BTActionTrigger implements BTAction
 	
 	
 	
-	/** \brief Trigger table. */
 	var TSTriggerTable pTriggerTable
-	
-	/** \brief Name of trigger target to manipulate. */
 	var StringID pName
-	
-	/** \brief Cached trigger target. */
 	var TSTriggerTarget pTriggerTarget
-	
-	/** \brief Action to apply to trigger target. */
 	var Action pAction
 	
 	

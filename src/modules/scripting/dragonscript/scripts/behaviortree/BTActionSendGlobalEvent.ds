@@ -33,16 +33,9 @@ pin Dragengine.Utils
  * This action always returns BTResult.success.
  */
 class BTActionSendGlobalEvent implements BTAction
-	/** \brief Global event instance to send event to. */
 	var GlobalEvents pGlobalEvents
-	
-	/** \brief Event to send. */
 	var String pEvent
-	
-	/** \brief Optional source of event. */
 	var Object pSource
-	
-	/** \brief Optional parameter to send with event. */
 	var Object pData
 	
 	

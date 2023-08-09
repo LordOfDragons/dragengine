@@ -31,7 +31,6 @@ pin Dragengine.Utils
  * \brief Base class for behavior tree rules using child rules.
  */
 abstract class BTRuleList extends BTRule
-	/** \brief Array of BTRule. */
 	var Array pRules
 	
 	

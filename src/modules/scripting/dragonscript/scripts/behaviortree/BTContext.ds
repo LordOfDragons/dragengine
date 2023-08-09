@@ -45,39 +45,17 @@ pin Dragengine.Scenery
  * readFromFile() is called otherwise an exception can be thrown.
  */
 class BTContext
-	/** \brief Behavior tree. */
 	var BehaviorTree pBehaviorTree
-	
-	/** \brief Conditions as Dictionary of BTCondition. */
 	var Dictionary pConditions
-	
-	/** \brief Actions as Dictionary of BTAction. */
 	var Dictionary pActions
-	
-	/** \brief Current rule. */
 	var BTRule pCurrentRule
-	
-	/** \brief Action runs for the first time. */
 	var bool pActionFirstRun
-	
-	/** \brief Last result. */
 	var BTResult pLastResult
-	
-	/** \brief Run away list as Array of BTRule. */
 	var Array pRunAwayList
 	
-	
-	
-	/** \brief Console or \em null if not wishing to log anything. */
 	var Console pConsole
-	
-	/** \brief Logging name to tell apart logs. */
 	var String pLoggingName
-	
-	/** \brief Log behavior tree steps. */
 	var bool pLogSteps
-	
-	/** \brief Log behavior tree rule changes. */
 	var bool pLogRuleChanges
 	
 	

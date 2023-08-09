@@ -33,10 +33,7 @@ pin Dragengine.Utils
  * Default behavior tree contains BTRuleFailure root rule with id "root".
  */
 class BehaviorTree
-	/** \brief Root rule. */
 	var BTRule pRootRule
-	
-	/** \brief Dictionary mapping String rule identifier to BTRule. */
 	var Dictionary pRuleMap
 	
 	

@@ -43,11 +43,7 @@ pin Dragengine.Utils
  * change.
  */
 class BTRuleAction extends BTRule
-	/** \brief Action identifier. */
 	var String pActionID
-	
-	/** \brief Action or \em null if not cached. */
-	var BTAction pAction
 	
 	
 	
@@ -66,9 +62,9 @@ class BTRuleAction extends BTRule
 		return pActionID
 	end
 	
-	/** \brief Action or \em null if not cached. */
+	/** \deprecated Removed without replacement. */
 	func BTAction getAction()
-		return pAction
+		return null
 	end
 	
 	
@@ -79,15 +75,13 @@ class BTRuleAction extends BTRule
 	 *          action is found in the BTContext. Otherwise BTResult.failure is returned.
 	 */
 	func BTResult run(BTContext context)
-		if pAction == null
-			pAction = context.getAction(pActionID)
-		end
+		var BTAction action = context.getAction(pActionID)
 		
-		if pAction == null or not evaluateConditions(context)
+		if action == null or not evaluateConditions(context)
 			return BTResult.failure
 		end
 		
-		var BTResult result = pAction.runAction(context, getParameters())
+		var BTResult result = action.runAction(context, getParameters())
 		context.setActionFirstRun(false)
 		return result
 	end

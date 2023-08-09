@@ -43,7 +43,6 @@ pin Dragengine.Utils
  * \endcode
  */
 class BTBlockAction implements BTAction
-	/** \brief Block to use. */
 	var Block pBlock
 	
 	

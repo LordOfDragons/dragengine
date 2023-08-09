@@ -57,22 +57,11 @@ class BTConditionParameterTableInt implements BTCondition
 	
 	
 	
-	/** \brief Parameter table entry to compare. */
 	var ParameterTableEntry pEntry
-	
-	/** \brief Default value if entry to compare is not null. */
 	var int pDefaultValue
-	
-	/** \brief Compare operator from eOperators. */
 	var Operator pOperator
-	
-	/** \brief Parameter table entry to compare against. */
 	var ParameterTableEntry pEntryCompareValue
-	
-	/** \brief Default compare against value. */
 	var int pCompareValue
-	
-	/** \brief Use named parameter as source of compare value if not null. */
 	var String pParameterNameCompareValue
 	
 	
