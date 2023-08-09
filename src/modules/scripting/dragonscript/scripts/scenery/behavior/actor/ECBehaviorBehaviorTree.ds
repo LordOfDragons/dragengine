@@ -182,6 +182,73 @@ pin Dragengine.Utils
  * the context is run by the behavior itself.
  */
 class ECBehaviorBehaviorTree extends DefaultECBehavior
+	/**
+	 * \brief Listener for behavior instance events.
+	 * \version 1.19
+	 */
+	interface Listener
+		/** \brief Before stepping behavior tree. */
+		func void behaviorTreeUpdate(Instance instance, BTContext context, float elapsed)
+		
+		/** \brief Stepping behavior tree Failed. */
+		func void behaviorTreeFailed(Instance instance, BTContext context)
+		
+		/** \brief Behavior tree has been restarted. */
+		func void behaviorTreeRestarted(Instance instance, BTContext context)
+	end
+	
+	/**
+	 * \brief Default implementation of behavior instance listener.
+	 * \version 1.19
+	 */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		func new()
+		end
+		
+		/** \brief Before stepping behavior tree. */
+		func void behaviorTreeUpdate(Instance instance, BTContext context, float elapsed)
+		end
+		
+		/** \brief Stepping behavior tree Failed. */
+		func void behaviorTreeFailed(Instance instance, BTContext context)
+		end
+		
+		/** \brief Behavior tree has been restarted. */
+		func void behaviorTreeRestarted(Instance instance, BTContext context)
+		end
+	end
+	
+	/**
+	 * \brief Factory creating listeners.
+	 * \version 1.19
+	 */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/**
+	 * \brief Factory creating listeners using block.
+	 * \version 1.19
+	 */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
 	/** \brief Factory assigining actions and conditions to behavior tree. */
 	interface ActionConditionFactory
 		/** \brief Assign actions and conditions to behavior tree. */
@@ -214,6 +281,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		var BTContext pContext
 		var bool pRun
 		var bool pFailed
+		var Array pListeners
 		
 		
 		
@@ -221,12 +289,14 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		func new(ECBehaviorBehaviorTree ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pFailed = false
+			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of composeable instance. */
 		func void dispose()
 			pContext = null
 			pBehaviorTree = null
+			pListeners = null
 			super.dispose()
 		end
 		
@@ -247,6 +317,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			end
 			
 			setRequiresThink(pRun)
+			pECBehavior.createListeners(this)
 		end
 		
 		/** \brief Load behavior tree. */
@@ -294,6 +365,8 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 				return
 			end
 			
+			notifyUpdate(pContext, elapsed)
+			
 			try
 				if pContext.stepBehaviorTree()
 					return
@@ -306,6 +379,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			setRequiresThink(false)
 			
 			pECBehavior.setActionsConditions(this)
+			notifyFailed(pContext)
 		end
 		
 		/** \brief Restart behavior tree to run it again. */
@@ -317,10 +391,10 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			pContext.reset()
 			pFailed = false
 			setRequiresThink(true)
+			notifyRestarted(pContext)
 		end
 		
-		/** \brief Set action to behavior tree.
-		 */
+		/** \brief Set action to behavior tree. */
 		func void setAction(String name, BTAction action)
 			pContext.setAction(name, action)
 		end
@@ -346,6 +420,69 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		 */
 		func void setCondition(String name, Block conditionBlock)
 			pContext.setCondition(name, conditionBlock)
+		end
+		
+		
+		
+		/**
+		 * \brief Add listener.
+		 * \version 1.19
+		 */
+		func void addListener(Listener listener)
+			if listener == null
+				throw ENullPointer.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/**
+		 * \brief Remove listener.
+		 * \version 1.19
+		 */
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		/**
+		 * \brief Notify listeners behavior tree restarted.
+		 * \version 1.19
+		 */
+		func void notifyRestarted(BTContext context)
+			if context == null
+				throw ENullPointer.new()
+			end
+			
+			pListeners.forEach(block Listener each
+				each.behaviorTreeRestarted(this, context)
+			end)
+		end
+		
+		/**
+		 * \brief Notify listeners behavior tree failed.
+		 * \version 1.19
+		 */
+		func void notifyFailed(BTContext context)
+			if context == null
+				throw ENullPointer.new()
+			end
+			
+			pListeners.forEach(block Listener each
+				each.behaviorTreeFailed(this, context)
+			end)
+		end
+		
+		/**
+		 * \brief Notify listeners behavior tree update before running.
+		 * \version 1.19
+		 */
+		func void notifyUpdate(BTContext context, float elapsed)
+			if context == null
+				throw ENullPointer.new()
+			end
+			
+			pListeners.forEach(block Listener each
+				each.behaviorTreeUpdate(this, context, elapsed)
+			end)
 		end
 		
 		
@@ -389,21 +526,21 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	var ECPBehaviorTree pBehaviorTree
 	var ECPBoolean pRun
 	var Array pActionConditionFactories
+	var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass) \
-	this(eclass, BaseGameApp.getApp().getLoaders(), "")
+	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders(), "")
 	end
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass, String id) \
+	func new(BehaviorElementClass eclass, String id)\
 	this(eclass, BaseGameApp.getApp().getLoaders(), id)
 	end
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass, String id, String prefix) \
+	func new(BehaviorElementClass eclass, String id, String prefix)\
 	this(eclass, BaseGameApp.getApp().getLoaders(), id, prefix)
 	end
 	
@@ -416,11 +553,11 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	this(eclass, loaders, id, id.empty() if "behaviorTree" else "behaviorTree(" + id + ")")
 	end
 	
-	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID) \
+	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID)\
 	this(eclass, loaders, id, subID, subID + ".")
 	end
 	
-	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID, \
+	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID,\
 	String prefix) super(eclass, id)
 		pBehaviorTree = ECPBehaviorTree.new(prefix + "path", loaders.getBehaviorTree())
 		eclass.addProperty(pBehaviorTree)
@@ -429,12 +566,14 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		eclass.addProperty(pRun)
 		
 		pActionConditionFactories = Array.new()
+		pListenerFactories = Array.new()
 		
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	func void dispose()
+		pListenerFactories = null
 		pActionConditionFactories = null
 		super.dispose()
 	end
@@ -477,6 +616,47 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	func void setActionsConditions(Instance instance)
 		pActionConditionFactories.forEach(block ActionConditionFactory each
 			each.setActionsConditions(instance)
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Add listener factory.
+	 * \version 1.19
+	 */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * \version 1.19
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/**
+	 * \brief Visit listener factories with block with argument ListenerFactory.
+	 * \version 1.19
+	 */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Create listeners from factories adding them to behavior instance.
+	 * \version 1.19
+	 */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
 		end)
 	end
 	
