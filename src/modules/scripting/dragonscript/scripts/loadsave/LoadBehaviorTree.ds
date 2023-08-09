@@ -142,7 +142,7 @@ class LoadBehaviorTree extends BaseXmlLoader
 		elif tagName.equals("running")
 			return readRuleRunning(element, behaviorTree, idPrefix, parentID)
 			
-		elif tagName.equals("subTree")
+		elif tagName.equals("subtree") or tagName.equals("subTree")
 			return readRuleSubTree(element, behaviorTree, idPrefix, parentID, basePath)
 			
 		else
