@@ -22,6 +22,7 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.BehaviorTreeSystem
 pin Dragengine.ConversationSystem
 pin Dragengine.Gui.Designers
 pin Dragengine.LoadSave
@@ -92,6 +93,34 @@ pin Dragengine.Utils.StyledText.Definition
  *   the left or right hand of an actor by using a virtual bone name. Script code can change
  *   the mapping for the bone at any time to make conversation scripts always refer to the
  *   right actor hand.
+ * 
+ * \par Version 1.19 Additions
+ * 
+ * ECBehaviorBehaviorTree behaviors can be added to the behavior using
+ * addBehaviorTree(ECBehaviorBehaviorTree). This will add behavior tree actions and conditions
+ * to all added behavior tree contexts. The following actions and conditions are added.
+ * 
+ * <b>Condition "conversationActor.inConversation"</b>
+ * 
+ * Determines if conversation actor is in a conversation.
+ * 
+ * This is an example of an action that can only run if the actor is in a conversation:
+ * \code{.xml}
+ * <action name='myAction' id='doing something'>
+ *    <condition>conversationActor.inConversation</condition>
+ * </action>
+ * \endcode
+ * 
+ * <b>Condition "conversationActor.notInConversation"</b>
+ * 
+ * Determines if conversation actor is not in a conversation.
+ * 
+ * This is an example of an action that can only run if the actor is not in a conversation:
+ * \code{.xml}
+ * <action name='myAction' id='doing something'>
+ *    <condition>conversationActor.notInConversation</condition>
+ * </action>
+ * \endcode
  */
 class ECBehaviorConversationActor extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -363,6 +392,32 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			end
 		end
 		
+		/** \brief Behavior tree condition "conversationActor.inConversation". */
+		class BTCInConversation implements BTCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return pInstance.isInConversation()
+			end
+		end
+		
+		/** \brief Behavior tree condition "conversationActor.notInConversation". */
+		class BTCNotInConversation implements BTCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return pInstance.isNotInConversation()
+			end
+		end
+		
 		
 		private var ECBehaviorConversationActor pECBehavior
 		
@@ -476,6 +531,12 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			end
 			
 			pECBehavior.createListeners(this)
+			
+			pECBehavior.forEachBehaviorTree(block ECBehaviorBehaviorTree each
+				var BTContext context = each.instance(element).getContext()
+				context.setCondition("conversationActor.inConversation", BTCInConversation.new(this))
+				context.setCondition("conversationActor.notInConversation", BTCNotInConversation.new(this))
+			end)
 		end
 		
 		/** \brief Create conversation actor. */
@@ -1096,6 +1157,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	private var ECBehaviorParameterTable pParameterTable
 	private var GuiTheme pSubtitleTheme
 	private var Array pListenerFactories
+	private var Array pBehaviorTrees
 	
 	
 	
@@ -1114,6 +1176,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		pListenerFactories = Array.new()
+		pBehaviorTrees = Array.new()
 		
 		pActorId = ECPStringID.new(prefix + "id", null)
 		eclass.addProperty(pActorId)
@@ -1141,6 +1204,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
+		pBehaviorTrees = null
 		pActorAnimated = null
 		pAnimated = null
 		pTwoStateAnimated = null
@@ -1246,6 +1310,28 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	public func void setSubtitleTheme(GuiTheme guiTheme)
 		pSubtitleTheme = guiTheme
 	end
+	
+	/**
+	 * \brief Add behavior behavior tree to add actions and conditions to.
+	 * \version 1.19
+	 */
+	func void addBehaviorTree(ECBehaviorBehaviorTree behavior)
+		if behavior == null
+			throw ENullPointer.new("behavior")
+		end
+		pBehaviorTrees.add(behavior)
+	end
+	
+	/**
+	 * \brief Visit behavior behavior trees to add actions and conditions to.
+	 * \version 1.19
+	 * \param ablock Block with parameter ECBehaviorBehaviorTree.
+	 */
+	func void forEachBehaviorTree(Block ablock)
+		pBehaviorTrees.forEach(ablock)
+	end
+	
+	
 	
 	/** \brief Add listener factory. */
 	public func void addListenerFactory(ListenerFactory factory)

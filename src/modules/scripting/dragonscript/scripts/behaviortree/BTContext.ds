@@ -257,7 +257,7 @@ class BTContext
 			if rule.getID() != null
 				pConsole.addMessage(pLoggingName + ": Rule changed to '" + rule.getID() + "'")
 			else
-				pConsole.addMessage(pLoggingName + ": Rule changed ro ''")
+				pConsole.addMessage(pLoggingName + ": Rule changed to ''")
 			end
 		end
 		

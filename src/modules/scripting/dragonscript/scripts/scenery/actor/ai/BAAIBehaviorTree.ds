@@ -127,22 +127,24 @@ class BAAIBehaviorTree extends BaseActorAI
 	
 	var BTContextAI pContext
 	var bool pRunning
+	var bool pPauseInConversation
 	var ECBehaviorBehaviorTree.Instance pBehaviorBehaviorTree
+	protected var ECBehaviorConversationActor.Instance conversationActor
 	
 	
 	
 	/** \brief Create actor ai. */
 	func new()
-		pRunning = false
 	end
 	
 	/** \brief Create actor ai restoring from file reader. */
 	func new(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+			var PersistencyFlags flags = PersistencyFlags.new(3, reader)
 			var bool hasContext = flags.getAt(0)
 			pRunning = flags.getAt(1)
+			pPauseInConversation = flags.getAt(2)
 			
 			if hasContext and pContext != null
 				pContext.readFromFile(env, reader)
@@ -156,6 +158,7 @@ class BAAIBehaviorTree extends BaseActorAI
 	/** \brief Dispose of actor ai. */
 	func void dispose()
 		pBehaviorBehaviorTree = null
+		conversationActor = null
 		pContext = null
 		super.dispose()
 	end
@@ -185,6 +188,22 @@ class BAAIBehaviorTree extends BaseActorAI
 	/** \brief Set if behavior tree is running. */
 	func void setRunning(bool running)
 		pRunning = running
+	end
+	
+	/**
+	 * \brief Pause behavior tree while actor is in a conversation.
+	 * \version 1.19
+	 */
+	func bool getPauseInConversation()
+		return pPauseInConversation
+	end
+	
+	/**
+	 * \brief Set to pause behavior tree while actor is in a conversation.
+	 * \version 1.19
+	 */
+	func void setPauseInConversation(bool pauseInConversation)
+		pPauseInConversation = pauseInConversation
 	end
 	
 	/**
@@ -220,6 +239,23 @@ class BAAIBehaviorTree extends BaseActorAI
 	end
 	
 	
+	
+	/**
+	 * \brief Init behaviors.
+	 * 
+	 * Retrieve and store required and optional behavior instances from the actor element.
+	 */
+	protected func void initBehaviors()
+		super.initBehaviors()
+		
+		if actor castable BaseActor
+			var BaseActor baseActor = actor cast BaseActor
+			conversationActor = baseActor.getConversationActor()
+			
+		else
+			conversationActor = ECBehaviorConversationActor.getInstanceIn(actor)
+		end
+	end
 	 
 	/**
 	 * \brief Thinking.
@@ -233,12 +269,19 @@ class BAAIBehaviorTree extends BaseActorAI
 	 * false and onBehaviorTreeFailed() is called. To run the context again call resetContext().
 	 */
 	func void think(float elapsed)
-		if pContext == null or not pRunning or isControlledByPlayer()
+		if pContext == null or isControlledByPlayer()
 			return
 		end
 		
 		if pBehaviorBehaviorTree != null
 			pBehaviorBehaviorTree.notifyUpdate(pContext, elapsed)
+		end
+		
+		if not pRunning
+			return
+		end
+		if pPauseInConversation and conversationActor != null and conversationActor.isInConversation()
+			return
 		end
 		
 		try
@@ -292,9 +335,10 @@ class BAAIBehaviorTree extends BaseActorAI
 		
 		writer.writeByte(0) // version
 		
-		var PersistencyFlags flags = PersistencyFlags.new(2)
+		var PersistencyFlags flags = PersistencyFlags.new(3)
 		flags.setAt(0, pContext != null)
 		flags.setAt(1, pRunning)
+		flags.setAt(2, pPauseInConversation)
 		
 		if pContext != null
 			pContext.writeToFile(env, writer)

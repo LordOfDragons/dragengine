@@ -107,14 +107,26 @@ pin Dragengine.Utils
  * Determines if timer is running and has not elapsed yet. Optionally as parameter use "timer"
  * to select the timer matching an identifier used in a previous action "timer.start".
  * 
- * This is an example of using this action. The action can only run if the timer "myTimer" is
- * running. To invert the test use "<conditionMode>allFalse</conditionMode>" or
- * "<conditionMode>anyFalse</conditionMode>":
+ * This is an example of an action that can only run if the timer "myTimer" is running:
  * \code{.xml}
  * <action name='myAction' id='doing something'>
  *    <parameter name='timer'>myTimer</parameter>
  *    <condition>timer.running</condition>
  * </action>
+ * \endcode
+ * 
+ * \par Condition "timer.finished"
+ * 
+ * Determines if timer is not running or has elapsed. Optionally as parameter use "timer"
+ * to select the timer matching an identifier used in a previous action "timer.start".
+ * 
+ * This is an example of an action that can only run if the timer "myTimer" is running:
+ * \code{.xml}
+ * <action name='myAction' id='doing something'>
+ *    <parameter name='timer'>myTimer</parameter>
+ *    <condition>timer.finished</condition>
+ * </action>
+ * \endcode
  * \endcode
  */
 class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
@@ -267,6 +279,19 @@ class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
 			end
 		end
 		
+		/** \brief Behavior tree condition "timer.finished". */
+		class ConditionTimerFinished implements BTCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return not pInstance.isTimerRunning(pInstance.getTimerParameter(parameters))
+			end
+		end
+		
 		
 		
 		var ECBehaviorBehaviorTreeTimer pECBehavior
@@ -303,6 +328,7 @@ class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
 			context.setAction("timer.wait", ActionTimerWait.new(this))
 			
 			context.setCondition("timer.running", ConditionTimerRunning.new(this))
+			context.setCondition("timer.finished", ConditionTimerFinished.new(this))
 			
 			pBehaviorTree.addListener(BehaviorTreeListener.new(this))
 		end

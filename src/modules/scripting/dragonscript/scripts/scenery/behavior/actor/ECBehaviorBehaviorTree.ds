@@ -474,6 +474,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		/**
 		 * \brief Notify listeners behavior tree update before running.
 		 * \version 1.19
+		 * \note Updates are send each think even if the behavior tree is currently paused.
 		 */
 		func void notifyUpdate(BTContext context, float elapsed)
 			if context == null
