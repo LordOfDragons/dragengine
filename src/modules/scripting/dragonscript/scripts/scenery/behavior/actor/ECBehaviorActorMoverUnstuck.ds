@@ -207,7 +207,7 @@ class ECBehaviorActorMoverUnstuck extends DefaultECBehavior
 			
 			pUpdateElapsed = 0
 			
-			if pMovedDistance < pExpectedDistance * pThreshold
+			if pExpectedDistance > 0.1 and pMovedDistance < pExpectedDistance * pThreshold
 				unstuckActor()
 			end
 			
