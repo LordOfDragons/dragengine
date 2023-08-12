@@ -19,56 +19,98 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 namespace Dragengine.ConversationSystem
 
 pin Dragengine.Scenery
-
 
 
 /**
  * \brief Topic group in conversation script.
  */
 class ConversationTopicGroup
-	private var StringID pID
-	private var Dictionary pTopics
+	var StringID pID
+	var Dictionary pTopics
+	var bool pLocked
 	
 	
 	
 	/** \brief Create topic group. */
-	public func new( StringID id )
+	func new(StringID id)
 		if id == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new()
 		end
 		
-		this.pID = id
-		this.pTopics = Dictionary.new()
+		pID = id
+		pTopics = Dictionary.new()
+	end
+	
+	/**
+	 * \brief Create shallow copy of topic group.
+	 * \version 1.19
+	 * 
+	 * Copy is not locked.
+	 */
+	func new(ConversationTopicGroup group)
+		pID = group.pID
+		pTopics = Dictionary.new(group.pTopics)
 	end
 	
 	
 	
 	/** \brief ID. */
-	public func StringID getID()
-		return this.pID
+	func StringID getID()
+		return pID
 	end
 	
 	/** \brief Topic with ID is present. */
-	public func bool hasTopicWithID( StringID id )
-		return this.pTopics.has( id )
+	func bool hasTopicWithID(StringID id)
+		return pTopics.has(id)
 	end
 	
 	/** \brief Topic with ID or null if absent. */
-	public func ConversationTopic getTopicWithID( StringID id )
-		return this.pTopics.getAt( id, null ) cast ConversationTopic
+	func ConversationTopic getTopicWithID(StringID id)
+		return pTopics.getAt(id, null) cast ConversationTopic
 	end
 	
 	/** \brief Add topic replacing existing one if present. */
-	public func void addTopic( ConversationTopic topic )
-		this.pTopics.setAt( topic.getID(), topic )
+	func void addTopic(ConversationTopic topic)
+		if pLocked
+			throw EInvalidAction.new("locked")
+		end
+		
+		pTopics.setAt(topic.getID(), topic)
 	end
 	
 	/** \brief Visits topics with block with parameter ConversationTopic. */
-	public func void forEachTopic( Block aBlock )
-		this.pTopics.forEachValue( aBlock )
+	func void forEachTopic(Block aBlock)
+		pTopics.forEachValue(aBlock)
+	end
+	
+	/**
+	 * \brief Topic group is locked.
+	 * \version 1.19
+	 */
+	func bool isLocked()
+		return pLocked
+	end
+	
+	/**
+	 * \brief Lock topic group.
+	 * \version 1.19
+	 */
+	func void lock()
+		pLocked = true
+	end
+	
+	/**
+	 * \brief Import topics.
+	 * \version 1.19
+	 */
+	func void importTopics(ConversationTopicGroup group)
+		if pLocked
+			throw EInvalidAction.new("locked")
+		end
+		
+		pTopics.setAll(group.pTopics)
 	end
 end
