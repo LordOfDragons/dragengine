@@ -1178,6 +1178,11 @@
 			<type>vector3</type>
 			<default>0 0 0</default>
 		</property>
+		<property name='touching'>
+			<description>Touch sensor is initially touching.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorAttachSlot'>

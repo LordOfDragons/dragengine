@@ -35,9 +35,9 @@ pin Dragengine.Utils
  * 
  * Adds support for sub title transmission to actor.
  * 
- * For doing sub title text output conversation scripts have to be used. This allow for
- * the highest control over the conversation. For first person only self conversation
- * or receiving transmissions using conversation scripts can be cumbersome. For this
+ * For using sub title text output instead of conversation scripts to display short
+ * bursts of text. For use in first person view to do self conversation or receiving
+ * transmissions for which conversation scripts can be cumbersome to use. For this
  * situation this behavior provides a simpler solution.
  * 
  * The behavior acts similar to CActionActorSpeak.executeSubTitle() in that it supports
