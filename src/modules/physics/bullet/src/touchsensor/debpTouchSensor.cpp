@@ -552,6 +552,10 @@ void debpTouchSensor::IgnoreCollidersChanged(){
 
 void debpTouchSensor::EnabledChanged(){
 	pGhostObject->SetEnabled( pTouchSensor.GetEnabled() );
+	
+	if( ! pTouchSensor.GetEnabled() ){
+		pClearTracking();
+	}
 }
 
 void debpTouchSensor::TrackEnterLeaveChanged(){
