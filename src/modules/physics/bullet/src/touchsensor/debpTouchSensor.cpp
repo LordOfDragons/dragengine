@@ -47,6 +47,7 @@
 #include "../terrain/heightmap/debpHTSector.h"
 #include "../visitors/debpShapeGroupExtends.h"
 #include "../visitors/debpCreateBulletShape.h"
+#include "../visitors/debpShapeToLog.h"
 #include "../world/debpWorld.h"
 #include "../world/debpDelayedOperation.h"
 
@@ -253,6 +254,10 @@ void debpTouchSensor::ApplyChanges(){
 	// this function is only called if tracking enter-leave is enabled
 	if( pGhostObject->GetGhostObject() ){
 		// check all collision pairs in the ghost collider for touching the sensor
+		// 
+		// NOTE bullet ghost object uses only AABB for collecting overlapping object pairs.
+		//      this gives wrong result since touch sensors are support to provide exact
+		//      collision check not approximate ones. so we have to do this manually here
 		const btGhostObject &ghostObject = *pGhostObject->GetGhostObject();
 		const int count = ghostObject.getNumOverlappingObjects();
 		
@@ -409,25 +414,6 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 	}
 	
 	if( preciseTesting ){
-		/*
-		// TODO we've got a huge problem here. the collision detection provided by the game engine
-		//      (which is going to be deprecated) does not contain Capsule-Box or Capsule-Sphere
-		//      collision tests and thus never finds a collision. this is a problem for actors
-		//      using a capsule. we need to delegate the collision test to bullet
-		const int count = pShape.GetShapeCount();
-		debpCollisionDetection &coldet = pBullet.GetCollisionDetection();
-		debpCollisionResult result;
-		int i;
-		
-		for( i=0; i<count; i++ ){
-			debpShape * const shape = *pShape.GetShapeAt( i );
-			shape->UpdateWithMatrix( transformation );
-			if( coldet.ShapeHitsCollider( shape, collider, result ) ){
-				return true;
-			}
-		}
-		*/
-		
 		debpCollisionWorld &cw = *pGhostObject->GetDynamicsWorld();
 		btGhostObject * const go = pGhostObject->GetGhostObject();
 		
@@ -442,6 +428,29 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 			const debpColliderComponent &component = *collider->CastToComponent();
 			
 			if( component.GetSimplePhysicsBody() ){
+					/*
+					if(component.GetCollider().GetPosition().IsEqualTo(decDVector(2.161,0.0,3.549), 0.1)){
+						const bool r = component.GetSimplePhysicsBody()->GetRigidBody()
+							&& cw.safeContactPairTest( go, component.GetSimplePhysicsBody()->GetRigidBody() );
+						pBullet.LogInfoFormat("BulletBug.TouchSensor.TestCollider: %d", r);
+						
+						if(r){
+							const debpShapeList &sl = component.GetRigShapes();
+							const int count = sl.GetShapeCount();
+							debpShapeToLog visitor;
+							int i;
+							for( i=0; i<count; i++ ){
+								if(sl.GetShapeAt(i)->GetShape()){
+									visitor.Reset();
+									sl.GetShapeAt( i )->GetShape()->Visit( visitor );
+									pBullet.LogWarnFormat( "  %d: %s", i, visitor.GetLog().GetString() );
+								}
+							}
+						}
+						
+						return r;
+					}
+					*/
 				return component.GetSimplePhysicsBody()->GetRigidBody()
 					&& cw.safeContactPairTest( go, component.GetSimplePhysicsBody()->GetRigidBody() );
 				
