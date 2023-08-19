@@ -232,7 +232,7 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertAnimation )
 		pCBMoveName, new cComboMoveName( *this ) );
 	pCBMoveName->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "Move Time:", "Time in seconds of animation frame to retrieve",
+	helper.EditFloat( groupBox, "Move Time:", "Time relative to move playtime to retrieve",
 		pEditMoveTime, new cTextMoveTime( *this ) );
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );

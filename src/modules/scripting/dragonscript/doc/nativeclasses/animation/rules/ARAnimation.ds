@@ -46,11 +46,11 @@ class ARAnimation extends AnimatorRule
 	
 	
 	
-	/** \brief Set move name. */
+	/** \brief Set move name relative to the move playtime. */
 	public func void setMoveName(String move)
 	end
 	
-	/** \brief Set move time in seconds. */
+	/** \brief Set time relative to move playtime. */
 	public func void setMoveTime(float time)
 	end
 	
