@@ -117,8 +117,9 @@ DEBUG_RESET_TIMERS;
 	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
-	const float moveTime = pMove->GetPlaytime() *
-		decMath::clamp( pTargetMoveTime.GetValue( GetInstance(), pAnimation.GetMoveTime() ), 0.0f, 1.0f );
+	const float moveTime = pMove->GetPlaytime() * decMath::clamp(
+		pTargetMoveTime.GetValue( GetInstance(), pAnimation.GetMoveTime()
+			/ decMath::max( pMove->GetPlaytime(), 0.01f ) ), 0.0f, 1.0f );
 	
 	// step through all bones and set animation
 	for( i=0; i<boneCount; i++ ){
