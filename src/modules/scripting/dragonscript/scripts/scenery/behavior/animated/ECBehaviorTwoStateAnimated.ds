@@ -636,6 +636,43 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				return
 			end
 			
+			// we could set the state immediately to deactivating then sending stopActivate and
+			// startDeactivate notification. this can though cause problems if the listeners are
+			// set up in an unfortunate way. to avoid such problems first switch to activated state
+			// then to deactivating state. this way listeners should not end up in a bad state
+			
+			// new value to use for deactivate
+			var float value = 0
+			if pControllerActivate != null
+				value = 1.0 - pControllerActivate.getRelativeValue()
+			end
+			
+			// switch to actived state and send stopActivate notification
+			pState = State.activated
+			
+			if pControllerActivate != null
+				pControllerActivate.setToUpper()
+			end
+			if pControllerDeactivate != null
+				pControllerDeactivate.setToLower()
+			end
+			if pControllerActivated != null
+				pControllerActivated.setToLower()
+			end
+			
+			pTargetActivating.reset()
+			
+			pListeners.forEach(block Listener each
+				each.stopActivate(this)
+			end)
+			
+			// it is possible a listener switched our state. if this is the case stick with
+			// the new state and do nothing. the listener is responsible for potential problems
+			if pState != State.activated
+				return
+			end
+			
+			// switch to deactivating and send startDeactivate notification
 			if pControllerDeactivate == null
 				setDeactivated()
 				return
@@ -643,24 +680,17 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			
 			pState = State.deactivating
 			
-			if pControllerActivate != null
-				pControllerDeactivate.setRelativeValue(1.0 - pControllerActivate.getRelativeValue())
-				pControllerActivate.setToUpper()
-				
-			else
-				pControllerDeactivate.setToLower()
+			if pControllerDeactivate != null
+				pControllerDeactivate.setRelativeValue(value)
 			end
-			
 			if pControllerDeactivated != null
 				pControllerDeactivated.setToUpper()
 			end
 			updateRequiresThink()
 			
-			pTargetActivating.reset()
 			pTargetDeactivating.fire()
 			
 			pListeners.forEach(block Listener each
-				each.stopActivate(this)
 				each.startDeactivate(this)
 			end)
 		end
@@ -679,6 +709,43 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				return
 			end
 			
+			// we could set the state immediately to activating then sending stopDeactivate and
+			// startActivate notification. this can though cause problems if the listeners are
+			// set up in an unfortunate way. to avoid such problems first switch to deactivated
+			// state then to activating state. this way listeners should not end up in a bad state
+			
+			// new value to use for deactivate
+			var float value = 0
+			if pControllerDeactivate != null
+				value = 1.0 - pControllerDeactivate.getRelativeValue()
+			end
+			
+			// switch to deactived state and send stopActivate notification
+			pState = State.deactivated
+			
+			if pControllerDeactivated != null
+				pControllerDeactivated.setToLower()
+			end
+			if pControllerActivate != null
+				pControllerActivate.setToLower()
+			end
+			if pControllerDeactivate != null
+				pControllerDeactivate.setToLower()
+			end
+			
+			pTargetDeactivating.reset()
+				
+			pListeners.forEach(block Listener each
+				each.stopDeactivate(this)
+			end)
+			
+			// it is possible a listener switched our state. if this is the case stick with
+			// the new state and do nothing. the listener is responsible for potential problems
+			if pState != State.deactivated
+				return
+			end
+			
+			// switch to deactivating and send startDeactivate notification
 			if pControllerActivate == null
 				setActivated()
 				return
@@ -686,24 +753,17 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			
 			pState = State.activating
 			
-			if pControllerDeactivate != null
-				pControllerActivate.setRelativeValue(1.0 - pControllerDeactivate.getRelativeValue())
-				pControllerDeactivate.setToLower()
-				
-			else
-				pControllerActivate.setToLower()
+			if pControllerActivate != null
+				pControllerActivate.setRelativeValue(value)
 			end
-			
 			if pControllerActivated != null
 				pControllerActivated.setToLower()
 			end
 			updateRequiresThink()
 			
-			pTargetDeactivating.reset()
 			pTargetActivating.fire()
 			
 			pListeners.forEach(block Listener each
-				each.stopDeactivate(this)
 				each.startActivate(this)
 			end)
 		end
@@ -742,6 +802,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			if doNotify
 				pListeners.forEach(block Listener each
 					each.startDeactivate(this)
+				end)
+				
+				pListeners.forEach(block Listener each
 					each.stopDeactivate(this)
 				end)
 			end
