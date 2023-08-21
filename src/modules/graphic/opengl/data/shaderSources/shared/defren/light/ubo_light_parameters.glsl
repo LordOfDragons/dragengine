@@ -14,9 +14,8 @@ UBOLAYOUT uniform LightParameters{
 			// used by:     point, spot
 			// not used by: sky
 		
-		float pLightGIAmbientRatio;
-			// used by:     sky
-			// not used by: point, spot
+		vec3 pLightColorAmbientGI;
+			// used by:     gi
 	#endif
 	
 	float pLightAttenuationCoefficient;

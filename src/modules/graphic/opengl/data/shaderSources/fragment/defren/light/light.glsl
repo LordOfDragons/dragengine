@@ -700,7 +700,7 @@ void main( void ){
 			// ray hits nothing. for sky lights this adds the ambient light contribution.
 			// for all other light sources do not light the ray
 			#ifdef SKY_LIGHT
-				vec3 lightColor = pLightColor * pLightGIAmbientRatio;
+				vec3 lightColor = pLightColorAmbientGI;
 				//outLuminance = vec4( vec3( dot( lightColor, lumiFactors ) ), diffuse.a );
 				outColor = vec4( lightColor * diffuse.rgb, diffuse.a );
 			#else
@@ -1138,6 +1138,9 @@ void main( void ){
 	
 	// light color taking into account light color, light image and shadow. attenuation is handled separately
 	vec3 lightColor = pLightColor;
+	#ifdef GI_RAY
+	lightColor += pLightColorAmbientGI;
+	#endif
 	
 	#ifdef TEXTURE_COLOR
 		// shadow maps are upside down compared to regular images. this is due to the images being
