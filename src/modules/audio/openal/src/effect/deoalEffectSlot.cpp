@@ -50,7 +50,7 @@ pImportance( 1000.0f )
 		OAL_CHECK( audioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_EFFECT, pEffect ) );
 		
 		// prevent reverb effects apply distance based statistics model
-		OAL_CHECK( pAudioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL_FALSE ) );
+		OAL_CHECK( audioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL_FALSE ) );
 		
 	}catch( const deException & ){
 		pCleanUp();

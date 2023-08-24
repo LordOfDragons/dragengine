@@ -257,6 +257,7 @@ void deoalAudioThread::CleanUp(){
 		pActiveWorld->FreeReference();
 		pActiveWorld = NULL;
 	}
+	pProcessOnceWorld.RemoveAll();
 	
 	if( pDebugInfo ){
 		delete pDebugInfo;
@@ -610,9 +611,10 @@ void deoalAudioThread::SetActiveMicrophone( deoalAMicrophone *microphone ){
 		}
 	}
 	
-	deoalAWorld * const world = microphone ? microphone->GetParentWorld() : NULL;
+	deoalAWorld * const world = microphone ? microphone->GetParentWorld() : nullptr;
 	if( world != pActiveWorld ){
 		if( pActiveWorld ){
+			pProcessOnceWorld.AddIfAbsent( pActiveWorld );
 			pActiveWorld->FreeReference();
 		}
 		
@@ -620,6 +622,7 @@ void deoalAudioThread::SetActiveMicrophone( deoalAMicrophone *microphone ){
 		
 		if( world ){
 			world->AddReference();
+			pProcessOnceWorld.RemoveIfPresent( world );
 		}
 	}
 }
@@ -704,6 +707,7 @@ void deoalAudioThread::pCleanUpThread(){
 		pActiveWorld->FreeReference();
 		pActiveWorld = NULL;
 	}
+	pProcessOnceWorld.RemoveAll();
 	
 	if( pWOVCollectElements ){
 		delete pWOVCollectElements;
@@ -840,6 +844,12 @@ void deoalAudioThread::pProcessAudio(){
 	}else{
 		pElapsed = pTimerElapsed.GetElapsedTime();
 		pTimeHistoryUpdate.Add( pElapsed );
+	}
+	
+	while( pProcessOnceWorld.GetCount() > 0 ){
+		deoalAWorld * const world = ( deoalAWorld* )pProcessOnceWorld.GetAt( 0 );
+		world->PrepareProcessAudio();
+		pProcessOnceWorld.Remove( world );
 	}
 	
 	if( pDeactiveMicrophone ){

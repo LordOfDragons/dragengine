@@ -25,6 +25,7 @@
 #include "deoalATLeakTracker.h"
 #include "../configuration/deoalConfiguration.h"
 
+#include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deBarrier.h>
@@ -108,6 +109,8 @@ private:
 	deoalAMicrophone *pActiveMicrophone;
 	deoalAMicrophone *pDeactiveMicrophone;
 	deoalAWorld *pActiveWorld;
+	
+	decObjectSet pProcessOnceWorld;
 	
 	decTimer pTimerElapsed;
 	float pElapsed;
