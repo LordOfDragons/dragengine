@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "deoalPAurealizationQuality.h"
+#include "deoalPAuralizationQuality.h"
 #include "../deAudioOpenAL.h"
 #include "../configuration/deoalConfiguration.h"
 
@@ -31,17 +31,17 @@
 
 
 
-// Class deoalPAurealizationQuality
+// Class deoalPAuralizationQuality
 /////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoalPAurealizationQuality::deoalPAurealizationQuality( deAudioOpenAL &oal ) : deoalParameter( oal )
+deoalPAuralizationQuality::deoalPAuralizationQuality( deAudioOpenAL &oal ) : deoalParameter( oal )
 {
-	SetName( "aurealizationQuality" );
-	SetDescription( "Aurealization quality weighting quality versus performance."
-		" This parameter is only used if 'aurealizationMode' is set to 'full'."
+	SetName( "auralizationQuality" );
+	SetDescription( "Auralization quality weighting quality versus performance."
+		" This parameter is only used if 'AuralizationMode' is set to 'full'."
 	);
 	SetType( deModuleParameter::eptSelection );
 	
@@ -56,11 +56,11 @@ deoalPAurealizationQuality::deoalPAurealizationQuality( deAudioOpenAL &oal ) : d
 	AddSelectionEntries( entries, 5 );
 	
 	SetCategory( ecBasic );
-	SetDisplayName( "Aurealization Quality" );
+	SetDisplayName( "Auralization Quality" );
 	SetDefaultValue( "medium" );
 }
 
-deoalPAurealizationQuality::~deoalPAurealizationQuality(){
+deoalPAuralizationQuality::~deoalPAuralizationQuality(){
 }
 
 
@@ -68,8 +68,8 @@ deoalPAurealizationQuality::~deoalPAurealizationQuality(){
 // Management
 ///////////////
 
-decString deoalPAurealizationQuality::GetParameterValue(){
-	switch( pOal.GetConfiguration().GetAurealizationQuality() ){
+decString deoalPAuralizationQuality::GetParameterValue(){
+	switch( pOal.GetConfiguration().GetAuralizationQuality() ){
 	case deoalConfiguration::eaqVeryLow:
 		return "veryLow";
 		
@@ -90,24 +90,24 @@ decString deoalPAurealizationQuality::GetParameterValue(){
 	}
 }
 
-void deoalPAurealizationQuality::SetParameterValue( const char *value ){
+void deoalPAuralizationQuality::SetParameterValue( const char *value ){
 	const decString svalue( decString( value ).GetLower() );
 	if( svalue.EqualsInsensitive( "verylow" ) ){
-		pOal.GetConfiguration().SetAurealizationQuality( deoalConfiguration::eaqVeryLow );
+		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqVeryLow );
 		
 	}else if( svalue.EqualsInsensitive( "low" ) ){
-		pOal.GetConfiguration().SetAurealizationQuality( deoalConfiguration::eaqLow );
+		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqLow );
 		
 	}else if( svalue.EqualsInsensitive( "medium" ) ){
-		pOal.GetConfiguration().SetAurealizationQuality( deoalConfiguration::eaqMedium );
+		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqMedium );
 		
 	}else if( svalue.EqualsInsensitive( "high" ) ){
-		pOal.GetConfiguration().SetAurealizationQuality( deoalConfiguration::eaqHigh );
+		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqHigh );
 		
 	}else if( svalue.EqualsInsensitive( "veryhigh" ) ){
-		pOal.GetConfiguration().SetAurealizationQuality( deoalConfiguration::eaqVeryHigh );
+		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqVeryHigh );
 		
 	}else{
-		pOal.GetConfiguration().SetAurealizationQuality( deoalConfiguration::eaqMedium );
+		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqMedium );
 	}
 }

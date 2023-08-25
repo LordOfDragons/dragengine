@@ -665,8 +665,8 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 	if( engMicrophone && microphone && engMicrophone->GetParentWorld() ){
 		deWorld &world = engMicrophone->GetParentWorld()->GetWorld();
 		const deoalSpeakerList &speakers = microphone->GetActiveSpeakers();
-		const bool useEnv = pAudioThread.GetConfiguration().GetAurealizationMode()
-			!= deoalConfiguration::eAurealizationModes::eamDisabled 
+		const bool useEnv = pAudioThread.GetConfiguration().GetAuralizationMode()
+			!= deoalConfiguration::eAuralizationModes::eamDisabled 
 			&& pAudioThread.GetConfiguration().GetEnableEFX();
 		const decColor soundHigh( 1.0f, 0.0f, 0.0f );
 		const decColor soundLow( 0.0f, 0.5f, 0.0f );

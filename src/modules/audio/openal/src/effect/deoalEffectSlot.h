@@ -95,6 +95,9 @@ public:
 	/** Clear effect. */
 	void ClearEffect();
 	
+	/** Update effect slot with effect parameters. */
+	void UpdateSlot() const;
+	
 	
 	
 	/** Bound. */

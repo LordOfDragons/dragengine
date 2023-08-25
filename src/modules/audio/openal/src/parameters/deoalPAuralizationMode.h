@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenAL Audio Module
  *
- * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,34 +19,34 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOALPAUREALIZATIONQUALITY_H_
-#define _DEOALPAUREALIZATIONQUALITY_H_
+#ifndef _DEOALPAURALIZATIONMODE_H_
+#define _DEOALPAURALIZATIONMODE_H_
 
 #include "deoalParameter.h"
 
 
 /**
- * Parameter aurealization mode.
+ * \brief Parameter Auralization mode.
  */
-class deoalPAurealizationQuality : public deoalParameter{
+class deoalPAuralizationMode : public deoalParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create parameter. */
-	deoalPAurealizationQuality( deAudioOpenAL &oal );
+	/** \brief Create parameter. */
+	deoalPAuralizationMode( deAudioOpenAL &oal );
 	
-	/** Clean up parameter. */
-	virtual ~deoalPAurealizationQuality();
+	/** \brief Clean up parameter. */
+	virtual ~deoalPAuralizationMode();
 	/*@}*/
 	
 	
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** Current value. */
+	/** \brief Current value. */
 	virtual decString GetParameterValue();
 	
-	/** Set current value. */
+	/** \brief Set current value. */
 	virtual void SetParameterValue( const char *value );
 	/*@}*/
 };

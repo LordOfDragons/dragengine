@@ -1686,6 +1686,8 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	alvector[ 2 ] = ( ALfloat )pEnvironment->GetReverbLateReverbPan().z;
 	OAL_CHECK( pAudioThread, palEffectfv( effect, AL_EAXREVERB_LATE_REVERB_PAN, &alvector[ 0 ] ) );
 	
+	effectSlot->UpdateSlot(); // required or slot sticks to old parameters
+	
 	// this one here is difficult to understand and handle. the documentation is lacking in this
 	// regard so look at an anwser found online:
 	// https://openal.opensource.creative.narkive.com/N3Uwb9th/efx-clarifications-2

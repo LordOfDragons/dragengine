@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "deoalPAurealizationMode.h"
+#include "deoalPAuralizationMode.h"
 #include "../deAudioOpenAL.h"
 #include "../configuration/deoalConfiguration.h"
 
@@ -31,39 +31,39 @@
 
 
 
-// Class deoalPAurealizationMode
+// Class deoalPAuralizationMode
 //////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoalPAurealizationMode::deoalPAurealizationMode( deAudioOpenAL &oal ) : deoalParameter( oal )
+deoalPAuralizationMode::deoalPAuralizationMode( deAudioOpenAL &oal ) : deoalParameter( oal )
 {
-	SetName( "aurealizationMode" );
-	SetDescription( "Aurealization mode influences how sound is calculate for the listener." );
+	SetName( "auralizationMode" );
+	SetDescription( "Auralization mode influences how sound is calculate for the listener." );
 	SetType( deModuleParameter::eptSelection );
 	
 	const deModuleParameter::SelectionEntry entries[ 3 ] = {
 		{ "disabled", "Disabled", 
-			"Aurealization disabled. Direct sound without any material based effects. "
+			"Auralization disabled. Direct sound without any material based effects. "
 			"This mode is enforced if APU has no EFX support or EFX support has been disabled." },
 		{ "directSound", "Direct Sound",
-			"Direct sound aurealization only. Direct sound effect based on materials are used. "
+			"Direct sound auralization only. Direct sound effect based on materials are used. "
 			"This includes muffling of sound over different frquency bands. Uses single collision "
 			"test along sound direction from source to listener to calculate the result." },
-		{ "full", "Full Aurealization",
-			"Full aurealization. Enables all aurealization effects. Uses ray-tracing to calculate "
+		{ "full", "Full auralization",
+			"Full auralization. Enables all auralization effects. Uses ray-tracing to calculate "
 			"various parameters. This is expensive depending on the hardware used." }
 	};
 	
 	AddSelectionEntries( entries, 3 );
 	
 	SetCategory( ecBasic );
-	SetDisplayName( "Aurealization Mode" );
+	SetDisplayName( "Auralization Mode" );
 	SetDefaultValue( "full" );
 }
 
-deoalPAurealizationMode::~deoalPAurealizationMode(){
+deoalPAuralizationMode::~deoalPAuralizationMode(){
 }
 
 
@@ -71,8 +71,8 @@ deoalPAurealizationMode::~deoalPAurealizationMode(){
 // Management
 ///////////////
 
-decString deoalPAurealizationMode::GetParameterValue(){
-	switch( pOal.GetConfiguration().GetAurealizationMode() ){
+decString deoalPAuralizationMode::GetParameterValue(){
+	switch( pOal.GetConfiguration().GetAuralizationMode() ){
 	case deoalConfiguration::eamDisabled:
 		return "disabled";
 		
@@ -87,18 +87,18 @@ decString deoalPAurealizationMode::GetParameterValue(){
 	}
 }
 
-void deoalPAurealizationMode::SetParameterValue( const char *value ){
+void deoalPAuralizationMode::SetParameterValue( const char *value ){
 	const decString svalue( decString( value ).GetLower() );
 	if( svalue.EqualsInsensitive( "disabled" ) ){
-		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eamDisabled );
+		pOal.GetConfiguration().SetAuralizationMode( deoalConfiguration::eamDisabled );
 		
 	}else if( svalue.EqualsInsensitive( "directsound" ) ){
-		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eamDirectSound );
+		pOal.GetConfiguration().SetAuralizationMode( deoalConfiguration::eamDirectSound );
 		
 	}else if( svalue.EqualsInsensitive( "full" ) ){
-		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eamFull );
+		pOal.GetConfiguration().SetAuralizationMode( deoalConfiguration::eamFull );
 		
 	}else{
-		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eamDisabled );
+		pOal.GetConfiguration().SetAuralizationMode( deoalConfiguration::eamDisabled );
 	}
 }

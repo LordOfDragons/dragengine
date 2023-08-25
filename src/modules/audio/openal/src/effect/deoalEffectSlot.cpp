@@ -76,7 +76,7 @@ void deoalEffectSlot::AssignOwner( void *owner, float importance ){
 }
 
 void deoalEffectSlot::ClearOwner(){
-	if( pOwner ){
+	if( ! pOwner ){
 		return;
 	}
 	
@@ -91,6 +91,10 @@ void deoalEffectSlot::SetImportance( float importance ){
 
 void deoalEffectSlot::ClearEffect(){
 	OAL_CHECK( pAudioThread, palEffecti( pEffect, AL_EFFECT_TYPE, AL_EFFECT_NULL ) );
+}
+
+void deoalEffectSlot::UpdateSlot() const{
+	OAL_CHECK( pAudioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_EFFECT, pEffect ) );
 }
 
 

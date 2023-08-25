@@ -42,8 +42,8 @@ pDirty( false ),
 
 pEnableEFX( true ),
 pStreamBufSizeThreshold( 700000 ), // see deoalSound.cpp
-pAurealizationMode( eamFull ),
-pAurealizationQuality( eaqMedium ),
+pAuralizationMode( eamFull ),
+pAuralizationQuality( eaqMedium ),
 
 pEstimateRoomRayCount( 128 ),
 
@@ -54,7 +54,7 @@ pAsyncAudio( true ),
 pFrameRateLimit( 0 ), // 0 means disabled
 pAsyncAudioSkipSyncTimeRatio( 0.5 )
 {
-	pApplyAurealizationProfile();
+	pApplyAuralizationProfile();
 }
 
 deoalConfiguration::deoalConfiguration( const deoalConfiguration &config ){
@@ -106,23 +106,23 @@ void deoalConfiguration::SetStreamBufSizeThreshold( int threshold ){
 	pDirty = true;
 }
 
-void deoalConfiguration::SetAurealizationMode( eAurealizationModes mode ){
-	if( mode == pAurealizationMode ){
+void deoalConfiguration::SetAuralizationMode( eAuralizationModes mode ){
+	if( mode == pAuralizationMode ){
 		return;
 	}
 	
-	pAurealizationMode = mode;
+	pAuralizationMode = mode;
 	pDirty = true;
 }
 
-void deoalConfiguration::SetAurealizationQuality( eAurealizationQuality quality ){
-	if( quality == pAurealizationQuality ){
+void deoalConfiguration::SetAuralizationQuality( eAuralizationQuality quality ){
+	if( quality == pAuralizationQuality ){
 		return;
 	}
 	
-	pAurealizationQuality = quality;
+	pAuralizationQuality = quality;
 	pDirty = true;
-	pApplyAurealizationProfile();
+	pApplyAuralizationProfile();
 }
 
 
@@ -240,8 +240,8 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 	pEnableEFX = config.pEnableEFX;
 	pStreamBufSizeThreshold = config.pStreamBufSizeThreshold;
 	pDisableExtensions = config.pDisableExtensions;
-	pAurealizationMode = config.pAurealizationMode;
-	pAurealizationQuality = config.pAurealizationQuality;
+	pAuralizationMode = config.pAuralizationMode;
+	pAuralizationQuality = config.pAuralizationQuality;
 	
 	pSoundTraceRayCount = config.pSoundTraceRayCount;
 	pSoundTraceMaxBounceCount = config.pSoundTraceMaxBounceCount;
@@ -262,14 +262,14 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 void deoalConfiguration::pCleanUp(){
 }
 
-void deoalConfiguration::pApplyAurealizationProfile(){
+void deoalConfiguration::pApplyAuralizationProfile(){
 	// switch profile.
 	// 
 	// bounces up to 100 go farther but if walls are absorbing enough this is not often reached.
 	// 
 	// less than 10 bounces has negative effect on reverberation time calculation stability
 	// and in general sounds worse if moving
-	switch( pAurealizationQuality ){
+	switch( pAuralizationQuality ){
 	case eaqVeryHigh:
 		// best working version for moving-sound scenario but creates 8x the ray segments.
 		// not usable from a performance point of view unless HW-acceleration can be used.
