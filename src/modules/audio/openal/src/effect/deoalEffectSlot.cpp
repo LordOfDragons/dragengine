@@ -37,7 +37,7 @@ pAudioThread( audioThread ),
 pSlot( 0 ),
 pEffect( 0 ),
 pOwner( nullptr ),
-pImportance( 1000.0f )
+pImportance( -1000.0f )
 {
 	try{
 		alGetError();
@@ -47,7 +47,6 @@ pImportance( 1000.0f )
 		}
 		
 		OAL_CHECK( audioThread, palGenEffects( 1, &pEffect ) );
-		OAL_CHECK( audioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_EFFECT, pEffect ) );
 		
 		// prevent reverb effects apply distance based statistics model
 		OAL_CHECK( audioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL_FALSE ) );
@@ -82,7 +81,7 @@ void deoalEffectSlot::ClearOwner(){
 	
 	ClearEffect();
 	pOwner = nullptr;
-	pImportance = 1000.0f;
+	pImportance = -1000.0f;
 }
 
 void deoalEffectSlot::SetImportance( float importance ){
@@ -91,6 +90,7 @@ void deoalEffectSlot::SetImportance( float importance ){
 
 void deoalEffectSlot::ClearEffect(){
 	OAL_CHECK( pAudioThread, palEffecti( pEffect, AL_EFFECT_TYPE, AL_EFFECT_NULL ) );
+	UpdateSlot();
 }
 
 void deoalEffectSlot::UpdateSlot() const{

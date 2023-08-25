@@ -1409,7 +1409,7 @@ void deoalASpeaker::pUpdateSourceImportance(){
 		importance = 0.0f;
 		
 	}else{
-		pSource->SetImportance( 1000.0f );
+		pSource->SetImportance( -1000.0f );
 		return;
 	}
 	

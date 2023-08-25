@@ -66,7 +66,7 @@ deoalEffectSlot *deoalEffectSlotManager::Bind( void *owner, float importance ){
 	}
 	
 	slot = pBestRebindable();
-	if( slot && importance <= slot->GetImportance() ){
+	if( slot && importance > slot->GetImportance() ){
 		slot->AssignOwner( owner, importance );
 		return slot;
 	}
