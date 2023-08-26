@@ -113,8 +113,8 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterFloat.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterInt.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationMode.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationQuality.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationQuality.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkin.cpp" />
@@ -264,8 +264,8 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterFloat.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterInt.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationMode.h" />
-    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationQuality.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationQuality.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkin.h" />

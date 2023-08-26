@@ -267,7 +267,7 @@ void deoglGIState::ActivateNextCascade(){
 // 	pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (cycle)", pActiveCascade );
 	
 	// while doing the first loop of cascade updates force tone mapping adaption on camera
-	// to avoid bad starting values due t non-lit geometry
+	// to avoid bad starting values due to non-lit geometry
 	if( pCameraForceToneMapAdaptionCount > 0 ){
 		pCameraForceToneMapAdaptionCount--;
 	}

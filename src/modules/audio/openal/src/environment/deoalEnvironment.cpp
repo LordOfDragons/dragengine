@@ -494,7 +494,7 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 	// of the location the sound source is located in. this estimation can be calculated
 	// in ~1ms and can also be further optimized if required. the environment parameters
 	// are then the combination of the two room parameters. this allows situations to
-	// work out properly where the sound source is located in a room with drstically
+	// work out properly where the sound source is located in a room with drastically
 	// different reverberation.
 	#ifdef LISTENER_CENTRIC_RAY_CAST
 		//deoalEnvProbe &probe = *pWorld->GetEnvProbeManager().GetProbeEstimateRoom(
