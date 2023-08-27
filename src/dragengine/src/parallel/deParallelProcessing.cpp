@@ -60,13 +60,7 @@ pOutputDebugMessages( false )
 {
 	try{
 		pDetectCoreCount();
-		
 		pCreateThreads( pCoreCount );
-		
-// 		pCreateThreads( 6 );
-// 		pCreateThreads( 8 );
-// 		pCreateThreads( 12 );
-// 		pCreateThreads( 16 );
 		
 	}catch( const deException & ){
 		pCleanUp();

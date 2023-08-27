@@ -902,7 +902,7 @@ void deoalASpeaker::pDecodeNext( bool underrun ){
 		return;
 	}
 	
-	// if we ran out of buffers we have to restart plpaying or playback stops
+	// if we ran out of buffers we have to restart playing or playback stops
 	if( restartPlaying ){
 		pPlayFinished = false;
 		pSource->Play();
@@ -1654,13 +1654,13 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	
 	const float reverbGain = pEnvironment->GetReverbGain() / decMath::max( pAttenuatedGain, 0.001f );
 	
-	const deoalEffectSlot * const effectSlot = pSource->GetEffectSlot();
+	deoalEffectSlot * const effectSlot = pSource->GetEffectSlot();
 	if( ! effectSlot ){
 		return;
 	}
 	
 	const ALuint effect = effectSlot->GetEffect();
-	OAL_CHECK( pAudioThread, palEffecti( effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB ) );
+	effectSlot->SetEffectType( AL_EFFECT_EAXREVERB );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAIN, 1.0f ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINHF, pEnvironment->GetReverbGainHF() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINLF, pEnvironment->GetReverbGainLF() ) );
@@ -1686,7 +1686,14 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	alvector[ 2 ] = ( ALfloat )pEnvironment->GetReverbLateReverbPan().z;
 	OAL_CHECK( pAudioThread, palEffectfv( effect, AL_EAXREVERB_LATE_REVERB_PAN, &alvector[ 0 ] ) );
 	
-	effectSlot->UpdateSlot(); // required or slot sticks to old parameters
+	// pAudioThread.GetLogger().LogInfoFormat("pUpdateEnvironmentEffect: %p g=(%.3f,%.3f) d=(%.3f,%.3f,%.3f) rg=(%.3f,%.3f) rd=(%.3f,%.3f) et=%.3f",
+	// 	pSource, pEnvironment->GetReverbGainHF(), pEnvironment->GetReverbGainLF(),
+	// 	pEnvironment->GetReverbDecayTime(), pEnvironment->GetReverbDecayHFRatio(), pEnvironment->GetReverbDecayLFRatio(),
+	// 	reverbGain * pEnvironment->GetReverbReflectionGain(), reverbGain * pEnvironment->GetReverbLateReverbGain(),
+	// 	pEnvironment->GetReverbReflectionDelay(), pEnvironment->GetReverbLateReverbDelay(),
+	// 	pEnvironment->GetReverbEchoTime());
+	
+	effectSlot->UpdateSlot( 0.0f /*pEnvironment->GetEffectKeepAliveTimeout()*/ );
 	
 	// this one here is difficult to understand and handle. the documentation is lacking in this
 	// regard so look at an anwser found online:

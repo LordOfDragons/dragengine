@@ -31,6 +31,17 @@
 #include <dragengine/common/exceptions.h>
 
 
+
+// #define DO_DEBUG 1
+
+#ifdef DO_DEBUG
+#define DEBUG(x) x
+#else
+#define DEBUG(x)
+#endif
+
+
+
 // Class deoalEffectSlotManager
 /////////////////////////////////
 
@@ -53,20 +64,40 @@ deoalEffectSlotManager::~deoalEffectSlotManager(){
 deoalEffectSlot *deoalEffectSlotManager::Bind( void *owner, float importance ){
 	DEASSERT_NOTNULL( owner )
 	
-	deoalEffectSlot *slot = pNextUnbound();
+	deoalEffectSlot *slot = pBestUnbound();
 	if( slot ){
 		slot->AssignOwner( owner, importance );
+		DEBUG( pAudioThread.GetLogger().LogInfoFormat(
+			"EffectSlotManager: Bind previously unbound effectslot %d to %p[%g] (%d)",
+			slot->GetSlot(), owner, importance, pSlots.GetCount() ) );
 		return slot;
 	}
 	
 	slot = pCreateNew();
 	if( slot ){
 		slot->AssignOwner( owner, importance );
+		DEBUG( pAudioThread.GetLogger().LogInfoFormat(
+			"EffectSlotManager: Create new effectslot %d to %p[%g] (%d)",
+			slot->GetSlot(), owner, importance, pSlots.GetCount() ) );
+		return slot;
+	}
+	
+	slot = pBestKeptAlive();
+	if( slot ){
+		DEBUG( pAudioThread.GetLogger().LogInfoFormat(
+			"EffectSlotManager: Rebind kept alive effectslot %d from %p[%g] to %p[%g] (%d)",
+			slot->GetSlot(), slot->GetOwner(), slot->GetImportance(),
+			owner, importance, pSlots.GetCount() ) );
+		slot->AssignOwner( owner, importance );
 		return slot;
 	}
 	
 	slot = pBestRebindable();
 	if( slot && importance > slot->GetImportance() ){
+		DEBUG( pAudioThread.GetLogger().LogInfoFormat(
+			"EffectSlotManager: Rebind bound effectslot %d from %p[%g] to %p[%g] (%d)",
+			slot->GetSlot(), slot->GetOwner(), slot->GetImportance(),
+			owner, importance, pSlots.GetCount() ) );
 		slot->AssignOwner( owner, importance );
 		return slot;
 	}
@@ -78,7 +109,19 @@ void deoalEffectSlotManager::Unbind( deoalEffectSlot *slot ){
 	DEASSERT_NOTNULL( slot )
 	DEASSERT_NOTNULL( slot->GetOwner() )
 	
+	DEBUG( pAudioThread.GetLogger().LogInfoFormat(
+		"EffectSlotManager: Unbind effectslot %d with %p[%g] (%d)",
+		slot->GetSlot(), slot->GetOwner(), slot->GetImportance(), pSlots.GetCount() ) );
 	slot->ClearOwner();
+}
+
+void deoalEffectSlotManager::Update( float elapsed ){
+	const int count = pSlots.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( deoalEffectSlot* )pSlots.GetAt( i ) )->Update( elapsed );
+	}
 }
 
 
@@ -86,18 +129,33 @@ void deoalEffectSlotManager::Unbind( deoalEffectSlot *slot ){
 // Private Functions
 //////////////////////
 
-deoalEffectSlot *deoalEffectSlotManager::pNextUnbound() const{
+deoalEffectSlot *deoalEffectSlotManager::pBestUnbound() const{
 	const int count = pSlots.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		deoalEffectSlot * const slot = ( deoalEffectSlot* )pSlots.GetAt( i );
-		if( slot->IsUnbound() ){
+		if( slot->IsUnbound() && ! slot->IsKeptAlive()){
 			return slot;
 		}
 	}
 	
 	return nullptr;
+}
+
+deoalEffectSlot *deoalEffectSlotManager::pBestKeptAlive() const{
+	const int count = pSlots.GetCount();
+	deoalEffectSlot *bestSlot = nullptr;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoalEffectSlot * const slot = ( deoalEffectSlot* )pSlots.GetAt( i );
+		if( slot->IsUnbound() && slot->IsKeptAlive() && ( ! bestSlot
+		|| slot->GetElapsedKeepAliveTime() > bestSlot->GetElapsedKeepAliveTime() ) ){
+			bestSlot = slot;
+		}
+	}
+	return bestSlot;
 }
 
 deoalEffectSlot *deoalEffectSlotManager::pBestRebindable() const{
@@ -111,7 +169,6 @@ deoalEffectSlot *deoalEffectSlotManager::pBestRebindable() const{
 			bestSlot = slot;
 		}
 	}
-	
 	return bestSlot;
 }
 
@@ -129,15 +186,15 @@ deoalEffectSlot *deoalEffectSlotManager::pCreateNew(){
 		// assume we hit the maximum count of effect slots. according to openal code
 		// this should be 64 but since we can not query this limit we use this version
 		pMaxCount = pSlots.GetCount();
-		pAudioThread.GetLogger().LogInfoFormat( "OutOfMemoy while creating effect."
-			" Assuming maximum effect slot count %d", pMaxCount );
+		pAudioThread.GetLogger().LogInfoFormat( "EffectSlotManager: OutOfMemoy while creating"
+			" effect. Assuming maximum effect slot count %d", pMaxCount );
 		return nullptr;
 		
 	}catch( const deException &e ){
 		pAudioThread.GetLogger().LogException( e );
 		pMaxCount = pSlots.GetCount();
-		pAudioThread.GetLogger().LogInfoFormat( "Exception while creating effect."
-			" Assuming maximum effect slot count %d", pMaxCount );
+		pAudioThread.GetLogger().LogInfoFormat( "EffectSlotManager: Exception while creating"
+			" effect. Assuming maximum effect slot count %d", pMaxCount );
 		return nullptr;
 	}
 }

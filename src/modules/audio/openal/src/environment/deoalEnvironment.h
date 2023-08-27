@@ -43,7 +43,7 @@ class deDebugDrawer;
 
 
 /**
- * \brief Environment tracking for speakers.
+ * Environment tracking for speakers.
  * 
  * Keeps track of the environment a speaker is located in. Stores the effect parameters
  * required to be assigned to a speaker to give the appropriate impression.
@@ -87,6 +87,8 @@ private:
 	decVector pReverbLateReverbPan;
 	float pReverbEchoTime;
 	
+	float pEffectKeepAliveTimeout;
+	
 	deoalEnvProbeListenerSmooth pListenerSmooth;
 	bool pResetListenerSmooth;
 	
@@ -99,10 +101,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create environment tracker. */
+	/** Create environment tracker. */
 	deoalEnvironment( deoalAudioThread &audioThread );
 	
-	/** \brief Clean up environment. */
+	/** Clean up environment. */
 	~deoalEnvironment();
 	/*@}*/
 	
@@ -110,126 +112,131 @@ public:
 	
 	/** \name Manegement */
 	/*@{*/
-	/** \brief Audio thread. */
+	/** Audio thread. */
 	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
-	/** \brief World or NULL. */
+	/** World or NULL. */
 	inline deoalAWorld *GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world or NULL. */
+	/** Set world or NULL. */
 	void SetWorld( deoalAWorld *world );
 	
-	/** \brief Position of speaker. */
+	/** Position of speaker. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position of speaker. */
+	/** Set position of speaker. */
 	void SetPosition( const decDVector &position );
 	
-	/** \brief Range of speaker. */
+	/** Range of speaker. */
 	inline float GetRange() const{ return pRange; }
 	
-	/** \brief Range squared of speaker. */
+	/** Range squared of speaker. */
 	inline float GetRangeSquared() const{ return pRangeSquared; }
 	
-	/** \brief Set range of speaker. */
+	/** Set range of speaker. */
 	void SetRange( float range );
 	
-	/** \brief Attenuation reference distance. */
+	/** Attenuation reference distance. */
 	inline float GetAttenuationRefDist() const{ return pAttenuationRefDist; }
 	
-	/** \brief Attenuation rolloff. */
+	/** Attenuation rolloff. */
 	inline float GetAttenuationRolloff() const{ return pAttenuationRolloff; }
 	
-	/** \brief Attenuation distance offset. */
+	/** Attenuation distance offset. */
 	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
 	
-	/** \brief Set attenuation parameters. */
+	/** Set attenuation parameters. */
 	void SetAttenuation( float refDist, float rolloff, float distanceOffset );
 	
-	/** \brief Layer mask. */
+	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
-	/** \brief Set layer mask. */
+	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
 	
-	/** \brief Environment data are valid. */
+	/** Environment data are valid. */
 	inline bool GetValid() const{ return pValid; }
 	
 	
 	
-	/** \brief Low frequency gain. */
+	/** Low frequency gain. */
 	inline float GetGainLow() const{ return pGainLow; }
 	
-	/** \brief Medium frequency gain. */
+	/** Medium frequency gain. */
 	inline float GetGainMedium() const{ return pGainMedium; }
 	
-	/** \brief High frequency gain. */
+	/** High frequency gain. */
 	inline float GetGainHigh() const{ return pGainHigh; }
 	
 	
 	
-	/** \brief Band pass gain value. */
+	/** Band pass gain value. */
 	inline float GetBandPassGain() const{ return pBandPassGain; }
 	
-	/** \brief Band pass low frequency gain value. */
+	/** Band pass low frequency gain value. */
 	inline float GetBandPassGainLF() const{ return pBandPassGainLF; }
 	
-	/** \brief Band pass high frequency gain value. */
+	/** Band pass high frequency gain value. */
 	inline float GetBandPassGainHF() const{ return pBandPassGainHF; }
 	
 	
 	
-	/** \brief Reverb effect gain value. */
+	/** Reverb effect gain value. */
 	inline float GetReverbGain() const{ return pReverbGain; }
 	
-	/** \brief Reverb effect low frequency gain value. */
+	/** Reverb effect low frequency gain value. */
 	inline float GetReverbGainLF() const{ return pReverbGainLF; }
 	
-	/** \brief Reverb effect high frequency gain value. */
+	/** Reverb effect high frequency gain value. */
 	inline float GetReverbGainHF() const{ return pReverbGainHF; }
 	
-	/** \brief Reverb effect decay time value. */
+	/** Reverb effect decay time value. */
 	inline float GetReverbDecayTime() const{ return pReverbDecayTime; }
 	
-	/** \brief Reverb effect decay lf ratio value. */
+	/** Reverb effect decay lf ratio value. */
 	inline float GetReverbDecayLFRatio() const{ return pReverbDecayLFRatio; }
 	
-	/** \brief Reverb effect decay hf ratio value. */
+	/** Reverb effect decay hf ratio value. */
 	inline float GetReverbDecayHFRatio() const{ return pReverbDecayHFRatio; }
 	
-	/** \brief Reverb effect reflection gain value. */
+	/** Reverb effect reflection gain value. */
 	inline float GetReverbReflectionGain() const{ return pReverbReflectionGain; }
 	
-	/** \brief Reverb effect reflection delay value. */
+	/** Reverb effect reflection delay value. */
 	inline float GetReverbReflectionDelay() const{ return pReverbReflectionDelay; }
 	
-	/** \brief Reverb effect reflection pan direction. */
+	/** Reverb effect reflection pan direction. */
 	inline const decVector &GetReverbReflectionPan() const{ return pReverbReflectionPan; }
 	
-	/** \brief Reverb effect late reverb gain value. */
+	/** Reverb effect late reverb gain value. */
 	inline float GetReverbLateReverbGain() const{ return pReverbLateReverbGain; }
 	
-	/** \brief Reverb effect late reverb delay value. */
+	/** Reverb effect late reverb delay value. */
 	inline float GetReverbLateReverbDelay() const{ return pReverbLateReverbDelay; }
 	
-	/** \brief Reverb effect late reverb pan direction. */
+	/** Reverb effect late reverb pan direction. */
 	inline const decVector &GetReverbLateReverbPan() const{ return pReverbLateReverbPan; }
 	
-	/** \brief Reverbe effect Echo time. */
+	/** Reverbe effect Echo time. */
 	inline float GetReverbEchoTime() const{ return pReverbEchoTime; }
 	
 	
 	
-	/** \brief Update environment. */
+	/** Effect keep-alive timeout. */
+	inline float GetEffectKeepAliveTimeout() const{ return pEffectKeepAliveTimeout; }
+	
+	
+	
+	/** Update environment. */
 	void Update();
 	
 	
 	
-	/** \brief Debug print. */
+	/** Debug print. */
 	void DebugPrint();
 	
 	/**
-	 * \brief Update debug information.
+	 * Update debug information.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void DebugUpdateInfo( deDebugBlockInfo &debugInfo );
@@ -245,6 +252,7 @@ private:
 		const decQuaternion &micOrient );
 	void pSetSilent();
 	void pCalcEffectParameters();
+	void pCalcEffectKeepAliveTimeout();
 };
 
 #endif

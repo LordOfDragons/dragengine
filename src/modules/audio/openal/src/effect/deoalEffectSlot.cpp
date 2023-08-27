@@ -21,8 +21,19 @@
 
 #include "deoalEffectSlot.h"
 #include "../audiothread/deoalAudioThread.h"
+#include "../audiothread/deoalATLogger.h"
 
 #include <dragengine/common/exceptions.h>
+
+
+
+// #define DO_DEBUG 1
+
+#ifdef DO_DEBUG
+#define DEBUG(x) x
+#else
+#define DEBUG(x)
+#endif
 
 
 
@@ -37,7 +48,11 @@ pAudioThread( audioThread ),
 pSlot( 0 ),
 pEffect( 0 ),
 pOwner( nullptr ),
-pImportance( -1000.0f )
+pImportance( -1000.0f ),
+pEffectType( AL_EFFECT_NULL ),
+	pParametersChanged ( false ),
+pKeepAliveElapsed( 0.0f ),
+pKeepAliveTimeout( 0.0f )
 {
 	try{
 		alGetError();
@@ -69,9 +84,12 @@ deoalEffectSlot::~deoalEffectSlot(){
 void deoalEffectSlot::AssignOwner( void *owner, float importance ){
 	DEASSERT_NOTNULL( owner )
 	
+	DEBUG( pAudioThread.GetLogger().LogInfoFormat( "EffectSlot: AssignOwner %d with %p[%g]",
+		pSlot, owner, importance ) );
 	pOwner = owner;
 	pImportance = importance;
-	ClearEffect();
+	pKeepAliveElapsed = 0.0f;
+	pKeepAliveTimeout = 0.0f;
 }
 
 void deoalEffectSlot::ClearOwner(){
@@ -79,7 +97,9 @@ void deoalEffectSlot::ClearOwner(){
 		return;
 	}
 	
-	ClearEffect();
+	DEBUG( pAudioThread.GetLogger().LogInfoFormat(
+		"EffectSlot: ClearOwner %d with %p[%g] keep-alive %g",
+		pSlot, pOwner, pImportance, pKeepAliveTimeout ) );
 	pOwner = nullptr;
 	pImportance = -1000.0f;
 }
@@ -88,13 +108,43 @@ void deoalEffectSlot::SetImportance( float importance ){
 	pImportance = importance;
 }
 
-void deoalEffectSlot::ClearEffect(){
-	OAL_CHECK( pAudioThread, palEffecti( pEffect, AL_EFFECT_TYPE, AL_EFFECT_NULL ) );
-	UpdateSlot();
+
+
+void deoalEffectSlot::SetEffectType( ALenum type ){
+	if( type == pEffectType ){
+		return;
+	}
+	
+	pEffectType = type;
+	pParametersChanged = true;
+	
+	OAL_CHECK( pAudioThread, palEffecti( pEffect, AL_EFFECT_TYPE, type ) );
 }
 
-void deoalEffectSlot::UpdateSlot() const{
-	OAL_CHECK( pAudioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_EFFECT, pEffect ) );
+
+
+void deoalEffectSlot::UpdateSlot( float timeout ){
+	pKeepAliveElapsed = 0.0f;
+	pKeepAliveTimeout = timeout;
+	
+	pUpdateSlotParameters();
+}
+
+
+
+void deoalEffectSlot::Update( float elapsed ){
+	if( pOwner ){
+		return;
+	}
+	
+	pKeepAliveElapsed += elapsed;
+	
+	if( pKeepAliveElapsed >= pKeepAliveTimeout && pEffectType != AL_EFFECT_NULL ){
+		DEBUG( pAudioThread.GetLogger().LogInfoFormat( "EffectSlot: Timeout %d with %p[%g]",
+			pSlot, pOwner, pImportance ) );
+		SetEffectType( AL_EFFECT_NULL );
+		pUpdateSlotParameters();
+	}
 }
 
 
@@ -109,4 +159,14 @@ void deoalEffectSlot::pCleanUp(){
 	if( pEffect ){
 		palDeleteEffects( 1, &pEffect );
 	}
+}
+
+void deoalEffectSlot::pUpdateSlotParameters(){
+	if( ! pParametersChanged ){
+		return;
+	}
+	
+	OAL_CHECK( pAudioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_EFFECT, pEffect ) );
+	DEBUG( pAudioThread.GetLogger().LogInfoFormat( "EffectSlot: UpdateSlot %d with %p[%g]",
+		pSlot, pOwner, pImportance ) );
 }

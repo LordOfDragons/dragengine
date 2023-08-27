@@ -131,6 +131,7 @@ pDeactiveMicrophone( nullptr ),
 pActiveWorld( nullptr ),
 
 pElapsed( 0.0f ),
+pElapsedFull( 0.0f ),
 
 // time history
 pTimeHistoryMain( 29, 2 ),
@@ -469,7 +470,7 @@ void deoalAudioThread::Run(){
 		// main thread causing the buffers to underrun.
 		pReadyToWait = true;
 		
-		const int barrierTimeout = decMath::max( maxSyncSkipDelay - ( int )( pElapsed * 1000 ), 0 );
+		const int barrierTimeout = decMath::max( maxSyncSkipDelay - ( int )( pElapsed * 1000.0f ), 0 );
 		
 		DEBUG_SYNC_RT_WAIT("in")
 		if( pBarrierSyncIn.TryWait( barrierTimeout ) ){
@@ -837,13 +838,17 @@ void deoalAudioThread::pProcessAudio(){
 	pDebugInfo->ResetTimersAudioThread();
 	pDelayed->ProcessFreeOperations( false );
 	
+	pElapsedFull = pElapsed = pTimerElapsed.GetElapsedTime();
+	
 	if( pWaitSkipped ){
-		pElapsed = pWaitSkippedElapsed;
+		pElapsedFull += pWaitSkippedElapsed;
+		// pLogger->LogInfoFormat( "ProcessAudio: skipped %.3f [%.3f, %.3f] (%.1f)", pElapsedFull, pWaitSkippedElapsed, pElapsed, 1.0f / pElapsed );
+		pWaitSkippedElapsed = 0.0f;
 		pWaitSkipped = false;
 		
 	}else{
-		pElapsed = pTimerElapsed.GetElapsedTime();
 		pTimeHistoryUpdate.Add( pElapsed );
+		// pLogger->LogInfoFormat( "ProcessAudio: %.3f (%.1f)", pElapsed, 1.0f / pElapsed );
 	}
 	
 	while( pProcessOnceWorld.GetCount() > 0 ){
@@ -855,6 +860,8 @@ void deoalAudioThread::pProcessAudio(){
 	if( pDeactiveMicrophone ){
 		pDeactiveMicrophone->ProcessDeactivate();
 	}
+	
+	pEffectSlotManager->Update( pElapsedFull );
 	
 	if( pActiveMicrophone ){
 		pActiveMicrophone->ProcessAudio();
@@ -871,13 +878,14 @@ void deoalAudioThread::pProcessAudio(){
 
 void deoalAudioThread::pProcessAudioFast(){
 	pElapsed = pTimerElapsed.GetElapsedTime();
+	// pLogger->LogInfoFormat( "ProcessAudioFast: %.3f", pElapsed );
 	
 	if( pWaitSkipped ){
 // 		pLogger->LogWarnFormat( "Buffer underflow protection: %dms (+)", ( int )( pElapsed * 1000.0f ) );
 		
 	}else{
 // 		pLogger->LogWarnFormat( "Buffer underflow protection: %dms", ( int )( pElapsed * 1000.0f ) );
-		pWaitSkippedElapsed = pElapsed;
+		pWaitSkippedElapsed += pElapsed;
 		pWaitSkipped = true;
 	}
 	

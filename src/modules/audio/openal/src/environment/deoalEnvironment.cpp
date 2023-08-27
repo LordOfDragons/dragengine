@@ -260,6 +260,7 @@ void deoalEnvironment::Update(){
 	}
 	
 	pCalcEffectParameters();
+	pCalcEffectKeepAliveTimeout();
 	
 	pValid = true;
 	
@@ -582,7 +583,7 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 		
 	}else{
 		pListenerSmooth.SetGoal( listener );
-		pListenerSmooth.Update( pAudioThread.GetElapsed() );
+		pListenerSmooth.Update( pAudioThread.GetElapsedFull() );
 		pListenerSmooth.AssignTo( listener );
 	}
 	
@@ -725,4 +726,20 @@ void deoalEnvironment::pCalcEffectParameters(){
 		pBandPassGainLF = 0.0f;
 		pBandPassGainHF = 0.0f;
 	}
+}
+
+void deoalEnvironment::pCalcEffectKeepAliveTimeout(){
+	// update slot with effect parameters if changed. this also resets keep-alive and sets the
+	// keep-alive timeout. this timeout is used to clear the effect after the source stopped
+	// using the effect slot to improve performance. as timeout the largest delay or ech time
+	// is used. it just has to be long enough for all residue sound to vanish
+	const float delay = pReverbReflectionDelay + pReverbLateReverbDelay;
+	
+	pEffectKeepAliveTimeout = delay + pReverbDecayTime;
+	
+	pEffectKeepAliveTimeout = decMath::max( pEffectKeepAliveTimeout,
+		delay + pReverbDecayTime * pReverbDecayHFRatio );
+	
+	pEffectKeepAliveTimeout = decMath::max( pEffectKeepAliveTimeout,
+		delay + pReverbDecayTime * pReverbDecayLFRatio );
 }

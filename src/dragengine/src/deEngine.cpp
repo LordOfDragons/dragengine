@@ -737,6 +737,8 @@ bool deEngine::Run( const char *scriptDirectory, const char *scriptVersion, cons
 	
 	pLogger->LogInfoFormat( LOGGING_NAME, "Detected CPU Cores: %d",
 		pParallelProcessing->GetCoreCount() );
+	pLogger->LogInfoFormat( LOGGING_NAME, "Parallel Processing Threads: %d",
+		pParallelProcessing->GetThreadCount() );
 	
 	if( true ){
 		pLogger->LogInfoFormat( LOGGING_NAME, "Screen Size is %dx%d.",

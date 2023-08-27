@@ -48,6 +48,12 @@ private:
 	void *pOwner;
 	float pImportance;
 	
+	ALenum pEffectType;
+	bool pParametersChanged;
+	
+	float pKeepAliveElapsed;
+	float pKeepAliveTimeout;
+	
 	
 	
 public:
@@ -92,11 +98,20 @@ public:
 	/** Set importance. */
 	void SetImportance( float importance );
 	
-	/** Clear effect. */
-	void ClearEffect();
 	
-	/** Update effect slot with effect parameters. */
-	void UpdateSlot() const;
+	
+	/** Set effect type. */
+	void SetEffectType( ALenum type );
+	
+	
+	
+	/** Update effect slot with effect parameters if changed and reset keep-alive. */
+	void UpdateSlot( float timeout );
+	
+	
+	
+	/** Update. */
+	void Update( float elapsed );
 	
 	
 	
@@ -105,12 +120,19 @@ public:
 	
 	/** Not bound. */
 	inline bool IsUnbound() const{ return pOwner == nullptr; }
+	
+	/** Is kept alive. */
+	inline bool IsKeptAlive() const{ return IsUnbound() && pEffectType != AL_EFFECT_NULL; }
+	
+	/** Elapsed keep-alive time. */
+	inline float GetElapsedKeepAliveTime() const{ return pKeepAliveElapsed; }
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
+	void pUpdateSlotParameters();
 };
 
 #endif

@@ -114,6 +114,7 @@ private:
 	
 	decTimer pTimerElapsed;
 	float pElapsed;
+	float pElapsedFull;
 	
 	// time history
 	decTimeHistory pTimeHistoryMain;
@@ -306,6 +307,9 @@ public:
 	
 	/** Elapsed time. */
 	inline float GetElapsed() const{ return pElapsed; }
+	
+	/** Elapsed time since the last full update. */
+	inline float GetElapsedFull() const{ return pElapsedFull; }
 	
 	/** FPS Rate. */
 	inline int GetFPSRate() const{ return pFPSRate; }
