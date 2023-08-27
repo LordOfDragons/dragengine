@@ -148,26 +148,17 @@ void deoalExtensions::pScanExtensions(){
 		strExtensions = "";
 	}
 	
-	/*
-	logger.LogInfoFormat( "pScanExtensions: '%s'", strExtensions);
-	- ALC_ENUMERATE_ALL_EXT
-	- ALC_ENUMERATION_EXT
-	- ALC_EXT_CAPTURE
-	- ALC_EXT_DEDICATED
-	- ALC_EXT_disconnect
-	- ALC_EXT_EFX
-	- ALC_EXT_thread_local_context
-	- ALC_SOFTX_device_clock
-	- ALC_SOFT_HRTF
-	- ALC_SOFT_loopback
-	- ALC_SOFT_output_limiter
-	- ALC_SOFT_pause_device
-	*/
-	
 	pStrListExtensions = decString( strExtensions ).Split( ' ' );
 	pStrListExtensions.SortAscending();
 	
+	deoalATLogger &logger = pAudioThread.GetLogger();
+	logger.LogInfo( "Extensions:" );
+	const int count = pStrListExtensions.GetCount();
 	int i;
+	for( i=0; i<count; i++ ){
+		logger.LogInfoFormat( "- %s", pStrListExtensions.GetAt( i ).GetString() );
+	}
+	
 	for( i=0; i<EXT_COUNT; i++ ){
 		pHasExtension[ i ] = pStrListExtensions.Has( vExtensionNames[ i ] );
 	}

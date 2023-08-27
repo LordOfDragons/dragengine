@@ -64,6 +64,7 @@ private:
 	float pAttenuationDistanceOffset;
 	decLayerMask pLayerMask;
 	bool pValid;
+	bool pSilent;
 	
 	float pGainLow;
 	float pGainMedium;
@@ -93,6 +94,20 @@ private:
 	bool pResetListenerSmooth;
 	
 	deoalEnvProbe *pEnvProbe;
+	
+	float pCompareReverbGain;
+	float pCompareReverbGainLF;
+	float pCompareReverbGainHF;
+	float pCompareReverbDecayTime;
+	float pCompareReverbDecayHFRatio;
+	float pCompareReverbDecayLFRatio;
+	float pCompareReverbReflectionGain;
+	float pCompareReverbReflectionDelay;
+	decVector pCompareReverbReflectionPan;
+	float pCompareReverbLateReverbGain;
+	float pCompareReverbLateReverbDelay;
+	decVector pCompareReverbLateReverbPan;
+	float pCompareReverbEchoTime;
 	
 	deoalEnvironmentDebug *pDebug;
 	
@@ -227,6 +242,11 @@ public:
 	
 	
 	
+	/** Distance between this environment and another one. */
+	float Distance( const deoalEnvironment &env ) const;
+	
+	
+	
 	/** Update environment. */
 	void Update();
 	
@@ -253,6 +273,8 @@ private:
 	void pSetSilent();
 	void pCalcEffectParameters();
 	void pCalcEffectKeepAliveTimeout();
+	void pCalcCompareParameters();
+	decVector pCalcComparePan( const decVector &pan ) const;
 };
 
 #endif

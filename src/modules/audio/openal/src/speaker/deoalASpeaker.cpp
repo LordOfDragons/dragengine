@@ -1652,6 +1652,11 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 // 			AttenuatedGain(0.0f), pVolume * AttenuatedGain(0.0f), pEnvironment->GetBandPassGain(), pVolume,
 // 			pEnvironment->GetReverbGain(), pEnvironment->GetReverbGain() * pVolume);
 	
+	if( pEnvironment->GetReverbGain() < 0.01f ){ //0.001f
+		pSource->DropEffectSlot();
+		return;
+	}
+	
 	const float reverbGain = pEnvironment->GetReverbGain() / decMath::max( pAttenuatedGain, 0.001f );
 	
 	deoalEffectSlot * const effectSlot = pSource->GetEffectSlot();
@@ -1685,6 +1690,28 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	alvector[ 1 ] = ( ALfloat )pEnvironment->GetReverbLateReverbPan().y;
 	alvector[ 2 ] = ( ALfloat )pEnvironment->GetReverbLateReverbPan().z;
 	OAL_CHECK( pAudioThread, palEffectfv( effect, AL_EAXREVERB_LATE_REVERB_PAN, &alvector[ 0 ] ) );
+	
+	// OpenAL performance note:
+	// 
+	// if certain parameters change this causes OpenAL to do a full update. a full update
+	// calculates the old and new effect pipeline blending them together. thus a full update
+	// causes double the processing time. according to the source code
+	// ( https://github.com/kcat/openal-soft/blob/ca3bc1bd80fdff511e83d563a4ee94d6cd885473/alc/effects/reverb.cpp#L1167 )
+	// the following parameter changes cause a full update:
+	// - AL_EAXREVERB_DENSITY
+	// - AL_EAXREVERB_DIFFUSION
+	// - AL_EAXREVERB_DECAY_TIME
+	// - AL_EAXREVERB_DECAY_HFRATIO
+	// - AL_EAXREVERB_DECAY_LFRATIO
+	// - AL_EAXREVERB_MODULATION_TIME
+	// - AL_EAXREVERB_MODULATION_DEPTH
+	// - AL_EAXREVERB_HFREFERENCE
+	// - AL_EAXREVERB_LFREFERENCE
+	// 
+	// out of these only the AL_EAXREVERB_DECAY_* parameters potentially change every update.
+	// furthermore the equality check is '==' not fabsf based which makes this all verry
+	// sensitive. also air absorption can alter the decay time so this can also cause unwanted
+	// extra processing time
 	
 	// pAudioThread.GetLogger().LogInfoFormat("pUpdateEnvironmentEffect: %p g=(%.3f,%.3f) d=(%.3f,%.3f,%.3f) rg=(%.3f,%.3f) rd=(%.3f,%.3f) et=%.3f",
 	// 	pSource, pEnvironment->GetReverbGainHF(), pEnvironment->GetReverbGainLF(),

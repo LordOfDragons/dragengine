@@ -198,7 +198,30 @@ void deoalEnvironment::SetLayerMask( const decLayerMask &layerMask ){
 
 
 
+float deoalEnvironment::Distance( const deoalEnvironment &env ) const{
+	const float d1 = env.pCompareReverbGain - pCompareReverbGain;
+	const float d2 = env.pCompareReverbGainLF - pCompareReverbGainLF;
+	const float d3 = env.pCompareReverbGainHF - pCompareReverbGainHF;
+	const float d4 = env.pCompareReverbDecayTime - pCompareReverbDecayTime;
+	const float d5 = env.pCompareReverbDecayHFRatio - pCompareReverbDecayHFRatio;
+	const float d6 = env.pCompareReverbDecayLFRatio - pCompareReverbDecayLFRatio;
+	const float d7 = env.pCompareReverbReflectionGain - pCompareReverbReflectionGain;
+	const float d8 = env.pCompareReverbReflectionDelay - pCompareReverbReflectionDelay;
+	const decVector d9( env.pCompareReverbReflectionPan - pCompareReverbReflectionPan );
+	const float d10 = env.pCompareReverbLateReverbGain - pCompareReverbLateReverbGain;
+	const float d11 = env.pCompareReverbLateReverbDelay - pCompareReverbLateReverbDelay;
+	const decVector d12( env.pCompareReverbLateReverbPan - pCompareReverbLateReverbPan );
+	const float d13 = env.pCompareReverbEchoTime - pCompareReverbEchoTime;
+	
+	return sqrtf( d1 * d1 + d2 * d2 + d3 * d3 + d4 * d4 + d5 * d5 + d6 * d6 + d7 * d7 + d8 * d8
+		+ d9.LengthSquared() + d10 * d10 + d11 * d11 + d12.LengthSquared() + d13 * d13 );
+}
+
+
+
 void deoalEnvironment::Update(){
+	pSetSilent();
+	
 	if( ! pWorld || ! pAudioThread.GetActiveMicrophone() ){
 		return;
 	}
@@ -261,6 +284,7 @@ void deoalEnvironment::Update(){
 	
 	pCalcEffectParameters();
 	pCalcEffectKeepAliveTimeout();
+	pCalcCompareParameters();
 	
 	pValid = true;
 	
@@ -742,4 +766,40 @@ void deoalEnvironment::pCalcEffectKeepAliveTimeout(){
 	
 	pEffectKeepAliveTimeout = decMath::max( pEffectKeepAliveTimeout,
 		delay + pReverbDecayTime * pReverbDecayLFRatio );
+}
+
+void deoalEnvironment::pCalcCompareParameters(){
+	pCompareReverbGain = pReverbGain;
+	pCompareReverbGainLF = pReverbGainLF;
+	pCompareReverbGainHF = pReverbGainHF;
+	pCompareReverbDecayTime = decMath::linearStep( pReverbDecayTime,
+		AL_EAXREVERB_MIN_DECAY_TIME, AL_EAXREVERB_MAX_DECAY_TIME );
+	pCompareReverbDecayHFRatio = decMath::linearStep( pReverbDecayHFRatio,
+		AL_EAXREVERB_MIN_DECAY_HFRATIO, AL_EAXREVERB_MAX_DECAY_HFRATIO );
+	pCompareReverbDecayLFRatio = decMath::linearStep( pReverbDecayLFRatio,
+		AL_EAXREVERB_MIN_DECAY_LFRATIO, AL_EAXREVERB_MAX_DECAY_LFRATIO );
+	pCompareReverbReflectionGain = decMath::linearStep( pReverbReflectionGain,
+		AL_EAXREVERB_MIN_REFLECTIONS_GAIN, AL_EAXREVERB_MAX_REFLECTIONS_GAIN );
+	pCompareReverbReflectionDelay = decMath::linearStep( pReverbReflectionDelay,
+		AL_EAXREVERB_MIN_REFLECTIONS_DELAY, AL_EAXREVERB_MAX_REFLECTIONS_DELAY );
+	pCompareReverbReflectionPan = pCalcComparePan( pReverbReflectionPan );
+	pCompareReverbLateReverbGain = decMath::linearStep( pReverbLateReverbGain,
+		AL_EAXREVERB_MIN_LATE_REVERB_GAIN, AL_EAXREVERB_MAX_LATE_REVERB_GAIN );
+	pCompareReverbLateReverbDelay = decMath::linearStep( pReverbLateReverbDelay,
+		AL_EAXREVERB_MIN_LATE_REVERB_DELAY, AL_EAXREVERB_MAX_LATE_REVERB_DELAY );
+	pCompareReverbLateReverbPan = pCalcComparePan( pReverbLateReverbPan );
+	pCompareReverbEchoTime = decMath::linearStep( pReverbEchoTime,
+		AL_EAXREVERB_MIN_ECHO_TIME, AL_EAXREVERB_MAX_ECHO_TIME );
+}
+
+decVector deoalEnvironment::pCalcComparePan( const decVector &pan ) const{
+	const float length = pan.Length();
+	if( length < 0.01f ){
+		return decVector();
+	}
+	
+	const float azimuth = atan2f( -pan.x, pan.z );
+	const float elevation = atan2f( pan.y, sqrtf( pan.x * pan.x + pan.z * pan.z ) );
+	return decVector( decMath::linearStep( azimuth, -PI, PI ),
+		decMath::linearStep( elevation, -HALF_PI, HALF_PI ), length );
 }
