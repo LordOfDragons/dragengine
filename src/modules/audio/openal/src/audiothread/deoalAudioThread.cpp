@@ -642,21 +642,25 @@ void deoalAudioThread::pCleanUp(){
 
 
 void deoalAudioThread::pInitThreadPhase1(){
-	// open device. this has to be done before anything else
+	// open device. this has to be done first
 	pContext = new deoalATContext( *this );
 	pContext->OpenDevice();
 	
-	// check extensions. this has to be done after the device has been created because
-	// extensions support is device specific
+	// check device extensions. this has to be done after the device has been opened but
+	// before a context has been created since context creations required this information
 	pExtensions = new deoalExtensions( *this );
+	pExtensions->ScanDeviceExtensions();
+	
+	// create context. this depends on the present device extensions
+	pContext->CreateContext();
+	
+	// check context extensions. this has to be done after the context has been created
+	pExtensions->ScanContextExtensions();
 	pExtensions->PrintSummary();
 	if( ! pExtensions->VerifyPresence() ){
 		pLogger->LogError( "Extension problems present" );
 		DETHROW( deeInvalidParam );
 	}
-	
-	// create context. this depends on the present extensions
-	pContext->CreateContext();
 	
 	// detect capabilites. this has to be done after creating the context since
 	// creating the context sets the actual capabilities

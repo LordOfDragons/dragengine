@@ -70,14 +70,6 @@ pEfxVersionMinor( 0 )
 	}
 	
 	pScanVersion();
-	pScanExtensions();
-	pDisableExtensions();
-	
-	pFetchRequiredFunctions();
-	pFetchOptionalFunctions();
-	
-	pHasEFX = pHasExtension[ ext_ALC_EXT_EFX ];
-	pHasHRTF = pHasExtension[ ext_ALC_SOFT_HRTF ];
 }
 
 deoalExtensions::~deoalExtensions(){
@@ -87,6 +79,51 @@ deoalExtensions::~deoalExtensions(){
 
 // Management
 ///////////////
+
+void deoalExtensions::ScanDeviceExtensions() {
+	ALCdevice * const device = pAudioThread.GetContext().GetDevice();
+	
+	const char * const strExtensions = ( const char * )alcGetString( device, ALC_EXTENSIONS );
+	if( strExtensions ){
+		pStrListExtensions = decString( strExtensions ).Split( ' ' );
+	}
+	
+	int i;
+	for( i=0; i<EXT_COUNT; i++ ){
+		pHasExtension[ i ] = pStrListExtensions.Has( vExtensionNames[ i ] );
+	}
+	
+	pDisableExtensions();
+	
+	pHasEFX = pHasExtension[ ext_ALC_EXT_EFX ];
+	pHasHRTF = pHasExtension[ ext_ALC_SOFT_HRTF ];
+}
+
+void deoalExtensions::ScanContextExtensions(){
+	const char * const strExtensions = ( const char * )alGetString( AL_EXTENSIONS );
+	if( strExtensions ){
+		pStrListExtensions += decString( strExtensions ).Split( ' ' );
+	}
+	
+	pStrListExtensions.SortAscending();
+	
+	deoalATLogger &logger = pAudioThread.GetLogger();
+	logger.LogInfo( "Extensions:" );
+	const int count = pStrListExtensions.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		logger.LogInfoFormat( "- %s", pStrListExtensions.GetAt( i ).GetString() );
+	}
+	
+	for( i=0; i<EXT_COUNT; i++ ){
+		pHasExtension[ i ] = pStrListExtensions.Has( vExtensionNames[ i ] );
+	}
+	
+	pDisableExtensions();
+	
+	pFetchRequiredFunctions();
+	pFetchOptionalFunctions();
+}
 
 void deoalExtensions::PrintSummary(){
 	deoalATLogger &logger = pAudioThread.GetLogger();
@@ -141,29 +178,6 @@ void deoalExtensions::pScanVersion(){
 	alcGetIntegerv( device, ALC_MINOR_VERSION, 1, ( ALint* )&pVersionMinor );
 }
 
-void deoalExtensions::pScanExtensions(){
-	ALCdevice * const device = pAudioThread.GetContext().GetDevice();
-	const char *strExtensions = ( const char * )alcGetString( device, ALC_EXTENSIONS );
-	if( ! strExtensions ){
-		strExtensions = "";
-	}
-	
-	pStrListExtensions = decString( strExtensions ).Split( ' ' );
-	pStrListExtensions.SortAscending();
-	
-	deoalATLogger &logger = pAudioThread.GetLogger();
-	logger.LogInfo( "Extensions:" );
-	const int count = pStrListExtensions.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		logger.LogInfoFormat( "- %s", pStrListExtensions.GetAt( i ).GetString() );
-	}
-	
-	for( i=0; i<EXT_COUNT; i++ ){
-		pHasExtension[ i ] = pStrListExtensions.Has( vExtensionNames[ i ] );
-	}
-}
-
 void deoalExtensions::pDisableExtensions(){
 	const decStringSet &list = pAudioThread.GetConfiguration().GetDisableExtensions();
 	deoalATLogger &logger = pAudioThread.GetLogger();
@@ -213,12 +227,20 @@ void deoalExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&palAuxiliaryEffectSlotiv, "alAuxiliaryEffectSlotiv", ext_ALC_EXT_EFX );
 		pGetOptionalFunction( (void**)&palAuxiliaryEffectSlotf, "alAuxiliaryEffectSlotf", ext_ALC_EXT_EFX );
 		pGetOptionalFunction( (void**)&palAuxiliaryEffectSlotfv, "alAuxiliaryEffectSlotfv", ext_ALC_EXT_EFX );
+		
+		if( ! pHasExtension[ ext_ALC_EXT_EFX ] ){
+			DETHROW( deeInvalidAction );
+		}
 	}
 	
 	// ALC_SOFT_HRTF
 	if( pHasExtension[ ext_ALC_SOFT_HRTF ] ){
 		pGetOptionalFunction( (void**)&palcGetStringi, "alcGetStringiSOFT", ext_ALC_SOFT_HRTF );
 		pGetOptionalFunction( (void**)&palcResetDevice, "alcResetDeviceSOFT", ext_ALC_SOFT_HRTF );
+		
+		if( ! pHasExtension[ ext_ALC_SOFT_HRTF ] ){
+			DETHROW( deeInvalidAction );
+		}
 	}
 }
 
