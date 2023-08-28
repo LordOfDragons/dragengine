@@ -52,7 +52,9 @@ pEAXReverbLateReverbGainFactor( 1.0f ),
 
 pAsyncAudio( true ),
 pFrameRateLimit( 0 ), // 0 means disabled
-pAsyncAudioSkipSyncTimeRatio( 0.5 )
+pAsyncAudioSkipSyncTimeRatio( 0.5 ),
+
+pUseSharedEffectSlots( true )
 {
 	pApplyAuralizationProfile();
 }
@@ -94,10 +96,7 @@ void deoalConfiguration::SetEnableEFX( bool enable ){
 }
 
 void deoalConfiguration::SetStreamBufSizeThreshold( int threshold ){
-	if( threshold < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( threshold > 0 )
 	if( threshold == pStreamBufSizeThreshold ){
 		return;
 	}
@@ -128,10 +127,7 @@ void deoalConfiguration::SetAuralizationQuality( eAuralizationQuality quality ){
 
 
 void deoalConfiguration::SetSoundTraceRayCount( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( count > 0 )
 	if( count == pSoundTraceRayCount ){
 		return;
 	}
@@ -141,10 +137,7 @@ void deoalConfiguration::SetSoundTraceRayCount( int count ){
 }
 
 void deoalConfiguration::SetSoundTraceMaxBounceCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( count > 0 )
 	if( count == pSoundTraceMaxBounceCount ){
 		return;
 	}
@@ -154,10 +147,7 @@ void deoalConfiguration::SetSoundTraceMaxBounceCount( int count ){
 }
 
 void deoalConfiguration::SetSoundTraceMaxTransmitCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( count > 0 )
 	if( count == pSoundTraceMaxTransmitCount ){
 		return;
 	}
@@ -167,10 +157,7 @@ void deoalConfiguration::SetSoundTraceMaxTransmitCount( int count ){
 }
 
 void deoalConfiguration::SetEstimateRoomRayCount( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( count > 0 )
 	if( count == pEstimateRoomRayCount ){
 		return;
 	}
@@ -202,11 +189,9 @@ void deoalConfiguration::SetEAXReverbLateReverbGainFactor( float factor ){
 
 
 void deoalConfiguration::SetFrameRateLimit( int frameRateLimit ){
+	DEASSERT_TRUE( frameRateLimit >= 0 )
 	if( frameRateLimit == pFrameRateLimit ){
 		return;
-	}
-	if( frameRateLimit < 0 ){
-		DETHROW( deeInvalidParam );
 	}
 	
 	pFrameRateLimit = frameRateLimit;
@@ -218,6 +203,7 @@ void deoalConfiguration::SetAsyncAudioSkipSyncTimeRatio( float ratio ){
 	if( fabsf( ratio - pAsyncAudioSkipSyncTimeRatio ) < FLOAT_SAFE_EPSILON ){
 		return;
 	}
+	
 	pAsyncAudioSkipSyncTimeRatio = ratio;
 	pDirty = true;
 }
@@ -226,7 +212,17 @@ void deoalConfiguration::SetAsyncAudio( bool asyncAudio ){
 	if( asyncAudio == pAsyncAudio ){
 		return;
 	}
+	
 	pAsyncAudio = asyncAudio;
+	pDirty = true;
+}
+
+void deoalConfiguration::SetUseSharedEffectSlots( bool useUseSharedEffectSlots ){
+	if( useUseSharedEffectSlots == pUseSharedEffectSlots ){
+		return;
+	}
+	
+	pUseSharedEffectSlots = useUseSharedEffectSlots;
 	pDirty = true;
 }
 
@@ -251,6 +247,7 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 	pEAXReverbReflectionGainFactor = config.pEAXReverbReflectionGainFactor;
 	pEAXReverbLateReverbGainFactor = config.pEAXReverbLateReverbGainFactor;
 	
+	pUseSharedEffectSlots = config.pUseSharedEffectSlots;
 	return *this;
 }
 

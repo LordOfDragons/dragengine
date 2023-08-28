@@ -198,7 +198,7 @@ void deoalEnvironment::SetLayerMask( const decLayerMask &layerMask ){
 
 
 
-float deoalEnvironment::Distance( const deoalEnvironment &env ) const{
+float deoalEnvironment::Distance( const deoalEnvironment &env, bool withPan ) const{
 	const float d1 = env.pCompareReverbGain - pCompareReverbGain;
 	const float d2 = env.pCompareReverbGainLF - pCompareReverbGainLF;
 	const float d3 = env.pCompareReverbGainHF - pCompareReverbGainHF;
@@ -207,14 +207,19 @@ float deoalEnvironment::Distance( const deoalEnvironment &env ) const{
 	const float d6 = env.pCompareReverbDecayLFRatio - pCompareReverbDecayLFRatio;
 	const float d7 = env.pCompareReverbReflectionGain - pCompareReverbReflectionGain;
 	const float d8 = env.pCompareReverbReflectionDelay - pCompareReverbReflectionDelay;
-	const decVector d9( env.pCompareReverbReflectionPan - pCompareReverbReflectionPan );
-	const float d10 = env.pCompareReverbLateReverbGain - pCompareReverbLateReverbGain;
-	const float d11 = env.pCompareReverbLateReverbDelay - pCompareReverbLateReverbDelay;
-	const decVector d12( env.pCompareReverbLateReverbPan - pCompareReverbLateReverbPan );
-	const float d13 = env.pCompareReverbEchoTime - pCompareReverbEchoTime;
+	const float d9 = env.pCompareReverbLateReverbGain - pCompareReverbLateReverbGain;
+	const float d10 = env.pCompareReverbLateReverbDelay - pCompareReverbLateReverbDelay;
+	const float d11 = env.pCompareReverbEchoTime - pCompareReverbEchoTime;
 	
-	return sqrtf( d1 * d1 + d2 * d2 + d3 * d3 + d4 * d4 + d5 * d5 + d6 * d6 + d7 * d7 + d8 * d8
-		+ d9.LengthSquared() + d10 * d10 + d11 * d11 + d12.LengthSquared() + d13 * d13 );
+	float distanceSquared = d1 * d1 + d2 * d2 + d3 * d3 + d4 * d4 + d5 * d5
+		+ d6 * d6 + d7 * d7 + d8 * d8 + d9 * d9 + d10 * d10 + d11 * d11;
+	
+	if( withPan ){
+		distanceSquared += ( env.pCompareReverbReflectionPan - pCompareReverbReflectionPan ).LengthSquared();
+		distanceSquared += ( env.pCompareReverbLateReverbPan - pCompareReverbLateReverbPan ).LengthSquared();
+	}
+	
+	return sqrtf( distanceSquared );
 }
 
 

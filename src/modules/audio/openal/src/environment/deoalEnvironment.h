@@ -243,7 +243,7 @@ public:
 	
 	
 	/** Distance between this environment and another one. */
-	float Distance( const deoalEnvironment &env ) const;
+	float Distance( const deoalEnvironment &env, bool withPan ) const;
 	
 	
 	

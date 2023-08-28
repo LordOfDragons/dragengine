@@ -29,6 +29,7 @@
 #include "../audiothread/deoalAudioThread.h"
 #include "../audiothread/deoalATDebug.h"
 #include "../audiothread/deoalATLogger.h"
+#include "../effect/deoalSharedEffectSlotManager.h"
 #include "../environment/deoalEnvProbe.h"
 #include "../environment/deoalEnvProbeList.h"
 #include "../environment/raytrace/deoalSoundRay.h"
@@ -712,7 +713,15 @@ void deoalAMicrophone::pProcessEffects(){
 	#endif
 	
 	// update effects of all speakers in audible range
+	if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
+		pAudioThread.GetSharedEffectSlotManager().ClearSpeakers();
+	}
+	
 	pActiveSpeakers.UpdateEffectsAll();
+	
+	if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
+		pAudioThread.GetSharedEffectSlotManager().AssignSpeakers();
+	}
 }
 
 void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume ){

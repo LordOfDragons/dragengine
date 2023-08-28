@@ -38,6 +38,7 @@
 #include "../capabilities/deoalCapabilities.h"
 #include "../component/deoalComponent.h"
 #include "../effect/deoalEffectSlotManager.h"
+#include "../effect/deoalSharedEffectSlotManager.h"
 #include "../environment/raytrace/deoalRayTraceResult.h"
 #include "../environment/raytrace/deoalRayTraceHitElementList.h"
 #include "../environment/raytrace/deoalSoundRayInteractionList.h"
@@ -116,6 +117,7 @@ pDecodeBuffer( nullptr ),
 pExtensions( nullptr ),
 pCapabilities( nullptr ),
 pEffectSlotManager( nullptr ),
+pSharedEffectSlotManager( nullptr ),
 pSourceManager( nullptr ),
 pSharedBufferList( nullptr ),
 
@@ -676,6 +678,7 @@ void deoalAudioThread::pInitThreadPhase1(){
 	// create working objects
 	pCaches = new deoalCaches( *this );
 	pEffectSlotManager = new deoalEffectSlotManager( *this );
+	pSharedEffectSlotManager = new deoalSharedEffectSlotManager( *this, 12 );
 	pSourceManager = new deoalSourceManager( *this );
 	pSpeakerList = new deoalSpeakerList;
 	pDecodeBuffer = new deoalDecodeBuffer( ( 44100 / 10 ) * 4 );
@@ -733,6 +736,9 @@ void deoalAudioThread::pCleanUpThread(){
 		delete pRTParallelEnvProbe;
 	}
 	
+	if( pSharedEffectSlotManager ){
+		delete pSharedEffectSlotManager;
+	}
 	if( pSpeakerList ){
 		delete pSpeakerList;
 	}

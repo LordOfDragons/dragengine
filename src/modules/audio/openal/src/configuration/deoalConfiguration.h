@@ -92,6 +92,8 @@ private:
 	int pFrameRateLimit;
 	float pAsyncAudioSkipSyncTimeRatio;
 	
+	bool pUseSharedEffectSlots;
+	
 	
 	
 public:
@@ -212,6 +214,12 @@ public:
 	
 	/** Set asynchronous audio. */
 	void SetAsyncAudio( bool asyncAudio );
+	
+	/** Use shared effect slots. */
+	inline bool GetUseSharedEffectSlots() const{ return pUseSharedEffectSlots; }
+	
+	/** Set use shared effect slots. */
+	void SetUseSharedEffectSlots( bool useUseSharedEffectSlots );
 	/*@}*/
 	
 	

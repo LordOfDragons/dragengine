@@ -33,6 +33,7 @@
 #include "../environment/deoalEnvironment.h"
 #include "../effect/deoalFilter.h"
 #include "../effect/deoalEffectSlot.h"
+#include "../effect/deoalSharedEffectSlotManager.h"
 #include "../extensions/deoalExtensions.h"
 #include "../microphone/deoalAMicrophone.h"
 #include "../sound/deoalDecodeBuffer.h"
@@ -130,6 +131,8 @@ pFinalGain( 0.0f ),
 pAttenuatedGain( 0.0f ),
 
 pEnvironment( NULL ),
+pSharedEffectSlotDistance( 0.0f ),
+pSharedEffectSlot( nullptr ),
 
 pMicrophoneMarkedRemove( false ),
 pWorldMarkedRemove( false ),
@@ -710,6 +713,14 @@ float deoalASpeaker::GetFullVolume() const{
 	}else{
 		return pVolume;
 	}
+}
+
+void deoalASpeaker::SetSharedEffectSlotDistance( float distance ){
+	pSharedEffectSlotDistance = distance;
+}
+
+void deoalASpeaker::SetSharedEffectSlot( deoalSharedEffectSlot *effectSlot ){
+	pSharedEffectSlot = effectSlot;
 }
 
 bool deoalASpeaker::AffectsActiveMicrophone() const{
@@ -1654,6 +1665,11 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	
 	if( pEnvironment->GetReverbGain() < 0.01f ){ //0.001f
 		pSource->DropEffectSlot();
+		return;
+	}
+	
+	if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
+		pAudioThread.GetSharedEffectSlotManager().AddSpeaker( this );
 		return;
 	}
 	

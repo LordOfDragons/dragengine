@@ -41,6 +41,7 @@ class deoalAWorld;
 class deoalWorldOctree;
 class deoalEnvironment;
 class deoalSpeaker;
+class deoalSharedEffectSlot;
 
 
 
@@ -117,6 +118,9 @@ private:
 	float pFinalGain;
 	float pAttenuatedGain;
 	deoalEnvironment *pEnvironment;
+	
+	float pSharedEffectSlotDistance;
+	deoalSharedEffectSlot *pSharedEffectSlot;
 	
 	decPointerSet pSoundLevelMeters;
 	
@@ -385,6 +389,18 @@ public:
 	
 	/** Environment or \em NULL if not present. */
 	inline deoalEnvironment *GetEnvironment() const{ return pEnvironment; }
+	
+	/** Shared effect slot distance. */
+	inline float GetSharedEffectSlotDistance() const{ return pSharedEffectSlotDistance; }
+	
+	/** Set shared effect slot distance. */
+	void SetSharedEffectSlotDistance( float distance );
+	
+	/** Shared effect slot. */
+	inline deoalSharedEffectSlot *GetSharedEffectSlot() const{ return pSharedEffectSlot; }
+	
+	/** Set shared effect slot. */
+	void SetSharedEffectSlot( deoalSharedEffectSlot *effectSlot );
 	
 	
 	

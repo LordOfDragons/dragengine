@@ -58,6 +58,8 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\devmode\deoalDevMode.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlot.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlotManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalSharedEffectSlot.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalSharedEffectSlotManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalFilter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvironment.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvironmentDebug.cpp" />
@@ -205,6 +207,8 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\devmode\deoalDevMode.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlot.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlotManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalSharedEffectSlot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalSharedEffectSlotManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalFilter.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvironment.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvironmentDebug.h" />
