@@ -1787,10 +1787,13 @@ void deoalASpeaker::pUpdateEnvironmentEffectShared(){
 		return;
 	}
 	
-	if( emptySlot ){
+	if( bestSlot && bestDistance <= config.GetShareEnvironmentThreshold() ){
+		pSharedEffectSlot = bestSlot;
+		
+	}else if( emptySlot ){
 		pSharedEffectSlot = emptySlot;
 		
-	}else if( bestSlot ){
+	}else{
 		pSharedEffectSlot = bestSlot;
 	}
 	
