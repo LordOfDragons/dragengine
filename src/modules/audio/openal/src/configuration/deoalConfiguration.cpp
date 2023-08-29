@@ -54,7 +54,9 @@ pAsyncAudio( true ),
 pFrameRateLimit( 0 ), // 0 means disabled
 pAsyncAudioSkipSyncTimeRatio( 0.5 ),
 
-pUseSharedEffectSlots( true )
+pUseSharedEffectSlots( true ),
+pShareEnvironmentThreshold( 0.1f ),
+pSwitchSharedEnvironmentThreshold( 0.2f )
 {
 	pApplyAuralizationProfile();
 }
@@ -226,6 +228,26 @@ void deoalConfiguration::SetUseSharedEffectSlots( bool useUseSharedEffectSlots )
 	pDirty = true;
 }
 
+void deoalConfiguration::SetShareEnvironmentThreshold( float threshold ){
+	threshold = decMath::max( threshold, 0.01f );
+	if( fabsf( threshold - pShareEnvironmentThreshold ) < 0.001f ){
+		return;
+	}
+	
+	pShareEnvironmentThreshold = threshold;
+	pDirty = true;
+}
+
+void deoalConfiguration::SetSwitchSharedEnvironmentThreshold( float threshold ){
+	threshold = decMath::max( threshold, 0.01f );
+	if( fabsf( threshold - pSwitchSharedEnvironmentThreshold ) < 0.001f ){
+		return;
+	}
+	
+	pSwitchSharedEnvironmentThreshold = threshold;
+	pDirty = true;
+}
+
 
 
 // Operators
@@ -248,6 +270,8 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 	pEAXReverbLateReverbGainFactor = config.pEAXReverbLateReverbGainFactor;
 	
 	pUseSharedEffectSlots = config.pUseSharedEffectSlots;
+	pShareEnvironmentThreshold = config.pShareEnvironmentThreshold;
+	pSwitchSharedEnvironmentThreshold = config.pSwitchSharedEnvironmentThreshold;
 	return *this;
 }
 

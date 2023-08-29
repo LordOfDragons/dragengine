@@ -93,6 +93,8 @@ private:
 	float pAsyncAudioSkipSyncTimeRatio;
 	
 	bool pUseSharedEffectSlots;
+	float pShareEnvironmentThreshold;
+	float pSwitchSharedEnvironmentThreshold;
 	
 	
 	
@@ -220,6 +222,18 @@ public:
 	
 	/** Set use shared effect slots. */
 	void SetUseSharedEffectSlots( bool useUseSharedEffectSlots );
+	
+	/** Share environment threshold. */
+	inline float GetShareEnvironmentThreshold() const{ return pShareEnvironmentThreshold; }
+	
+	/** Set share environment threshold. */
+	void SetShareEnvironmentThreshold( float threshold );
+	
+	/** Switch shared environment threshold. */
+	inline float GetSwitchSharedEnvironmentThreshold() const{ return pSwitchSharedEnvironmentThreshold; }
+	
+	/** Set switch shared environment threshold. */
+	void SetSwitchSharedEnvironmentThreshold( float threshold );
 	/*@}*/
 	
 	

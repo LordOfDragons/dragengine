@@ -481,6 +481,7 @@ private:
 	
 	void pEnsureEnvironment();
 	void pUpdateEnvironmentEffect();
+	void pUpdateEnvironmentEffectShared();
 	
 	void pRemoveFromSoundLevelMeters();
 	void pDropEnvProbeOctreeNodeAllSLMs();

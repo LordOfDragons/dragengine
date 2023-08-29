@@ -85,6 +85,9 @@ public:
 	/** Add speaker. */
 	void AddSpeaker( deoalASpeaker *speaker );
 	
+	/** Remove speaker. */
+	void RemoveSpeaker( deoalASpeaker *speaker );
+	
 	/** Remove all speakers. */
 	void RemoveAllSpeakers();
 	
@@ -93,6 +96,12 @@ public:
 	
 	/** Update effect slot. */
 	void UpdateEffectSlot();
+	
+	/** Is empty. */
+	bool IsEmpty() const;
+	
+	/** Disable effects. */
+	void DisableEffects();
 	/*@}*/
 };
 

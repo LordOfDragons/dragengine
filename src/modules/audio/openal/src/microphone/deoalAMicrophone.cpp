@@ -34,6 +34,7 @@
 #include "../environment/deoalEnvProbeList.h"
 #include "../environment/raytrace/deoalSoundRay.h"
 #include "../environment/raytrace/deoalSoundRaySegment.h"
+#include "../extensions/deoalExtensions.h"
 #include "../speaker/deoalASpeaker.h"
 #include "../world/deoalAWorld.h"
 #include "../world/octree/deoalWorldOctree.h"
@@ -713,14 +714,19 @@ void deoalAMicrophone::pProcessEffects(){
 	#endif
 	
 	// update effects of all speakers in audible range
-	if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
-		pAudioThread.GetSharedEffectSlotManager().ClearSpeakers();
-	}
+	// if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
+		// pAudioThread.GetSharedEffectSlotManager().ClearSpeakers();
+	// }
 	
 	pActiveSpeakers.UpdateEffectsAll();
 	
-	if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
-		pAudioThread.GetSharedEffectSlotManager().AssignSpeakers();
+	// if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
+		// pAudioThread.GetSharedEffectSlotManager().AssignSpeakers();
+	// }
+	
+	if( ! pAudioThread.GetExtensions().GetHasEFX()
+	|| ! pAudioThread.GetConfiguration().GetEnableEFX() ){
+		pAudioThread.GetSharedEffectSlotManager().DisableEffects();
 	}
 }
 

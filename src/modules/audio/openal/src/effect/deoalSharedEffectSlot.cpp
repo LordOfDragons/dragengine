@@ -25,6 +25,7 @@
 #include "../audiothread/deoalATLogger.h"
 #include "../environment/deoalEnvironment.h"
 #include "../speaker/deoalASpeaker.h"
+#include "../source/deoalSource.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -85,12 +86,35 @@ void deoalSharedEffectSlot::AddSpeaker( deoalASpeaker *speaker ){
 	if( ! pRefEnv ){
 		pRefEnv = speaker->GetEnvironment();
 		pRefAttGain = speaker->GetAttenuatedGain();
+		UpdateEffectSlot();
+	}
+}
+
+void deoalSharedEffectSlot::RemoveSpeaker( deoalASpeaker *speaker ){
+	const int index = pSpeakers.IndexOf( speaker );
+	if( index == -1 ){
+		return;
+	}
+	
+	pSpeakers.RemoveFrom( index );
+	
+	if( index == 0 ){
+		pRefEnv = nullptr;
+		
+		if( pSpeakers.GetCount() > 0 ){
+			speaker = ( deoalASpeaker* )pSpeakers.GetAt( 0 );
+			pRefEnv = speaker->GetEnvironment();
+			pRefAttGain = speaker->GetAttenuatedGain();
+		}
+		
+		UpdateEffectSlot();
 	}
 }
 
 void deoalSharedEffectSlot::RemoveAllSpeakers(){
 	pSpeakers.RemoveAll();
 	pRefEnv = nullptr;
+	UpdateEffectSlot();
 }
 
 void deoalSharedEffectSlot::UpdateEffectSlot(){
@@ -181,4 +205,26 @@ void deoalSharedEffectSlot::UpdateEffectSlot(){
 	// to be in place for the effect to work
 	// 
 	// see deoalSource::GetSendSlot()
+}
+
+bool deoalSharedEffectSlot::IsEmpty() const{
+	return pRefEnv != nullptr;
+}
+
+void deoalSharedEffectSlot::DisableEffects(){
+	const int count = pSpeakers.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoalASpeaker &speaker = *( ( deoalASpeaker* )pSpeakers.GetAt( i ) );
+		if( speaker.GetSource() ){
+			speaker.GetSource()->DropEffectSlot();
+			OAL_CHECK( pAudioThread, alSource3i( speaker.GetSource()->GetSource(),
+				AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+		}
+	}
+	
+	pSpeakers.RemoveAll();
+	pRefEnv = nullptr;
+	DropEffectSlot();
 }

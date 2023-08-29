@@ -102,6 +102,26 @@ const deoalEnvironment &environment, float &bestDistance ) const{
 	return ( deoalSharedEffectSlot* )pSlots.GetAt( bestSlot );
 }
 
+deoalSharedEffectSlot *deoalSharedEffectSlotManager::FirstEmptySlot() const{
+	int i;
+	for( i=0; i<pMaxCount; i++ ){
+		deoalSharedEffectSlot * const slot = ( deoalSharedEffectSlot* )pSlots.GetAt( i );
+		if( slot->IsEmpty() ){
+			return slot;
+		}
+	}
+	return nullptr;
+}
+
+void deoalSharedEffectSlotManager::DisableEffects(){
+	ClearSpeakers();
+	
+	int i;
+	for( i=0; i<pMaxCount; i++ ){
+		( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) )->DisableEffects();
+	}
+}
+
 
 
 // Private Functions

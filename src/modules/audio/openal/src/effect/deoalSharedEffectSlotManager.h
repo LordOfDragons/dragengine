@@ -71,9 +71,15 @@ public:
 	/** Assign speakers to shared effect slots. */
 	void AssignSpeakers();
 	
-	/** Best matching shared effect slot. */
+	/** Best matching shared effect slot or nullptr. */
 	deoalSharedEffectSlot *BestMatchingSlot( const deoalEnvironment &environment,
 		float &bestDistance ) const;
+	
+	/** First empty slot or nullptr. */
+	deoalSharedEffectSlot *FirstEmptySlot() const;
+	
+	/** Disable effects. */
+	void DisableEffects();
 	/*@}*/
 	
 	

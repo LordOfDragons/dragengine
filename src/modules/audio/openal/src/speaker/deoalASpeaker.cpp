@@ -33,6 +33,7 @@
 #include "../environment/deoalEnvironment.h"
 #include "../effect/deoalFilter.h"
 #include "../effect/deoalEffectSlot.h"
+#include "../effect/deoalSharedEffectSlot.h"
 #include "../effect/deoalSharedEffectSlotManager.h"
 #include "../extensions/deoalExtensions.h"
 #include "../microphone/deoalAMicrophone.h"
@@ -1669,7 +1670,7 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	}
 	
 	if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
-		pAudioThread.GetSharedEffectSlotManager().AddSpeaker( this );
+		pUpdateEnvironmentEffectShared();
 		return;
 	}
 	
@@ -1750,6 +1751,54 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	// to be in place for the effect to work
 	// 
 	// see deoalSource::GetSendSlot()
+}
+
+void deoalASpeaker::pUpdateEnvironmentEffectShared(){
+	deoalSharedEffectSlotManager &sem = pAudioThread.GetSharedEffectSlotManager();
+	const deoalConfiguration &config = pAudioThread.GetConfiguration();
+	
+	// sem.AddSpeaker( this );
+	
+	float bestDistance = 0.0f;
+	deoalSharedEffectSlot * const bestSlot = sem.BestMatchingSlot( *pEnvironment, bestDistance );
+	deoalSharedEffectSlot * const emptySlot = sem.FirstEmptySlot();
+	
+	if( pSharedEffectSlot && pSharedEffectSlot->GetReferenceEnvironment()->
+	Distance( *pEnvironment, false ) >= config.GetSwitchSharedEnvironmentThreshold() ){
+		bool doSwitch = false;
+		
+		if( emptySlot ){
+			doSwitch = true;
+			
+		}else if( bestSlot ){
+			doSwitch = bestSlot != pSharedEffectSlot
+				&& bestDistance <= config.GetShareEnvironmentThreshold();
+		}
+		
+		if( doSwitch ){
+			OAL_CHECK( pAudioThread, alSource3i( pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
+				AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+			pSharedEffectSlot->RemoveSpeaker( this );
+			pSharedEffectSlot = nullptr;
+		}
+	}
+	
+	if( pSharedEffectSlot ){
+		return;
+	}
+	
+	if( emptySlot ){
+		pSharedEffectSlot = emptySlot;
+		
+	}else if( bestSlot ){
+		pSharedEffectSlot = bestSlot;
+	}
+	
+	if( pSharedEffectSlot ){
+		pSharedEffectSlot->AddSpeaker( this );
+		OAL_CHECK( pAudioThread, alSource3i( pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
+			pSharedEffectSlot->GetEffectSlot()->GetSlot(), 0, AL_FILTER_NULL ) );
+	}
 }
 
 
