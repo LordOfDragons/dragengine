@@ -39,7 +39,7 @@
 
 deoalSharedEffectSlot::deoalSharedEffectSlot( deoalAudioThread &audioThread ) :
 pAudioThread( audioThread ),
-pRefEnv( nullptr ){
+pRefSpeaker( nullptr ){
 }
 
 deoalSharedEffectSlot::~deoalSharedEffectSlot(){
@@ -83,9 +83,8 @@ void deoalSharedEffectSlot::AddSpeaker( deoalASpeaker *speaker ){
 	
 	pSpeakers.Add( speaker );
 	
-	if( ! pRefEnv ){
-		pRefEnv = speaker->GetEnvironment();
-		pRefAttGain = speaker->GetAttenuatedGain();
+	if( ! pRefSpeaker ){
+		pRefSpeaker = speaker;
 		UpdateEffectSlot();
 	}
 }
@@ -99,12 +98,10 @@ void deoalSharedEffectSlot::RemoveSpeaker( deoalASpeaker *speaker ){
 	pSpeakers.RemoveFrom( index );
 	
 	if( index == 0 ){
-		pRefEnv = nullptr;
+		pRefSpeaker = nullptr;
 		
 		if( pSpeakers.GetCount() > 0 ){
-			speaker = ( deoalASpeaker* )pSpeakers.GetAt( 0 );
-			pRefEnv = speaker->GetEnvironment();
-			pRefAttGain = speaker->GetAttenuatedGain();
+			pRefSpeaker = ( deoalASpeaker* )pSpeakers.GetAt( 0 );
 		}
 		
 		UpdateEffectSlot();
@@ -112,8 +109,32 @@ void deoalSharedEffectSlot::RemoveSpeaker( deoalASpeaker *speaker ){
 }
 
 void deoalSharedEffectSlot::RemoveAllSpeakers(){
+	const int count = pSpeakers.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		deoalASpeaker &speaker = *( ( deoalASpeaker* )pSpeakers.GetAt( i ) );
+		if( speaker.GetSource() ){
+			OAL_CHECK( pAudioThread, alSource3i( speaker.GetSource()->GetSource(),
+				AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+		}
+		speaker.SetSharedEffectSlot( nullptr );
+	}
+	
 	pSpeakers.RemoveAll();
-	pRefEnv = nullptr;
+	
+	pRefSpeaker = nullptr;
+	UpdateEffectSlot();
+}
+
+void deoalSharedEffectSlot::MoveSpeakerFront( deoalASpeaker *speaker ){
+	const int index = pSpeakers.IndexOf( speaker );
+	if( index < 1 ){
+		return;
+	}
+	
+	pSpeakers.Move( index, 0 );
+	
+	pRefSpeaker = speaker;
 	UpdateEffectSlot();
 }
 
@@ -123,7 +144,7 @@ void deoalSharedEffectSlot::UpdateEffectSlot(){
 		return;
 	}
 	
-	if( ! pRefEnv ){
+	if( ! pRefSpeaker || ! pRefSpeaker->GetEnvironment() ){
 		// pEffectSlot->SetEffectType( AL_EFFECT_NULL );
 		// pEffectSlot->UpdateSlot( 0.0f );
 		return;
@@ -132,34 +153,36 @@ void deoalSharedEffectSlot::UpdateEffectSlot(){
 	// this is actually not correct since we use the same ratio between reverb gain and attenuated
 	// gain for all speakers. but sharing effects slots across multiple speakers is anyways not
 	// correct so this should not be a problem
-	const float reverbGain = pRefEnv->GetReverbGain() / decMath::max( pRefAttGain, 0.001f );
+	const deoalEnvironment &environment = *pRefSpeaker->GetEnvironment();
+	const float reverbGain = environment.GetReverbGain()
+		/ decMath::max( pRefSpeaker->GetAttenuatedGain(), 0.001f );
 	
 	const ALuint effect = pEffectSlot->GetEffect();
 	
 	pEffectSlot->SetEffectType( AL_EFFECT_EAXREVERB );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAIN, 1.0f ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINHF, pRefEnv->GetReverbGainHF() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINLF, pRefEnv->GetReverbGainLF() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_TIME, pRefEnv->GetReverbDecayTime() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_HFRATIO, pRefEnv->GetReverbDecayHFRatio() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_LFRATIO, pRefEnv->GetReverbDecayLFRatio() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINHF, environment.GetReverbGainHF() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINLF, environment.GetReverbGainLF() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_TIME, environment.GetReverbDecayTime() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_HFRATIO, environment.GetReverbDecayHFRatio() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_LFRATIO, environment.GetReverbDecayLFRatio() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_GAIN, decMath::min(
-		reverbGain * pRefEnv->GetReverbReflectionGain(), AL_EAXREVERB_MAX_REFLECTIONS_GAIN ) ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_DELAY, pRefEnv->GetReverbReflectionDelay() ) );
+		reverbGain * environment.GetReverbReflectionGain(), AL_EAXREVERB_MAX_REFLECTIONS_GAIN ) ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_DELAY, environment.GetReverbReflectionDelay() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_GAIN, decMath::min(
-		reverbGain * pRefEnv->GetReverbLateReverbGain(), AL_EAXREVERB_MAX_LATE_REVERB_GAIN ) ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_DELAY, pRefEnv->GetReverbLateReverbDelay() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_ECHO_TIME, pRefEnv->GetReverbEchoTime() ) );
+		reverbGain * environment.GetReverbLateReverbGain(), AL_EAXREVERB_MAX_LATE_REVERB_GAIN ) ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_DELAY, environment.GetReverbLateReverbDelay() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_ECHO_TIME, environment.GetReverbEchoTime() ) );
 	
 	ALfloat alvector[ 3 ];
-	alvector[ 0 ] = 0.0f; //( ALfloat )pRefEnv->GetReverbReflectionPan().x;
-	alvector[ 1 ] = 0.0f; //( ALfloat )pRefEnv->GetReverbReflectionPan().y;
-	alvector[ 2 ] = 0.0f; //( ALfloat )pRefEnv->GetReverbReflectionPan().z;
+	alvector[ 0 ] = 0.0f; //( ALfloat )environment.GetReverbReflectionPan().x;
+	alvector[ 1 ] = 0.0f; //( ALfloat )environment.GetReverbReflectionPan().y;
+	alvector[ 2 ] = 0.0f; //( ALfloat )environment.GetReverbReflectionPan().z;
 	OAL_CHECK( pAudioThread, palEffectfv( effect, AL_EAXREVERB_REFLECTIONS_PAN, &alvector[ 0 ] ) );
 	
-	alvector[ 0 ] = 0.0f; //( ALfloat )pRefEnv->GetReverbLateReverbPan().x;
-	alvector[ 1 ] = 0.0f; //( ALfloat )pRefEnv->GetReverbLateReverbPan().y;
-	alvector[ 2 ] = 0.0f; //( ALfloat )pRefEnv->GetReverbLateReverbPan().z;
+	alvector[ 0 ] = 0.0f; //( ALfloat )environment.GetReverbLateReverbPan().x;
+	alvector[ 1 ] = 0.0f; //( ALfloat )environment.GetReverbLateReverbPan().y;
+	alvector[ 2 ] = 0.0f; //( ALfloat )environment.GetReverbLateReverbPan().z;
 	OAL_CHECK( pAudioThread, palEffectfv( effect, AL_EAXREVERB_LATE_REVERB_PAN, &alvector[ 0 ] ) );
 	
 	// OpenAL performance note:
@@ -185,13 +208,13 @@ void deoalSharedEffectSlot::UpdateEffectSlot(){
 	// extra processing time
 	
 	// pAudioThread.GetLogger().LogInfoFormat("pUpdateEnvironmentEffect: %p g=(%.3f,%.3f) d=(%.3f,%.3f,%.3f) rg=(%.3f,%.3f) rd=(%.3f,%.3f) et=%.3f",
-	// 	this, pRefEnv->GetReverbGainHF(), pRefEnv->GetReverbGainLF(),
-	// 	pRefEnv->GetReverbDecayTime(), pRefEnv->GetReverbDecayHFRatio(), pRefEnv->GetReverbDecayLFRatio(),
-	// 	reverbGain * pRefEnv->GetReverbReflectionGain(), reverbGain * pRefEnv->GetReverbLateReverbGain(),
-	// 	pRefEnv->GetReverbReflectionDelay(), pRefEnv->GetReverbLateReverbDelay(),
-	// 	pRefEnv->GetReverbEchoTime());
+	// 	this, environment.GetReverbGainHF(), environment.GetReverbGainLF(),
+	// 	environment.GetReverbDecayTime(), environment.GetReverbDecayHFRatio(), environment.GetReverbDecayLFRatio(),
+	// 	reverbGain * environment.GetReverbReflectionGain(), reverbGain * environment.GetReverbLateReverbGain(),
+	// 	environment.GetReverbReflectionDelay(), environment.GetReverbLateReverbDelay(),
+	// 	environment.GetReverbEchoTime());
 	
-	pEffectSlot->UpdateSlot( 0.0f /*pRefEnv->GetEffectKeepAliveTimeout()*/ );
+	pEffectSlot->UpdateSlot( 0.0f /*environment.GetEffectKeepAliveTimeout()*/ );
 	
 	// this one here is difficult to understand and handle. the documentation is lacking in this
 	// regard so look at an anwser found online:
@@ -208,23 +231,5 @@ void deoalSharedEffectSlot::UpdateEffectSlot(){
 }
 
 bool deoalSharedEffectSlot::IsEmpty() const{
-	return pRefEnv != nullptr;
-}
-
-void deoalSharedEffectSlot::DisableEffects(){
-	const int count = pSpeakers.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		deoalASpeaker &speaker = *( ( deoalASpeaker* )pSpeakers.GetAt( i ) );
-		if( speaker.GetSource() ){
-			speaker.GetSource()->DropEffectSlot();
-			OAL_CHECK( pAudioThread, alSource3i( speaker.GetSource()->GetSource(),
-				AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
-		}
-	}
-	
-	pSpeakers.RemoveAll();
-	pRefEnv = nullptr;
-	DropEffectSlot();
+	return pRefSpeaker == nullptr;
 }

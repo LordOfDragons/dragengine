@@ -253,6 +253,9 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalASpeaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalFakeSpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -706,6 +709,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalASpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalFakeSpeaker.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeaker.h">

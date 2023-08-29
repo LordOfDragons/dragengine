@@ -82,7 +82,7 @@ void deoalSharedEffectSlotManager::AssignSpeakers(){
 	}
 	pAssignRefSpeaker();
 	pAssignSpeakers();
-	// pDebugLogState();
+	// DebugLogState();
 }
 
 deoalSharedEffectSlot *deoalSharedEffectSlotManager::BestMatchingSlot(
@@ -91,15 +91,20 @@ const deoalEnvironment &environment, float &bestDistance ) const{
 	bestDistance = 0.0f;
 	
 	for( i=0; i<pMaxCount; i++ ){
-		const float distance = environment.Distance(
-			*( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) )->GetReferenceEnvironment(), false );
+		const deoalASpeaker * const refSpeaker =
+			( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) )->GetReferenceSpeaker();
+		if( ! refSpeaker || ! refSpeaker->GetEnvironment() ){
+			continue;
+		}
+		
+		const float distance = environment.Distance( *refSpeaker->GetEnvironment(), false );
 		if( bestSlot == -1 or distance < bestDistance ){
 			bestSlot = i;
 			bestDistance = distance;
 		}
 	}
 	
-	return ( deoalSharedEffectSlot* )pSlots.GetAt( bestSlot );
+	return bestSlot != -1 ? ( deoalSharedEffectSlot* )pSlots.GetAt( bestSlot ) : nullptr;
 }
 
 deoalSharedEffectSlot *deoalSharedEffectSlotManager::FirstEmptySlot() const{
@@ -113,13 +118,77 @@ deoalSharedEffectSlot *deoalSharedEffectSlotManager::FirstEmptySlot() const{
 	return nullptr;
 }
 
-void deoalSharedEffectSlotManager::DisableEffects(){
+void deoalSharedEffectSlotManager::DropEffects(){
 	ClearSpeakers();
 	
 	int i;
 	for( i=0; i<pMaxCount; i++ ){
-		( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) )->DisableEffects();
+		( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) )->RemoveAllSpeakers();
 	}
+}
+
+void deoalSharedEffectSlotManager::DebugLogState(){
+	decString text;
+	int i;
+	
+#if 0
+	for( i=0; i<pMaxCount; i++ ){
+		const deoalSharedEffectSlot &slot = *( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) );
+		text.AppendFormat( " %d(%d)", i, slot.GetSpeakerCount() );
+	}
+	pAudioThread.GetLogger().LogInfoFormat("SharedEffectSlots: %s", text.GetString() );
+	
+	text.Empty();
+	for( i=0; i<pSpeakers.GetCount(); i++ ){
+		const deoalASpeaker &speaker = *( ( deoalASpeaker* )pSpeakers.GetAt( i ) );
+		decString source;
+		if( speaker.GetSound() ){
+			source = speaker.GetSound()->GetFilename();
+			const int delimiter = source.FindReverse( '/' );
+			source = source.GetMiddle( delimiter != -1 ? delimiter + 1 : 0, source.GetLength() - 4 );
+		}
+		text.AppendFormat( " %.3f(%s)", speaker.GetSharedEffectSlotDistance(), source.GetString() );
+	}
+	pAudioThread.GetLogger().LogInfoFormat("SharedEffectSlots: %s", text.GetString() );
+#endif
+	
+	int j;
+	
+	text.Empty();
+	for( i=0; i<pMaxCount; i++ ){
+		const deoalSharedEffectSlot &slot = *( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) );
+		const int speakerCount = slot.GetSpeakerCount();
+		
+		if( speakerCount == 0 ){
+			text.AppendFormat( "%s%d[]", i > 0 ? " | " : "", i );
+			continue;
+		}
+		
+		const deoalEnvironment &environment = *slot.GetReferenceSpeaker()->GetEnvironment();
+		
+		text.AppendFormat( "%s%d[", i > 0 ? " | " : "", i );
+		for( j=0; j<speakerCount; j++ ){
+			const deoalASpeaker &speaker = *slot.GetSpeakerAt( j );
+			const float dist = environment.Distance( *speaker.GetEnvironment(), false );
+			
+			decString source;
+			if( speaker.GetSound() ){
+				source = speaker.GetSound()->GetFilename();
+				const int delimiter = source.FindReverse( '/' );
+				source = source.GetMiddle( delimiter != -1 ? delimiter + 1 : 0, source.GetLength() - 4 );
+			}
+			
+			text.AppendFormat( "%s%.3f(%s)", j > 0 ? ", " : "", dist, source.GetString() );
+		}
+		text.Append( "]" );
+	}
+	
+	int totalSpeakerCount = 0;
+	for( i=0; i<pMaxCount; i++ ){
+		totalSpeakerCount += ( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) )->GetSpeakerCount();
+	}
+	
+	pAudioThread.GetLogger().LogInfoFormat("SharedEffectSlots(%d): %s", totalSpeakerCount, text.GetString() );
 }
 
 
@@ -216,61 +285,4 @@ void deoalSharedEffectSlotManager::pAssignSpeakers(){
 		OAL_CHECK( pAudioThread, alSource3i( speaker->GetSource()->GetSource(),
 			AL_AUXILIARY_SEND_FILTER, slot.GetEffectSlot()->GetSlot(), 0, AL_FILTER_NULL ) );
 	}
-}
-
-void deoalSharedEffectSlotManager::pDebugLogState(){
-	decString text;
-	int i;
-	
-#if 0
-	for( i=0; i<pMaxCount; i++ ){
-		const deoalSharedEffectSlot &slot = *( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) );
-		text.AppendFormat( " %d(%d)", i, slot.GetSpeakerCount() );
-	}
-	pAudioThread.GetLogger().LogInfoFormat("SharedEffectSlots: %s", text.GetString() );
-	
-	text.Empty();
-	for( i=0; i<pSpeakers.GetCount(); i++ ){
-		const deoalASpeaker &speaker = *( ( deoalASpeaker* )pSpeakers.GetAt( i ) );
-		decString source;
-		if( speaker.GetSound() ){
-			source = speaker.GetSound()->GetFilename();
-			const int delimiter = source.FindReverse( '/' );
-			source = source.GetMiddle( delimiter != -1 ? delimiter + 1 : 0, source.GetLength() - 4 );
-		}
-		text.AppendFormat( " %.3f(%s)", speaker.GetSharedEffectSlotDistance(), source.GetString() );
-	}
-	pAudioThread.GetLogger().LogInfoFormat("SharedEffectSlots: %s", text.GetString() );
-#endif
-	
-	int j;
-	text.Empty();
-	for( i=0; i<pMaxCount; i++ ){
-		const deoalSharedEffectSlot &slot = *( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) );
-		const int speakerCount = slot.GetSpeakerCount();
-		
-		if( speakerCount == 0 ){
-			text.AppendFormat( "%s%d()", i > 0 ? " | " : "", i );
-			continue;
-		}
-		
-		const deoalEnvironment &env = *slot.GetReferenceEnvironment();
-		
-		text.AppendFormat( " %d(", i );
-		for( j=0; j<speakerCount; j++ ){
-			const deoalASpeaker &speaker = *slot.GetSpeakerAt( j );
-			const float dist = env.Distance( *speaker.GetEnvironment(), false );
-			
-			decString source;
-			if( speaker.GetSound() ){
-				source = speaker.GetSound()->GetFilename();
-				const int delimiter = source.FindReverse( '/' );
-				source = source.GetMiddle( delimiter != -1 ? delimiter + 1 : 0, source.GetLength() - 4 );
-			}
-			
-			text.AppendFormat( "%s%.3f(%s)", j > 0 ? ", " : "", dist, source.GetString() );
-		}
-		text.Append( ")" );
-	}
-	pAudioThread.GetLogger().LogInfoFormat("SharedEffectSlots: %s", text.GetString() );
 }

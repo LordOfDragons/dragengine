@@ -78,8 +78,11 @@ public:
 	/** First empty slot or nullptr. */
 	deoalSharedEffectSlot *FirstEmptySlot() const;
 	
-	/** Disable effects. */
-	void DisableEffects();
+	/** Drop effects. */
+	void DropEffects();
+	
+	/** Debug log state. */
+	void DebugLogState();
 	/*@}*/
 	
 	
@@ -89,7 +92,6 @@ private:
 	void pSortSpeakerParamByDistance( int left, int right );
 	void pAssignRefSpeaker();
 	void pAssignSpeakers();
-	void pDebugLogState();
 };
 
 #endif

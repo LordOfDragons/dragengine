@@ -131,6 +131,7 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\source\deoalSource.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\source\deoalSourceManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalASpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalFakeSpeaker.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeaker.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeakerList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\synthesizer\deoalASynthesizerInstance.cpp" />
@@ -284,6 +285,7 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\source\deoalSource.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\source\deoalSourceManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalASpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalFakeSpeaker.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeaker.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeakerList.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\synthesizer\deoalASynthesizerInstance.h" />

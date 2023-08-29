@@ -55,8 +55,8 @@ pFrameRateLimit( 0 ), // 0 means disabled
 pAsyncAudioSkipSyncTimeRatio( 0.5 ),
 
 pUseSharedEffectSlots( true ),
-pShareEnvironmentThreshold( 0.1f ),
-pSwitchSharedEnvironmentThreshold( 0.2f )
+pShareEnvironmentThreshold( 0.05f ),
+pSwitchSharedEnvironmentThreshold( 0.1f )
 {
 	pApplyAuralizationProfile();
 }

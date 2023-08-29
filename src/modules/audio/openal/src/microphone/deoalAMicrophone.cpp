@@ -726,7 +726,10 @@ void deoalAMicrophone::pProcessEffects(){
 	
 	if( ! pAudioThread.GetExtensions().GetHasEFX()
 	|| ! pAudioThread.GetConfiguration().GetEnableEFX() ){
-		pAudioThread.GetSharedEffectSlotManager().DisableEffects();
+		pAudioThread.GetSharedEffectSlotManager().DropEffects();
+		
+	}else{
+		// pAudioThread.GetSharedEffectSlotManager().DebugLogState();
 	}
 }
 

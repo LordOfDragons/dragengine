@@ -46,8 +46,7 @@ private:
 	deoalEffectSlot::Ref pEffectSlot;
 	
 	decObjectList pSpeakers;
-	deoalEnvironment *pRefEnv;
-	float pRefAttGain;
+	deoalASpeaker *pRefSpeaker;
 	
 	
 	
@@ -91,17 +90,17 @@ public:
 	/** Remove all speakers. */
 	void RemoveAllSpeakers();
 	
-	/** Reference environment or nullptr. */
-	inline deoalEnvironment *GetReferenceEnvironment() const{ return pRefEnv; }
+	/** Move speaker to first position and make it reference. */
+	void MoveSpeakerFront( deoalASpeaker *speaker );
+	
+	/** Reference speaker or nullptr. */
+	inline deoalASpeaker *GetReferenceSpeaker() const{ return pRefSpeaker; }
 	
 	/** Update effect slot. */
 	void UpdateEffectSlot();
 	
 	/** Is empty. */
 	bool IsEmpty() const;
-	
-	/** Disable effects. */
-	void DisableEffects();
 	/*@}*/
 };
 

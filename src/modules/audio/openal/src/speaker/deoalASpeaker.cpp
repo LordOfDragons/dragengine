@@ -131,14 +131,14 @@ pAttenuationDistanceOffset( 0.0f ),
 pFinalGain( 0.0f ),
 pAttenuatedGain( 0.0f ),
 
-pEnvironment( NULL ),
+pEnvironment( nullptr ),
 pSharedEffectSlotDistance( 0.0f ),
 pSharedEffectSlot( nullptr ),
 
 pMicrophoneMarkedRemove( false ),
 pWorldMarkedRemove( false ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL )
+pLLWorldPrev( nullptr ),
+pLLWorldNext( nullptr )
 {
 	LEAK_CHECK_CREATE( audioThread, Speaker );
 }
@@ -724,6 +724,19 @@ void deoalASpeaker::SetSharedEffectSlot( deoalSharedEffectSlot *effectSlot ){
 	pSharedEffectSlot = effectSlot;
 }
 
+void deoalASpeaker::DropSharedEffectSlot(){
+	if( ! pSharedEffectSlot ){
+		return;
+	}
+	
+	if( pSource ){
+		OAL_CHECK( pAudioThread, alSource3i( pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
+			AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+	}
+	pSharedEffectSlot->RemoveSpeaker( this );
+	pSharedEffectSlot = nullptr;
+}
+
 bool deoalASpeaker::AffectsActiveMicrophone() const{
 	const deoalAMicrophone * const microphone = pAudioThread.GetActiveMicrophone();
 	if( ! microphone ){
@@ -782,32 +795,34 @@ public:
 };
 
 void deoalASpeaker::pCleanUp(){
-	pSoundDecoder = NULL;
+	DropSharedEffectSlot();
+	
+	pSoundDecoder = nullptr;
 	if( pBufferData ){
 		delete [] pBufferData;
-		pBufferData = NULL;
+		pBufferData = nullptr;
 	}
 	if( pEnvironment ){
 		delete pEnvironment;
-		pEnvironment = NULL;
+		pEnvironment = nullptr;
 	}
 	if( pSound ){
 		pSound->FreeReference();
-		pSound = NULL;
+		pSound = nullptr;
 	}
 	if( pSynthesizer ){
 		pSynthesizer->FreeReference();
-		pSynthesizer = NULL;
+		pSynthesizer = nullptr;
 	}
 	if( pVideoPlayer ){
 		pVideoPlayer->FreeReference();
-		pVideoPlayer = NULL;
+		pVideoPlayer = nullptr;
 	}
 	
 	// delayed deletion
 	pCheckStillSourceOwner();
 	if( pSource ){
-		deoalASpeakerDeletion *delayedDeletion = NULL;
+		deoalASpeakerDeletion *delayedDeletion = nullptr;
 		
 		try{
 			delayedDeletion = new deoalASpeakerDeletion;
@@ -1399,6 +1414,7 @@ void deoalASpeaker::pStopPlaySource(){
 		return;
 	}
 	
+	DropSharedEffectSlot();
 	pAudioThread.GetSourceManager().UnbindSource( pSource );
 	pSource = NULL;
 	pQueueSampleOffset = 0;
@@ -1602,8 +1618,9 @@ void deoalASpeaker::pEnsureEnvironment(){
 		}
 		
 	}else if( pEnvironment ){
+		DropSharedEffectSlot();
 		delete pEnvironment;
-		pEnvironment = NULL;
+		pEnvironment = nullptr;
 	}
 }
 
@@ -1666,6 +1683,7 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	
 	if( pEnvironment->GetReverbGain() < 0.01f ){ //0.001f
 		pSource->DropEffectSlot();
+		DropSharedEffectSlot();
 		return;
 	}
 	
@@ -1763,27 +1781,36 @@ void deoalASpeaker::pUpdateEnvironmentEffectShared(){
 	deoalSharedEffectSlot * const bestSlot = sem.BestMatchingSlot( *pEnvironment, bestDistance );
 	deoalSharedEffectSlot * const emptySlot = sem.FirstEmptySlot();
 	
-	if( pSharedEffectSlot && pSharedEffectSlot->GetReferenceEnvironment()->
-	Distance( *pEnvironment, false ) >= config.GetSwitchSharedEnvironmentThreshold() ){
-		bool doSwitch = false;
-		
-		if( emptySlot ){
-			doSwitch = true;
-			
-		}else if( bestSlot ){
-			doSwitch = bestSlot != pSharedEffectSlot
-				&& bestDistance <= config.GetShareEnvironmentThreshold();
-		}
-		
-		if( doSwitch ){
-			OAL_CHECK( pAudioThread, alSource3i( pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
-				AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
-			pSharedEffectSlot->RemoveSpeaker( this );
-			pSharedEffectSlot = nullptr;
+	if( pSharedEffectSlot ){
+		const deoalASpeaker * const refSpeaker = pSharedEffectSlot->GetReferenceSpeaker();
+		if( refSpeaker ){
+			const deoalEnvironment * const refEnv = refSpeaker->GetEnvironment();
+			if( refEnv && refEnv->Distance( *pEnvironment, false )
+			>= config.GetSwitchSharedEnvironmentThreshold() ){
+				if( emptySlot ){
+					DropSharedEffectSlot();
+					
+				}else if( bestSlot && bestSlot != pSharedEffectSlot
+				&& bestDistance <= config.GetShareEnvironmentThreshold() ){
+					DropSharedEffectSlot();
+				}
+			}
 		}
 	}
 	
 	if( pSharedEffectSlot ){
+		if( pSharedEffectSlot->GetReferenceSpeaker() == this ){
+			pSharedEffectSlot->UpdateEffectSlot();
+			/*
+		}else{
+			const decDVector &micpos = pAudioThread.GetActiveMicrophone()->GetPosition();
+			
+			if( ( pSharedEffectSlot->GetSpeakerAt( 0 )->GetPosition() - micpos ).Length()
+			- ( pPosition - micpos ).Length() > 2.0 ){
+				pSharedEffectSlot->MoveSpeakerFront( this );
+			}
+			*/
+		}
 		return;
 	}
 	

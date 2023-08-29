@@ -402,6 +402,9 @@ public:
 	/** Set shared effect slot. */
 	void SetSharedEffectSlot( deoalSharedEffectSlot *effectSlot );
 	
+	/** Drop shared effect slot. */
+	void DropSharedEffectSlot();
+	
 	
 	
 	/** Sound level meters tracking this speaker. */
