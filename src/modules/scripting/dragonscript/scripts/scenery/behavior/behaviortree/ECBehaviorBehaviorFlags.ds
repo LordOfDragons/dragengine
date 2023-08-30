@@ -78,7 +78,9 @@ pin Dragengine.Utils
  * parameter "wait" to wait until the flag is set or cleared. If not waiting the action
  * returns immediately with BTResult.success if the flag is set otherwise BTResult.failure .
  * If waiting the action keeps running until the flags becomes set or cleared then returns
- * BTResult.success . A flag that has not been used so far is in cleared state.
+ * BTResult.success . A flag that has not been used so far is in cleared state. Use the optional
+ * parameter "reset" to toggle the flag if condition is finished. Hence if "reset" is used and
+ * the flag is set it is reset. This can be used for waiting and not waiting.
  * 
  * This is an example of using this action to check if a flag is set right now:
  * \code{.xml}
@@ -100,6 +102,15 @@ pin Dragengine.Utils
  * <action name='flags.check' id='waiting'>
  *    <parameter name='flag'>arrived at target</parameter>
  *    <parameter name='wait'/>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of using this action waiting until the flag is set and then clear it:
+ * \code{.xml}
+ * <action name='flags.check' id='waiting'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <parameter name='wait'>
+ *    <parameter name='reset'>
  * </action>
  * \endcode
  * 
@@ -151,13 +162,18 @@ class ECBehaviorBehaviorTreeFlags extends DefaultECBehavior
 			end
 			
 			func BTResult runAction(BTContext context, Dictionary parameters)
-				var bool flag = pInstance.getFlag(parameters.getAt("flag") cast String)
-				if parameters.has("cleared")
-					flag = not flag
-				end
+				var String flag = parameters.getAt("flag") cast String
+				var bool expected = not parameters.has("cleared")
 				
-				return flag if BTResult.success else (parameters.has("wait")\
-					if BTResult.running else BTResult.failure)
+				if pInstance.getFlag(flag) == expected
+					if parameters.has("reset")
+						pInstance.setFlag(flag, not expected)
+					end
+					return BTResult.success
+					
+				else
+					return parameters.has("wait") if BTResult.running else BTResult.failure
+				end
 			end
 		end
 		
