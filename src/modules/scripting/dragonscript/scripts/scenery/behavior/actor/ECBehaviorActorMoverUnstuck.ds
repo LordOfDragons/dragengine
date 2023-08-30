@@ -188,7 +188,8 @@ class ECBehaviorActorMoverUnstuck extends DefaultECBehavior
 		
 		/** \brief Update tracking. */
 		func void update(float elapsed)
-			if not pEnabled or pActorMover.hasNoGoal() or pActorMover.getPause()
+			// dispose protection: pActorMover == null
+			if not pEnabled or pActorMover == null or pActorMover.hasNoGoal() or pActorMover.getPause()
 				return
 			end
 			

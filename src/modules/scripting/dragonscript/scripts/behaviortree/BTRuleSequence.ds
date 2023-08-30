@@ -135,4 +135,11 @@ class BTRuleSequence extends BTRuleList
 			end
 		end
 	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleSequence(id='{}')".format(Array.newWith(getID()))
+	end
 end

@@ -141,4 +141,11 @@ class BTRuleChoice extends BTRuleList
 			end
 		end
 	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleChoice(id='{}')".format(Array.newWith(getID()))
+	end
 end

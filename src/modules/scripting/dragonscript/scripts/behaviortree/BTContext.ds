@@ -254,11 +254,7 @@ class BTContext
 		pActionFirstRun = true
 		
 		if pLogRuleChanges and pConsole != null
-			if rule.getID() != null
-				pConsole.addMessage(pLoggingName + ": Rule changed to '" + rule.getID() + "'")
-			else
-				pConsole.addMessage(pLoggingName + ": Rule changed to ''")
-			end
+			pConsole.addMessage(pLoggingName + ": Rule changed to " + rule)
 		end
 		
 		onCurrentRuleChanged()
@@ -386,13 +382,8 @@ class BTContext
 			pLastResult = rule.run(this)
 			
 			if pLogSteps and pConsole != null
-				if rule.getID() != null
-					pConsole.addMessage(pLoggingName + ": " + stepCount + ") Run '" \
-						+ rule.getID() + "' = " + pLastResult)
-				else
-					pConsole.addMessage(pLoggingName + ": " + stepCount \
-						+ ") Run '' = " + pLastResult)
-				end
+				pConsole.addMessage(pLoggingName + ": " + stepCount\
+					+ ") Run " + rule + " = " + pLastResult)
 			end
 			
 			if pLastResult == BTResult.running
@@ -428,13 +419,8 @@ class BTContext
 				pLastResult = rule.run(this)
 				
 				if pLogSteps and pConsole != null
-					if rule.getID() != null
-						pConsole.addMessage(pLoggingName + ": " + stepCount + ") Parent '" \
-							+ rule.getID() + "' = " + pLastResult)
-					else
-						pConsole.addMessage(pLoggingName + ": " + stepCount \
-							+ ") Parent '' = " + pLastResult)
-					end
+					pConsole.addMessage(pLoggingName + ": " + stepCount\
+						+ ") Parent " + rule + "' = " + pLastResult)
 				end
 				
 				if pLastResult == BTResult.running
@@ -444,7 +430,7 @@ class BTContext
 				if stepCount == runAwayLimit
 					var BTRunAwayException exception = BTRunAwayException.new(pRunAwayList)
 					if pConsole != null
-						pConsole.addMessage(pLoggingName + ": " \
+						pConsole.addMessage(pLoggingName + ": "\
 							+ exception.getReason() + "\n" + exception.getRunAwayBacktrace())
 					end
 					throw exception

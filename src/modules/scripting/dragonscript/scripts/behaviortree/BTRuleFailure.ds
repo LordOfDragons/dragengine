@@ -47,4 +47,11 @@ class BTRuleFailure extends BTRule
 	func BTResult run(BTContext context)
 		return BTResult.failure
 	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleFailure(id='{}')".format(Array.newWith(getID()))
+	end
 end

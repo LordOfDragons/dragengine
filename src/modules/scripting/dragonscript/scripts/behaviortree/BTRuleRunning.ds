@@ -39,4 +39,11 @@ class BTRuleRunning extends BTRule
 	func BTResult run(BTContext context)
 		return evaluateConditions(context) if BTResult.running else BTResult.failure
 	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleRunning(id='{}')".format(Array.newWith(getID()))
+	end
 end

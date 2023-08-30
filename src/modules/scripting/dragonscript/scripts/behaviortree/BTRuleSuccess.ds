@@ -36,4 +36,11 @@ class BTRuleSuccess extends BTRule
 	func BTResult run(BTContext context)
 		return evaluateConditions(context) if BTResult.success else BTResult.failure
 	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleSuccess(id='{}')".format(Array.newWith(getID()))
+	end
 end

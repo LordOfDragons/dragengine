@@ -85,4 +85,11 @@ class BTRuleAction extends BTRule
 		context.setActionFirstRun(false)
 		return result
 	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleAction(id='{}' action='{}')".format(Array.newWith(getID(), pActionID))
+	end
 end

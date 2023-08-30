@@ -148,7 +148,7 @@ class ECBehaviorBehaviorTreeFlags extends DefaultECBehavior
 			end
 			
 			func BTResult runAction(BTContext context, Dictionary parameters)
-				pInstance.setFlag(parameters.getAt("flag") cast String, not parameters.has("cleared"))
+				pInstance.setFlag(parameters.getAt("flag") cast String, not parameters.has("clear"))
 				return BTResult.success
 			end
 		end
