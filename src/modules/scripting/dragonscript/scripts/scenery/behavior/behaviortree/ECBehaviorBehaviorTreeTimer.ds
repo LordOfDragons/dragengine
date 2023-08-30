@@ -31,7 +31,7 @@ pin Dragengine.Utils
 /**
  * \brief Behavior element behavior adding timer support to behavior tree support.
  * 
- * Behavior adds behavior tree actions and conditions the a ECBehaviorBehaviorTree allowing
+ * Behavior adds behavior tree actions and conditions to an ECBehaviorBehaviorTree allowing
  * behavior trees to start and wait for multiple independent timers. This behavior can be added
  * multiple times to an element for each ECBehaviorBehaviorTree. Each instance creates an own
  * set of behavior tree action and conditions and timers. Hence to use more than one behavior
