@@ -755,12 +755,10 @@ void deoglRWorld::AddComponent( deoglRComponent *component ){
 }
 
 void deoglRWorld::RemoveComponent( deoglRComponent *component ){
-	if( component->GetParentWorld() != this ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( component->GetParentWorld() == this )
 	
 	RemovePrepareForRenderComponent( component );
-	component->SetParentWorld( NULL );
+	component->SetParentWorld( nullptr );
 	component->SetWorldMarkedRemove( false );
 	
 	if( component->GetLLWorldPrev() ){
@@ -787,8 +785,10 @@ void deoglRWorld::RemoveAllComponents(){
 		pRootComponent->SetLLWorldPrev( NULL ); // ensure root has no prev
 		
 		RemovePrepareForRenderComponent( pRootComponent );
-		pRootComponent->SetParentWorld( NULL );
-		pRootComponent->SetWorldMarkedRemove( false );
+		if( pRootComponent->GetParentWorld() ){ // required or marked for remove could be wrong
+			pRootComponent->SetParentWorld( nullptr );
+			pRootComponent->SetWorldMarkedRemove( false );
+		}
 		pComponentCount--;
 		pRootComponent->FreeReference();
 		
