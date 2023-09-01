@@ -725,13 +725,11 @@ void deoglRWorld::AddComponent( deoglRComponent *component ){
 	}
 	
 	if( component->GetParentWorld() ){
-		if( component->GetWorldMarkedRemove() ){
-			component->GetParentWorld()->RemoveComponent( component );
-			
-		}else{
-			DETHROW( deeInvalidParam );
-		}
+		DEASSERT_TRUE( component->GetWorldMarkedRemove() )
+		component->GetParentWorld()->RemoveComponent( component );
 	}
+	
+	component->SetWorldMarkedRemove( false ); // tricky problem. ensure it is always false
 	
 	if( pTailComponent ){
 		pTailComponent->SetLLWorldNext( component );
@@ -785,10 +783,8 @@ void deoglRWorld::RemoveAllComponents(){
 		pRootComponent->SetLLWorldPrev( NULL ); // ensure root has no prev
 		
 		RemovePrepareForRenderComponent( pRootComponent );
-		if( pRootComponent->GetParentWorld() ){ // required or marked for remove could be wrong
-			pRootComponent->SetParentWorld( nullptr );
-			pRootComponent->SetWorldMarkedRemove( false );
-		}
+		pRootComponent->SetParentWorld( nullptr );
+		pRootComponent->SetWorldMarkedRemove( false );
 		pComponentCount--;
 		pRootComponent->FreeReference();
 		
