@@ -196,6 +196,12 @@ void deoalEnvironment::SetLayerMask( const decLayerMask &layerMask ){
 	}
 }
 
+void deoalEnvironment::PrepareQuickDispose(){
+	if( pEnvProbe ){
+		pEnvProbe->SetOctreeNode( nullptr );
+	}
+}
+
 
 
 float deoalEnvironment::Distance( const deoalEnvironment &env, bool withPan ) const{

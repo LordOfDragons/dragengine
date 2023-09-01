@@ -196,6 +196,12 @@ void deoalASoundLevelMeter::UpdateOctreeNode(){
 }
 
 void deoalASoundLevelMeter::PrepareQuickDispose(){
+	if( pEnvProbeList ){
+		pEnvProbeList->PrepareQuickDispose();
+		delete pEnvProbeList;
+		pEnvProbeList = NULL;
+	}
+	
 	pSpeakers.RemoveAll();
 	pParentWorld = NULL;
 	pOctreeNode = NULL;

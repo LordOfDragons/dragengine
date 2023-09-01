@@ -172,6 +172,9 @@ public:
 	/** Environment data are valid. */
 	inline bool GetValid() const{ return pValid; }
 	
+	/** Prepare quick dispose. */
+	void PrepareQuickDispose();
+	
 	
 	
 	/** Low frequency gain. */

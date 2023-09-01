@@ -540,6 +540,12 @@ void deoalASpeaker::ResetStreaming(){
 }
 
 void deoalASpeaker::PrepareQuickDispose(){
+	if( pEnvironment ){
+		pEnvironment->PrepareQuickDispose();
+		delete pEnvironment;
+		pEnvironment = nullptr;
+	}
+	
 	pParentMicrophone = NULL;
 	pParentWorld = NULL;
 	pOctreeNode = NULL;
