@@ -56,7 +56,8 @@ pAsyncAudioSkipSyncTimeRatio( 0.5 ),
 
 pUseSharedEffectSlots( true ),
 pShareEnvironmentThreshold( 0.05f ),
-pSwitchSharedEnvironmentThreshold( 0.1f )
+pSwitchSharedEnvironmentThreshold( 0.1f ),
+pMaxSharedEffectSlots( 8 )
 {
 	pApplyAuralizationProfile();
 }
@@ -248,6 +249,17 @@ void deoalConfiguration::SetSwitchSharedEnvironmentThreshold( float threshold ){
 	pDirty = true;
 }
 
+void deoalConfiguration::SetMaxSharedEffectSlots( int count ){
+	DEASSERT_TRUE( count >= 2 )
+	DEASSERT_TRUE( count <= 8 )
+	if( count == pMaxSharedEffectSlots ){
+		return;
+	}
+	
+	pMaxSharedEffectSlots = count;
+	pDirty = true;
+}
+
 
 
 // Operators
@@ -272,6 +284,7 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 	pUseSharedEffectSlots = config.pUseSharedEffectSlots;
 	pShareEnvironmentThreshold = config.pShareEnvironmentThreshold;
 	pSwitchSharedEnvironmentThreshold = config.pSwitchSharedEnvironmentThreshold;
+	pMaxSharedEffectSlots = config.pMaxSharedEffectSlots;
 	return *this;
 }
 

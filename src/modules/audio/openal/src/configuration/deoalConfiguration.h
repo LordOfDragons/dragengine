@@ -95,6 +95,7 @@ private:
 	bool pUseSharedEffectSlots;
 	float pShareEnvironmentThreshold;
 	float pSwitchSharedEnvironmentThreshold;
+	int pMaxSharedEffectSlots;
 	
 	
 	
@@ -234,6 +235,12 @@ public:
 	
 	/** Set switch shared environment threshold. */
 	void SetSwitchSharedEnvironmentThreshold( float threshold );
+	
+	/** Maximum shared effect slot count. */
+	inline int GetMaxSharedEffectSlots() const{ return pMaxSharedEffectSlots; }
+	
+	/** Set maximum shared effect slot count. */
+	void SetMaxSharedEffectSlots( int count );
 	/*@}*/
 	
 	

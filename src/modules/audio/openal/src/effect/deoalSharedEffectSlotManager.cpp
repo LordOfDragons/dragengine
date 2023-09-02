@@ -39,15 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalSharedEffectSlotManager::deoalSharedEffectSlotManager(
-	deoalAudioThread &audioThread, int maxCount ) :
+deoalSharedEffectSlotManager::deoalSharedEffectSlotManager( deoalAudioThread &audioThread ) :
 pAudioThread( audioThread ),
-pMaxCount( maxCount )
+pMaxCount( 0 )
 {
-	int i;
-	for( i=0; i<maxCount; i++ ){
-		pSlots.Add( deoalSharedEffectSlot::Ref::New( new deoalSharedEffectSlot( audioThread ) ) );
-	}
+	SetMaxCount( audioThread.GetConfiguration().GetMaxSharedEffectSlots() );
 }
 
 deoalSharedEffectSlotManager::~deoalSharedEffectSlotManager(){
@@ -57,6 +53,25 @@ deoalSharedEffectSlotManager::~deoalSharedEffectSlotManager(){
 
 // Management
 ///////////////
+
+void deoalSharedEffectSlotManager::SetMaxCount( int count ){
+	DEASSERT_TRUE( count >= 1 )
+	if( count == pMaxCount ){
+		return;
+	}
+	
+	int i;
+	for( i=0; i<pMaxCount; i++ ){
+		( ( deoalSharedEffectSlot* )pSlots.GetAt( i ) )->RemoveAllSpeakers();
+	}
+	pSlots.RemoveAll();
+	
+	pMaxCount = count;
+	
+	for( i=0; i<count; i++ ){
+		pSlots.Add( deoalSharedEffectSlot::Ref::New( new deoalSharedEffectSlot( pAudioThread ) ) );
+	}
+}
 
 void deoalSharedEffectSlotManager::AddSpeaker( deoalASpeaker *speaker ){
 	DEASSERT_NOTNULL( speaker )

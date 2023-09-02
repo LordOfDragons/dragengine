@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create openal sared effect slot manager. */
-	deoalSharedEffectSlotManager( deoalAudioThread &audioThread, int maxCount );
+	deoalSharedEffectSlotManager( deoalAudioThread &audioThread );
 	
 	/** Clean up openal shared effect slot manager. */
 	~deoalSharedEffectSlotManager();
@@ -61,6 +61,12 @@ public:
 	/*@{*/
 	/** OpenAL module. */
 	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	
+	/** Maximum shared effect slot count. */
+	inline int GetMaxCount() const{ return pMaxCount; }
+	
+	/** Set maximum shared effect slot count. */
+	void SetMaxCount( int count );
 	
 	/** Add speaker. */
 	void AddSpeaker( deoalASpeaker *speaker );
