@@ -1573,7 +1573,7 @@ void debpColliderVolume::pUpdateAttachments( bool force ){
 			// TODO similar to component collider
 			
 		}else{
-			bpAttachment.Reposition( posMatrix, ! pPreventAttNotify );
+			bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify );
 		}
 	}
 	

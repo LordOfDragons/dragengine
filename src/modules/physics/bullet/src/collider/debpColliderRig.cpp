@@ -1269,7 +1269,7 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 		changed = false;
 		
 		if( attachType == deColliderAttachment::eatStatic ){
-			bpAttachment.Reposition( posMatrix, ! pPreventAttNotify );
+			bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify );
 			
 		}else if( attachType == deColliderAttachment::eatRig ){
 			if( ! engRig ){
@@ -1335,11 +1335,12 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 				boneIndex = bpAttachment.GetTrackBone();
 				
 				if( boneIndex == -1 ){
-					bpAttachment.Reposition( posMatrix, ! pPreventAttNotify );
+					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify );
 					
 				}else{
 					const deColliderBone &colBone = pColliderRig.GetBoneAt( boneIndex );
-					bpAttachment.Reposition( colBone.GetMatrix(), ! pPreventAttNotify );
+					bpAttachment.Reposition( colBone.GetMatrix(), colBone.GetLinearVelocity(),
+						! pPreventAttNotify );
 				}
 			}
 			
@@ -1360,17 +1361,20 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 				
 				if( weightCount > 0 ){
 					decDMatrix transform;
+					decVector velocity;
 					
 					for( j=0; j<weightCount; j++ ){
 						boneIndex = bpAttachment.GetBoneMappingAt( j );
 						weightFactor = weights[ j ].weight;
 						
 						if( boneIndex != -1 ){
-							transform.QuickAddTo( pColliderRig.GetBoneAt( boneIndex ).GetMatrix().QuickMultiply( weightFactor ) );
+							const deColliderBone &cbone = pColliderRig.GetBoneAt( boneIndex );
+							transform.QuickAddTo( cbone.GetMatrix().QuickMultiply( weightFactor ) );
+							velocity += cbone.GetLinearVelocity() * weightFactor;
 						}
 					}
 					
-					bpAttachment.Reposition( transform, ! pPreventAttNotify );
+					bpAttachment.Reposition( transform, velocity, ! pPreventAttNotify );
 				}
 			}
 			
