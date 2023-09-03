@@ -98,6 +98,8 @@ FXDEFMAP( igdeNativeFoxRenderView ) igdeNativeFoxRenderViewMap[] = {
 	FXMAPFUNC( SEL_DOUBLECLICKED, 0, igdeNativeFoxRenderView::onDoubleClicked ),
 	FXMAPFUNC( SEL_MOTION, 0, igdeNativeFoxRenderView::onMouseMove ),
 	FXMAPFUNC( SEL_MOUSEWHEEL, 0, igdeNativeFoxRenderView::onMouseWheel ),
+	FXMAPFUNC( SEL_ENTER, 0, igdeNativeFoxRenderView::onMouseEnter ),
+	FXMAPFUNC( SEL_LEAVE, 0, igdeNativeFoxRenderView::onMouseLeave ),
 	
 	// bug fix
 	FXMAPFUNC( SEL_TIMEOUT, igdeNativeFoxRenderView::ID_TIMEOUT_RETRY_MAP,
@@ -724,6 +726,24 @@ long igdeNativeFoxRenderView::onDoubleClicked( FXObject*, FXSelector, void *pdat
 	pOwner->NotifyDoubleClicked( deInputEvent::embcLeft, decPoint( event.win_x, event.win_y ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	return 1; // prevent further processing
+}
+
+long igdeNativeFoxRenderView::onMouseEnter( FXObject*, FXSelector, void* ){
+	if( ! pOwner || ! isEnabled() ){
+		return 1; // prevent further processing
+	}
+	
+	pOwner->NotifyMouseEnter();
+	return 1;
+}
+
+long igdeNativeFoxRenderView::onMouseLeave( FXObject *, FXSelector, void* ){
+	if( ! pOwner || ! isEnabled() ){
+		return 1; // prevent further processing
+	}
+	
+	pOwner->NotifyMouseLeave();
+	return 1;
 }
 
 long igdeNativeFoxRenderView::onTimeoutRetryMap( FXObject*, FXSelector, void* ){

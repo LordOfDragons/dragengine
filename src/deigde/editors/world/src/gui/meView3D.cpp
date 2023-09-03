@@ -72,7 +72,7 @@ public:
 	cEditorInteraction( meView3D &view ) : pView( view ){ }
 	
 public:
-	virtual void OnButtonPress( igdeWidget*, int button, const decPoint &position, int modifiers ){
+	void OnButtonPress( igdeWidget*, int button, const decPoint &position, int modifiers ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -95,7 +95,7 @@ public:
 		}
 	}
 	
-	virtual void OnButtonRelease( igdeWidget*, int button, const decPoint &position, int modifiers ){
+	void OnButtonRelease( igdeWidget*, int button, const decPoint &position, int modifiers ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -118,7 +118,7 @@ public:
 		}
 	}
 	
-	virtual void OnMouseMoved(igdeWidget*, const decPoint &position, int modifiers ){
+	void OnMouseMoved(igdeWidget*, const decPoint &position, int modifiers ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -128,7 +128,7 @@ public:
 			( modifiers & deInputEvent::esmControl ) == deInputEvent::esmControl );
 	}
 	
-	virtual void OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &change, int modifiers ){
+	void OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &change, int modifiers ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -138,7 +138,7 @@ public:
 			( modifiers & deInputEvent::esmControl ) == deInputEvent::esmControl );
 	}
 	
-	virtual void OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ){
+	void OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -147,13 +147,25 @@ public:
 			pView.GetEditor()->GetControlStart() );
 	}
 	
-	virtual void OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ){
+	void OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
 		
 		pView.GetEditor()->OnKeyRelease( keyCode, pView.GetEditor()->GetShiftStart(),
 			pView.GetEditor()->GetControlStart() );
+	}
+	
+	void OnMouseEnter( igdeWidget* ) override{
+		if( pView.GetEditor() ){
+			pView.GetEditor()->OnMouseEnter();
+		}
+	}
+	
+	void OnMouseLeave ( igdeWidget* ) override{
+		if( pView.GetEditor() ){
+			pView.GetEditor()->OnMousLeave();
+		}
 	}
 };
 
