@@ -134,6 +134,7 @@ pAttenuatedGain( 0.0f ),
 pEnvironment( nullptr ),
 pSharedEffectSlotDistance( 0.0f ),
 pSharedEffectSlot( nullptr ),
+pDelayedDropSharedEffectSlot( false ),
 
 pMicrophoneMarkedRemove( false ),
 pWorldMarkedRemove( false ),
@@ -591,9 +592,7 @@ void deoalASpeaker::SetFlag( bool flag ){
 void deoalASpeaker::SetParentWorld( deoalAWorld *world ){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( pParentMicrophone ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NULL( pParentMicrophone )
 	
 	if( world == pParentWorld ){
 		return;
@@ -731,6 +730,8 @@ void deoalASpeaker::SetSharedEffectSlot( deoalSharedEffectSlot *effectSlot ){
 }
 
 void deoalASpeaker::DropSharedEffectSlot(){
+	pDelayedDropSharedEffectSlot = false;
+	
 	if( ! pSharedEffectSlot ){
 		return;
 	}
@@ -801,7 +802,10 @@ public:
 };
 
 void deoalASpeaker::pCleanUp(){
-	DropSharedEffectSlot();
+	if( pSharedEffectSlot ){ // do not use DropSharedEffectSlot here (potentially main thread)
+		pSharedEffectSlot->RemoveSpeaker( this );
+		pSharedEffectSlot = nullptr;
+	}
 	
 	pSoundDecoder = nullptr;
 	if( pBufferData ){
@@ -1624,7 +1628,8 @@ void deoalASpeaker::pEnsureEnvironment(){
 		}
 		
 	}else if( pEnvironment ){
-		DropSharedEffectSlot();
+		pDelayedDropSharedEffectSlot = true; // no DropSharedEffectSlot since main thread
+		
 		delete pEnvironment;
 		pEnvironment = nullptr;
 	}
@@ -1786,6 +1791,10 @@ void deoalASpeaker::pUpdateEnvironmentEffectShared(){
 	float bestDistance = 0.0f;
 	deoalSharedEffectSlot * const bestSlot = sem.BestMatchingSlot( *pEnvironment, bestDistance );
 	deoalSharedEffectSlot * const emptySlot = sem.FirstEmptySlot();
+	
+	if( pDelayedDropSharedEffectSlot ){
+		DropSharedEffectSlot();
+	}
 	
 	if( pSharedEffectSlot ){
 		const deoalASpeaker * const refSpeaker = pSharedEffectSlot->GetReferenceSpeaker();

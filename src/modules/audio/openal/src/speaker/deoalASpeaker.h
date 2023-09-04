@@ -121,6 +121,7 @@ private:
 	
 	float pSharedEffectSlotDistance;
 	deoalSharedEffectSlot *pSharedEffectSlot;
+	bool pDelayedDropSharedEffectSlot;
 	
 	decPointerSet pSoundLevelMeters;
 	
