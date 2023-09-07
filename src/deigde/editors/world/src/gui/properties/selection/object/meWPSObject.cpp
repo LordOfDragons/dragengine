@@ -32,6 +32,7 @@
 #include "../../../meWindowMain.h"
 #include "../../../../utils/meHelpers.h"
 #include "../../../../world/meWorld.h"
+#include "../../../../world/meCamera.h"
 #include "../../../../world/object/meObject.h"
 #include "../../../../world/object/meObjectSelection.h"
 #include "../../../../world/object/texture/meObjectTexture.h"
@@ -339,6 +340,95 @@ public:
 	
 	virtual void Update(){
 		SetEnabled( pPanel.GetActiveObject() );
+	}
+};
+
+
+class cActionMenuId : public igdeActionContextMenu{
+	meWPSObject &pPanel;
+	
+public:
+	cActionMenuId( meWPSObject &panel ) : igdeActionContextMenu( "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "ID menu" ),
+	pPanel( panel ){}
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+		if( ! pPanel.GetWorld() ){
+			return;
+		}
+		
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( contextMenu, pPanel.GetActionIdFind() );
+	}
+};
+
+class cActionIdFind : public igdeAction{
+	meWPSObject &pPanel;
+	
+public:
+	cActionIdFind( meWPSObject &panel ) : igdeAction( "Find ID...",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSearch ),
+		"Find ID. Activates object if found." ), pPanel( panel ){}
+	
+	virtual void OnAction() override{
+		meWorld * const world = pPanel.GetWorld();
+		if( ! world ){
+			return;
+		}
+		
+		decString value;
+		if( ! igdeCommonDialogs::GetString( &pPanel.GetWPSelection(), "Find ID", "ID:", value ) ){
+			return;
+		}
+		
+		value.ToLower();
+		if( value.BeginsWith( "0h" ) ){
+			value = value.GetMiddle( 2 );
+		}
+		
+		decUniqueID id;
+		try{
+			id = decUniqueID( value );
+			
+		}catch( const deException & ){
+			igdeCommonDialogs::ErrorFormat( &pPanel.GetWPSelection(),
+				"Find ID", "Invalid ID '%s'", value.GetString() );
+			return;
+		}
+		
+		meObjectSelection &selection = world->GetSelectionObject();
+		const meObject * const active = selection.GetActive();
+		const meObjectList &list = world->GetObjects();
+		const int count = list.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			meObject * const object = list.GetAt( i );
+			if( object->GetID() != id ){
+				continue;
+			}
+			
+			if( object != active ){
+				selection.Reset();
+				selection.Add( object );
+				selection.SetActive( object );
+				world->NotifyObjectSelectionChanged();
+				
+				meCamera * const camera = world->GetActiveCamera();
+				if( ! camera->HasHostObject() ){
+					camera->SetPosition( object->GetPosition() + camera->GetViewMatrix()
+						.TransformNormal( decDVector( 0.0, 0.0, -5.0 ) ) );
+				}
+			}
+			return;
+		}
+		
+		igdeCommonDialogs::ErrorFormat( &pPanel.GetWPSelection(),
+			"Find ID", "ID '%s' not found", value.GetString() );
+	}
+	
+	virtual void Update() override{
+		SetEnabled( pPanel.GetWorld() != nullptr );
 	}
 };
 
@@ -1229,6 +1319,9 @@ pWorld( NULL )
 	pActionClassBrowse.TakeOver( new cActionClassBrowse( *this ) );
 	pActionClassEdit.TakeOver( new cActionClassEdit( *this ) );
 	
+	pActionIdClass.TakeOver( new cActionMenuId( *this ) );
+	pActionIdFind.TakeOver( new cActionIdFind( *this ) );
+	
 	pActionMenuPosition.TakeOver( new cActionMenuPosition( *this ) );
 	pActionMenuRotation.TakeOver( new cActionMenuRotation( *this ) );
 	pActionMenuScale.TakeOver( new cActionMenuScale( *this ) );
@@ -1268,9 +1361,13 @@ pWorld( NULL )
 	helper.Button( formLine, pBtnClassMenu, pActionMenuClass );
 	pActionMenuClass->SetWidget( pBtnClassMenu );
 	
-	helper.EditString( groupBox, "ID:", "Unique object ID", pEditID, NULL );
+	helper.FormLineStretchFirst( groupBox, "ID:", "Unique object ID.", formLine );
+	helper.EditString( formLine, "Unique object ID", pEditID, nullptr );
 	pEditID->SetEditable( false );
-	helper.EditString( groupBox, "Attach:", "ID of object to attach to", pEditAttach, NULL );
+	helper.Button( formLine, pBtnIdMenu, pActionIdClass );
+	pActionIdClass->SetWidget( pBtnIdMenu );
+	
+	helper.EditString( groupBox, "Attach:", "ID of object to attach to", pEditAttach, nullptr );
 	pEditAttach->SetEditable( false );
 	
 	helper.FormLineStretchFirst( groupBox, "Position:", "Position of the object.", formLine );
