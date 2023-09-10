@@ -235,6 +235,21 @@ decTexMatrix2 decTexMatrix2::CreateCenterSRT( const decVector2 &scaling, float r
 	return m;
 }
 
+decTexMatrix2 decTexMatrix2::CreateCenterRotation( float rotation ){
+	decTexMatrix2 m;
+	const float rsin = sinf( rotation );
+	const float rcos = cosf( rotation );
+	
+	m.a11 = rcos;
+	m.a12 = -rsin;
+	m.a13 = 0.5f * ( rsin - rcos ) + 0.5f;
+	m.a21 = rsin;
+	m.a22 = rcos;
+	m.a23 = 0.5f - 0.5f * ( rsin + rcos );
+	
+	return m;
+}
+
 
 
 // Management

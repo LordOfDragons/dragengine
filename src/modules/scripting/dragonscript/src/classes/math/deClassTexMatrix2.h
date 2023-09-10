@@ -94,6 +94,7 @@ private:
 	DEF_NATFUNC( nfNewSRT2 );
 	DEF_NATFUNC( nfNewCenterSRT );
 	DEF_NATFUNC( nfNewCenterSRT2 );
+	DEF_NATFUNC( nfNewCenterRotation );
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetAt );

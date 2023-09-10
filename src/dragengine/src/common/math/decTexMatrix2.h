@@ -82,6 +82,9 @@ public:
 	
 	/** \brief Create center scale-rotation-translation matrix. */
 	static decTexMatrix2 CreateCenterSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	
+	/** \brief Create center rotation matrix. */
+	static decTexMatrix2 CreateCenterRotation( float rotation );
 	/*@}*/
 	
 	
