@@ -309,7 +309,7 @@ void igdeWOSOSpeaker::pDestroySpeaker(){
 		GetWrapper().GetWorld()->RemoveSpeaker( pSpeaker );
 	}
 	
-	pSpeaker = NULL;
+	pSpeaker = nullptr;
 	pAddedToWorld = false;
 }
 

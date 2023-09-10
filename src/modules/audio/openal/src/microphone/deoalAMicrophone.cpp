@@ -178,6 +178,7 @@ deoalASpeaker *deoalAMicrophone::GetSpeakerAt( int index ) const{
 void deoalAMicrophone::AddSpeaker( deoalASpeaker *speaker ){
 	// WARNING Called during synchronization time from main thread.
 	
+	pInvalidateSpeakers.RemoveIfPresent( speaker );
 	pSpeakers.Add( speaker );
 	
 	speaker->SetPositionless( true );
@@ -194,8 +195,8 @@ void deoalAMicrophone::RemoveSpeaker( deoalASpeaker *speaker ){
 	
 	speaker->SetEnabled( false );
 	
-	if( pAudioThread.GetActiveMicrophone() ){
-		pAudioThread.GetActiveMicrophone()->InvalidateSpeaker( speaker );
+	if( pAudioThread.GetActiveMicrophone() == this ){
+		InvalidateSpeaker( speaker );
 	}
 	
 	pSpeakers.RemoveFrom( index );
@@ -204,14 +205,15 @@ void deoalAMicrophone::RemoveSpeaker( deoalASpeaker *speaker ){
 void deoalAMicrophone::RemoveAllSpeakers(){
 	// WARNING Called during synchronization time from main thread.
 	
+	const bool isActive = pAudioThread.GetActiveMicrophone() == this;
 	const int count = pSpeakers.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		deoalASpeaker * const speaker = ( deoalASpeaker* )pSpeakers.GetAt( i );
 		speaker->SetEnabled( false );
-		if( pAudioThread.GetActiveMicrophone() ){
-			pAudioThread.GetActiveMicrophone()->InvalidateSpeaker( speaker );
+		if( isActive ){
+			InvalidateSpeaker( speaker );
 		}
 	}
 	
@@ -419,13 +421,18 @@ void deoalAMicrophone::ProcessAudio(){
 	// update all speakers
 	pActiveSpeakers.UpdateAll();
 	
+	int i, count = pInvalidateSpeakers.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	}
+	pInvalidateSpeakers.RemoveAll();
+	
 	// process speakers stored in the world and this microphone
 	if( pParentWorld ){
 		pParentWorld->PrepareProcessAudio();
 	}
 	
-	const int count = pSpeakers.GetCount();
-	int i;
+	count = pSpeakers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
 	}
@@ -441,20 +448,30 @@ void deoalAMicrophone::ProcessAudioFast(){
 	
 	pActiveSpeakers.UpdateAll();
 	
+	int i, count = pInvalidateSpeakers.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	}
+	pInvalidateSpeakers.RemoveAll();
+	
 	if( pParentWorld ){
 		pParentWorld->PrepareProcessAudio();
 	}
 	
-	const int count = pSpeakers.GetCount();
-	int i;
+	count = pSpeakers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
 	}
 }
 
 void deoalAMicrophone::ProcessDeactivate(){
-	const int count = pSpeakers.GetCount();
-	int i;
+	int i, count = pInvalidateSpeakers.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->ProcessDeactivate();
+	}
+	pInvalidateSpeakers.RemoveAll();
+	
+	count = pSpeakers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->ProcessDeactivate();
 	}
@@ -466,6 +483,7 @@ void deoalAMicrophone::ProcessDeactivate(){
 
 void deoalAMicrophone::InvalidateSpeaker( deoalASpeaker *speaker ){
 	pActiveSpeakers.RemoveIfExisting( speaker );
+	pInvalidateSpeakers.AddIfAbsent( speaker );
 }
 
 
