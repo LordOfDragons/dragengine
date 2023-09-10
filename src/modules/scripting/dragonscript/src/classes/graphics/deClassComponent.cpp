@@ -1030,8 +1030,7 @@ void deClassComponent::nfSetTextureTransformAt::RunFunction( dsRunTime *rt, dsVa
 	const int index = rt->GetValue( 0 )->GetInt();
 	const decTexMatrix2 &transform = ds.GetClassTexMatrix2()->GetTexMatrix( rt->GetValue( 1 )->GetRealObject() );
 	
-	deComponentTexture &ctex = component.GetTextureAt( index );
-	ctex.SetTransform( transform );
+	component.GetTextureAt( index ).SetTransform( transform );
 	
 	component.NotifyTextureChanged( index );
 }

@@ -990,7 +990,7 @@ void igdeWObject::pCreateSubObjects( const decString &prefix, const igdeGDClass 
 	for( i=0; i<inheritCount; i++ ){
 		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
 		if( inherit.GetClass() ){
-			pCreateSubObjects( inherit.GetPropertyPrefix() + prefix, *inherit.GetClass() );
+			pCreateSubObjects( prefix + inherit.GetPropertyPrefix(), *inherit.GetClass() );
 		}
 	}
 }
