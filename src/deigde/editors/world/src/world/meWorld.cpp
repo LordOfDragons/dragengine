@@ -192,6 +192,8 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		pPathFindTest = new mePathFindTest( engine );
 		pPathFindTest->SetWorld( this );
 		
+		pMusic.TakeOver( new meMusic( *this ) );
+		
 		// make sure all is set properly
 		SetChanged( false );
 		pDepChanged = false;
@@ -930,6 +932,13 @@ void meWorld::NotifyPathFindTestChanged(){
 	
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->PathFindTestChanged( this );
+	}
+}
+
+void meWorld::NotifyMusicChanged(){
+	int i;
+	for( i=0; i<pNotifierCount; i++ ){
+		pNotifiers[ i ]->MusicChanged( this );
 	}
 }
 
@@ -1691,12 +1700,13 @@ void meWorld::pCleanUp(){
 		delete pWeather;
 	}
 	
+	pMusic = nullptr;
 	if( pPathFindTest ){
-		pPathFindTest->SetWorld( NULL );
+		pPathFindTest->SetWorld( nullptr );
 		pPathFindTest->FreeReference();
 	}
 	if( pLumimeter ){
-		pLumimeter->SetWorld( NULL );
+		pLumimeter->SetWorld( nullptr );
 		pLumimeter->FreeReference();
 	}
 	

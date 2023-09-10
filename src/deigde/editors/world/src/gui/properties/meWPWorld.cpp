@@ -52,6 +52,10 @@
 #include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditPathListener.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditSliderTextListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
@@ -530,6 +534,73 @@ public:
 	}
 };
 
+
+class cEditMusicPath : public igdeEditPathListener{
+	meWPWorld &pPanel;
+public:
+	cEditMusicPath( meWPWorld &panel ) : pPanel( panel ){}
+	
+	virtual void OnEditPathChanged( igdeEditPath *editPath ) override{
+		if( pPanel.GetWorld() ){
+			pPanel.GetWorld()->GetMusic().SetPath( editPath->GetPath() );
+		}
+	}
+};
+
+class cEditMusicVolume : public igdeEditSliderTextListener{
+	meWPWorld &pPanel;
+public:
+	cEditMusicVolume( meWPWorld &panel ) : pPanel( panel ){}
+	
+	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText ) override{
+		if( pPanel.GetWorld() ){
+			pPanel.GetWorld()->GetMusic().SetVolume( sliderText->GetValue() );
+		}
+	}
+};
+
+class cActionMusicPlay : public cBaseAction{
+public:
+	cActionMusicPlay( meWPWorld &panel ) : cBaseAction( panel, "Play", nullptr, "Play" ){}
+	
+	virtual igdeUndo *OnAction( meWorld *world ) override{
+		world->GetMusic().Play();
+		return nullptr;
+	}
+	
+	virtual void Update() override{
+		SetEnabled( pPanel.GetWorld() );
+	}
+};
+
+class cActionMusicPause : public cBaseAction{
+public:
+	cActionMusicPause( meWPWorld &panel ) : cBaseAction( panel, "Pause", nullptr, "Pause" ){}
+	
+	virtual igdeUndo *OnAction( meWorld *world ) override{
+		world->GetMusic().Pause();
+		return nullptr;
+	}
+	
+	virtual void Update() override{
+		SetEnabled( pPanel.GetWorld() );
+	}
+};
+
+class cActionMusicStop : public cBaseAction{
+public:
+	cActionMusicStop( meWPWorld &panel ) : cBaseAction( panel, "Stop", nullptr, "Stop" ){}
+	
+	virtual igdeUndo *OnAction( meWorld *world ) override{
+		world->GetMusic().Stop();
+		return nullptr;
+	}
+	
+	virtual void Update() override{
+		SetEnabled( pPanel.GetWorld() );
+	}
+};
+
 }
 
 
@@ -558,6 +629,9 @@ pWorld( NULL )
 	pActionPFTTypeAdd.TakeOver( new cActionPFTTypeAdd( *this ) );
 	pActionPFTTypeRemove.TakeOver( new cActionPFTTypeRemove( *this ) );
 	pActionPFTTypeClear.TakeOver( new cActionPFTTypeClear( *this ) );
+	pActionMusicPlay.TakeOver( new cActionMusicPlay( *this ) );
+	pActionMusicPause.TakeOver( new cActionMusicPause( *this ) );
+	pActionMusicStop.TakeOver( new cActionMusicStop( *this ) );
 	
 	
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
@@ -622,6 +696,21 @@ pWorld( NULL )
 		pEditPFTTypeFixCost, new cEditPFTTypeFixCost( *this ) );
 	helper.EditFloat( groupBox, "Cost Per Meter:", "Cost per meter travelled inside type.",
 		pEditPFTTypeCPM, new cEditPFTTypeCostPerMeter( *this ) );
+	
+	
+	// music testing
+	helper.GroupBox( content, groupBox, "Music Testing:", true );
+	
+	helper.EditPath( groupBox, "Path:", "Path to sound file to play.",
+		igdeEnvironment::efpltSound, pEditMusicPath, new cEditMusicPath( *this ) );
+	
+	helper.EditSliderText( groupBox, "Volume:", "Volume to play music.",
+		0.0f, 1.0f, 4, 2, 0.1f, pEditMusicVolume, new cEditMusicVolume( *this ) );
+	
+	helper.FormLine( groupBox, "", "", formLine );
+	helper.Button( formLine, pBtnMusicPlay, new cActionMusicPlay( *this ), true );
+	helper.Button( formLine, pBtnMusicPause, new cActionMusicPause( *this ), true );
+	helper.Button( formLine, pBtnMusicStop, new cActionMusicStop( *this ), true );
 }
 
 meWPWorld::~meWPWorld(){
@@ -674,6 +763,7 @@ void meWPWorld::UpdateWorld(){
 	UpdateWorldParameters();
 	UpdatePathFindTestTypeList();
 	UpdatePathFindTest();
+	UpdateMusic();
 	UpdatePropertyKeys();
 	UpdateProperties();
 }
@@ -778,6 +868,24 @@ void meWPWorld::UpdatePathFindTestType(){
 	pEditPFTTypeCPM->SetEnabled( enabled );
 }
 
+
+void meWPWorld::UpdateMusic(){
+	if( pWorld ){
+		pEditMusicPath->SetPath( pWorld->GetMusic().GetPath() );
+		pEditMusicVolume->SetValue( pWorld->GetMusic().GetVolume() );
+		
+	}else{
+		pEditMusicPath->ClearPath();
+		pEditMusicVolume->SetValue( 1.0f );
+	}
+	
+	const bool enabled = pWorld;
+	pEditMusicPath->SetEnabled( enabled );
+	pEditMusicVolume->SetEnabled( enabled );
+	pActionMusicPlay->Update();
+	pActionMusicPause->Update();
+	pActionMusicStop->Update();
+}
 
 
 const decString &meWPWorld::GetActiveProperty() const{

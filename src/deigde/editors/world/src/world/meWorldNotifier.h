@@ -82,6 +82,10 @@ public:
 	virtual void LumimeterChanged( meWorld *world );
 	/** Path find test changed. */
 	virtual void PathFindTestChanged( meWorld *world );
+	
+	/** Music changed. */
+	virtual void MusicChanged( meWorld *world );
+	
 	/** Lighting parameters changed. */
 	virtual void LightingChanged( meWorld *world );
 	/** Editing parameters changed. */
