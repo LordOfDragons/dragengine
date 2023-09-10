@@ -171,7 +171,12 @@ deoglRComponentTexture::~deoglRComponentTexture(){
 //////////////////
 
 void deoglRComponentTexture::SetTransform( const decTexMatrix2 &matrix ){
+	if( matrix.IsEqualTo( pTransform ) ){
+		return;
+	}
+	
 	pTransform = matrix;
+	MarkParamBlocksDirty();
 }
 
 
