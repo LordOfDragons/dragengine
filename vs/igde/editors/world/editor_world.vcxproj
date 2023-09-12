@@ -355,7 +355,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldGuiParameters.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldNotifier.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldMusic.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meMusic.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpace.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpaceList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpaceSelection.cpp" />
@@ -706,7 +706,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorld.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldGuiParameters.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldNotifier.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldMusic.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meMusic.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpace.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpaceList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpaceSelection.h" />
