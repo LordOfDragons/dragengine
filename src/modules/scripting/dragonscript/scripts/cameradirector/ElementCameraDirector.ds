@@ -32,17 +32,18 @@ pin Dragengine.Scenery
  * rotation point.
  */
 class ElementCameraDirector extends CameraDirector
-	private var Element pElement
-	private var DVector pPivot
-	private var DMatrix pLocalMatrix
-	private var float pAzimuth
-	private var float pElevation
-	private var float pDistance
+	var Element pElement
+	var DVector pPivot
+	var DMatrix pLocalMatrix
+	var float pAzimuth
+	var float pElevation
+	var float pDistance
+	var bool pUseOrientation
 	
 	
 	
 	/** \brief Create camera director. */
-	public func new(Element element)
+	func new(Element element)
 		pElement = element
 		pPivot = DVector.new()
 		pLocalMatrix = DMatrix.new()
@@ -52,7 +53,7 @@ class ElementCameraDirector extends CameraDirector
 	end
 	
 	/** \brief Create camera director. */
-	public func new(Element element, Camera camera, Microphone microphone) this(element)
+	func new(Element element, Camera camera, Microphone microphone) this(element)
 		setCamera(camera)
 		setMicrophone(microphone)
 	end
@@ -60,22 +61,22 @@ class ElementCameraDirector extends CameraDirector
 	
 	
 	/** \brief Element. */
-	public func Element getElement()
+	func Element getElement()
 		return pElement
 	end
 	
 	/** \brief Set element. */
-	public func void setElement(Element element)
+	func void setElement(Element element)
 		pElement = element
 	end
 	
 	/** \brief Rotation point. */
-	public func DVector getPivot()
+	func DVector getPivot()
 		return pPivot
 	end
 	
 	/** \brief Set rotation point. */
-	public func void setPivot(DVector pivot)
+	func void setPivot(DVector pivot)
 		if pivot == null
 			throw EInvalidParam.new()
 		end
@@ -83,12 +84,12 @@ class ElementCameraDirector extends CameraDirector
 	end
 	
 	/** \brief Local matrix. */
-	public func DMatrix getLocalMatrix()
+	func DMatrix getLocalMatrix()
 		return pLocalMatrix
 	end
 	
 	/** \brief Set local matrix. */
-	public func void setLocalMatrix(DMatrix localMatrix)
+	func void setLocalMatrix(DMatrix localMatrix)
 		if localMatrix == null
 			throw EInvalidParam.new()
 		end
@@ -96,44 +97,66 @@ class ElementCameraDirector extends CameraDirector
 	end
 	
 	/** \brief Set local matrix from position and rotation. */
-	public func void setLocalMatrix(Vector position, Vector rotation)
+	func void setLocalMatrix(Vector position, Vector rotation)
 		pLocalMatrix = Matrix.newRT(rotation, position).toDMatrix()
 	end
 	
 	/** \brief Vertical rotation. */
-	public func float getAzimuth()
+	func float getAzimuth()
 		return pAzimuth
 	end
 	
 	/** \brief Set vertical rotation. */
-	public func void setAzimuth(float azimuth)
+	func void setAzimuth(float azimuth)
 		pAzimuth = azimuth
 	end
 	
 	/** \brief Horizontal rotation. */
-	public func float getElevation()
+	func float getElevation()
 		return pElevation
 	end
 	
 	/** \brief Set horizontal rotation. */
-	public func void setElevation(float elevation)
+	func void setElevation(float elevation)
 		pElevation = elevation
 	end
 	
 	/** \brief Distance. */
-	public func float getDistance()
+	func float getDistance()
 		return pDistance
 	end
 	
 	/** \brief Set distance. */
-	public func void setDistance(float distance)
+	func void setDistance(float distance)
 		pDistance = DEMath.max(distance, 0.0)
+	end
+	
+	/**
+	 * \brief Use element orientation.
+	 * \version 1.19
+	 * 
+	 * If true the camera rotates together with the element. If false the camera only moves
+	 * together with the element. The default is false.
+	 */
+	func bool getUseOrientation()
+		return pUseOrientation
+	end
+	
+	/**
+	 * \brief Set use element orientation.
+	 * \version 1.19
+	 * 
+	 * If true the camera rotates together with the element. If false the camera only moves
+	 * together with the element. The default is false.
+	 */
+	func void setUseOrientation(bool useOrientation)
+		pUseOrientation = useOrientation
 	end
 	
 	
 	
 	/** \brief Update camera. */
-	public func void updateCamera(float elapsed)
+	func void updateCamera(float elapsed)
 		var DMatrix matrix = getCameraMatrix()
 		var Camera camera = getCamera()
 		camera.setPosition(matrix.getPosition())
@@ -141,13 +164,16 @@ class ElementCameraDirector extends CameraDirector
 	end
 	
 	/** \brief Camera matrix. */
-	public func DMatrix getCameraMatrix()
-		var DMatrix matrix = pLocalMatrix \
-			* DMatrix.newTranslation(0.0, 0.0, -pDistance) \
-			* DMatrix.newRotation(-pElevation, pAzimuth, 0.0)
+	func DMatrix getCameraMatrix()
+		var DMatrix matrix = pLocalMatrix\
+			* DMatrix.newTranslation(0, 0, -pDistance)\
+			* DMatrix.newRotation(-pElevation, pAzimuth, 0)
 		
 		if pElement == null
 			matrix = matrix * DMatrix.newTranslation(pPivot)
+			
+		elif pUseOrientation
+			matrix = matrix * DMatrix.newTranslation(pPivot) * pElement.getElementMatrix()
 			
 		else
 			matrix = matrix * DMatrix.newTranslation(pElement.getPosition() + pPivot)
