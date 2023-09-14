@@ -1134,6 +1134,7 @@ class BaseGameApp extends Game
 	 * - BaseLightClass named "BaseLight"
 	 * - BaseForceFieldClass named "BaseForceField"
 	 * - EnvironmentMapClass named "EnvironmentMap"
+	 * - HiddenElementClass named "HiddenElement"
 	 * - IgnoreElementClass named "MapperNote" (helper IGDE class)
 	 * - IgnoreElementClass named "VirtualElement" (helper IGDE class)
 	 * - InfoConvoCoordSystem named "InfoConvoCoordSystem"
@@ -1164,6 +1165,7 @@ class BaseGameApp extends Game
 		pElementClassList.add(PhysicsElementClass.new())
 		pElementClassList.add(AnimatedElementClass.new(pLoaders, pTriggerTable))
 		pElementClassList.add(TwoStateAnimatedElementClass.new(pLoaders, pTriggerTable))
+		pElementClassList.add(HiddenElementClass.new(pLoaders, pTriggerTable))
 		pElementClassList.add(RandomElementClass.new(pElementClassList))
 		pElementClassList.add(BaseLightClass.new())
 		pElementClassList.add(BaseSpeakerClass.new())

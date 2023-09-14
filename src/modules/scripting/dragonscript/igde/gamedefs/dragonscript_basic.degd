@@ -161,6 +161,16 @@
 		</inherit>
 		<category>Dragengine</category>
 	</class>
+	<class name='HiddenElement'>
+		<description>Basic class for elements containing a single component and collider with support for beeing shown/hidden using a trigger expression.</description>
+		<scaleMode>free</scaleMode>
+		<inherit name='SimpleElement'>
+		</inherit>
+		<inherit name='ECBehaviorShowElement'>
+			<propertyPrefix>showElement.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
 	<class name='SimpleElementOnRail'>
 		<description>Basic class for simple elements moving on a rail. Whenever triggered the element starts moving to the opposite end of the rail. If no trigger is used the element keeps moving forth and back between the first and last corner of the rail.</description>
 		<scaleMode>free</scaleMode>
@@ -995,6 +1005,17 @@
 		<property name='message'>
 			<description>Message to show.</description>
 			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorShowElement'>
+		<description>Behavior element behavior showing/hiding element if triggered.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>showElement.</defaultInheritPropertyPrefix>
+		<property name='trigger'>
+			<description>Trigger to show/hide element.</description>
+			<type>triggerExpression</type>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
