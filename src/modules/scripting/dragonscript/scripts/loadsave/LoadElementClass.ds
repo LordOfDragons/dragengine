@@ -154,13 +154,13 @@ class LoadElementClass extends BaseXmlLoader
 		end
 		var String propName = tag.getAttributeNamed("name")
 		
-		if propName.startsWith("_igde.")
-			return
-		end
-		
 		if not eclass.hasPropertyNamed(propName)
-			printOnConsole(tag, "The class " + eclass.getClassname() + "(" + baseClassName \
-				+ ") does not have a property '" + propName + "'.")
+			if propName.findString("._", 1) != -1
+				return // IGDE only property name. do not report it missing
+			end
+			
+			printOnConsole(tag, "The class {}({}) does not have a property '{}'.".format(\
+				Array.newWith(eclass.getClassname(), baseClassName, propName)))
 			return
 		end
 		

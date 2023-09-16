@@ -39,43 +39,43 @@ pin Dragengine.Utils
  * containing the required information.
  */
 class DebugVerifyStubProperties
-	private var Console pConsole
-	private var String pLogPrefix
-	private var Dictionary pWorldProperties
-	private var Dictionary pDecalProperties
-	private var Array pIgnoreClassNames
-	private var Array pIgnoreKeys
+	var Console pConsole
+	var String pLogPrefix
+	var Dictionary pWorldProperties
+	var Dictionary pDecalProperties
+	var Array pIgnoreClassNames
+	var Array pIgnoreKeys
 	
 	
 	
 	/** \brief Create debug verifier. */
-	public func new( Console console )
-		this.pConsole = console
-		this.pLogPrefix = ""
-		this.pIgnoreKeys = Array.new()
-		this.pIgnoreClassNames = Array.new()
+	func new(Console console)
+		pConsole = console
+		pLogPrefix = ""
+		pIgnoreKeys = Array.new()
+		pIgnoreClassNames = Array.new()
 	end
 	
 	
 	
 	/** \brief Console to use. */
-	public func Console getConsole()
-		return this.pConsole
+	func Console getConsole()
+		return pConsole
 	end
 	
 	/** \brief Set console to use. */
-	public func void setConsole( Console console )
-		this.pConsole = console
+	func void setConsole(Console console)
+		pConsole = console
 	end
 	
 	/** \brief Prefix prepended to logs written. */
-	public func String getLogPrefix()
-		return this.pLogPrefix
+	func String getLogPrefix()
+		return pLogPrefix
 	end
 	
 	/** \brief Set prefix prepended to logs written. */
-	public func void setLogPrefix( String prefix )
-		this.pLogPrefix = prefix
+	func void setLogPrefix(String prefix)
+		pLogPrefix = prefix
 	end
 	
 	/**
@@ -84,8 +84,8 @@ class DebugVerifyStubProperties
 	 * By default this is null which disables checking world properties. Dictionary contains
 	 * ElementClassProperty values with ElementClassProperty.getName() as key.
 	 */
-	public func Dictionary getWorldProperties()
-		return this.pWorldProperties
+	func Dictionary getWorldProperties()
+		return pWorldProperties
 	end
 	
 	/**
@@ -94,8 +94,8 @@ class DebugVerifyStubProperties
 	 * By default this is null which disables checking world properties. Dictionary contains
 	 * ElementClassProperty values with ElementClassProperty.getName() as key.
 	 */
-	public func void setWorldProperties( Dictionary properties )
-		this.pWorldProperties = properties
+	func void setWorldProperties(Dictionary properties)
+		pWorldProperties = properties
 	end
 	
 	/**
@@ -104,8 +104,8 @@ class DebugVerifyStubProperties
 	 * By default this is null which disables checking decal properties. Dictionary contains
 	 * ElementClassProperty values with ElementClassProperty.getName() as key.
 	 */
-	public func Dictionary getDecalProperties()
-		return this.pDecalProperties
+	func Dictionary getDecalProperties()
+		return pDecalProperties
 	end
 	
 	/**
@@ -114,18 +114,18 @@ class DebugVerifyStubProperties
 	 * By default this is null which disables checking decal properties. Dictionary contains
 	 * ElementClassProperty values with ElementClassProperty.getName() as key.
 	 */
-	public func void setDecalProperties( Dictionary properties )
-		this.pDecalProperties = properties
+	func void setDecalProperties(Dictionary properties)
+		pDecalProperties = properties
 	end
 	
 	/** \brief Array of property keys to ignore. */
-	public func Array getIgnoreKeys()
-		return this.pIgnoreKeys
+	func Array getIgnoreKeys()
+		return pIgnoreKeys
 	end
 	
 	/** \brief Array of class names to ignore. */
-	public func Array getIgnoreClassNames()
-		return this.pIgnoreClassNames
+	func Array getIgnoreClassNames()
+		return pIgnoreClassNames
 	end
 	
 	
@@ -134,22 +134,22 @@ class DebugVerifyStubProperties
 	 * \brief Verify stub properties.
 	 * \returns true if no problems are found or false if problems are found.
 	 */
-	public func bool verifyWorld( StubGameWorld stub )
+	func bool verifyWorld(StubGameWorld stub)
 		var bool allVerified = true
 		
-		if this.pWorldProperties != null
-			allVerified &= this.verifyProperties( stub, this.pWorldProperties, "World: " )
+		if pWorldProperties != null
+			allVerified &= verifyProperties(stub, pWorldProperties, "World: ")
 		end
 		
 		var int i, count = stub.getElementCount()
 		for i = 0 to count
-			allVerified &= this.verifyElement( stub.getElementAt( i ) )
+			allVerified &= verifyElement(stub.getElementAt(i))
 		end
 		
-		if this.pDecalProperties != null
+		if pDecalProperties != null
 			var int i, count = stub.getWorldDecalCount()
 			for i = 0 to count
-				allVerified &= this.verifyDecal( stub.getWorldDecalAt( i ), this.pDecalProperties )
+				allVerified &= verifyDecal(stub.getWorldDecalAt(i), pDecalProperties)
 			end
 		end
 		
@@ -160,80 +160,88 @@ class DebugVerifyStubProperties
 	 * \brief Verify stub properties against element class properties.
 	 * \returns true if no problems are found or false if problems are found.
 	 */
-	public func bool verifyElement( StubElement stub )
+	func bool verifyElement(StubElement stub)
 		var String logPrefix = "Element(" + stub.getClass().getClassname() \
 			+ ") id(" + stub.getID() + ") pos(" + stub.getPosition() + "): "
 		
-		return this.pIgnoreClassNames.has( stub.getClass().getClassname() ) or \
-			this.verifyProperties( stub, stub.getClass(), logPrefix )
+		return pIgnoreClassNames.has(stub.getClass().getClassname()) or \
+			verifyProperties(stub, stub.getClass(), logPrefix)
 	end
 	
 	/**
 	 * \brief Verify stub properties against element class properties.
 	 * \returns true if no problems are found or false if problems are found.
 	 */
-	public func bool verifyDecal( StubWorldDecal stub, Dictionary properties )
+	func bool verifyDecal(StubWorldDecal stub, Dictionary properties)
 		var String logPrefix = "Decal pos(" + stub.getPosition() + "): "
 		
-		return this.verifyProperties( stub, properties, logPrefix )
+		return verifyProperties(stub, properties, logPrefix)
 	end
 	
 	/**
 	 * \brief Verify stub properties using list of ElementClassProperty.
 	 * \returns true if no problems are found or false if problems are found.
 	 */
-	public func bool verifyProperties( StubWithProperties stub, Dictionary properties, String logPrefix )
+	func bool verifyProperties(StubWithProperties stub, Dictionary properties, String logPrefix)
 		var ElementClassProperty property
-		return stub.getPropertyKeys().collect( block String key
-			if this.pIgnoreKeys.has( key )
+		return stub.getPropertyKeys().collect(block String key
+			if pIgnoreKeys.has(key)
 				return false
 			end
 			
-			property = properties.getAt( key, null ) cast ElementClassProperty
+			property = properties.getAt(key, null) cast ElementClassProperty
 			if property == null
-				this.logProblem( logPrefix + "Property key '" + key + "' not found." )
+				if key.findString("._") != -1
+					return true // IGDE only property name. do not report it missing
+				end
+				
+				logProblem(logPrefix + "Property key '" + key + "' not found.")
 				return true
 				
 			else
-				return not this.verifyProperty( property, stub.getPropertyValueFor( key, null ), logPrefix )
+				return not verifyProperty(property, stub.getPropertyValueFor(key, null), logPrefix)
 			end
-		end ) == null
+		end) == null
 	end
 	
 	/**
 	 * \brief Verify stub properties against element class properties.
 	 * \returns true if no problems are found or false if problems are found.
 	 */
-	public func bool verifyProperties( StubWithProperties stub, ElementClass eclass, String logPrefix )
+	func bool verifyProperties(StubWithProperties stub, ElementClass eclass, String logPrefix)
 		var ElementClassProperty property
-		return stub.getPropertyKeys().collect( block String key
-			if this.pIgnoreKeys.has( key )
+		return stub.getPropertyKeys().collect(block String key
+			if pIgnoreKeys.has(key)
 				return false
 			end
 			
-			property = eclass.getPropertyNamed( key )
+			property = eclass.getPropertyNamed(key)
 			if property == null
-				this.logProblem( logPrefix + "Property key '" + key + "' not found." )
+				if key.findString("._") != -1
+					return true // IGDE only property name. do not report it missing
+				end
+				
+				logProblem(logPrefix + "Property key '" + key + "' not found.")
 				return true
 				
 			else
-				return not this.verifyProperty( property, stub.getPropertyValueFor( key, null ), logPrefix )
+				return not verifyProperty(property, stub.getPropertyValueFor(key, null), logPrefix)
 			end
-		end ) == null
+		end) == null
 	end
 	
 	/**
 	 * \brief Verify stub property against element class property.
 	 * \returns true if no problems are found or false if problems are found.
 	 */
-	public func bool verifyProperty( ElementClassProperty property, String value, String logPrefix )
+	func bool verifyProperty(ElementClassProperty property, String value, String logPrefix)
 		// for the time being we do no special check here
 		// TODO verify if the type can be properly decoded.
 		return true
 	end
 	
 	/** \brief Log problem. */
-	public func void logProblem( String message )
-		this.pConsole.addMessage( this.pLogPrefix + message )
+	func void logProblem(String message)
+		pConsole.addMessage(pLogPrefix + message)
 	end
 end
