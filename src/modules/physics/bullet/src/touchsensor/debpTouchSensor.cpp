@@ -508,6 +508,27 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 	return false;
 }
 
+void debpTouchSensor::RemoveColliderImmediately( debpCollider *collider ){
+	if( ! pTouchSensor.GetTrackEnterLeave() ){
+		return;
+	}
+	
+	const deTouchSensorReference guard( &pTouchSensor );
+	
+	int index = pLeavingColliders.IndexOf( collider );
+	if( index != -1 ){
+		pLeavingColliders.RemoveFrom( index );
+		pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+		return;
+	}
+	
+	index = pTouchingColliders.IndexOf( collider );
+	if( index != -1 ){
+		pTouchingColliders.RemoveFrom( index );
+		pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+	}
+}
+
 
 
 // Notifications
