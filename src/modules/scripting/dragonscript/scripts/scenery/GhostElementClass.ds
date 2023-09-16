@@ -19,13 +19,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
 pin Dragengine.LoadSave
-pin Dragengine.Preloading
-pin Dragengine.Utils
 
 
 /**
@@ -42,34 +39,34 @@ class GhostElementClass extends BehaviorElementClass
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new() this( "GhostElement", BaseGameApp.getApp().getLoaders() )
+	func new() this("GhostElement", BaseGameApp.getApp().getLoaders())
 	end
 	
 	/** \brief Create element class. */
-	public func new( Loaders loaders ) this( "GhostElement", loaders )
+	func new(Loaders loaders) this("GhostElement", loaders)
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders() )
+	func new(String className) this(className, BaseGameApp.getApp().getLoaders())
 	end
 	
 	/** \brief Create element class. */
-	public func new( String className, Loaders loaders ) super( className )
-		this.pComponent = ECBehaviorComponent.new( this, null )
+	func new(String className, Loaders loaders) super(className)
+		pComponent = ECBehaviorComponent.new(this, null)
 	end
 	
 	
 	
 	/** \brief Component behavior. */
-	public func ECBehaviorComponent getComponent()
-		return this.pComponent
+	func ECBehaviorComponent getComponent()
+		return pComponent
 	end
 	
 	
 	
 	/** \brief Create copy of element class. */
-	public func ElementClass duplicateNamed( String classname )
-		return GhostElementClass.new( classname )
+	func ElementClass duplicateNamed(String classname)
+		return GhostElementClass.new(classname)
 	end
 	
 	
@@ -84,6 +81,6 @@ class GhostElementClass extends BehaviorElementClass
 	 * and loadAndAddElement() bypassing this method.
 	 */
 	protected func Element createElement()
-		return GhostElement.new( this )
+		return GhostElement.new(this)
 	end
 end
