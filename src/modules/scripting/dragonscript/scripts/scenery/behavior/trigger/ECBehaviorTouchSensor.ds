@@ -151,9 +151,30 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements TouchSensorListener
+		private class TrackedElement
+			var Collider pCollider
+			var Element pElement
+			
+			func new(Collider collider, Element element)
+				pCollider = collider
+				pElement = element
+			end
+			
+			func Collider getCollider()
+				return pCollider
+			end
+			
+			func Element getElement()
+				return pElement
+			end
+		end
+		
+		
+		
 		var ECBehaviorTouchSensor pECBehavior
 		var ECBehaviorCollider.Instance pCollider
 		var TouchSensor pTouchSensor
+		var Array pTrackedElements
 		var Array pTouchingElements
 		var Array pListeners
 		
@@ -162,7 +183,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		/** \brief Create element. */
 		func new(ECBehaviorTouchSensor ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
-			pTouchingElements = Array.new()
+			pTrackedElements = Array.new()
 			pListeners = Array.new()
 		end
 		
@@ -173,6 +194,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				pTouchSensor = null
 			end
 			pTouchingElements = null
+			pTrackedElements = null
 			pCollider = null
 			pListeners = null
 			
@@ -265,41 +287,58 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		/** \brief Number of touching elements. */
 		func int getTouchingElementCount()
-			return pTouchingElements.getCount()
+			return pTrackedElements.getCount()
 		end
 		
 		/** \brief Touching element at index. */
 		func Element getTouchingElementAt(int index)
+			prepareTouchingElements()
 			return pTouchingElements.getAt(index) cast Element
 		end
 		
 		/** \brief Element is touching. */
 		func bool isElementTouching(Element element)
+			prepareTouchingElements()
 			return pTouchingElements.has(element)
 		end
 		
-		/** \brief Add touching element. */
+		/** \deprecated Use addTouchingElement(Collider,Element). */
 		protected func void addTouchingElement(Element element)
-			pTouchingElements.add(element)
+			addTouchingElement(null, element)
+		end
+		
+		/**
+		 * \brief Add touching element.
+		 * \version 1.19
+		 */
+		protected func void addTouchingElement(Collider collider, Element element)
+			pTrackedElements.add(TrackedElement.new(collider, element))
+			pTouchingElements = null
 		end
 		
 		/** \brief Remove touching element. */
 		protected func void removeTouchingElement(Element element)
-			pTouchingElements.remove(element)
+			pTrackedElements.removeIf(block TrackedElement each
+				return each.getElement() == element
+			end)
+			pTouchingElements = null
 		end
 		
 		/** \brief Remove all touching elements. */
 		protected func void removeAllTouchingElements()
-			pTouchingElements.removeAll()
+			pTrackedElements.removeAll()
+			pTouchingElements = null
 		end
 		
 		/** \brief Visit touching elements with block with parameter Element. */
 		func void forEachTouchingElement(Block ablock)
+			prepareTouchingElements()
 			pTouchingElements.forEach(ablock)
 		end
 		
 		/** \brief Find touching elements with block with parameter Element. */
 		func Element findTouchingElement(Block ablock)
+			prepareTouchingElements()
 			return pTouchingElements.find(ablock) cast Element
 		end
 		
@@ -308,6 +347,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		 * \version 1.19
 		 */
 		func void forEachTouchingElementCastable(Block ablock)
+			prepareTouchingElements()
 			pTouchingElements.forEachCastable(ablock)
 		end
 		
@@ -316,13 +356,14 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		 * \version 1.19
 		 */
 		func Element findTouchingElementCastable(Block ablock)
+			prepareTouchingElements()
 			return pTouchingElements.findCastable(ablock) cast Element
 		end
 		
 		/** \brief Visit touching elements with ElementVisitor. */
 		func void visitTouchingElements(ElementVisitor visitor)
-			pTouchingElements.forEach(block Element each
-				each.visit(visitor)
+			pTrackedElements.forEach(block TrackedElement each
+				each.getElement().visit(visitor)
 			end)
 		end
 		
@@ -359,15 +400,15 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		/** \brief Remove element from game world. */
 		func void removeFromGameWorld()
-			while pTouchingElements.getCount() > 0
-				var int index = pTouchingElements.getCount() - 1
-				var Element element = pTouchingElements.getAt(index) cast Element
-				pTouchingElements.removeFrom(index)
-				
-				pListeners.forEach(block Listener each
-					each.elementLeft(this, element)
+			prepareTouchingElements()
+			pTrackedElements.removeAll()
+			
+			pTouchingElements.forEach(block Element element
+				pListeners.forEach(block Listener listener
+					listener.elementLeft(this, element)
 				end)
-			end
+			end)
+			pTouchingElements = null
 			
 			getElement().getGameWorld().getWorld().removeTouchSensor(pTouchSensor)
 		end
@@ -376,17 +417,24 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		/** \brief Collider entered sensor shape. */
 		func void colliderEntered(Collider collider)
+			if pTrackedElements.find(block TrackedElement each
+				return each.getCollider().equals(collider)
+			end) != null
+				return
+			end
+			
 			var Object owner = collider.getOwner()
 			if not owner castable Element
 				return
 			end
 			
 			var Element element = owner cast Element
-			if not canTouchElement(element) or pTouchingElements.has(element)
+			if not canTouchElement(element)
 				return
 			end
 			
-			pTouchingElements.add(element)
+			pTrackedElements.add(TrackedElement.new(collider, element))
+			pTouchingElements = null
 			
 			pListeners.forEach(block Listener each
 				each.elementEntered(this, element)
@@ -395,21 +443,31 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		/** \brief Collider left sensor shape. */
 		func void colliderLeft(Collider collider)
-			var Object owner = collider.getOwner()
-			if not owner castable Element
+			var TrackedElement tracked = pTrackedElements.find(block TrackedElement each
+				return each.getCollider().equals(collider)
+			end) cast TrackedElement
+			
+			if tracked == null
 				return
 			end
 			
-			var Element element = owner cast Element
-			if not pTouchingElements.has(element)
-				return
-			end
+			pTrackedElements.remove(tracked)
+			pTouchingElements = null
 			
-			pTouchingElements.remove(element)
-			
+			var Element element = tracked.getElement()
 			pListeners.forEach(block Listener each
 				each.elementLeft(this, element)
 			end)
+		end
+		
+		
+		
+		private func void prepareTouchingElements()
+			if pTouchingElements == null
+				pTouchingElements = pTrackedElements.map(block TrackedElement each
+					return each.getElement()
+				end)
+			end
 		end
 		
 		
