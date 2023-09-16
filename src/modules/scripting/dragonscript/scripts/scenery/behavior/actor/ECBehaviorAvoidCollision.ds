@@ -715,13 +715,15 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				return
 			end
 			
-			var Vector actorVelocity = Matrix.newRotationY(pActorMover.getLocomotion() \
-				.getLocomotion().getMovingOrientation()).getViewVector() * actorSpeed
+			var Vector norActorVelocity = Matrix.newRotationY(pActorMover.getLocomotion() \
+				.getLocomotion().getMovingOrientation()).getViewVector()
+			var Vector actorVelocity = norActorVelocity * actorSpeed
 			
 			// if hit normal is pointing away do not avoid
-			var Vector norActorVelocity = actorVelocity / actorSpeed
 			var float hitAngle = DEMath.acos(norActorVelocity * pCCTAvoidCollision.hitNormalWorld(0))
 			if /* pCCTAvoidCollision.hitDistance(0) > 0.01 and */ hitAngle < 100
+// 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
+// 					+ getElement().getPosition() + ": return hitAngle=" + hitAngle)
 				return
 			end
 			
@@ -733,6 +735,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			var DVector actorPosition = pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
 			var DVector connection = collider.getPosition() - actorPosition
 			if actorVelocity * connection.toVector() <= 0
+// 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
+// 					+ getElement().getPosition() + ": return behind=" + (actorVelocity * connection.toVector()))
 				return
 			end
 			
@@ -741,8 +745,12 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// this check also skips avoiding if collider moves faster than actor:
 			//    speedDiff = actorSpeed - (norActorVelocity * velocity)
 			//    hitDistanceThreshold = speedDiff / actorSpeed
-			if pCCTAvoidCollision.getCollisionAt(0).getDistance() \
+			if pCCTAvoidCollision.getCollisionAt(0).getDistance()\
 			>= 1.0 - (norActorVelocity * colliderVelocity) / actorSpeed
+// 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
+// 					+ getElement().getPosition() + ": return relSpeed=("\
+// 					+ pCCTAvoidCollision.getCollisionAt(0).getDistance() + ","\
+// 					+ (1.0 - (norActorVelocity * colliderVelocity) / actorSpeed) + ")")
 				return
 			end
 			
@@ -760,8 +768,11 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			var float crossAngle = 0
 			if colliderVelocity.getLength() > 0.01
 				crossAngle = DEMath.acos(norActorVelocity * colliderVelocity.normalize())
-				if crossAngle > 20 and crossAngle < 160
+// 				if crossAngle > 20 and crossAngle < 160
+				if crossAngle > 60 and crossAngle < 120 // 30 degrees spread around 90 degrees
 					waitBehindAvoidedByActor(behavior)
+// 					BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
+// 						+ getElement().getPosition() + ": return crossing=" + crossAngle)
 					return
 				end
 			end
@@ -774,6 +785,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				ECBehaviorAvoidCollision.getInstanceIn(behavior.getElement())
 			if otherAvoidCollision != null and otherAvoidCollision.pDeviationTime > 0
 				waitBehindAvoidedByActor(behavior)
+// 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
+// 					+ getElement().getPosition() + ": return bothAvoid=("\
+// 					+ otherAvoidCollision.pDeviationTime + "," + otherAvoidCollision.pSpeedMultiplier + ")")
 				return
 			end
 			
