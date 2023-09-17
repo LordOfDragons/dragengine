@@ -779,11 +779,12 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			
 			// if the other element also supports ECBehaviorAvoidCollision check who should
 			// avoid the other. If the other element is already avoiding apply wait behind
-			// to slow down before continue moving
+			// to slow down before continue moving. speed multiplier is negative if the
+			// other actor is backing off a bit to make it easier for use to get around
 			
 			var ECBehaviorAvoidCollision.Instance otherAvoidCollision = \
 				ECBehaviorAvoidCollision.getInstanceIn(behavior.getElement())
-			if otherAvoidCollision != null and otherAvoidCollision.pDeviationTime > 0
+			if otherAvoidCollision != null and otherAvoidCollision.pDeviationTime > 0 and pSpeedMultiplier > 0
 				waitBehindAvoidedByActor(behavior)
 // 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
 // 					+ getElement().getPosition() + ": return bothAvoid=("\
