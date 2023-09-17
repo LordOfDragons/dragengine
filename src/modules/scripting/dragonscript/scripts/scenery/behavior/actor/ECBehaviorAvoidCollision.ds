@@ -784,7 +784,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			
 			var ECBehaviorAvoidCollision.Instance otherAvoidCollision = \
 				ECBehaviorAvoidCollision.getInstanceIn(behavior.getElement())
-			if otherAvoidCollision != null and otherAvoidCollision.pDeviationTime > 0 and pSpeedMultiplier > 0
+			if otherAvoidCollision != null and otherAvoidCollision.pDeviationTime > 0\
+			and otherAvoidCollision.pSpeedMultiplier > 0
 				waitBehindAvoidedByActor(behavior)
 // 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
 // 					+ getElement().getPosition() + ": return bothAvoid=("\
@@ -844,29 +845,38 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				//      but the left/right check hits an obstacle right next to it. in such
 				//      situations the actor should be bold and just try deviating. not sure how
 				//      to solve this properly
-				waitBehindAvoidedByActor(behavior)
-				return
-			end
-			
-			select navSpaceEvadeSide(actorPosition, movingOrientation, \
-			leftAngle, leftDist, rightAngle, rightDist)
-			case -1 // no side possible
-				waitBehindAvoidedByActor(behavior)
-				return
-				
-			case 0 // both possible
-				if canEvadeLeft and canEvadeRight
-					useLeftSide = leftAngle < rightAngle
+				if crossAngle < 90
+					waitBehindAvoidedByActor(behavior)
 					
 				else
-					useLeftSide = canEvadeLeft
+					useLeftSide = DEMath.probability(0.5)
 				end
 				
-			case 1 // only left possible
-				useLeftSide = canEvadeLeft
-				
-			case 2 // only right possible
-				useLeftSide = not canEvadeRight
+			else
+				select navSpaceEvadeSide(actorPosition, movingOrientation, \
+				leftAngle, leftDist, rightAngle, rightDist)
+				case -1 // no side possible
+					if crossAngle < 90
+						waitBehindAvoidedByActor(behavior)
+						
+					else
+						useLeftSide = DEMath.probability(0.5)
+					end
+					
+				case 0 // both possible
+					if canEvadeLeft and canEvadeRight
+						useLeftSide = leftAngle < rightAngle
+						
+					else
+						useLeftSide = canEvadeLeft
+					end
+					
+				case 1 // only left possible
+					useLeftSide = canEvadeLeft
+					
+				case 2 // only right possible
+					useLeftSide = not canEvadeRight
+				end
 			end
 			
 			// calculate the deviation parameters to use
@@ -1070,10 +1080,24 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			if pCCTAvoidCollision.hitDistance(0) < 0.01
 // 				BaseGameApp.getApp().getConsole().addMessage("wbaba bump: " + Array.newWith(\
 // 					moveSpeed, colliderSpeed, angle, pCCTAvoidCollision.hitDistance(0)))
-				pDeviationAngle = pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
-				pDeviationTime = DEMath.random(0.25, 0.5)
-				pSpeedMultiplier = -0.5
-				return
+				var bool doBackOff = true
+				
+				// if the avoided obstacle has avoid collision behavior too check if it is
+				// also trying to back off already. if this is the case go on like normal
+				var ECBehaviorAvoidCollision.Instance otherAvoidCollision = \
+					ECBehaviorAvoidCollision.getInstanceIn(behavior.getElement())
+				if otherAvoidCollision != null and otherAvoidCollision.pDeviationTime > 0\
+				and otherAvoidCollision.pSpeedMultiplier < 0
+					doBackOff = false
+				end
+				
+				if doBackOff
+					pDeviationAngle = pActorMover.getLocomotion().getLocomotion()\
+						.getMovingOrientation() + DEMath.random(-30.0, 30.0)
+					pDeviationTime = DEMath.random(0.25, 0.5)
+					pSpeedMultiplier = -0.5
+					return
+				end
 			end
 			
 			// actor is moving faster than obstacle. adjust speed relative to distance. if the
