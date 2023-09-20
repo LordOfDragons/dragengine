@@ -185,7 +185,6 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			var String action = arguments.getAt(1) cast String
 			
 			if action.equals("start")
-				pInstance.stop()
 				pInstance.setAnimator(arguments.getAt(2) cast String)
 				arguments.slice(3).forEach(block String each
 					pInstance.addBreakPoint(each.toFloat())
@@ -407,9 +406,10 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			animated.setAnimator(pAnimator)
 			
 			pController = animated.getControllerNamed(pControllerName)
-			pController.setValue(0)
+			pController.setToLower()
 			
 			animated.captureState(0)
+			animated.applyAnimations() // required if behavior has been added after animated
 			
 			pNextBreakPoint = 0
 			pState = State.playing
