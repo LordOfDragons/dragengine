@@ -42,4 +42,16 @@ enum RepeatMode
 	
 	/** \brief Tile image in x and y direction. */
 	tile
+	
+	/**
+	 * \brief Show image in the center.
+	 * \version 1.19
+	 */
+	center
+	
+	/**
+	 * \brief Stretch image to fill widget keeping aspect ratio.
+	 * \version 1.19
+	 */
+	stretchRatio
 end

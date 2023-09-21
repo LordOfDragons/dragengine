@@ -37,125 +37,125 @@ pin Dragengine.Utils
  * By default no audio is played if the video has audio. To play audio assign a Speaker.
  */
 class DisplayVideo extends Widget
-	private var CanvasVideoPlayer pCanvasVideo
-	private var RepeatMode pRepeatMode
-	private var VideoPlayer pVideoPlayer
-	private var Speaker pSpeaker
-	private var Video pVideo
-	private var bool pProtectVideoColorTransform
+	var CanvasVideoPlayer pCanvasVideo
+	var RepeatMode pRepeatMode
+	var VideoPlayer pVideoPlayer
+	var Speaker pSpeaker
+	var Video pVideo
+	var bool pProtectVideoColorTransform
 	
 	
 	
 	/** \brief Create display video widget. */
-	public func new() this( null, RepeatMode.once, true, null )
+	func new() this(null, RepeatMode.once, true, null)
 	end
 	
-	public func new( Video video ) this( video, RepeatMode.once, true, null )
+	func new(Video video) this(video, RepeatMode.once, true, null)
 	end
 	
-	public func new( Video video, RepeatMode repeatMode ) this( video, RepeatMode.once, true, null )
+	func new(Video video, RepeatMode repeatMode) this(video, RepeatMode.once, true, null)
 	end
 	
-	public func new( Video video, RepeatMode repeatMode, bool autoPlay ) this( video, repeatMode, autoPlay, null )
+	func new(Video video, RepeatMode repeatMode, bool autoPlay) this(video, repeatMode, autoPlay, null)
 	end
 	
-	public func new( Video video, RepeatMode repeatMode, bool autoPlay, Speaker speaker )
-		this.pRepeatMode = repeatMode
-		this.pProtectVideoColorTransform = false
-		this.pVideo = video
-		this.pVideoPlayer = VideoPlayer.new()
-		this.pVideoPlayer.setVideo( video )
-		this.pVideoPlayer.setLooping( true )
+	func new(Video video, RepeatMode repeatMode, bool autoPlay, Speaker speaker)
+		pRepeatMode = repeatMode
+		pProtectVideoColorTransform = false
+		pVideo = video
+		pVideoPlayer = VideoPlayer.new()
+		pVideoPlayer.setVideo(video)
+		pVideoPlayer.setLooping(true)
 		
-		this.pCanvasVideo = CanvasVideoPlayer.new()
-		this.pCanvasVideo.setVideoPlayer( this.pVideoPlayer )
-		this.getCanvasContent().addCanvas( this.pCanvasVideo )
-		this.updateCanvasVideo()
+		pCanvasVideo = CanvasVideoPlayer.new()
+		pCanvasVideo.setVideoPlayer(pVideoPlayer)
+		getCanvasContent().addCanvas(pCanvasVideo)
+		updateCanvasVideo()
 		
-		this.setSpeaker( speaker )
+		setSpeaker(speaker)
 		
-		this.setDesignerSelector( "Video" )
+		setDesignerSelector("Video")
 		
 		if autoPlay
-			this.play()
+			play()
 		end
 	end
 	
-	public func new( Video video, String designerSelector ) this( video )
-		this.setDesignerSelector( designerSelector )
+	func new(Video video, String designerSelector) this(video)
+		setDesignerSelector(designerSelector)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		this.stop()
-		this.setSpeaker( null )
+	func void dispose()
+		stop()
+		setSpeaker(null)
 		super.dispose()
 	end
 	
 	
 	
 	/** Video to display or null if not set. */
-	public func Video getVideo()
-		return this.pVideo
+	func Video getVideo()
+		return pVideo
 	end
 	
 	/** Set video to display. */
-	public func void setVideo( Video video )
-		if this.pVideo == video
+	func void setVideo(Video video)
+		if pVideo == video
 			return
 		end
 		
-		this.pVideo = video
-		this.pVideoPlayer.setVideo( video )
+		pVideo = video
+		pVideoPlayer.setVideo(video)
 		
-		this.layoutParent()
-		this.updateCanvasVideo()
+		layoutParent()
+		updateCanvasVideo()
 	end
 	
 	/** Repeat mode. */
-	public func RepeatMode getRepeatMode()
-		return this.pRepeatMode
+	func RepeatMode getRepeatMode()
+		return pRepeatMode
 	end
 	
 	/** Set repeat mode. Has to be one of REPEAT_* . */
-	public func void setRepeatMode( RepeatMode repeatMode )
-		if repeatMode == this.pRepeatMode
+	func void setRepeatMode(RepeatMode repeatMode)
+		if repeatMode == pRepeatMode
 			return
 		end
 		
-		this.pRepeatMode = repeatMode
+		pRepeatMode = repeatMode
 		
-		this.updateCanvasVideo()
+		updateCanvasVideo()
 	end
 	
 	/** \brief Video color transform. */
-	public func ColorMatrix getVideoColorTransform()
-		return this.pCanvasVideo.getColorTransform()
+	func ColorMatrix getVideoColorTransform()
+		return pCanvasVideo.getColorTransform()
 	end
 	
 	/** \brief Set color transformation. */
-	public func void setVideoColorTransform( ColorMatrix transform )
-		this.pCanvasVideo.setColorTransform( transform )
+	func void setVideoColorTransform(ColorMatrix transform)
+		pCanvasVideo.setColorTransform(transform)
 	end
 	
 	/** \brief Protect custom set video color transform. */
-	public func bool getProtectVideoColorTransform()
-		return this.pProtectVideoColorTransform
+	func bool getProtectVideoColorTransform()
+		return pProtectVideoColorTransform
 	end
 	
 	/** \brief Set protect custom set video color transform. */
-	public func void setProtectVideoColorTransform( bool protect )
-		this.pProtectVideoColorTransform = protect
+	func void setProtectVideoColorTransform(bool protect)
+		pProtectVideoColorTransform = protect
 	end
 	
 	/** \brief Speaker or null. */
-	public func Speaker getSpeaker()
-		return this.pSpeaker
+	func Speaker getSpeaker()
+		return pSpeaker
 	end
 	
 	/** \brief Set speaker or null. */
-	public func void setSpeaker( Speaker speaker )
-		if speaker == this.pSpeaker
+	func void setSpeaker(Speaker speaker)
+		if speaker == pSpeaker
 			return
 		end
 		
@@ -163,25 +163,25 @@ class DisplayVideo extends Widget
 			throw EInvalidParam.new()
 		end
 		
-		if this.pSpeaker != null
-			this.pSpeaker.setVideoPlayer( this.pVideoPlayer )
+		if pSpeaker != null
+			pSpeaker.setVideoPlayer(pVideoPlayer)
 		end
 		
-		this.pSpeaker = speaker
+		pSpeaker = speaker
 		
 		if speaker != null
-			speaker.setVideoPlayer( this.pVideoPlayer )
+			speaker.setVideoPlayer(pVideoPlayer)
 		end
 	end
 	
 	
 	
 	/** Minimal size of widget. */
-	public func Point getMinimumSize()
-		if this.pVideo == null or this.isMinimumSizeSet()
+	func Point getMinimumSize()
+		if pVideo == null or isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
-		return this.getPadding().getSize() + this.pVideo.getSize()
+		return getPadding().getSize() + pVideo.getSize()
 	end
 	
 	
@@ -190,63 +190,63 @@ class DisplayVideo extends Widget
 	 * \brief State changed.
 	 * \details Sends event to listeners.
 	 */
-	public func void onStateChanged( StateChangeEvent event )
-		super.onStateChanged( event )
-		this.updateCanvasVideo()
+	func void onStateChanged(StateChangeEvent event)
+		super.onStateChanged(event)
+		updateCanvasVideo()
 	end
 	
 	/** \brief Padding changed. */
-	public func void onPaddingChanged()
-		this.updateCanvasVideo()
+	func void onPaddingChanged()
+		updateCanvasVideo()
 	end
 	
 	
 	
 	/** \brief Looping playback. */
-	public func bool getLooping()
-		return this.pVideoPlayer.getLooping()
+	func bool getLooping()
+		return pVideoPlayer.getLooping()
 	end
 	
 	/** \brief Set if playback is looping. */
-	public func void setLooping( bool looping )
-		this.pVideoPlayer.setLooping( looping )
+	func void setLooping(bool looping)
+		pVideoPlayer.setLooping(looping)
 	end
 	
 	/** \brief Start playback. */
-	public func void play()
-		if this.pVideoPlayer.isPlaying()
+	func void play()
+		if pVideoPlayer.isPlaying()
 			return
 		end
 		
-		this.pVideoPlayer.play()
-		this.startFrameUpdater()
+		pVideoPlayer.play()
+		startFrameUpdater()
 	end
 	
 	/** \brief Pause playback. */
-	public func void pause()
-		this.pVideoPlayer.pause()
-		this.stopFrameUpdater()
+	func void pause()
+		pVideoPlayer.pause()
+		stopFrameUpdater()
 	end
 	
 	/** \brief Stop playback. */
-	public func void stop()
-		this.pVideoPlayer.stop()
-		this.stopFrameUpdater()
+	func void stop()
+		pVideoPlayer.stop()
+		stopFrameUpdater()
 	end
 	
 	/** \brief Video is playing back. */
-	public func bool isPlaying()
-		return this.pVideoPlayer.isPlaying()
+	func bool isPlaying()
+		return pVideoPlayer.isPlaying()
 	end
 	
 	/** \brief Video is paused. */
-	public func bool isPaused()
-		return this.pVideoPlayer.isPaused()
+	func bool isPaused()
+		return pVideoPlayer.isPaused()
 	end
 	
 	/** \brief Video is stopped. */
-	public func bool isStopped()
-		return this.pVideoPlayer.isStopped()
+	func bool isStopped()
+		return pVideoPlayer.isStopped()
 	end
 	
 	/**
@@ -256,29 +256,29 @@ class DisplayVideo extends Widget
 	 * 
 	 * \param elapsed Elapsed time since the last frame update. Equals Engine.getElapsedTime().
 	 */
-	public func void onFrameUpdate( float elapsed )
-		this.pVideoPlayer.update( elapsed )
+	func void onFrameUpdate(float elapsed)
+		pVideoPlayer.update(elapsed)
 		
-		if this.pVideoPlayer.getLooping() and not this.pVideoPlayer.isPlaying()
-			this.stop()
+		if pVideoPlayer.getLooping() and not pVideoPlayer.isPlaying()
+			stop()
 		end
 	end
 	
 	
 	
 	/** \brief Get play time in seconds. */
-	public func float getPlayTime()
-		return this.pVideoPlayer.getPlayTo()
+	func float getPlayTime()
+		return pVideoPlayer.getPlayTo()
 	end
 	
 	/** \brief Playback position in seconds. */
-	public func float getPlayPosition()
-		return this.pVideoPlayer.getPlayPosition()
+	func float getPlayPosition()
+		return pVideoPlayer.getPlayPosition()
 	end
 	
 	/** \brief Set playback position in seconds clamped to play range. */
-	public func void setPlayPosition( float position )
-		this.pVideoPlayer.setPlayPosition( position )
+	func void setPlayPosition(float position)
+		pVideoPlayer.setPlayPosition(position)
 	end
 	
 	/**
@@ -287,71 +287,96 @@ class DisplayVideo extends Widget
 	 * Use this if you want to advance the play time in variable time steps independend of
 	 * the game frame time. Negative values advance the time backwards.
 	 */
-	public func void advancePlayPosition( float seconds )
-		this.pVideoPlayer.setPlayPosition( DEMath.normalize( \
-			this.pVideoPlayer.getPlayPosition() + seconds, this.pVideoPlayer.getPlayTo() ) )
+	func void advancePlayPosition(float seconds)
+		pVideoPlayer.setPlayPosition(DEMath.normalize(\
+			pVideoPlayer.getPlayPosition() + seconds, pVideoPlayer.getPlayTo()))
 	end
 	
 	
 	
 	/** Update canvas video. */
-	public func void updateCanvasVideo()
-		if this.pVideo == null
+	func void updateCanvasVideo()
+		if pVideo == null
 			return
 		end
 		
-		var BorderSize padding = this.getPadding()
-		var Point size = Point.new().largest( this.getSize() - padding.getSize() )
-		var Point position = Point.new( padding.getLeft(), padding.getTop() )
+		var BorderSize padding = getPadding()
+		var Point size = Point.new().largest(getSize() - padding.getSize())
+		var Point position = Point.new(padding.getLeft(), padding.getTop())
 		
-		select this.pRepeatMode
+		select pRepeatMode
 		case RepeatMode.once
-			this.pCanvasVideo.setRepeatX( 1 )
-			this.pCanvasVideo.setRepeatY( 1 )
-			this.pCanvasVideo.setPosition( position )
-			this.pCanvasVideo.setSize( this.pVideo.getSize() )
+			pCanvasVideo.setRepeatX(1)
+			pCanvasVideo.setRepeatY(1)
+			pCanvasVideo.setPosition(position)
+			pCanvasVideo.setSize(pVideo.getSize())
 			
 		case RepeatMode.stretch
-			this.pCanvasVideo.setRepeatX( 1 )
-			this.pCanvasVideo.setRepeatY( 1 )
-			this.pCanvasVideo.setPosition( position )
-			this.pCanvasVideo.setSize( size )
+			pCanvasVideo.setRepeatX(1)
+			pCanvasVideo.setRepeatY(1)
+			pCanvasVideo.setPosition(position)
+			pCanvasVideo.setSize(size)
 			
 		case RepeatMode.tileX
-			var int videoWidth = this.pVideo.getWidth()
-			var int videoHeight = this.pVideo.getHeight()
-			var int repeatX = DEMath.max( size.getX() - 1, 0 ) / videoWidth + 1
-			this.pCanvasVideo.setRepeatX( repeatX )
-			this.pCanvasVideo.setRepeatY( 1 )
-			this.pCanvasVideo.setPosition( position )
-			this.pCanvasVideo.setSize( Point.new( videoWidth * repeatX, videoHeight ) )
+			var int videoWidth = pVideo.getWidth()
+			var int videoHeight = pVideo.getHeight()
+			var int repeatX = DEMath.max(size.getX() - 1, 0) / videoWidth + 1
+			pCanvasVideo.setRepeatX(repeatX)
+			pCanvasVideo.setRepeatY(1)
+			pCanvasVideo.setPosition(position)
+			pCanvasVideo.setSize(Point.new(videoWidth * repeatX, videoHeight))
 			
 		case RepeatMode.tileY
-			var int videoWidth = this.pVideo.getWidth()
-			var int videoHeight = this.pVideo.getHeight()
-			var int repeatY = DEMath.max( size.getY() - 1, 0 ) / videoHeight + 1
-			this.pCanvasVideo.setRepeatX( 1 )
-			this.pCanvasVideo.setRepeatY( repeatY )
-			this.pCanvasVideo.setPosition( position )
-			this.pCanvasVideo.setSize( Point.new( videoWidth, videoHeight * repeatY ) )
+			var int videoWidth = pVideo.getWidth()
+			var int videoHeight = pVideo.getHeight()
+			var int repeatY = DEMath.max(size.getY() - 1, 0) / videoHeight + 1
+			pCanvasVideo.setRepeatX(1)
+			pCanvasVideo.setRepeatY(repeatY)
+			pCanvasVideo.setPosition(position)
+			pCanvasVideo.setSize(Point.new(videoWidth, videoHeight * repeatY))
 			
 		case RepeatMode.tile
-			var int videoWidth = this.pVideo.getWidth()
-			var int videoHeight = this.pVideo.getHeight()
-			var int repeatX = DEMath.max( size.getX() - 1, 0 ) / videoWidth + 1
-			var int repeatY = DEMath.max( size.getY() - 1, 0 ) / videoHeight + 1
-			this.pCanvasVideo.setRepeatX( repeatX )
-			this.pCanvasVideo.setRepeatY( repeatY )
-			this.pCanvasVideo.setPosition( position )
-			this.pCanvasVideo.setSize( Point.new( videoWidth * repeatX, videoHeight * repeatY ) )
+			var int videoWidth = pVideo.getWidth()
+			var int videoHeight = pVideo.getHeight()
+			var int repeatX = DEMath.max(size.getX() - 1, 0) / videoWidth + 1
+			var int repeatY = DEMath.max(size.getY() - 1, 0) / videoHeight + 1
+			pCanvasVideo.setRepeatX(repeatX)
+			pCanvasVideo.setRepeatY(repeatY)
+			pCanvasVideo.setPosition(position)
+			pCanvasVideo.setSize(Point.new(videoWidth * repeatX, videoHeight * repeatY))
+			
+		case RepeatMode.center
+			pCanvasVideo.setRepeatX(1)
+			pCanvasVideo.setRepeatY(1)
+			pCanvasVideo.setPosition(position + (size - pVideo.getSize()) / 2)
+			pCanvasVideo.setSize(pVideo.getSize())
+			
+		case RepeatMode.stretchRatio
+			var Point videoSize = pVideo.getSize()
+			var Point newSize = size
+			if videoSize > Point.new()
+				var int stretched = videoSize.getY() * size.getX() / videoSize.getX()
+				if stretched <= size.getY()
+					newSize = Point.new(size.getX(), stretched)
+					
+				else
+					stretched = videoSize.getX() * size.getY() / videoSize.getY()
+					newSize = Point.new(stretched, size.getY())
+				end
+			end
+			
+			pCanvasVideo.setRepeatX(1)
+			pCanvasVideo.setRepeatY(1)
+			pCanvasVideo.setPosition(position + (size - newSize) / 2)
+			pCanvasVideo.setSize(newSize)
 		end
 	end
 	
 	
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.updateCanvasVideo()
+	func void onResize(WidgetEvent event)
+		super.onResize(event)
+		updateCanvasVideo()
 	end
 end
