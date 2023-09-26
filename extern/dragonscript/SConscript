@@ -28,7 +28,7 @@ else:
 		distVersionMajor, distVersionMinor) )
 	libLinkName = 'dscript'
 
-# check if system libpng is present
+# check if system dragonscript is present
 envLibrary.Append( CPPPATH = [ envLibrary[ 'with_dragonscript_inc' ] ] )
 envLibrary.Append( LIBPATH = [ envLibrary[ 'with_dragonscript_lib' ] ] )
 
@@ -129,7 +129,7 @@ depends = parent_env.Alias( 'lib_dragonscript', library )
 envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
 
 parent_targets[ 'lib_dragonscript' ] = {
-	'name' : 'Internal libpng library',
+	'name' : 'Internal DragonScript library',
 	'cpppath' : [ envLibrary.Dir( 'include' ) ],
 	'libpath' : [ envLibrary.Dir( 'lib' ) ],
 	'libs' : libs,

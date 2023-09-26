@@ -357,9 +357,6 @@ class GameWorld
 	/** \brief Element with identifier or \em null if absent. */
 	public func Element getElementWithID(UniqueID id)
 		return pElementIDMap.getAt(id, null) cast Element
-// 		return pElements.find(block Element each
-// 			return each.getID().equals(id)
-// 		end) cast Element
 	end
 	
 	/** \brief Visit elements. */
