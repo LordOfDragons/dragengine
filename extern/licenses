@@ -11,24 +11,14 @@ libapng:      zLib/libpng (GPL/MIT compatible)
               {vid_apng}
 libevdev:     MIT
               {inp_x}
-libffi:       MIT
-              {scr_smalltalk}
-libhidapi:    libhidapi (GPL/MIT compatible)
-              {lib_libopenhmd}
 libjpeg:      libjpeg (GPL/MIT compatible)
               {img_libjpeg}
-libltdl:      GPLv2
-              {scr_smalltalk}
 libogg:       BSD (GPL/MIT compatible)
               {lib_libvorbis, lib_libwebp}
 libpng:       zLib/libpng (GPL/MIT compatible)
               {lib_fox, lib_libapng, syn_desynthesizer, img_png, img_png3d}
-libsigsegv:   GPLv2
-              {scr_smalltalk}
 libtheora:    BSD (GPL/MIT compatible)
               {vid_theora}
-libusb:       L-GPL
-              {lib_libhidapi}
 libvorbis:    BSD (GPL/MIT compatible)
               {lib_libtheora, vid_webm, sng_ogg}
 libvpx:       libwebm [BSD style] (GPL/MIT compatible)
@@ -45,20 +35,10 @@ openvr:       valve [BSD style] (GPL/MIT compatible)
               {vr_openvr}
 openxr:       Apache-2 (GPL/MIT compatible)
               {vr_openxr}
-smalltalk:    GPLv2
-              {scr_smalltalk}
 sndio:        ISC [MIT/BSD comparable] (GPL/MIT compatible)
               {lib_openal}
-soundtouch:   L-GPL
+soundtouch:   L-GPL (MIT compatible)
               {syn_desynthesizer}
 zlib:         zLib (GPL/MIT compatible)
               {lib_evdev, lib_libsigsegv, lib_libpng, lib_libapng,
                arc_delga, dragengine, editor_project}
-
-these libraries are deprecated and are subject to be removed in
-a future release:
-
-fftw:         GPLv2
-              {}
-libopenhmd:   boost (GPL/MIT compatible)
-              {}
