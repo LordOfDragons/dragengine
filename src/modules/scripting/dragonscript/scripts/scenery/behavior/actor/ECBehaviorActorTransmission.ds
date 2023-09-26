@@ -57,6 +57,11 @@ pin Dragengine.Utils
  * it there is no reason to use multiple transmissions since the sub titles can be styled
  * 
  * Element class property prefix is "transmission".
+ * 
+ * \par Version 1.19
+ * 
+ * If part has empty string the subtitle is hidden. This allows empty parts to be used
+ * to created pauses between parts.
  */
 class ECBehaviorActorTransmission extends DefaultECBehavior
 	/** \brief Immutable transmission part. */
@@ -367,6 +372,18 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			displayPart(part)
 		end
 		
+		/**
+		 * \brief Add transmission part with empty text.
+		 * \version 1.19
+		 * 
+		 * Hides the sub title box. Can be used to create pauses between parts.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners.
+		 */
+		public func void addPause(float timeout)
+			addPart(UnicodeString.new(), pStyle, timeout)
+		end
+		
 		/** \brief Clear all parts and hide subtitle. */
 		public func void clear()
 			if not isRunning()
@@ -420,9 +437,16 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			
 			pParts.remove(part)
 			
-			var SubTitleBoxText text = pConversationActor.createSubTitleText(part.getText(), part.getStyle())
-			getSubTitle().addSubTitleText(text.subtitleWidget())
-			setSubTitleText(text)
+			var UnicodeString text = part.getText()
+			
+			if text.getLength() > 0
+				var SubTitleBoxText stbt = pConversationActor.createSubTitleText(text, part.getStyle())
+				getSubTitle().addSubTitleText(stbt.subtitleWidget())
+				setSubTitleText(stbt)
+				
+			else
+				setSubTitleText(null)
+			end
 			
 			pRemainingDisplayTime = part.getTimeout()
 			
