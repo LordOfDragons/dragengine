@@ -692,7 +692,7 @@ class Locomotion
 	/** \name State control and frame update */
 	/*@{*/
 	/**
-	 * \brief Cancel inpurt.
+	 * \brief Cancel input.
 	 * 
 	 * Resets these parameters:
 	 * - Analog moving left-right: set value and goal to 0

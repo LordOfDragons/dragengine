@@ -273,9 +273,14 @@ class WindowGameWorld extends Window
 			if AudioSystem.getActiveMicrophone() == pMicrophone
 				AudioSystem.setActiveMicrophone(null)
 			end
-			pGameWorld.getWorld().removeMicrophone(pMicrophone)
 			
-			pGameWorld.getWorld().removeCamera(pCamera)
+			var World world = pGameWorld.getWorld()
+			if world.equals(pMicrophone.getParentWorld())
+				world.removeMicrophone(pMicrophone)
+			end
+			if world.equals(pCamera.getParentWorld())
+				world.removeCamera(pCamera)
+			end
 			
 			if dispose
 				try
