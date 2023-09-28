@@ -208,8 +208,11 @@ void debpParticleEmitterInstance::PrepareParticles( float elapsed ){
 
 void debpParticleEmitterInstance::ApplyForceFields( float elapsed ){
 	// TODO track force fields to update only if they are nearby
+	if( ! pParentWorld ){
+		return;
+	}
 	
-	const deWorld &world = GetParentWorld()->GetWorld();
+	const deWorld &world = pParentWorld->GetWorld();
 	deForceField *forceField = world.GetRootForceField();
 	int i;
 	
