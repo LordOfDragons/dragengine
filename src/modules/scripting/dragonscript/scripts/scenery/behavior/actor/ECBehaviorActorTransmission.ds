@@ -436,7 +436,25 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			end
 			
 			pParts.remove(part)
+			displaySubTitleText(part)
+			pRemainingDisplayTime = part.getTimeout()
+			onPartDisplayed(part)
 			
+			pListeners.forEach(block Listener each
+				each.partDisplayed(this, part)
+			end)
+		end
+		
+		/**
+		 * \brief Display sub title text for part.
+		 * \version 1.19
+		 * 
+		 * Default implementation uses ECBehaviorConversationActor.createSubTitleText() to
+		 * create sub title text. The created sub title text is added to getSubTitle() then
+		 * assigned to this instance using setSubTitleText(). If text is empty SubTitleBoxText()
+		 * is called with null argument.
+		 */
+		protected func void displaySubTitleText(Part part)
 			var UnicodeString text = part.getText()
 			
 			if text.getLength() > 0
@@ -447,14 +465,6 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			else
 				setSubTitleText(null)
 			end
-			
-			pRemainingDisplayTime = part.getTimeout()
-			
-			onPartDisplayed(part)
-			
-			pListeners.forEach(block Listener each
-				each.partDisplayed(this, part)
-			end)
 		end
 		
 		/** \brief Transmission started. */
