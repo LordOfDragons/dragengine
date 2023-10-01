@@ -15,7 +15,7 @@ out float vZCoord;
 void emitCorner( in vec4 position, in vec3 center ){
 	vec3 displacement = vec3( ( vec3( position ) - center ).xy, 0.0 );
 	float len = length( displacement );
-	if( len > 0.0 ){
+	if( len > 0.001 ){
 		position.xyz += ( displacement / len ) * 0.001;
 	}
 	

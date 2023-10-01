@@ -65,7 +65,7 @@ void main( void ){
 	// calculate the image key
 //	float key = 1.03 - 2.0 / ( 2.0 + log( averageLuminance + 1.0 ) / log( 10.0 ) ); // paper
 	//float key = max( 0.0, 1.5 - 1.5 / ( averageLuminance * 0.1 + 1.0 ) ) + 0.1; // ogre
-	float maxLum = averageLuminance / ckey;
+	float maxLum = max( averageLuminance / ckey, 0.01 );
 	float scaleLum = pToneMapMaxWhiteLum / maxLum;
 	
 	// adjust the image key using the user chosen exposure

@@ -314,7 +314,7 @@ inout float closestBorderDistance, inout vec3 closestColor ){
 			if( hitDistance < order2Distance ){
 				float scale = 1.0;
 				
-				if( order2WeightSum > 0.0 ){
+				if( order2WeightSum > 0.001 ){
 					scale = max( min( order2WeightSum, 1.0 - envMapWeights.y ), 0.0 ) / order2WeightSum;
 				}
 				
@@ -389,14 +389,14 @@ void colorEnvMapReflection( in vec3 position, in vec3 reflectDir, in float rough
 		float scale = 1.0;
 		
 		if( order1WeightSum + order2WeightSum > 1.0 ){
-			scale = max( min( order2WeightSum, 1.0 - order1WeightSum ), 0.0 ) / order2WeightSum;
+			scale = max( min( order2WeightSum, 1.0 - order1WeightSum ), 0.0 ) / max( order2WeightSum, 0.001 );
 		}
 		
 		order1Color += order2Color * vec3( scale );
 		order1WeightSum += order2WeightSum * scale;
 	}
 	
-	if( order1WeightSum > 0.0 ){
+	if( order1WeightSum > 0.001 ){
 		color = order1Color / vec3( order1WeightSum );
 		
 	}else{

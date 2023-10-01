@@ -110,7 +110,7 @@ void main( void ){
 		}else{
 			// calculate the scatter scaling. this is required to scale the sss calculation differently for each component.
 			// it's not a fully correct version but works well enough inside a shader
-			vec3 scatterScale = vec3( 1.0 ) / max( absorptionRadius, vec3( 0.0001 ) );
+			vec3 scatterScale = vec3( 1.0 ) / max( absorptionRadius, vec3( 0.001 ) );
 			
 			// calculate sss using tap spiral
 			int tapCount = pTapCount; // so we can adjust it with smaller radius
