@@ -40,15 +40,15 @@ pin Dragengine.TriggerSystem
 class ECComposeAnimator
 	/** \brief Playback support for elements. */
 	public class Playback
-		private var AnimatorInstance pInstance
-		private var AnimatorController pController
-		private var float pPlaySpeed
-		private var bool pPlaying
+		var AnimatorInstance pInstance
+		var AnimatorController pController
+		var float pPlaySpeed
+		var bool pPlaying
 		
 		
 		
 		/** \brief Create playback. */
-		public func new(AnimatorInstance instance, String playbackController)
+		func new(AnimatorInstance instance, String playbackController)
 			pInstance = instance
 			pPlaySpeed = 1
 			pPlaying = false
@@ -59,27 +59,27 @@ class ECComposeAnimator
 		
 		
 		/** \brief Playback speed. */
-		public func float getPlaySpeed()
+		func float getPlaySpeed()
 			return pPlaySpeed
 		end
 		
 		/** \brief Set playback speed. */
-		public func void setPlaySpeed(float playSpeed)
+		func void setPlaySpeed(float playSpeed)
 			pPlaySpeed = playSpeed
 		end
 		
 		/** \brief Animator instance or \em null if not available. */
-		public func AnimatorInstance getInstance()
+		func AnimatorInstance getInstance()
 			return pInstance
 		end
 		
 		/** \brief Playback controller or \em null if not available. */
-		public func AnimatorController getController()
+		func AnimatorController getController()
 			return pController
 		end
 		
 		/** \brief Set playback controller from index if valid. */
-		public func void setControllerIndex(int index)
+		func void setControllerIndex(int index)
 			if pInstance == null or index < 0 or index >= pInstance.getControllerCount()
 				return
 			end
@@ -87,7 +87,7 @@ class ECComposeAnimator
 		end
 		
 		/** \brief Set playback controller by name if valid. */
-		public func void setControllerNamed(String name)
+		func void setControllerNamed(String name)
 			if pInstance == null
 				return
 			end
@@ -97,51 +97,51 @@ class ECComposeAnimator
 		
 		
 		/** \brief Is playing back. */
-		public func bool getPlaying()
+		func bool getPlaying()
 			return pPlaying
 		end
 		
 		/** \brief Set if playing back. */
-		public func void setPlaying(bool playing)
+		func void setPlaying(bool playing)
 			pPlaying = playing
 		end
 		
 		/** \brief Is looping. */
-		public func bool getLooping()
+		func bool getLooping()
 			return pController != null and not pController.getClamp()
 		end
 		
 		/** \brief Set if looping. */
-		public func void setLooping(bool looping)
+		func void setLooping(bool looping)
 			if pController != null
 				pController.setClamp(not looping)
 			end
 		end
 		
 		/** \brief Playback time. */
-		public func float getTime()
+		func float getTime()
 			return pController != null if pController.getValue() else 0.0
 		end
 		
 		/** \brief Set playback time. */
-		public func void setTime(float time)
+		func void setTime(float time)
 			if pController != null
 				pController.setValue(time)
 			end
 		end
 		
 		/** \brief Playback is at beginning. */
-		public func bool isAtBegin()
+		func bool isAtBegin()
 			return pController != null if pController.isAtLower() else true
 		end
 		
 		/** \brief Playback is at end. */
-		public func bool isAtEnd()
+		func bool isAtEnd()
 			return pController != null if pController.isAtUpper() else true
 		end
 		
 		/** \brief Rewind. */
-		public func void rewind()
+		func void rewind()
 			if pController == null
 				return
 			end
@@ -162,7 +162,7 @@ class ECComposeAnimator
 		 * Advances the controller by the elapsed time multiplied by the play speeed
 		 * and calls AnimatorInstance.apply().
 		 */
-		public func void update(float elapsed)
+		func void update(float elapsed)
 			if not pPlaying or pController == null
 				return
 			end
@@ -177,7 +177,7 @@ class ECComposeAnimator
 		end
 		
 		/** \brief Apply animation. */
-		public func void apply()
+		func void apply()
 			if pInstance != null
 				pInstance.apply()
 			end
@@ -186,7 +186,7 @@ class ECComposeAnimator
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
@@ -199,7 +199,7 @@ class ECComposeAnimator
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(1)
@@ -211,12 +211,14 @@ class ECComposeAnimator
 	
 	
 	
-	private var ECPAnimator pAnimator
-	private var ECPAnimation pAnimation
-	private var ECPFloat pPlaySpeed
-	private var ECPBoolean pPlaying
-	private var ECPString pPlaybackController
-	private var String pPrefix
+	var ECPAnimator pAnimator
+	var ECPAnimation pAnimation
+	var ECPString pMove
+	var ECPFloat pPlaySpeed
+	var ECPBoolean pPlaying
+	var ECPString pPlaybackController
+	var ECPBoolean pLoopMove
+	var String pPrefix
 	
 	
 	
@@ -226,7 +228,7 @@ class ECComposeAnimator
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new(ElementClass ownerClass, Loaders loaders) \
+	func new(ElementClass ownerClass, Loaders loaders) \
 	this(ownerClass, loaders, "animator.")
 	end
 	
@@ -236,7 +238,7 @@ class ECComposeAnimator
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new(ElementClass ownerClass, Loaders loaders, String prefix)
+	func new(ElementClass ownerClass, Loaders loaders, String prefix)
 		if prefix == null
 			throw EInvalidParam.new()
 		end
@@ -256,90 +258,152 @@ class ECComposeAnimator
 		pPlaybackController = ECPString.new(prefix + "playbackController", "playback")
 		ownerClass.addProperty(pPlaybackController)
 		
+		pMove = ECPString.new(prefix + "move", null)
+		ownerClass.addProperty(pMove)
+		
+		pLoopMove = ECPBoolean.new(prefix + "loopMove", true)
+		ownerClass.addProperty(pLoopMove)
+		
 		pPrefix = prefix
 	end
 	
 	
 	
 	/** \brief Animator resource. */
-	public func ECPAnimator getAnimator()
+	func ECPAnimator getAnimator()
 		return pAnimator
 	end
 	
 	/** \brief Animation resource. */
-	public func ECPAnimation getAnimation()
+	func ECPAnimation getAnimation()
 		return pAnimation
 	end
 	
+	/**
+	 * \brief Move name.
+	 * \version 1.19
+	 * 
+	 * If animator is not set creates an animator playing back move. This can be
+	 * used to play animation moves without needing to create an animator.
+	 */
+	func ECPString getMove()
+		return pMove
+	end
+	
 	/** \brief Play speed. */
-	public func ECPFloat getPlaySpeed()
+	func ECPFloat getPlaySpeed()
 		return pPlaySpeed
 	end
 	
 	/** \brief Animation is playing. */
-	public func ECPBoolean getPlaying()
+	func ECPBoolean getPlaying()
 		return pPlaying
 	end
 	
 	/** \brief Playback controller name. */
-	public func ECPString getPlaybackController()
+	func ECPString getPlaybackController()
 		return pPlaybackController
 	end
 	
+	/**
+	 * \brief Loop animation move.
+	 * \version 1.19
+	 * 
+	 * Used only if animator is not set and animation and move is set.
+	 */
+	func ECPBoolean getLoopMove()
+		return pLoopMove
+	end
+	
 	/** \brief Property prefix. */
-	public func String getPrefix()
+	func String getPrefix()
 		return pPrefix
 	end
 	
 	
 	
 	/**
+	 * \deprecated Use createAnimatorInstance(Element,StubElement,Component)
+	 */
+	func AnimatorInstance createAnimatorInstance(Element element, StubElement stub)
+		return createAnimatorInstance(element, stub, null)
+	end
+	
+	/**
 	 * \brief Initialize animator instance for element from stub.
+	 * \version 1.19
 	 * 
 	 * Assigns the animator and animation to the instance. If at least one controller is
-	 * present then the first controller is initialized as playback controller. The element
-	 * is responsible to assign a Component to the animator instance.
+	 * present then the first controller is initialized as playback controller. If no animator
+	 * is defined but animation and move is defined an animator is created with one controller
+	 * and an animation rule playing back the move.
 	 */
-	public func AnimatorInstance createAnimatorInstance(Element element, StubElement stub)
-		var Animator animator = pAnimator.getAnimator()
-		var Animation animation = pAnimation.getAnimation()
-		var String value
-		
-		// animator resource
-		value = stub.getPropertyValueFor(pAnimator.getName(), "")
-		if not value.empty()
-			try
-				animator = pAnimator.getLoader().loadFromFile(value)
-				
-			catch Exception e
-				throw ELoadResourceFailed.new(value, element.getClass().getClassname())
-			end
-		end
-		
-		// animation resource
-		value = stub.getPropertyValueFor(pAnimation.getName(), "")
-		if not value.empty()
-			try
-				animation = Animation.new(value)
-				
-			catch Exception e
-				throw ELoadResourceFailed.new(value, element.getClass().getClassname())
-			end
-		end
+	func AnimatorInstance createAnimatorInstance(Element element, StubElement stub, Component component)
+		var Animator animator = pAnimator.getAnimator(stub, element.getClass())
+		var Animation animation = pAnimation.getAnimation(stub, element.getClass())
 		
 		if animator == null
-			return null
+			animator = createMoveAnimator(element, stub, component)
+			if animator == null
+				return null
+			end
 		end
 		
 		// create animator instance
 		var AnimatorInstance instance = AnimatorInstance.new()
 		instance.setAnimator(animator)
 		instance.setAnimation(animation)
+		instance.setComponent(component)
 		return instance
 	end
 	
+	/**
+	 * \brief Create animator using animation and move.
+	 * \version 1.19
+	 * 
+	 * Creates animator is created with one controller and an animation rule playing
+	 * back the move. Playback can be looping or not depending on getLoopMove().
+	 * If animation or move is null no animator is created and null is returned.
+	 */
+	func Animator createMoveAnimator(Element element, StubElement stub, Component component)
+		if component == null
+			return null
+		end
+		
+		var Animation animation = pAnimation.getAnimation(stub, element.getClass())
+		if animation == null
+			return null
+		end
+		
+		var String move = pMove.getValueOrNull(stub)
+		if move == null
+			return null
+		end
+		
+		var Animator animator = Animator.new()
+		animator.setRig(component.getRig())
+		animator.setAnimation(animation)
+		animator.setControllerCount(1)
+		
+		var AnimatorController controller = animator.getControllerAt(0)
+		controller.setName(pPlaybackController.getValue(stub))
+		controller.setRange(0, animation.getMovePlaytime(move))
+		controller.setClamp(not pLoopMove.getValue(stub))
+		
+		animator.addLink(0)
+		animator.setLinkCurve(0, CurveBezier.newDefaultLinear())
+		
+		var ARAnimation rule = ARAnimation.new()
+		rule.setEnableSize(true)
+		rule.setMoveName(move)
+		rule.targetAddLink(ARAnimationTarget.moveTime, 0)
+		animator.addRule(rule)
+		
+		return animator
+	end
+	
 	/** \brief Create playback helper. */
-	public func Playback createPlayback(AnimatorInstance instance, StubElement stub)
+	func Playback createPlayback(AnimatorInstance instance, StubElement stub)
 		var Playback playback = Playback.new(instance, pPlaybackController.getValue(stub))
 		playback.setPlaySpeed(pPlaySpeed.getValue(stub))
 		playback.setPlaying(pPlaying.getValue(stub))
@@ -347,12 +411,12 @@ class ECComposeAnimator
 	end
 	
 	/** \brief Create playing trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerPlaying(Element element, StubElement stub)
+	func TSTriggerExpression createTriggerPlaying(Element element, StubElement stub)
 		return createTriggerPlaying(element, stub, "")
 	end
 	
 	/** \brief Create playing trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerPlaying(Element element, StubElement stub, String defaultValue)
+	func TSTriggerExpression createTriggerPlaying(Element element, StubElement stub, String defaultValue)
 		var String value = stub.getPropertyValueFor(pPrefix + "trigger", defaultValue)
 		
 		if value.empty()

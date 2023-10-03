@@ -342,7 +342,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		/**
 		 * \brief Create animator instance for the element.
 		 * 
-		 * Default implementation uses ECComposeAnimator.createAnimatorInstance().
+		 * Default implementation uses createAnimatorInstance().
 		 */
 		protected func AnimatorInstance createAnimatorInstance(StubElement stub)
 			return pECBehavior.createAnimatorInstance(getElement(), stub)

@@ -707,6 +707,15 @@
 			<description>Trigger target mirroring activated state.</description>
 			<type>triggerTarget</type>
 		</property>
+		<property name='move'>
+			<description>If animator is not set creates animator playing back move.</description>
+			<type>string</type>
+		</property>
+		<property name='loopMove'>
+			<description>If animator is created using move it is played back looping.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorAttachToParent'>
