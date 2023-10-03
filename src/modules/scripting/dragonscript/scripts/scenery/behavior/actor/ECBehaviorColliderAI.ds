@@ -356,13 +356,17 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		
 		/** \brief State changed (visble, touchable). */
 		func void stateChanged()
-			pCollider.setEnabled(getElement().getTouchable())
+			if pCollider != null
+				pCollider.setEnabled(getElement().getTouchable())
+			end
 		end
 		
 		/** \brief Position or orientation changed. */
 		func void geometryChanged()
-			var BehaviorElement element = getElement()
-			pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+			if pCollider != null
+				var BehaviorElement element = getElement()
+				pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+			end
 		end
 		
 		/** \brief Add element to game world. */
