@@ -681,6 +681,12 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 		}
 	}
 	
+	// this memory barrier is required or ray tracing compute shaders sampling the material
+	// textures can cause strange to debut NaN errors. if this happens GI picks the NaN values
+	// up and instantly spreads them across the entire image causing huge troubles
+	OGL_CHECK( renderThread, pglMemoryBarrier(
+		GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
+	
 	// clean up
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	renderThread.GetTexture().GetStages().DisableAllStages();

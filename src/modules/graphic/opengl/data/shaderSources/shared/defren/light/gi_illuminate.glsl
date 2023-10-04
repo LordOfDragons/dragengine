@@ -83,7 +83,7 @@ vec4 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int 
 		vec3 probeToPoint = position + offsetPosition - probePosition;
 		float distToProbe = length( probeToPoint );
 		
-		vec3 texCoord = vec3( giTCFromDirection( distToProbe > 0.001 ? probeToPoint / distToProbe : vec3( 0, 0, 1 ) ),
+		vec3 texCoord = vec3( giTCFromDirection( distToProbe > 0.001 ? probeToPoint / distToProbe : vec3( 0, 0, 1 ),
 			probeCoord, pGIParams[cascade].distanceMapScale, pGIParams[cascade].distanceMapSize ), cascade );
 		
 		vec2 visibility = texture( texGIDistance, texCoord ).ra; // RG16 in opengl has RRRG as swizzle
