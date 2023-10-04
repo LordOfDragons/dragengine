@@ -100,7 +100,7 @@ void main( void ){
 	
 	// calculate the parameters
 #if 1
-	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
+	vec3 normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
 #else
 	vec3 normal = normalize( cross( dFdy( position ), dFdx( position ) ) );
 #endif

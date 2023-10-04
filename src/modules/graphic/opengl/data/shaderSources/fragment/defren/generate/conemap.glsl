@@ -29,7 +29,7 @@ void main( void ){
 	outConeRatio = 1.0;
 	
 	float destz = SAMPLE_HEIGHT( vDestTC ).r;
-	if( destz == 1.0 ){ // prevent div-by-zero if destination is at the top
+	if( destz > 0.999 ){ // prevent div-by-zero if destination is at the top
 		return;
 	}
 	
@@ -50,7 +50,7 @@ void main( void ){
 	
 	// destination has to be above source
 	float diffz = destination.z - SAMPLE_HEIGHT( vTexCoord ).r;
-	if( diffz > 0.0 ){
+	if( diffz > 0.001 ){
 		outConeRatio = length( destination.xy - vTexCoord ) / diffz;
 	}
 }

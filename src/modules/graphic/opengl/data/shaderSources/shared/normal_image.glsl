@@ -88,7 +88,7 @@ vec3 normalLoadSphereMap( readonly image2DArray image, in ivec3 texCoord ){
 // encode normal using sphere map method.
 // use this method for RG8 or RG16 textures. normal has to be normalized.
 vec2 normalEncodeSphereMap( in vec3 normal ){
-	return normal.xy / vec2( sqrt( 8.0001 - 7.9999 * normal.z ) ) + vec2( 0.5 );
+	return normal.xy / vec2( sqrt( 8.001 - 7.999 * normal.z ) ) + vec2( 0.5 );
 }
 
 

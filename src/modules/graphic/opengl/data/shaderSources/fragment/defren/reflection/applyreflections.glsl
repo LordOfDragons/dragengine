@@ -81,7 +81,7 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
-	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
+	vec3 normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	reflectDir = reflect( fragmentDirection, normal );
 	
@@ -131,7 +131,7 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDirBounced ){
 	#define solidity aoSolidity.b
 	
 	// calculate fresnel reflection
-	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
+	vec3 normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -reflectDir, normal ) ), 1.0 );
 	reflectDirBounced = reflect( reflectDir, normal );
 	

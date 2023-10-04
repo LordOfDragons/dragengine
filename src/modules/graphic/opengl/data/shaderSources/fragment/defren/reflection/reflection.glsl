@@ -60,7 +60,7 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
-	normal = normalize( normalLoadMaterial( texNormal, tc ) );
+	normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	reflectDir = reflect( fragmentDirection, normal );
 	
@@ -329,7 +329,7 @@ void main( void ){
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
-	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
+	vec3 normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal ) );
 	
