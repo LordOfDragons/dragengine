@@ -435,7 +435,9 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
 		
 		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
-		OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+			| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT
+			| GL_SHADER_STORAGE_BARRIER_BIT ) );
 		
 		// copy traced rays to cache
 		deoglDebugTraceGroup debugTraceCachStore( debugTraceCacheTrace, "GI.TraceRays.TraceRays.CacheStore" );
@@ -456,7 +458,9 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		ismgr.Enable( 4, rayCache.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
 		
 		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
-		OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+			| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT
+			| GL_SHADER_STORAGE_BARRIER_BIT ) );
 		
 		ismgr.DisableAllStages();
 		
@@ -506,7 +510,9 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
 		
 		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
-		OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+			| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT
+			| GL_SHADER_STORAGE_BARRIER_BIT ) );
 		
 		debugTrace3.Close();
 	#endif
@@ -526,7 +532,8 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
 	ismgr.DisableAllStages();
 	
@@ -684,8 +691,8 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 	// this memory barrier is required or ray tracing compute shaders sampling the material
 	// textures can cause strange to debut NaN errors. if this happens GI picks the NaN values
 	// up and instantly spreads them across the entire image causing huge troubles
-	OGL_CHECK( renderThread, pglMemoryBarrier(
-		GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
 	
 	// clean up
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
@@ -724,6 +731,9 @@ deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 	tsmgr.DisableStagesAbove( 2 );
 	
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, mapsPerRow * rowsPerImage ) );
+	
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
 	
 	// clean up
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
@@ -769,7 +779,8 @@ void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
 	giState->GetUBOClearProbes().Activate();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( giState->GetRealProbeCount(), 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+		| GL_TEXTURE_FETCH_BARRIER_BIT ) );
 	
 	// clean up
 	cascade.ClearClearProbes();
@@ -820,7 +831,8 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	pActivateGIUBOs();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_IMAGE_ACCESS_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT
+		| GL_SHADER_IMAGE_ACCESS_BARRIER_BIT ) );
 	
 	// clean up
 	
@@ -1254,7 +1266,8 @@ void deoglRenderGI::pClearTraceRays( const decPoint &size ){
 	ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( size.x - 1 ) / 128 + 1, ( size.y - 1 ) / 8 + 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_IMAGE_ACCESS_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
 	
 	ismgr.DisableAllStages();
 }
