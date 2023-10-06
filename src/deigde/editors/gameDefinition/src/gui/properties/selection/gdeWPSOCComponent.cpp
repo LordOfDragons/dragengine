@@ -37,9 +37,11 @@
 #include "../../../gamedef/skin/gdeSkin.h"
 #include "../../../undosys/objectClass/component/gdeUOCAddComponent.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetSkinPath.h"
-#include "../../../undosys/objectClass/component/gdeUOCComponentSetAnimPath.h"
+#include "../../../undosys/objectClass/component/gdeUOCComponentSetAnimationPath.h"
+#include "../../../undosys/objectClass/component/gdeUOCComponentSetAnimatorPath.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetPropertyName.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetColRespType.h"
+#include "../../../undosys/objectClass/component/gdeUOCComponentSetMove.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetOccMeshPath.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetAudioModelPath.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleDoNotScale.h"
@@ -286,8 +288,46 @@ public:
 		}
 		
 		igdeUndoReference undo;
-		undo.TakeOver( new gdeUOCComponentSetAnimPath(
+		undo.TakeOver( new gdeUOCComponentSetAnimatorPath(
 			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cEditPathAnimation : public igdeEditPathListener{
+	gdeWPSOCComponent &pPanel;
+	
+public:
+	cEditPathAnimation( gdeWPSOCComponent &panel ) : pPanel( panel ){ }
+	
+	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+		gdeOCComponent * const component = pPanel.GetComponent();
+		if( ! component || component->GetAnimationPath() == editPath->GetPath() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCComponentSetAnimationPath(
+			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cEditMove : public igdeTextFieldListener{
+	gdeWPSOCComponent &pPanel;
+	
+public:
+	cEditMove( gdeWPSOCComponent &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged ( igdeTextField *textField ) override{
+		gdeOCComponent * const component = pPanel.GetComponent();
+		if( ! component || component->GetMove() == textField->GetText() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCComponentSetMove(
+			pPanel.GetObjectClass(), component, textField->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -963,6 +1003,9 @@ pDirtyEngModelTexNames( true )
 		igdeEnvironment::efpltRig, pEditPathRig, new cEditPathRig( *this ) );
 	helper.EditPath( groupBox, "Animator:", "Path to animator file to use",
 		igdeEnvironment::efpltAnimator, pEditPathAnimator, new cEditPathAnimator( *this ) );
+	helper.EditPath( groupBox, "Animation:", "Path to animation file to use",
+		igdeEnvironment::efpltAnimation, pEditPathAnimation, new cEditPathAnimation( *this ) );
+	helper.EditString( groupBox, "Move:", "Move to use from animation file", 15, pEditMove, new cEditMove( *this ) );
 	helper.EditPath( groupBox, "Occlusion Mesh:", "Path to occlusion mesh file to use",
 		igdeEnvironment::efpltOcclusionMesh, pEditPathOcclusionMesh, new cEditPathOcclusionMesh( *this ) );
 	helper.EditPath( groupBox, "Audio Model:", "Path to audio model file to use",
@@ -1000,6 +1043,8 @@ pDirtyEngModelTexNames( true )
 	pCBPropertyNames->AddItem( "Skin", NULL, ( void* )( intptr_t )gdeOCComponent::epSkin );
 	pCBPropertyNames->AddItem( "Rig", NULL, ( void* )( intptr_t )gdeOCComponent::epRig );
 	pCBPropertyNames->AddItem( "Animator", NULL, ( void* )( intptr_t )gdeOCComponent::epAnimator );
+	pCBPropertyNames->AddItem( "Animation", NULL, ( void* )( intptr_t )gdeOCComponent::epAnimation );
+	pCBPropertyNames->AddItem( "Move", NULL, ( void* )( intptr_t )gdeOCComponent::epMove );
 	pCBPropertyNames->AddItem( "Playback controller", NULL, ( void* )( intptr_t )gdeOCComponent::epPlaybackController );
 	pCBPropertyNames->AddItem( "Occlusion mesh", NULL, ( void* )( intptr_t )gdeOCComponent::epOcclusionMesh );
 	pCBPropertyNames->AddItem( "Audio model", NULL, ( void* )( intptr_t )gdeOCComponent::epAudioModel );
@@ -1182,6 +1227,8 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pEditPathSkin->SetPath( component->GetSkinPath() );
 		pEditPathRig->SetPath( component->GetRigPath() );
 		pEditPathAnimator->SetPath( component->GetAnimatorPath() );
+		pEditPathAnimation->SetPath( component->GetAnimationPath() );
+		pEditMove->SetText( component->GetMove() );
 		pEditPathOcclusionMesh->SetPath( component->GetOcclusionMeshPath() );
 		pEditPathAudioModel->SetPath( component->GetAudioModelPath() );
 		pEditPlaybackController->SetText( component->GetPlaybackController() );
@@ -1205,6 +1252,8 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pEditPathSkin->ClearPath();
 		pEditPathRig->ClearPath();
 		pEditPathAnimator->ClearPath();
+		pEditPathAnimation->ClearPath();
+		pEditMove->ClearText();
 		pEditPathOcclusionMesh->ClearPath();
 		pEditPathAudioModel->ClearPath();
 		pEditPlaybackController->ClearText();
@@ -1228,6 +1277,8 @@ void gdeWPSOCComponent::UpdateComponent(){
 	pEditPathSkin->SetEnabled( enabled );
 	pEditPathRig->SetEnabled( enabled );
 	pEditPathAnimator->SetEnabled( enabled );
+	pEditPathAnimation->SetEnabled( enabled );
+	pEditMove->SetEnabled( enabled );
 	pEditPathOcclusionMesh->SetEnabled( enabled );
 	pEditPathAudioModel->SetEnabled( enabled );
 	pEditPlaybackController->SetEnabled( enabled );

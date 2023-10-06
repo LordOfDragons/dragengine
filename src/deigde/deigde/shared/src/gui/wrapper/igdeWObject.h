@@ -429,7 +429,7 @@ private:
 	void pUpdateVisiblity();
 	
 	void pCreateSubObjects();
-	void pCreateSubObjects( const decString &prefix, const igdeGDClass &gdclass );
+	void pCreateSubObjects( const decString &prefix, const igdeGDClass &gdclas, int filter );
 	void pDestroySubObjects();
 	void pSubObjectsReattachToColliders();
 	void pSubObjectsInitTriggers();

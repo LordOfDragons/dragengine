@@ -433,27 +433,101 @@ void gdeVAOComponent::pCreateAnimator(){
 	deVirtualFileSystem &vfs = *pView.GetGameDefinition()->GetPreviewVFS();
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
-	deAnimatorReference animator;
+	deAnimation::Ref animation;
+	deAnimator::Ref animator;
 	
-	if( pOCComponent->GetAnimatorPath().IsEmpty() ){
+	const decString &pathAnimator = pOCComponent->GetAnimatorPath();
+	const decString &pathAnimation = pOCComponent->GetAnimationPath();
+	const decString &move = pOCComponent->GetMove();
+	
+	if( pathAnimator.IsEmpty() && pathAnimation.IsEmpty() ){
 		return;
 	}
 	
-	try{
-		const decPath vfsPath( decPath::CreatePathUnix( pOCComponent->GetAnimatorPath() ) );
+	if( ! pathAnimation.IsEmpty() && vfs.ExistsFile( decPath::CreatePathUnix( pathAnimation ) ) ){
+		try{
+			animation.TakeOver( engine.GetAnimationManager()->LoadAnimation( &vfs, pathAnimation, "/" ) );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			animation = nullptr;
+		}
+	}
+	
+	if( ! pathAnimator.IsEmpty() ){
+		const decPath vfsPath( decPath::CreatePathUnix( pathAnimator ) );
 		if( ! vfs.ExistsFile( vfsPath ) ){
 			return;
 		}
 		
-		decBaseFileReaderReference reader;
-		reader.TakeOver( vfs.OpenFileForReading( vfsPath ) );
 		igdeLoadAnimator loader( environment, environment.GetLogger(), LOGSOURCE );
-		animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
-		loader.Load( pOCComponent->GetAnimatorPath(), animator, reader );
+		try{
+			const decBaseFileReader::Ref reader(
+				decBaseFileReader::Ref::New( vfs.OpenFileForReading( vfsPath ) ) );
+			animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
+			loader.Load( pathAnimator, animator, reader );
+			animator->SetAnimation( animation );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			return;
+		}
 		
-	}catch( const deException &e ){
-		environment.GetLogger()->LogException( LOGSOURCE, e );
-		return;
+	}else if ( animation ){
+		const int moveIndex = animation->FindMove( move );
+		if( moveIndex == -1 ){
+			return;
+		}
+		
+		animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
+		animator->SetAnimation( animation );
+		
+		deAnimatorController *controller = nullptr;
+		deAnimatorLink *link = nullptr;
+		
+		try{
+			controller = new deAnimatorController;
+			controller->SetName( pOCComponent->GetPlaybackController() );
+			controller->SetValueRange( 0.0f, animation->GetMove( moveIndex )->GetPlaytime() );
+			animator->AddController( controller );
+			
+		}catch( const deException &e ){
+			if( controller ){
+				delete controller;
+			}
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			return;
+		}
+		
+		try{
+			link = new deAnimatorLink;
+			link->SetController( 0 );
+			
+			decCurveBezier curve;
+			curve.SetDefaultLinear();
+			link->SetCurve( curve );
+			animator->AddLink( link );
+			
+		}catch( const deException &e ){
+			if( link ){
+				delete link;
+			}
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			return;
+		}
+		
+		try{
+			const deAnimatorRuleAnimation::Ref rule(
+				deAnimatorRuleAnimation::Ref::New( new deAnimatorRuleAnimation ) );
+			rule->SetEnableSize( true );
+			rule->SetMoveName( move );
+			rule->GetTargetMoveTime().AddLink( 0 );
+			animator->AddRule( rule );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			return;
+		}
 	}
 	
 	pAnimator.TakeOver( engine.GetAnimatorInstanceManager()->CreateAnimatorInstance() );

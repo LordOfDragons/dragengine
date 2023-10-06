@@ -75,6 +75,16 @@ private:
 	igdeComboBoxReference pCBScaleMode;
 	igdeCheckBoxReference pChkIsGhost;
 	igdeCheckBoxReference pChkCanInstantiate;
+	igdeCheckBoxReference pChkInheritSOBillboards;
+	igdeCheckBoxReference pChkInheritSOComponents;
+	igdeCheckBoxReference pChkInheritSOLights;
+	igdeCheckBoxReference pChkInheritSOSnapPoints;
+	igdeCheckBoxReference pChkInheritSOParticleEmitters;
+	igdeCheckBoxReference pChkInheritSOForceFields;
+	igdeCheckBoxReference pChkInheritSOEnvMapProbes;
+	igdeCheckBoxReference pChkInheritSOSpeakers;
+	igdeCheckBoxReference pChkInheritSONavigationSpaces;
+	igdeCheckBoxReference pChkInheritSONavigationBlockers;
 	igdeTextFieldReference pEditDefaultInheritPropertyPrefix;
 	
 	igdeWidgetReference pEditProperties;

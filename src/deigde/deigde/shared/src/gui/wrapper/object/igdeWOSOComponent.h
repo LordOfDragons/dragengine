@@ -54,6 +54,7 @@ private:
 	deAnimatorInstanceReference pAnimator;
 	int pPlaybackControllerIndex;
 	decString pPathAnimator;
+	decString pMove;
 	bool pRenderEnvMap;
 	bool pAffectsAudio;
 	bool pLightShadowIgnore;

@@ -351,7 +351,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetViewDistance.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCRemoveCamera.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCAddComponent.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimatorPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimationPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetMove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAudioModelPath.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetBoneName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetColRespType.cpp" />
@@ -421,6 +423,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetScaleMode.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetTextureProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleCanInstantiate.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetInheritSubObjects.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsGhost.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeURemoveObjectClass.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCAddInherit.cpp" />
@@ -886,7 +889,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetViewDistance.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCRemoveCamera.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCAddComponent.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimatorPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimationPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetMove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAudioModelPath.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetBoneName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetColRespType.h" />
@@ -956,6 +961,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetScaleMode.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetTextureProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleCanInstantiate.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetInheritSubObjects.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsGhost.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeURemoveObjectClass.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCAddInherit.h" />

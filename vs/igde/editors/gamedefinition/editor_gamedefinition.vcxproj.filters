@@ -955,7 +955,13 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCAddComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimPath.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimatorPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimationPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAudioModelPath.cpp">
@@ -1163,6 +1169,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleCanInstantiate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetInheritSubObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsGhost.cpp">
@@ -2556,7 +2565,13 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCAddComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimPath.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimatorPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAnimationPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetMove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetAudioModelPath.h">
@@ -2764,6 +2779,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleCanInstantiate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetInheritSubObjects.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsGhost.h">

@@ -60,6 +60,7 @@
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
+#include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
@@ -788,7 +789,7 @@ void gdeViewActiveObject::pInitObjectClass(){
 		return;
 	}
 	pObjectClass->AddReference();
-	pInitObjectClassOCs( *pObjectClass, "" );
+	pInitObjectClassOCs( *pObjectClass, "", igdeGDClass::FilterSubObjectsAll );
 	pAddComponentShadowIgnore();
 }
 
@@ -850,39 +851,50 @@ void gdeViewActiveObject::pInitParticleEmitter(){
 
 
 
-void gdeViewActiveObject::pInitObjectClassOCs( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	if( pOCComponents.GetCount() == 0 ){
+void gdeViewActiveObject::pInitObjectClassOCs( const gdeObjectClass &objectClass,
+const decString &propertyPrefix, int filter ){
+	if( pOCComponents.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoComponents ) == igdeGDClass::efsoComponents ){
 		pInitOCComponents( objectClass, propertyPrefix );
 	}
 	
-	if( pOCBillboards.GetCount() == 0 ){
+	if( pOCBillboards.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoBillboards ) == igdeGDClass::efsoBillboards ){
 		pInitOCBillboards( objectClass, propertyPrefix );
 	}
 	if( pOCCameras.GetCount() == 0 ){
 		pInitOCCameras( objectClass, propertyPrefix );
 	}
-	if( pOCEnvMapProbes.GetCount() == 0 ){
+	if( pOCEnvMapProbes.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoEnvMapProbes ) == igdeGDClass::efsoEnvMapProbes ){
 		pInitOCEnvMapProbes( objectClass, propertyPrefix );
 	}
-	if( pOCLights.GetCount() == 0 ){
+	if( pOCLights.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoLights ) == igdeGDClass::efsoLights ){
 		pInitOCLights( objectClass, propertyPrefix );
 	}
-	if( pOCNavSpaces.GetCount() == 0 ){
+	if( pOCNavSpaces.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoNavigationSpaces ) == igdeGDClass::efsoNavigationSpaces ){
 		pInitOCNavigationSpaces( objectClass, propertyPrefix );
 	}
-	if( pOCNavBlockers.GetCount() == 0 ){
+	if( pOCNavBlockers.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoNavigationBlockers ) == igdeGDClass::efsoNavigationBlockers ){
 		pInitOCNavigationBlockers( objectClass, propertyPrefix );
 	}
-	if( pOCParticleEmitters.GetCount() == 0 ){
+	if( pOCParticleEmitters.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoParticleEmitters ) == igdeGDClass::efsoParticleEmitters ){
 		pInitOCParticleEmitters( objectClass, propertyPrefix );
 	}
-	if( pOCForceFields.GetCount() == 0 ){
+	if( pOCForceFields.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoForceFields ) == igdeGDClass::efsoForceFields ){
 		pInitOCForceFields( objectClass, propertyPrefix );
 	}
-	if( pOCSnapPoints.GetCount() == 0 ){
+	if( pOCSnapPoints.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoSnapPoints ) == igdeGDClass::efsoSnapPoints ){
 		pInitOCSnapPoints( objectClass, propertyPrefix );
 	}
-	if( pOCSpeakers.GetCount() == 0 ){
+	if( pOCSpeakers.GetCount() == 0
+	&& ( filter & igdeGDClass::efsoSpeakers ) == igdeGDClass::efsoSpeakers ){
 		pInitOCSpeakers( objectClass, propertyPrefix );
 	}
 	
@@ -890,10 +902,13 @@ void gdeViewActiveObject::pInitObjectClassOCs( const gdeObjectClass &objectClass
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
+		
+		filter &= objectClass.GetInheritSubObjects();
+		
 		for( i=0; i<inheritCount; i++ ){
 			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
 			if( ioc ){
-				pInitObjectClassOCs( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+				pInitObjectClassOCs( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix(), filter );
 			}
 		}
 	}
@@ -1074,7 +1089,7 @@ void gdeViewActiveObject::pRebuildOCBillboards( const gdeObjectClass &objectClas
 		for( i=0; i<inheritCount; i++ ){
 			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
 			if( ioc ){
-				pInitObjectClassOCs( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+				pRebuildOCBillboards( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
 			}
 		}
 	}

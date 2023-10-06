@@ -548,6 +548,12 @@ void igdeWOSOComponent::pLoadResources(){
 		rl.LoadAudioModel( pathAudioModel );
 	}
 	
+	const decString pathAnimation( GetStringProperty(
+		pGDComponent.GetPropertyName( igdeGDCComponent::epAnimation ), pGDComponent.GetAnimationPath() ) );
+	if( ! pathAnimation.IsEmpty() ){
+		rl.LoadAnimation( pathAnimation );
+	}
+	
 	int textureCount = pGDComponent.GetTextureList().GetCount();
 	int i;
 	for( i=0; i<textureCount; i++ ){
@@ -633,9 +639,12 @@ void igdeWOSOComponent::pUpdateComponent(){
 		pColliderInteraction->SetEnabled( pCollider->GetEnabled() );
 	}
 	
+	deAnimation * const animation = rl.GetAnimation();
+	
 	deModel *currentModel = nullptr;
 	deSkin *currentSkin = nullptr;
 	deRig *currentRig = nullptr;
+	deAnimation *currentAnimation = nullptr;
 	
 	if( pComponent ){
 		currentModel = pComponent->GetModel();
@@ -652,6 +661,10 @@ void igdeWOSOComponent::pUpdateComponent(){
 		UpdateVisibility();
 	}
 	
+	if( pAnimator ){
+		currentAnimation = pAnimator->GetAnimation();
+	}
+	
 	if( ! pComponentInteraction ){
 		pComponentInteraction.TakeOver( GetEngine().GetComponentManager()->CreateComponent() );
 		pComponentInteraction->SetHintMovement( pComponent->GetHintMovement() );
@@ -662,6 +675,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 	const bool modelChanged = model != currentModel;
 	const bool skinChanged = skin != currentSkin;
 	const bool rigChanged = rig != currentRig;
+	const bool animationChanged = animation != currentAnimation;
 	
 	// if the model, skin or rig changed the component has to be removed from certain
 	// places first to avoid problems
@@ -746,9 +760,17 @@ void igdeWOSOComponent::pUpdateComponent(){
 		pGDComponent.GetPropertyName( igdeGDCComponent::epAnimator ),
 		pGDComponent.GetAnimatorPath() ) );
 	
-	if( pathAnimator != pPathAnimator ){
+	decString move( GetStringProperty(
+		pGDComponent.GetPropertyName( igdeGDCComponent::epMove ),
+		pGDComponent.GetMove() ) );
+	
+	if( pathAnimator != pPathAnimator || animationChanged || move != pMove ){
+		const decString playbackController( GetStringProperty(
+				pGDComponent.GetPropertyName( igdeGDCComponent::epPlaybackController ),
+				pGDComponent.GetPlaybackController() ) );
+		
 		deEngine &engine = GetEngine();
-		deAnimatorReference animator;
+		deAnimator::Ref animator;
 		
 		if( ! pathAnimator.IsEmpty() ){
 			igdeLoadAnimator loadAnimator( GetEnvironment(), &GetLogger(), "DEIGDE" );
@@ -756,19 +778,79 @@ void igdeWOSOComponent::pUpdateComponent(){
 			
 			if( engine.GetVirtualFileSystem()->ExistsFile( vfsPath ) ){
 				try{
-					decBaseFileReaderReference reader;
-					reader.TakeOver( engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) );
+					const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
+						engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) ) );
 					animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
 					loadAnimator.Load( pathAnimator, animator, reader );
+					animator->SetAnimation( animation );
 					
 				}catch( const deException &e ){
-					animator = NULL;
+					animator = nullptr;
+					GetLogger().LogException( "DEIGDE", e );
+				}
+			}
+			
+		}else if ( animation ){
+			const int moveIndex = animation->FindMove( move );
+			
+			if( moveIndex != -1 ){
+				animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
+				animator->SetAnimation( animation );
+				animator->SetRig( rig );
+				
+				deAnimatorController *controller = nullptr;
+				deAnimatorLink *link = nullptr;
+				
+				try{
+					controller = new deAnimatorController;
+					controller->SetName( playbackController );
+					controller->SetValueRange( 0.0f, animation->GetMove( moveIndex )->GetPlaytime() );
+					controller->SetClamp( false );
+					animator->AddController( controller );
+					
+				}catch( const deException &e ){
+					if( controller ){
+						delete controller;
+					}
+					animator = nullptr;
+					GetLogger().LogException( "DEIGDE", e );
+				}
+				
+				try{
+					link = new deAnimatorLink;
+					link->SetController( 0 );
+					
+					decCurveBezier curve;
+					curve.SetDefaultLinear();
+					link->SetCurve( curve );
+					animator->AddLink( link );
+					
+				}catch( const deException &e ){
+					if( link ){
+						delete link;
+					}
+					animator = nullptr;
+					GetLogger().LogException( "DEIGDE", e );
+				}
+				
+				try{
+					const deAnimatorRuleAnimation::Ref rule(
+						deAnimatorRuleAnimation::Ref::New( new deAnimatorRuleAnimation ) );
+					rule->SetEnableSize( true );
+					rule->SetMoveName( move );
+					rule->GetTargetMoveTime().AddLink( 0 );
+					animator->AddRule( rule );
+			GetLogger().LogInfoFormat( "DEIGDE", "OOPS %p %p '%s' %d", &GetWrapper(), this, pGDComponent.GetPropertyName( igdeGDCComponent::epAnimation ).GetString(), moveIndex );
+					
+				}catch( const deException &e ){
+					animator = nullptr;
 					GetLogger().LogException( "DEIGDE", e );
 				}
 			}
 		}
 		
 		pPathAnimator = pathAnimator;
+		pMove = move;
 		pPlaybackControllerIndex = -1;
 		
 		if( animator ){
@@ -778,13 +860,10 @@ void igdeWOSOComponent::pUpdateComponent(){
 			}
 			pAnimator->SetAnimator( animator );
 			
-			// playback controller
-			pPlaybackControllerIndex = pAnimator->IndexOfControllerNamed( GetStringProperty(
-				pGDComponent.GetPropertyName( igdeGDCComponent::epPlaybackController ),
-				pGDComponent.GetPlaybackController() ) );
+			pPlaybackControllerIndex = pAnimator->IndexOfControllerNamed( playbackController );
 			
 		}else{
-			pAnimator = NULL;
+			pAnimator = nullptr;
 		}
 	}
 	
@@ -933,6 +1012,7 @@ void igdeWOSOComponent::pDestroyComponent(){
 		pPlaybackControllerIndex = -1;
 		pAnimator = NULL;
 		pPathAnimator.Empty();
+		pMove.Empty();
 		
 		if( pAddedToWorld ){
 			GetWrapper().GetWorld()->RemoveComponent( pComponent );

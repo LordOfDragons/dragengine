@@ -20,8 +20,8 @@
  */
 
 
-#ifndef _GDEUOCCOMPONENTSETANIMPATH_H_
-#define _GDEUOCCOMPONENTSETANIMPATH_H_
+#ifndef _GDEUOCCOMPONENTSETANIMATORPATH_H_
+#define _GDEUOCCOMPONENTSETANIMATORPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -33,7 +33,7 @@ class gdeObjectClass;
 /**
  * \brief Undo action object class component set animation path.
  */
-class gdeUOCComponentSetAnimPath : public igdeUndo{
+class gdeUOCComponentSetAnimatorPath : public igdeUndo{
 private:
 	gdeObjectClass *pObjectClass;
 	gdeOCComponent *pComponent;
@@ -47,12 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetAnimPath( gdeObjectClass *objectClass,
+	gdeUOCComponentSetAnimatorPath( gdeObjectClass *objectClass,
 		gdeOCComponent *component, const char *newValue );
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCComponentSetAnimPath();
+	virtual ~gdeUOCComponentSetAnimatorPath();
 	/*@}*/
 	
 	

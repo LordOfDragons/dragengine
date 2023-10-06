@@ -23,7 +23,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "gdeUOCComponentSetAnimPath.h"
+#include "gdeUOCComponentSetMove.h"
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../gamedef/objectClass/component/gdeOCComponent.h"
 
@@ -31,13 +31,13 @@
 
 
 
-// Class gdeUOCComponentSetAnimPath
-//////////////////////////////////////
+// Class gdeUOCComponentSetMove
+/////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetAnimPath::gdeUOCComponentSetAnimPath( gdeObjectClass *objectClass,
+gdeUOCComponentSetMove::gdeUOCComponentSetMove( gdeObjectClass *objectClass,
 gdeOCComponent *component, const char *newValue ) :
 pObjectClass( NULL ),
 pComponent( NULL )
@@ -46,9 +46,9 @@ pComponent( NULL )
 		DETHROW( deeInvalidParam );
 	}
 	
-	SetShortInfo( "Component set animator path" );
+	SetShortInfo( "Component set move" );
 	
-	pOldValue = component->GetAnimatorPath();
+	pOldValue = component->GetMove();
 	pNewValue = newValue;
 	
 	pComponent = component;
@@ -58,7 +58,7 @@ pComponent( NULL )
 	objectClass->AddReference();
 }
 
-gdeUOCComponentSetAnimPath::~gdeUOCComponentSetAnimPath(){
+gdeUOCComponentSetMove::~gdeUOCComponentSetMove(){
 	if( pComponent ){
 		pComponent->FreeReference();
 	}
@@ -72,12 +72,12 @@ gdeUOCComponentSetAnimPath::~gdeUOCComponentSetAnimPath(){
 // Management
 ///////////////
 
-void gdeUOCComponentSetAnimPath::Undo(){
-	pComponent->SetAnimatorPath( pOldValue );
+void gdeUOCComponentSetMove::Undo(){
+	pComponent->SetMove( pOldValue );
 	pObjectClass->NotifyComponentChanged( pComponent );
 }
 
-void gdeUOCComponentSetAnimPath::Redo(){
-	pComponent->SetAnimatorPath( pNewValue );
+void gdeUOCComponentSetMove::Redo(){
+	pComponent->SetMove( pNewValue );
 	pObjectClass->NotifyComponentChanged( pComponent );
 }

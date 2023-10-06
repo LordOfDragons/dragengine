@@ -51,7 +51,9 @@ public:
 		epAffectsAudio,
 		epAttachPosition,
 		epAttachRotation,
-		epLightShadowIgnore
+		epLightShadowIgnore,
+		epAnimation,
+		epMove
 	};
 	
 	
@@ -60,10 +62,12 @@ private:
 	decString pModelPath;
 	decString pSkinPath;
 	decString pRigPath;
-	decString pAnimPath;
+	decString pAnimatorPath;
 	decString pOccMeshPath;
 	decString pAudioModelPath;
 	decString pPlaybackController;
+	decString pAnimationPath;
+	decString pMove;
 	bool pDoNotScale;
 	bool pStatic;
 	bool pRenderEnvMap;
@@ -76,7 +80,7 @@ private:
 	decQuaternion pOrientation;
 	decString pBoneName;
 	
-	decString pPropertyNames[ epLightShadowIgnore + 1 ];
+	decString pPropertyNames[ epMove + 1 ];
 	
 	igdeGDCCTextureList pTextureList;
 	
@@ -118,10 +122,22 @@ public:
 	void SetRigPath( const char *path );
 	
 	/** \brief Animator path. */
-	inline const decString &GetAnimatorPath() const{ return pAnimPath; }
+	inline const decString &GetAnimatorPath() const{ return pAnimatorPath; }
 	
 	/** \brief Set animator path. */
 	void SetAnimatorPath( const char *path );
+	
+	/** \brief Animation path. */
+	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
+	
+	/** \brief Set animation path. */
+	void SetAnimationPath( const char *path );
+	
+	/** \brief Move. */
+	inline const decString &GetMove() const{ return pMove; }
+	
+	/** \brief Set move. */
+	void SetMove( const char *move );
 	
 	/** \brief Occlusion mesh path. */
 	inline const decString &GetOcclusionMeshPath() const{ return pOccMeshPath; }

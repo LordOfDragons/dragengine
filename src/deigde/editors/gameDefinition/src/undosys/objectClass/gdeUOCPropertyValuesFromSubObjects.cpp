@@ -105,6 +105,16 @@ igdeCodecPropertyString codec, const gdeOCComponent &component ){
 		codec.EncodeVector( component.GetRotation(), string );
 		values.SetAt( component.GetPropertyName( gdeOCComponent::epAttachRotation ), string );
 	}
+	
+	if( component.IsPropertySet( gdeOCComponent::epAnimation ) ){
+		values.SetAt( component.GetPropertyName( gdeOCComponent::epAnimation ),
+			component.GetAnimationPath() );
+	}
+	
+	if( component.IsPropertySet( gdeOCComponent::epMove ) ){
+		values.SetAt( component.GetPropertyName( gdeOCComponent::epMove ),
+			component.GetMove() );
+	}
 }
 
 static void UpdateEnvMapProbe( decStringDictionary &values,

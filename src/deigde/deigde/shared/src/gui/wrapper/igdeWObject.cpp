@@ -839,158 +839,178 @@ void igdeWObject::pCreateSubObjects(){
 	pAsyncLoadCounter = 1;
 	
 	if( pGDClass && pWorld ){
-		pCreateSubObjects( "", pGDClass );
+		pCreateSubObjects( "", pGDClass, igdeGDClass::FilterSubObjectsAll );
 	}
 	
 	pAsyncLoadCounter--;
 	pCheckAsyncLoadFinished();
 }
 
-void igdeWObject::pCreateSubObjects( const decString &prefix, const igdeGDClass &gdclass ){
+void igdeWObject::pCreateSubObjects( const decString &prefix, const igdeGDClass &gdclass, int filter ){
 	deObjectReference refSubObject;
 	int i;
 	
 	// components
-	const igdeGDCComponentList &components = gdclass.GetComponentList();
-	const int componentCount = components.GetCount();
-	for( i=0; i<componentCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOComponent( *this, *components.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoComponents ) != 0 ){
+		const igdeGDCComponentList &components = gdclass.GetComponentList();
+		const int componentCount = components.GetCount();
+		for( i=0; i<componentCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOComponent( *this, *components.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// billboards
-	const igdeGDCBillboardList &billboards = gdclass.GetBillboardList();
-	const int billboardCount = billboards.GetCount();
-	for( i=0; i<billboardCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOBillboard( *this, *billboards.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoBillboards ) != 0 ){
+		const igdeGDCBillboardList &billboards = gdclass.GetBillboardList();
+		const int billboardCount = billboards.GetCount();
+		for( i=0; i<billboardCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOBillboard( *this, *billboards.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// lights
-	const igdeGDCLightList &lights = gdclass.GetLightList();
-	const int lightCount = lights.GetCount();
-	for( i=0; i<lightCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOLight( *this, *lights.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoLights ) != 0 ){
+		const igdeGDCLightList &lights = gdclass.GetLightList();
+		const int lightCount = lights.GetCount();
+		for( i=0; i<lightCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOLight( *this, *lights.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// speakers
-	const igdeGDCSpeakerList &speakers = gdclass.GetSpeakerList();
-	const int speakerCount = speakers.GetCount();
-	for( i=0; i<speakerCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOSpeaker( *this, *speakers.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoSpeakers ) != 0 ){
+		const igdeGDCSpeakerList &speakers = gdclass.GetSpeakerList();
+		const int speakerCount = speakers.GetCount();
+		for( i=0; i<speakerCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOSpeaker( *this, *speakers.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// particle emitters
-	const igdeGDCParticleEmitterList &particleEmitters = gdclass.GetParticleEmitterList();
-	const int particleEmitterCount = particleEmitters.GetCount();
-	for( i=0; i<particleEmitterCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOParticleEmitter( *this, *particleEmitters.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoParticleEmitters ) != 0 ){
+		const igdeGDCParticleEmitterList &particleEmitters = gdclass.GetParticleEmitterList();
+		const int particleEmitterCount = particleEmitters.GetCount();
+		for( i=0; i<particleEmitterCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOParticleEmitter( *this, *particleEmitters.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// force fields
-	const igdeGDCForceFieldList &forceFields = gdclass.GetForceFieldList();
-	const int forceFieldCount = forceFields.GetCount();
-	for( i=0; i<forceFieldCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOForceField( *this, *forceFields.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoForceFields ) != 0 ){
+		const igdeGDCForceFieldList &forceFields = gdclass.GetForceFieldList();
+		const int forceFieldCount = forceFields.GetCount();
+		for( i=0; i<forceFieldCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOForceField( *this, *forceFields.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// envMapProbes
-	const igdeGDCEnvMapProbeList &envMapProbes = gdclass.GetEnvironmentMapProbeList();
-	const int envMapProbeCount = envMapProbes.GetCount();
-	for( i=0; i<envMapProbeCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOEnvMapProbe( *this, *envMapProbes.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoEnvMapProbes ) != 0 ){
+		const igdeGDCEnvMapProbeList &envMapProbes = gdclass.GetEnvironmentMapProbeList();
+		const int envMapProbeCount = envMapProbes.GetCount();
+		for( i=0; i<envMapProbeCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOEnvMapProbe( *this, *envMapProbes.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// navigation spaces
-	const igdeGDCNavigationSpaceList &navigationSpaces = gdclass.GetNavigationSpaceList();
-	const int navigationSpaceCount = navigationSpaces.GetCount();
-	for( i=0; i<navigationSpaceCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSONavigationSpace( *this, *navigationSpaces.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoNavigationSpaces ) != 0 ){
+		const igdeGDCNavigationSpaceList &navigationSpaces = gdclass.GetNavigationSpaceList();
+		const int navigationSpaceCount = navigationSpaces.GetCount();
+		for( i=0; i<navigationSpaceCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSONavigationSpace( *this, *navigationSpaces.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
-	// navigation spaces
-	const igdeGDCNavigationBlockerList &navigationBlockers = gdclass.GetNavigationBlockerList();
-	const int navigationBlockerCount = navigationBlockers.GetCount();
-	for( i=0; i<navigationBlockerCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSONavigationBlocker( *this, *navigationBlockers.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	// navigation blockers
+	if( ( filter & igdeGDClass::efsoNavigationBlockers ) != 0 ){
+		const igdeGDCNavigationBlockerList &navigationBlockers = gdclass.GetNavigationBlockerList();
+		const int navigationBlockerCount = navigationBlockers.GetCount();
+		for( i=0; i<navigationBlockerCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSONavigationBlocker( *this, *navigationBlockers.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// inherited classes
 	const int inheritCount = gdclass.GetInheritClassCount();
+	filter &= gdclass.GetInheritSubObjects();
+	
 	for( i=0; i<inheritCount; i++ ){
 		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
 		if( inherit.GetClass() ){
-			pCreateSubObjects( prefix + inherit.GetPropertyPrefix(), *inherit.GetClass() );
+			pCreateSubObjects( prefix + inherit.GetPropertyPrefix(), *inherit.GetClass(), filter );
 		}
 	}
 }
