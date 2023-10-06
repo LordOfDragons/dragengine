@@ -44,7 +44,7 @@ public:
 		eetWorld,
 		
 		/** \brief Height Terrain Sector. */
-		      eetHeightTerrain,
+		eetHeightTerrain,
 		
 		/** \brief Height Terrain Height Image. */
 		eetHTHeight,

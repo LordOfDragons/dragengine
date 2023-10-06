@@ -128,7 +128,7 @@ public:
 	
 	
 	/** \brief Set from another item. */
-	virtual igdeListItem &operator=( const igdeListItem &listItem );
+	igdeListItem &operator=( const igdeListItem &listItem );
 	/*@}*/
 };
 

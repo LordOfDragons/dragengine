@@ -452,6 +452,9 @@ void convhull_3d_build
             absdist[k*d+j] = (points[i*(d+1)+j] -  meanp[j])/span[j];
     
     /* Relative distance of points from the center */
+    if((nVert-d-1) * sizeof(CH_FLOAT) > PTRDIFF_MAX){
+        return; // protection against bogus -Walloc-size-larger-than=
+    }
     reldist = (CH_FLOAT*)calloc((nVert-d-1), sizeof(CH_FLOAT));
     desReldist = (CH_FLOAT*)malloc((nVert-d-1) * sizeof(CH_FLOAT));
     for(i=0; i<(nVert-d-1); i++)
