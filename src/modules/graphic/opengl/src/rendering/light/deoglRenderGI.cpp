@@ -390,7 +390,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
-	const deoglGICascade &cascade = giState->GetActiveCascade();
 	const decPoint &size = giState->GetSampleImageSize();
 	
 	if( pDebugInfoGI->GetVisible() ){
@@ -399,6 +398,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	// if any ray caches are invalid update them
 	#ifdef GI_USE_RAY_CACHE
+	const deoglGICascade &cascade = giState->GetActiveCascade();
 	if( cascade.GetRayCacheProbeCount() > 0 ){
 		deoglGIBVH &bvh = giState->GetBVHStatic();
 		

@@ -117,9 +117,7 @@ pBVHDynamic( renderThread )
 		
 		pCameraForceToneMapAdaptionCount = pCascaceUpdateCycleCount;
 		
-		#ifdef GI_USE_RAY_CACHE
 		pPrepareProbeVBO();
-		#endif
 		
 		pAreaTracker.SetHalfExtends( pCascades[ pCascadeCount - 1 ]->GetDetectionBox() );
 		

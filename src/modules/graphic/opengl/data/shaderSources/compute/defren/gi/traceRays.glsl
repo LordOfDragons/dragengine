@@ -14,6 +14,7 @@ precision highp int;
 
 #ifdef GI_USE_RAY_CACHE
 	#include "shared/defren/gi/raycast/ray_cache_distance.glsl"
+	#include "shared/defren/sanitize_light.glsl"
 #endif
 
 
@@ -100,6 +101,14 @@ void main( void ){
 			resultRoughness = 1;
 			resultLight = vec3( 0 );
 		}
+		
+		#ifdef GI_USE_RAY_CACHE
+		// this one here is REALLY strange. without this sanitize GI lighting randomly
+		// obtains NaN values causing total black-out. it makes no sense at all why this
+		// sanitize is required here to prevent the blow-up but as long as nobody can
+		// explain to me the reason why this sanitize is kept here
+		resultLight = sanitizeLight( resultLight );
+		#endif
 		
 		imageStore( texPosition, tc, vec4( resultPosition, resultDistance ) );
 		imageStore( texNormal, tc, vec4( resultNormal, 0 ) );
