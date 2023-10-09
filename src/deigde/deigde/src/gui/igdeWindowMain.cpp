@@ -1812,6 +1812,11 @@ void igdeWindowMain::pLoadStockIcons(){
 		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_small_strong_right.png" ) );
 	pStockIcons[ igdeEnvironment::esiSmallWarning ].TakeOver(
 		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_small_warning.png" ) );
+	
+	pStockIcons[ igdeEnvironment::esiEdit ].TakeOver(
+		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_edit.png" ) );
+	pStockIcons[ igdeEnvironment::esiConfig ].TakeOver(
+		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_config.png" ) );
 }
 
 void igdeWindowMain::pLoadStockSkins(){
@@ -1868,7 +1873,7 @@ void igdeWindowMain::pCreateGuiThemes(){
 	igdeGuiThemeReference guitheme;
 	guitheme.TakeOver( new igdeGuiTheme( igdeGuiThemeNames::properties, pDefaultGuiTheme ) );
 	
-	guitheme->SetFloatProperty( igdeGuiThemePropertyNames::fontSize, 0.85f );
+	// guitheme->SetFloatProperty( igdeGuiThemePropertyNames::fontSize, 0.85f );
 	
 	guitheme->SetIntProperty( igdeGuiThemePropertyNames::groupBoxPaddingLeft, 3 );
 	guitheme->SetIntProperty( igdeGuiThemePropertyNames::groupBoxPaddingRight, 3 );

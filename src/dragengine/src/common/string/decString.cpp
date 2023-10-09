@@ -1433,19 +1433,47 @@ decString decString::GetUpper() const{
 
 
 int decString::ToInt() const{
-	return ( int )strtol( pString, NULL, 10 );
+	return ( int )strtol( pString, nullptr, 10 );
 }
 
 long long decString::ToLong() const{
-	return strtol( pString, NULL, 10 );
+	return strtol( pString, nullptr, 10 );
 }
 
 float decString::ToFloat() const{
-	return strtof( pString, NULL );
+	return strtof( pString, nullptr );
 }
 
 double decString::ToDouble() const{
-	return strtod( pString, NULL );
+	return strtod( pString, nullptr );
+}
+
+int decString::ToIntValid() const{
+	char *end = nullptr;
+	const int value = ( int )strtol( pString, &end, 10 );
+	DEASSERT_TRUE( *end == 0 )
+	return value;
+}
+
+long long decString::ToLongValid() const{
+	char *end = nullptr;
+	const long long value = strtol( pString, &end, 10 );
+	DEASSERT_TRUE( *end == 0 )
+	return value;
+}
+
+float decString::ToFloatValid() const{
+	char *end = nullptr;
+	const float value = strtof( pString, &end );
+	DEASSERT_TRUE( *end == 0 )
+	return value;
+}
+
+double decString::ToDoubleValid() const{
+	char *end = nullptr;
+	const double value = strtod( pString, &end );
+	DEASSERT_TRUE( *end == 0 )
+	return value;
 }
 
 const char *decString::GetString() const{

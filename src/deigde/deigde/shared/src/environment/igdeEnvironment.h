@@ -124,7 +124,10 @@ public:
 		esiSmallStrongDown,
 		esiSmallStrongLeft,
 		esiSmallStrongRight,
-		esiSmallWarning
+		esiSmallWarning,
+		
+		esiEdit,
+		esiConfig
 	};
 	
 	/** \brief System colors. */
