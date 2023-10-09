@@ -1626,7 +1626,11 @@ void deoglRComponent::NotifyComponentDestroyed(){
 void deoglRComponent::NotifyParentWorldChanged(){
 	pListenerIndex = 0;
 	while( pListenerIndex < pListeners.GetCount() ){
+		try{ // temp hack
 		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->ParentWorldChanged( *this );
+		}catch(const deException &e){ // temp hack
+			pRenderThread.GetLogger().LogException(e);
+		}
 		pListenerIndex++;
 	}
 }
