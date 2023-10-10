@@ -150,6 +150,9 @@ void deoglGIInstance::cComponentListener::VisibilityChanged( deoglRComponent &co
 	}
 }
 
+void deoglGIInstance::cComponentListener::GIImportanceChanged( deoglRComponent &component ){
+}
+
 
 // Class deoglGIInstance::cDecalListener
 //////////////////////////////////////////

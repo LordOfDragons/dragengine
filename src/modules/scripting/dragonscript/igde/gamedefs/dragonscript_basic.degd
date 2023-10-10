@@ -667,6 +667,17 @@
 			<option>dynamic</option>
 			<default>stationary</default>
 		</property>
+		<property name='enableGI'>
+			<description>Enable GI in graphic module if supported.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='hintGIImportance'>
+			<description>GI important hint. Value is in the range from 0 (very unimportant) to 4 (very important). This hint can be used by the graphic module to improve performance by excluding components with a GI important below a user chosen threashold. The default important is 4.</description>
+			<type>range</type>
+			<range min='0' max='4'/>
+			<default>4</default>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorAnimated'>

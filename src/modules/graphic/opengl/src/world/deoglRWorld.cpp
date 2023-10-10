@@ -1421,6 +1421,14 @@ void deoglRWorld::GIStatesNotifyComponentBecameVisible( deoglRComponent *compone
 	}
 }
 
+void deoglRWorld::GIStatesNotifyComponentChangedGIImportance( deoglRComponent *component ){
+	const int count = pGIStates.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglGIState* )pGIStates.GetAt( i ) )->ComponentChangedGIImportance( component );
+	}
+}
+
 
 
 // Private Functions

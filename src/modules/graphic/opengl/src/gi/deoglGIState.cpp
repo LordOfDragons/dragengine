@@ -68,6 +68,8 @@ pProbeCount( 32, 8, 32 ),
 pGridCoordClamp( pProbeCount - decPoint3( 1, 1, 1 ) ),
 pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
 pRealProbeCount( pStrideProbeCount * pProbeCount.y ),
+pAreaTracker( deoglGIAreaTracker::GIImportanceFromGIQuality(
+	renderThread.GetConfiguration().GetGIQuality() ) ),
 
 pIrradianceMapSize( 8 ),
 pDistanceMapSize( 16 ),
@@ -282,6 +284,8 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 	INIT_SPECIAL_TIMING
 	// monitor configuration changes
 	pRenderThread.GetGI().GetTraceRays().UpdateFromConfig();
+	pAreaTracker.SetGIImportance( deoglGIAreaTracker::GIImportanceFromGIQuality(
+		pRenderThread.GetConfiguration().GetGIQuality() ) );
 	
 	// update position
 	deoglGICascade &cascade = GetActiveCascade();
@@ -423,6 +427,10 @@ void deoglGIState::ComponentChangedLayerMask( deoglRComponent *component ){
 // 		pRenderThread.GetLogger().LogInfoFormat( "ComponentChangedLayerMask: (%g,%g,%g) %s", p.x, p.y, p.z,
 // 			component->GetModel()->GetFilename().GetString());
 	pInstances.AddComponent( component, true );
+}
+
+void deoglGIState::ComponentChangedGIImportance( deoglRComponent *component ){
+	ComponentChangedLayerMask( component );
 }
 
 void deoglGIState::ComponentBecameVisible( deoglRComponent *component ){

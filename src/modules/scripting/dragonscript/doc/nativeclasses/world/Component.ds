@@ -17,11 +17,11 @@ class Component
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create component. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create component. */
-	public func new(Model model, Skin skin)
+	func new(Model model, Skin skin)
 	end
 	/*@}*/
 	
@@ -30,55 +30,55 @@ class Component
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	public func DVector getPosition()
+	func DVector getPosition()
 		return null
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition(DVector position)
+	func void setPosition(DVector position)
 	end
 	
 	/** \brief Orientation. */
-	public func Quaternion getOrientation()
+	func Quaternion getOrientation()
 		return null
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation(Quaternion orientation)
+	func void setOrientation(Quaternion orientation)
 	end
 	
 	/** \brief Scaling. */
-	public func Vector getScaling()
+	func Vector getScaling()
 		return null
 	end
 	
 	/** \brief Set scaling. */
-	public func void setScaling(Vector scaling)
+	func void setScaling(Vector scaling)
 	end
 	
 	/** \brief Matrix. */
-	public func DMatrix getMatrix()
+	func DMatrix getMatrix()
 		return null
 	end
 	
 	/** \brief Inverse matrix. */
-	public func DMatrix getInverseMatrix()
+	func DMatrix getInverseMatrix()
 		return null
 	end
 	
 	/** \brief Component is visible. */
-	public func bool getVisible()
+	func bool getVisible()
 		return false
 	end
 	
 	/** \brief Set if component is visible. */
-	public func void setVisible(bool visible)
+	func void setVisible(bool visible)
 	end
 	
 	
 	
 	/** \brief Model or \em null if not set. */
-	public func Model getModel()
+	func Model getModel()
 		return null
 	end
 	
@@ -86,7 +86,7 @@ class Component
 	 * \brief Set model or \em null if not set.
 	 * \details Textures are reset. To keep textures use setModelKeepTextures.
 	 */
-	public func void setModel(Model model)
+	func void setModel(Model model)
 	end
 	
 	/**
@@ -97,42 +97,42 @@ class Component
 	 * and the new model is similar enough to match. Textures not existing anymore
 	 * are not restored.
 	 */
-	public func void setModelKeepTextures(Model model)
+	func void setModelKeepTextures(Model model)
 	end
 	
 	/** \brief Skin or \em null if not set. */
-	public func Skin getSkin()
+	func Skin getSkin()
 		return null
 	end
 	
 	/** \brief Set skin or \em null if not set. */
-	public func void setSkin(Skin skin)
+	func void setSkin(Skin skin)
 	end
 	
 	/** \brief Set model and skin or \em null if not set. */
-	public func void setModelAndSkin(Model model, Skin skin)
+	func void setModelAndSkin(Model model, Skin skin)
 	end
 	
 	/** \brief Rig or \em null if not set. */
-	public func Rig getRig()
+	func Rig getRig()
 		return null
 	end
 	
 	/** \brief Set rig or \em null if not set. */
-	public func void setRig(Rig rig)
+	func void setRig(Rig rig)
 	end
 	
 	/** \brief Occlusion mesh or \em null if not set. */
-	public func OcclusionMesh getOcclusionMesh()
+	func OcclusionMesh getOcclusionMesh()
 		return null
 	end
 	
 	/** \brief Set occlusion mesh or \em null if not set. */
-	public func void setOcclusionMesh(OcclusionMesh occlusionMesh)
+	func void setOcclusionMesh(OcclusionMesh occlusionMesh)
 	end
 	
 	/** \brief Audio model or \em null if not set. */
-	public func Model getAudioModel()
+	func Model getAudioModel()
 		return null
 	end
 	
@@ -141,35 +141,35 @@ class Component
 	 * 
 	 * Shares textures with assigned model.
 	 */
-	public func void setAudioModel(Model model)
+	func void setAudioModel(Model model)
 	end
 	
 	/** \brief Layer mask for visibility masking. */
-	public func LayerMask getLayerMask()
+	func LayerMask getLayerMask()
 		return null
 	end
 	
 	/** \brief Set layer mask for visibility masking. */
-	public func void setLayerMask(LayerMask layerMask)
+	func void setLayerMask(LayerMask layerMask)
 	end
 	
 	/** \brief Dynamic skin or \em null if not set. */
-	public func DynamicSkin getDynamicSkin()
+	func DynamicSkin getDynamicSkin()
 		return null
 	end
 	
 	/** \brief Set dynamic skin or \em null if not set. */
-	public func void setDynamicSkin(DynamicSkin dynamicSkin)
+	func void setDynamicSkin(DynamicSkin dynamicSkin)
 	end
 	
 	
 	
 	/** \brief Update bone matrices. */
-	public func void updateBones()
+	func void updateBones()
 	end
 	
 	/** \brief Copy bone states to matching bones states of another component. */
-	public func void copyBonesToComponent(Component component)
+	func void copyBonesToComponent(Component component)
 	end
 	/*@}*/
 	
@@ -178,12 +178,12 @@ class Component
 	/** \name Textures */
 	/*@{*/
 	/** \brief Count of textures in the model or 0 if no model is set. */
-	public func int getTextureCount()
+	func int getTextureCount()
 		return 0
 	end
 	
 	/** \brief Index of named texture or -1 if not found or model is not set. */
-	public func int indexOfTextureNamed(String name)
+	func int indexOfTextureNamed(String name)
 		return 0
 	end
 	
@@ -192,7 +192,7 @@ class Component
 	 * \version 1.9
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func String getTextureNameAt(int texture)
+	func String getTextureNameAt(int texture)
 		return null
 	end
 	
@@ -200,7 +200,7 @@ class Component
 	 * \brief Skin of texture or \em null if not used.
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func Skin getTextureSkinAt(int texture)
+	func Skin getTextureSkinAt(int texture)
 		return null
 	end
 	
@@ -208,7 +208,7 @@ class Component
 	 * \brief Texture number of texture or \em null if not used.
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func int getTextureTextureAt(int texture)
+	func int getTextureTextureAt(int texture)
 		return 0
 	end
 	
@@ -216,14 +216,14 @@ class Component
 	 * \brief Set skin of texture or \em null if not set.
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func void setTextureSkinAt(int texture, Skin skin, int skinTexture)
+	func void setTextureSkinAt(int texture, Skin skin, int skinTexture)
 	end
 	
 	/**
 	 * \brief Texture coordinates transformation of texture.
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func TexMatrix2 getTextureTransformAt(int texture)
+	func TexMatrix2 getTextureTransformAt(int texture)
 		return null
 	end
 	
@@ -231,14 +231,14 @@ class Component
 	 * \brief Set texture coordinates transformation of texture.
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func void setTextureTransformAt(int texture, TexMatrix2 transform)
+	func void setTextureTransformAt(int texture, TexMatrix2 transform)
 	end
 	
 	/**
 	 * \brief Dynamic skin of texture or \em null if not set.
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func DynamicSkin getTextureDynamicSkinAt(int texture)
+	func DynamicSkin getTextureDynamicSkinAt(int texture)
 		return null
 	end
 	
@@ -246,7 +246,7 @@ class Component
 	 * \brief Set dynamic skin of texture or \em null if not set.
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func void setTextureDynamicSkinAt(int texture, DynamicSkin dynamicSkin)
+	func void setTextureDynamicSkinAt(int texture, DynamicSkin dynamicSkin)
 	end
 	/*@}*/
 	
@@ -255,12 +255,12 @@ class Component
 	/** \name Bones */
 	/*@{*/
 	/** \brief Number of bones. */
-	public func int getBoneCount()
+	func int getBoneCount()
 		return 0
 	end
 	
 	/** \brief Index of named bone or -1 if not found in rig or rig is not set. */
-	public func int indexOfBoneNamed(String name)
+	func int indexOfBoneNamed(String name)
 		return 0
 	end
 	
@@ -268,7 +268,7 @@ class Component
 	 * \brief Name of bone.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
-	public func String boneGetName(int index)
+	func String boneGetName(int index)
 		return null
 	end
 	
@@ -276,7 +276,7 @@ class Component
 	 * \brief Position of bone relative to bone origin matrix.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
-	public func Vector boneGetPosition(int bone)
+	func Vector boneGetPosition(int bone)
 		return null
 	end
 	
@@ -284,14 +284,14 @@ class Component
 	 * \brief Set position of the bone relative to bone origin matrix.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
-	public func void boneSetPosition(int bone, Vector position)
+	func void boneSetPosition(int bone, Vector position)
 	end
 	
 	/**
 	 * \brief Rotation of bone relative to bone origin matrix.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
-	public func Quaternion boneGetRotation(int bone)
+	func Quaternion boneGetRotation(int bone)
 		return null
 	end
 	
@@ -299,14 +299,14 @@ class Component
 	 * \brief Set rotation of the bone relative to bone origin matrix.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
-	public func void boneSetRotation(int bone, Quaternion rotation)
+	func void boneSetRotation(int bone, Quaternion rotation)
 	end
 	
 	/**
 	 * \brief Bone matrix relative to component space.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
-	public func Matrix boneGetMatrix(int bone)
+	func Matrix boneGetMatrix(int bone)
 		return null
 	end
 	
@@ -314,7 +314,7 @@ class Component
 	 * \brief Inverse bone matrix relative to component space.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
-	public func Matrix boneGetInverseMatrix(int bone)
+	func Matrix boneGetInverseMatrix(int bone)
 		return null
 	end
 	
@@ -324,7 +324,7 @@ class Component
 	 *          has no position, no rotation and 1 scaling.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
-	public func Matrix getBoneOriginMatrix(int bone)
+	func Matrix getBoneOriginMatrix(int bone)
 		return null
 	end
 	
@@ -334,7 +334,7 @@ class Component
 	 *          has no position, no rotation and 1 scaling.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
-	public func Matrix getBoneOriginInverseMatrix(int bone)
+	func Matrix getBoneOriginInverseMatrix(int bone)
 		return null
 	end
 	
@@ -345,7 +345,7 @@ class Component
 	 * \throws EInvalidParam No bone with name \em bone found.
 	 * \deprecated Use boneGetPosition(indexOfBoneNamed(bone))
 	 */
-	public func Vector getBonePosition(String bone)
+	func Vector getBonePosition(String bone)
 		return null
 	end
 	
@@ -354,7 +354,7 @@ class Component
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 * \deprecated Use boneSetPosition(indexOfBoneNamed(bone), position)
 	 */
-	public func void setBonePosition(String bone, Vector position)
+	func void setBonePosition(String bone, Vector position)
 	end
 	
 	/**
@@ -362,7 +362,7 @@ class Component
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 * \deprecated Use boneSetRotation(indexOfBoneNamed(bone), position)
 	 */
-	public func Quaternion getBoneRotation(String bone)
+	func Quaternion getBoneRotation(String bone)
 		return null
 	end
 	
@@ -371,14 +371,14 @@ class Component
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 * \deprecated Use boneSetRotation(indexOfBoneNamed(bone), rotation)
 	 */
-	public func void setBoneRotation(String bone, Quaternion rotation)
+	func void setBoneRotation(String bone, Quaternion rotation)
 	end
 	
 	/**
 	 * \brief Bone matrix relative to component space.
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 */
-	public func Matrix getBoneMatrix(String bone)
+	func Matrix getBoneMatrix(String bone)
 		return null
 	end
 	
@@ -386,7 +386,7 @@ class Component
 	 * \brief Inverse bone matrix relative to component space.
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 */
-	public func Matrix getBoneInverseMatrix(String bone)
+	func Matrix getBoneInverseMatrix(String bone)
 		return null
 	end
 	/*@}*/
@@ -399,7 +399,7 @@ class Component
 	 * \brief Count of vertex position sets.
 	 * \version 1.17
 	 */
-	public func int getVertexPositionSetCount()
+	func int getVertexPositionSetCount()
 		return 0
 	end
 	
@@ -407,7 +407,7 @@ class Component
 	 * \brief Index of vertex position set with name or -1 if not found.
 	 * \version 1.17
 	 */
-	public func int indexOfVertexPositionSetNamed(String name)
+	func int indexOfVertexPositionSetNamed(String name)
 		return 0
 	end
 	
@@ -417,7 +417,7 @@ class Component
 	 * \throws EOutOfBoundary Index is less than 0.
 	 * \throws EOutOfBoundary Index is larger than or equal to getVertexPositionSetCount().
 	 */
-	public func String vertexPositionSetGetNameAt(int index)
+	func String vertexPositionSetGetNameAt(int index)
 		return null
 	end
 	
@@ -427,7 +427,7 @@ class Component
 	 * \throws EOutOfBoundary Index is less than 0.
 	 * \throws EOutOfBoundary Index is larger than or equal to getVertexPositionSetCount().
 	 */
-	public func float vertexPositionSetGetWeightAt(int index)
+	func float vertexPositionSetGetWeightAt(int index)
 		return 0.0
 	end
 	
@@ -436,7 +436,7 @@ class Component
 	 * \version 1.17
 	 * \throws EOutOfBoundary Vertex position set with name is absent.
 	 */
-	public func float vertexPositionSetGetWeightNamed(String name)
+	func float vertexPositionSetGetWeightNamed(String name)
 		return 0.0
 	end
 	
@@ -446,7 +446,7 @@ class Component
 	 * \throws EOutOfBoundary Index is less than 0.
 	 * \throws EOutOfBoundary Index is larger than or equal to getVertexPositionSetCount().
 	 */
-	public func void vertexPositionSetSetWeightAt(int index, float weight)
+	func void vertexPositionSetSetWeightAt(int index, float weight)
 	end
 	
 	/**
@@ -454,21 +454,54 @@ class Component
 	 * \version 1.17
 	 * \throws EOutOfBoundary Vertex position set with name is absent.
 	 */
-	public func void vertexPositionSetSetWeightNamed(String name, float weight)
+	func void vertexPositionSetSetWeightNamed(String name, float weight)
 	end
-	/*@}*/
 	
-	
-	
-	/** \name Hint */
-	/*@{*/
 	/** \brief Movement hint. */
-	public func ComponentHintMovement getHintMovement()
+	func ComponentHintMovement getHintMovement()
 		return null
 	end
 	
 	/** \brief Set movement hint. */
-	public func void setHintMovement(ComponentHintMovement hint)
+	func void setHintMovement(ComponentHintMovement hint)
+	end
+	
+	/**
+	 * \brief Enable GI in graphic module if supported.
+	 * \version 1.19
+	 */
+	func bool getEnableGI()
+		return false
+	end
+	
+	/**
+	 * \brief Set if enabled for GI in graphic module if supported.
+	 * \version 1.19
+	 */
+	func void setEnableGI( bool enable )
+	end
+	
+	/**
+	 * \brief GI important hint.
+	 * \version 1.19
+	 * 
+	 * Value is in the range from 0 (very unimportant) to 4 (very important). This hint
+	 * can be used by the graphic module to improve performance by excluding components
+	 * with a GI important below a user chosen threashold. The default important is 4.
+	 */
+	func int getHintGIImportance()
+		return 0
+	end
+	
+	/**
+	 * \brief Set GI important hint.
+	 * \version 1.19
+	 * 
+	 * Value is in the range from 0 (very unimportant) to 4 (very important). This hint
+	 * can be used by the graphic module to improve performance by excluding components
+	 * with a GI important below a user chosen threshold.
+	 */
+	func void setHintGIImportance( int importance )
 	end
 	/*@}*/
 	
@@ -477,20 +510,20 @@ class Component
 	/** \name Decals */
 	/*@{*/
 	/** \brief Number of decals. */
-	public func int getDecalCount()
+	func int getDecalCount()
 		return 0
 	end
 	
 	/** \brief Add decal. */
-	public func void addDecal(Decal decal)
+	func void addDecal(Decal decal)
 	end
 	
 	/** \brief Remove decal. */
-	public func void removeDecal(Decal decal)
+	func void removeDecal(Decal decal)
 	end
 	
 	/** \brief Remove all decals. */
-	public func void removeAllDecals()
+	func void removeAllDecals()
 	end
 	
 	/**
@@ -498,7 +531,7 @@ class Component
 	 * 
 	 * \warning Do not add or remove decals from inside the block.
 	 */
-	public func void forEachDecal(Block ablock)
+	func void forEachDecal(Block ablock)
 	end
 	/*@}*/
 end

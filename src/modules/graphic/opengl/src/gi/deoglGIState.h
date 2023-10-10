@@ -279,6 +279,9 @@ public:
 	/** Notification component became visible. */
 	void ComponentBecameVisible( deoglRComponent *component );
 	
+	/** Notification component changed gi importance. */
+	void ComponentChangedGIImportance( deoglRComponent *component );
+	
 	/** Start read back information for the next frame update. */
 	void StartReadBack();
 	

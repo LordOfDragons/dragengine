@@ -90,6 +90,7 @@ private:
 	bool pVisible;
 	deComponent::eMovementHints pMovementHint;
 	decLayerMask pLayerMask;
+	int pGIImportance;
 	
 	decIntList pModelSkinMappings;
 	decIntList pModelRigMappings;
@@ -245,6 +246,9 @@ public:
 	
 	/** Set movement hint. */
 	void SetMovementHint( deComponent::eMovementHints hint );
+	
+	inline int GetGIImportance() const{ return pGIImportance; }
+	void SetGIImportance( int importance );
 	
 	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
@@ -688,6 +692,8 @@ public:
 	
 	/** Notify all movement hint changed. */
 	void NotifyMovementHintChanged();
+	
+	void NotifyGIImportanceChanged();
 	
 	/** Notify all lights that their light volume has to be updated. */
 	void NotifyLightsDirtyLightVolume();

@@ -66,15 +66,16 @@ private:
 		
 	public:
 		cComponentListener( deoglGIInstance &instance );
-		virtual void ComponentDestroyed( deoglRComponent &component );
-		virtual void ParentWorldChanged( deoglRComponent &component );
-		virtual void LayerMaskChanged( deoglRComponent &component );
-		virtual void BoundariesChanged( deoglRComponent &component );
-		virtual void OcclusionMeshChanged( deoglRComponent &component );
-		virtual void TexturesChanged( deoglRComponent &component );
-		virtual void RenderStaticChanged( deoglRComponent &component );
-		virtual void MovementHintChanged( deoglRComponent &component );
-		virtual void VisibilityChanged( deoglRComponent &component);
+		void ComponentDestroyed( deoglRComponent &component ) override;
+		void ParentWorldChanged( deoglRComponent &component ) override;
+		void LayerMaskChanged( deoglRComponent &component ) override;
+		void BoundariesChanged( deoglRComponent &component ) override;
+		void OcclusionMeshChanged( deoglRComponent &component ) override;
+		void TexturesChanged( deoglRComponent &component ) override;
+		void RenderStaticChanged( deoglRComponent &component ) override;
+		void MovementHintChanged( deoglRComponent &component ) override;
+		void VisibilityChanged( deoglRComponent &component) override;
+		void GIImportanceChanged(deoglRComponent & component) override;
 	};
 	
 	class cDecalListener : public deoglDecalListener{

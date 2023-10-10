@@ -537,6 +537,9 @@ public:
 	
 	/** Notify GI states component became visible. */
 	void GIStatesNotifyComponentBecameVisible( deoglRComponent *component );
+	
+	/** Notify GI states component changed gi importance. */
+	void GIStatesNotifyComponentChangedGIImportance( deoglRComponent *component );
 	/*@}*/
 	
 	
