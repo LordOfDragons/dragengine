@@ -129,7 +129,8 @@ class BaseActorAction implements Persistable
 	 * \version 1.4
 	 */
 	public func bool isActive()
-		return aiAction.getAction() == this
+		// if not activated once initBehaviors() has not been called yet and aiAction is null
+		return aiAction != null and aiAction.getAction() == this
 	end
 	
 	/**
@@ -137,7 +138,7 @@ class BaseActorAction implements Persistable
 	 * \version 1.4
 	 */
 	public func bool isNotActive()
-		return aiAction.getAction() != this
+		return aiAction == null or aiAction.getAction() != this
 	end
 	
 	
