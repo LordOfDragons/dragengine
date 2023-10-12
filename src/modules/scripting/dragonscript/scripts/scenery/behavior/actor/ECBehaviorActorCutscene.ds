@@ -549,7 +549,10 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 				
 				if flags.getAt(0)
 					setAnimator(reader.readString8())
-					pController.setValue(reader.readFloat())
+					var float value = reader.readFloat()
+					if pController != null
+						pController.setValue(value)
+					end
 				end
 				
 				if flags.getAt(1)
@@ -609,7 +612,11 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			writer.writeByte(pState.order())
 			if pAnimator != null
 				writer.writeString8(pPathAnimator)
-				writer.writeFloat(pController.getValue())
+				var float value
+				if pController != null
+					value = pController.getValue()
+				end
+				writer.writeFloat(value)
 			end
 			
 			if pSpeakerSynth != null and pSpeakerSynth.getPlaying()
