@@ -36,23 +36,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeLangPackEntry::lpeLangPackEntry(){
-	pLangPack = NULL;
-	
-	pName = "Entry";
-	
-	pSelected = false;
-	pActive = false;
+lpeLangPackEntry::lpeLangPackEntry() :
+pLangPack( nullptr ),
+pName( "Entry" ),
+pSelected( false ),
+pActive( false ){
 }
 
-lpeLangPackEntry::lpeLangPackEntry( const lpeLangPackEntry &entry ){
-	pLangPack = NULL;
-	
-	pName = entry.pName;
-	pText = entry.pText;
-	
-	pSelected = false;
-	pActive = false;
+lpeLangPackEntry::lpeLangPackEntry( const lpeLangPackEntry &entry ) :
+pLangPack( nullptr ),
+pName( entry.pName ),
+pText( entry.pText ),
+pSelected( false ),
+pActive( false ){
 }
 
 lpeLangPackEntry::~lpeLangPackEntry(){
@@ -70,21 +66,21 @@ void lpeLangPackEntry::SetLangPack( lpeLangPack *langpack ){
 
 
 void lpeLangPackEntry::SetName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+	if( pName.Equals( name ) ){
+		return;
 	}
 	
-	if( ! pName.Equals( name ) ){
-		pName = name;
-		NotifyNameChanged();
-	}
+	pName = name;
+	NotifyNameChanged();
 }
 
 void lpeLangPackEntry::SetText( const decUnicodeString &text ){
-	if( pText != text ){
-		pText = text;
-		NotifyChanged();
+	if( pText == text ){
+		return;
 	}
+	
+	pText = text;
+	NotifyChanged();
 }
 
 void lpeLangPackEntry::SetSelected( bool selected ){

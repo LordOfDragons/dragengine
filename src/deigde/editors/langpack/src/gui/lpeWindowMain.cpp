@@ -215,6 +215,10 @@ void lpeWindowMain::SaveLangPack( const char *filename ){
 	GetRecentFiles().AddFile( filename );
 }
 
+void lpeWindowMain::SetReferenceLangPack( lpeLangPack *langpack ){
+	pViewLangPack->SetReferenceLangPack( langpack );
+}
+
 
 
 void lpeWindowMain::GetChangedDocuments( decStringList &list ){
@@ -382,6 +386,27 @@ public:
 };
 
 
+class cActionLangPackOpenRef : public cActionBase{
+public:
+	cActionLangPackOpenRef( lpeWindowMain &window ) : cActionBase( window, "Open Reference...",
+		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ),
+		"Opens reference language pack from file" ){}
+	
+	virtual void OnAction(){
+		decString filename( pWindow.GetLangPack()->GetFilePath() );
+		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Reference Language Pack",
+		*pWindow.GetEnvironment().GetFileSystemGame(),
+		pWindow.GetLoadSaveSystem().GetLangPackFPList(), filename ) ){
+			return;
+		}
+		
+		pWindow.GetEditorModule().LogInfoFormat( "Loading language pack %s", filename.GetString() );
+		pWindow.SetReferenceLangPack( lpeLangPack::Ref::New(
+			pWindow.GetLoadSaveSystem().LoadLangPack( filename ) ) );
+	}
+};
+
+
 
 class cActionEditCut : public cActionBase{
 public:
@@ -526,6 +551,7 @@ void lpeWindowMain::pCreateActions(){
 	pActionLangPackOpen.TakeOver( new cActionLangPackOpen( *this ) );
 	pActionLangPackSave.TakeOver( new cActionLangPackSave( *this ) );
 	pActionLangPackSaveAs.TakeOver( new cActionLangPackSaveAs( *this ) );
+	pActionLangPackOpenRef.TakeOver( new cActionLangPackOpenRef( *this ) );
 	pActionEditUndo.TakeOver( new igdeActionUndo( GetEnvironment() ) );
 	pActionEditRedo.TakeOver( new igdeActionRedo( GetEnvironment() ) );
 	pActionEditCut.TakeOver( new cActionEditCut( *this ) );
@@ -540,6 +566,7 @@ void lpeWindowMain::pCreateActions(){
 	AddUpdateAction( pActionLangPackOpen );
 	AddUpdateAction( pActionLangPackSave );
 	AddUpdateAction( pActionLangPackSaveAs );
+	AddUpdateAction( pActionLangPackOpenRef );
 	AddUpdateAction( pActionEditUndo );
 	AddUpdateAction( pActionEditRedo );
 	AddUpdateAction( pActionEditCut );
@@ -557,6 +584,9 @@ void lpeWindowMain::pCreateToolBarFile(){
 	helper.ToolBarButton( pTBFile, pActionLangPackNew );
 	helper.ToolBarButton( pTBFile, pActionLangPackOpen );
 	helper.ToolBarButton( pTBFile, pActionLangPackSave );
+	
+	helper.ToolBarSeparator( pTBFile );
+	helper.ToolBarButton( pTBFile, pActionLangPackOpenRef );
 	
 	helper.ToolBarSeparator( pTBFile );
 	helper.ToolBarButton( pTBFile, pActionEntryAdd );
@@ -606,6 +636,9 @@ void lpeWindowMain::pCreateMenuLangPack( igdeMenuCascade &menu ){
 	helper.MenuRecentFiles( menu, GetRecentFiles() );
 	helper.MenuCommand( menu, pActionLangPackSave );
 	helper.MenuCommand( menu, pActionLangPackSaveAs );
+	
+	helper.MenuSeparator( menu );
+	helper.MenuCommand( menu, pActionLangPackOpenRef );
 }
 
 void lpeWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
