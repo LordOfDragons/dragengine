@@ -215,8 +215,16 @@ void lpeWindowMain::SaveLangPack( const char *filename ){
 	GetRecentFiles().AddFile( filename );
 }
 
+lpeLangPack *lpeWindowMain::GetReferenceLangPack() const{
+	return pViewLangPack->GetReferenceLangPack();
+}
+
 void lpeWindowMain::SetReferenceLangPack( lpeLangPack *langpack ){
 	pViewLangPack->SetReferenceLangPack( langpack );
+}
+
+void lpeWindowMain::SelectNextMissingEntry(){
+	pViewLangPack->SelectNextMissingEntry();
 }
 
 
@@ -390,7 +398,7 @@ class cActionLangPackOpenRef : public cActionBase{
 public:
 	cActionLangPackOpenRef( lpeWindowMain &window ) : cActionBase( window, "Open Reference...",
 		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ),
-		"Opens reference language pack from file" ){}
+		"Opens reference language pack from file", deInputEvent::ekcR ){}
 	
 	virtual void OnAction(){
 		decString filename( pWindow.GetLangPack()->GetFilePath() );
@@ -481,20 +489,16 @@ public:
 			}
 			
 			igdeUndoReference undo;
-			lpeLangPackEntry *entry = NULL;
+			const lpeLangPackEntry::Ref entry( lpeLangPackEntry::Ref::New( new lpeLangPackEntry ) );
+			entry->SetName( name );
 			
-			try{
-				entry = new lpeLangPackEntry;
-				entry->SetName( name );
-				undo.TakeOver( new lpeULangPackEntryAdd( langpack, entry ) );
-				entry->FreeReference();
-				
-			}catch( const deException & ){
-				if( entry ){
-					entry->FreeReference();
-				}
-				throw;
+			const lpeLangPack * const refLangPack = pWindow.GetReferenceLangPack();
+			lpeLangPackEntry *refEntry = nullptr;
+			if( refLangPack ){
+				refEntry = refLangPack->GetEntryList().GetNamed( name );
 			}
+			
+			undo.TakeOver( new lpeULangPackEntryAdd( langpack, entry, refEntry ) );
 			
 			langpack->GetUndoSystem()->Add( undo );
 			return;
@@ -502,7 +506,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( pWindow.GetLangPack() != NULL );
+		SetEnabled( pWindow.GetLangPack() != nullptr );
 	}
 };
 
@@ -520,18 +524,47 @@ public:
 		}
 		
 		const lpeLangPackEntryList &selection = langpack->GetEntrySelection().GetSelected();
-		if( selection.GetCount() == 0 ){
+		const int count = selection.GetCount();
+		lpeLangPackEntryList list;
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			lpeLangPackEntry * const entry = selection.GetAt( i );
+			if( entry->GetLangPack() == langpack ){
+				list.Add( entry );
+			}
+		}
+		
+		if( list.GetCount() == 0 ){
 			return;
 		}
 		
 		igdeUndoReference undo;
-		undo.TakeOver( new lpeULangPackEntryRemove( langpack, selection ) );
+		undo.TakeOver( new lpeULangPackEntryRemove( langpack, list, pWindow.GetReferenceLangPack() ) );
 		langpack->GetUndoSystem()->Add( undo );
 	}
 	
 	virtual void Update(){
 		SetEnabled( pWindow.GetLangPack() && pWindow.GetLangPack()
 			->GetEntrySelection().GetSelected().GetCount() > 0 );
+	}
+};
+
+
+class cActionEntryNextMissing : public cActionBase{
+public:
+	cActionEntryNextMissing( lpeWindowMain &window ) : cActionBase( window,
+		"Select next missing", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiWarning ),
+		"Select next missing language pack entry", deInputEvent::ekcM ){}
+	
+	virtual void OnAction(){
+		if( pWindow.GetLangPack() ){
+			pWindow.SelectNextMissingEntry();
+		}
+	}
+	
+	virtual void Update(){
+		SetEnabled( pWindow.GetLangPack() );
 	}
 };
 
@@ -559,6 +592,7 @@ void lpeWindowMain::pCreateActions(){
 	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
 	pActionEntryAdd.TakeOver( new cActionEntryAdd( *this ) );
 	pActionEntryRemove.TakeOver( new cActionEntryRemove( *this ) );
+	pActionEntryNextMissing.TakeOver( new cActionEntryNextMissing( *this ) );
 	
 	
 	// register for updating
@@ -574,6 +608,7 @@ void lpeWindowMain::pCreateActions(){
 	AddUpdateAction( pActionEditPaste );
 	AddUpdateAction( pActionEntryAdd );
 	AddUpdateAction( pActionEntryRemove );
+	AddUpdateAction( pActionEntryNextMissing );
 }
 
 void lpeWindowMain::pCreateToolBarFile(){
@@ -591,6 +626,7 @@ void lpeWindowMain::pCreateToolBarFile(){
 	helper.ToolBarSeparator( pTBFile );
 	helper.ToolBarButton( pTBFile, pActionEntryAdd );
 	helper.ToolBarButton( pTBFile, pActionEntryRemove );
+	helper.ToolBarButton( pTBFile, pActionEntryNextMissing );
 	
 	AddSharedToolBar( pTBFile );
 }
@@ -658,4 +694,5 @@ void lpeWindowMain::pCreateMenuEntry( igdeMenuCascade &menu ){
 	
 	helper.MenuCommand( menu, pActionEntryAdd );
 	helper.MenuCommand( menu, pActionEntryRemove );
+	helper.MenuCommand( menu, pActionEntryNextMissing );
 }

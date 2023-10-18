@@ -58,6 +58,7 @@ private:
 	igdeActionReference pActionLangPackOpenRef;
 	igdeActionReference pActionEntryAdd;
 	igdeActionReference pActionEntryRemove;
+	igdeActionReference pActionEntryNextMissing;
 	
 	igdeActionUndoReference pActionEditUndo;
 	igdeActionRedoReference pActionEditRedo;
@@ -106,6 +107,7 @@ public:
 	inline igdeAction *GetActionLangPackOpenRef() const{ return pActionLangPackOpenRef; }
 	inline igdeAction *GetActionEntryAdd() const{ return pActionEntryAdd; }
 	inline igdeAction *GetActionEntryRemove() const{ return pActionEntryRemove; }
+	inline igdeAction *GetActionEntryNextMissing() const{ return pActionEntryNextMissing; }
 	
 	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
 	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
@@ -137,8 +139,14 @@ public:
 	/** Save language pack under the given file. */
 	void SaveLangPack( const char *filename );
 	
+	/** Get reference language pack. */
+	lpeLangPack *GetReferenceLangPack() const;
+	
 	/** Set reference language pack. */
 	void SetReferenceLangPack( lpeLangPack *langpack );
+	
+	/** Select next missing language pack entry. */
+	void SelectNextMissingEntry();
 	
 	/** List of unsaved open documents. */
 	void GetChangedDocuments( decStringList &list );

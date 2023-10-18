@@ -51,9 +51,7 @@ lpeLangPackEntrySelection::~lpeLangPackEntrySelection(){
 ///////////////
 
 void lpeLangPackEntrySelection::Add( lpeLangPackEntry *entry ){
-	if( ! entry ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( entry )
 	
 	entry->SetSelected( true );
 	
@@ -63,9 +61,7 @@ void lpeLangPackEntrySelection::Add( lpeLangPackEntry *entry ){
 }
 
 void lpeLangPackEntrySelection::Remove( lpeLangPackEntry *entry ){
-	if( ! entry ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( entry )
 	
 	entry->SetSelected( false );
 	
@@ -92,6 +88,15 @@ bool lpeLangPackEntrySelection::HasActive() const{
 }
 
 void lpeLangPackEntrySelection::SetActive( lpeLangPackEntry *entry ){
+	if( entry == pActive ){
+		return;
+	}
+	
+	if( entry ){
+		DEASSERT_TRUE( pSelection.Has( entry ) )
+		DEASSERT_TRUE( entry->GetSelected() )
+	}
+	
 	if( pActive ){
 		pActive->SetActive( false );
 		pActive->FreeReference();
@@ -121,6 +126,6 @@ void lpeLangPackEntrySelection::ActivateNext(){
 }
 
 void lpeLangPackEntrySelection::Reset(){
+	SetActive( nullptr );
 	RemoveAll();
-	SetActive( NULL );
 }

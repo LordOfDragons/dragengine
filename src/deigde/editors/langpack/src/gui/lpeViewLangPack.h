@@ -50,6 +50,12 @@ private:
 	igdeIconListBoxReference pListEntries;
 	igdeTextFieldReference pEditEntryName;
 	igdeTextAreaReference pEditEntryText;
+	igdeTextFieldReference pEditRefText;
+	
+	
+	
+public:
+	bool preventUpdate;
 	
 	
 	
@@ -94,6 +100,15 @@ public:
 	
 	/** Select active entry. */
 	void SelectActiveEntry();
+	
+	/** Select entry with name. */
+	void SelectEntryNamed( const char *name );
+	
+	/** Select entry. */
+	void SelectEntry( lpeLangPackEntry *entry );
+	
+	/** Select next missing. */
+	void SelectNextMissingEntry();
 	
 	/** Update active entry. */
 	void UpdateActiveEntry();

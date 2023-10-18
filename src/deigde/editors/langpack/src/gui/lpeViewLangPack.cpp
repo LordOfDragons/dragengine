@@ -57,6 +57,7 @@
 #include <deigde/undo/igdeUndoReference.h>
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/logger/deLogger.h>
 
 
 
@@ -137,7 +138,7 @@ public:
 			lpeLangPackEntry::Ref newEntry( lpeLangPackEntry::Ref::New( new lpeLangPackEntry ) );
 			newEntry->SetName( entry->GetName() );
 			newEntry->SetText( text );
-			undo.TakeOver( new lpeULangPackEntryAdd( pView.GetLangPack(), newEntry ) );
+			undo.TakeOver( new lpeULangPackEntryAdd( pView.GetLangPack(), newEntry, entry ) );
 		}
 		
 		if( undo ){
@@ -160,22 +161,16 @@ protected:
 	eSorting pSorting;
 	
 public:
-	cListEntries( lpeViewLangPack &view ) :
-	pView( view ),
-	pSorting( esNameAscending ){}
+	cListEntries( lpeViewLangPack &view ) : pView( view ), pSorting( esNameAscending ){}
 	
 	virtual void OnSelectionChanged( igdeIconListBox *listBox ){
 		lpeLangPack * const langpack = pView.GetLangPack();
-		if( ! langpack ){
+		if( ! langpack || pView.preventUpdate ){
 			return;
 		}
 		
 		const igdeListItem * const selection = listBox->GetSelectedItem();
-		
-		langpack->GetEntrySelection().SetActive( selection
-			? ( lpeLangPackEntry* )selection->GetData() : NULL );
-		
-		langpack->NotifyActiveEntryChanged();
+		pView.SelectEntry( selection ? ( lpeLangPackEntry* )selection->GetData() : nullptr );
 	}
 	
 	// TODO add
@@ -183,7 +178,7 @@ public:
 	//   something like ListBoxClicked, ItemClicked
 	virtual void OnItemSelected( igdeIconListBox *listBox, int index ){
 		lpeLangPack * const langpack = pView.GetLangPack();
-		if( ! langpack ){
+		if( ! langpack || pView.preventUpdate ){
 			return;
 		}
 		
@@ -193,7 +188,7 @@ public:
 	
 	virtual void OnItemDeselected( igdeIconListBox *listBox, int index ){
 		lpeLangPack * const langpack = pView.GetLangPack();
-		if( ! langpack ){
+		if( ! langpack || pView.preventUpdate ){
 			return;
 		}
 		
@@ -247,7 +242,8 @@ public:
 lpeViewLangPack::lpeViewLangPack( lpeWindowMain &windowMain ) :
 igdeContainerBorder( windowMain.GetEnvironment() ),
 pWindowMain( windowMain ),
-pListener( lpeLangPackListener::Ref::New( new lpeViewLangPackListener( *this ) ) )
+pListener( lpeLangPackListener::Ref::New( new lpeViewLangPackListener( *this ) ) ),
+preventUpdate( false )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
@@ -259,7 +255,7 @@ pListener( lpeLangPackListener::Ref::New( new lpeViewLangPackListener( *this ) )
 		pEditFilter, new cTextFilter( *this ) );
 	AddChild( topLine, igdeContainerBorder::eaTop );
 	
-	// content split between list and bottom lin
+	// content split between list and bottom line
 	igdeContainerSplittedReference splitted;
 	splitted.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espBottom, 100 ) );
 	AddChild( splitted, igdeContainerBorder::eaCenter );
@@ -268,13 +264,16 @@ pListener( lpeLangPackListener::Ref::New( new lpeViewLangPackListener( *this ) )
 	sidePanel.TakeOver( new igdeContainerForm( env, igdeContainerForm::esLast ) );
 	helper.EditString( sidePanel, "Identifier:", "Unique identifier name of the entry.",
 		pEditEntryName, new cTextName( *this ) );
+	helper.EditString( sidePanel, "Reference Text:", "Reference text of the reference language pack entry.",
+		pEditRefText, nullptr );
 	helper.EditString( sidePanel, "Text:", "Text of the selected entry.",
-		pEditEntryText, 5, new cTextText( *this ) );
+		pEditEntryText, 3, new cTextText( *this ) );
+	pEditRefText->SetEditable( false );
 	splitted->AddChild( sidePanel, igdeContainerSplitted::eaSide );
 	
 	const igdeUIHelper::sColumnHeader listHeaders[ 3 ] = {
-		{ "Identifier", nullptr, 200 },
-		{ "Text", nullptr, 600 },
+		{ "Identifier", nullptr, 250 },
+		{ "Text", nullptr, 650 },
 		{ "Reference", nullptr, 400 }
 	};
 	helper.IconListBox( decPoint( 100, 150 ), listHeaders, 3, "Entries", pListEntries, nullptr );
@@ -335,6 +334,7 @@ lpeLangPackEntry *lpeViewLangPack::GetActiveEntry() const{
 
 
 void lpeViewLangPack::UpdateEntries(){
+	preventUpdate = true;
 	pListEntries->RemoveAllItems();
 	
 	if( pLangPack ){
@@ -365,6 +365,7 @@ void lpeViewLangPack::UpdateEntries(){
 		if( pRefLangPack ){
 			const lpeLangPackEntryList &refList = pRefLangPack->GetEntryList();
 			const int refEntryCount = refList.GetCount();
+			igdeIcon * const icon = GetEnvironment().GetStockIcon( igdeEnvironment::esiWarning );
 			
 			for( i=0; i<refEntryCount; i++ ){
 				lpeLangPackEntry * const refEntry = refList.GetAt( i );
@@ -378,7 +379,7 @@ void lpeViewLangPack::UpdateEntries(){
 					details.Add( "" );
 					details.Add( refEntry->GetText().ToUTF8() );
 					
-					pListEntries->AddItem( refEntry->GetName(), details, nullptr, refEntry );
+					pListEntries->AddItem( refEntry->GetName(), details, icon, refEntry );
 				}
 			}
 		}
@@ -386,6 +387,7 @@ void lpeViewLangPack::UpdateEntries(){
 	
 	SortEntries();
 	UpdateEntrySelection();
+	preventUpdate = false;
 	SelectActiveEntry();
 }
 
@@ -394,9 +396,55 @@ void lpeViewLangPack::SortEntries() {
 }
 
 void lpeViewLangPack::SelectActiveEntry(){
-	pListEntries->SetSelection( pListEntries->IndexOfItemWithData( GetActiveEntry() ) );
+	pListEntries->SetSelectionWithData( GetActiveEntry() );
 	pListEntries->EnsureSelectedItemVisible();
 	UpdateActiveEntry();
+}
+
+void lpeViewLangPack::SelectEntryNamed( const char *name ){
+	if( ! pLangPack ){
+		return;
+	}
+	
+	lpeLangPackEntry *entry = pLangPack->GetEntryList().GetNamed( name );
+	if( ! entry && pRefLangPack ){
+		entry = pRefLangPack->GetEntryList().GetNamed( name );
+	}
+	SelectEntry( entry );
+}
+
+void lpeViewLangPack::SelectEntry( lpeLangPackEntry *entry ){
+	lpeLangPackEntrySelection &lpes = pLangPack->GetEntrySelection();
+	lpes.RemoveAll();
+	if( entry ){
+		lpes.Add( entry );
+	}
+	lpes.SetActive( entry );
+	pLangPack->NotifyEntrySelectionChanged();
+	pLangPack->NotifyActiveEntryChanged();
+}
+
+void lpeViewLangPack::SelectNextMissingEntry(){
+	if( ! pLangPack || ! pRefLangPack ){
+		return;
+	}
+	
+	const igdeIconListBox &list = pListEntries;
+	const int startIndex = list.GetSelection() + 1;
+	const int count = list.GetItemCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		lpeLangPackEntry * const entry = ( lpeLangPackEntry* )
+			list.GetItemAt( ( startIndex + i ) % count )->GetData();
+		if( entry->GetLangPack() != pLangPack ){
+			SelectEntry( entry );
+			return;
+		}
+	}
+	
+	igdeCommonDialogs::Information( &pWindowMain, "Select next missing entry",
+		"No more missing language pack entries" );
 }
 
 void lpeViewLangPack::UpdateActiveEntry(){
@@ -409,17 +457,27 @@ void lpeViewLangPack::UpdateActiveEntry(){
 		if( entry->GetLangPack() == pLangPack ){
 			pEditEntryText->SetText( entry->GetText().ToUTF8() );
 			
+			const lpeLangPackEntry *refEntry = nullptr;
+			if( pRefLangPack ){
+				refEntry = pRefLangPack->GetEntryList().GetNamed( entry->GetName() );
+			}
+			
+			pEditRefText->SetText( refEntry ? refEntry->GetText().ToUTF8() : "" );
+			
 		}else{
-			pEditEntryText->SetText( "" );
+			pEditEntryText->ClearText();
+			pEditRefText->SetText( entry->GetText().ToUTF8() );
 		}
 		
 	}else{
-		pEditEntryName->SetText( "" );
-		pEditEntryText->SetText( "" );
+		pEditEntryName->ClearText();
+		pEditEntryText->ClearText();
+		pEditRefText->ClearText();
 	}
 	
 	pEditEntryName->SetEnabled( entry && entry->GetLangPack() == pLangPack );
 	pEditEntryText->SetEnabled( entry != nullptr );
+	pEditRefText->SetEnabled( entry != nullptr );
 }
 
 void lpeViewLangPack::UpdateEntrySelection(){
@@ -427,13 +485,13 @@ void lpeViewLangPack::UpdateEntrySelection(){
 		return;
 	}
 	
-	//const lpeLangPackEntryList &selection = pLangPack->GetEntrySelection().GetSelected();
 	igdeIconListBox &list = pListEntries;
 	const int count = list.GetItemCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		if( ( ( lpeLangPackEntry* )list.GetItemAt( i )->GetData() )->GetSelected() ){
+		const lpeLangPackEntry &entry = *( ( lpeLangPackEntry* )list.GetItemAt( i )->GetData() );
+		if( entry.GetSelected() ){
 			list.SelectItem( i );
 			
 		}else{
@@ -464,10 +522,12 @@ void lpeViewLangPack::UpdateEntry( lpeLangPackEntry *entry ){
 		}
 		
 		details.SetAt( 1, refEntry ? refEntry->GetText().ToUTF8().GetString() : "" );
+		item.SetIcon( nullptr );
 		
 	}else{
 		details.SetAt( 0, "" );
 		details.SetAt( 1, entry->GetText().ToUTF8() );
+		item.SetIcon( GetEnvironment().GetStockIcon( igdeEnvironment::esiWarning ) );
 	}
 	
 	pListEntries->ItemChangedAt( selection );
