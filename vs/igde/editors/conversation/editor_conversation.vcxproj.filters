@@ -1570,6 +1570,18 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValueList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPackEntry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveLangPack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakMoveTbt2Translation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\ceIGDEModule.h">
@@ -3127,6 +3139,18 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValueList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPack.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPackEntry.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveLangPack.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakMoveTbt2Translation.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

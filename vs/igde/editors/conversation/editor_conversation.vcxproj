@@ -556,6 +556,10 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicSetID.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValue.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValueList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPack.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPackEntry.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveLangPack.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakMoveTbt2Translation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\ceIGDEModule.h" />
@@ -1077,6 +1081,10 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicSetID.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValue.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValueList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPack.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPackEntry.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveLangPack.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakMoveTbt2Translation.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
