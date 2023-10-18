@@ -462,7 +462,7 @@ void lpeViewLangPack::UpdateActiveEntry(){
 				refEntry = pRefLangPack->GetEntryList().GetNamed( entry->GetName() );
 			}
 			
-			pEditRefText->SetText( refEntry ? refEntry->GetText().ToUTF8() : "" );
+			pEditRefText->SetText( refEntry ? refEntry->GetText().ToUTF8() : decString() );
 			
 		}else{
 			pEditEntryText->ClearText();

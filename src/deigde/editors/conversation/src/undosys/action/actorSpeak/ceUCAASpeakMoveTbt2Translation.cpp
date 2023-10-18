@@ -42,7 +42,7 @@ pEntry( entry ),
 pAddEntry( addEntry ),
 pTextBoxText( actorSpeak ? actorSpeak->GetTextBoxText() : decUnicodeString() ),
 pOldEntryText( entry ? entry->GetText() : decUnicodeString() ),
-pOldTranslationName( actorSpeak ? actorSpeak->GetTextBoxTextTranslate() : "" )
+pOldTranslationName( actorSpeak ? actorSpeak->GetTextBoxTextTranslate() : decString() )
 {
 	DEASSERT_NOTNULL( pConversation )
 	DEASSERT_NOTNULL( pTopic )
