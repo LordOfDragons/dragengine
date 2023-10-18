@@ -54,29 +54,29 @@ abstract class TestCase
 	
 	
 	/** \brief Test suite. */
-	private var WeakReference pTestSuite
+	var WeakReference pTestSuite
 	
 	/** \brief Test identifier. */
-	private var String pID
+	var String pID
 	
 	/** \brief Test name. */
-	private var UnicodeString pName
+	var UnicodeString pName
 	
 	/** \brief Test case is enabled. */
-	private var bool pEnabled
+	var bool pEnabled
 	
 	/** \brief Test state. */
-	private var State pState
+	var State pState
 	
 	/** \brief Exception if test case failed. */
-	private var Exception pException
+	var Exception pException
 	
 	
 	
 	/**
 	 * \brief Create test case.
 	 */
-	public func new(String id, UnicodeString name)
+	func new(String id, UnicodeString name)
 		if id == null
 			throw ENullPointer.new("id")
 		end
@@ -97,7 +97,7 @@ abstract class TestCase
 	
 	
 	/** \brief Test suite. */
-	public func TestSuite getTestSuite()
+	func TestSuite getTestSuite()
 		return this.pTestSuite.get() cast TestSuite
 	end
 	
@@ -106,37 +106,37 @@ abstract class TestCase
 	 * 
 	 * For use only by TestSuite.
 	 */
-	public func void setTestSuite(TestSuite testSuite)
+	func void setTestSuite(TestSuite testSuite)
 		this.pTestSuite.set(testSuite)
 	end
 	
 	/** \brief Identifier. */
-	public func String getID()
+	func String getID()
 		return this.pID
 	end
 	
 	/** \brief Display name. */
-	public func UnicodeString getName()
+	func UnicodeString getName()
 		return this.pName
 	end
 	
 	/** \brief Test case is enabled. */
-	public func bool getEnabled()
+	func bool getEnabled()
 		return this.pEnabled
 	end
 	
 	/** \brief Set if test case is enabled. */
-	public func void setEnabled(bool enabled)
+	func void setEnabled(bool enabled)
 		this.pEnabled = enabled
 	end
 	
 	/** \brief Test state. */
-	public func State getState()
+	func State getState()
 		return this.pState
 	end
 	
 	/** \brief Set test state. */
-	public func void setState(State state)
+	func void setState(State state)
 		if state == null
 			throw ENullPointer.new("state")
 		end
@@ -145,19 +145,19 @@ abstract class TestCase
 	end
 	
 	/** \brief Exception if test case failed. */
-	public func Exception getException()
+	func Exception getException()
 		return this.pException
 	end
 	
 	/** \brief Set exception if test case failed. */
-	public func void setException(Exception exception)
+	func void setException(Exception exception)
 		this.pException = exception
 	end
 	
 	
 	
 	/** \brief Initialize test. */
-	public func void init()
+	func void init()
 	end
 	
 	/**
@@ -167,16 +167,16 @@ abstract class TestCase
 	 * Once this method returns false the test finishes with state set to passed.
 	 * To fail the test throw an exception.
 	 */
-	abstract public func bool run(TestSuite testSuite)
+	abstract func bool run(TestSuite testSuite)
 	
 	/** \brief Tear down after test finished. */
-	public func void tearDown()
+	func void tearDown()
 	end
 	
 	
 	
 	/** \brief Fail test if \em found does not equal \em expected. */
-	protected func void assertEquals(Object found, Object expected)
+	func void assertEquals(Object found, Object expected)
 		if found == expected
 			return
 		end
@@ -187,7 +187,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if \em found equals \em expected. */
-	protected func void assertDiffers(Object found, Object shouldNot)
+	func void assertDiffers(Object found, Object shouldNot)
 		if found == null and shouldNot != null
 			return
 		end
@@ -198,27 +198,27 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if \em found is not true. */
-	protected func void assertTrue(bool found)
+	func void assertTrue(bool found)
 		this.assertEquals(found, true)
 	end
 	
 	/** \brief Fail test if \em found is not false. */
-	protected func void assertFalse(bool found)
+	func void assertFalse(bool found)
 		this.assertEquals(found, false)
 	end
 	
 	/** \brief Fail test if \em found is not null. */
-	protected func void assertNull(Object found)
+	func void assertNull(Object found)
 		this.assertEquals(found, null)
 	end
 	
 	/** \brief Fail test if \em found is not null. */
-	protected func void assertNotNull(Object found)
+	func void assertNotNull(Object found)
 		this.assertDiffers(found, null)
 	end
 	
 	/** \brief Fail test if \em ablock does not throw an exception. */
-	protected func void assertThrows(Block ablock)
+	func void assertThrows(Block ablock)
 		try
 			ablock.run()
 			
@@ -230,7 +230,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if vectors are not equal within range of 1mm. */
-	protected func void assertDVector(DVector found, DVector expected)
+	func void assertDVector(DVector found, DVector expected)
 		if found.isEqualTo(expected, 0.001)
 			return
 		end
@@ -238,7 +238,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if vectors are not equal within range. */
-	protected func void assertDVector(DVector found, DVector expected, float range)
+	func void assertDVector(DVector found, DVector expected, float range)
 		if found.isEqualTo(expected, range)
 			return
 		end
@@ -246,7 +246,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if vectors are not equal within range of 1mm. */
-	protected func void assertVector(Vector found, Vector expected)
+	func void assertVector(Vector found, Vector expected)
 		if found.isEqualTo(expected, 0.001)
 			return
 		end
@@ -254,7 +254,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if vectors are not equal within range. */
-	protected func void assertVector(DVector found, DVector expected, float range)
+	func void assertVector(DVector found, DVector expected, float range)
 		if found.isEqualTo(expected, range)
 			return
 		end
@@ -262,7 +262,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if quaternions are not equal within range of 1mm. */
-	protected func void assertQuaternion(Quaternion found, Quaternion expected)
+	func void assertQuaternion(Quaternion found, Quaternion expected)
 		if found.isEqualTo(expected, 0.001)
 			return
 		end
@@ -270,7 +270,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if quaternions are not equal within range. */
-	protected func void assertQuaternion(Quaternion found, Quaternion expected, float range)
+	func void assertQuaternion(Quaternion found, Quaternion expected, float range)
 		if found.isEqualTo(expected, range)
 			return
 		end
@@ -278,7 +278,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if colors are not equal within range. */
-	protected func void assertColor(Color found, Color expected, float range)
+	func void assertColor(Color found, Color expected, float range)
 		if found.isEqual(expected, range)
 			return
 		end

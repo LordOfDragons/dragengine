@@ -355,7 +355,7 @@ class WindowTesting extends Window
 	
 	private var Console pConsole
 	private var TestRunner pTestRunner
-	private var TestGameApp pTestGameApp
+	private var BaseGameApp pTestGameApp
 	private var DefaultListModel pModelTestSuites
 	private var DefaultListModel pModelTestCases
 	private var DefaultTextModel pModelLogs
@@ -377,7 +377,7 @@ class WindowTesting extends Window
 		
 		pConsole = console
 		
-		pTestGameApp = TestGameApp.new()
+		pTestGameApp = createTestGameApp()
 		pTestGameApp.initGame()
 		
 		createContent()
@@ -418,7 +418,7 @@ class WindowTesting extends Window
 	
 	
 	/** \brief Game application for use by test suited. */
-	public func TestGameApp getTestGameApp()
+	public func BaseGameApp getTestGameApp()
 		return pTestGameApp
 	end
 	
@@ -488,6 +488,16 @@ class WindowTesting extends Window
 	end
 	
 	
+	
+	/**
+	 * \brief Create test game application instance.
+	 * \version 1.19
+	 * 
+	 * Default implementation creates instance of TestGameApp.
+	 */
+	protected func BaseGameApp createTestGameApp()
+		return TestGameApp.new()
+	end
 	
 	/**
 	 * \brief Create window content.
