@@ -423,13 +423,14 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 	}
 	
 	// update the sub title
-	if( action.GetTextBoxText().GetLength() > 0 ){
+	const decUnicodeString &textBoxText = action.ResolveTextBoxText( conversation );
+	if( textBoxText.GetLength() > 0 ){
 		ceTextBoxText *text = NULL;
 		
 		try{
 			text = new ceTextBoxText;
 			text->SetName( conversationActor.GetTextBoxName() );
-			text->SetText( action.GetTextBoxText() );
+			text->SetText( textBoxText );
 			// TODO text style 
 			playbackActor.SetTextBoxText( text );
 			text->FreeReference();

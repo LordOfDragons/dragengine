@@ -63,7 +63,7 @@ protected:
 	
 public:
 	cActionWordsFromText( ceWDSLaneWord &lane ) : igdeAction( "Words From Text",
-		NULL, "Set words from Actor Speak Action text using speech animation information" ),
+		nullptr, "Set words from Actor Speak Action text using speech animation information" ),
 	pLane( lane ){ }
 
 	virtual void OnAction(){
@@ -72,9 +72,15 @@ public:
 			return;
 		}
 		
+		ceConversation * const conversation = pLane.GetWindow().GetConversation();
+		if( ! conversation ){
+			return;
+		}
+		
 		igdeUndoReference undo;
 		undo.TakeOver( new ceUCAASpeakWordFromText( pLane.GetWindow().GetTopic(), action ) );
-		( ( ceUCAASpeakWordFromText& )( igdeUndo& )undo ).SetWordsFromText( action->GetTextBoxText(), 0.075f );
+		( ( ceUCAASpeakWordFromText& )( igdeUndo& )undo ).SetWordsFromText(
+			action->ResolveTextBoxText( *conversation ), 0.075f );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	

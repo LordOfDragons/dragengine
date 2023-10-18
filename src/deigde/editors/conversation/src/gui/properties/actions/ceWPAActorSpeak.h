@@ -40,8 +40,9 @@ class ceWPAActorSpeak : public ceWPAction{
 private:
 	igdeComboBoxReference pCBActorID;
 	igdeTextFieldReference pEditTextBoxText;
-	igdeTextFieldReference pEditTextBoxTextTranslate;
 	igdeButtonReference pBtnTextBoxText;
+	igdeTextFieldReference pEditTextBoxTextTranslate;
+	igdeButtonReference pBtnTextBoxTextTranslate;
 	igdeTextFieldReference pEditTextBoxTextStyle;
 	igdeTextFieldReference pEditMovement;
 	igdeEditPathReference pEditPathSound;

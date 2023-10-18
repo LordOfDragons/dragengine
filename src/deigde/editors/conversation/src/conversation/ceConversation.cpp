@@ -129,9 +129,11 @@ ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEnt
 	
 	try{
 		SetFilePath( "new.deconvo" );
-		SetCTSPath( "test.dects" );
-		SetCTAPath( "test.decta" );
-		SetCTFIPath( "test.dectfi" );
+		pCTSPath = "test.dects";
+		pCTAPath = "test.decta";
+		pCTFIPath = "test.dectfi";
+		pLangPackPath = "/content/languages/english.delangpack";
+		pLangPackEntryName = "convo.group.topic.s1";
 		
 		// create world
 		pEngWorld.TakeOver( engine->GetWorldManager()->CreateWorld() );
@@ -300,6 +302,23 @@ void ceConversation::SetCTAPath( const char *path ){
 
 void ceConversation::SetCTFIPath( const char *path ){
 	pCTFIPath = path;
+}
+
+void ceConversation::SetLangPackPath( const char *path ){
+	pLangPackPath = path;
+}
+
+void ceConversation::SetLangPackEntryName( const char *name ){
+	pLangPackEntryName = name;
+}
+
+void ceConversation::SetLanguagePack( ceLangPack *langpack ){
+	if( langpack == pLangPack ){
+		return;
+	}
+	
+	pLangPack = langpack;
+	NotifyLanguagePackChanged();
 }
 
 
@@ -1648,6 +1667,15 @@ void ceConversation::NotifyPlaybackMissingWordsChanged(){
 	
 	for( l=0; l<listenerCount; l++ ){
 		( ( ceConversationListener* )pListeners.GetAt( l ) )->PlaybackMissingWordsChanged( this );
+	}
+}
+
+void ceConversation::NotifyLanguagePackChanged(){
+	const int listenerCount = pListeners.GetCount();
+	int l;
+	
+	for( l=0; l<listenerCount; l++ ){
+		( ( ceConversationListener* )pListeners.GetAt( l ) )->LanguagePackChanged( this );
 	}
 }
 

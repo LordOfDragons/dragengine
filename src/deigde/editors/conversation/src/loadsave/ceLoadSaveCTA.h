@@ -40,7 +40,7 @@ class decXmlElementTag;
 
 
 /**
- * \brief Load/Save conversation test actor.
+ * Load/Save conversation test actor.
  */
 class ceLoadSaveCTA : public igdeBaseXML{
 private:
@@ -53,7 +53,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create load/save conversation test actor. */
+	/** Create load/save conversation test actor. */
 	ceLoadSaveCTA( ceLoadSaveSystem &loadSaveSystem, deLogger *logger, const char *loggerSource );
 	/*@}*/
 	
@@ -61,24 +61,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Pattern. */
+	/** Pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
-	/** \brief Load conversation test actor. */
+	/** Load conversation test actor. */
 	void LoadCTA( ceConversationActor &actor, decBaseFileReader &reader );
 	
-	/** \brief Save conversation test actor. */
+	/** Save conversation test actor. */
 	void SaveCTA( const ceConversationActor &actor, decBaseFileWriter &writer );
 	
 	
 	
-	/** \brief Write actor tag. */
+	/** Write actor tag. */
 	void WriteActor( decXmlWriter &writer, const ceConversationActor &actor, const char *tagName );
 	
-	/** \brief Read actor tag. */
+	/** Read actor tag. */
 	void ReadActor( const decXmlElementTag &root, ceConversationActor &actor );
 	/*@}*/
 	

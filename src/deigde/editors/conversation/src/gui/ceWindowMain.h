@@ -104,6 +104,8 @@ private:
 	igdeActionReference pActionViewCTGSLoad;
 	igdeActionReference pActionViewCTGSSave;
 	igdeActionReference pActionViewShowRuleOfThirdsAid;
+	igdeActionReference pActionViewAttachLangPack;
+	igdeActionReference pActionViewDetachLangPack;
 	
 	igdeToolBarReference pTBFile;
 	igdeToolBarReference pTBEdit;

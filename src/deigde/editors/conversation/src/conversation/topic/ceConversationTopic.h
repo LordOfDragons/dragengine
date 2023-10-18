@@ -37,6 +37,11 @@ class ceConversationCondition;
  * \brief Conversation topic.
  */
 class ceConversationTopic : public deObject{
+public:
+	typedef deTObjectReference<ceConversationTopic> Ref;
+	
+	
+	
 private:
 	ceConversationFile *pFile;
 	
