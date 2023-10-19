@@ -447,6 +447,10 @@ void *decPointerOrderedSet::operator[]( int index ) const{
 
 
 decPointerOrderedSet &decPointerOrderedSet::operator=( const decPointerOrderedSet &set ){
+	if( &set == this ){
+		return *this;
+	}
+	
 	RemoveAll();
 	
 	if( set.pPointerCount > pPointerSize ){

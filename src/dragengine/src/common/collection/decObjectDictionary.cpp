@@ -122,7 +122,7 @@ decObjectDictionary::decObjectDictionary( int bucketCount ){
 }
 
 decObjectDictionary::decObjectDictionary( const decObjectDictionary &dict ){
-	pBuckets = NULL;
+	pBuckets = nullptr;
 	pBucketCount = dict.pBucketCount;
 	pEntryCount = dict.pEntryCount;
 	
@@ -130,36 +130,26 @@ decObjectDictionary::decObjectDictionary( const decObjectDictionary &dict ){
 	
 	int i;
 	for( i=0; i<pBucketCount; i++ ){
-		pBuckets[ i ] = NULL;
+		pBuckets[ i ] = nullptr;
 	}
 	
-	sDictEntry *newEntry;
-	try{
-		for( i=0; i<pBucketCount; i++ ){
-			sDictEntry *iterEntry = dict.pBuckets[ i ];
-			sDictEntry *lastEntry = NULL;
-			newEntry = NULL;
-			
-			while( iterEntry ){
-				newEntry = new sDictEntry( *iterEntry );
-				
-				if( lastEntry ){
-					lastEntry->next = newEntry;
-					
-				}else{
-					pBuckets[ i ] = newEntry;
-				}
-				lastEntry = newEntry;
-				
-				iterEntry = iterEntry->next;
-			}
-		}
+	for( i=0; i<pBucketCount; i++ ){
+		sDictEntry *iterEntry = dict.pBuckets[ i ];
+		sDictEntry *lastEntry = nullptr;
 		
-	}catch( const deException & ){
-		if( newEntry ){
-			delete newEntry;
+		while( iterEntry ){
+			sDictEntry * const newEntry = new sDictEntry( *iterEntry );
+			
+			if( lastEntry ){
+				lastEntry->next = newEntry;
+				
+			}else{
+				pBuckets[ i ] = newEntry;
+			}
+			lastEntry = newEntry;
+			
+			iterEntry = iterEntry->next;
 		}
-		throw;
 	}
 }
 

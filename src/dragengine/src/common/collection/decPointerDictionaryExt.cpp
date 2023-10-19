@@ -33,27 +33,28 @@
 
 decPointerDictionaryExt::sDictEntry::sDictEntry() :
 hash( 0 ),
-value( NULL ),
-next( NULL ){
+key( nullptr ),
+value( nullptr ),
+next( nullptr ){
 }
 
 decPointerDictionaryExt::sDictEntry::sDictEntry( const decPointerDictionaryExt::sDictEntry &entry ) :
 hash( entry.hash ),
 key( entry.key ),
 value( entry.value ),
-next( NULL ){
+next( nullptr ){
 }
 
 decPointerDictionaryExt::sDictEntry::sDictEntry( unsigned int nhash, const void *nkey, void *nvalue ) :
 hash( nhash ),
 key( nkey ),
 value( nvalue ),
-next( NULL ){
+next( nullptr ){
 }
 
 decPointerDictionaryExt::sDictEntry::~sDictEntry(){
-	value = NULL;
-	next = NULL;
+	value = nullptr;
+	next = nullptr;
 }
 
 
@@ -95,7 +96,7 @@ decPointerDictionaryExt::decPointerDictionaryExt( int bucketCount ){
 }
 
 decPointerDictionaryExt::decPointerDictionaryExt( const decPointerDictionaryExt &dict ){
-	pBuckets = NULL;
+	pBuckets = nullptr;
 	pBucketCount = dict.pBucketCount;
 	pEntryCount = dict.pEntryCount;
 	
@@ -103,36 +104,26 @@ decPointerDictionaryExt::decPointerDictionaryExt( const decPointerDictionaryExt 
 	
 	int i;
 	for( i=0; i<pBucketCount; i++ ){
-		pBuckets[ i ] = NULL;
+		pBuckets[ i ] = nullptr;
 	}
 	
-	sDictEntry *newEntry;
-	try{
-		for( i=0; i<pBucketCount; i++ ){
-			sDictEntry *iterEntry = dict.pBuckets[ i ];
-			sDictEntry *lastEntry = NULL;
-			newEntry = NULL;
-			
-			while( iterEntry ){
-				newEntry = new sDictEntry( *iterEntry );
-				
-				if( lastEntry ){
-					lastEntry->next = newEntry;
-					
-				}else{
-					pBuckets[ i ] = newEntry;
-				}
-				lastEntry = newEntry;
-				
-				iterEntry = iterEntry->next;
-			}
-		}
+	for( i=0; i<pBucketCount; i++ ){
+		sDictEntry *iterEntry = dict.pBuckets[ i ];
+		sDictEntry *lastEntry = nullptr;
 		
-	}catch( const deException & ){
-		if( newEntry ){
-			delete newEntry;
+		while( iterEntry ){
+			sDictEntry * const newEntry = new sDictEntry( *iterEntry );
+			
+			if( lastEntry ){
+				lastEntry->next = newEntry;
+				
+			}else{
+				pBuckets[ i ] = newEntry;
+			}
+			lastEntry = newEntry;
+			
+			iterEntry = iterEntry->next;
 		}
-		throw;
 	}
 }
 

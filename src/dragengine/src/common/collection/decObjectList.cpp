@@ -501,6 +501,10 @@ deObject *decObjectList::operator[]( int position ) const{
 
 
 decObjectList &decObjectList::operator=( const decObjectList &list ){
+	if( &list == this ){
+		return *this;
+	}
+	
 	deObject *object;
 	
 	RemoveAll();

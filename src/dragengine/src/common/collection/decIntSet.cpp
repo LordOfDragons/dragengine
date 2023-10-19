@@ -222,6 +222,10 @@ int decIntSet::operator[]( int position ) const{
 
 
 decIntSet &decIntSet::operator=( const decIntSet &set ){
+	if( &set == this ){
+		return *this;
+	}
+	
 	if( set.pValueCount > pValueSize ){
 		int *newArray = new int[ set.pValueCount ];
 		if( pValues ){

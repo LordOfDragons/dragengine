@@ -221,7 +221,7 @@ void decIntList::RemoveFrom( int index ){
 	
 	int p;
 	
-	for( p= index +1; p<pValueCount; p++ ){
+	for( p=index+1; p<pValueCount; p++ ){
 		pValues[ p - 1 ] = pValues[ p ];
 	}
 	pValueCount--;
@@ -428,6 +428,10 @@ int decIntList::operator[]( int index ) const{
 
 
 decIntList &decIntList::operator=( const decIntList &list ){
+	if( &list == this ){
+		return *this;
+	}
+	
 	if( list.pValueCount > pValueSize ){
 		int *newArray = new int[ list.pValueCount ];
 		if( pValues ){

@@ -432,6 +432,10 @@ int decIntOrderedSet::operator[]( int index ) const{
 
 
 decIntOrderedSet &decIntOrderedSet::operator=( const decIntOrderedSet &set ){
+	if( &set == this ){
+		return *this;
+	}
+	
 	if( set.pValueCount > pValueSize ){
 		int *newArray = new int[ set.pValueCount ];
 		if( pValues ){
