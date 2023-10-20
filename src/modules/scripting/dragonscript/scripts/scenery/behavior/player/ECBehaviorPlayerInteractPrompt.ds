@@ -398,6 +398,7 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 				entry.setVerb(each.getVerb())
 				entry.setDescription(each.getDescription())
 				entry.setCommand(pECBehavior.getCommandManager().getNamed(each.getCommand()))
+				entry.setSettings(each.getSettings())
 				return entry
 			end))
 		end

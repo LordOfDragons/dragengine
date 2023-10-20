@@ -2642,6 +2642,15 @@
 			<description>List of bones this prompt is limited to.</description>
 			<type>list</type>
 		</property>
+		<property name='maximumDistance'>
+			<description>Maximum distance to show interact prompt for when looking at it.</description>
+			<type>float</type>
+			<default>1000</default>
+		</property>
+		<property name='settings'>
+			<description>Optional settings to modify custom prompt widget display.</description>
+			<type>string</type>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorPlayerLookAtInteractPrompt'>
