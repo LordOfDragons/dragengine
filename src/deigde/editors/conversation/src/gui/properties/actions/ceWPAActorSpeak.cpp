@@ -259,6 +259,40 @@ public:
 	}
 };
 
+class cActionShowTranslationEntry : public igdeAction{
+	ceWPAActorSpeak &pPanel;
+	
+public:
+	cActionShowTranslationEntry( ceWPAActorSpeak &panel ) : igdeAction( "Text from translation entry...",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongLeft ),
+		"Show language pack translation entry" ), pPanel( panel ){}
+	
+	virtual void OnAction(){
+		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
+		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
+		ceCAActorSpeak * const action = pPanel.GetAction();
+		if( ! topic || ! conversation || ! action ){
+			return;
+		}
+		
+		ceLangPack * const langpack = conversation->GetLanguagePack();
+		if( ! langpack ){
+			return;
+		}
+		
+		ceLangPackEntry::Ref entry( langpack->GetEntryNamed( action->GetTextBoxTextTranslate() ) );
+		if( entry ){
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(),
+				"Translation Entry", entry->GetText().ToUTF8().GetString() );
+		}
+	}
+	
+	virtual void Update(){
+		const ceConversation *conversation = pPanel.GetParentPanel().GetConversation();
+		SetEnabled( conversation && conversation->GetLanguagePack() );
+	}
+};
+
 class cActionTextBoxTextTranslateMenu : public igdeActionContextMenu{
 	ceWPAActorSpeak &pPanel;
 	
@@ -272,7 +306,8 @@ public:
 		
 		helper.MenuCommand( contextMenu, new cActionTbt2TranslationEntry( pPanel ), true );
 		helper.MenuCommand( contextMenu, new cActionTbtFromTranslationEntry( pPanel ), true );
-		// helper.MenuSeparator( contextMenu );
+		helper.MenuSeparator( contextMenu );
+		helper.MenuCommand( contextMenu, new cActionShowTranslationEntry( pPanel ), true );
 	}
 };
 
