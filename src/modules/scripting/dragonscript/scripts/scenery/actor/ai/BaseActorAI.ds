@@ -264,8 +264,8 @@ class BaseActorAI implements Persistable
 	 * Returns string in the form "<actor-class>/<ai-class>".
 	 */
 	public func String loggingPrefix()
-		return this.actor.getClass().getClassname().split( '.' ).getAt( -1 ).toString() \
-			+ "/" + this.className().split( '.' ).getAt( -1 )
+		return this.actor.getClass().getClassname().splitExact( '.' ).getAt( -1 ).toString() \
+			+ "/" + this.className().splitExact( '.' ).getAt( -1 )
 	end
 	
 	

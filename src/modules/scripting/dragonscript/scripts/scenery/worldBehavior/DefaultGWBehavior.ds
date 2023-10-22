@@ -123,7 +123,7 @@ public class DefaultGWBehavior implements GWBehavior
 	 *       static during the entire life time of the behavior.
 	 */
 	protected func void useClassNameAsBehaviorID()
-		pBehaviorID = className().split('.').getAt(-1) cast String
+		pBehaviorID = className().splitExact('.').getAt(-1) cast String
 		if not pID.empty()
 			pBehaviorID = pBehaviorID + ":" + pID
 		end

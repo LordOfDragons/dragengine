@@ -219,7 +219,7 @@ class CodecPropertyString
 		var Dictionary dict = Dictionary.new()
 		
 		string.split(pTokenSeparators).forEach(block String pair
-			var Array keyValue = pair.split(pKeyValueSeparator)
+			var Array keyValue = pair.splitExact(pKeyValueSeparator)
 			dict.setAt(keyValue.getAt(0) cast String, keyValue.getAt(1) cast String)
 		end)
 		
@@ -362,7 +362,7 @@ class CodecPropertyString
 		var int tokenSphereCount = tokenShapeList.getCount()
 		
 		for i = 0 to tokenSphereCount
-			var Array tokenParamList = (tokenShapeList.getAt(i) cast String).split(pShapeParameterSeparator)
+			var Array tokenParamList = (tokenShapeList.getAt(i) cast String).splitExact(pShapeParameterSeparator)
 			var String tokenShapeType = tokenParamList.getAt(0) cast String
 			var int tokenParamCount = tokenParamList.getCount()
 			
@@ -371,7 +371,7 @@ class CodecPropertyString
 				var float radius = 1.0
 				
 				for j = 1 to tokenParamCount
-					var Array tokenValueList = (tokenParamList.getAt(j) cast String).split(pShapeValueSeparator)
+					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
 					var String tokenParamName = tokenValueList.getAt(0) cast String
 					var int tokenValueCount = tokenValueList.getCount()
 					
@@ -406,7 +406,7 @@ class CodecPropertyString
 				var Vector bextends = Vector.new()
 				
 				for j = 1 to tokenParamCount
-					var Array tokenValueList = (tokenParamList.getAt(j) cast String).split(pShapeValueSeparator)
+					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
 					var String tokenParamName = tokenValueList.getAt(0) cast String
 					var int tokenValueCount = tokenValueList.getCount()
 					
@@ -458,7 +458,7 @@ class CodecPropertyString
 				var float height = 1.0
 				
 				for j = 1 to tokenParamCount
-					var Array tokenValueList = (tokenParamList.getAt(j) cast String).split(pShapeValueSeparator)
+					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
 					var String tokenParamName = tokenValueList.getAt(0) cast String
 					var int tokenValueCount = tokenValueList.getCount()
 					
@@ -533,7 +533,7 @@ class CodecPropertyString
 				var float height = 1.0
 				
 				for j = 1 to tokenParamCount
-					var Array tokenValueList = (tokenParamList.getAt(j) cast String).split(pShapeValueSeparator)
+					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
 					var String tokenParamName = tokenValueList.getAt(0) cast String
 					var int tokenValueCount = tokenValueList.getCount()
 					
@@ -604,7 +604,7 @@ class CodecPropertyString
 				var Array points = Array.new()
 				
 				for j = 1 to tokenParamCount
-					var Array tokenValueList = (tokenParamList.getAt(j) cast String).split(pShapeValueSeparator)
+					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
 					var String tokenParamName = tokenValueList.getAt(0) cast String
 					var int tokenValueCount = tokenValueList.getCount()
 					

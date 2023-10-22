@@ -74,7 +74,7 @@ class DefaultLabelDesigner extends DefaultWidgetDesigner
 				return
 			end
 			
-			var int alignment = string.split( ',' ).inject( 0, block int value, String each
+			var int alignment = string.splitExact( ',' ).inject( 0, block int value, String each
 				if each.equals( "left" )
 					return value | Label.left
 					
