@@ -493,9 +493,7 @@ class BaseGameApp extends Game
 		pSkinAnnotations = createSkinAnnotations()
 		pConnectionTracker = createConnectionTracker()
 		pNetworkStateTracker = createNetworkStateTracker()
-		
-		pScreenshotCreator = ScreenshotCreator.new()
-		pScreenshotCreator.setConsole(pConsole)
+		pScreenshotCreator = createScreenshotCreator()
 		
 		pCommandManager = CommandManager.new()
 		pConsoleCommands = ConsoleCommandList.new()
@@ -1113,6 +1111,18 @@ class BaseGameApp extends Game
 	 */
 	protected func NetworkStateTracker createNetworkStateTracker()
 		return NetworkStateTracker.new()
+	end
+	
+	/**
+	 * \brief Create screen shot creater.
+	 * \version 1.19
+	 * 
+	 * Creates instance of ScreenshotCreator and assigns console.
+	 */
+	protected func ScreenshotCreator createScreenshotCreator()
+		var ScreenshotCreator creator = ScreenshotCreator.new()
+		creator.setConsole(pConsole)
+		return creator
 	end
 	
 	/**
