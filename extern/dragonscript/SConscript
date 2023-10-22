@@ -68,6 +68,7 @@ def dragonscriptBuild( target, source, env ):
 		if env['OSWindows'] and env['CROSSCOMPILE_CLANG']:
 			useSanitize = False
 		
+		f.write('version = "{}.{}"\n'.format(distVersionMajor, distVersionMinor))
 		f.write('with_debug = "{}"\n'.format('yes' if envLibrary['with_debug'] else 'no'))
 		f.write('with_sanitize = "{}"\n'.format('yes' if useSanitize else 'no'))
 		f.write('with_verbose = "no"\n')
