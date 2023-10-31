@@ -1,6 +1,12 @@
+dragengine (1.19-ubuntu2~ubuntu20.10-ppa1) jammy; urgency=medium
+
+  * Changelog 1.19: https://dragondreams.ch/?page_id=1514
+
+ -- Roland Plüss <roland@rptd.ch>  Tue, 31 Oct 2023 20:47:09 +0000
+
 dragengine (1.18-ubuntu2~ubuntu20.10-ppa1) jammy; urgency=medium
 
-  * Changelog 1.17: https://dragondreams.ch/?page_id=1302
+  * Changelog 1.18: https://dragondreams.ch/?page_id=1302
 
  -- Roland Plüss <roland@rptd.ch>  Wed, 02 Aug 2023 17:41:01 +0000
 
