@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine Game Engine
  *
- * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland PlÃ¼ss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 

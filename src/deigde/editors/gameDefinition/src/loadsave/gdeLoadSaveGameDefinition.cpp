@@ -52,6 +52,7 @@
 
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/codec/igdeCodecPropertyString.h>
+#include <deigde/gamedefinition/class/igdeGDClass.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/deObjectReference.h>
@@ -493,6 +494,48 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 		/* backwards compatibility */ || tagName == "canInstanciate" ){
 			objectClass.SetCanInstantiate( GetCDataBool( *tag ) );
 			
+		}else if( tagName == "replaceSubObjects" ){
+			const decStringList keys( decString( GetCDataString( *tag ) ).Split( ',' ) );
+			int j, inherit = igdeGDClass::FilterSubObjectsAll;
+			const int keyCount = keys.GetCount();
+			
+			for( j=0; j<keyCount; j++ ){
+				const decString &key = keys.GetAt( j );
+				
+				if( key == "billboards" ){
+					inherit &= ~igdeGDClass::efsoBillboards;
+					
+				}else if( key == "components" ){
+					inherit &= ~igdeGDClass::efsoComponents;
+					
+				}else if( key == "lights" ){
+					inherit &= ~igdeGDClass::efsoLights;
+					
+				}else if( key == "snapPoints" ){
+					inherit &= ~igdeGDClass::efsoSnapPoints;
+					
+				}else if( key == "particleEmitters" ){
+					inherit &= ~igdeGDClass::efsoParticleEmitters;
+					
+				}else if( key == "forceFields" ){
+					inherit &= ~igdeGDClass::efsoForceFields;
+					
+				}else if( key == "envMapProbes" ){
+					inherit &= ~igdeGDClass::efsoEnvMapProbes;
+					
+				}else if( key == "speakers" ){
+					inherit &= ~igdeGDClass::efsoSpeakers;
+					
+				}else if( key == "navigationSpaces" ){
+					inherit &= ~igdeGDClass::efsoNavigationSpaces;
+					
+				}else if( key == "navigationBlockers" ){
+					inherit &= ~igdeGDClass::efsoNavigationBlockers;
+				}
+			}
+			
+			objectClass.SetInheritSubObjects( inherit );
+			
 		}else if( tagName == "inherit" ){
 			pReadObjectClassInherit( *tag, objectClass );
 			
@@ -672,6 +715,12 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 		}else if( tagName == "animator" ){
 			component.SetAnimatorPath( GetCDataString( *tag ) );
 			
+		}else if( tagName == "animation" ){
+			component.SetAnimationPath( GetCDataString( *tag ) );
+			
+		}else if( tagName == "move" ){
+			component.SetMove( GetCDataString( *tag ) );
+			
 		}else if( tagName == "occlusionMesh" ){
 			component.SetOcclusionMeshPath( GetCDataString( *tag ) );
 			
@@ -773,6 +822,12 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 				
 			}else if( value == "attachRotation" ){
 				component.SetPropertyName( gdeOCComponent::epAttachRotation, property );
+				
+			}else if( value == "animation" ){
+				component.SetPropertyName( gdeOCComponent::epAnimation, property );
+				
+			}else if( value == "move" ){
+				component.SetPropertyName( gdeOCComponent::epMove, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -2267,6 +2322,44 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 	if( ! objectClass.GetCanInstantiate() ){
 		writer.WriteDataTagBool( "canInstantiate", objectClass.GetCanInstantiate() );
 	}
+	if( objectClass.GetInheritSubObjects() != igdeGDClass::FilterSubObjectsAll ){
+		decString keys;
+		
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoBillboards ) == 0 ){
+			keys.Append( "billboards," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoComponents ) == 0 ){
+			keys.Append( "components," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoLights ) == 0 ){
+			keys.Append( "lights," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoSnapPoints ) == 0 ){
+			keys.Append( "snapPoints," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoParticleEmitters ) == 0 ){
+			keys.Append( "particleEmitters," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoForceFields ) == 0 ){
+			keys.Append( "forceFields," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoEnvMapProbes ) == 0 ){
+			keys.Append( "envMapProbes," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoSpeakers ) == 0 ){
+			keys.Append( "speakers," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoNavigationSpaces ) == 0 ){
+			keys.Append( "navigationSpaces," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoNavigationBlockers ) == 0 ){
+			keys.Append( "navigationBlockers," );
+		}
+		if( ! keys.IsEmpty() ){
+			keys.SetAt( -1, 0 );
+		}
+		writer.WriteDataTagString( "replaceSubObjects", keys );
+	}
 	
 	if( ! objectClass.GetDefaultInheritPropertyPrefix().IsEmpty() ){
 		writer.WriteDataTagString( "defaultInheritPropertyPrefix", objectClass.GetDefaultInheritPropertyPrefix() );
@@ -2403,6 +2496,12 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 	if( ! component.GetAnimatorPath().IsEmpty() ){
 		writer.WriteDataTagString( "animator", component.GetAnimatorPath() );
 	}
+	if( ! component.GetAnimationPath().IsEmpty() ){
+		writer.WriteDataTagString( "animation", component.GetAnimationPath() );
+	}
+	if( ! component.GetMove().IsEmpty() ){
+		writer.WriteDataTagString( "move", component.GetMove() );
+	}
 	if( ! component.GetOcclusionMeshPath().IsEmpty() ){
 		writer.WriteDataTagString( "occlusionMesh", component.GetOcclusionMeshPath() );
 	}
@@ -2503,6 +2602,10 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 		"link", "attachPosition" );
 	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epAttachRotation ),
 		"link", "attachRotation" );
+	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epAnimation ),
+		"link", "animation" );
+	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epMove ),
+		"link", "move" );
 	
 	writer.WriteClosingTag( "component" );
 }

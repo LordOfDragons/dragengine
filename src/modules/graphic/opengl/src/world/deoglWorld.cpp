@@ -411,7 +411,7 @@ void deoglWorld::ComponentRemoved( deComponent *component ){
 	deoglComponent * const oglComponent = ( deoglComponent* )component->GetPeerGraphic();
 	RemoveSyncComponent( oglComponent );
 	oglComponent->GetRComponent()->SetWorldMarkedRemove( true );
-	oglComponent->SetParentWorld( NULL );
+	oglComponent->SetParentWorld( nullptr );
 	pDirtyComponents = true;
 }
 
@@ -421,7 +421,7 @@ void deoglWorld::AllComponentsRemoved(){
 		deoglComponent * const oglComponent = ( deoglComponent* )component->GetPeerGraphic();
 		RemoveSyncComponent( oglComponent );
 		oglComponent->GetRComponent()->SetWorldMarkedRemove( true );
-		oglComponent->SetParentWorld( NULL );
+		oglComponent->SetParentWorld( nullptr );
 		component = component->GetLLWorldNext();
 	}
 	

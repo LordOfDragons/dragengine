@@ -30,122 +30,122 @@ pin Dragengine.Utils
  * \brief Conversation script.
  */
 class Conversation
-	private var String pPathFile
-	private var Dictionary pTargets
-	private var Dictionary pCameraShots
-	private var Dictionary pGestures
-	private var Dictionary pFacePoses
-	private var Dictionary pTopicGroups
+	var String pPathFile
+	var Dictionary pTargets
+	var Dictionary pCameraShots
+	var Dictionary pGestures
+	var Dictionary pFacePoses
+	var Dictionary pTopicGroups
 	
 	
 	
 	/** \brief Create conversation. */
-	public func new( String pathFile )
-		this.pPathFile = pathFile
-		this.pTargets = Dictionary.new()
-		this.pCameraShots = Dictionary.new()
-		this.pGestures = Dictionary.new()
-		this.pFacePoses = Dictionary.new()
-		this.pTopicGroups = Dictionary.new()
+	func new(String pathFile)
+		pPathFile = pathFile
+		pTargets = Dictionary.new()
+		pCameraShots = Dictionary.new()
+		pGestures = Dictionary.new()
+		pFacePoses = Dictionary.new()
+		pTopicGroups = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Path conversation has been loaded from. */
-	public func String getPathFile()
-		return this.pPathFile
+	func String getPathFile()
+		return pPathFile
 	end
 	
 	
 	
 	/** \brief Named target or null if absent. */
-	public func ConversationTarget getTargetNamed( StringID name )
-		return this.pTargets.getAt( name, null ) cast ConversationTarget
+	func ConversationTarget getTargetNamed(StringID name)
+		return pTargets.getAt(name, null) cast ConversationTarget
 	end
 	
 	/** \brief Add target replacing existing one if present. */
-	public func void addTarget( ConversationTarget target )
-		this.pTargets.setAt( target.getName(), target )
+	func void addTarget(ConversationTarget target)
+		pTargets.setAt(target.getName(), target)
 	end
 	
 	/** \brief Visit targets with block with parameter ConversationTarget. */
-	public func void forEachTarget( Block ablock )
-		this.pTargets.forEachValue( ablock )
+	func void forEachTarget(Block ablock)
+		pTargets.forEachValue(ablock)
 	end
 	
 	
 	
 	/** \brief Named camera shot or null if absent. */
-	public func ConversationCameraShot getCameraShotNamed( StringID name )
-		return this.pCameraShots.getAt( name, null ) cast ConversationCameraShot
+	func ConversationCameraShot getCameraShotNamed(StringID name)
+		return pCameraShots.getAt(name, null) cast ConversationCameraShot
 	end
 	
 	/** \brief Add camera shot replacing existing one if present. */
-	public func void addCameraShot( ConversationCameraShot cameraShot )
-		this.pCameraShots.setAt( cameraShot.getName(), cameraShot )
+	func void addCameraShot(ConversationCameraShot cameraShot)
+		pCameraShots.setAt(cameraShot.getName(), cameraShot)
 	end
 	
 	/** \brief Visit camera shots with block with parameter ConversationCameraShot. */
-	public func void forEachCameraShot( Block ablock )
-		this.pCameraShots.forEachValue( ablock )
+	func void forEachCameraShot(Block ablock)
+		pCameraShots.forEachValue(ablock)
 	end
 	
 	
 	
 	/** \brief Named gesture or null if absent. */
-	public func ConversationGesture getGestureNamed( StringID name )
-		return this.pGestures.getAt( name, null ) cast ConversationGesture
+	func ConversationGesture getGestureNamed(StringID name)
+		return pGestures.getAt(name, null) cast ConversationGesture
 	end
 	
 	/** \brief Add gesture replacing existing one if present. */
-	public func void addGesture( ConversationGesture gesture )
-		this.pGestures.setAt( gesture.getName(), gesture )
+	func void addGesture(ConversationGesture gesture)
+		pGestures.setAt(gesture.getName(), gesture)
 	end
 	
 	/** \brief Visit gestures with block with parameter ConversationGesture. */
-	public func void forEachGesture( Block ablock )
-		this.pGestures.forEachValue( ablock )
+	func void forEachGesture(Block ablock)
+		pGestures.forEachValue(ablock)
 	end
 	
 	
 	
 	/** \brief Named face pose or null if absent. */
-	public func ConversationFacePose getFacePoseNamed( StringID name )
-		return this.pFacePoses.getAt( name, null ) cast ConversationFacePose
+	func ConversationFacePose getFacePoseNamed(StringID name)
+		return pFacePoses.getAt(name, null) cast ConversationFacePose
 	end
 	
 	/** \brief Add face pose replacing existing one if present. */
-	public func void addFacePose( ConversationFacePose facePose )
-		this.pFacePoses.setAt( facePose.getName(), facePose )
+	func void addFacePose(ConversationFacePose facePose)
+		pFacePoses.setAt(facePose.getName(), facePose)
 	end
 	
 	/** \brief Visit face poses with block with parameter ConversationFacePose. */
-	public func void forEachFacePose( Block ablock )
-		this.pFacePoses.forEachValue( ablock )
+	func void forEachFacePose(Block ablock)
+		pFacePoses.forEachValue(ablock)
 	end
 	
 	
 	
 	/** \brief Topic group with ID or null if absent. */
-	public func ConversationTopicGroup getTopicGroupWithID( StringID id )
-		return this.pTopicGroups.getAt( id, null ) cast ConversationTopicGroup
+	func ConversationTopicGroup getTopicGroupWithID(StringID id)
+		return pTopicGroups.getAt(id, null) cast ConversationTopicGroup
 	end
 	
 	/** \brief Add topic group replacing existing one if present. */
-	public func void addTopicGroup( ConversationTopicGroup group )
-		this.pTopicGroups.setAt( group.getID(), group )
+	func void addTopicGroup(ConversationTopicGroup group)
+		pTopicGroups.setAt(group.getID(), group)
 	end
 	
 	/** \brief Visit topic groups with block with parameter ConversationTopicGroup. */
-	public func void forEachTopicGroup( Block ablock )
-		this.pTopicGroups.forEachValue( ablock )
+	func void forEachTopicGroup(Block ablock)
+		pTopicGroups.forEachValue(ablock)
 	end
 	
 	/** \brief Topic in group or null if absent. */
-	public func ConversationTopic findTopic( StringID groupID, StringID topicID )
-		var ConversationTopicGroup group = this.pTopicGroups.getAt( groupID, null ) cast ConversationTopicGroup
+	func ConversationTopic findTopic(StringID groupID, StringID topicID)
+		var ConversationTopicGroup group = pTopicGroups.getAt(groupID, null) cast ConversationTopicGroup
 		if group != null
-			return group.getTopicWithID( topicID )
+			return group.getTopicWithID(topicID)
 		end
 		return null
 	end
@@ -161,33 +161,38 @@ class Conversation
 	 * For topic groups inserts topics (with replacing existing ones without copying)
 	 * topics from matching topic groups.
 	 */
-	 public func void import( Conversation conversation )
+	func void import(Conversation conversation)
 		// insert elements replacing existing ones
-		conversation.pTargets.forEachValue( block ConversationTarget each
-			this.pTargets.setAt( each.getName(), each )
-		end )
-		conversation.pCameraShots.forEachValue( block ConversationCameraShot each
-			this.pCameraShots.setAt( each.getName(), each )
-		end )
-		conversation.pGestures.forEachValue( block ConversationGesture each
-			this.pGestures.setAt( each.getName(), each )
-		end )
-		conversation.pFacePoses.forEachValue( block ConversationFacePose each
-			this.pFacePoses.setAt( each.getName(), each )
-		end )
+		conversation.pTargets.forEachValue(block ConversationTarget each
+			pTargets.setAt(each.getName(), each)
+		end)
+		conversation.pCameraShots.forEachValue(block ConversationCameraShot each
+			pCameraShots.setAt(each.getName(), each)
+		end)
+		conversation.pGestures.forEachValue(block ConversationGesture each
+			pGestures.setAt(each.getName(), each)
+		end)
+		conversation.pFacePoses.forEachValue(block ConversationFacePose each
+			pFacePoses.setAt(each.getName(), each)
+		end)
 		
 		// update existing topic groups by inserting topics replacing existing ones.
 		// add non existing topic groups
-		conversation.pTopicGroups.forEachValue( block ConversationTopicGroup group
-			var ConversationTopicGroup updateGroup = this.pTopicGroups.getAt( group.getID(), null ) cast ConversationTopicGroup
-			if updateGroup == null
-				updateGroup = ConversationTopicGroup.new( group.getID() )
-				this.pTopicGroups.setAt( group.getID(), updateGroup )
-			end
+		conversation.pTopicGroups.forEachValue(block ConversationTopicGroup group
+			var ConversationTopicGroup updateGroup = pTopicGroups.getAt(group.getID(), null) cast ConversationTopicGroup
 			
-			group.forEachTopic( block ConversationTopic each
-				updateGroup.addTopic( each )
-			end )
-		end )
-	 end
+			if updateGroup == null
+				group.lock()
+				pTopicGroups.setAt(group.getID(), group)
+				
+			else
+				if updateGroup.isLocked()
+					updateGroup = ConversationTopicGroup.new(updateGroup)
+					pTopicGroups.setAt(updateGroup.getID(), updateGroup)
+				end
+				
+				updateGroup.importTopics(group)
+			end
+		end)
+	end
 end

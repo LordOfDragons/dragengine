@@ -29,7 +29,7 @@ class meWPWorld;
 
 
 /**
- * \brief World panel listener
+ * World panel listener
  */
 class meWPWorldListener : public meWorldNotifier{
 private:
@@ -40,11 +40,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	meWPWorldListener( meWPWorld &panel );
 	
-	/** \brief Clean up listener. */
-	virtual ~meWPWorldListener();
+	/** Clean up listener. */
+	virtual ~meWPWorldListener() override;
 	/*@}*/
 	
 	
@@ -52,31 +52,29 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** World parameters changed. */
-	virtual void WorldParametersChanged( meWorld *world );
+	virtual void WorldParametersChanged( meWorld *world ) override;
 	
-	/** \brief Lighting parameters changed. */
-	virtual void LightingChanged( meWorld *world );
+	/** Lighting parameters changed. */
+	virtual void LightingChanged( meWorld *world ) override;
 	
-	/** \brief Path find test changed. */
-	virtual void PathFindTestChanged( meWorld *world );
+	/** Path find test changed. */
+	virtual void PathFindTestChanged( meWorld *world ) override;
 	
-	/** \brief Sector count changed. */
-	virtual void SectorCountChanged( meWorld *world );
+	/** Music changed. */
+	virtual void MusicChanged( meWorld *world ) override;
 	
-	/** \brief Sector size changed. */
-	virtual void SectorSizeChanged( meWorld *world );
+	/** World properties changed. */
+	virtual void PropertiesChanged( meWorld *world ) override;
 	
-	/** \brief World properties changed. */
-	virtual void PropertiesChanged( meWorld *world );
+	/** World active property changed. */
+	virtual void ActivePropertyChanged( meWorld *world ) override;
 	
-	/** \brief World active property changed. */
-	virtual void ActivePropertyChanged( meWorld *world );
+	/** Object properties changed. */
+	virtual void ObjectPropertiesChanged( meWorld *world, meObject *object ) override;
 	
-	/** \brief Object properties changed. */
-	virtual void ObjectPropertiesChanged( meWorld *world, meObject *object );
-	
-	/** \brief Object texture properties changed. */
-	virtual void ObjectTexturePropertiesChanged( meWorld *world, meObject *object, meObjectTexture *texture );
+	/** Object texture properties changed. */
+	virtual void ObjectTexturePropertiesChanged( meWorld *world, meObject *object,
+		meObjectTexture *texture ) override;
 	/*@}*/
 };
 

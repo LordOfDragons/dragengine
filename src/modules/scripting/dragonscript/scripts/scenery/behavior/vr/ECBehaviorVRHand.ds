@@ -757,7 +757,10 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			var bool visible = pShowHand and getElement().getVisible()
 			
 			component.setVisible(visible)
-			pCollider.setEnabled(visible)
+			
+			if pCollider != null
+				pCollider.setEnabled(visible)
+			end
 		end
 		
 		

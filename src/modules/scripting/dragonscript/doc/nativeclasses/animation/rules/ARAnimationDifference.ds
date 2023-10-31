@@ -50,7 +50,7 @@ class ARAnimationDifference extends AnimatorRule
 	public func void setLeadingMoveName(String move)
 	end
 	
-	/** \brief Set leading move time in seconds. */
+	/** \brief Set time relative to leading move playtime. */
 	public func void setLeadingMoveTime(float time)
 	end
 	
@@ -58,7 +58,7 @@ class ARAnimationDifference extends AnimatorRule
 	public func void setReferenceMoveName(String move)
 	end
 	
-	/** \brief Set reference move time in seconds. */
+	/** \brief Set time relative to reference move playtime. */
 	public func void setReferenceMoveTime(float time)
 	end
 	

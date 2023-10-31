@@ -31,10 +31,10 @@
  */
 class deoalConfiguration{
 public:
-	/** Aurealization mode. */
-	enum eAurealizationModes{
+	/** Auralization mode. */
+	enum eAuralizationModes{
 		/**
-		 * Aurealization disabled.
+		 * Auralization disabled.
 		 * 
 		 * Direct sound without any material based effects. This mode is enforced if APU has
 		 * no EFX support or EFX support has been disabled.
@@ -42,7 +42,7 @@ public:
 		eamDisabled,
 		
 		/**
-		 * Direct sound aurealization only.
+		 * Direct sound auralization only.
 		 * 
 		 * Direct sound effect based on materials are used. This includes muffling of sound
 		 * over different frquency bands. Uses single collision test along sound direction
@@ -51,16 +51,16 @@ public:
 		eamDirectSound,
 		
 		/**
-		 * Full aurealization.
+		 * Full auralization.
 		 * 
-		 * Enables all aurealization effects. Uses ray-tracing to calculate various parameters.
+		 * Enables all auralization effects. Uses ray-tracing to calculate various parameters.
 		 * This is expensive depending on the hardware used.
 		 */
 		eamFull
 	};
 	
-	/** Aurealization quality. */
-	enum eAurealizationQuality{
+	/** Auralization quality. */
+	enum eAuralizationQuality{
 		eaqVeryLow,
 		eaqLow,
 		eaqMedium,
@@ -77,8 +77,8 @@ private:
 	bool pEnableEFX;
 	int pStreamBufSizeThreshold;
 	decStringSet pDisableExtensions;
-	eAurealizationModes pAurealizationMode;
-	eAurealizationQuality pAurealizationQuality;
+	eAuralizationModes pAuralizationMode;
+	eAuralizationQuality pAuralizationQuality;
 	
 	int pSoundTraceRayCount;
 	int pSoundTraceMaxBounceCount;
@@ -91,6 +91,11 @@ private:
 	bool pAsyncAudio;
 	int pFrameRateLimit;
 	float pAsyncAudioSkipSyncTimeRatio;
+	
+	bool pUseSharedEffectSlots;
+	float pShareEnvironmentThreshold;
+	float pSwitchSharedEnvironmentThreshold;
+	int pMaxSharedEffectSlots;
 	
 	
 	
@@ -141,17 +146,17 @@ public:
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }
 	inline const decStringSet &GetDisableExtensions() const{ return pDisableExtensions; }
 	
-	/** Aurealization mode */
-	inline eAurealizationModes GetAurealizationMode() const{ return pAurealizationMode; }
+	/** Auralization mode */
+	inline eAuralizationModes GetAuralizationMode() const{ return pAuralizationMode; }
 	
-	/** Set aurealization mode. */
-	void SetAurealizationMode( eAurealizationModes mode );
+	/** Set Auralization mode. */
+	void SetAuralizationMode( eAuralizationModes mode );
 	
-	/** Aurealization quality */
-	inline eAurealizationQuality GetAurealizationQuality() const{ return pAurealizationQuality; }
+	/** Auralization quality */
+	inline eAuralizationQuality GetAuralizationQuality() const{ return pAuralizationQuality; }
 	
-	/** Set aurealization quality. */
-	void SetAurealizationQuality( eAurealizationQuality quality );
+	/** Set Auralization quality. */
+	void SetAuralizationQuality( eAuralizationQuality quality );
 	
 	
 	
@@ -212,6 +217,30 @@ public:
 	
 	/** Set asynchronous audio. */
 	void SetAsyncAudio( bool asyncAudio );
+	
+	/** Use shared effect slots. */
+	inline bool GetUseSharedEffectSlots() const{ return pUseSharedEffectSlots; }
+	
+	/** Set use shared effect slots. */
+	void SetUseSharedEffectSlots( bool useUseSharedEffectSlots );
+	
+	/** Share environment threshold. */
+	inline float GetShareEnvironmentThreshold() const{ return pShareEnvironmentThreshold; }
+	
+	/** Set share environment threshold. */
+	void SetShareEnvironmentThreshold( float threshold );
+	
+	/** Switch shared environment threshold. */
+	inline float GetSwitchSharedEnvironmentThreshold() const{ return pSwitchSharedEnvironmentThreshold; }
+	
+	/** Set switch shared environment threshold. */
+	void SetSwitchSharedEnvironmentThreshold( float threshold );
+	
+	/** Maximum shared effect slot count. */
+	inline int GetMaxSharedEffectSlots() const{ return pMaxSharedEffectSlots; }
+	
+	/** Set maximum shared effect slot count. */
+	void SetMaxSharedEffectSlots( int count );
 	/*@}*/
 	
 	
@@ -226,7 +255,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pApplyAurealizationProfile();
+	void pApplyAuralizationProfile();
 };
 
 #endif

@@ -464,6 +464,7 @@ void meObject::OnGameDefinitionChanged(){
 	
 	pClassDef = classDef;
 	
+	UpdateIDGroupList();
 	IncrementIDGroupIDUsage();
 	pCreateSnapPoints();
 }
@@ -2446,7 +2447,7 @@ bool meObject::pAnyGDClassHasAnyPartialVisOf( const igdeGDClass &gdclass, const 
 	return false;
 }
 
-void meObject::pUpdateIDGroupList ( const igdeGDClass &gdclass, const decString &prefix ){
+void meObject::pUpdateIDGroupList( const igdeGDClass &gdclass, const decString &prefix ){
 	meIDGroupList &groupList = pWorld->GetIDGroupList();
 	
 	// object properties

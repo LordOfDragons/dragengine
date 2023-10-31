@@ -138,7 +138,6 @@ void dedsSoundLevelMeter::SpeakerInaudible( deSpeaker *speaker ){
 	const int funcIndex = pDS.GetClassSoundLevelMeterListener()->GetFuncIndexSpeakerInaudible();
 	dsRunTime * const rt = pDS.GetScriptEngine()->GetMainRunTime();
 	
-	// colliderLeft( collider )
 	try{
 		pDS.GetClassSpeaker()->PushSpeaker( rt, speaker ); // speaker
 		rt->RunFunctionFast( pValCB, funcIndex );

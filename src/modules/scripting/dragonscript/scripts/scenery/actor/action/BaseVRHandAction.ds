@@ -479,8 +479,8 @@ class BaseVRHandAction implements Persistable
 	 * Returns string in the form "<actor-class>/<action-class>".
 	 */
 	public func String loggingPrefix()
-		return actor.getClass().getClassname().split('.').getAt(-1).toString() \
-			+ "/" + className().split('.').getAt(-1)\
+		return actor.getClass().getClassname().splitExact('.').getAt(-1).toString() \
+			+ "/" + className().splitExact('.').getAt(-1)\
 			+ "/" + vrHand.getECBehavior().getID()
 	end
 	

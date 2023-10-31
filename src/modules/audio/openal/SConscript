@@ -26,7 +26,7 @@ envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
 # fetch values in expanded form for later use
-versionString = '1.17'
+versionString = '1.19'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

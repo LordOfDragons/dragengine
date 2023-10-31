@@ -282,7 +282,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		 * Default implementation uses ECComposeAnimator.createAnimatorInstance().
 		 */
 		protected func AnimatorInstance createAnimatorInstance(StubElement stub)
-			return pECBehavior.getAnimator().createAnimatorInstance(getElement(), stub)
+			return pECBehavior.getAnimator().createAnimatorInstance(getElement(), stub, pComponent.getComponent())
 		end
 		
 		/**

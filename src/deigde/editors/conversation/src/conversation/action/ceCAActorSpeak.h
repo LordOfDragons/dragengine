@@ -29,6 +29,8 @@
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
+class ceConversation;
+
 class deEngine;
 class deSound;
 
@@ -40,6 +42,11 @@ class deSound;
  * animation file.
  */
 class ceCAActorSpeak : public ceConversationAction{
+public:
+	typedef deTObjectReference<ceCAActorSpeak> Ref;
+	
+	
+	
 private:
 	deEngine *pEngine;
 	deSound *pEngSound;
@@ -95,6 +102,9 @@ public:
 	
 	/** Set translated text box text. */
 	void SetTextBoxTextTranslate( const char *text );
+	
+	/** Resolved text box text. */
+	decUnicodeString ResolveTextBoxText( const ceConversation &conversation ) const;
 	
 	/** \brief Retrieves the text box text style. */
 	inline const decString &GetTextBoxTextStyle() const{ return pTextBoxTextStyle; }

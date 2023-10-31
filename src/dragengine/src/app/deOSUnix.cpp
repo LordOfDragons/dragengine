@@ -178,6 +178,7 @@ static int errorHandler( Display *dpy, XErrorEvent *e ){
 	case X_SetModifierMapping: requestCodeName = "SetModifierMapping"; break;
 	case X_GetModifierMapping: requestCodeName = "GetModifierMapping"; break;
 	case X_NoOperation: requestCodeName = "NoOperation"; break;
+	case 151: requestCodeName = "XInputExtension"; break;
 	case 153: requestCodeName = "GLX"; break;
 	default: break;
 	}
@@ -223,6 +224,11 @@ static int errorHandler( Display *dpy, XErrorEvent *e ){
 		}
 	}
 	
+	/*
+	info:
+	XInputExtension: opcodes, see https://www.x.org/releases/X11R7.7/doc/libXi/inputlib.html
+	*/
+
 	decString errorMessage;
 	errorMessage.Format( "XError %s: request_code=%s(%d) minor_code=%s(%d)",
 		errorText, requestCodeName, e->request_code, minorCodeName, e->minor_code );

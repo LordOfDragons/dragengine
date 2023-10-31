@@ -38,6 +38,7 @@
 #include "../capabilities/deoalCapabilities.h"
 #include "../component/deoalComponent.h"
 #include "../effect/deoalEffectSlotManager.h"
+#include "../effect/deoalSharedEffectSlotManager.h"
 #include "../environment/raytrace/deoalRayTraceResult.h"
 #include "../environment/raytrace/deoalRayTraceHitElementList.h"
 #include "../environment/raytrace/deoalSoundRayInteractionList.h"
@@ -116,6 +117,7 @@ pDecodeBuffer( nullptr ),
 pExtensions( nullptr ),
 pCapabilities( nullptr ),
 pEffectSlotManager( nullptr ),
+pSharedEffectSlotManager( nullptr ),
 pSourceManager( nullptr ),
 pSharedBufferList( nullptr ),
 
@@ -131,6 +133,7 @@ pDeactiveMicrophone( nullptr ),
 pActiveWorld( nullptr ),
 
 pElapsed( 0.0f ),
+pElapsedFull( 0.0f ),
 
 // time history
 pTimeHistoryMain( 29, 2 ),
@@ -257,6 +260,7 @@ void deoalAudioThread::CleanUp(){
 		pActiveWorld->FreeReference();
 		pActiveWorld = NULL;
 	}
+	pProcessOnceWorld.RemoveAll();
 	
 	if( pDebugInfo ){
 		delete pDebugInfo;
@@ -468,7 +472,7 @@ void deoalAudioThread::Run(){
 		// main thread causing the buffers to underrun.
 		pReadyToWait = true;
 		
-		const int barrierTimeout = decMath::max( maxSyncSkipDelay - ( int )( pElapsed * 1000 ), 0 );
+		const int barrierTimeout = decMath::max( maxSyncSkipDelay - ( int )( pElapsed * 1000.0f ), 0 );
 		
 		DEBUG_SYNC_RT_WAIT("in")
 		if( pBarrierSyncIn.TryWait( barrierTimeout ) ){
@@ -610,9 +614,10 @@ void deoalAudioThread::SetActiveMicrophone( deoalAMicrophone *microphone ){
 		}
 	}
 	
-	deoalAWorld * const world = microphone ? microphone->GetParentWorld() : NULL;
+	deoalAWorld * const world = microphone ? microphone->GetParentWorld() : nullptr;
 	if( world != pActiveWorld ){
 		if( pActiveWorld ){
+			pProcessOnceWorld.AddIfAbsent( pActiveWorld );
 			pActiveWorld->FreeReference();
 		}
 		
@@ -620,6 +625,7 @@ void deoalAudioThread::SetActiveMicrophone( deoalAMicrophone *microphone ){
 		
 		if( world ){
 			world->AddReference();
+			pProcessOnceWorld.RemoveIfPresent( world );
 		}
 	}
 }
@@ -638,21 +644,25 @@ void deoalAudioThread::pCleanUp(){
 
 
 void deoalAudioThread::pInitThreadPhase1(){
-	// open device. this has to be done before anything else
+	// open device. this has to be done first
 	pContext = new deoalATContext( *this );
 	pContext->OpenDevice();
 	
-	// check extensions. this has to be done after the device has been created because
-	// extensions support is device specific
+	// check device extensions. this has to be done after the device has been opened but
+	// before a context has been created since context creations required this information
 	pExtensions = new deoalExtensions( *this );
+	pExtensions->ScanDeviceExtensions();
+	
+	// create context. this depends on the present device extensions
+	pContext->CreateContext();
+	
+	// check context extensions. this has to be done after the context has been created
+	pExtensions->ScanContextExtensions();
 	pExtensions->PrintSummary();
 	if( ! pExtensions->VerifyPresence() ){
 		pLogger->LogError( "Extension problems present" );
 		DETHROW( deeInvalidParam );
 	}
-	
-	// create context. this depends on the present extensions
-	pContext->CreateContext();
 	
 	// detect capabilites. this has to be done after creating the context since
 	// creating the context sets the actual capabilities
@@ -668,6 +678,7 @@ void deoalAudioThread::pInitThreadPhase1(){
 	// create working objects
 	pCaches = new deoalCaches( *this );
 	pEffectSlotManager = new deoalEffectSlotManager( *this );
+	pSharedEffectSlotManager = new deoalSharedEffectSlotManager( *this );
 	pSourceManager = new deoalSourceManager( *this );
 	pSpeakerList = new deoalSpeakerList;
 	pDecodeBuffer = new deoalDecodeBuffer( ( 44100 / 10 ) * 4 );
@@ -704,6 +715,7 @@ void deoalAudioThread::pCleanUpThread(){
 		pActiveWorld->FreeReference();
 		pActiveWorld = NULL;
 	}
+	pProcessOnceWorld.RemoveAll();
 	
 	if( pWOVCollectElements ){
 		delete pWOVCollectElements;
@@ -724,6 +736,9 @@ void deoalAudioThread::pCleanUpThread(){
 		delete pRTParallelEnvProbe;
 	}
 	
+	if( pSharedEffectSlotManager ){
+		delete pSharedEffectSlotManager;
+	}
 	if( pSpeakerList ){
 		delete pSpeakerList;
 	}
@@ -833,18 +848,30 @@ void deoalAudioThread::pProcessAudio(){
 	pDebugInfo->ResetTimersAudioThread();
 	pDelayed->ProcessFreeOperations( false );
 	
+	pElapsedFull = pElapsed = pTimerElapsed.GetElapsedTime();
+	
 	if( pWaitSkipped ){
-		pElapsed = pWaitSkippedElapsed;
+		pElapsedFull += pWaitSkippedElapsed;
+		// pLogger->LogInfoFormat( "ProcessAudio: skipped %.3f [%.3f, %.3f] (%.1f)", pElapsedFull, pWaitSkippedElapsed, pElapsed, 1.0f / pElapsed );
+		pWaitSkippedElapsed = 0.0f;
 		pWaitSkipped = false;
 		
 	}else{
-		pElapsed = pTimerElapsed.GetElapsedTime();
 		pTimeHistoryUpdate.Add( pElapsed );
+		// pLogger->LogInfoFormat( "ProcessAudio: %.3f (%.1f)", pElapsed, 1.0f / pElapsed );
+	}
+	
+	while( pProcessOnceWorld.GetCount() > 0 ){
+		deoalAWorld * const world = ( deoalAWorld* )pProcessOnceWorld.GetAt( 0 );
+		world->PrepareProcessAudio();
+		pProcessOnceWorld.Remove( world );
 	}
 	
 	if( pDeactiveMicrophone ){
 		pDeactiveMicrophone->ProcessDeactivate();
 	}
+	
+	pEffectSlotManager->Update( pElapsedFull );
 	
 	if( pActiveMicrophone ){
 		pActiveMicrophone->ProcessAudio();
@@ -861,13 +888,14 @@ void deoalAudioThread::pProcessAudio(){
 
 void deoalAudioThread::pProcessAudioFast(){
 	pElapsed = pTimerElapsed.GetElapsedTime();
+	// pLogger->LogInfoFormat( "ProcessAudioFast: %.3f", pElapsed );
 	
 	if( pWaitSkipped ){
 // 		pLogger->LogWarnFormat( "Buffer underflow protection: %dms (+)", ( int )( pElapsed * 1000.0f ) );
 		
 	}else{
 // 		pLogger->LogWarnFormat( "Buffer underflow protection: %dms", ( int )( pElapsed * 1000.0f ) );
-		pWaitSkippedElapsed = pElapsed;
+		pWaitSkippedElapsed += pElapsed;
 		pWaitSkipped = true;
 	}
 	

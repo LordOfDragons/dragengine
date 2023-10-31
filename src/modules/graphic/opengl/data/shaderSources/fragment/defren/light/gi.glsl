@@ -134,14 +134,14 @@ void main( void ){
 	// fetch normal
 	#ifdef GI_RAY
 		// requires matrix transpose done by reversed order
-		vec3 normal = normalLoadMaterial( texNormal, tc ) * pGIRayMatrixNormal;
+		vec3 normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) * pGIRayMatrixNormal );
 		#define bendNormal normal
 		
 	#else
 		// we can not use gbuffer normal here since it is bend potentially causing
 		// troubles. derive instead the normal from the depth buffer
 		vec3 normal = normalFromDepth( tc, depth, position );
-		vec3 bendNormal = normalLoadMaterial( texNormal, tc );
+		vec3 bendNormal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
 	#endif
 	
 	// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding

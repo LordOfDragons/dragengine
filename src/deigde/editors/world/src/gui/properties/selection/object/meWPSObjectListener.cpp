@@ -104,6 +104,7 @@ void meWPSObjectListener::ObjectClassChanged( meWorld*, meObject *object ){
 	
 	pPanel.UpdateObject();
 	pPanel.UpdatePropertyKeys();
+	pPanel.UpdateTexPropertyKeys();
 }
 
 void meWPSObjectListener::ObjectGeometryChanged( meWorld*, meObject *object ){

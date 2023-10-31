@@ -326,6 +326,18 @@ public:
 	/** \brief Retrieves double value. */
 	double ToDouble() const;
 	
+	/** \brief Integer value throwing exception if not valid. */
+	int ToIntValid() const;
+	
+	/** \brief Long int value throwing exception if not valid. */
+	long long ToLongValid() const;
+	
+	/** \brief Float value throwing exception if not valid. */
+	float ToFloatValid() const;
+	
+	/** \brief Double value throwing exception if not valid. */
+	double ToDoubleValid() const;
+	
 	/** \brief Pointer to the text. */
 	const char *GetString() const;
 	

@@ -44,12 +44,6 @@ void main( void ){
 	float ckey = 0.18; //0.27; // average constant key: ( 0.18 + 0.36 ) / 2
 	
 	// limit the luminance
-	//averageLuminance = clamp( averageLuminance, pToneMapLowLuminance, pToneMapHighLuminance );
-	
-//	float avglmin = pToneMapLowLuminance * ( 1.03 - 2.0 / ( 2.0 + log( pToneMapLowLuminance + 1.0 ) / log( 10.0 ) ) );
-//	float avglmax = pToneMapHighLuminance * ( 1.03 - 2.0 / ( 2.0 + log( pToneMapHighLuminance + 1.0 ) / log( 10.0 ) ) );
-//	averageLuminance = clamp( averageLuminance, avglmin, avglmax );
-	
 	vec2 avglLimits = vec2( pToneMapLowLuminance, pToneMapHighLuminance ) * vec2( ckey );
 	
 	averageLuminance = clamp( averageLuminance, avglLimits.x, avglLimits.y );
@@ -60,12 +54,12 @@ void main( void ){
 	if( averageLuminance < lastParams.x ){
 		adaptionFactor * 0.25; // hack: 4 times longer to adapt to darkness than to adapt to lightness
 	}
-	averageLuminance = max( mix( lastParams.x, averageLuminance, clamp( adaptionFactor, 0.0, 1.0 ) ), 1e-4 );
+	averageLuminance = max( mix( lastParams.x, averageLuminance, clamp( adaptionFactor, 0, 1 ) ), 1e-4 );
 	
 	// calculate the image key
 //	float key = 1.03 - 2.0 / ( 2.0 + log( averageLuminance + 1.0 ) / log( 10.0 ) ); // paper
 	//float key = max( 0.0, 1.5 - 1.5 / ( averageLuminance * 0.1 + 1.0 ) ) + 0.1; // ogre
-	float maxLum = averageLuminance / ckey;
+	float maxLum = max( averageLuminance / ckey, 0.01 );
 	float scaleLum = pToneMapMaxWhiteLum / maxLum;
 	
 	// adjust the image key using the user chosen exposure

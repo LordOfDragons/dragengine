@@ -125,33 +125,9 @@
 # 
 # with_system_dragonscript = 'auto'
 #   Use System DragonScript
-# 
-# with_system_libffi = 'auto'
-#   Use System libffi
-# 
-# with_system_libltdl = 'auto'
-#   Use System libltdl
-# 
-# with_system_libsigsegv = 'auto'
-#   Use System libsigsegv
-# 
-# with_system_smalltalk = 'auto'
-#   Use System Smalltalk
-# 
+#
 # with_system_libevdev = 'auto'
 #   Use System libevdev
-# 
-# with_system_libusb = 'auto'
-#   Use System libusb
-# 
-# with_system_libhidapi = 'auto'
-#   Use System libhidapi
-# 
-# with_system_libopenhmd = 'auto'
-#   Use System libopenhmd
-# 
-# with_system_fftw = 'auto'
-#   Use System fftw
 # 
 # with_system_soundtouch = 'auto'
 #   Use System soundtouch
@@ -224,9 +200,6 @@
 # 
 # build_script_python = 'auto'
 #   Build Python Script Module
-# 
-# build_script_smalltalk = 'auto'
-#   Build Smalltalk Script Module
 # 
 # build_sound_ogg = 'auto'
 #   Build OGG Vorbis Sound Module

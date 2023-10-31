@@ -187,12 +187,13 @@ class LoadWorld extends BaseXmlLoader
 			end
 			
 			var String classname = element.getFirstCData()
+			var UniqueID id = UniqueID.newFromHexString(root.getAttributeNamed("id"))
+			
 			if classname.empty()
-				logInvalidValue(element, classname)
-				throw EInvalidParam.new()
+				stubElement = StubElementClassNotFound.new(classname, id)
+				break
 			end
 			
-			var UniqueID id = UniqueID.newFromHexString(root.getAttributeNamed("id"))
 			elementClass = pElementClassList.getNamed(classname)
 			
 			if elementClass != null

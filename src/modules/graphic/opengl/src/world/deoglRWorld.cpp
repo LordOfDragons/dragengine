@@ -725,13 +725,11 @@ void deoglRWorld::AddComponent( deoglRComponent *component ){
 	}
 	
 	if( component->GetParentWorld() ){
-		if( component->GetWorldMarkedRemove() ){
-			component->GetParentWorld()->RemoveComponent( component );
-			
-		}else{
-			DETHROW( deeInvalidParam );
-		}
+		DEASSERT_TRUE( component->GetWorldMarkedRemove() )
+		component->GetParentWorld()->RemoveComponent( component );
 	}
+	
+	component->SetWorldMarkedRemove( false ); // tricky problem. ensure it is always false
 	
 	if( pTailComponent ){
 		pTailComponent->SetLLWorldNext( component );
@@ -755,12 +753,10 @@ void deoglRWorld::AddComponent( deoglRComponent *component ){
 }
 
 void deoglRWorld::RemoveComponent( deoglRComponent *component ){
-	if( component->GetParentWorld() != this ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( component->GetParentWorld() == this )
 	
 	RemovePrepareForRenderComponent( component );
-	component->SetParentWorld( NULL );
+	component->SetParentWorld( nullptr );
 	component->SetWorldMarkedRemove( false );
 	
 	if( component->GetLLWorldPrev() ){
@@ -787,7 +783,7 @@ void deoglRWorld::RemoveAllComponents(){
 		pRootComponent->SetLLWorldPrev( NULL ); // ensure root has no prev
 		
 		RemovePrepareForRenderComponent( pRootComponent );
-		pRootComponent->SetParentWorld( NULL );
+		pRootComponent->SetParentWorld( nullptr );
 		pRootComponent->SetWorldMarkedRemove( false );
 		pComponentCount--;
 		pRootComponent->FreeReference();
@@ -1422,6 +1418,14 @@ void deoglRWorld::GIStatesNotifyComponentBecameVisible( deoglRComponent *compone
 	int i;
 	for( i=0; i<count; i++ ){
 		( ( deoglGIState* )pGIStates.GetAt( i ) )->ComponentBecameVisible( component );
+	}
+}
+
+void deoglRWorld::GIStatesNotifyComponentChangedGIImportance( deoglRComponent *component ){
+	const int count = pGIStates.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglGIState* )pGIStates.GetAt( i ) )->ComponentChangedGIImportance( component );
 	}
 }
 

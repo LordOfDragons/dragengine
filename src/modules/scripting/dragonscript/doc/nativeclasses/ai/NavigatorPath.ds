@@ -77,7 +77,12 @@ class NavigatorPath
 		return null
 	end
 	
-	/** \brief Length in meters from start of path to the end. */
+	/**
+	 * \brief Length in meters from start of path to the end.
+	 * 
+	 * This does not include the start position used to find the path. Hence if the goal position
+	 * can be reached directly the path contains only the goal position and the length is 0.
+	 */
 	public func float getLength()
 		return 0.0
 	end

@@ -40,29 +40,29 @@ pin Dragengine.Utils
  * elements between game worlds. Elements removed using removeAllElements though get disposed.
  */
 class GameWorld
-	private var World pWorld
-	private var SafeArray pElements
-	private var SafeArray pThinkers
-	private var Dictionary pElementIDMap
-	private var Array pEnterFrameOnce
-	private var bool pLockEnterFrameOnce
-	private var SpawnPointList pSpawnPoints
-	private var TemporaryDecalManager pTempDecalMgr
-	private var CachedVegetation pCachedVegetation
-	private var UniqueID pNextObjectID
-	private var UniqueIDRemapper pUniqueIDRemapper
-	private var Vector pGravity
-	private var RailList pRailList
-	private var ConversationActorList pConvoActorList
-	private var ConversationCoordSystemList pConvoCoordSystemList
-	private var AnchoredElementList pAnchoredElementList
-	private var StubGameWorld pStub
-	private var Array pBehaviors
-	private var bool pBehaviorsInited
-	private var Array pThinkingBehaviors
-	private var bool pEnablePersistency
+	var World pWorld
+	var SafeArray pElements
+	var SafeArray pThinkers
+	var Dictionary pElementIDMap
+	var Array pEnterFrameOnce
+	var bool pLockEnterFrameOnce
+	var SpawnPointList pSpawnPoints
+	var TemporaryDecalManager pTempDecalMgr
+	var CachedVegetation pCachedVegetation
+	var UniqueID pNextObjectID
+	var UniqueIDRemapper pUniqueIDRemapper
+	var Vector pGravity
+	var RailList pRailList
+	var ConversationActorList pConvoActorList
+	var ConversationCoordSystemList pConvoCoordSystemList
+	var AnchoredElementList pAnchoredElementList
+	var StubGameWorld pStub
+	var Array pBehaviors
+	var bool pBehaviorsInited
+	var Array pThinkingBehaviors
+	var bool pEnablePersistency
 	
-	private var GWBehaviorOneShotSpeaker pBehaviorOneShotSpeaker
+	var GWBehaviorOneShotSpeaker pBehaviorOneShotSpeaker
 	
 	
 	
@@ -237,11 +237,8 @@ class GameWorld
 	 * on behaviors not requiring it.
 	 */
 	public func void requiresThinkChanged()
-		pThinkingBehaviors.removeAll()
-		pBehaviors.forEach(block GWBehavior each
-			if each.requiresThink()
-				pThinkingBehaviors.add(each)
-			end
+		pThinkingBehaviors = pBehaviors.collect(block GWBehavior each
+			return each.requiresThink()
 		end)
 	end
 	
@@ -360,9 +357,6 @@ class GameWorld
 	/** \brief Element with identifier or \em null if absent. */
 	public func Element getElementWithID(UniqueID id)
 		return pElementIDMap.getAt(id, null) cast Element
-// 		return pElements.find(block Element each
-// 			return each.getID().equals(id)
-// 		end) cast Element
 	end
 	
 	/** \brief Visit elements. */

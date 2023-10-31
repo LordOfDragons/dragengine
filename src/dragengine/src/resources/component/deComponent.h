@@ -92,6 +92,8 @@ private:
 	decDMatrix pInverseMatrix;
 	bool pVisible;
 	eMovementHints pHintMovement;
+	bool pEnableGI;
+	int pHintGIImportance;
 	
 	deAnimatorReference pAnimator;
 	
@@ -229,6 +231,30 @@ public:
 	
 	/** \brief Set movement hint. */
 	void SetHintMovement( eMovementHints hint );
+	
+	/** \brief Enable GI in graphic module if supported. */
+	bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** \brief Set if enabled for GI in graphic module if supported. */
+	void SetEnableGI( bool enable );
+	
+	/**
+	 * \brief GI important hint.
+	 * 
+	 * Value is in the range from 0 (very unimportant) to 4 (very important). This hint
+	 * can be used by the graphic module to improve performance by excluding components
+	 * with a GI important below a user chosen threashold. The default important is 4.
+	 */
+	inline int GetHintGIImportance() const{ return pHintGIImportance; }
+	
+	/**
+	 * \brief Set GI important hint.
+	 * 
+	 * Value is in the range from 0 (very unimportant) to 4 (very important). This hint
+	 * can be used by the graphic module to improve performance by excluding components
+	 * with a GI important below a user chosen threshold.
+	 */
+	void SetHintGIImportance( int importance );
 	
 	/** \brief Component matrix. */
 	const decDMatrix &GetMatrix();

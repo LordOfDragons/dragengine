@@ -120,6 +120,7 @@ pWorldComputeElement( deoglWorldComputeElement::Ref::New( new deoglRComponentWCE
 
 pVisible( true ),
 pMovementHint( deComponent::emhStationary ),
+pGIImportance( 5 ),
 
 pStaticTextures( true ),
 pDirtyModelVBOs( true ),
@@ -353,6 +354,20 @@ void deoglRComponent::SetMovementHint( deComponent::eMovementHints hint ){
 	if( pRenderMode == ermStatic ){
 		NotifySkiesUpdateStatic();
 	}
+}
+
+void deoglRComponent::SetGIImportance( int importance ){
+	if( importance == pGIImportance ){
+		return;
+	}
+	
+	pGIImportance = importance;
+	
+	if( pParentWorld ){
+		pParentWorld->GIStatesNotifyComponentChangedGIImportance( this );
+	}
+	
+	NotifyGIImportanceChanged();
 }
 
 void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
@@ -1626,7 +1641,11 @@ void deoglRComponent::NotifyComponentDestroyed(){
 void deoglRComponent::NotifyParentWorldChanged(){
 	pListenerIndex = 0;
 	while( pListenerIndex < pListeners.GetCount() ){
+		try{ // temp hack
 		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->ParentWorldChanged( *this );
+		}catch(const deException &e){ // temp hack
+			pRenderThread.GetLogger().LogException(e);
+		}
 		pListenerIndex++;
 	}
 }
@@ -1679,6 +1698,14 @@ void deoglRComponent::NotifyMovementHintChanged(){
 	pListenerIndex = 0;
 	while( pListenerIndex < pListeners.GetCount() ){
 		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->MovementHintChanged( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRComponent::NotifyGIImportanceChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->GIImportanceChanged( *this );
 		pListenerIndex++;
 	}
 }

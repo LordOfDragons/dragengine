@@ -70,6 +70,7 @@ private:
 		dsClass *clsDVec, *clsVec, *clsQuat, *clsObj, *clsSpk;
 		dsClass *clsLayerMask;
 		dsClass *clsMicrophoneType;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -98,6 +99,7 @@ private:
 	DEF_NATFUNC( nfSetLayerMask );
 	DEF_NATFUNC( nfGetSpeakerGain );
 	DEF_NATFUNC( nfSetSpeakerGain);
+	DEF_NATFUNC( nfGetParentWorld );
 	
 	DEF_NATFUNC( nfAddSpeaker );
 	DEF_NATFUNC( nfRemoveSpeaker );

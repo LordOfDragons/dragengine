@@ -44,96 +44,96 @@ ECBehaviorPlayerInteractPrompt.PromptController
 	class ControllerFactory implements \
 	ECBehaviorPlayerLookAtInteractPrompt.PromptControllerFactory, \
 	ECBehaviorPlayerInteractPrompt.PromptControllerFactory
-		private var DisplayInteractPromptEntry.Placement pPlacement
-		private var String pDesignerSelector
-		private var String pEntryBaseSelectorName
+		var DisplayInteractPromptEntry.Placement pPlacement
+		var String pDesignerSelector
+		var String pEntryBaseSelectorName
 		
 		/** \brief Create factory. */
-		public func new() this( DisplayInteractPromptEntry.Placement.top )
+		func new() this(DisplayInteractPromptEntry.Placement.top)
 		end
 		
 		/** \brief Create factory. */
-		public func new( DisplayInteractPromptEntry.Placement placement ) \
-		this( placement, "InteractPrompt", "InteractPromptEntry" )
+		func new(DisplayInteractPromptEntry.Placement placement) \
+		this(placement, "InteractPrompt", "InteractPromptEntry")
 		end
 		
 		/** \brief Create factory. */
-		public func new( DisplayInteractPromptEntry.Placement placement, \
-		String designerSelector, String entryBaseSelectorName )
+		func new(DisplayInteractPromptEntry.Placement placement, \
+		String designerSelector, String entryBaseSelectorName)
 			if placement == null
 				throw ENullPointer.new()
 			end
 			if designerSelector == null
-				throw ENullPointer.new( "designerSelector" )
+				throw ENullPointer.new("designerSelector")
 			end
 			if entryBaseSelectorName == null
-				throw ENullPointer.new( "entryBaseSelectorName" )
+				throw ENullPointer.new("entryBaseSelectorName")
 			end
 			
-			this.pPlacement = placement
-			this.pDesignerSelector = designerSelector
-			this.pEntryBaseSelectorName = entryBaseSelectorName
+			pPlacement = placement
+			pDesignerSelector = designerSelector
+			pEntryBaseSelectorName = entryBaseSelectorName
 		end
 		
 		
 		/** \brief Create instance of PromptController. */
-		public func ECBehaviorPlayerLookAtInteractPrompt.PromptController \
-		createPromptController( ECBehaviorPlayerLookAtInteractPrompt.Instance instance )
-			return PanelInteractPromptController.new( \
+		func ECBehaviorPlayerLookAtInteractPrompt.PromptController \
+		createPromptController(ECBehaviorPlayerLookAtInteractPrompt.Instance instance)
+			return PanelInteractPromptController.new(\
 				instance.getECBehavior().getBindingManager(), \
-				instance.getBindingIconHeight(), this.pPlacement, \
-				this.pDesignerSelector, this.pEntryBaseSelectorName )
+				instance.getBindingIconHeight(), pPlacement, \
+				pDesignerSelector, pEntryBaseSelectorName)
 		end
 		
 		/** \brief Create instance of PromptController. */
-		public func ECBehaviorPlayerInteractPrompt.PromptController \
-		createPromptController( ECBehaviorPlayerInteractPrompt.Instance instance )
-			return PanelInteractPromptController.new( \
+		func ECBehaviorPlayerInteractPrompt.PromptController \
+		createPromptController(ECBehaviorPlayerInteractPrompt.Instance instance)
+			return PanelInteractPromptController.new(\
 				instance.getECBehavior().getBindingManager(), \
-				instance.getBindingIconHeight(), this.pPlacement, \
-				this.pDesignerSelector, this.pEntryBaseSelectorName )
+				instance.getBindingIconHeight(), pPlacement, \
+				pDesignerSelector, pEntryBaseSelectorName)
 		end
 	end
 	
 	
 	
-	private var PanelInteractPrompt pPanelInteractPrompt
+	var PanelInteractPrompt pPanelInteractPrompt
 	
 	
 	
 	/** \brief Create interact prompt panel. */
-	public func new() this( BaseGameApp.getApp().getBindingManager(), 32 )
+	func new() this(BaseGameApp.getApp().getBindingManager(), 32)
 	end
 	
-	public func new( BindingManager bindingManager, int bindingIconHeight ) \
-	this( bindingManager, bindingIconHeight, DisplayInteractPromptEntry.Placement.top )
+	func new(BindingManager bindingManager, int bindingIconHeight) \
+	this(bindingManager, bindingIconHeight, DisplayInteractPromptEntry.Placement.top)
 	end
 	
-	public func new( BindingManager bindingManager, int bindingIconHeight, \
-	DisplayInteractPromptEntry.Placement placement )
-		this.pPanelInteractPrompt = PanelInteractPrompt.new( bindingManager, bindingIconHeight, placement )
-		this.createContent( this.pPanelInteractPrompt )
+	func new(BindingManager bindingManager, int bindingIconHeight, \
+	DisplayInteractPromptEntry.Placement placement)
+		pPanelInteractPrompt = PanelInteractPrompt.new(bindingManager, bindingIconHeight, placement)
+		createContent(pPanelInteractPrompt)
 	end
 	
-	public func new( BindingManager bindingManager, int bindingIconHeight, \
+	func new(BindingManager bindingManager, int bindingIconHeight, \
 	DisplayInteractPromptEntry.Placement placement, String designerSelector, \
-	String entryBaseSelectorName )
-		this.pPanelInteractPrompt = PanelInteractPrompt.new( bindingManager, \
-			bindingIconHeight, placement, designerSelector, entryBaseSelectorName )
-		this.createContent( this.pPanelInteractPrompt )
+	String entryBaseSelectorName)
+		pPanelInteractPrompt = PanelInteractPrompt.new(bindingManager, \
+			bindingIconHeight, placement, designerSelector, entryBaseSelectorName)
+		createContent(pPanelInteractPrompt)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		this.pPanelInteractPrompt = null
+	func void dispose()
+		pPanelInteractPrompt = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Panel interact prompt. */
-	public func PanelInteractPrompt getPanelInteractPrompt()
-		return this.pPanelInteractPrompt
+	func PanelInteractPrompt getPanelInteractPrompt()
+		return pPanelInteractPrompt
 	end
 	
 	
@@ -143,8 +143,8 @@ ECBehaviorPlayerInteractPrompt.PromptController
 	 * 
 	 * Sets visibility of the controller panel.
 	 */
-	public func void setPromptVisible( bool visible )
-		this.setVisible( visible )
+	func void setPromptVisible(bool visible)
+		setVisible(visible)
 	end
 	
 	/**
@@ -152,8 +152,8 @@ ECBehaviorPlayerInteractPrompt.PromptController
 	 * 
 	 * Sets transparency of PanelInteractPrompt.
 	 */
-	public func void setPromptTransparency( float transparency )
-		this.pPanelInteractPrompt.setTransparency( transparency )
+	func void setPromptTransparency(float transparency)
+		pPanelInteractPrompt.setTransparency(transparency)
 	end
 	
 	/**
@@ -161,22 +161,22 @@ ECBehaviorPlayerInteractPrompt.PromptController
 	 * 
 	 * Calls PanelInteractPrompt.setPrompts().
 	 */
-	public func void setPrompts( Array prompts )
-		this.pPanelInteractPrompt.setPrompts( prompts )
+	func void setPrompts(Array prompts)
+		pPanelInteractPrompt.setPrompts(prompts)
 	end
 	
 	/**
 	 * \brief Prompt widget to be added to UI container.
 	 * 
-	 * Returns this.
+	 * Returns 
 	 */
-	public func Widget promptWidget()
+	func Widget promptWidget()
 		return this
 	end
 	
 	/** \brief Dispose of controller. */
-	public func void disposeController()
-		this.dispose()
+	func void disposeController()
+		dispose()
 	end
 	
 	
@@ -197,11 +197,11 @@ ECBehaviorPlayerInteractPrompt.PromptController
 	 * content creation at the appropriate time. You can get the panel by calling
 	 * getPanelInteractPrompt().
 	 */
-	protected func void createContent( PanelInteractPrompt panelInteractPrompt )
-		this.runWhileBlockingLayout( block
-			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x ) )
-			this.addWidget( panelInteractPrompt )
-		end )
-		this.doLayoutIfBlocked()
+	protected func void createContent(PanelInteractPrompt panelInteractPrompt)
+		runWhileBlockingLayout(block
+			setLayout(CentrizedBoxLayout.new(LayoutAxis.x))
+			addWidget(panelInteractPrompt)
+		end)
+		doLayoutIfBlocked()
 	end
 end

@@ -192,6 +192,7 @@ void deoglComponent::SyncToRender(){
 		pRComponent->SetVisible( pComponent.GetVisible() );
 		pRComponent->SetMovementHint( pComponent.GetHintMovement() );
 		pRComponent->SetLayerMask( pComponent.GetLayerMask() );
+		pRComponent->SetGIImportance( pComponent.GetEnableGI() ? pComponent.GetHintGIImportance() + 1 : 0 );
 		pDirtyComponent = false;
 	}
 	

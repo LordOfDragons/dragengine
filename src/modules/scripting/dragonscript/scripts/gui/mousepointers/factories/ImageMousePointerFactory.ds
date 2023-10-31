@@ -30,44 +30,41 @@ pin Dragengine.Scenery
  * \brief Mouse pointer factory using image.
  */
 public class ImageMousePointerFactory extends DefaultMousePointerFactory
-	/** \brief Image. */
-	private var Image pImage
-	
-	/** \brief Color matrix to use. */
-	private var ColorMatrix pColorMatrix
+	var Image pImage
+	var ColorMatrix pColorMatrix
 	
 	
 	
 	/** \brief Create mouse pointer factory. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create copy of mouse pointer factory. */
-	public func new( ImageMousePointerFactory factory ) super( factory )
-		this.pImage = factory.pImage
-		this.pColorMatrix = factory.pColorMatrix
+	func new(ImageMousePointerFactory factory) super(factory)
+		pImage = factory.pImage
+		pColorMatrix = factory.pColorMatrix
 	end
 	
 	
 	
 	/** \brief Image or \em null if not set. */
-	public func Image getImage()
-		return this.pImage
+	func Image getImage()
+		return pImage
 	end
 	
 	/** \brief Set image or \em null if not set. */
-	public func void setImage( Image image )
-		this.pImage = image
+	func void setImage(Image image)
+		pImage = image
 	end
 	
 	/** \brief Color matrix to use. */
-	public func ColorMatrix getColorMatrix()
-		return this.pColorMatrix
+	func ColorMatrix getColorMatrix()
+		return pColorMatrix
 	end
 	
 	/** \brief Set color matrix to use. */
-	public func void setColorMatrix( ColorMatrix colorMatrix )
-		this.pColorMatrix = colorMatrix
+	func void setColorMatrix(ColorMatrix colorMatrix)
+		pColorMatrix = colorMatrix
 	end
 	
 	
@@ -81,39 +78,39 @@ public class ImageMousePointerFactory extends DefaultMousePointerFactory
 	 * | image | Image | setImage |
 	 * | colorMatrix | ColorMatrix | setColorMatrix |
 	 */
-	public func void setParameter( String name, Object value )
-		if name.equals( "image" )
-			this.setImage( value cast Image )
+	func void setParameter(String name, Object value)
+		if name.equals("image")
+			setImage(value cast Image)
 			
-		elif name.equals( "colorMatrix" )
-			this.setColorMatrix( value cast ColorMatrix )
+		elif name.equals("colorMatrix")
+			setColorMatrix(value cast ColorMatrix)
 			
 		else
-			super.setParameter( name, value )
+			super.setParameter(name, value)
 		end
 	end
 	
 	
 	
 	/** \brief Create copy of mouse pointer factory. */
-	public func MousePointerFactory copyFactory()
-		return ImageMousePointerFactory.new( this )
+	func MousePointerFactory copyFactory()
+		return ImageMousePointerFactory.new(this)
 	end
 	
 	/** \brief Create mouse pointer. */
-	public func MousePointer createMousePointer()
+	func MousePointer createMousePointer()
 		var ImageMousePointer mousePointer = ImageMousePointer.new()
-		this.initImageMousePointer( mousePointer )
+		initImageMousePointer(mousePointer)
 		return mousePointer
 	end
 	
 	/** \brief Initialize canvas creator part of mouse pointer. */
-	protected func void initImageMousePointer( ImageMousePointer mousePointer )
-		this.initDefaultMousePointer( mousePointer )
-		mousePointer.setImage( this.pImage )
+	protected func void initImageMousePointer(ImageMousePointer mousePointer)
+		initDefaultMousePointer(mousePointer)
+		mousePointer.setImage(pImage)
 		
-		if this.pColorMatrix != null
-			mousePointer.getCanvas().setColorTransform( this.pColorMatrix )
+		if pColorMatrix != null
+			mousePointer.getCanvas().setColorTransform(pColorMatrix)
 		end
 	end
 end

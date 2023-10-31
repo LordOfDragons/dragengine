@@ -55,7 +55,7 @@ void main( void ){
 		vec3 diffuse = texelFetch( texDiffuse, tc, 0 ).rgb;
 		vec3 normal = normalLoadShiftedInt( texNormal, tc );
 		
-		if( length( normal ) > 0 ){
+		if( length( normal ) > 0.001 ){
 			outColor.rgb += giIlluminate( position, normal, normal ) * diffuse;
 		}
 	#endif

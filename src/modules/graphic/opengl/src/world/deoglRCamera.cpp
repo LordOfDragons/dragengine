@@ -211,7 +211,7 @@ float deoglRCamera::GetLastAverageLuminance(){
 		pDirtyLastAverageLuminance = false;
 		
 		if( pInitTexture || pForceToneMapAdaption ){
-			pLastAverageLuminance = pLowestIntensity * pRenderThread.GetConfiguration().GetHDRRSceneKey();
+			pLastAverageLuminance = pHighestIntensity * pRenderThread.GetConfiguration().GetHDRRSceneKey();
 			
 		}else{
 			const deoglPixelBuffer::Ref pbToneMapParams( deoglPixelBuffer::Ref::New(

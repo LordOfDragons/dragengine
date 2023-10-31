@@ -163,7 +163,7 @@ public:
 	
 	
 	/** \brief Set from another item. */
-	virtual igdeTreeItem &operator=( const igdeTreeItem &treeItem );
+	igdeTreeItem &operator=( const igdeTreeItem &treeItem );
 	
 	
 	

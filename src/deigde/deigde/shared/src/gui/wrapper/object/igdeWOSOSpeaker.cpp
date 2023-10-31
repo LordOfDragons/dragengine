@@ -295,7 +295,7 @@ void igdeWOSOSpeaker::pUpdateSpeaker(){
 		AttachToCollider();
 	}
 	
-	pResLoad = NULL;
+	pResLoad = nullptr;
 }
 
 void igdeWOSOSpeaker::pDestroySpeaker(){
@@ -309,7 +309,7 @@ void igdeWOSOSpeaker::pDestroySpeaker(){
 		GetWrapper().GetWorld()->RemoveSpeaker( pSpeaker );
 	}
 	
-	pSpeaker = NULL;
+	pSpeaker = nullptr;
 	pAddedToWorld = false;
 }
 
@@ -322,7 +322,7 @@ void igdeWOSOSpeaker::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment( pSpeaker );
@@ -363,22 +363,19 @@ void igdeWOSOSpeaker::DetachFromCollider(){
 	}
 	
 	pAttachedToCollider->RemoveAttachment( pAttachment );
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }
 
 bool igdeWOSOSpeaker::pEvalPlaying(){
-	if( GetWrapper().GetVisible() ){
-		if( pTriggerPlaying ){
-			return pTriggerPlaying->GetResult();
-			
-		}else{
-			return GetBoolProperty(
-				pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epPlaying ),
-				pGDSpeaker.GetPlaying() );
-		}
-		
-	}else{
+	if( ! GetWrapper().GetVisible() ){
 		return false;
 	}
+	
+	if( pTriggerPlaying ){
+		return pTriggerPlaying->GetResult();
+	}
+	
+	return GetBoolProperty( pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epPlaying ),
+		pGDSpeaker.GetPlaying() );
 }

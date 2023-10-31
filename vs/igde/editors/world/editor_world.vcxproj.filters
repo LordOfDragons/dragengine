@@ -961,6 +961,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldNotifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meMusic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2005,6 +2008,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldNotifier.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meMusic.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpace.h">

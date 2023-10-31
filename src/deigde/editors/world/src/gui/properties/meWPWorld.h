@@ -29,6 +29,8 @@
 #include <deigde/gui/igdeWidgetReference.h>
 #include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/composed/igdeEditSliderTextReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
@@ -51,6 +53,9 @@ private:
 	igdeActionReference pActionPFTTypeAdd;
 	igdeActionReference pActionPFTTypeRemove;
 	igdeActionReference pActionPFTTypeClear;
+	igdeActionReference pActionMusicPlay;
+	igdeActionReference pActionMusicPause;
+	igdeActionReference pActionMusicStop;
 	
 	
 	igdeWidgetReference pEditProperties;
@@ -73,6 +78,12 @@ private:
 	igdeTextFieldReference pEditPFTTypeFixCost;
 	igdeTextFieldReference pEditPFTTypeCPM;
 	
+	
+	igdeEditPathReference pEditMusicPath;
+	igdeEditSliderTextReference pEditMusicVolume;
+	igdeButtonReference pBtnMusicPlay;
+	igdeButtonReference pBtnMusicPause;
+	igdeButtonReference pBtnMusicStop;
 	
 	
 public:
@@ -116,6 +127,11 @@ public:
 	
 	/** Update path find test type. */
 	void UpdatePathFindTestType();
+	
+	
+	
+	/** Update music. */
+	void UpdateMusic();
 	
 	
 	

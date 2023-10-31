@@ -264,7 +264,7 @@ private:
 	void pInitSky();
 	void pInitParticleEmitter();
 	
-	void pInitObjectClassOCs( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitObjectClassOCs( const gdeObjectClass &objectClass, const decString &propertyPrefix, int filter );
 	void pInitOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix );
 	void pInitOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix );
 	void pInitOCComponents( const gdeObjectClass &objectClass, const decString &propertyPrefix );

@@ -232,8 +232,9 @@ class ECBehaviorCollider extends DefaultECBehavior
 			
 			pCollider = createCollider(stub, component)
 			pCollider.setColliderListener(this)
-			pCollider.setOwner(getElement())
+			pCollider.setOwner(element)
 			pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+			pCollider.setEnabled(element.getTouchable())
 			
 			// if response type is dynamic update bone position. this is required for dynamic
 			// rigs with bones. upon initializing the bones they are set to zero but bones
@@ -333,13 +334,17 @@ class ECBehaviorCollider extends DefaultECBehavior
 		
 		/** \brief State changed (visble, touchable). */
 		public func void stateChanged()
-			pCollider.setEnabled(getElement().getTouchable())
+			if pCollider != null
+				pCollider.setEnabled(getElement().getTouchable())
+			end
 		end
 		
 		/** \brief Position or orientation changed. */
 		public func void geometryChanged()
-			var BehaviorElement element = getElement()
-			pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+			if pCollider != null
+				var BehaviorElement element = getElement()
+				pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+			end
 		end
 		
 		/** \brief Add element to game world. */

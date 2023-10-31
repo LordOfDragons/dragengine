@@ -86,10 +86,15 @@ void lpeViewLangPackListener::EntryNameChanged( lpeLangPack *langpack, lpeLangPa
 		return;
 	}
 	
-	if( entry->GetActive() ){
-		pPanel.UpdateActiveEntry();
+	if( pPanel.GetReferenceLangPack() ){
+		pPanel.UpdateEntries();
+		
+	}else{
+		if( entry->GetActive() ){
+			pPanel.UpdateActiveEntry();
+		}
+		pPanel.SortEntries();
 	}
-	pPanel.SortEntries();
 }
 
 void lpeViewLangPackListener::EntrySelectionChanged( lpeLangPack *langpack ){

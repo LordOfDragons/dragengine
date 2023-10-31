@@ -34,29 +34,29 @@ pin Dragengine.LoadSave
  * situation.
  */
 class TSNamedTriggerTarget
-	private var StringID pName
-	private var TSTriggerTarget pTarget
+	var StringID pName
+	var TSTriggerTarget pTarget
 	
 	
 	
 	/** \brief Create named trigger target. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create named trigger target with initial name. */
-	public func new( StringID name )
-		this.pName = name
+	func new( StringID name )
+		pName = name
 	end
 	
-	public func new( String name )
-		this.setName( name )
+	func new( String name )
+		setName( name )
 	end
 	
 	
 	
 	/** \brief Name. */
-	public func StringID getName()
-		return this.pName
+	func StringID getName()
+		return pName
 	end
 	
 	/**
@@ -64,9 +64,9 @@ class TSNamedTriggerTarget
 	 * 
 	 * Drops the trigger target if present.
 	 */
-	public func void setName( StringID name )
-		this.pName = name
-		this.pTarget = null
+	func void setName( StringID name )
+		pName = name
+		pTarget = null
 	end
 	
 	/**
@@ -74,20 +74,20 @@ class TSNamedTriggerTarget
 	 * 
 	 * Drops the trigger target if present.
 	 */
-	public func void setName( String name )
+	func void setName( String name )
 		if name != null and not name.empty()
-			this.pName = StringID.new( name )
+			pName = StringID.new( name )
 			
 		else
-			this.pName = null
+			pName = null
 		end
 		
-		this.pTarget = null
+		pTarget = null
 	end
 	
 	/** \brief Trigger target or null if not acquired yet. */
-	public func TSTriggerTarget getTarget()
-		return this.pTarget
+	func TSTriggerTarget getTarget()
+		return pTarget
 	end
 	
 	/**
@@ -95,9 +95,9 @@ class TSNamedTriggerTarget
 	 * 
 	 * Call this during Element.addToGameWorld().
 	 */
-	public func void acquireTarget( TSTriggerTable triggerTable )
-		if this.pName != null
-			this.pTarget = triggerTable.getOrAddNamed( this.pName )
+	func void acquireTarget( TSTriggerTable triggerTable )
+		if pName != null
+			pTarget = triggerTable.getOrAddNamed( pName )
 		end
 	end
 	
@@ -106,16 +106,16 @@ class TSNamedTriggerTarget
 	 * 
 	 * Call this during Element.removeFromGameWorld() or when the trigger table is no more valid.
 	 */
-	public func void dropTarget()
-		this.pTarget = null
+	func void dropTarget()
+		pTarget = null
 	end
 	
 	
 	
 	/** \brief Trigger target fired state or false if absent. */
-	public func bool getFired()
-		if this.pTarget != null
-			return this.pTarget.getFired()
+	func bool getFired()
+		if pTarget != null
+			return pTarget.getFired()
 			
 		else
 			return false
@@ -123,16 +123,16 @@ class TSNamedTriggerTarget
 	end
 	
 	/** \brief Set trigger target fire state if present. */
-	public func void setFired( bool fired )
-		if this.pTarget != null
-			this.pTarget.setFired( fired )
+	func void setFired( bool fired )
+		if pTarget != null
+			pTarget.setFired( fired )
 		end
 	end
 	
 	/** \brief Target target ever fired state or false if absent. */
-	public func bool getHasFired()
-		if this.pTarget != null
-			return this.pTarget.getHasFired()
+	func bool getHasFired()
+		if pTarget != null
+			return pTarget.getHasFired()
 			
 		else
 			return false
@@ -140,56 +140,69 @@ class TSNamedTriggerTarget
 	end
 	
 	/** \brief Set if trigger target ever fired state if present. */
-	public func void setHasFired( bool hasFired )
-		if this.pTarget != null
-			this.pTarget.setHasFired( hasFired )
+	func void setHasFired( bool hasFired )
+		if pTarget != null
+			pTarget.setHasFired( hasFired )
 		end
 	end
 	
 	
 	
 	/** \brief Fire trigger target if present. */
-	public func void fire()
-		if this.pTarget != null
-			this.pTarget.fire()
+	func void fire()
+		if pTarget != null
+			pTarget.fire()
 		end
 	end
 	
 	/** \brief Reset trigger target if present. */
-	public func void reset()
-		if this.pTarget != null
-			this.pTarget.reset()
+	func void reset()
+		if pTarget != null
+			pTarget.reset()
 		end
 	end
 	
 	/** \brief Fully reset trigger target if present. */
-	public func void fullReset()
-		if this.pTarget != null
-			this.pTarget.fullReset()
+	func void fullReset()
+		if pTarget != null
+			pTarget.fullReset()
 		end
 	end
 	
 	/** \brief Fire then reset trigger target if present. */
-	public func void pulse()
-		if this.pTarget != null
-			this.pTarget.fire()
-			this.pTarget.reset()
+	func void pulse()
+		if pTarget != null
+			pTarget.fire()
+			pTarget.reset()
+		end
+	end
+	
+	/**
+	 * \brief Toggle between fired and reset state.
+	 * \version 1.19
+	 */
+	func void toggle()
+		if pTarget.getFired()
+			reset()
+			
+		else
+			fire()
 		end
 	end
 	
 	
 	
 	/** \brief Add listener to trigger target if present. */
-	public func void addListener( TSTriggerListener listener )
-		if this.pTarget != null
-			this.pTarget.addListener( listener )
+	func void addListener( TSTriggerListener listener )
+		if pTarget != null
+			pTarget.addListener( listener )
 		end
 	end
 	
 	/** \brief Remove listener from trigger target if present. */
-	public func void removeListener( TSTriggerListener listener )
-		if this.pTarget != null
-			this.pTarget.removeListener( listener )
+	func void removeListener( TSTriggerListener listener )
+		if pTarget != null
+			pTarget.removeListener( listener )
 		end
 	end
 end

@@ -199,7 +199,7 @@ class ECPElementClassMap extends ElementClassProperty
 		
 		var Dictionary map = Dictionary.new()
 		codec.decodeStringList(value).forEach(block String each
-			var Array parts = each.split(':')
+			var Array parts = each.splitExact(':')
 			var String id = parts.getAt(0) cast String
 			var String elementClassName = parts.getAt(1) cast String
 			var ElementClass eclass = pElementClassList.getNamed(elementClassName)

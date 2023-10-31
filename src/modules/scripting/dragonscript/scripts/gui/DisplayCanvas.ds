@@ -30,100 +30,100 @@ pin Dragengine.Scenery
  * \brief Display canvas in the widget.
  */
 class DisplayCanvas extends Widget
-	private var CanvasCanvasView pCanvasCanvas
-	private var RepeatMode pRepeatMode
-	private var CanvasView pCanvasView
+	var CanvasCanvasView pCanvasCanvas
+	var RepeatMode pRepeatMode
+	var CanvasView pCanvasView
 	
 	
 	
 	/** \brief Create display canvas widget. */
-	public func new() this( null, RepeatMode.once )
+	func new() this(null, RepeatMode.once)
 	end
 	
 	/**
 	 * \brief Create display canvas widget.
 	 * \throws EInvalidParam \em canvasView is not of type Canvas.VIEW.
 	 */
-	public func new( CanvasView canvasView ) this( canvasView, RepeatMode.once )
+	func new(CanvasView canvasView) this(canvasView, RepeatMode.once)
 	end
 	
 	/**
 	 * \brief Create display canvas widget.
 	 * \throws EInvalidParam \em canvasView is not of type Canvas.VIEW.
 	 */
-	public func new( CanvasView canvasView, RepeatMode repeatMode )
-		this.pRepeatMode = repeatMode
-		this.pCanvasView = canvasView
+	func new(CanvasView canvasView, RepeatMode repeatMode)
+		pRepeatMode = repeatMode
+		pCanvasView = canvasView
 		
-		this.pCanvasCanvas = CanvasCanvasView.new()
-		this.pCanvasCanvas.setCanvasView( canvasView )
-		this.getCanvasContent().addCanvas( this.pCanvasCanvas )
+		pCanvasCanvas = CanvasCanvasView.new()
+		pCanvasCanvas.setCanvasView(canvasView)
+		getCanvasContent().addCanvas(pCanvasCanvas)
 		
-		this.layoutParent()
-		this.updateCanvasCanvas()
+		layoutParent()
+		updateCanvasCanvas()
 	end
 	
 	
 	
 	/** Canvas to display or null if not set. */
-	public func CanvasView getCanvas()
-		return this.pCanvasView
+	func CanvasView getCanvas()
+		return pCanvasView
 	end
 	
 	/**
 	 * \brief Set canvas view to display.
 	 * \throws EInvalidParam \em canvasView is not of type Canvas.VIEW.
 	 */
-	public func void setCanvas( CanvasView canvasView )
-		if this.pCanvasView == canvasView
+	func void setCanvas(CanvasView canvasView)
+		if pCanvasView == canvasView
 			return
 		end
 		
-		this.pCanvasView = canvasView
-		this.pCanvasCanvas.setCanvasView( canvasView )
+		pCanvasView = canvasView
+		pCanvasCanvas.setCanvasView(canvasView)
 		
-		this.layoutParent()
-		this.updateCanvasCanvas()
+		layoutParent()
+		updateCanvasCanvas()
 	end
 	
 	/** \brief Repeat mode. */
-	public func RepeatMode getRepeatMode()
-		return this.pRepeatMode
+	func RepeatMode getRepeatMode()
+		return pRepeatMode
 	end
 	
 	/**
 	 * \brief Set repeat mode.
 	 * \param repeatMode Has to be one of REPEAT_* .
 	 */
-	public func void setRepeatMode( RepeatMode repeatMode )
-		if repeatMode == this.pRepeatMode
+	func void setRepeatMode(RepeatMode repeatMode)
+		if repeatMode == pRepeatMode
 			return
 		end
 		
-		this.pRepeatMode = repeatMode
+		pRepeatMode = repeatMode
 		
-		this.updateCanvasCanvas()
+		updateCanvasCanvas()
 	end
 	
 	
 	
 	/** \brief Minimal size of widget. */
-	public func Point getMinimumSize()
-		if this.pCanvasView == null or this.isMinimumSizeSet()
+	func Point getMinimumSize()
+		if pCanvasView == null or isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		
-		select this.pRepeatMode
-		case RepeatMode.once
-			return this.pCanvasView.getSize()
+		select pRepeatMode
+		case RepeatMode.once, RepeatMode.center
+			return pCanvasView.getSize()
 			
 		case RepeatMode.tileX
-			return Point.new( this.getWidth(), this.pCanvasView.getSize().getY() )
+			return Point.new(getWidth(), pCanvasView.getSize().getY())
 			
 		case RepeatMode.tileY
-			return Point.new( this.pCanvasView.getSize().getX(), this.getHeight() )
+			return Point.new(pCanvasView.getSize().getX(), getHeight())
 			
-		case RepeatMode.stretch, RepeatMode.tile
+		case RepeatMode.stretch, RepeatMode.stretchRatio, RepeatMode.tile
 			return super.getMinimumSize()
 			
 		else
@@ -134,52 +134,76 @@ class DisplayCanvas extends Widget
 	
 	
 	/** \brief Update canvas canvas. */
-	public func void updateCanvasCanvas()
-		if this.pCanvasView == null
+	func void updateCanvasCanvas()
+		if pCanvasView == null
 			return
 		end
 		
-		var Point canvasSize = this.pCanvasView.getSize()
-		var Point contentSize = this.getCanvasContent().getSize()
+		var Point canvasSize = pCanvasView.getSize()
+		var Point contentSize = getCanvasContent().getSize()
 		var int repeatX, repeatY
 		
-		select this.pRepeatMode
+		select pRepeatMode
 		case RepeatMode.once
-			this.pCanvasCanvas.setRepeatX( 1 )
-			this.pCanvasCanvas.setRepeatY( 1 )
-			this.pCanvasCanvas.setSize( this.pCanvasView.getSize() )
+			pCanvasCanvas.setRepeatX(1)
+			pCanvasCanvas.setRepeatY(1)
+			pCanvasCanvas.setSize(pCanvasView.getSize())
 			
 		case RepeatMode.stretch
-			this.pCanvasCanvas.setRepeatX( 1 )
-			this.pCanvasCanvas.setRepeatY( 1 )
-			this.pCanvasCanvas.setSize( contentSize )
+			pCanvasCanvas.setRepeatX(1)
+			pCanvasCanvas.setRepeatY(1)
+			pCanvasCanvas.setSize(contentSize)
 			
 		case RepeatMode.tileX
-			repeatX = DEMath.max( contentSize.getX() - 1, 0 ) / canvasSize.getX() + 1
-			this.pCanvasCanvas.setRepeatX( repeatX )
-			this.pCanvasCanvas.setRepeatY( 1 )
-			this.pCanvasCanvas.setSize( Point.new( repeatX, 1 ).compMultiply( canvasSize ) )
+			repeatX = DEMath.max(contentSize.getX() - 1, 0) / canvasSize.getX() + 1
+			pCanvasCanvas.setRepeatX(repeatX)
+			pCanvasCanvas.setRepeatY(1)
+			pCanvasCanvas.setSize(Point.new(repeatX, 1).compMultiply(canvasSize))
 			
 		case RepeatMode.tileY
-			repeatY = DEMath.max( contentSize.getY() - 1, 0 ) / canvasSize.getY() + 1
-			this.pCanvasCanvas.setRepeatX( 1 )
-			this.pCanvasCanvas.setRepeatY( repeatY )
-			this.pCanvasCanvas.setSize( Point.new( 1, repeatY ).compMultiply( canvasSize ) )
+			repeatY = DEMath.max(contentSize.getY() - 1, 0) / canvasSize.getY() + 1
+			pCanvasCanvas.setRepeatX(1)
+			pCanvasCanvas.setRepeatY(repeatY)
+			pCanvasCanvas.setSize(Point.new(1, repeatY).compMultiply(canvasSize))
 			
 		case RepeatMode.tile
-			repeatX = DEMath.max( contentSize.getX() - 1, 0 ) / canvasSize.getX() + 1
-			repeatY = DEMath.max( contentSize.getY() - 1, 0 ) / canvasSize.getY() + 1
-			this.pCanvasCanvas.setRepeatX( repeatX )
-			this.pCanvasCanvas.setRepeatY( repeatY )
-			this.pCanvasCanvas.setSize( Point.new( repeatX, repeatY ).compMultiply( canvasSize ) )
+			repeatX = DEMath.max(contentSize.getX() - 1, 0) / canvasSize.getX() + 1
+			repeatY = DEMath.max(contentSize.getY() - 1, 0) / canvasSize.getY() + 1
+			pCanvasCanvas.setRepeatX(repeatX)
+			pCanvasCanvas.setRepeatY(repeatY)
+			pCanvasCanvas.setSize(Point.new(repeatX, repeatY).compMultiply(canvasSize))
+			
+		case RepeatMode.center
+			pCanvasCanvas.setRepeatX(1)
+			pCanvasCanvas.setRepeatY(1)
+			pCanvasCanvas.setPosition((contentSize - pCanvasView.getSize()) / 2)
+			pCanvasCanvas.setSize(pCanvasView.getSize())
+			
+		case RepeatMode.stretchRatio
+			var Point newSize = contentSize
+			if canvasSize > Point.new()
+				var int stretched = canvasSize.getY() * contentSize.getX() / canvasSize.getX()
+				if stretched <= contentSize.getY()
+					newSize = Point.new(contentSize.getX(), stretched)
+					
+				else
+					stretched = canvasSize.getX() * contentSize.getY() / canvasSize.getY()
+					newSize = Point.new(stretched, contentSize.getY())
+				end
+			end
+			
+			pCanvasCanvas.setRepeatX(1)
+			pCanvasCanvas.setRepeatY(1)
+			pCanvasCanvas.setPosition((contentSize - newSize) / 2)
+			pCanvasCanvas.setSize(newSize)
 		end
 	end
 	
 	
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.updateCanvasCanvas()
+	func void onResize(WidgetEvent event)
+		super.onResize(event)
+		updateCanvasCanvas()
 	end
 end

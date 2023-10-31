@@ -60,3 +60,9 @@ void igdeMouseKeyListener::OnMouseMoved( igdeWidget*, const decPoint &, int ){
 
 void igdeMouseKeyListener::OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &, int ){
 }
+
+void igdeMouseKeyListener::OnMouseEnter( igdeWidget* ){
+}
+
+void igdeMouseKeyListener::OnMouseLeave( igdeWidget* ){
+}

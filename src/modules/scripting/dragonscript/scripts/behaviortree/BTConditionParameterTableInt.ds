@@ -57,121 +57,110 @@ class BTConditionParameterTableInt implements BTCondition
 	
 	
 	
-	/** \brief Parameter table entry to compare. */
-	private var ParameterTableEntry pEntry
-	
-	/** \brief Default value if entry to compare is not null. */
-	private var int pDefaultValue
-	
-	/** \brief Compare operator from eOperators. */
-	private var Operator pOperator
-	
-	/** \brief Parameter table entry to compare against. */
-	private var ParameterTableEntry pEntryCompareValue
-	
-	/** \brief Default compare against value. */
-	private var int pCompareValue
-	
-	/** \brief Use named parameter as source of compare value if not null. */
-	private var String pParameterNameCompareValue
+	var ParameterTableEntry pEntry
+	var int pDefaultValue
+	var Operator pOperator
+	var ParameterTableEntry pEntryCompareValue
+	var int pCompareValue
+	var String pParameterNameCompareValue
 	
 	
 	
 	/** \brief Create condition. */
-	public func new( ParameterTableEntry entry, int defaultValue, Operator operator, int compareValue ) \
-	this( entry, defaultValue, operator, null, compareValue, null )
+	func new(ParameterTableEntry entry, int defaultValue, Operator operator, int compareValue) \
+	this(entry, defaultValue, operator, null, compareValue, null)
 	end
 	
 	/** \brief Create condition. */
-	public func new( ParameterTableEntry entry, int defaultValue, Operator operator, \
-	int compareValue, String parameterNameCompareValue ) \
-	this( entry, defaultValue, operator, null, compareValue, parameterNameCompareValue )
+	func new(ParameterTableEntry entry, int defaultValue, Operator operator, \
+	int compareValue, String parameterNameCompareValue) \
+	this(entry, defaultValue, operator, null, compareValue, parameterNameCompareValue)
 	end
 	
 	/** \brief Create condition. */
-	public func new( ParameterTableEntry entry, int defaultValue, Operator operator, \
-	ParameterTableEntry entryCompareValue, int compareValue, String parameterNameCompareValue )
+	func new(ParameterTableEntry entry, int defaultValue, Operator operator, \
+	ParameterTableEntry entryCompareValue, int compareValue, String parameterNameCompareValue)
 		if entry == null
 			throw EInvalidParam.new()
 		end
-		this.pEntry = entry
-		this.pDefaultValue = defaultValue
-		this.pOperator = operator
-		this.pEntryCompareValue = entryCompareValue
-		this.pCompareValue = compareValue
-		this.pParameterNameCompareValue = parameterNameCompareValue
+		pEntry = entry
+		pDefaultValue = defaultValue
+		pOperator = operator
+		pEntryCompareValue = entryCompareValue
+		pCompareValue = compareValue
+		pParameterNameCompareValue = parameterNameCompareValue
 	end
 	
 	
 	
 	/** \brief Parameter table entry to compare. */
-	public func ParameterTableEntry getEntry()
-		return this.pEntry
+	func ParameterTableEntry getEntry()
+		return pEntry
 	end
 	
 	/** \brief Set parameter table entry to compare. */
-	public func void setEntry( ParameterTableEntry entry )
+	func void setEntry(ParameterTableEntry entry)
 		if entry == null
 			throw EInvalidParam.new()
 		end
-		this.pEntry = entry
+		pEntry = entry
 	end
 	
 	/** \brief Default value if entry to compare is not null. */
-	public func int getDefaultValue()
-		return this.pDefaultValue
+	func int getDefaultValue()
+		return pDefaultValue
 	end
 	
 	/** \brief Set default value if entry to compare is not null. */
-	public func void setDefaultValue( int defaultValue )
-		this.pDefaultValue = defaultValue
+	func void setDefaultValue(int defaultValue)
+		pDefaultValue = defaultValue
 	end
 	
 	/** \brief Compare operator from eOperators. */
-	public func Operator getOperator()
-		return this.pOperator
+	func Operator getOperator()
+		return pOperator
 	end
 	
 	/** \brief Set compare operator from eOperators. */
-	public func void setOperator( Operator operator )
-		this.pOperator = operator
+	func void setOperator(Operator operator)
+		pOperator = operator
 	end
 	
 	/** \brief Parameter table entry to compare against. */
-	public func ParameterTableEntry getEntryCompareValue()
-		return this.pEntryCompareValue
+	func ParameterTableEntry getEntryCompareValue()
+		return pEntryCompareValue
 	end
 	
 	/** \brief Set parameter table entry to compare against. */
-	public func void setEntryCompareValue( ParameterTableEntry entry )
-		this.pEntryCompareValue = entry
+	func void setEntryCompareValue(ParameterTableEntry entry)
+		pEntryCompareValue = entry
 	end
 	
 	/** \brief Default compare against value. */
-	public func int getCompareValue()
-		return this.pCompareValue
+	func int getCompareValue()
+		return pCompareValue
 	end
 	
 	/** \brief Set default compare against value. */
-	public func void setCompareValue( int compareValue )
-		this.pCompareValue = compareValue
+	func void setCompareValue(int compareValue)
+		pCompareValue = compareValue
 	end
 	
 	/** \brief Use named parameter as source of compare value if not null. */
-	public func String getParameterNameCompareValue()
-		return this.pParameterNameCompareValue
+	func String getParameterNameCompareValue()
+		return pParameterNameCompareValue
 	end
 	
 	/** \brief Use named parameter as source of compare value if not null. */
-	public func void setParameterNameCompareValue( String name )
-		this.pParameterNameCompareValue = name
+	func void setParameterNameCompareValue(String name)
+		pParameterNameCompareValue = name
 	end
 	
 	
 	
 	/** \brief Create condition testing the exact opposite. */
-	public func BTConditionParameterTableInt negated()
-		var Operator operator = this.pOperator
+	func BTConditionParameterTableInt negated()
+		var Operator operator = pOperator
 		
 		select operator
 		case Operator.equal
@@ -193,9 +182,9 @@ class BTConditionParameterTableInt implements BTCondition
 			operator = Operator.lessThan
 		end
 		
-		return BTConditionParameterTableInt.new( this.pEntry, this.pDefaultValue, \
-			operator, this.pEntryCompareValue, this.pCompareValue, \
-			this.pParameterNameCompareValue )
+		return BTConditionParameterTableInt.new(pEntry, pDefaultValue, \
+			operator, pEntryCompareValue, pCompareValue, \
+			pParameterNameCompareValue)
 	end
 	
 	
@@ -205,36 +194,36 @@ class BTConditionParameterTableInt implements BTCondition
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func bool evaluateCondition( BTContext context, Dictionary parameters )
-		var int compareValue = this.pCompareValue
-		if this.pEntryCompareValue != null
-			compareValue = this.pEntryCompareValue.getValue( compareValue )
+	func bool evaluateCondition(BTContext context, Dictionary parameters)
+		var int compareValue = pCompareValue
+		if pEntryCompareValue != null
+			compareValue = pEntryCompareValue.getValue(compareValue)
 		end
-		if this.pParameterNameCompareValue != null
-			var String value = parameters.getAt( this.pParameterNameCompareValue, null ) cast String
+		if pParameterNameCompareValue != null
+			var String value = parameters.getAt(pParameterNameCompareValue, null) cast String
 			if value != null
 				compareValue = value.toInt()
 			end
 		end
 		
-		select this.pOperator
+		select pOperator
 		case Operator.equal
-			return this.pEntry.getValue( this.pDefaultValue ) == compareValue
+			return pEntry.getValue(pDefaultValue) == compareValue
 			
 		case Operator.notEqual
-			return this.pEntry.getValue( this.pDefaultValue ) != compareValue
+			return pEntry.getValue(pDefaultValue) != compareValue
 			
 		case Operator.lessThan
-			return this.pEntry.getValue( this.pDefaultValue ) < compareValue
+			return pEntry.getValue(pDefaultValue) < compareValue
 			
 		case Operator.lessThanOrEqual
-			return this.pEntry.getValue( this.pDefaultValue ) <= compareValue
+			return pEntry.getValue(pDefaultValue) <= compareValue
 			
 		case Operator.greaterThan
-			return this.pEntry.getValue( this.pDefaultValue ) > compareValue
+			return pEntry.getValue(pDefaultValue) > compareValue
 			
 		case Operator.greaterThanOrEqual
-			return this.pEntry.getValue( this.pDefaultValue ) >= compareValue
+			return pEntry.getValue(pDefaultValue) >= compareValue
 			
 		else
 			return false

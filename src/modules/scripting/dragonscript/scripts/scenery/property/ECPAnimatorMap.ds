@@ -193,7 +193,7 @@ class ECPAnimatorMap extends ElementClassProperty
 		
 		var Dictionary map = Dictionary.new()
 		codec.decodeStringList(value).forEach(block String each
-			var Array parts = each.split(':')
+			var Array parts = each.splitExact(':')
 			map.setAt(parts.getAt(0) cast String, pLoader.loadFromFile(parts.getAt(1) cast String))
 		end)
 		return map

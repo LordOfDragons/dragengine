@@ -133,10 +133,7 @@ void lpeLangPack::RemoveAllEntries(){
 //////////////
 
 void lpeLangPack::AddListener( lpeLangPackListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_NOTNULL( listener )
 	pListeners.Add( listener );
 }
 

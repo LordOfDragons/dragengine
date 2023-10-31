@@ -134,6 +134,20 @@ public:
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
 	virtual void OnMouseWheeled( igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers );
+	
+	/**
+	 * \brief Mouse entered widget.
+	 * 
+	 * \param[in] widget Widget sending the event.
+	 */
+	virtual void OnMouseEnter( igdeWidget *widget );
+	
+	/**
+	 * \brief Mouse left widget.
+	 * 
+	 * \param[in] widget Widget sending the event.
+	 */
+	virtual void OnMouseLeave( igdeWidget *widget );
 	/*@}*/
 };
 

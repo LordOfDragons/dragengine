@@ -34,7 +34,7 @@ pin Dragengine.Utils
  */
 class BTRuleFailure extends BTRule
 	/** \brief Create behavior tree rule. */
-	public func new( String id ) super( id )
+	func new(String id) super(id)
 	end
 	
 	
@@ -44,7 +44,14 @@ class BTRuleFailure extends BTRule
 	 * 
 	 * \returns Value from BTAction.eReturnValues .
 	 */
-	public func BTResult run( BTContext context )
+	func BTResult run(BTContext context)
 		return BTResult.failure
+	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleFailure(id='{}')".format(Array.newWith(getID()))
 	end
 end

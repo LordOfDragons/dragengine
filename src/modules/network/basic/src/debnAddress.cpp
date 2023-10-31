@@ -71,34 +71,34 @@ void debnAddress::SetType( eAddressType type ){
 }
 
 int debnAddress::GetValueAt( int location ) const{
-	DEASSERT_TRUE( location < 0 )
-	DEASSERT_TRUE( location >= pValueCount )
+	DEASSERT_TRUE( location >= 0 )
+	DEASSERT_TRUE( location < pValueCount )
 	
 	return pValues[ location ];
 }
 
 void debnAddress::SetValueAt( int location, int value ){
-	DEASSERT_TRUE( location < 0 )
-	DEASSERT_TRUE( location >= pValueCount )
-	DEASSERT_TRUE( value < 0 )
-	DEASSERT_TRUE( value > 255 )
+	DEASSERT_TRUE( location >= 0 )
+	DEASSERT_TRUE( location < pValueCount )
+	DEASSERT_TRUE( value >= 0 )
+	DEASSERT_TRUE( value <= 255 )
 	
 	pValues[ location ] = ( unsigned char )value;
 }
 
 void debnAddress::SetPort( int port ){
-	DEASSERT_TRUE( port < 0 )
+	DEASSERT_TRUE( port >= 0 )
 	
 	pPort = port;
 }
 
 void debnAddress::SetIPv4( int values[ 4 ], int port ){
-	DEASSERT_TRUE( port < 0 )
+	DEASSERT_TRUE( port >= 0 )
 	
 	int i;
 	for( i=0; i<4; i++ ){
-		DEASSERT_TRUE( values[ i ] < 0 )
-		DEASSERT_TRUE( values[ i ] > 255 )
+		DEASSERT_TRUE( values[ i ] >= 0 )
+		DEASSERT_TRUE( values[ i ] <= 255 )
 	}
 	
 	pType = eatIPv4;
@@ -169,12 +169,12 @@ void debnAddress::SetIPv6Loopback(){
 }
 
 void debnAddress::SetIPv6( int values[ 16 ], int port ){
-	DEASSERT_TRUE( port < 0 )
+	DEASSERT_TRUE( port >= 0 )
 	
 	int i;
 	for( i=0; i<16; i++ ){
-		DEASSERT_TRUE( values[ i ] < 0 )
-		DEASSERT_TRUE( values[ i ] > 255 )
+		DEASSERT_TRUE( values[ i ] >= 0 )
+		DEASSERT_TRUE( values[ i ] <= 255 )
 	}
 	
 	pType = eatIPv6;

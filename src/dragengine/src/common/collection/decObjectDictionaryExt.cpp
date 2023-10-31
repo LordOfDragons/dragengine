@@ -36,15 +36,16 @@
 
 decObjectDictionaryExt::sDictEntry::sDictEntry() :
 hash( 0 ),
-value( NULL ),
-next( NULL ){
+key( nullptr ),
+value( nullptr ),
+next( nullptr ){
 }
 
 decObjectDictionaryExt::sDictEntry::sDictEntry( const decObjectDictionaryExt::sDictEntry &entry ) :
 hash( entry.hash ),
 key( entry.key ),
 value( entry.value ),
-next( NULL )
+next( nullptr )
 {
 	if( value ){
 		value->AddReference();
@@ -55,7 +56,7 @@ decObjectDictionaryExt::sDictEntry::sDictEntry( unsigned int nhash, const void *
 hash( nhash ),
 key( nkey ),
 value( nvalue ),
-next( NULL )
+next( nullptr )
 {
 	if( value ){
 		value->AddReference();
@@ -63,8 +64,8 @@ next( NULL )
 }
 
 decObjectDictionaryExt::sDictEntry::~sDictEntry(){
-	SetValue( NULL );
-	next = NULL;
+	SetValue( nullptr );
+	next = nullptr;
 }
 
 void decObjectDictionaryExt::sDictEntry::SetValue( deObject *nvalue ){
@@ -120,7 +121,7 @@ decObjectDictionaryExt::decObjectDictionaryExt( int bucketCount ){
 }
 
 decObjectDictionaryExt::decObjectDictionaryExt( const decObjectDictionaryExt &dict ){
-	pBuckets = NULL;
+	pBuckets = nullptr;
 	pBucketCount = dict.pBucketCount;
 	pEntryCount = dict.pEntryCount;
 	
@@ -128,36 +129,26 @@ decObjectDictionaryExt::decObjectDictionaryExt( const decObjectDictionaryExt &di
 	
 	int i;
 	for( i=0; i<pBucketCount; i++ ){
-		pBuckets[ i ] = NULL;
+		pBuckets[ i ] = nullptr;
 	}
 	
-	sDictEntry *newEntry;
-	try{
-		for( i=0; i<pBucketCount; i++ ){
-			sDictEntry *iterEntry = dict.pBuckets[ i ];
-			sDictEntry *lastEntry = NULL;
-			newEntry = NULL;
-			
-			while( iterEntry ){
-				newEntry = new sDictEntry( *iterEntry );
-				
-				if( lastEntry ){
-					lastEntry->next = newEntry;
-					
-				}else{
-					pBuckets[ i ] = newEntry;
-				}
-				lastEntry = newEntry;
-				
-				iterEntry = iterEntry->next;
-			}
-		}
+	for( i=0; i<pBucketCount; i++ ){
+		sDictEntry *iterEntry = dict.pBuckets[ i ];
+		sDictEntry *lastEntry = nullptr;
 		
-	}catch( const deException & ){
-		if( newEntry ){
-			delete newEntry;
+		while( iterEntry ){
+			sDictEntry * const newEntry = new sDictEntry( *iterEntry );
+			
+			if( lastEntry ){
+				lastEntry->next = newEntry;
+				
+			}else{
+				pBuckets[ i ] = newEntry;
+			}
+			lastEntry = newEntry;
+			
+			iterEntry = iterEntry->next;
 		}
-		throw;
 	}
 }
 

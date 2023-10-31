@@ -297,6 +297,12 @@ void meViewEditorSelect::OnMouseWheel( int steps, bool shift, bool control ){
 	}
 }
 
+void meViewEditorSelect::OnMousLeave(){
+	meViewEditorNavigation::OnMousLeave();
+	
+	pInfoBubble->Hide();
+}
+
 
 
 // Private Functions
@@ -337,8 +343,9 @@ void meViewEditorSelect::pUpdateInfoBubble( int x, int y ){
 	
 	meWorldGuiParameters &guiparams = GetWorldGuiParameters();
 	const decDVector rayPosition = GetMatrixView().GetPosition();
+	const decPoint size( GetViewWidth(), GetViewHeight() );
 	const decVector rayDirection = GetActiveCamera().GetDirectionFor(
-		GetViewWidth(), GetViewHeight(), x, y ) * guiparams.GetRectSelDistance();
+		size.x, size.y, x, y ) * guiparams.GetRectSelDistance();
 	RayTestCollision( pCLClosest, rayPosition, rayDirection,
 		decCollisionFilter( collisionCategory, collisionFilter ) );
 	
@@ -352,7 +359,21 @@ void meViewEditorSelect::pUpdateInfoBubble( int x, int y ){
 		pInfoBubbleText->SetSize( textSize );
 		pInfoBubble->GetCanvasContent()->SetSize( textSize );
 		
-		pInfoBubble->ShowAt( decPoint( x + 32, y ), meInfoBubble::epTopRight );
+		decPoint position = decPoint( x + 32, y );
+		meInfoBubble::ePlacement placement = meInfoBubble::epTopRight;
+		
+		if( position.x + textSize.x + 6 > size.x ){
+			position.x = x - 32;
+			placement = meInfoBubble::epTopLeft;
+		}
+		
+		if( position.y - textSize.y - 6 < 0 ){
+			position.y = y + 64;
+			placement = placement == meInfoBubble::epTopRight
+				? meInfoBubble::epBottomRight : meInfoBubble::epBottomLeft;
+		}
+		
+		pInfoBubble->ShowAt( position, placement );
 		
 	}else{
 		pInfoBubble->Hide();

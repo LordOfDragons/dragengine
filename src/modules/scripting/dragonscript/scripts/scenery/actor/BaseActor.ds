@@ -86,32 +86,32 @@ pin Dragengine.Utils
  * playerTakesControl() method.
  */
 class BaseActor extends BehaviorElement
-	private var ECBehaviorComponent.Instance pComponent
-	private var ECBehaviorCollider.Instance pCollider
-	private var ECBehaviorColliderAI.Instance pColliderAI
-	private var ECBehaviorParameterTable.Instance pParameterTable
-	private var ECBehaviorProjectToGround.Instance pProjectToGround
-	private var ECBehaviorLocomotion.Instance pLocomotion
-	private var ECBehaviorActorAnimated.Instance pActorAnimated
-	private var ECBehaviorConversationActor.Instance pConversationActor
-	private var ECBehaviorNavigator.Instance pNavigator
-	private var ECBehaviorFootSteps.Instance pFootSteps
-	private var ECBehaviorRideOn.Instance pRideOn
-	private var ECBehaviorActorMover.Instance pActorMover
-	private var ECBehaviorAlignActor.Instance pAlignActor
-	private var ECBehaviorAvoidedByActor.Instance pAvoidedByActor
-	private var ECBehaviorAvoidCollision.Instance pAvoidCollision
-	private var ECBehaviorPlayerInputLook.Instance pPlayerInputLook
-	private var ECBehaviorPlayerInputTurn.Instance pPlayerInputTurn
-	private var ECBehaviorPlayerInputCrouch.Instance pPlayerInputCrouch
-	private var ECBehaviorPlayerInputMove.Instance pPlayerInputMove
-	private var ECBehaviorPlayerControllable.Instance pPlayerControllable
-	private var ECBehaviorActorAIAction.Instance pAIAction
+	var ECBehaviorComponent.Instance pComponent
+	var ECBehaviorCollider.Instance pCollider
+	var ECBehaviorColliderAI.Instance pColliderAI
+	var ECBehaviorParameterTable.Instance pParameterTable
+	var ECBehaviorProjectToGround.Instance pProjectToGround
+	var ECBehaviorLocomotion.Instance pLocomotion
+	var ECBehaviorActorAnimated.Instance pActorAnimated
+	var ECBehaviorConversationActor.Instance pConversationActor
+	var ECBehaviorNavigator.Instance pNavigator
+	var ECBehaviorFootSteps.Instance pFootSteps
+	var ECBehaviorRideOn.Instance pRideOn
+	var ECBehaviorActorMover.Instance pActorMover
+	var ECBehaviorAlignActor.Instance pAlignActor
+	var ECBehaviorAvoidedByActor.Instance pAvoidedByActor
+	var ECBehaviorAvoidCollision.Instance pAvoidCollision
+	var ECBehaviorPlayerInputLook.Instance pPlayerInputLook
+	var ECBehaviorPlayerInputTurn.Instance pPlayerInputTurn
+	var ECBehaviorPlayerInputCrouch.Instance pPlayerInputCrouch
+	var ECBehaviorPlayerInputMove.Instance pPlayerInputMove
+	var ECBehaviorPlayerControllable.Instance pPlayerControllable
+	var ECBehaviorActorAIAction.Instance pAIAction
 	
 	
 	
 	/** \brief Create element. */
-	public func new(BaseActorClass eclass) super(eclass)
+	func new(BaseActorClass eclass) super(eclass)
 		pComponent = eclass.getComponent().instance(this)
 		pCollider = eclass.getCollider().instance(this)
 		pColliderAI = eclass.getColliderAI().instance(this)
@@ -146,7 +146,7 @@ class BaseActor extends BehaviorElement
 	 * - initAvoidCollisionShape()
 	 * - initNavigator()
 	 */
-	public func void init(StubElement stub)
+	func void init(StubElement stub)
 		super.init(stub)
 		
 		initColliderShape(stub)
@@ -207,107 +207,107 @@ class BaseActor extends BehaviorElement
 	
 	
 	/** \brief Component behavio instance. */
-	public func ECBehaviorComponent.Instance getComponent()
+	func ECBehaviorComponent.Instance getComponent()
 		return pComponent
 	end
 	
 	/** \brief Collider behavior instance. */
-	public func ECBehaviorCollider.Instance getCollider()
+	func ECBehaviorCollider.Instance getCollider()
 		return pCollider
 	end
 	
 	/** \brief Collider AI behavior instance. */
-	public func ECBehaviorColliderAI.Instance getColliderAI()
+	func ECBehaviorColliderAI.Instance getColliderAI()
 		return pColliderAI
 	end
 	
 	/** \brief Parameter table instance. */
-	public func ECBehaviorParameterTable.Instance getParameterTable()
+	func ECBehaviorParameterTable.Instance getParameterTable()
 		return pParameterTable
 	end
 	
 	/** \brief Project to ground behavior instance. */
-	public func ECBehaviorProjectToGround.Instance getProjectToGround()
+	func ECBehaviorProjectToGround.Instance getProjectToGround()
 		return pProjectToGround
 	end
 	
 	/** \brief Locomotion behavior instance. */
-	public func ECBehaviorLocomotion.Instance getLocomotion()
+	func ECBehaviorLocomotion.Instance getLocomotion()
 		return pLocomotion
 	end
 	
 	/** \brief Actor animated behavior instance. */
-	public func ECBehaviorActorAnimated.Instance getActorAnimated()
+	func ECBehaviorActorAnimated.Instance getActorAnimated()
 		return pActorAnimated
 	end
 	
 	/** \brief Conversation actor instance. */
-	public func ECBehaviorConversationActor.Instance getConversationActor()
+	func ECBehaviorConversationActor.Instance getConversationActor()
 		return pConversationActor
 	end
 	
 	/** \brief Navigator instance. */
-	public func ECBehaviorNavigator.Instance getNavigator()
+	func ECBehaviorNavigator.Instance getNavigator()
 		return pNavigator
 	end
 	
 	/** \brief Foot steps instance. */
-	public func ECBehaviorFootSteps.Instance getFootSteps()
+	func ECBehaviorFootSteps.Instance getFootSteps()
 		return pFootSteps
 	end
 	
 	/** \brief Ride on instance. */
-	public func ECBehaviorRideOn.Instance getRideOn()
+	func ECBehaviorRideOn.Instance getRideOn()
 		return pRideOn
 	end
 	
 	/** \brief Actor mover instance. */
-	public func ECBehaviorActorMover.Instance getActorMover()
+	func ECBehaviorActorMover.Instance getActorMover()
 		return pActorMover
 	end
 	
 	/** \brief Align actor instance. */
-	public func ECBehaviorAlignActor.Instance getAlignActor()
+	func ECBehaviorAlignActor.Instance getAlignActor()
 		return pAlignActor
 	end
 	
 	/** \brief Avoided by actor instance. */
-	public func ECBehaviorAvoidedByActor.Instance getAvoidedByActor()
+	func ECBehaviorAvoidedByActor.Instance getAvoidedByActor()
 		return pAvoidedByActor
 	end
 	
 	/** \brief Avoid collision instance. */
-	public func ECBehaviorAvoidCollision.Instance getAvoidCollision()
+	func ECBehaviorAvoidCollision.Instance getAvoidCollision()
 		return pAvoidCollision
 	end
 	
 	/** \brief Player input looking around behavior instance. */
-	public func ECBehaviorPlayerInputLook.Instance getPlayerInputLook()
+	func ECBehaviorPlayerInputLook.Instance getPlayerInputLook()
 		return pPlayerInputLook
 	end
 	
 	/** \brief Player input turning behavior instance. */
-	public func ECBehaviorPlayerInputTurn.Instance getPlayerInputTurn()
+	func ECBehaviorPlayerInputTurn.Instance getPlayerInputTurn()
 		return pPlayerInputTurn
 	end
 	
 	/** \brief Player input crouching behavior instance. */
-	public func ECBehaviorPlayerInputCrouch.Instance getPlayerInputCrouch()
+	func ECBehaviorPlayerInputCrouch.Instance getPlayerInputCrouch()
 		return pPlayerInputCrouch
 	end
 	
 	/** \brief Player input moving behavior instance. */
-	public func ECBehaviorPlayerInputMove.Instance getPlayerInputMove()
+	func ECBehaviorPlayerInputMove.Instance getPlayerInputMove()
 		return pPlayerInputMove
 	end
 	
 	/** \brief Player controllable instance. */
-	public func ECBehaviorPlayerControllable.Instance getPlayerControllable()
+	func ECBehaviorPlayerControllable.Instance getPlayerControllable()
 		return pPlayerControllable
 	end
 	
 	/** \brief AI-Action instance. */
-	public func ECBehaviorActorAIAction.Instance getAIAction()
+	func ECBehaviorActorAIAction.Instance getAIAction()
 		return pAIAction
 	end
 	
@@ -318,7 +318,7 @@ class BaseActor extends BehaviorElement
 	 * 
 	 * Calls spawnAdjustActor().
 	 */
-	public func void teleportAdjustActor()
+	func void teleportAdjustActor()
 		spawnAdjustActor()
 	end
 	
@@ -346,7 +346,7 @@ class BaseActor extends BehaviorElement
 	end
 	
 	/** \brief Add to game world. */
-	public func void addToGameWorld()
+	func void addToGameWorld()
 		spawnAdjustActor()
 		super.addToGameWorld()
 	end
@@ -354,7 +354,7 @@ class BaseActor extends BehaviorElement
 	
 	
 	/** \brief Read element from file. */
-	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		super.readFromFile(env, reader)
 		
 		select reader.readByte() // version
@@ -368,7 +368,7 @@ class BaseActor extends BehaviorElement
 	end
 	
 	/** Writes the element to a file. */
-	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 		super.writeToFile(env, writer)
 		
 		writer.writeByte(0) // version
@@ -381,7 +381,7 @@ class BaseActor extends BehaviorElement
 	
 	
 	/** \brief Visit element. */
-	public func void visit(ElementVisitor visitor)
+	func void visit(ElementVisitor visitor)
 		visitor.visitBaseActor(this)
 	end
 end

@@ -58,7 +58,7 @@ class ScreenshotCreator
 	/** \brief Capture pending. */
 	private var bool pCapturePending
 	
-	private var int pHACKNumber
+	private var int pNextNumber
 	
 	
 	/**
@@ -73,7 +73,7 @@ class ScreenshotCreator
 		this.pPrefix = "screenshot-"
 		this.pSuffix = ".png"
 		this.pCapturePending = false
-		this.pHACKNumber = 1
+		this.pNextNumber = 1
 		
 		this.pCaptureCanvas = CaptureCanvas.new()
 		this.pCaptureCanvas.setCanvasView( GraphicSystem.getPrimaryCanvas() )
@@ -177,8 +177,8 @@ class ScreenshotCreator
 		
 		this.pCapturePending = false
 		
-		var String filename = this.pPath + this.pPrefix + this.pHACKNumber + this.pSuffix
-		this.pHACKNumber++
+		var String filename = this.pPath + this.pPrefix + this.pNextNumber + this.pSuffix
+		this.pNextNumber++
 		
 		var Image image = this.pCaptureCanvas.getImage()
 		this.pCaptureCanvas.dropImage()

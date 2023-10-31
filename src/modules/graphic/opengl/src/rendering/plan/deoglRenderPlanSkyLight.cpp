@@ -236,11 +236,9 @@ void deoglRenderPlanSkyLight::Plan(){
 	
 	pDetermineShadowParameters();
 	
-	if( ! pUseShadow ){
-		return;
+	if( pUseShadow ){
+		pCalcShadowLayerParams();
 	}
-	
-	pCalcShadowLayerParams();
 	pGICalcShadowLayerParams();
 }
 
@@ -974,8 +972,11 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
 		pUseShadow = false;
 	}
 	
-	// if there is no direct light scrap the shadows
-	if( ! pLayer->GetHasLightDirect() ){
+	// if there is no direct light scrap the shadows unless GI is used. GI always requires
+	// shadows to be calculated even if ambient only. this is not selectively enabled since
+	// it is tricky to get this working properly in all code path. instead enable shadow
+	// casting always is the safe route and usually not a performance problem
+	if( ! pLayer->GetHasLightDirect() && ! pPlan.GetUpdateGIState() ){
 		pUseShadow = false;
 	}
 	

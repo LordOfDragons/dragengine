@@ -65,6 +65,9 @@ private:
 	igdeActionReference pActionClassBrowse;
 	igdeActionReference pActionClassEdit;
 	
+	igdeActionContextMenuReference pActionIdClass;
+	igdeActionReference pActionIdFind;
+	
 	igdeActionContextMenuReference pActionMenuPosition;
 	igdeActionContextMenuReference pActionMenuRotation;
 	igdeActionContextMenuReference pActionMenuScale;
@@ -87,6 +90,7 @@ private:
 	igdeTextFieldReference pEditSelCount;
 	
 	igdeTextFieldReference pEditID;
+	igdeButtonReference pBtnIdMenu;
 	igdeTextFieldReference pEditAttach;
 	igdeComboBoxFilterReference pCBClass;
 	igdeButtonReference pBtnClassMenu;
@@ -230,6 +234,8 @@ public:
 	
 	inline igdeAction *GetActionClassBrowse() const{ return pActionClassBrowse; }
 	inline igdeAction *GetActionClassEdit() const{ return pActionClassEdit; }
+	
+	inline igdeAction *GetActionIdFind() const{ return pActionIdFind; }
 	
 	inline igdeAction *GetActionTextureAddCustom() const{ return pActionTextureAddCustom; }
 	inline igdeAction *GetActionTextureAddAllModel() const{ return pActionTextureAddAllModel; }

@@ -25,6 +25,7 @@
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/math/decMath.h>
 
+#include "../configuration/deoglConfiguration.h"
 #include "../collidelist/deoglCollideList.h"
 
 class deoglRWorld;
@@ -50,6 +51,7 @@ private:
 	decDVector pHalfExtends;
 	decLayerMask pLayerMask;
 	double pUpdateThreshold;
+	int pGIImportance;
 	
 	decDVector pLastUpdatePosition;
 	decDVector pPosition;
@@ -66,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	deoglGIAreaTracker();
+	deoglGIAreaTracker( int giimportance );
 	/*@}*/
 	
 	
@@ -96,6 +98,9 @@ public:
 	
 	/** Set position distance threshold before updating tracking. */
 	void SetUpdateThreshold( double threshold );
+	
+	/** Set GI importance. */
+	void SetGIImportance( int importance );
 	
 	
 	
@@ -138,6 +143,11 @@ public:
 	
 	/** Component touches current box. */
 	bool ComponentTouches( const deoglRComponent &component ) const;
+	
+	
+	
+	/** GI importance from GI quality. */
+	static int GIImportanceFromGIQuality( deoglConfiguration::eGIQuality quality );
 	/*@}*/
 	
 	

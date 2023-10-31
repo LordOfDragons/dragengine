@@ -138,7 +138,7 @@ abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatibl
 	 *       static during the entire life time of the behavior.
 	 */
 	protected func void useClassNameAsBehaviorID()
-		pUseBehaviorID = className().split('.').getAt(-1) cast String
+		pUseBehaviorID = className().splitExact('.').getAt(-1) cast String
 		if not pID.empty()
 			pUseBehaviorID = pUseBehaviorID + ":" + pID
 		end

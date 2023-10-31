@@ -82,10 +82,10 @@ gdeUOCCTextureSetOffset::~gdeUOCCTextureSetOffset(){
 
 void gdeUOCCTextureSetOffset::Undo(){
 	pTexture->SetOffset( pOldValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }
 
 void gdeUOCCTextureSetOffset::Redo(){
 	pTexture->SetOffset( pNewValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }

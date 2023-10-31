@@ -52,22 +52,22 @@ vec3 normalFromDepth( in ivec3 texcoord, in float centerDepth, in vec3 centerPos
 	bool flip = false;
 	
 	if( difference.x < difference.y ){
-		offsetX = vec2( -pDepthSampleOffset.x, 0.0 );
+		offsetX = vec2( -pDepthSampleOffset.x, 0 );
 		positionX = vec3( samples.x );
 		flip = true;
 		
 	}else{
-		offsetX = vec2( pDepthSampleOffset.x, 0.0 );
+		offsetX = vec2( pDepthSampleOffset.x, 0 );
 		positionX = vec3( samples.y );
 	}
 	
 	if( difference.z < difference.w ){
-		offsetY = vec2( 0.0, -pDepthSampleOffset.y );
+		offsetY = vec2( 0, -pDepthSampleOffset.y );
 		positionY = vec3( samples.z );
 		flip = ! flip;
 		
 	}else{
-		offsetY = vec2( 0.0, pDepthSampleOffset.y );
+		offsetY = vec2( 0, pDepthSampleOffset.y );
 		positionY = vec3( samples.w );
 	}
 	

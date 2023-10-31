@@ -67,6 +67,7 @@ private:
 	
 	ALuint pFilter;
 	deoalEffectSlot *pEffectSlot;
+	ALuint pEffectSlotFilter;
 	
 	
 	
@@ -159,6 +160,14 @@ public:
 	
 	/** Drop effect slot. */
 	void DropEffectSlot();
+	
+	/** Effect slot filter creating it if not present. */
+	ALuint GetEffectSlotFilter();
+	
+	
+	
+	/** Reset to be used again. */
+	void Reset();
 	/*@}*/
 	
 	

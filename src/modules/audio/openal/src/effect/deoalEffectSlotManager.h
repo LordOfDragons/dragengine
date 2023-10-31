@@ -67,12 +67,16 @@ public:
 	
 	/** Unbind effect slot. */
 	void Unbind( deoalEffectSlot *slot );
+	
+	/** Update. */
+	void Update( float elapsed );
 	/*@}*/
 	
 	
 	
 private:
-	deoalEffectSlot *pNextUnbound() const;
+	deoalEffectSlot *pBestUnbound() const;
+	deoalEffectSlot *pBestKeptAlive() const;
 	deoalEffectSlot *pBestRebindable() const;
 	deoalEffectSlot *pCreateNew();
 };

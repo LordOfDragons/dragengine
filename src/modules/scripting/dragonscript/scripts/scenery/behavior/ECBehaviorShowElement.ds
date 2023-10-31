@@ -1,0 +1,228 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior show/hide element if triggered.
+ * \version 1.19
+ * 
+ * If trigger evaluates to true the element is set visible and touchable others not.
+ * 
+ * Element class properties have the prefix "showElement.". Behavior can be added only once.
+ * 
+ * This behavior supports persistable element class (setPersistable).
+ */
+class ECBehaviorShowElement extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Change shown listener. */
+		class ShowElementListener extends ECBehaviorTriggered.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+				pInstance.setShown(true)
+			end
+			
+			func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
+				pInstance.setShown(false)
+			end
+		end
+		
+		
+		
+		var ECBehaviorShowElement pECBehavior
+		var ECBehaviorTriggered.Instance pTrigger
+		var bool pShown
+		
+		
+		
+		/** \brief Create element. */
+		func new(ECBehaviorShowElement ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			
+			element.setVisible(false)
+			element.setTouchable(false)
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		func void dispose()
+			pTrigger = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		func void init(StubElement stub)
+			if pECBehavior.getTriggerTable() == null
+				return
+			end
+			
+			pTrigger = pECBehavior.getTriggered().instance(getElement())
+			pTrigger.addListener(ShowElementListener.new(this))
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorShowElement getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Trigger or \em null. */
+		func ECBehaviorTriggered.Instance getTrigger()
+			return pTrigger
+		end
+		
+		
+		
+		/** \brief Element is shown. */
+		func bool getShown()
+			return pShown
+		end
+		
+		/** \brief Set if element is shown. */
+		func void setShown(bool shown)
+			if shown == pShown
+				return
+			end
+			
+			pShown = shown
+			
+			var BehaviorElement element = getElement()
+			element.setVisible(shown)
+			element.setTouchable(shown)
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte()
+			case 0
+				setShown(env.readBool(reader))
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** Write element to file. */
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0)
+			env.writeBool(writer, pShown)
+		end
+	end
+	
+	
+	
+	var ECBehaviorTriggered pTriggered
+	var TSTriggerTable pTriggerTable
+	
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getTriggerTable())
+	end
+	
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable)\
+	this(eclass, triggerTable, "showElement.")
+	end
+	
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String prefix) super(eclass)
+		pTriggerTable = triggerTable
+		
+		pTriggered = ECBehaviorTriggered.new(eclass, triggerTable, "showElement", prefix + "trigger")
+		
+		eclass.addBehavior(this)
+	end
+	
+	
+	
+	/** \brief Trigger to show element. */
+	func ECBehaviorTriggered getTriggered()
+		return pTriggered
+	end
+	
+	/** \brief Trigger table or \em null if not used. */
+	func TSTriggerTable getTriggerTable()
+		return pTriggerTable
+	end
+	
+	/** \brief Set trigger table or \em null if not used. */
+	protected func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static func ECBehaviorShowElement getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorShowElement each
+			return true
+		end) cast ECBehaviorShowElement
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorShowElement.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

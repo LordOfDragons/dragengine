@@ -23,6 +23,7 @@
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
+pin Dragengine.Preloading
 pin Dragengine.Utils
 
 
@@ -95,5 +96,28 @@ class ECPStringMap extends ElementClassProperty
 	 */
 	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
 		pMap = Dictionary.new((property cast ECPStringMap).pMap)
+	end
+	
+	
+	
+	/**
+	 * \brief String map modified by stub property if present.
+	 * \version 1.19
+	 * 
+	 * If named stub property is not present or empty string the stored dictionary is returned.
+	 * If the named stub property is present it is decoded using codec. Since the returned
+	 * dictionary can be the stored dictionary do not modify the returned dictionary. If you
+	 * need to modify it create first a copy using "Dictionary.new(getMap(stub, codec))".
+	 * 
+	 * - "key1:value1 key2:value2 ... keyN:valueN"
+	 */
+	public func Dictionary getMap(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
+		if value.empty()
+			return pMap
+			
+		else
+			return codec.decodeStringDictionary(value)
+		end
 	end
 end

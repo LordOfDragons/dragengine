@@ -41,8 +41,8 @@
 deoglHTView::HTListener::HTListener( deoglHTView &htview ) : pHTView( htview ){
 }
 
-void deoglHTView::HTListener::SectorsChanged( deoglRHeightTerrain& ){
-	pHTView.SectorsChanged();
+void deoglHTView::HTListener::SectorsChanged( deoglRHeightTerrain &heightTerrain ){
+	pHTView.SectorsChanged( heightTerrain );
 }
 
 
@@ -176,6 +176,6 @@ void deoglHTView::pRebuildSectors(){
 
 
 
-void deoglHTView::SectorsChanged(){
+void deoglHTView::SectorsChanged ( deoglRHeightTerrain &heightTerrain ){
 	pDirtySectors = true;
 }

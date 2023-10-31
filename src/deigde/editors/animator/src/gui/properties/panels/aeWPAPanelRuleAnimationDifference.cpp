@@ -287,14 +287,14 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertAnimationDifference )
 		pCBLMoveName, new cComboLeadingMoveName( *this ) );
 	pCBLMoveName->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "Leading Move Time:", "Time in seconds of leading animation frame to retrieve",
+	helper.EditFloat( groupBox, "Leading Move Time:", "Time relative to leading move playtime to retrieve",
 		pEditLMoveTime, new cTextLeadingMoveTime( *this ) );
 	
 	helper.ComboBoxFilter( groupBox, "Reference Move Name:", true, "Name of reference animation move to use",
 		pCBRMoveName, new cComboReferenceMoveName( *this ) );
 	pCBRMoveName->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "Reference Move Time:", "Time in seconds of reference animation frame to retrieve",
+	helper.EditFloat( groupBox, "Reference Move Time:", "Time relative to reference move playtime to retrieve",
 		pEditRMoveTime, new cTextReferenceMoveTime( *this ) );
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );

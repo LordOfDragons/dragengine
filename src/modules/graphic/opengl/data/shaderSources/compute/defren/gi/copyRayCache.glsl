@@ -24,7 +24,7 @@ void main( void ){
 	ivec2 tc = ivec2( gl_GlobalInvocationID );
 	
 	int updateIndex = pGIProbesPerLine * tc.y + tc.x / pGIRaysPerProbe;
-	if( updateIndex >= pRayCacheProbeCount ){
+	if( updateIndex >= pGIProbeCount ){
 		return;
 	}
 	

@@ -35,122 +35,141 @@ pin Dragengine.Utils
  * decide what information to show.
  */
 class InteractPromptEntry
-	private var Image pImage
-	private var Video pVideo
-	private var UnicodeString pVerb
-	private var UnicodeString pDescription
-	private var String pStyle
-	private var Command pCommand
+	var Image pImage
+	var Video pVideo
+	var UnicodeString pVerb
+	var UnicodeString pDescription
+	var String pStyle
+	var Command pCommand
+	var Object pSettings
 	
 	
 	
 	/** \brief Create interact prompt entry. */
-	public func new()
-		this.pVerb = UnicodeString.new()
-		this.pDescription = UnicodeString.new()
-		this.pStyle = ""
+	func new()
+		pVerb = UnicodeString.new()
+		pDescription = UnicodeString.new()
+		pStyle = ""
 	end
 	
 	/** \brief Create copy of interact prompt entry. */
-	public func new( InteractPromptEntry copy )
-		this.pImage = copy.pImage
-		this.pVideo = copy.pVideo
-		this.pVerb = copy.pVerb
-		this.pDescription = copy.pDescription
-		this.pStyle = copy.pStyle
-		this.pCommand = copy.pCommand
+	func new(InteractPromptEntry copy)
+		pImage = copy.pImage
+		pVideo = copy.pVideo
+		pVerb = copy.pVerb
+		pDescription = copy.pDescription
+		pStyle = copy.pStyle
+		pCommand = copy.pCommand
+		pSettings = copy.pSettings
 	end
 	
 	
 	
 	/** \brief Image or null. */
-	public func Image getImage()
-		return this.pImage
+	func Image getImage()
+		return pImage
 	end
 	
 	/** \brief Set image or null. */
-	public func void setImage( Image image )
-		this.pImage = image
+	func void setImage(Image image)
+		pImage = image
 	end
 	
 	/** \brief Video or null. */
-	public func Video getVideo()
-		return this.pVideo
+	func Video getVideo()
+		return pVideo
 	end
 	
 	/** \brief Set video or null. */
-	public func void setVideo( Video video )
-		this.pVideo = video
+	func void setVideo(Video video)
+		pVideo = video
 	end
 	
 	/** \brief Style or empty string if not used. */
-	public func String getStyle()
-		return this.pStyle
+	func String getStyle()
+		return pStyle
 	end
 	
 	/** \brief Set style or empty string if not used. */
-	public func void setStyle( String style )
+	func void setStyle(String style)
 		if style == null
 			throw ENullPointer.new()
 		end
-		this.pStyle = style
+		pStyle = style
 	end
 	
 	/** \brief Verb. */
-	public func UnicodeString getVerb()
-		return this.pVerb
+	func UnicodeString getVerb()
+		return pVerb
 	end
 	
 	/** \brief Set verb. */
-	public func void setVerb( UnicodeString verb )
+	func void setVerb(UnicodeString verb)
 		if verb == null
 			throw ENullPointer.new()
 		end
-		this.pVerb = verb
+		pVerb = verb
 	end
 	
 	/** \brief Description. */
-	public func UnicodeString getDescription()
-		return this.pDescription
+	func UnicodeString getDescription()
+		return pDescription
 	end
 	
 	/** \brief Set description. */
-	public func void setDescription( UnicodeString description )
+	func void setDescription(UnicodeString description)
 		if description == null
 			throw ENullPointer.new()
 		end
-		this.pDescription = description
+		pDescription = description
 	end
 	
 	/** \brief Command or null if not used. */
-	public func Command getCommand()
-		return this.pCommand
+	func Command getCommand()
+		return pCommand
 	end
 	
 	/** \brief Set command or null if not used. */
-	public func void setCommand( Command command )
-		this.pCommand = command
+	func void setCommand(Command command)
+		pCommand = command
+	end
+	
+	/**
+	 * \brief Optional settings or null if not used.
+	 * \version 1.19
+	 */
+	func Object getSettings()
+		return pSettings
+	end
+	
+	/**
+	 * \brief Set optional settings or null if not used.
+	 * \version 1.19
+	 */
+	func void setSettings(Object settings)
+		pSettings = settings
 	end
 	
 	
 	
 	/** \brief String representation. */
-	public func String toString()
-		return this.pVerb.toUTF8()
+	func String toString()
+		return pVerb.toUTF8()
 	end
 	
 	/** \brief Prompts are equal. */
-	public func bool equals( Object other )
+	func bool equals(Object other)
 		if not other castable InteractPromptEntry
 			return false
 		end
 		
 		var InteractPromptEntry ipe = other cast InteractPromptEntry
-		return this.pImage == ipe.pImage \
-			and this.pVideo == ipe.pVideo \
-			and this.pCommand == ipe.pCommand \
-			and this.pVerb.equals( ipe.pVerb ) \
-			and this.pDescription.equals( ipe.pDescription ) \
-			and this.pStyle.equals( ipe.pStyle )
+		return pImage == ipe.pImage\
+			and pVideo == ipe.pVideo\
+			and pCommand == ipe.pCommand\
+			and pVerb.equals(ipe.pVerb)\
+			and pDescription.equals(ipe.pDescription)\
+			and pStyle.equals(ipe.pStyle)\
+			and (pSettings != null if pSettings.equals(ipe.pSettings) else ipe.pSettings == null)
 	end
 end

@@ -37,30 +37,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackEntryAdd::lpeULangPackEntryAdd( lpeLangPack *langpack, lpeLangPackEntry *entry ) :
-pLangPack( NULL ),
-pEntry( NULL )
+lpeULangPackEntryAdd::lpeULangPackEntryAdd( lpeLangPack *langpack,
+	lpeLangPackEntry *entry, lpeLangPackEntry *refEntry ) :
+pLangPack( langpack ),
+pEntry( entry ),
+pRefEntry( refEntry )
 {
-	if( ! langpack || ! entry ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( langpack )
+	DEASSERT_NOTNULL( entry )
 	
 	SetShortInfo( "Add entry" );
-	
-	pEntry = entry;
-	entry->AddReference();
-	
-	pLangPack = langpack;
-	langpack->AddReference();
 }
 
 lpeULangPackEntryAdd::~lpeULangPackEntryAdd(){
-	if( pEntry ){
-		pEntry->FreeReference();
-	}
-	if( pLangPack ){
-		pLangPack->FreeReference();
-	}
 }
 
 
@@ -69,21 +58,32 @@ lpeULangPackEntryAdd::~lpeULangPackEntryAdd(){
 ///////////////
 
 void lpeULangPackEntryAdd::Undo(){
-	pLangPack->GetEntrySelection().Remove( pEntry );
-	pLangPack->GetEntrySelection().ActivateNext();
+	lpeLangPackEntrySelection &lpes = pLangPack->GetEntrySelection();
+	
+	lpes.Remove( pEntry );
+	
+	if( pRefEntry ){
+		lpes.Add( pRefEntry );
+		lpes.SetActive( pRefEntry );
+		
+	}else{
+		lpes.ActivateNext();
+	}
+	
+	pLangPack->RemoveEntry( pEntry );
 	
 	pLangPack->NotifyEntrySelectionChanged();
 	pLangPack->NotifyActiveEntryChanged();
-	
-	pLangPack->RemoveEntry( pEntry );
 }
 
 void lpeULangPackEntryAdd::Redo(){
+	lpeLangPackEntrySelection &lpes = pLangPack->GetEntrySelection();
+	
 	pLangPack->AddEntry( pEntry );
 	
-	pLangPack->GetEntrySelection().Reset();
-	pLangPack->GetEntrySelection().Add( pEntry );
-	pLangPack->GetEntrySelection().SetActive( pEntry );
+	lpes.Reset();
+	lpes.Add( pEntry );
+	lpes.SetActive( pEntry );
 	
 	pLangPack->NotifyEntrySelectionChanged();
 	pLangPack->NotifyActiveEntryChanged();

@@ -724,7 +724,7 @@ void main( void ){
 	vec3 position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
 	
 	// calculate the reflection parameters
-	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
+	vec3 normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
 	vec3 reflectDir = reflect( normalize( position ), normal );
 	
 	// calculate the screen space reflection

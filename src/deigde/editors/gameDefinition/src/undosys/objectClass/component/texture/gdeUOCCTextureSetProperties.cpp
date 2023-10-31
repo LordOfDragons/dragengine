@@ -86,7 +86,6 @@ void gdeUOCCTextureSetProperties::Undo(){
 	}
 	
 	pTexture->GetProperties() = pOldValue;
-	
 	pObjectClass->NotifyComponentTexturePropertiesChanged( pComponent, pTexture );
 }
 
@@ -96,6 +95,5 @@ void gdeUOCCTextureSetProperties::Redo(){
 	}
 	
 	pTexture->GetProperties() = pNewValue;
-	
 	pObjectClass->NotifyComponentTexturePropertiesChanged( pComponent, pTexture );
 }

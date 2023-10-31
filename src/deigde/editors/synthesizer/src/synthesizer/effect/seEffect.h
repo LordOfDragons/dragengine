@@ -156,7 +156,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another synthesizer effect to this synthesizer effect. */
-	virtual seEffect &operator=( const seEffect &copy );
+	seEffect &operator=( const seEffect &copy );
 	/*@}*/
 	
 	

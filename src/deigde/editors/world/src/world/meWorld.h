@@ -31,6 +31,7 @@
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/utils/decUniqueID.h>
 
+#include "meMusic.h"
 #include "object/meObjectList.h"
 #include "object/meObjectSelection.h"
 #include "objectshape/meObjectShapeSelection.h"
@@ -189,6 +190,7 @@ private:
 	
 	meLumimeter *pLumimeter;
 	mePathFindTest *pPathFindTest;
+	meMusic::Ref pMusic;
 	
 	bool pDepChanged;
 	
@@ -474,6 +476,9 @@ public:
 	inline const decString &GetPathNavTest() const{ return pPathNavTest; }
 	/** Sets the last path used for loading/saving navigation test files. */
 	void SetPathNavTest( const char *path );
+	
+	/** Music testing. */
+	inline meMusic &GetMusic() const{ return pMusic; }
 	/*@}*/
 	
 	/** Activate microphone. */
@@ -516,6 +521,10 @@ public:
 	void NotifyLumimeterChanged();
 	/** Notifies all that the path find test changed. */
 	void NotifyPathFindTestChanged();
+	
+	/** Notify listeners music changed. */
+	void NotifyMusicChanged();
+	
 	/** Notifies all that the lighting changed. */
 	void NotifyLightingChanged();
 	/** Notifies all that the editing parameters changed. */

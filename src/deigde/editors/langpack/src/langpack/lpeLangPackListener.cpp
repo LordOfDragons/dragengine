@@ -40,29 +40,29 @@ lpeLangPackListener::~lpeLangPackListener(){
 // Notifications
 //////////////////
 
-void lpeLangPackListener::StateChanged( lpeLangPack *langpack ){
+void lpeLangPackListener::StateChanged( lpeLangPack* ){
 }
 
-void lpeLangPackListener::UndoChanged( lpeLangPack *langpack ){
+void lpeLangPackListener::UndoChanged( lpeLangPack* ){
 }
 
-void lpeLangPackListener::LangPackChanged( lpeLangPack *langpack ){
+void lpeLangPackListener::LangPackChanged( lpeLangPack* ){
 }
 
 
 
-void lpeLangPackListener::EntryStructureChanged( lpeLangPack *skin ){
+void lpeLangPackListener::EntryStructureChanged( lpeLangPack* ){
 }
 
-void lpeLangPackListener::EntryChanged( lpeLangPack *langpack, lpeLangPackEntry *entry ){
+void lpeLangPackListener::EntryChanged( lpeLangPack*, lpeLangPackEntry* ){
 }
 
 void lpeLangPackListener::EntryNameChanged( lpeLangPack *langpack, lpeLangPackEntry *entry ){
 	EntryChanged( langpack, entry );
 }
 
-void lpeLangPackListener::EntrySelectionChanged( lpeLangPack *langpack ){
+void lpeLangPackListener::EntrySelectionChanged( lpeLangPack* ){
 }
 
-void lpeLangPackListener::ActiveEntryChanged( lpeLangPack *langpack ){
+void lpeLangPackListener::ActiveEntryChanged( lpeLangPack* ){
 }

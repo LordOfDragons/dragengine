@@ -81,12 +81,12 @@ class ADRuleAnimation extends ADRule
 		pMoveName = name
 	end
 	
-	/** \brief Move time. */
+	/** \brief Time relative to move playtime. */
 	public func float getMoveTime()
 		return pMoveTime
 	end
 	
-	/** \brief Set move time. */
+	/** \brief Set time relative to move playtime. */
 	public func void setMoveTime(float time)
 		pMoveTime = time
 	end
@@ -96,7 +96,7 @@ class ADRuleAnimation extends ADRule
 		return pEnablePosition
 	end
 	
-	/** \brief Setif position manipulation is enabled. */
+	/** \brief Set if position manipulation is enabled. */
 	public func void setEnablePosition(bool enable)
 		pEnablePosition = enable
 	end

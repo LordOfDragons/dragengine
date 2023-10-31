@@ -82,10 +82,10 @@ gdeUOCCTextureSetName::~gdeUOCCTextureSetName(){
 
 void gdeUOCCTextureSetName::Undo(){
 	pTexture->SetName( pOldValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureNameChanged( pComponent, pTexture );
 }
 
 void gdeUOCCTextureSetName::Redo(){
 	pTexture->SetName( pNewValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureNameChanged( pComponent, pTexture );
 }

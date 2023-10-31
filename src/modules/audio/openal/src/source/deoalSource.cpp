@@ -51,7 +51,8 @@ pOwner( NULL ),
 pImportance( 1000.0f ),
 
 pFilter( 0 ),
-pEffectSlot( nullptr )
+pEffectSlot( nullptr ),
+pEffectSlotFilter( 0 )
 {
 	try{
 		// create sound source and set some default parameters. throws an exception
@@ -242,6 +243,27 @@ void deoalSource::DropEffectSlot(){
 	pEffectSlot = nullptr;
 }
 
+ALuint deoalSource::GetEffectSlotFilter(){
+	if( ! pEffectSlotFilter ){
+		OAL_CHECK( pAudioThread, palGenFilters( 1, &pEffectSlotFilter ) );
+	}
+	return pEffectSlotFilter;
+}
+
+
+
+void deoalSource::Reset(){
+	SetOwner( nullptr );
+	Stop();
+	ClearFilter();
+	DropEffectSlot();
+	
+	if( pSource ){
+		OAL_CHECK( pAudioThread, alSource3i( pSource, AL_AUXILIARY_SEND_FILTER,
+			AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+	}
+}
+
 
 
 // Private Functions
@@ -254,6 +276,10 @@ void deoalSource::pCleanUp(){
 	if( pFilter ){
 		palDeleteFilters( 1, &pFilter );
 		pFilter = 0;
+	}
+	if( pEffectSlotFilter ){
+		palDeleteFilters( 1, &pEffectSlotFilter );
+		pEffectSlotFilter = 0;
 	}
 	
 	if( pBuffers ){

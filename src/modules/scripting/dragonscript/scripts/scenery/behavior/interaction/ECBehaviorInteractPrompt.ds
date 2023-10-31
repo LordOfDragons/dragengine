@@ -80,32 +80,34 @@ pin Dragengine.Utils
  * - "interactPrompt{(id)}.enabled": ECPBoolean
  * - "interactPrompt{(id)}.bones": ECPStringList
  * - "interactPrompt{(id)}.maximumDistance": ECPFloat
+ * - "interactPrompt{(id)}.settings": ECPString
  */
 class ECBehaviorInteractPrompt extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorInteractPrompt pECBehavior
-		private var Image pImage
-		private var Video pVideo
-		private var String pStyle
-		private var UnicodeString pVerb
-		private var UnicodeString pDescription
-		private var String pCommand
-		private var bool pEnabled
-		private var Array pBones
-		private var float pMaximumDistance
+		var ECBehaviorInteractPrompt pECBehavior
+		var Image pImage
+		var Video pVideo
+		var String pStyle
+		var UnicodeString pVerb
+		var UnicodeString pDescription
+		var String pCommand
+		var bool pEnabled
+		var Array pBones
+		var float pMaximumDistance
+		var String pSettings
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new(ECBehaviorInteractPrompt ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorInteractPrompt ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var ElementClass eclass = getElement().getClass()
 			var CodecPropertyString codec = eclass.getCodecPropertyString()
 			
@@ -116,6 +118,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 			pEnabled = pECBehavior.getEnabled().getValue(stub)
 			pBones = pECBehavior.getBones().getList(stub, codec)
 			pMaximumDistance = pECBehavior.getMaximumDistance().getValue(stub)
+			pSettings = pECBehavior.getSettings().getValue(stub)
 			
 			var TranslationManager tm = pECBehavior.getTranslationManager()
 			if tm != null
@@ -144,37 +147,37 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorInteractPrompt getECBehavior()
+		func ECBehaviorInteractPrompt getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Image. */
-		public func Image getImage()
+		func Image getImage()
 			return pImage
 		end
 		
 		/** \brief Set image. */
-		public func void setImage(Image image)
+		func void setImage(Image image)
 			pImage = image
 		end
 		
 		/** \brief Video. */
-		public func Video getVideo()
+		func Video getVideo()
 			return pVideo
 		end
 		
 		/** \brief Set video. */
-		public func void setVideo(Video video)
+		func void setVideo(Video video)
 			pVideo = video
 		end
 		
 		/** \brief Style. */
-		public func String getStyle()
+		func String getStyle()
 			return pStyle
 		end
 		
 		/** \brief Set style. */
-		public func void setStyle(String style)
+		func void setStyle(String style)
 			if style == null
 				throw ENullPointer.new("style")
 			end
@@ -182,12 +185,12 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Verb. */
-		public func UnicodeString getVerb()
+		func UnicodeString getVerb()
 			return pVerb
 		end
 		
 		/** \brief Set verb. */
-		public func void setVerb(UnicodeString verb)
+		func void setVerb(UnicodeString verb)
 			if verb == null
 				throw ENullPointer.new("verb")
 			end
@@ -195,12 +198,12 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Description. */
-		public func UnicodeString getDescription()
+		func UnicodeString getDescription()
 			return pDescription
 		end
 		
 		/** \brief Set description. */
-		public func void setDescription(UnicodeString description)
+		func void setDescription(UnicodeString description)
 			if description == null
 				throw ENullPointer.new("description")
 			end
@@ -208,12 +211,12 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Command. */
-		public func String getCommand()
+		func String getCommand()
 			return pCommand
 		end
 		
 		/** \brief Set command. */
-		public func void setCommand(String command)
+		func void setCommand(String command)
 			if command == null
 				throw ENullPointer.new("command")
 			end
@@ -221,12 +224,12 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Prompt is enabled. */
-		public func bool getEnabled()
+		func bool getEnabled()
 			return pEnabled
 		end
 		
 		/** \brief Set if prompt is enabled. */
-		public func void setEnabled(bool enabled)
+		func void setEnabled(bool enabled)
 			pEnabled = enabled
 		end
 		
@@ -234,7 +237,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		 * \brief Maximum distance to show interact prompt for when looking at it.
 		 * \version 1.18
 		 */
-		public func float getMaximumDistance()
+		func float getMaximumDistance()
 			return pMaximumDistance
 		end
 		
@@ -242,24 +245,44 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		 * \brief Set maximum distance to show interact prompt for when looking at it.
 		 * \version 1.18
 		 */
-		public func void setMaximumDistance(float distance)
+		func void setMaximumDistance(float distance)
 			pMaximumDistance = DEMath.max(distance, 0.0)
+		end
+		
+		/**
+		 * \brief Optional settings to modify display in custom prompt widgets.
+		 * \version 1.19
+		 * 
+		 * Can be null.
+		 */
+		func String getSettings()
+			return pSettings
+		end
+		
+		/**
+		 * \brief Set optional settings to modify display in custom prompt widgets.
+		 * \version 1.19
+		 * 
+		 * Can be null.
+		 */
+		func void setSettings(String settings)
+			pSettings = settings
 		end
 		
 		
 		
 		/** \brief Count of bones this prompt is limited to. */
-		public func int getBoneCount()
+		func int getBoneCount()
 			return pBones.getCount()
 		end
 		
 		/** \brief Bone at index this prompt is limited to. */
-		public func String getBoneAt(int index)
+		func String getBoneAt(int index)
 			return pBones.getAt(index) cast String
 		end
 		
 		/** \brief Bone is included in list of bones this prompt is limited to. */
-		public func bool hasBone(String bone)
+		func bool hasBone(String bone)
 			return pBones.has(bone)
 		end
 		
@@ -268,7 +291,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		 * 
 		 * Block receives as argument "String bone".
 		 */
-		public func void forEachBone(Block ablock)
+		func void forEachBone(Block ablock)
 			pBones.forEach(ablock)
 		end
 		
@@ -280,73 +303,54 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	
 	
 	
-	private var ECPImage pImage
-	private var ECPVideo pVideo
-	private var ECPString pStyle
-	private var ECPUnicodeString pVerb
-	private var ECPString pVerbTranslate
-	private var ECPUnicodeString pDescription
-	private var ECPString pDescriptionTranslate
-	private var ECPString pCommand
-	private var ECPBoolean pEnabled
-	private var ECPStringList pBones
-	private var ECPFloat pMaximumDistance
-	private var TranslationManager pTranslationManager
+	var ECPImage pImage
+	var ECPVideo pVideo
+	var ECPString pStyle
+	var ECPUnicodeString pVerb
+	var ECPString pVerbTranslate
+	var ECPUnicodeString pDescription
+	var ECPString pDescriptionTranslate
+	var ECPString pCommand
+	var ECPBoolean pEnabled
+	var ECPStringList pBones
+	var ECPFloat pMaximumDistance
+	var ECPString pSettings
+	var TranslationManager pTranslationManager
 	
 	
 	
 	/**
 	 * \brief Create behavior element class.
 	 */
-	public func new(BehaviorElementClass eclass) this(eclass, "")
+	func new(BehaviorElementClass eclass) this(eclass, "")
 	end
 	
-	public func new(BehaviorElementClass eclass, String id) this(eclass, id, \
+	func new(BehaviorElementClass eclass, String id) this(eclass, id,\
 	id.empty() if "interactPrompt" else "interactPrompt(" + id + ")")
 	end
 	
-	public func new(BehaviorElementClass eclass, String id, String subID) \
+	func new(BehaviorElementClass eclass, String id, String subID)\
 	this(eclass, id, subID, subID + ".")
 	end
 	
-	public func new(BehaviorElementClass eclass, String id, String subID, String prefix) super(eclass, id)
+	func new(BehaviorElementClass eclass, String id, String subID, String prefix) super(eclass, id)
 		var BaseGameApp app = BaseGameApp.getApp()
 		if app != null
 			pTranslationManager = app.getTranslationManager()
 		end
 
-		pImage = ECPImage.new(prefix + "image")
-		eclass.addProperty(pImage)
-		
-		pVideo = ECPVideo.new(prefix + "video")
-		eclass.addProperty(pVideo)
-		
-		pStyle = ECPString.new(prefix + "style", "")
-		eclass.addProperty(pStyle)
-		
-		pVerb = ECPUnicodeString.new(prefix + "verb", "")
-		eclass.addProperty(pVerb)
-		
-		pVerbTranslate = ECPString.new(prefix + "verbTranslate", "")
-		eclass.addProperty(pVerbTranslate)
-		
-		pDescription = ECPUnicodeString.new(prefix + "description", "")
-		eclass.addProperty(pDescription)
-		
-		pDescriptionTranslate = ECPString.new(prefix + "descriptionTranslate", "")
-		eclass.addProperty(pDescriptionTranslate)
-		
-		pCommand = ECPString.new(prefix + "command", "")
-		eclass.addProperty(pCommand)
-		
-		pEnabled = ECPBoolean.new(prefix + "enabled", true)
-		eclass.addProperty(pEnabled)
-		
-		pBones = ECPStringList.new(prefix + "bones")
-		eclass.addProperty(pBones)
-		
-		pMaximumDistance = ECPFloat.new(prefix + "maximumDistance", 1000, 0)
-		eclass.addProperty(pMaximumDistance)
+		eclass.addProperty(pImage = ECPImage.new(prefix + "image"))
+		eclass.addProperty(pVideo = ECPVideo.new(prefix + "video"))
+		eclass.addProperty(pStyle = ECPString.new(prefix + "style", ""))
+		eclass.addProperty(pVerb = ECPUnicodeString.new(prefix + "verb", ""))
+		eclass.addProperty(pVerbTranslate = ECPString.new(prefix + "verbTranslate", ""))
+		eclass.addProperty(pDescription = ECPUnicodeString.new(prefix + "description", ""))
+		eclass.addProperty(pDescriptionTranslate = ECPString.new(prefix + "descriptionTranslate", ""))
+		eclass.addProperty(pCommand = ECPString.new(prefix + "command", ""))
+		eclass.addProperty(pEnabled = ECPBoolean.new(prefix + "enabled", true))
+		eclass.addProperty(pBones = ECPStringList.new(prefix + "bones"))
+		eclass.addProperty(pMaximumDistance = ECPFloat.new(prefix + "maximumDistance", 1000, 0))
+		eclass.addProperty(pSettings = ECPString.new(prefix + "settings", null))
 		
 		eclass.addBehavior(this)
 	end
@@ -354,22 +358,22 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	
 	
 	/** \brief Image. */
-	public func ECPImage getImage()
+	func ECPImage getImage()
 		return pImage
 	end
 	
 	/** \brief Video. */
-	public func ECPVideo getVideo()
+	func ECPVideo getVideo()
 		return pVideo
 	end
 	
 	/** \brief Style. */
-	public func ECPString getStyle()
+	func ECPString getStyle()
 		return pStyle
 	end
 	
 	/** \brief Verb. */
-	public func ECPUnicodeString getVerb()
+	func ECPUnicodeString getVerb()
 		return pVerb
 	end
 	
@@ -377,12 +381,12 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * \brief Verb translated by active language.
 	 * \version 1.16
 	 */
-	public func ECPString getVerbTranslate()
+	func ECPString getVerbTranslate()
 		return pVerbTranslate
 	end
 	
 	/** \brief Description. */
-	public func ECPUnicodeString getDescription()
+	func ECPUnicodeString getDescription()
 		return pDescription
 	end
 	
@@ -390,22 +394,22 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * \brief Description translated by active language.
 	 * \version 1.16
 	 */
-	public func ECPString getDescriptionTranslate()
+	func ECPString getDescriptionTranslate()
 		return pDescriptionTranslate
 	end
 	
 	/** \brief Command. */
-	public func ECPString getCommand()
+	func ECPString getCommand()
 		return pCommand
 	end
 	
 	/** \brief Prompt is enabled. */
-	public func ECPBoolean getEnabled()
+	func ECPBoolean getEnabled()
 		return pEnabled
 	end
 	
 	/** \brief List of bones to restrict the prompt to. */
-	public func ECPStringList getBones()
+	func ECPStringList getBones()
 		return pBones
 	end
 	
@@ -413,7 +417,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * \brief Translation manager or null.
 	 * \version 1.16
 	 */
-	public func TranslationManager getTranslationManager()
+	func TranslationManager getTranslationManager()
 		return pTranslationManager
 	end
 
@@ -421,7 +425,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * \brief Set translation manager or null.
 	 * \version 1.16
 	 */
-	public func void setTranslationManager(TranslationManager manager)
+	func void setTranslationManager(TranslationManager manager)
 		pTranslationManager = manager
 	end
 	
@@ -429,14 +433,22 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * \brief Maximum distance to show interact prompt for when looking at it.
 	 * \version 1.18
 	 */
-	public func ECPFloat getMaximumDistance()
+	func ECPFloat getMaximumDistance()
 		return pMaximumDistance
+	end
+	
+	/**
+	 * \brief Optional settings to modify custom prompt widget display.
+	 * \version 1.19
+	 */
+	func ECPString getSettings()
+		return pSettings
 	end
 
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -448,7 +460,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorInteractPrompt.
 	 */
-	static public func ECBehaviorInteractPrompt getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorInteractPrompt getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorInteractPrompt each
 			return true
 		end) cast ECBehaviorInteractPrompt
@@ -460,7 +472,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorInteractPrompt with specific identifier.
 	 */
-	static public func ECBehaviorInteractPrompt getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorInteractPrompt getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorInteractPrompt each
 			return each.getID().equals(id)
 		end) cast ECBehaviorInteractPrompt
@@ -472,7 +484,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInteractPrompt behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorInteractPrompt each
 			return true
 		end)
@@ -487,7 +499,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * of type ECBehaviorInteractPrompt.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -499,7 +511,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorInteractPrompt.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -511,7 +523,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInteractPrompt.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -525,7 +537,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInteractPrompt.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllEnabledInstancesIn(BehaviorElement element)
+	static func Array getAllEnabledInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return each.getEnabled()
 		end)
@@ -534,7 +546,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

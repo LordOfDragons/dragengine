@@ -2593,12 +2593,12 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 			
 			switch( attachment.GetAttachType() ){
 			case deColliderAttachment::eatStatic:
-				bpAttachment.Reposition( posMatrix, ! pPreventAttNotify );
+				bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify );
 				break;
 				
 			case deColliderAttachment::eatRig:{
 				if( ! rig ){
-					bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
+					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 					break;
 				}
 				
@@ -2609,7 +2609,7 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				const bool isAttComponent = attResType == deResourceManager::ertComponent;
 				
 				if( ! isAttCollider && ! isAttComponent ){
-					bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
+					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 					break;
 				}
 				
@@ -2626,19 +2626,19 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 						? visitor.CastToComponent().GetComponent() : ( deComponent* )&attachedResource;
 					
 					if( ! attachedComponent ){
-						bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
+						bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 						break;
 					}
 					
 					deRig * const attachedRig = attachedComponent->GetRig();
 					if( ! attachedRig ){
-						bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
+						bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 						break;
 					}
 					
 					const int boneCount = attachedComponent->GetBoneCount();
 					if( boneCount == 0 ){
-						bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
+						bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 						break;
 					}
 					
@@ -2690,7 +2690,7 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 					changed = true; // TODO: can this be optimized to be false in some cases?
 					
 				}else{
-					bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
+					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 					break;
 				}
 				
@@ -2712,7 +2712,7 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				
 			case deColliderAttachment::eatBone:{
 				if( ! rig ){
-					bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
+					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 					break;
 				}
 				
@@ -2723,7 +2723,7 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				
 				const int boneIndex = bpAttachment.GetTrackBone();
 				if( boneIndex == -1 ){
-					bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
+					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 					break;
 				}
 				
@@ -2734,15 +2734,16 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 					bpAttachment.Reposition( pBones[ boneIndex ]->GetRealMatrix(), ! pPreventAttNotify );
 					
 				}else{*/
-					bpAttachment.Reposition( decDMatrix( component->GetBoneAt( boneIndex ).GetMatrix() )
-						.QuickMultiply( posMatrix ), ! pPreventAttNotify );
+					const deComponentBone &cbone = component->GetBoneAt( boneIndex );
+					bpAttachment.Reposition( decDMatrix( cbone.GetMatrix() ).QuickMultiply( posMatrix ),
+						pLinVelo, ! pPreventAttNotify );
 				//}
 				
 				}break;
 				
 			case deColliderAttachment::eatWeight:{
 				if( ! rig || ! pLinkedComponent ){
-					bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
+					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 					break;
 				}
 				
@@ -2783,7 +2784,7 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 						}
 					}
 					
-					bpAttachment.Reposition( transform.QuickMultiply( posMatrix ), ! pPreventAttNotify );
+					bpAttachment.Reposition( transform.QuickMultiply( posMatrix ), pLinVelo, ! pPreventAttNotify );
 				}
 				}break;
 				
@@ -2796,7 +2797,7 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				}
 				
 				bpAttachment.Transform( bpAttachment.GetAccumRelMoveMatrix()
-					.QuickMultiply( pRelMoveMatrix ), ! pPreventAttNotify );
+					.QuickMultiply( pRelMoveMatrix ), pLinVelo, ! pPreventAttNotify );
 				bpAttachment.SetAccumRelMoveMatrix( decDMatrix() );
 				}break;
 			}
@@ -2835,7 +2836,8 @@ void debpColliderComponent::pApplyAccumRelMoveMatrices(){
 		if( attachment.GetAttachType() == deColliderAttachment::eatRelativeMovement ){
 			bpAttachment.Transform( bpAttachment.GetAccumRelMoveMatrix()
 				.QuickMultiply( decDMatrix::CreateTranslation( decDVector( pRelMoveDisplacement ) - pPosition ) )
-				.QuickMultiply( decDMatrix::CreateWorld( pPosition, pRelMoveRotation ) ), ! pPreventAttNotify );
+				.QuickMultiply( decDMatrix::CreateWorld( pPosition, pRelMoveRotation ) ),
+				pLinVelo, ! pPreventAttNotify );
 			bpAttachment.SetAccumRelMoveMatrix( decDMatrix() );
 		}
 	}

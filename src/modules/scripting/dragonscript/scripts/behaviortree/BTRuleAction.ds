@@ -43,32 +43,28 @@ pin Dragengine.Utils
  * change.
  */
 class BTRuleAction extends BTRule
-	/** \brief Action identifier. */
-	private var String pActionID
-	
-	/** \brief Action or \em null if not cached. */
-	private var BTAction pAction
+	var String pActionID
 	
 	
 	
 	/** \brief Create behavior tree rule. */
-	public func new( String id, String actionID ) super( id )
+	func new(String id, String actionID) super(id)
 		if actionID == null
 			throw EInvalidParam.new()
 		end
-		this.pActionID = actionID
+		pActionID = actionID
 	end
 	
 	
 	
 	/** \brief Action identifier. */
-	public func String getActionID()
-		return this.pActionID
+	func String getActionID()
+		return pActionID
 	end
 	
-	/** \brief Action or \em null if not cached. */
-	public func BTAction getAction()
-		return this.pAction
+	/** \deprecated Removed without replacement. */
+	func BTAction getAction()
+		return null
 	end
 	
 	
@@ -78,17 +74,22 @@ class BTRuleAction extends BTRule
 	 * \returns Action return value if no rule condition evaluates to false and the named
 	 *          action is found in the BTContext. Otherwise BTResult.failure is returned.
 	 */
-	public func BTResult run( BTContext context )
-		if this.pAction == null
-			this.pAction = context.getAction( this.pActionID )
-		end
+	func BTResult run(BTContext context)
+		var BTAction action = context.getAction(pActionID)
 		
-		if this.pAction == null or not this.evaluateConditions( context )
+		if action == null or not evaluateConditions(context)
 			return BTResult.failure
 		end
 		
-		var BTResult result = this.pAction.runAction( context, this.getParameters() )
-		context.setActionFirstRun( false )
+		var BTResult result = action.runAction(context, getParameters())
+		context.setActionFirstRun(false)
 		return result
+	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleAction(id='{}' action='{}')".format(Array.newWith(getID(), pActionID))
 	end
 end

@@ -63,15 +63,15 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Actor starts aligning. */
-		public func void startAligning(Instance instance)
+		func void startAligning(Instance instance)
 		end
 		
 		/** \brief Actor finished aligning. */
-		public func void finishedAligning(Instance instance)
+		func void finishedAligning(Instance instance)
 		end
 	end
 	
@@ -83,10 +83,10 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -94,7 +94,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -104,43 +104,43 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		class LeaveConversation extends ECBehaviorConversationActor.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void leaveConversation(ECBehaviorConversationActor.Instance instance)
+			func void leaveConversation(ECBehaviorConversationActor.Instance instance)
 				pInstance.onLeaveConversation()
 			end
 		end
 		
 		
-		private var ECBehaviorAlignActor pECBehavior
+		var ECBehaviorAlignActor pECBehavior
 		
-		private var ECBehaviorLocomotion.Instance pLocomotion
-		private var ECBehaviorConversationActor.Instance pConversationActor
+		var ECBehaviorLocomotion.Instance pLocomotion
+		var ECBehaviorConversationActor.Instance pConversationActor
 		
-		private var DVector pTargetPosition
-		private var float pTargetOrientation
-		private var float pTargetLookVertical
-		private var ConversationPlaybackLookAt pLookAt
-		private var Element pRelativeTargetElement
-		private var DMatrix pRelativeTargetMatrix
-		private var float pInitialDistance
-		private var bool pIsAtTarget
-		private var bool pAlignFinished
-		private var bool pSucceeded
+		var DVector pTargetPosition
+		var float pTargetOrientation
+		var float pTargetLookVertical
+		var ConversationPlaybackLookAt pLookAt
+		var Element pRelativeTargetElement
+		var DMatrix pRelativeTargetMatrix
+		var float pInitialDistance
+		var bool pIsAtTarget
+		var bool pAlignFinished
+		var bool pSucceeded
 		
-		private var float pSpeed
+		var float pSpeed
 		
-		private var ElementResolver pElementResolver
-		private var Array pListeners
+		var ElementResolver pElementResolver
+		var Array pListeners
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new(ECBehaviorAlignActor ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorAlignActor ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
 			pIsAtTarget = false
@@ -153,7 +153,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			pConversationActor = null
 			pLocomotion = null
 			pListeners = null
@@ -165,7 +165,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var BehaviorElement element = getElement()
 			
 			if pECBehavior.getConversationActor() != null
@@ -184,94 +184,94 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorAlignActor getECBehavior()
+		func ECBehaviorAlignActor getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Locomotion behavior. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
+		func ECBehaviorLocomotion.Instance getLocomotion()
 			return pLocomotion
 		end
 		
 		/** \brief Conversation actor behavior or null if not used. */
-		public func ECBehaviorConversationActor.Instance getConversationActor()
+		func ECBehaviorConversationActor.Instance getConversationActor()
 			return pConversationActor
 		end
 		
 		
 		
 		/** \brief Target position. */
-		public func DVector getTargetPosition()
+		func DVector getTargetPosition()
 			return pTargetPosition
 		end
 		
 		/** \brief Set target position. */
-		public func void setTargetPosition(DVector position)
+		func void setTargetPosition(DVector position)
 			pTargetPosition = position
 		end
 		
 		/** \brief Target orientation. */
-		public func float getTargetOrientation()
+		func float getTargetOrientation()
 			return pTargetOrientation
 		end
 		
 		/** \brief Set target orientation. */
-		public func void setTargetOrientation(float orientation)
+		func void setTargetOrientation(float orientation)
 			pTargetOrientation = DEMath.normalize(orientation, -180.0, 180.0)
 		end
 		
 		/** \brief Set target orientation. */
-		public func void setTargetOrientation(DVector targetPosition)
+		func void setTargetOrientation(DVector targetPosition)
 			var DVector direction = targetPosition - getElement().getPosition()
 			pTargetOrientation = -DEMath.atan2(direction.getX(), direction.getZ())
 		end
 		
 		/** \brief Relative target matrix. */
-		public func DMatrix getRelativeTargetMatrix()
+		func DMatrix getRelativeTargetMatrix()
 			return pRelativeTargetMatrix
 		end
 		
 		/** \brief Relative target element. */
-		public func Element getRelativeTargetElement()
+		func Element getRelativeTargetElement()
 			return pRelativeTargetElement
 		end
 		
 		/** \brief Set relative target position. */
-		public func void setRelativeTargetElement(Element element)
+		func void setRelativeTargetElement(Element element)
 			pRelativeTargetElement = element
 		end
 		
 		/** \brief Set target. */
-		public func void setTarget(Element element, DVector position, float orientation)
+		func void setTarget(Element element, DVector position, float orientation)
 			setRelativeTargetElement(element)
 			setTargetPosition(position)
 			setTargetOrientation(orientation)
 		end
 		
 		/** \brief Target looking up-down. */
-		public func float getTargetLookVertical()
+		func float getTargetLookVertical()
 			return pTargetLookVertical
 		end
 		
 		/** \brief Set target looking up-down. */
-		public func void setTargetLookVertical(float lookVertical)
+		func void setTargetLookVertical(float lookVertical)
 			pTargetLookVertical = lookVertical
 		end
 		
 		/** \brief Set target from locomotion. */
-		public func void setTargetFromLocomotion()
+		func void setTargetFromLocomotion()
 			var Locomotion locomotion = pLocomotion.getLocomotion()
 			pTargetOrientation = locomotion.getOrientation()
 			pTargetLookVertical = locomotion.getLookVerticalGoal()
 		end
 		
 		/** \brief Conversation look-at. */
-		public func ConversationPlaybackLookAt getLookAt()
+		func ConversationPlaybackLookAt getLookAt()
 			return pLookAt
 		end
 		
 		/** \brief Set conversation look-at. */
-		public func void setLookAt(ConversationPlaybackLookAt lookAt)
+		func void setLookAt(ConversationPlaybackLookAt lookAt)
 			pLookAt = lookAt
 		end
 		
@@ -282,13 +282,13 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		 * Shortcut for calling setLookAt() with ConversationPlaybackLookAt using
 		 * ConversationCustomTarget with matrix set from world position.
 		 */
-		public func void setLookAt(DVector lookAt)
+		func void setLookAt(DVector lookAt)
 			pLookAt = ConversationPlaybackLookAt.new(\
 				ConversationCustomTarget.new(DMatrix.newTranslation(lookAt)))
 		end
 		
 		/** \brief Clear target parameters. */
-		public func void clearTarget()
+		func void clearTarget()
 			pTargetPosition = null
 			pTargetOrientation = 0
 			pTargetLookVertical = 0
@@ -298,44 +298,74 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		end
 		
 		/** \brief Movement speed. */
-		public func float getSpeed()
+		func float getSpeed()
 			return pSpeed
 		end
 		
 		/** \brief Set movement speed. */
-		public func void setSpeed(float speed)
+		func void setSpeed(float speed)
 			pSpeed = DEMath.max(speed, 0.0)
 		end
 		
 		
 		
+		/**
+		 * \brief World target position.
+		 * \version 1.19
+		 * 
+		 * If relative to element this potentially changes every frame update.
+		 */
+		func DVector getWorldTargetPosition()
+			var DVector position = pTargetPosition
+			if pRelativeTargetElement != null
+				position = (pRelativeTargetMatrix * pRelativeTargetElement.getElementMatrix()).getPosition()
+			end
+			return position
+		end
+		
+		/**
+		 * \brief World target orientation.
+		 * \version 1.19
+		 * 
+		 * If relative to element this potentially changes every frame update.
+		 */
+		func float getWorldTargetOrientation()
+			var float orientation = pTargetOrientation
+			if pRelativeTargetElement != null
+				orientation = (pRelativeTargetMatrix * pRelativeTargetElement.getElementMatrix()).getEulerAngles().getY()
+			end
+			return orientation
+		end
+		
+		
+		
 		/** \brief Actor is at target position. */
-		public func bool isAtTarget()
+		func bool isAtTarget()
 			return pIsAtTarget
 		end
 		
 		/** \brief Actor is not at target position. */
-		public func bool isNotAtTarget()
+		func bool isNotAtTarget()
 			return not pIsAtTarget
 		end
 		
 		/** \brief Actor is aligning. */
-		public func bool isAligning()
+		func bool isAligning()
 			return not pAlignFinished
 		end
 		
 		/** \brief Actor is not aligning. */
-		public func bool isFinished()
+		func bool isFinished()
 			return pAlignFinished
 		end
 		
 		/** \brief Last aligning succeeded. */
-		public func bool hasSucceeded()
+		func bool hasSucceeded()
 			return pSucceeded
 		end
 		
 		/** \brief Last aligning failed. */
-		public func bool hasFailed()
+		func bool hasFailed()
 			return not pSucceeded
 		end
 		
@@ -360,7 +390,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		 * \note To not call if ECBehaviorActorMover is present and is moving actor
 		 * \throws EInvalidParam Actor is already aligning.
 		 */
-		public func void startAligning()
+		func void startAligning()
 			if not pAlignFinished
 				throw EInvalidParam.new("Aligning in progress")
 			end
@@ -419,7 +449,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		 * 
 		 * You can change these values manully before calling startAligning() too.
 		 */
-		public func void initLocomotionPlayer()
+		func void initLocomotionPlayer()
 			var Locomotion locomotion = pLocomotion.getLocomotion()
 			locomotion.setAdjustTimeHorizontal(0.5)
 			locomotion.setAdjustTimeVertical(0.5)
@@ -438,7 +468,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		 * if aligning finished or has been cancelled. It is recommended to clear all
 		 * ECBehaviorPlayerInput* once finished to ensure player input did not build up.
 		 */
-		public func void update(float elapsed)
+		func void update(float elapsed)
 			if pAlignFinished
 				return
 			end
@@ -479,7 +509,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		end
 		
 		/** \brief Cancel aligning if running. */
-		public func void cancelAligning()
+		func void cancelAligning()
 			if pAlignFinished
 				return
 			end
@@ -592,7 +622,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		
 		
 		/** \brief Actor leaves conversation. */
-		public func void onLeaveConversation()
+		func void onLeaveConversation()
 			// if actor enter conversation after aligning started the look-at can be cleared
 			// upon leaving. if this is the case restore the look-at
 			if pAlignFinished or pLookAt == null
@@ -608,7 +638,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -616,21 +646,21 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Think about what to do for the next frame update. */
-		public func void think(float elapsed)
+		func void think(float elapsed)
 			update(elapsed)
 		end
 		
 		
 		
 		/** \brief Frame update started. */
-		public func void enterFrame()
+		func void enterFrame()
 			if pElementResolver != null
 				pElementResolver.resolve(getElement().getGameWorld())
 				pElementResolver = null
@@ -640,7 +670,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(7, reader)
@@ -674,7 +704,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(7)
@@ -711,10 +741,10 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorLocomotion pLocomotion
-	private var ECBehaviorConversationActor pConversationActor
-	private var ECPFloat pSpeed
-	private var Array pListenerFactories
+	var ECBehaviorLocomotion pLocomotion
+	var ECBehaviorConversationActor pConversationActor
+	var ECPFloat pSpeed
+	var Array pListenerFactories
 	
 	
 	
@@ -723,12 +753,12 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em conversationActor.
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
 	ECBehaviorConversationActor conversationActor) \
 	this(eclass, locomotion, conversationActor, "alignActor.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
 	ECBehaviorConversationActor conversationActor, String prefix) super(eclass)
 		if locomotion == null
 			throw ENullPointer.new("locomotion")
@@ -748,7 +778,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pLocomotion = null
 		pConversationActor = null
 		pListenerFactories = null
@@ -758,22 +788,22 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	
 	
 	/** \brief Locomotion behavior. */
-	public func ECBehaviorLocomotion getLocomotion()
+	func ECBehaviorLocomotion getLocomotion()
 		return pLocomotion
 	end
 	
 	/** \brief Conversation actor behavior or null. */
-	public func ECBehaviorConversationActor getConversationActor()
+	func ECBehaviorConversationActor getConversationActor()
 		return pConversationActor
 	end
 	
 	/** \brief Movement speed. */
-	public func ECPFloat getSpeed()
+	func ECPFloat getSpeed()
 		return pSpeed
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -785,17 +815,17 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -804,7 +834,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -816,7 +846,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorAlignActor.
 	 */
-	static public func ECBehaviorAlignActor getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorAlignActor getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorAlignActor each
 			return true
 		end) cast ECBehaviorAlignActor
@@ -828,7 +858,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorAlignActor.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -837,7 +867,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

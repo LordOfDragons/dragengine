@@ -117,9 +117,11 @@ class ECBehaviorComponent extends DefaultECBehavior
 				return
 			end
 			
+			var BehaviorElement element = getElement()
+			pComponent.setVisible(element.getVisible())
+			
 			if pECBehavior.getCollider() != null
-				var ECBehaviorCollider.Instance collider = \
-					pECBehavior.getCollider().instance(getElement())
+				var ECBehaviorCollider.Instance collider = pECBehavior.getCollider().instance(element)
 				if collider.getCollider() != null
 					attachComponent(stub, collider)
 				end

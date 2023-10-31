@@ -26,7 +26,7 @@ import bpy
 
 from mathutils import Vector, Matrix
 
-from .de_math import vector_by_matrix, float2String, convertMatrix
+from .de_math import transformPosition, vector_by_matrix, float2String, convertMatrix
 from .de_resources import Mesh, Armature
 from .de_porting import registerClass, matmul
 
@@ -185,6 +185,55 @@ class OBJECT_OT_DEToolEClassProperty(bpy.types.Operator):
 				text.write("<list name='curve'>\n")
 				for point in curve:
 					text.write("\t{}\n".format(point))
+				text.write("</list>\n")
+			text.write("\n")
+		
+		# bezier curves as vector list
+		curves = []
+		
+		for obj in context.selected_objects:
+			if obj.type != 'CURVE':
+				continue
+			
+			volume = Armature.CollisionVolume(obj, scalePosition)
+			if self.relative3DCursor:
+				volume.setMatrix(convertMatrix(matmul(relativeMatrix, volume.object.matrix_world)), scalePosition)
+			
+			points = []
+			
+			for spline in obj.data.splines:
+				for point in spline.bezier_points:
+					ppts = []
+					pos = vector_by_matrix(volume.matrix, point.co)
+					pos = vector_by_matrix(transformPosition, pos)
+					ppts.append("<vector x='{}' y='{}' z='{}'/>".format(
+						float2String(pos.x), float2String(pos.y), float2String(pos.z)))
+					
+					if (point.handle_left - point.co).length > 0.01 or (point.handle_right - point.co).length > 0.01:
+						pos = vector_by_matrix(volume.matrix, point.handle_left)
+						pos = vector_by_matrix(transformPosition, pos)
+						ppts.append("<vector x='{}' y='{}' z='{}'/>".format(
+							float2String(pos.x), float2String(pos.y), float2String(pos.z)))
+						
+						pos = vector_by_matrix(volume.matrix, point.handle_right)
+						pos = vector_by_matrix(transformPosition, pos)
+						ppts.append("<vector x='{}' y='{}' z='{}'/>".format(
+							float2String(pos.x), float2String(pos.y), float2String(pos.z)))
+					points.append(ppts)
+			
+			if points:
+				curves.append(points)
+		
+		if curves:
+			text.write("<!-- bezier curves -->\n")
+			
+			for curve in curves:
+				text.write("<list name='curve'>\n")
+				for point in curve:
+					text.write("\t<list>\n")
+					for ppt in point:
+						text.write("\t\t{}\n".format(ppt))
+					text.write("\t</list>\n")
 				text.write("</list>\n")
 			text.write("\n")
 		

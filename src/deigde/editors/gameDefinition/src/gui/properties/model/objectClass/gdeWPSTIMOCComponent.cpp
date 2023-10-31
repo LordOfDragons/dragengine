@@ -97,6 +97,10 @@ bool gdeWPSTIMOCComponent::IsValid() const{
 	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetAnimatorPath() ) ) ){
 		return false;
 	}
+	if( ! pComponent->GetAnimationPath().IsEmpty()
+	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetAnimationPath() ) ) ){
+		return false;
+	}
 	if( ! pComponent->GetOcclusionMeshPath().IsEmpty()
 	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetOcclusionMeshPath() ) ) ){
 		return false;

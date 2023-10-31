@@ -1,0 +1,414 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding flags support to behavior tree support.
+ * 
+ * Behavior adds behavior tree actions and conditions to an ECBehaviorBehaviorTree allowing
+ * scripts and behavior trees to set, clear and check flags. This can be used to signal events
+ * to behavior trees that can be processed at an appropriate time. This behavior can be added
+ * multiple times to an element for each ECBehaviorBehaviorTree. Each instance creates an own
+ * set of behavior tree actions, conditions and flags. Hence to use more than one behavior
+ * tree use code like this in your subclass constructor:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorBehaviorTree btree = ECBehaviorBehaviorTree.new(this)
+ *       var ECBehaviorBehaviorTree btree2 = ECBehaviorBehaviorTree.new(this, "bt2")
+ *       ECBehaviorBehaviorTreeFlags.new(this, btree)
+ *       ECBehaviorBehaviorTreeFlags.new(this, btree, "bt2")
+ *    end
+ * end
+ * \endcode
+ * 
+ * The following actions are added to the behavior tree:
+ * 
+ * \par Action "flags.set"
+ * 
+ * Set a flag. As parameter use "flag" to select the flag to set. Use optional parameter
+ * "clear" to clear flag. This action immediately returns and does not require a rule identifier.
+ * 
+ * This is an example of using this action:
+ * \code{.xml}
+ * <action name='flags.set'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of using this action to clear flag:
+ * \code{.xml}
+ * <action name='flags.set'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <parameter name='clear'/>
+ * </action>
+ * \endcode
+ * 
+ * \par Action "flags.check"
+ * 
+ * Checks if flag is set. Use as parameter "flag" to select the flag to check. Use as optional
+ * parameter "cleared" to check for flag to be cleared instead of set. Use the optional
+ * parameter "wait" to wait until the flag is set or cleared. If not waiting the action
+ * returns immediately with BTResult.success if the flag is set otherwise BTResult.failure .
+ * If waiting the action keeps running until the flags becomes set or cleared then returns
+ * BTResult.success . A flag that has not been used so far is in cleared state. Use the optional
+ * parameter "reset" to toggle the flag if condition is finished. Hence if "reset" is used and
+ * the flag is set it is reset. This can be used for waiting and not waiting.
+ * 
+ * This is an example of using this action to check if a flag is set right now:
+ * \code{.xml}
+ * <action name='flags.check'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of using this action to check if a flag is cleared right now:
+ * \code{.xml}
+ * <action name='flags.check'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <parameter name='cleared'/>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of using this action waiting until the flag is set:
+ * \code{.xml}
+ * <action name='flags.check' id='waiting'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <parameter name='wait'/>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of using this action waiting until the flag is set and then clear it:
+ * \code{.xml}
+ * <action name='flags.check' id='waiting'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <parameter name='wait'>
+ *    <parameter name='reset'>
+ * </action>
+ * \endcode
+ * 
+ * \par Condition "flags.state"
+ * 
+ * Determines if flag is set. Use as parameter "flag" to select the flag to check.
+ * Use optional parameter "flag.cleared" to check if the flag is cleared instead of set.
+ * 
+ * This is an example of an action that can only run if the flag "arrived at target" is set:
+ * \code{.xml}
+ * <action name='myAction' id='doing something'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <condition>flags.state</condition>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of an action that can only run if the flag "arrived at target" is cleared:
+ * \code{.xml}
+ * <action name='myAction' id='doing something'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <parameter name='flag.cleared'/>
+ *    <condition>flags.state</condition>
+ * </action>
+ * \endcode
+ */
+class ECBehaviorBehaviorTreeFlags extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Behavior tree action "flags.set". */
+		class ActionFlagsSet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				pInstance.setFlag(parameters.getAt("flag") cast String, not parameters.has("clear"))
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree action "Flags.check". */
+		class ActionFlagsCheck implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var String flag = parameters.getAt("flag") cast String
+				var bool expected = not parameters.has("cleared")
+				
+				if pInstance.getFlag(flag) == expected
+					if parameters.has("reset")
+						pInstance.setFlag(flag, not expected)
+					end
+					return BTResult.success
+					
+				else
+					return parameters.has("wait") if BTResult.running else BTResult.failure
+				end
+			end
+		end
+		
+		/** \brief Behavior tree condition "flags.state". */
+		class ConditionFlagsState implements BTCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				var bool flag = pInstance.getFlag(parameters.getAt("flag") cast String)
+				if parameters.has("flags.cleared")
+					flag = not flag
+				end
+				return flag
+			end
+		end
+		
+		
+		
+		var ECBehaviorBehaviorTreeFlags pECBehavior
+		var ECBehaviorBehaviorTree.Instance pBehaviorTree
+		var Dictionary pFlags
+		
+		
+		
+		/** \brief Create element. */
+		func new(ECBehaviorBehaviorTreeFlags ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pFlags = Dictionary.new()
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			pBehaviorTree = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init(StubElement stub)
+			pBehaviorTree = pECBehavior.getBehaviorTree().instance(getElement())
+			
+			var BTContext context = pBehaviorTree.getContext()
+			if context == null
+				return
+			end
+			
+			context.setAction("flags.set", ActionFlagsSet.new(this))
+			context.setAction("flags.check", ActionFlagsCheck.new(this))
+			
+			context.setCondition("flags.state", ConditionFlagsState.new(this))
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorBehaviorTreeFlags getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Behavior tree behavior or \em null. */
+		func ECBehaviorBehaviorTree.Instance getBehaviorTree()
+			return pBehaviorTree
+		end
+		
+		
+		
+		/** \brief Flag is set. */
+		func bool getFlag(String name)
+			return pFlags.getAt(name, false) cast bool
+		end
+		
+		/** \brief Set flag. */
+		func void setFlag(String name, bool flagged)
+			pFlags.setAt(name, flagged)
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			pFlags.removeAll()
+			
+			select reader.readByte() // version
+			case 0
+				var String name = reader.readString8()
+				while not name.empty()
+					pFlags.setAt(name, true)
+					name = reader.readString8()
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
+		end
+		
+		/** Writes the element to a file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			pFlags.forEach(block String name, bool value
+				if value
+					writer.writeString8(name)
+				end
+			end)
+			writer.writeByte(0) // empty string
+		end
+	end
+	
+	
+	
+	var ECBehaviorBehaviorTree pBehaviorTree
+	
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorBehaviorTree behaviorTree)\
+	this(eclass, behaviorTree, "")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorBehaviorTree behaviorTree, String id)\
+	super(eclass, id)
+		if behaviorTree == null
+			throw ENullPointer.new("behaviorTree")
+		end
+		
+		pBehaviorTree = behaviorTree
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pBehaviorTree = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Behavior tree behavior. */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorBehaviorTree.
+	 */
+	static func ECBehaviorBehaviorTreeFlags getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorBehaviorTreeFlags each
+			return true
+		end) cast ECBehaviorBehaviorTreeFlags
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorBehaviorTreeFlags with specific identifier.
+	 */
+	static func ECBehaviorBehaviorTreeFlags getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorBehaviorTreeFlags each
+			return each.getID().equals(id)
+		end) cast ECBehaviorBehaviorTreeFlags
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorBehaviorTreeFlags behaviors in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorBehaviorTreeFlags each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBehaviorTreeFlags.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBehaviorTreeFlags.Instance with specific identifier.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorBehaviorTreeFlags.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

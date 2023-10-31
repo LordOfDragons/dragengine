@@ -686,6 +686,7 @@ void meWPPropertyList::UpdateKeys(){
 	pCBKeys->StoreFilterItems();
 	
 	pCBKeys->SetText( selection );
+	VerifyProperties();
 }
 
 void meWPPropertyList::UpdateList(){

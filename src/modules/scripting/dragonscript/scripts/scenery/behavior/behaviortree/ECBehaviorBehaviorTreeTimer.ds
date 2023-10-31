@@ -1,0 +1,561 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding timer support to behavior tree support.
+ * 
+ * Behavior adds behavior tree actions and conditions to an ECBehaviorBehaviorTree allowing
+ * behavior trees to start and wait for multiple independent timers. This behavior can be added
+ * multiple times to an element for each ECBehaviorBehaviorTree. Each instance creates an own
+ * set of behavior tree action and conditions and timers. Hence to use more than one behavior
+ * tree use code like this in your subclass constructor:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorBehaviorTree btree = ECBehaviorBehaviorTree.new(this)
+ *       var ECBehaviorBehaviorTree btree2 = ECBehaviorBehaviorTree.new(this, "bt2")
+ *       ECBehaviorBehaviorTreeTimer.new(this, btree)
+ *       ECBehaviorBehaviorTreeTimer.new(this, btree, "bt2")
+ *    end
+ * end
+ * \endcode
+ * 
+ * The following actions are added to the behavior tree:
+ * 
+ * \par Action "timer.start"
+ * 
+ * Starts a timer. As parameter use "timeout" to set the seconds until the timer elapses or
+ * "timeout.lower" and "timeout.upper" to randomly select seconds between a lower and upper
+ * limit (inclusive). Optionally use parameter "timer" to select the timer. "timer" is a string
+ * identifier you can freely choose. If absent empty string is used as timer identifier.
+ * The timer is created if absent. This action immediately returns and does not require
+ * a rule identifier.
+ * 
+ * This is an example of using this action:
+ * \code{.xml}
+ * <action name='timer.start'>
+ *    <parameter name='timeout'>1.5</parameter>
+ *    <parameter name='timer'>myTimer</parameter>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of using this action with random timeout:
+ * \code{.xml}
+ * <action name='timer.start'>
+ *    <parameter name='timeout.lower'>1.5</parameter>
+ *    <parameter name='timeout.upper'>2.5</parameter>
+ *    <parameter name='timer'>myTimer</parameter>
+ * </action>
+ * \endcode
+ * 
+ * \par Action "timer.stop"
+ * 
+ * Stops a timer. Optionally as parameter use "timer" to select the timer matching an identifier
+ * used in a previous action "timer.start". This action immediately returns and does not require
+ * a rule identifier.
+ * 
+ * This is an example of using this action:
+ * \code{.xml}
+ * <action name='timer.stop'>
+ *    <parameter name='timer'>myTimer</parameter>
+ * </action>
+ * \endcode
+ * 
+ * \par Action "timer.wait"
+ * 
+ * Waits for a timer to elapse. Optionally as parameter use "timer" to select the timer matching
+ * an identifier used in a previous action "timer.start". The action keeps running until the
+ * timer elapsed. If the timer is absent the action immediately returns.
+ * 
+ * This is an example of using this action:
+ * \code{.xml}
+ * <action name='timer.stop' id='waiting'>
+ *    <parameter name='timer'>myTimer</parameter>
+ * </action>
+ * \endcode
+ * 
+ * \par Condition "timer.running"
+ * 
+ * Determines if timer is running and has not elapsed yet. Optionally as parameter use "timer"
+ * to select the timer matching an identifier used in a previous action "timer.start".
+ * 
+ * This is an example of an action that can only run if the timer "myTimer" is running:
+ * \code{.xml}
+ * <action name='myAction' id='doing something'>
+ *    <parameter name='timer'>myTimer</parameter>
+ *    <condition>timer.running</condition>
+ * </action>
+ * \endcode
+ * 
+ * \par Condition "timer.finished"
+ * 
+ * Determines if timer is not running or has elapsed. Optionally as parameter use "timer"
+ * to select the timer matching an identifier used in a previous action "timer.start".
+ * 
+ * This is an example of an action that can only run if the timer "myTimer" is running:
+ * \code{.xml}
+ * <action name='myAction' id='doing something'>
+ *    <parameter name='timer'>myTimer</parameter>
+ *    <condition>timer.finished</condition>
+ * </action>
+ * \endcode
+ * \endcode
+ */
+class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
+	/** \brief Behavior tree Timer. */
+	class BehaviorTreeTimer
+		var String pIdentifier
+		var float pTimeout
+		var float pRemaining
+		
+		
+		/** \brief Create behavior tree timer. */
+		func new(String identifier)
+			pIdentifier = identifier
+		end
+		
+		/** \brief Create behavior tree timer during loading. */
+		func new(String identifier, float timeout, float remaining)
+			pIdentifier = identifier
+			pTimeout = timeout
+			pRemaining = remaining
+		end
+		
+		
+		/** \brief Identifier. */
+		func String getIdentifier()
+			return pIdentifier
+		end
+		
+		/** \brief Timeout in seconds the timer has been started with. */
+		func float getTimeout()
+			return pTimeout
+		end
+		
+		/** \brief Remaining time in seconds. */
+		func float getRemaining()
+			return pRemaining
+		end
+		
+		
+		/** \brief Start timer. */
+		func void start(float timeout)
+			pTimeout = timeout
+			pRemaining = timeout
+		end
+		
+		/** \brief Stop timer reseting timeout and remaining to 0. */
+		func void stop()
+			pTimeout = 0
+			pRemaining = 0
+		end
+		
+		/** \brief Update timer reducing remaining time clamping it at 0. */
+		func void update(float elapsed)
+			pRemaining = DEMath.max(pRemaining - elapsed, 0.0)
+		end
+		
+		
+		/** \brief Remaining time is 0. */
+		func bool hasElapsed()
+			return pRemaining == 0
+		end
+		
+		/** \brief Remaining time is larger than 0. */
+		func bool hasNotElapsed()
+			return pRemaining > 0
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Behavior tree listener. */
+		class BehaviorTreeListener extends ECBehaviorBehaviorTree.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void behaviorTreeUpdate(ECBehaviorBehaviorTree.Instance instance, BTContext context, float elapsed)
+				pInstance.update(elapsed)
+			end
+		end
+		
+		/** \brief Behavior tree action "timer.start". */
+		class ActionTimerStart implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var String timer = pInstance.getTimerParameter(parameters)
+				var float timeout
+				var Object value
+				
+				value = parameters.getAt("timeout", null)
+				if value != null
+					timeout = (value cast String).toFloat()
+					
+				else
+					var float lower = (parameters.getAt("timeout.lower") cast String).toFloat()
+					var float upper = (parameters.getAt("timeout.upper") cast String).toFloat()
+					timeout = DEMath.random(lower, upper)
+				end
+				
+				pInstance.startTimer(timer, timeout)
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree action "timer.stop". */
+		class ActionTimerStop implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				pInstance.stopTimer(pInstance.getTimerParameter(parameters))
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree action "timer.wait". */
+		class ActionTimerWait implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return pInstance.isTimerRunning(pInstance.getTimerParameter(parameters))\
+					if BTResult.running else BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree condition "timer.running". */
+		class ConditionTimerRunning implements BTCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return pInstance.isTimerRunning(pInstance.getTimerParameter(parameters))
+			end
+		end
+		
+		/** \brief Behavior tree condition "timer.finished". */
+		class ConditionTimerFinished implements BTCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return not pInstance.isTimerRunning(pInstance.getTimerParameter(parameters))
+			end
+		end
+		
+		
+		
+		var ECBehaviorBehaviorTreeTimer pECBehavior
+		var ECBehaviorBehaviorTree.Instance pBehaviorTree
+		var Dictionary pTimers
+		
+		
+		
+		/** \brief Create element. */
+		func new(ECBehaviorBehaviorTreeTimer ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pTimers = Dictionary.new()
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			pBehaviorTree = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init(StubElement stub)
+			pBehaviorTree = pECBehavior.getBehaviorTree().instance(getElement())
+			
+			var BTContext context = pBehaviorTree.getContext()
+			if context == null
+				return
+			end
+			
+			context.setAction("timer.start", ActionTimerStart.new(this))
+			context.setAction("timer.stop", ActionTimerStop.new(this))
+			context.setAction("timer.wait", ActionTimerWait.new(this))
+			
+			context.setCondition("timer.running", ConditionTimerRunning.new(this))
+			context.setCondition("timer.finished", ConditionTimerFinished.new(this))
+			
+			pBehaviorTree.addListener(BehaviorTreeListener.new(this))
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorBehaviorTreeTimer getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Behavior tree behavior or \em null. */
+		func ECBehaviorBehaviorTree.Instance getBehaviorTree()
+			return pBehaviorTree
+		end
+		
+		
+		
+		/** \brief Get timer from parameters or empty identifier if absent. */
+		func String getTimerParameter(Dictionary parameters)
+			var Object value = parameters.getAt("timer", null)
+			if value != null
+				return value cast String
+				
+			else
+				return ""
+			end
+		end
+		
+		
+		
+		/** \brief Update timers. */
+		func void update(float elapsed)
+			pTimers.forEachValue(block BehaviorTreeTimer each
+				each.update(elapsed)
+			end)
+		end
+		
+		/** \brief Start timer adding it if absent. */
+		func void startTimer(String timer, float timeout)
+			var BehaviorTreeTimer bttimer = pTimers.getAt(timer, null) cast BehaviorTreeTimer
+			if bttimer == null
+				if pTimers.getCount() == 65535
+					throw EInvalidParam.new("too many timers")
+				end
+				if timer.getLength() > 255
+					throw EInvalidParam.new("timer identifier too long")
+				end
+				bttimer = BehaviorTreeTimer.new(timer)
+				pTimers.setAt(timer, bttimer)
+			end
+			bttimer.start(timeout)
+		end
+		
+		/** \brief Stop timer if present. */
+		func void stopTimer(String timer)
+			var BehaviorTreeTimer bttimer = pTimers.getAt(timer, null) cast BehaviorTreeTimer
+			if bttimer != null
+				bttimer.stop()
+			end
+		end
+		
+		/** \brief Timer is present and running. */
+		func bool isTimerRunning(String timer)
+			var BehaviorTreeTimer bttimer = pTimers.getAt(timer, null) cast BehaviorTreeTimer
+			return bttimer != null and bttimer.hasNotElapsed()
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			pTimers.removeAll()
+			
+			select reader.readByte() // version
+			case 0
+				var int i, count = reader.readUShort()
+				var float timeout, remaining
+				var String identifier
+				
+				for i = 0 to count
+					identifier = reader.readString8()
+					timeout = reader.readFloat()
+					remaining = reader.readFloat()
+					pTimers.setAt(identifier, BehaviorTreeTimer.new(identifier, timeout, remaining))
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
+		end
+		
+		/** Writes the element to a file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			writer.writeUShort(pTimers.getCount())
+			pTimers.forEachValue(block BehaviorTreeTimer each
+				writer.writeString8(each.getIdentifier())
+				writer.writeFloat(each.getTimeout())
+				writer.writeFloat(each.getRemaining())
+			end)
+		end
+	end
+	
+	
+	
+	var ECBehaviorBehaviorTree pBehaviorTree
+	
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorBehaviorTree behaviorTree)\
+	this(eclass, behaviorTree, "")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorBehaviorTree behaviorTree, String id)\
+	super(eclass, id)
+		if behaviorTree == null
+			throw ENullPointer.new("behaviorTree")
+		end
+		
+		pBehaviorTree = behaviorTree
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pBehaviorTree = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Behavior tree behavior. */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorBehaviorTree.
+	 */
+	static func ECBehaviorBehaviorTreeTimer getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorBehaviorTreeTimer each
+			return true
+		end) cast ECBehaviorBehaviorTreeTimer
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorBehaviorTreeTimer with specific identifier.
+	 */
+	static func ECBehaviorBehaviorTreeTimer getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorBehaviorTreeTimer each
+			return each.getID().equals(id)
+		end) cast ECBehaviorBehaviorTreeTimer
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorBehaviorTreeTimer behaviors in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorBehaviorTreeTimer each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBehaviorTreeTimer.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBehaviorTreeTimer.Instance with specific identifier.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorBehaviorTreeTimer.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

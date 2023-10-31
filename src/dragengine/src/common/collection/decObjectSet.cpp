@@ -256,6 +256,10 @@ deObject *decObjectSet::operator[]( int position ) const{
 
 
 decObjectSet &decObjectSet::operator=( const decObjectSet &set ){
+	if( &set == this ){
+		return *this;
+	}
+	
 	deObject *object;
 	
 	RemoveAll();

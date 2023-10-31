@@ -76,7 +76,7 @@ int igdeCodecPropertyString::DecodeFixedFloatList( const char *string, float *va
 	}
 	
 	for( i=0; i<count; i++ ){
-		values[ i ] = list.GetAt( i ).ToFloat();
+		values[ i ] = list.GetAt( i ).ToFloatValid();
 	}
 	
 	return count;
@@ -91,7 +91,7 @@ int igdeCodecPropertyString::DecodeFixedDoubleList( const char *string, double *
 	}
 	
 	for( i=0; i<count; i++ ){
-		values[ i ] = list.GetAt( i ).ToDouble();
+		values[ i ] = list.GetAt( i ).ToDoubleValid();
 	}
 	
 	return count;
@@ -106,7 +106,7 @@ int igdeCodecPropertyString::DecodeFixedIntList( const char *string, int *values
 	}
 	
 	for( i=0; i<count; i++ ){
-		values[ i ] = list.GetAt( i ).ToInt();
+		values[ i ] = list.GetAt( i ).ToIntValid();
 	}
 	
 	return count;
@@ -285,16 +285,16 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						sphere->SetPosition( decVector(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat(),
-							tokenValueList.GetAt( 3 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid(),
+							tokenValueList.GetAt( 3 ).ToFloatValid() ) );
 						
 					}else if( tokenParamName == "radius" ){
 						if( tokenValueCount != 2 ){
 							DETHROW( deeInvalidParam );
 						}
 						
-						sphere->SetRadius( tokenValueList.GetAt( 1 ).ToFloat() );
+						sphere->SetRadius( tokenValueList.GetAt( 1 ).ToFloatValid() );
 						
 					}else{
 						DETHROW( deeInvalidParam );
@@ -318,9 +318,9 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						box->SetPosition( decVector(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat(),
-							tokenValueList.GetAt( 3 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid(),
+							tokenValueList.GetAt( 3 ).ToFloatValid() ) );
 						
 					}else if( tokenParamName == "rotation" ){
 						if( tokenValueCount != 4 ){
@@ -328,9 +328,9 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						box->SetOrientation( decMatrix::CreateRotation(
-							tokenValueList.GetAt( 1 ).ToFloat() * DEG2RAD,
-							tokenValueList.GetAt( 2 ).ToFloat() * DEG2RAD,
-							tokenValueList.GetAt( 3 ).ToFloat() * DEG2RAD ).ToQuaternion() );
+							tokenValueList.GetAt( 1 ).ToFloatValid() * DEG2RAD,
+							tokenValueList.GetAt( 2 ).ToFloatValid() * DEG2RAD,
+							tokenValueList.GetAt( 3 ).ToFloatValid() * DEG2RAD ).ToQuaternion() );
 						
 					}else if( tokenParamName == "extends" ){
 						if( tokenValueCount != 4 ){
@@ -338,9 +338,9 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						box->SetHalfExtends( decVector(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat(),
-							tokenValueList.GetAt( 3 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid(),
+							tokenValueList.GetAt( 3 ).ToFloatValid() ) );
 						
 					}else{
 						DETHROW( deeInvalidParam );
@@ -364,9 +364,9 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						cylinder->SetPosition( decVector(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat(),
-							tokenValueList.GetAt( 3 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid(),
+							tokenValueList.GetAt( 3 ).ToFloatValid() ) );
 						
 					}else if( tokenParamName == "rotation" ){
 						if( tokenValueCount != 4 ){
@@ -374,24 +374,24 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						cylinder->SetOrientation( decMatrix::CreateRotation(
-							tokenValueList.GetAt( 1 ).ToFloat() * DEG2RAD,
-							tokenValueList.GetAt( 2 ).ToFloat() * DEG2RAD,
-							tokenValueList.GetAt( 3 ).ToFloat() * DEG2RAD ).ToQuaternion() );
+							tokenValueList.GetAt( 1 ).ToFloatValid() * DEG2RAD,
+							tokenValueList.GetAt( 2 ).ToFloatValid() * DEG2RAD,
+							tokenValueList.GetAt( 3 ).ToFloatValid() * DEG2RAD ).ToQuaternion() );
 						
 					}else if( tokenParamName == "height" ){
 						if( tokenValueCount != 2 ){
 							DETHROW( deeInvalidParam );
 						}
 						
-						cylinder->SetHalfHeight( tokenValueList.GetAt( 1 ).ToFloat() );
+						cylinder->SetHalfHeight( tokenValueList.GetAt( 1 ).ToFloatValid() );
 						
 					}else if( tokenParamName == "radius" ){
 						if( tokenValueCount != 3 ){
 							DETHROW( deeInvalidParam );
 						}
 						
-						cylinder->SetTopRadius( tokenValueList.GetAt( 1 ).ToFloat() );
-						cylinder->SetBottomRadius( tokenValueList.GetAt( 2 ).ToFloat() );
+						cylinder->SetTopRadius( tokenValueList.GetAt( 1 ).ToFloatValid() );
+						cylinder->SetBottomRadius( tokenValueList.GetAt( 2 ).ToFloatValid() );
 						
 					}else if( tokenParamName == "topAxisScaling" ){
 						if( tokenValueCount != 3 ){
@@ -399,8 +399,8 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						cylinder->SetTopAxisScaling( decVector2(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid() ) );
 						
 					}else if( tokenParamName == "bottomAxisScaling" ){
 						if( tokenValueCount != 3 ){
@@ -408,8 +408,8 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						cylinder->SetBottomAxisScaling( decVector2(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid() ) );
 						
 					}else{
 						DETHROW( deeInvalidParam );
@@ -433,9 +433,9 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						capsule->SetPosition( decVector(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat(),
-							tokenValueList.GetAt( 3 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid(),
+							tokenValueList.GetAt( 3 ).ToFloatValid() ) );
 						
 					}else if( tokenParamName == "rotation" ){
 						if( tokenValueCount != 4 ){
@@ -443,24 +443,24 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						capsule->SetOrientation( decMatrix::CreateRotation(
-							tokenValueList.GetAt( 1 ).ToFloat() * DEG2RAD,
-							tokenValueList.GetAt( 2 ).ToFloat() * DEG2RAD,
-							tokenValueList.GetAt( 3 ).ToFloat() * DEG2RAD ).ToQuaternion() );
+							tokenValueList.GetAt( 1 ).ToFloatValid() * DEG2RAD,
+							tokenValueList.GetAt( 2 ).ToFloatValid() * DEG2RAD,
+							tokenValueList.GetAt( 3 ).ToFloatValid() * DEG2RAD ).ToQuaternion() );
 						
 					}else if( tokenParamName == "height" ){
 						if( tokenValueCount != 2 ){
 							DETHROW( deeInvalidParam );
 						}
 						
-						capsule->SetHalfHeight( tokenValueList.GetAt( 1 ).ToFloat() );
+						capsule->SetHalfHeight( tokenValueList.GetAt( 1 ).ToFloatValid() );
 						
 					}else if( tokenParamName == "radius" ){
 						if( tokenValueCount != 3 ){
 							DETHROW( deeInvalidParam );
 						}
 						
-						capsule->SetTopRadius( tokenValueList.GetAt( 1 ).ToFloat() );
-						capsule->SetBottomRadius( tokenValueList.GetAt( 2 ).ToFloat() );
+						capsule->SetTopRadius( tokenValueList.GetAt( 1 ).ToFloatValid() );
+						capsule->SetBottomRadius( tokenValueList.GetAt( 2 ).ToFloatValid() );
 						
 					}else if( tokenParamName == "topAxisScaling" ){
 						if( tokenValueCount != 3 ){
@@ -468,8 +468,8 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						capsule->SetTopAxisScaling( decVector2(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid() ) );
 						
 					}else if( tokenParamName == "bottomAxisScaling" ){
 						if( tokenValueCount != 3 ){
@@ -477,8 +477,8 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						capsule->SetBottomAxisScaling( decVector2(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid() ) );
 						
 					}else{
 						DETHROW( deeInvalidParam );
@@ -502,9 +502,9 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						hull->SetPosition( decVector(
-							tokenValueList.GetAt( 1 ).ToFloat(),
-							tokenValueList.GetAt( 2 ).ToFloat(),
-							tokenValueList.GetAt( 3 ).ToFloat() ) );
+							tokenValueList.GetAt( 1 ).ToFloatValid(),
+							tokenValueList.GetAt( 2 ).ToFloatValid(),
+							tokenValueList.GetAt( 3 ).ToFloatValid() ) );
 						
 					}else if( tokenParamName == "rotation" ){
 						if( tokenValueCount != 4 ){
@@ -512,9 +512,9 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						}
 						
 						hull->SetOrientation( decMatrix::CreateRotation(
-							tokenValueList.GetAt( 1 ).ToFloat() * DEG2RAD,
-							tokenValueList.GetAt( 2 ).ToFloat() * DEG2RAD,
-							tokenValueList.GetAt( 3 ).ToFloat() * DEG2RAD ).ToQuaternion() );
+							tokenValueList.GetAt( 1 ).ToFloatValid() * DEG2RAD,
+							tokenValueList.GetAt( 2 ).ToFloatValid() * DEG2RAD,
+							tokenValueList.GetAt( 3 ).ToFloatValid() * DEG2RAD ).ToQuaternion() );
 						
 					}else if( tokenParamName == "points" ){
 						if( ( ( tokenValueCount - 1 ) % 3 ) != 0 ){
@@ -527,9 +527,9 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 						for( k=0; k<pointCount; k++ ){
 							const int index = 1 + k * 3;
 							hull->SetPointAt( k, decVector(
-								tokenValueList.GetAt( index ).ToFloat(),
-								tokenValueList.GetAt( index + 1 ).ToFloat(),
-								tokenValueList.GetAt( index + 2 ).ToFloat() ) );
+								tokenValueList.GetAt( index ).ToFloatValid(),
+								tokenValueList.GetAt( index + 1 ).ToFloatValid(),
+								tokenValueList.GetAt( index + 2 ).ToFloatValid() ) );
 						}
 						
 					}else{

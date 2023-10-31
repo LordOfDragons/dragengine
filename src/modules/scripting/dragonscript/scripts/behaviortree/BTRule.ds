@@ -59,23 +59,11 @@ abstract class BTRule
 	
 	
 	
-	/** \brief Unique rule identifier or \em null. */
-	private var String pID
-	
-	/** \brief Parent rule or \em null if this is the root rule in a behavior tree. */
-	private var WeakReference pParent
-	
-	/** \brief Conditions as Array of String identifiers. */
-	private var Array pConditions
-	
-	/** \brief Resolved conditions as Array of BTCondition. */
-	private var Array pResolvedConditions
-	
-	/** \brief Condition mode from eConditionModes. */
-	private var ConditionMode pConditionMode
-	
-	/** \brief Parameters as Dictionary of type String key and String value. */
-	private var Dictionary pParameters
+	var String pID
+	var WeakReference pParent
+	var Array pConditions
+	var ConditionMode pConditionMode
+	var Dictionary pParameters
 	
 	
 	
@@ -84,99 +72,96 @@ abstract class BTRule
 	 * \param id Identifier or \em null.
 	 * \throws EInvalidParam \em id is empty string.
 	 */
-	public func new( String id )
+	func new(String id)
 		if id != null and id.empty()
 			throw EInvalidParam.new()
 		end
 		
-		this.pID = id
-		this.pParent = WeakReference.new()
-		this.pConditions = Array.new()
-		this.pConditionMode = ConditionMode.allTrue
-		this.pParameters = Dictionary.new()
+		pID = id
+		pParent = WeakReference.new()
+		pConditions = Array.new()
+		pConditionMode = ConditionMode.allTrue
+		pParameters = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Unique rule identifier or \em null. */
-	public func String getID()
-		return this.pID
+	func String getID()
+		return pID
 	end
 	
 	/** \brief Parent rule or \em null if this is the root rule in a behavior tree. */
-	public func BTRule getParent()
-		return this.pParent.get() cast BTRule
+	func BTRule getParent()
+		return pParent.get() cast BTRule
 	end
 	
 	/** \brief Set parent rule or \em null if this is the root rule in a behavior tree. */
-	public func void setParent( BTRule rule )
-		this.pParent.set( rule )
+	func void setParent(BTRule rule)
+		pParent.set(rule)
 	end
 	
 	/**
 	 * \brief Parameters as Dictionary of type String key and String value.
 	 * \warning Do not change the content of the dictionary as it is shared.
 	 */
-	public func Dictionary getParameters()
-		return this.pParameters
+	func Dictionary getParameters()
+		return pParameters
 	end
 	
 	
 	
 	/** \brief Number of conditions. */
-	public func int getConditionCount()
-		return this.pConditions.getCount()
+	func int getConditionCount()
+		return pConditions.getCount()
 	end
 	
 	/** \brief Get condition at index. */
-	public func String getConditionAt( int index )
-		return this.pConditions.getAt( index ) cast String
+	func String getConditionAt(int index)
+		return pConditions.getAt(index) cast String
 	end
 	
 	/** \brief Index of condition or -1 if absent. */
-	public func int indexOfCondition( String condition )
-		return this.pConditions.indexOf( condition )
+	func int indexOfCondition(String condition)
+		return pConditions.indexOf(condition)
 	end
 	
 	/** \brief Add condition. */
-	public func void addCondition( String condition )
+	func void addCondition(String condition)
 		if condition == null
 			throw EInvalidParam.new()
 		end
-		this.pConditions.add( condition )
-		this.pResolvedConditions = null
+		pConditions.add(condition)
 	end
 	
 	/** \brief Remove condition. */
-	public func void removeCondition( String condition )
-		this.pConditions.remove( condition )
-		this.pResolvedConditions = null
+	func void removeCondition(String condition)
+		pConditions.remove(condition)
 	end
 	
 	/** \brief Remove all conditions. */
-	public func void removeAllConditions()
-		this.pConditions.removeAll()
-		this.pResolvedConditions = null
+	func void removeAllConditions()
+		pConditions.removeAll()
 	end
 	
 	/** \brief Visit conditions with block with parameter String. */
-	public func void forEachCondition( Block ablock )
-		this.pConditions.forEach( ablock )
+	func void forEachCondition(Block ablock)
+		pConditions.forEach(ablock)
 	end
 	
 	/** \brief Find condition with block with parameter String. */
-	public func String findCondition( Block ablock )
-		return this.pConditions.find( ablock ) cast String
+	func String findCondition(Block ablock)
+		return pConditions.find(ablock) cast String
 	end
 	
 	/** \brief Condition mode from eConditionModes. */
-	public func ConditionMode getConditionMode()
-		return this.pConditionMode
+	func ConditionMode getConditionMode()
+		return pConditionMode
 	end
 	
 	/** \brief Set condition mode from eConditionModes. */
-	public func void setConditionMode( ConditionMode mode )
-		this.pConditionMode = mode
+	func void setConditionMode(ConditionMode mode)
+		pConditionMode = mode
 	end
 	
 	/**
@@ -187,37 +172,35 @@ abstract class BTRule
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func bool evaluateConditions( BTContext context )
-		if this.pResolvedConditions == null
-			this.pResolvedConditions = this.pConditions.map( block String each
-				return context.getCondition( each )
-			end )
-		end
-		
-		if this.pResolvedConditions.getCount() == 0
+	func bool evaluateConditions(BTContext context)
+		if pConditions.getCount() == 0
 			return true
 		end
 		
-		select this.pConditionMode
+		select pConditionMode
 		case ConditionMode.allTrue
-			return this.pResolvedConditions.find( block BTCondition each
-				return each == null or not each.evaluateCondition( context, this.pParameters )
-			end ) == null
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
+			end) == null
 			
 		case ConditionMode.anyTrue
-			return this.pResolvedConditions.find( block BTCondition each
-				return each != null and each.evaluateCondition( context, this.pParameters )
-			end ) != null
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
+			end) != null
 			
 		case ConditionMode.anyFalse
-			return this.pResolvedConditions.find( block BTCondition each
-				return each == null or not each.evaluateCondition( context, this.pParameters )
-			end ) != null
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
+			end) != null
 			
 		case ConditionMode.allFalse
-			return this.pResolvedConditions.find( block BTCondition each
-				return each != null and each.evaluateCondition( context, this.pParameters )
-			end ) == null
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
+			end) == null
 			
 		else
 			return false
@@ -231,5 +214,5 @@ abstract class BTRule
 	 * 
 	 * \returns Value from BTAction.eReturnValues .
 	 */
-	abstract public func BTResult run( BTContext context )
+	abstract func BTResult run(BTContext context)
 end

@@ -82,10 +82,10 @@ gdeUOCCTextureSetRotation::~gdeUOCCTextureSetRotation(){
 
 void gdeUOCCTextureSetRotation::Undo(){
 	pTexture->SetRotation( pOldValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }
 
 void gdeUOCCTextureSetRotation::Redo(){
 	pTexture->SetRotation( pNewValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }

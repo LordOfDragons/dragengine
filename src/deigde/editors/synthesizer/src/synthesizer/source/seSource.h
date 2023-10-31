@@ -247,7 +247,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another synthesizer source to this synthesizer source. */
-	virtual seSource &operator=( const seSource &copy );
+	seSource &operator=( const seSource &copy );
 	/*@}*/
 	
 	

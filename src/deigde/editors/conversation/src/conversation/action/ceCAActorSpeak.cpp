@@ -25,6 +25,9 @@
 
 #include "ceCAActorSpeak.h"
 #include "../strip/ceStrip.h"
+#include "../ceConversation.h"
+#include "../../langpack/ceLangPack.h"
+#include "../../langpack/ceLangPackEntry.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -118,6 +121,19 @@ void ceCAActorSpeak::SetTextBoxText( const decUnicodeString &text ){
 
 void ceCAActorSpeak::SetTextBoxTextTranslate( const char *text ){
 	pTextBoxTextTranslate = text;
+}
+
+decUnicodeString ceCAActorSpeak::ResolveTextBoxText( const ceConversation &conversation ) const{
+	if( ! pTextBoxTextTranslate.IsEmpty() ){
+		const ceLangPack * const langpack = conversation.GetLanguagePack();
+		if( langpack ){
+			const ceLangPackEntry * const entry = langpack->GetEntryNamed( pTextBoxTextTranslate );
+			if( entry ){
+				return entry->GetText();
+			}
+		}
+	}
+	return pTextBoxText;
 }
 
 void ceCAActorSpeak::SetTextBoxTextStyle( const char *style ){

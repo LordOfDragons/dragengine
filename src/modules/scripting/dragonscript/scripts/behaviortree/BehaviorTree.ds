@@ -33,43 +33,40 @@ pin Dragengine.Utils
  * Default behavior tree contains BTRuleFailure root rule with id "root".
  */
 class BehaviorTree
-	/** \brief Root rule. */
-	private var BTRule pRootRule
-	
-	/** \brief Dictionary mapping String rule identifier to BTRule. */
-	private var Dictionary pRuleMap
+	var BTRule pRootRule
+	var Dictionary pRuleMap
 	
 	
 	
 	/** \brief Create behavior tree. */
-	public func new()
-		this.pRootRule = BTRuleFailure.new( "root" )
-		this.pRuleMap = Dictionary.new()
+	func new()
+		pRootRule = BTRuleFailure.new("root")
+		pRuleMap = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Root rule. */
-	public func BTRule getRootRule()
-		return this.pRootRule
+	func BTRule getRootRule()
+		return pRootRule
 	end
 	
 	/** \brief Set root rule. */
-	public func void setRootRule( BTRule rule )
+	func void setRootRule(BTRule rule)
 		if rule == null
 			throw EInvalidParam.new()
 		end
-		this.pRootRule = rule
+		pRootRule = rule
 	end
 	
 	/** \brief Registered rule with identifier is present. */
-	public func bool hasRuleWithID( String id )
-		return this.pRuleMap.has( id )
+	func bool hasRuleWithID(String id)
+		return pRuleMap.has(id)
 	end
 	
 	/** \brief Registered rule with identifier or \em null if absent. */
-	public func BTRule getRuleWithID( String id )
-		return this.pRuleMap.getAt( id, null ) cast BTRule
+	func BTRule getRuleWithID(String id)
+		return pRuleMap.getAt(id, null) cast BTRule
 	end
 	
 	/**
@@ -77,10 +74,10 @@ class BehaviorTree
 	 * \throws EInvalidParam Rule has \em null identifier.
 	 * \throws EInvalidParam Another rule with the same ID is already registered.
 	 */
-	public func void registerRule( BTRule rule )
-		if rule == null or rule.getID() == null or this.pRuleMap.has( rule.getID() )
+	func void registerRule(BTRule rule)
+		if rule == null or rule.getID() == null or pRuleMap.has(rule.getID())
 			throw EInvalidParam.new()
 		end
-		this.pRuleMap.setAt( rule.getID(), rule )
+		pRuleMap.setAt(rule.getID(), rule)
 	end
 end

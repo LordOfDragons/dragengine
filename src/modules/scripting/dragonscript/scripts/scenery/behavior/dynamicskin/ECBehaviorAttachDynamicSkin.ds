@@ -42,7 +42,7 @@ pin Dragengine.Scenery
  * where child elements should match up with. The dynamic skin is controlled by the
  * parent element and can be used for all child elements.
  * 
- * To not use this behavior together with child elements using their own ECBehaviorDynamicSkin
+ * Do not use this behavior together with child elements using their own ECBehaviorDynamicSkin
  * otherwise this dynamic skin will be overwritten.
  * 
  * By default the behavior is configured to be used by attaching to parent element using

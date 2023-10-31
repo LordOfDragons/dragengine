@@ -72,6 +72,22 @@ public:
 		esmFree
 	};
 	
+	/** \brief Sub objects filter. */
+	enum eFilterSubObjects{
+		efsoBillboards = 0x1,
+		efsoComponents = 0x2,
+		efsoLights = 0x4,
+		efsoSnapPoints = 0x8,
+		efsoParticleEmitters = 0x10,
+		efsoForceFields = 0x20,
+		efsoEnvMapProbes = 0x40,
+		efsoSpeakers = 0x80,
+		efsoNavigationSpaces = 0x100,
+		efsoNavigationBlockers = 0x200
+	};
+	
+	static const int FilterSubObjectsAll = 0x3ff;
+	
 	
 	
 private:
@@ -96,6 +112,7 @@ private:
 	igdeGDCSpeakerList pListSpeakers;
 	igdeGDCNavigationSpaceList pListNavigationSpaces;
 	igdeGDCNavigationBlockerList pListNavigationBlockers;
+	int pInheritSubObjects;
 	
 	igdeTagManager pHideTags;
 	igdeTagManager pPartialHideTags;
@@ -179,6 +196,12 @@ public:
 	/** \brief Partial hide tags. */
 	inline igdeTagManager &GetPartialHideTags(){ return pPartialHideTags; }
 	inline const igdeTagManager &GetPartialHideTags() const{ return pPartialHideTags; }
+	
+	/** \brief Inherit sub objects filter. */
+	inline int GetInheritSubObjects() const{ return pInheritSubObjects; }
+	
+	/** \brief Set inherit sub objects filter. */
+	void SetInheritSubObjects( int filter );
 	
 	
 	

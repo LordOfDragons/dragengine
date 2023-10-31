@@ -116,7 +116,7 @@ public:
 	
 	
 	/** Sectors changed. */
-	void SectorsChanged();
+	virtual void SectorsChanged( deoglRHeightTerrain &heightTerrain );
 	/*@}*/
 	
 	

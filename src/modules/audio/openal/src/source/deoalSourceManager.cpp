@@ -117,6 +117,7 @@ deoalSource *deoalSourceManager::BindSource( void *owner ){
 			"Rebind previously bound source %i from %p to %p (%i,%i,%i)",
 			pSources.IndexOf( source ), source->GetOwner(), owner,
 			pSources.GetCount(), pCountBound, pCountUnbound ) );
+		source->Reset();
 		source->SetOwner( owner );
 		return source;
 	}
@@ -133,10 +134,9 @@ void deoalSourceManager::UnbindSource( deoalSource *source ){
 	DEBUG( pAudioThread.GetLogger().LogInfoFormat(
 		"Unbind source %i from %p (%i,%i,%i)", pSources.IndexOf( source ),
 		source->GetOwner(), pSources.GetCount(), pCountBound, pCountUnbound ) );
-	source->SetOwner( nullptr );
-	source->Stop();
-	source->ClearFilter();
-	source->DropEffectSlot();
+	
+	source->Reset();
+	
 	pCountBound--;
 	pCountUnbound++;
 }
