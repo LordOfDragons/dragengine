@@ -42,8 +42,8 @@ pDirty( false ),
 
 pEnableEFX( true ),
 pStreamBufSizeThreshold( 700000 ), // see deoalSound.cpp
-pAurealizationMode( eamFull ),
-pAurealizationQuality( eaqMedium ),
+pAuralizationMode( eamFull ),
+pAuralizationQuality( eaqMedium ),
 
 pEstimateRoomRayCount( 128 ),
 
@@ -52,9 +52,14 @@ pEAXReverbLateReverbGainFactor( 1.0f ),
 
 pAsyncAudio( true ),
 pFrameRateLimit( 0 ), // 0 means disabled
-pAsyncAudioSkipSyncTimeRatio( 0.5 )
+pAsyncAudioSkipSyncTimeRatio( 0.5 ),
+
+pUseSharedEffectSlots( true ),
+pShareEnvironmentThreshold( 0.05f ),
+pSwitchSharedEnvironmentThreshold( 0.1f ),
+pMaxSharedEffectSlots( 8 )
 {
-	pApplyAurealizationProfile();
+	pApplyAuralizationProfile();
 }
 
 deoalConfiguration::deoalConfiguration( const deoalConfiguration &config ){
@@ -94,10 +99,7 @@ void deoalConfiguration::SetEnableEFX( bool enable ){
 }
 
 void deoalConfiguration::SetStreamBufSizeThreshold( int threshold ){
-	if( threshold < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( threshold > 0 )
 	if( threshold == pStreamBufSizeThreshold ){
 		return;
 	}
@@ -106,32 +108,29 @@ void deoalConfiguration::SetStreamBufSizeThreshold( int threshold ){
 	pDirty = true;
 }
 
-void deoalConfiguration::SetAurealizationMode( eAurealizationModes mode ){
-	if( mode == pAurealizationMode ){
+void deoalConfiguration::SetAuralizationMode( eAuralizationModes mode ){
+	if( mode == pAuralizationMode ){
 		return;
 	}
 	
-	pAurealizationMode = mode;
+	pAuralizationMode = mode;
 	pDirty = true;
 }
 
-void deoalConfiguration::SetAurealizationQuality( eAurealizationQuality quality ){
-	if( quality == pAurealizationQuality ){
+void deoalConfiguration::SetAuralizationQuality( eAuralizationQuality quality ){
+	if( quality == pAuralizationQuality ){
 		return;
 	}
 	
-	pAurealizationQuality = quality;
+	pAuralizationQuality = quality;
 	pDirty = true;
-	pApplyAurealizationProfile();
+	pApplyAuralizationProfile();
 }
 
 
 
 void deoalConfiguration::SetSoundTraceRayCount( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( count > 0 )
 	if( count == pSoundTraceRayCount ){
 		return;
 	}
@@ -141,10 +140,7 @@ void deoalConfiguration::SetSoundTraceRayCount( int count ){
 }
 
 void deoalConfiguration::SetSoundTraceMaxBounceCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( count > 0 )
 	if( count == pSoundTraceMaxBounceCount ){
 		return;
 	}
@@ -154,10 +150,7 @@ void deoalConfiguration::SetSoundTraceMaxBounceCount( int count ){
 }
 
 void deoalConfiguration::SetSoundTraceMaxTransmitCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( count > 0 )
 	if( count == pSoundTraceMaxTransmitCount ){
 		return;
 	}
@@ -167,10 +160,7 @@ void deoalConfiguration::SetSoundTraceMaxTransmitCount( int count ){
 }
 
 void deoalConfiguration::SetEstimateRoomRayCount( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_TRUE( count > 0 )
 	if( count == pEstimateRoomRayCount ){
 		return;
 	}
@@ -202,11 +192,9 @@ void deoalConfiguration::SetEAXReverbLateReverbGainFactor( float factor ){
 
 
 void deoalConfiguration::SetFrameRateLimit( int frameRateLimit ){
+	DEASSERT_TRUE( frameRateLimit >= 0 )
 	if( frameRateLimit == pFrameRateLimit ){
 		return;
-	}
-	if( frameRateLimit < 0 ){
-		DETHROW( deeInvalidParam );
 	}
 	
 	pFrameRateLimit = frameRateLimit;
@@ -218,6 +206,7 @@ void deoalConfiguration::SetAsyncAudioSkipSyncTimeRatio( float ratio ){
 	if( fabsf( ratio - pAsyncAudioSkipSyncTimeRatio ) < FLOAT_SAFE_EPSILON ){
 		return;
 	}
+	
 	pAsyncAudioSkipSyncTimeRatio = ratio;
 	pDirty = true;
 }
@@ -226,7 +215,48 @@ void deoalConfiguration::SetAsyncAudio( bool asyncAudio ){
 	if( asyncAudio == pAsyncAudio ){
 		return;
 	}
+	
 	pAsyncAudio = asyncAudio;
+	pDirty = true;
+}
+
+void deoalConfiguration::SetUseSharedEffectSlots( bool useUseSharedEffectSlots ){
+	if( useUseSharedEffectSlots == pUseSharedEffectSlots ){
+		return;
+	}
+	
+	pUseSharedEffectSlots = useUseSharedEffectSlots;
+	pDirty = true;
+}
+
+void deoalConfiguration::SetShareEnvironmentThreshold( float threshold ){
+	threshold = decMath::max( threshold, 0.01f );
+	if( fabsf( threshold - pShareEnvironmentThreshold ) < 0.001f ){
+		return;
+	}
+	
+	pShareEnvironmentThreshold = threshold;
+	pDirty = true;
+}
+
+void deoalConfiguration::SetSwitchSharedEnvironmentThreshold( float threshold ){
+	threshold = decMath::max( threshold, 0.01f );
+	if( fabsf( threshold - pSwitchSharedEnvironmentThreshold ) < 0.001f ){
+		return;
+	}
+	
+	pSwitchSharedEnvironmentThreshold = threshold;
+	pDirty = true;
+}
+
+void deoalConfiguration::SetMaxSharedEffectSlots( int count ){
+	DEASSERT_TRUE( count >= 2 )
+	DEASSERT_TRUE( count <= 8 )
+	if( count == pMaxSharedEffectSlots ){
+		return;
+	}
+	
+	pMaxSharedEffectSlots = count;
 	pDirty = true;
 }
 
@@ -240,8 +270,8 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 	pEnableEFX = config.pEnableEFX;
 	pStreamBufSizeThreshold = config.pStreamBufSizeThreshold;
 	pDisableExtensions = config.pDisableExtensions;
-	pAurealizationMode = config.pAurealizationMode;
-	pAurealizationQuality = config.pAurealizationQuality;
+	pAuralizationMode = config.pAuralizationMode;
+	pAuralizationQuality = config.pAuralizationQuality;
 	
 	pSoundTraceRayCount = config.pSoundTraceRayCount;
 	pSoundTraceMaxBounceCount = config.pSoundTraceMaxBounceCount;
@@ -251,6 +281,10 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 	pEAXReverbReflectionGainFactor = config.pEAXReverbReflectionGainFactor;
 	pEAXReverbLateReverbGainFactor = config.pEAXReverbLateReverbGainFactor;
 	
+	pUseSharedEffectSlots = config.pUseSharedEffectSlots;
+	pShareEnvironmentThreshold = config.pShareEnvironmentThreshold;
+	pSwitchSharedEnvironmentThreshold = config.pSwitchSharedEnvironmentThreshold;
+	pMaxSharedEffectSlots = config.pMaxSharedEffectSlots;
 	return *this;
 }
 
@@ -262,14 +296,14 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 void deoalConfiguration::pCleanUp(){
 }
 
-void deoalConfiguration::pApplyAurealizationProfile(){
+void deoalConfiguration::pApplyAuralizationProfile(){
 	// switch profile.
 	// 
 	// bounces up to 100 go farther but if walls are absorbing enough this is not often reached.
 	// 
 	// less than 10 bounces has negative effect on reverberation time calculation stability
 	// and in general sounds worse if moving
-	switch( pAurealizationQuality ){
+	switch( pAuralizationQuality ){
 	case eaqVeryHigh:
 		// best working version for moving-sound scenario but creates 8x the ray segments.
 		// not usable from a performance point of view unless HW-acceleration can be used.

@@ -6,7 +6,7 @@ void reliefMapping( inout vec2 tc, in vec3 normal ){
 	
 	// transform the view vector into the relief coordinate system
 	int i;
-	float scaleZ = 1.0 / max( pHeightRemap.x, 0.001 );
+	float scaleZ = 1 / max( pHeightRemap.x, 0.001 );
 	vec3 direction = vec3(
 		dot( vTangent, vReflectDir ),
 		dot( vBitangent, vReflectDir ),
@@ -25,7 +25,7 @@ void reliefMapping( inout vec2 tc, in vec3 normal ){
 	
 	// find first point of intersection
 	#ifdef HEIGHT_VERSION_LINEAR
-		vec3 end = vec3( fract( tc ), 1.0 ); // top
+		vec3 end = vec3( tc, 1 ); // top
 		for( i=0; i<linearStepCount; i++ ){
 			end += direction;
 			if( texture( texHeight, end.st ).r > end.z ){
@@ -36,10 +36,10 @@ void reliefMapping( inout vec2 tc, in vec3 normal ){
 	#elif defined HEIGHT_VERSION_RELCONE
 		#define coneStepCount 15
 		float rayRatio = length( direction.xy );
-		vec3 end = vec3( fract( tc ), 1.0 ); // top
-		for( i=0; i<coneStepCount; i++ ){  
+		vec3 end = vec3( tc, 1 ); // top
+		for( i=0; i<coneStepCount; i++ ){
 			vec2 tap = texture( texHeight, end.st ).rg;
-			end += direction * ( tap.y * clamp( end.z - tap.x, 0.0, 1.0 ) / ( rayRatio + tap.y ) );
+			end += direction * ( tap.y * clamp( end.z - tap.x, 0, 1 ) / max( rayRatio + tap.y, 0.001 ) );
 		}
 	#endif
 	

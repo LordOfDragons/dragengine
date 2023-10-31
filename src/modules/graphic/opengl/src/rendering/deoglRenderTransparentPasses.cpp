@@ -621,7 +621,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
 	const int layerLimit = renderThread.GetConfiguration().GetTranspLayerLimit();
 	if( plan.GetTransparencyLayerCount() <= layerLimit ){
-		DBG_EXIT("RenderTransparentLimitDepth: Layer count below trashold")
+		DBG_EXIT("RenderTransparentLimitDepth: Layer count below treshold")
 		return;
 	}
 	

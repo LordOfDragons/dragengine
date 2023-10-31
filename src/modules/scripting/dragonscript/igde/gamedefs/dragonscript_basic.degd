@@ -161,6 +161,16 @@
 		</inherit>
 		<category>Dragengine</category>
 	</class>
+	<class name='HiddenElement'>
+		<description>Basic class for elements containing a single component and collider with support for beeing shown/hidden using a trigger expression.</description>
+		<scaleMode>free</scaleMode>
+		<inherit name='SimpleElement'>
+		</inherit>
+		<inherit name='ECBehaviorShowElement'>
+			<propertyPrefix>showElement.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
 	<class name='SimpleElementOnRail'>
 		<description>Basic class for simple elements moving on a rail. Whenever triggered the element starts moving to the opposite end of the rail. If no trigger is used the element keeps moving forth and back between the first and last corner of the rail.</description>
 		<scaleMode>free</scaleMode>
@@ -657,6 +667,17 @@
 			<option>dynamic</option>
 			<default>stationary</default>
 		</property>
+		<property name='enableGI'>
+			<description>Enable GI in graphic module if supported.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='hintGIImportance'>
+			<description>GI important hint. Value is in the range from 0 (very unimportant) to 4 (very important). This hint can be used by the graphic module to improve performance by excluding components with a GI important below a user chosen threashold. The default important is 4.</description>
+			<type>range</type>
+			<range min='0' max='4'/>
+			<default>4</default>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorAnimated'>
@@ -696,6 +717,15 @@
 		<property name='targetPlaying'>
 			<description>Trigger target mirroring activated state.</description>
 			<type>triggerTarget</type>
+		</property>
+		<property name='move'>
+			<description>If animator is not set creates animator playing back move.</description>
+			<type>string</type>
+		</property>
+		<property name='loopMove'>
+			<description>If animator is created using move it is played back looping.</description>
+			<type>boolean</type>
+			<default>1</default>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
@@ -998,6 +1028,17 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorShowElement'>
+		<description>Behavior element behavior showing/hiding element if triggered.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>showElement.</defaultInheritPropertyPrefix>
+		<property name='trigger'>
+			<description>Trigger to show/hide element.</description>
+			<type>triggerExpression</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 	<class name='ECBehaviorConvoCoordSystem'>
 		<description>Behavior element behavior adding conversation coordinate support.</description>
 		<ghost>true</ghost>
@@ -1177,6 +1218,11 @@
 			<description>Orientation in euler angles to attach to.</description>
 			<type>vector3</type>
 			<default>0 0 0</default>
+		</property>
+		<property name='touching'>
+			<description>Touch sensor is initially touching.</description>
+			<type>boolean</type>
+			<default>1</default>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
@@ -2595,6 +2641,15 @@
 		<property name='bones'>
 			<description>List of bones this prompt is limited to.</description>
 			<type>list</type>
+		</property>
+		<property name='maximumDistance'>
+			<description>Maximum distance to show interact prompt for when looking at it.</description>
+			<type>float</type>
+			<default>1000</default>
+		</property>
+		<property name='settings'>
+			<description>Optional settings to modify custom prompt widget display.</description>
+			<type>string</type>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>

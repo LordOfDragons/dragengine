@@ -33,6 +33,8 @@
 #include "../environment/deoalEnvironment.h"
 #include "../effect/deoalFilter.h"
 #include "../effect/deoalEffectSlot.h"
+#include "../effect/deoalSharedEffectSlot.h"
+#include "../effect/deoalSharedEffectSlotManager.h"
 #include "../extensions/deoalExtensions.h"
 #include "../microphone/deoalAMicrophone.h"
 #include "../sound/deoalDecodeBuffer.h"
@@ -129,12 +131,15 @@ pAttenuationDistanceOffset( 0.0f ),
 pFinalGain( 0.0f ),
 pAttenuatedGain( 0.0f ),
 
-pEnvironment( NULL ),
+pEnvironment( nullptr ),
+pSharedEffectSlotDistance( 0.0f ),
+pSharedEffectSlot( nullptr ),
+pDelayedDropSharedEffectSlot( false ),
 
 pMicrophoneMarkedRemove( false ),
 pWorldMarkedRemove( false ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL )
+pLLWorldPrev( nullptr ),
+pLLWorldNext( nullptr )
 {
 	LEAK_CHECK_CREATE( audioThread, Speaker );
 }
@@ -536,6 +541,12 @@ void deoalASpeaker::ResetStreaming(){
 }
 
 void deoalASpeaker::PrepareQuickDispose(){
+	if( pEnvironment ){
+		pEnvironment->PrepareQuickDispose();
+		delete pEnvironment;
+		pEnvironment = nullptr;
+	}
+	
 	pParentMicrophone = NULL;
 	pParentWorld = NULL;
 	pOctreeNode = NULL;
@@ -581,9 +592,7 @@ void deoalASpeaker::SetFlag( bool flag ){
 void deoalASpeaker::SetParentWorld( deoalAWorld *world ){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( pParentMicrophone ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NULL( pParentMicrophone )
 	
 	if( world == pParentWorld ){
 		return;
@@ -712,6 +721,29 @@ float deoalASpeaker::GetFullVolume() const{
 	}
 }
 
+void deoalASpeaker::SetSharedEffectSlotDistance( float distance ){
+	pSharedEffectSlotDistance = distance;
+}
+
+void deoalASpeaker::SetSharedEffectSlot( deoalSharedEffectSlot *effectSlot ){
+	pSharedEffectSlot = effectSlot;
+}
+
+void deoalASpeaker::DropSharedEffectSlot(){
+	pDelayedDropSharedEffectSlot = false;
+	
+	if( ! pSharedEffectSlot ){
+		return;
+	}
+	
+	if( pSource ){
+		OAL_CHECK( pAudioThread, alSource3i( pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
+			AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+	}
+	pSharedEffectSlot->RemoveSpeaker( this );
+	pSharedEffectSlot = nullptr;
+}
+
 bool deoalASpeaker::AffectsActiveMicrophone() const{
 	const deoalAMicrophone * const microphone = pAudioThread.GetActiveMicrophone();
 	if( ! microphone ){
@@ -770,32 +802,37 @@ public:
 };
 
 void deoalASpeaker::pCleanUp(){
-	pSoundDecoder = NULL;
+	if( pSharedEffectSlot ){ // do not use DropSharedEffectSlot here (potentially main thread)
+		pSharedEffectSlot->RemoveSpeaker( this );
+		pSharedEffectSlot = nullptr;
+	}
+	
+	pSoundDecoder = nullptr;
 	if( pBufferData ){
 		delete [] pBufferData;
-		pBufferData = NULL;
+		pBufferData = nullptr;
 	}
 	if( pEnvironment ){
 		delete pEnvironment;
-		pEnvironment = NULL;
+		pEnvironment = nullptr;
 	}
 	if( pSound ){
 		pSound->FreeReference();
-		pSound = NULL;
+		pSound = nullptr;
 	}
 	if( pSynthesizer ){
 		pSynthesizer->FreeReference();
-		pSynthesizer = NULL;
+		pSynthesizer = nullptr;
 	}
 	if( pVideoPlayer ){
 		pVideoPlayer->FreeReference();
-		pVideoPlayer = NULL;
+		pVideoPlayer = nullptr;
 	}
 	
 	// delayed deletion
 	pCheckStillSourceOwner();
 	if( pSource ){
-		deoalASpeakerDeletion *delayedDeletion = NULL;
+		deoalASpeakerDeletion *delayedDeletion = nullptr;
 		
 		try{
 			delayedDeletion = new deoalASpeakerDeletion;
@@ -902,7 +939,7 @@ void deoalASpeaker::pDecodeNext( bool underrun ){
 		return;
 	}
 	
-	// if we ran out of buffers we have to restart plpaying or playback stops
+	// if we ran out of buffers we have to restart playing or playback stops
 	if( restartPlaying ){
 		pPlayFinished = false;
 		pSource->Play();
@@ -1387,6 +1424,7 @@ void deoalASpeaker::pStopPlaySource(){
 		return;
 	}
 	
+	DropSharedEffectSlot();
 	pAudioThread.GetSourceManager().UnbindSource( pSource );
 	pSource = NULL;
 	pQueueSampleOffset = 0;
@@ -1409,7 +1447,7 @@ void deoalASpeaker::pUpdateSourceImportance(){
 		importance = 0.0f;
 		
 	}else{
-		pSource->SetImportance( 1000.0f );
+		pSource->SetImportance( -1000.0f );
 		return;
 	}
 	
@@ -1590,8 +1628,10 @@ void deoalASpeaker::pEnsureEnvironment(){
 		}
 		
 	}else if( pEnvironment ){
+		pDelayedDropSharedEffectSlot = true; // no DropSharedEffectSlot since main thread
+		
 		delete pEnvironment;
-		pEnvironment = NULL;
+		pEnvironment = nullptr;
 	}
 }
 
@@ -1652,15 +1692,26 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 // 			AttenuatedGain(0.0f), pVolume * AttenuatedGain(0.0f), pEnvironment->GetBandPassGain(), pVolume,
 // 			pEnvironment->GetReverbGain(), pEnvironment->GetReverbGain() * pVolume);
 	
+	if( pEnvironment->GetReverbGain() < 0.01f ){ //0.001f
+		pSource->DropEffectSlot();
+		DropSharedEffectSlot();
+		return;
+	}
+	
+	if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
+		pUpdateEnvironmentEffectShared();
+		return;
+	}
+	
 	const float reverbGain = pEnvironment->GetReverbGain() / decMath::max( pAttenuatedGain, 0.001f );
 	
-	const deoalEffectSlot * const effectSlot = pSource->GetEffectSlot();
+	deoalEffectSlot * const effectSlot = pSource->GetEffectSlot();
 	if( ! effectSlot ){
 		return;
 	}
 	
 	const ALuint effect = effectSlot->GetEffect();
-	OAL_CHECK( pAudioThread, palEffecti( effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB ) );
+	effectSlot->SetEffectType( AL_EFFECT_EAXREVERB );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAIN, 1.0f ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINHF, pEnvironment->GetReverbGainHF() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINLF, pEnvironment->GetReverbGainLF() ) );
@@ -1686,6 +1737,37 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	alvector[ 2 ] = ( ALfloat )pEnvironment->GetReverbLateReverbPan().z;
 	OAL_CHECK( pAudioThread, palEffectfv( effect, AL_EAXREVERB_LATE_REVERB_PAN, &alvector[ 0 ] ) );
 	
+	// OpenAL performance note:
+	// 
+	// if certain parameters change this causes OpenAL to do a full update. a full update
+	// calculates the old and new effect pipeline blending them together. thus a full update
+	// causes double the processing time. according to the source code
+	// ( https://github.com/kcat/openal-soft/blob/ca3bc1bd80fdff511e83d563a4ee94d6cd885473/alc/effects/reverb.cpp#L1167 )
+	// the following parameter changes cause a full update:
+	// - AL_EAXREVERB_DENSITY
+	// - AL_EAXREVERB_DIFFUSION
+	// - AL_EAXREVERB_DECAY_TIME
+	// - AL_EAXREVERB_DECAY_HFRATIO
+	// - AL_EAXREVERB_DECAY_LFRATIO
+	// - AL_EAXREVERB_MODULATION_TIME
+	// - AL_EAXREVERB_MODULATION_DEPTH
+	// - AL_EAXREVERB_HFREFERENCE
+	// - AL_EAXREVERB_LFREFERENCE
+	// 
+	// out of these only the AL_EAXREVERB_DECAY_* parameters potentially change every update.
+	// furthermore the equality check is '==' not fabsf based which makes this all verry
+	// sensitive. also air absorption can alter the decay time so this can also cause unwanted
+	// extra processing time
+	
+	// pAudioThread.GetLogger().LogInfoFormat("pUpdateEnvironmentEffect: %p g=(%.3f,%.3f) d=(%.3f,%.3f,%.3f) rg=(%.3f,%.3f) rd=(%.3f,%.3f) et=%.3f",
+	// 	pSource, pEnvironment->GetReverbGainHF(), pEnvironment->GetReverbGainLF(),
+	// 	pEnvironment->GetReverbDecayTime(), pEnvironment->GetReverbDecayHFRatio(), pEnvironment->GetReverbDecayLFRatio(),
+	// 	reverbGain * pEnvironment->GetReverbReflectionGain(), reverbGain * pEnvironment->GetReverbLateReverbGain(),
+	// 	pEnvironment->GetReverbReflectionDelay(), pEnvironment->GetReverbLateReverbDelay(),
+	// 	pEnvironment->GetReverbEchoTime());
+	
+	effectSlot->UpdateSlot( 0.0f /*pEnvironment->GetEffectKeepAliveTimeout()*/ );
+	
 	// this one here is difficult to understand and handle. the documentation is lacking in this
 	// regard so look at an anwser found online:
 	// https://openal.opensource.creative.narkive.com/N3Uwb9th/efx-clarifications-2
@@ -1698,6 +1780,70 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	// to be in place for the effect to work
 	// 
 	// see deoalSource::GetSendSlot()
+}
+
+void deoalASpeaker::pUpdateEnvironmentEffectShared(){
+	deoalSharedEffectSlotManager &sem = pAudioThread.GetSharedEffectSlotManager();
+	const deoalConfiguration &config = pAudioThread.GetConfiguration();
+	
+	// sem.AddSpeaker( this );
+	
+	float bestDistance = 0.0f;
+	deoalSharedEffectSlot * const bestSlot = sem.BestMatchingSlot( *pEnvironment, bestDistance );
+	deoalSharedEffectSlot * const emptySlot = sem.FirstEmptySlot();
+	
+	if( pDelayedDropSharedEffectSlot ){
+		DropSharedEffectSlot();
+	}
+	
+	if( pSharedEffectSlot ){
+		const deoalASpeaker * const refSpeaker = pSharedEffectSlot->GetReferenceSpeaker();
+		if( refSpeaker ){
+			const deoalEnvironment * const refEnv = refSpeaker->GetEnvironment();
+			if( refEnv && refEnv->Distance( *pEnvironment, false )
+			>= config.GetSwitchSharedEnvironmentThreshold() ){
+				if( emptySlot ){
+					DropSharedEffectSlot();
+					
+				}else if( bestSlot && bestSlot != pSharedEffectSlot
+				&& bestDistance <= config.GetShareEnvironmentThreshold() ){
+					DropSharedEffectSlot();
+				}
+			}
+		}
+	}
+	
+	if( pSharedEffectSlot ){
+		if( pSharedEffectSlot->GetReferenceSpeaker() == this ){
+			pSharedEffectSlot->UpdateEffectSlot();
+			/*
+		}else{
+			const decDVector &micpos = pAudioThread.GetActiveMicrophone()->GetPosition();
+			
+			if( ( pSharedEffectSlot->GetSpeakerAt( 0 )->GetPosition() - micpos ).Length()
+			- ( pPosition - micpos ).Length() > 2.0 ){
+				pSharedEffectSlot->MoveSpeakerFront( this );
+			}
+			*/
+		}
+		return;
+	}
+	
+	if( bestSlot && bestDistance <= config.GetShareEnvironmentThreshold() ){
+		pSharedEffectSlot = bestSlot;
+		
+	}else if( emptySlot ){
+		pSharedEffectSlot = emptySlot;
+		
+	}else{
+		pSharedEffectSlot = bestSlot;
+	}
+	
+	if( pSharedEffectSlot ){
+		pSharedEffectSlot->AddSpeaker( this );
+		OAL_CHECK( pAudioThread, alSource3i( pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
+			pSharedEffectSlot->GetEffectSlot()->GetSlot(), 0, AL_FILTER_NULL ) );
+	}
 }
 
 

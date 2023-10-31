@@ -36,30 +36,29 @@ pin Dragengine.Utils
  * Do not change the content of the dictionary as it is shared.
  * 
  * \code{.ds}
- * new BTBlockCondition( block BTContext context, Dictionary parameters
+ * new BTBlockCondition(block BTContext context, Dictionary parameters
  *    // verify condition then return true or false
  *    return true
- * end )
+ * end)
  * \endcode
  */
 class BTBlockCondition implements BTCondition
-	/** \brief Block to use. */
-	private var Block pBlock
+	var Block pBlock
 	
 	
 	
 	/** \brief Create condition. */
-	public func new( Block ablock )
+	func new(Block ablock)
 		if ablock == null
 			throw EInvalidParam.new()
 		end
-		this.pBlock = ablock
+		pBlock = ablock
 	end
 	
 	
 	/** \brief Block to use. */
-	public func Block getBlock()
-		return this.pBlock
+	func Block getBlock()
+		return pBlock
 	end
 	
 	
@@ -69,7 +68,7 @@ class BTBlockCondition implements BTCondition
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func bool evaluateCondition( BTContext context, Dictionary parameters )
-		return this.pBlock.run( context, parameters ) cast bool
+	func bool evaluateCondition(BTContext context, Dictionary parameters)
+		return pBlock.run(context, parameters) cast bool
 	end
 end

@@ -103,27 +103,27 @@ int deoglSkinStateConstructedNode::GetMappedFor( deSkinPropertyNode::eMapped typ
 
 void deoglSkinStateConstructedNode::Update( deoglSkinState &state ){
 	if( pMapped[ deSkinPropertyNode::emPositionX ] != -1 ){
-		pPosition.x = state.GetMappedAt( pMapped[ deSkinPropertyNode::emPositionX ] ).GetValue();
+		pPosition.x = ( int )( state.GetMappedAt( pMapped[ deSkinPropertyNode::emPositionX ] ).GetValue() + 0.5f );
 		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emPositionY ] != -1 ){
-		pPosition.y = state.GetMappedAt( pMapped[ deSkinPropertyNode::emPositionY ] ).GetValue();
+		pPosition.y = ( int )( state.GetMappedAt( pMapped[ deSkinPropertyNode::emPositionY ] ).GetValue() + 0.5f );
 		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emPositionZ ] != -1 ){
-		pPosition.z = state.GetMappedAt( pMapped[ deSkinPropertyNode::emPositionZ ] ).GetValue();
+		pPosition.z = ( int )( state.GetMappedAt( pMapped[ deSkinPropertyNode::emPositionZ ] ).GetValue() + 0.5f );
 		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emSizeX ] != -1 ){
-		pSize.x = state.GetMappedAt( pMapped[ deSkinPropertyNode::emSizeX ] ).GetValue();
+		pSize.x = ( int )( state.GetMappedAt( pMapped[ deSkinPropertyNode::emSizeX ] ).GetValue() + 0.5f );
 		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emSizeY ] != -1 ){
-		pSize.y = state.GetMappedAt( pMapped[ deSkinPropertyNode::emSizeY ] ).GetValue();
+		pSize.y = ( int )( state.GetMappedAt( pMapped[ deSkinPropertyNode::emSizeY ] ).GetValue() + 0.5f );
 		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emSizeZ ] != -1 ){
-		pSize.z = state.GetMappedAt( pMapped[ deSkinPropertyNode::emSizeZ ] ).GetValue();
+		pSize.z = ( int )( state.GetMappedAt( pMapped[ deSkinPropertyNode::emSizeZ ] ).GetValue() + 0.5f );
 		pDirtyTransform = true;
 	}
 	if( pMapped[ deSkinPropertyNode::emRotation ] != -1 ){

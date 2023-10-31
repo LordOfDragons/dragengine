@@ -75,6 +75,11 @@ class LoadConversation extends BaseXmlLoader
 		
 		conversation = Conversation.new(filename)
 		pReadConversation(root, conversation, File.new(filename).getParent().getPath())
+		
+		conversation.forEachTopicGroup(block ConversationTopicGroup each
+			each.lock()
+		end)
+		
 		pConversations.setAt(filename, conversation)
 		
 		return conversation
@@ -296,6 +301,10 @@ class LoadConversation extends BaseXmlLoader
 		var ConversationTopicGroup group = conversation.getTopicGroupWithID(id)
 		if group == null
 			group = ConversationTopicGroup.new(id)
+			conversation.addTopicGroup(group)
+			
+		elif group.isLocked()
+			group = ConversationTopicGroup.new(group)
 			conversation.addTopicGroup(group)
 		end
 		

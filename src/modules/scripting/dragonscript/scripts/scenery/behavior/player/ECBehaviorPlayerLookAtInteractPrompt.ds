@@ -96,7 +96,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/**
@@ -105,7 +105,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		 * If all listeners return true the prompt is accepted otherwise rejected.
 		 * Default implementation returns true.
 		 */
-		public func bool acceptInteractPrompt(Instance instance, ECBehaviorInteractPrompt.Instance prompt)
+		func bool acceptInteractPrompt(Instance instance, ECBehaviorInteractPrompt.Instance prompt)
 			return true
 		end
 	end
@@ -118,10 +118,10 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -129,7 +129,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -138,36 +138,37 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Player takes control listener. */
 		class PlayerTakesControl extends ECBehaviorPlayerControllable.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void playerTakesControl(ECBehaviorPlayerControllable.Instance instance)
+			func void playerTakesControl(ECBehaviorPlayerControllable.Instance instance)
 				pInstance.playerTakesControl()
 			end
 			
-			public func void playerReleasesControl(ECBehaviorPlayerControllable.Instance instance)
+			func void playerReleasesControl(ECBehaviorPlayerControllable.Instance instance)
 				pInstance.playerReleasesControl()
 			end
 		end
 		
 		
-		private var ECBehaviorPlayerLookAtInteractPrompt pECBehavior
-		private var ECBehaviorPlayerControllable.Instance pPlayerControllable
-		private var ECBehaviorLookAt.Instance pLookAt
-		private var int pBindingIconHeight
-		private var float pTransparency
-		private var Container pUIContainer
-		private var PromptController pPromptController
-		private var bool pEnabled
-		private var Array pListeners
+		var ECBehaviorPlayerLookAtInteractPrompt pECBehavior
+		var ECBehaviorPlayerControllable.Instance pPlayerControllable
+		var ECBehaviorLookAt.Instance pLookAt
+		var int pBindingIconHeight
+		var float pTransparency
+		var bool pVisibleIfEmpty
+		var Container pUIContainer
+		var PromptController pPromptController
+		var bool pEnabled
+		var Array pListeners
 		
 		
 		
 		/** \brief Create instance. */
-		public func new(ECBehaviorPlayerLookAtInteractPrompt ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorPlayerLookAtInteractPrompt ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pEnabled = true
 			
@@ -180,7 +181,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of instance. */
-		public func void dispose()
+		func void dispose()
 			pPlayerControllable = null
 			pLookAt = null
 			pUIContainer = null
@@ -196,9 +197,10 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			pBindingIconHeight = pECBehavior.getBindingIconHeight().getValue(stub)
 			pTransparency = pECBehavior.getTransparency().getValue(stub)
+			pVisibleIfEmpty = pECBehavior.getVisibleIfEmpty().getValue(stub)
 			pPlayerControllable.addListener(PlayerTakesControl.new(this))
 			
 			pECBehavior.createListeners(this)
@@ -207,32 +209,32 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorPlayerLookAtInteractPrompt getECBehavior()
+		func ECBehaviorPlayerLookAtInteractPrompt getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Player controllable behavior. */
-		public func ECBehaviorPlayerControllable.Instance getPlayerControllable()
+		func ECBehaviorPlayerControllable.Instance getPlayerControllable()
 			return pPlayerControllable
 		end
 		
 		/** \brief Look-at behavior. */
-		public func ECBehaviorLookAt.Instance getLookAt()
+		func ECBehaviorLookAt.Instance getLookAt()
 			return pLookAt
 		end
 		
 		/** \brief Binding icon height. */
-		public func int getBindingIconHeight()
+		func int getBindingIconHeight()
 			return pBindingIconHeight
 		end
 		
 		/** \brief Transparency. */
-		public func float getTransparency()
+		func float getTransparency()
 			return pTransparency
 		end
 		
 		/** \brief Set transparency. */
-		public func void setTransparency(float transparency)
+		func void setTransparency(float transparency)
 			transparency = DEMath.clamp(transparency, 0.0, 1.0)
 			if DEMath.fabs(transparency - pTransparency) < 0.001
 				return
@@ -245,13 +247,29 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			end
 		end
 		
+		/**
+		 * \brief Show prompt widget if no prompts are present.
+		 * \version 1.19
+		 */
+		func bool getVisibleIfEmpty()
+			return pVisibleIfEmpty
+		end
+		
+		/**
+		 * \brief Set if prompt widget is visible if no prompts are present.
+		 * \version 1.19
+		 */
+		func void setVisibleIfEmpty(bool visible)
+			pVisibleIfEmpty = visible
+		end
+		
 		/** \brief UI Container to add panel to. */
-		public func Container getUIContainer()
+		func Container getUIContainer()
 			return pUIContainer
 		end
 		
 		/** \brief Set UI container to add panel to. */
-		public func void setUIContainer(Container container)
+		func void setUIContainer(Container container)
 			if container == null
 				throw ENullPointer.new("container")
 			end
@@ -269,26 +287,26 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Behavior is enabled showing interact prompts if an element is looked at. */
-		public func bool getEnabled()
+		func bool getEnabled()
 			return pEnabled
 		end
 		
 		/** \brief Set if behavior is enabled showing interact prompts if an element is looked at. */
-		public func void setEnabled(bool enabled)
+		func void setEnabled(bool enabled)
 			pEnabled = enabled
 		end
 		
 		
 		
 		/** \brief Prompt controller or null if not created. */
-		public func PromptController getPromptController()
+		func PromptController getPromptController()
 			return pPromptController
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -296,7 +314,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
@@ -307,7 +325,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		 * 
 		 * Creates prompt widget if not created already and adds it to UI container.
 		 */
-		public func void playerTakesControl()
+		func void playerTakesControl()
 			if pPromptController != null
 				return
 			end
@@ -325,7 +343,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		 * 
 		 * Destroys prompt widget if created removing it from the UI container.
 		 */
-		public func void playerReleasesControl()
+		func void playerReleasesControl()
 			setRequiresThink(false)
 			
 			if pPromptController != null
@@ -341,7 +359,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		 * distance set for each interact prompt. If look-at bone name is also present ignores
 		 * instances having bones defined where the look-at bone is not part of the bones list.
 		 */
-		public func Array getPromptsFrom(BehaviorElement element)
+		func Array getPromptsFrom(BehaviorElement element)
 			var Array prompts = ECBehaviorInteractPrompt.getAllEnabledInstancesIn(element)
 			
 			var float hitDistance = pLookAt.getLookAtDistance()
@@ -360,7 +378,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Update prompts. */
-		public func void updatePrompts()
+		func void updatePrompts()
 			if pPromptController == null
 				return
 			end
@@ -388,7 +406,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			
 			setPromptsFromBehaviors(prompts)
 			
-			pPromptController.setPromptVisible(prompts.getCount() > 0)
+			pPromptController.setPromptVisible(prompts.getCount() > 0 or pVisibleIfEmpty)
 		end
 		
 		/**
@@ -412,7 +430,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		end
 		
 		/** \brief Update prompts if player is active actor. */
-		public func void think(float elapsed)
+		func void think(float elapsed)
 			if pPromptController != null
 				updatePrompts()
 			end
@@ -421,16 +439,17 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorPlayerControllable pPlayerControllable
-	private var ECBehaviorLookAt pLookAt
-	private var PromptControllerFactory pPromptControllerFactory
-	private var Container pUIContainer
-	private var Object pUIContainerAddSettings
-	private var CommandManager pCommandManager
-	private var BindingManager pBindingManager
-	private var ECPInteger pBindingIconHeight
-	private var ECPFloat pTransparency
-	private var Array pListenerFactories
+	var ECBehaviorPlayerControllable pPlayerControllable
+	var ECBehaviorLookAt pLookAt
+	var PromptControllerFactory pPromptControllerFactory
+	var Container pUIContainer
+	var Object pUIContainerAddSettings
+	var CommandManager pCommandManager
+	var BindingManager pBindingManager
+	var ECPInteger pBindingIconHeight
+	var ECPFloat pTransparency
+	var ECPBoolean pVisibleIfEmpty
+	var Array pListenerFactories
 	
 	
 	
@@ -442,7 +461,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	 * - bindingManager
 	 * - uiContainerAddSettings
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \
+	func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \
 	ECBehaviorLookAt lookAt, PromptControllerFactory promptControllerFactory, Container uiContainer, \
 	Object uiContainerAddSettings) \
 	this(eclass, playerControllable, lookAt, promptControllerFactory, uiContainer, \
@@ -450,14 +469,14 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	BaseGameApp.getApp().getBindingManager())
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \
+	func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \
 	ECBehaviorLookAt lookAt, PromptControllerFactory promptControllerFactory, Container uiContainer, \
 	Object uiContainerAddSettings, CommandManager commandManager, BindingManager bindingManager) \
 	this(eclass, playerControllable, lookAt, promptControllerFactory, uiContainer, \
 	uiContainerAddSettings, commandManager, bindingManager, "playerLookAtInteractPrompt.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \
+	func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \
 	ECBehaviorLookAt lookAt, PromptControllerFactory promptControllerFactory, Container uiContainer, \
 	Object uiContainerAddSettings, String prefix) \
 	this(eclass, playerControllable, lookAt, promptControllerFactory, uiContainer, \
@@ -465,7 +484,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	BaseGameApp.getApp().getBindingManager(), prefix)
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \
+	func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \
 	ECBehaviorLookAt lookAt, PromptControllerFactory promptControllerFactory, Container uiContainer, \
 	Object uiContainerAddSettings, CommandManager commandManager, BindingManager bindingManager, \
 	String prefix) super(eclass)
@@ -494,17 +513,15 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		pBindingManager = bindingManager
 		pListenerFactories = Array.new()
 		
-		pBindingIconHeight = ECPInteger.new(prefix + ".bindingIconHeight", 32, 1)
-		eclass.addProperty(pBindingIconHeight)
-		
-		pTransparency = ECPFloat.new(prefix + ".transparency", 1, 0, 1)
-		eclass.addProperty(pTransparency)
+		eclass.addProperty(pBindingIconHeight = ECPInteger.new(prefix + ".bindingIconHeight", 32, 1))
+		eclass.addProperty(pTransparency = ECPFloat.new(prefix + ".transparency", 1, 0, 1))
+		eclass.addProperty(pVisibleIfEmpty = ECPBoolean.new(prefix + ".visibleIfEmpty", false))
 		
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pCommandManager = null
 		pBindingManager = null
 		pPlayerControllable = null
@@ -518,22 +535,22 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	
 	
 	/** \brief Player controllable behavior. */
-	public func ECBehaviorPlayerControllable getPlayerControllable()
+	func ECBehaviorPlayerControllable getPlayerControllable()
 		return pPlayerControllable
 	end
 	
 	/** \brief Look-at behavior. */
-	public func ECBehaviorLookAt getLookAt()
+	func ECBehaviorLookAt getLookAt()
 		return pLookAt
 	end
 	
 	/** \brief Prompt controller factory. */
-	public func PromptControllerFactory getPromptControllerFactory()
+	func PromptControllerFactory getPromptControllerFactory()
 		return pPromptControllerFactory
 	end
 	
 	/** \brief Set prompt controller factory. */
-	public func void setPromptControllerFactory(PromptControllerFactory factory)
+	func void setPromptControllerFactory(PromptControllerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -541,12 +558,12 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	end
 	
 	/** \brief UI Container to add panel to. */
-	public func Container getUIContainer()
+	func Container getUIContainer()
 		return pUIContainer
 	end
 	
 	/** \brief Set UI Container to add panel to. */
-	public func void setUIContainer(Container container)
+	func void setUIContainer(Container container)
 		if container == null
 			throw ENullPointer.new()
 		end
@@ -554,47 +571,55 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	end
 	
 	/** \brief Settings use to add prompt widget to UI Container. */
-	public func Object getUIContainerAddSettings()
+	func Object getUIContainerAddSettings()
 		return pUIContainerAddSettings
 	end
 	
 	/** \brief Set settings use to add prompt widget to UI Container. */
-	public func void setUIContainerAddSettings(Object settings)
+	func void setUIContainerAddSettings(Object settings)
 		pUIContainerAddSettings = settings
 	end
 	
 	/** \brief Command manager or null. */
-	public func CommandManager getCommandManager()
+	func CommandManager getCommandManager()
 		return pCommandManager
 	end
 	
 	/** \brief Set command manager or null. */
-	public func void setCommandManager(CommandManager commandManager)
+	func void setCommandManager(CommandManager commandManager)
 		pCommandManager = commandManager
 	end
 	
 	/** \brief Binding manager or null. */
-	public func BindingManager getBindingManager()
+	func BindingManager getBindingManager()
 		return pBindingManager
 	end
 	
 	/** \brief Set binding manager or null. */
-	public func void setBindingManager(BindingManager bindingManager)
+	func void setBindingManager(BindingManager bindingManager)
 		pBindingManager = bindingManager
 	end
 	
 	/** \brief Binding icon height. */
-	public func ECPInteger getBindingIconHeight()
+	func ECPInteger getBindingIconHeight()
 		return pBindingIconHeight
 	end
 	
 	/** \brief Transparency. */
-	public func ECPFloat getTransparency()
+	func ECPFloat getTransparency()
 		return pTransparency
 	end
 	
+	/**
+	 * \brief Show prompt widget if no prompts are present.
+	 * \version 1.19
+	 */
+	func ECPBoolean getVisibleIfEmpty()
+		return pVisibleIfEmpty
+	end
+	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -606,17 +631,17 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -625,7 +650,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -637,7 +662,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorPlayerLookAtInteractPrompt.
 	 */
-	static public func ECBehaviorPlayerLookAtInteractPrompt getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorPlayerLookAtInteractPrompt getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorPlayerLookAtInteractPrompt each
 			return true
 		end) cast ECBehaviorPlayerLookAtInteractPrompt
@@ -649,7 +674,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorPlayerLookAtInteractPrompt.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -658,7 +683,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

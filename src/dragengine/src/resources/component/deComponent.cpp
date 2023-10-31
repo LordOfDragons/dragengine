@@ -73,6 +73,8 @@ pSkin( skin ),
 pScale( 1.0f, 1.0f, 1.0f ),
 pVisible( true ),
 pHintMovement( emhStationary ),
+pEnableGI( true ),
+pHintGIImportance( 4 ),
 
 pBones( NULL ),
 pBoneCount( 0 ),
@@ -404,6 +406,45 @@ void deComponent::SetHintMovement( eMovementHints hint ){
 	}
 	
 	pHintMovement = hint;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParametersChanged();
+	}
+	if( pPeerPhysics ){
+		pPeerPhysics->ParametersChanged();
+	}
+	if( pPeerAudio ){
+		pPeerAudio->ParametersChanged();
+	}
+}
+
+void deComponent::SetEnableGI( bool enable ){
+	if( enable == pEnableGI ){
+		return;
+	}
+	
+	pEnableGI = enable;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParametersChanged();
+	}
+	if( pPeerPhysics ){
+		pPeerPhysics->ParametersChanged();
+	}
+	if( pPeerAudio ){
+		pPeerAudio->ParametersChanged();
+	}
+}
+
+void deComponent::SetHintGIImportance( int importance ){
+	DEASSERT_TRUE( importance >= 0 )
+	DEASSERT_TRUE( importance <= 4 )
+	
+	if( importance == pHintGIImportance ){
+		return;
+	}
+	
+	pHintGIImportance = importance;
 	
 	if( pPeerGraphic ){
 		pPeerGraphic->ParametersChanged();

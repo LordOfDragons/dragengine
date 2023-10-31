@@ -348,6 +348,7 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeGroupExtends.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeSurface.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeToVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeToLog.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpCollisionDispatcher.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpCollisionWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpConstraintSolver.cpp" />
@@ -835,6 +836,7 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeGroupExtends.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeSurface.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeToVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeToLog.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpCollisionDispatcher.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpCollisionWorld.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpConstraintSolver.h" />

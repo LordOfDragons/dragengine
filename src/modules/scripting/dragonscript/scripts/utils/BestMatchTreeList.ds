@@ -100,7 +100,7 @@ class BestMatchTreeList
 	
 	/** \brief Get property best matching path. */
 	public func Object getAt( String path )
-		var Array components = path.split( this.pSeparator )
+		var Array components = path.splitExact( this.pSeparator )
 		var int i, count = components.getCount()
 		var Object property = this.pRoot.object
 		var Entry entry = this.pRoot
@@ -125,7 +125,7 @@ class BestMatchTreeList
 	
 	/** \brief Get property matching exactly path or null if absent. */
 	public func Object getAtExact( String path )
-		var Array components = path.split( this.pSeparator )
+		var Array components = path.splitExact( this.pSeparator )
 		var int i, count = components.getCount()
 		var Entry next, entry = this.pRoot
 		
@@ -147,7 +147,7 @@ class BestMatchTreeList
 	 * property is ignored during getAt().
 	 */
 	public func void setAt( String path, Object property )
-		( path.split( this.pSeparator ).inject( this.pRoot, block Entry entry, String component
+		( path.splitExact( this.pSeparator ).inject( this.pRoot, block Entry entry, String component
 			var Entry child = entry.entries.getAt( component, null ) cast Entry
 			if child == null
 				child = Entry.new( component )
@@ -190,7 +190,7 @@ class BestMatchTreeList
 	 * Block has signature String path, Object property.
 	 */
 	public func void forEach( String path, Block ablock )
-		var Array components = path.split( this.pSeparator )
+		var Array components = path.splitExact( this.pSeparator )
 		var int i, count = components.getCount()
 		var Entry entry = this.pRoot
 		var String buildPath = ""

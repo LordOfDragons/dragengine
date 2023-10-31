@@ -700,7 +700,7 @@ void main( void ){
 			// ray hits nothing. for sky lights this adds the ambient light contribution.
 			// for all other light sources do not light the ray
 			#ifdef SKY_LIGHT
-				vec3 lightColor = pLightColor * pLightGIAmbientRatio;
+				vec3 lightColor = pLightColorAmbientGI;
 				//outLuminance = vec4( vec3( dot( lightColor, lumiFactors ) ), diffuse.a );
 				outColor = vec4( lightColor * diffuse.rgb, diffuse.a );
 			#else
@@ -1117,10 +1117,10 @@ void main( void ){
 	
 	// specular term
 	//roughness.r = max( roughness.r, 0.1 );
-	float ap = 426.0 * ( 1.0 - roughness.r ) / ( 90.0 * roughness.r * roughness.r + roughness.r + 0.0001 ) + 1.0;
+	float ap = 426.0 * ( 1.0 - roughness.r ) / ( 90.0 * roughness.r * roughness.r + roughness.r + 0.001 ) + 1.0;
 	vec3 halfDir = normalize( lightDir - normalize( position ) );
 	float specNormTerm = ( ap + 2.0 ) / 8.0;
-	float specPowTerm = pow( clamp( dot( normal, halfDir ), 0.0, 0.99999 ), ap ); // 0.99999 prevents infinity overshoot on near 0-angle ray
+	float specPowTerm = pow( clamp( dot( normal, halfDir ), 0.0, 0.99 ), ap ); // 0.99 prevents infinity overshoot on near 0-angle ray
 	vec3 specFresnelTerm = mix( reflectivity, vec3( 1.0 ), vec3( pow( clamp( 1.0 - dot( lightDir, halfDir ), 0.0, 1.0 ), 5.0 ) ) );
 	
 	#ifdef AMBIENT_LIGHTING
@@ -1138,6 +1138,9 @@ void main( void ){
 	
 	// light color taking into account light color, light image and shadow. attenuation is handled separately
 	vec3 lightColor = pLightColor;
+	#ifdef GI_RAY
+	lightColor += pLightColorAmbientGI;
+	#endif
 	
 	#ifdef TEXTURE_COLOR
 		// shadow maps are upside down compared to regular images. this is due to the images being

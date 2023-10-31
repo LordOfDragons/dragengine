@@ -232,17 +232,17 @@ void deoalLSConfiguration::pLoadConfig( decBaseFileReader *file ){
 			pConfig.GetDisableExtensions().Add( pGetCData( *tag, "" ) );
 			pConfig.SetDirty( true );
 			
-		}else if( name == "aurealizationMode" ){
+		}else if( name == "AuralizationMode" ){
 			const decString value( pGetCData( *tag, "" ) );
 			
 			if( value == "disabled" ){
-				pConfig.SetAurealizationMode( deoalConfiguration::eamDisabled );
+				pConfig.SetAuralizationMode( deoalConfiguration::eamDisabled );
 				
 			}else if( value == "directSound" ){
-				pConfig.SetAurealizationMode( deoalConfiguration::eamDirectSound );
+				pConfig.SetAuralizationMode( deoalConfiguration::eamDirectSound );
 				
 			}else if( value == "full" ){
-				pConfig.SetAurealizationMode( deoalConfiguration::eamFull );
+				pConfig.SetAuralizationMode( deoalConfiguration::eamFull );
 				
 			}else{
 				pOal.LogWarnFormat( "openal.xml %s(%i:%i): Unknown Value '%s'.",
@@ -250,23 +250,23 @@ void deoalLSConfiguration::pLoadConfig( decBaseFileReader *file ){
 				tag->GetPositionNumber(), tag->GetName().GetString() );
 			}
 			
-		}else if( name == "aurealizationQuality" ){
+		}else if( name == "AuralizationQuality" ){
 			const decString value( pGetCData( *tag, "" ) );
 			
 			if( value == "veryLow" ){
-				pConfig.SetAurealizationQuality( deoalConfiguration::eaqVeryLow );
+				pConfig.SetAuralizationQuality( deoalConfiguration::eaqVeryLow );
 				
 			}else if( value == "low" ){
-				pConfig.SetAurealizationQuality( deoalConfiguration::eaqLow );
+				pConfig.SetAuralizationQuality( deoalConfiguration::eaqLow );
 				
 			}else if( value == "medium" ){
-				pConfig.SetAurealizationQuality( deoalConfiguration::eaqMedium );
+				pConfig.SetAuralizationQuality( deoalConfiguration::eaqMedium );
 				
 			}else if( value == "high" ){
-				pConfig.SetAurealizationQuality( deoalConfiguration::eaqHigh );
+				pConfig.SetAuralizationQuality( deoalConfiguration::eaqHigh );
 				
 			}else if( value == "veryHigh" ){
-				pConfig.SetAurealizationQuality( deoalConfiguration::eaqVeryHigh );
+				pConfig.SetAuralizationQuality( deoalConfiguration::eaqVeryHigh );
 				
 			}else{
 				pOal.LogWarnFormat( "openal.xml %s(%i:%i): Unknown Value '%s'.",
@@ -289,6 +289,24 @@ void deoalLSConfiguration::pLoadConfig( decBaseFileReader *file ){
 			
 		}else if( name == "asyncAudio" ){
 			pConfig.SetAsyncAudio( pGetCDataBool( *tag, pConfig.GetAsyncAudio() ) );
+		
+		
+		
+		}else if( name == "useSharedEffectSlots" ){
+			pConfig.SetUseSharedEffectSlots( pGetCDataBool(
+				*tag, pConfig.GetUseSharedEffectSlots() ) );
+		
+		}else if( name == "shareEnvironmentThreshold" ){
+			pConfig.SetShareEnvironmentThreshold( pGetCDataFloat(
+				*tag, pConfig.GetShareEnvironmentThreshold() ) );
+		
+		}else if( name == "switchSharedEnvironmentThreshold" ){
+			pConfig.SetSwitchSharedEnvironmentThreshold( pGetCDataFloat(
+				*tag, pConfig.GetSwitchSharedEnvironmentThreshold() ) );
+		
+		}else if( name == "maxSharedEffectSlots" ){
+			pConfig.SetMaxSharedEffectSlots( pGetCDataInt(
+				*tag, pConfig.GetMaxSharedEffectSlots() ) );
 			
 			
 			

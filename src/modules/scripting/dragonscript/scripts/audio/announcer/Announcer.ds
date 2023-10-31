@@ -153,8 +153,8 @@ class Announcer
 	 */
 	public func void setAnnounceFromText( String text )
 		// split text into phrases, sub-phrases and words
-		var Array phrases = text.toLower().split( '.' ).map( block String phrase
-			return phrase.split( ',' ).map( block String subPhrase
+		var Array phrases = text.toLower().splitExact( '.' ).map( block String phrase
+			return phrase.splitExact( ',' ).map( block String subPhrase
 				return subPhrase.split( ' ' )
 			end )
 		end )

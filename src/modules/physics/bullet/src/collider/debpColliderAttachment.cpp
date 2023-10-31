@@ -140,24 +140,26 @@ void debpColliderAttachment::AttachmentChanged(){
 
 
 
-void debpColliderAttachment::Reposition( const decDMatrix &matrix, bool changeNotify ){
+void debpColliderAttachment::Reposition( const decDMatrix &matrix, const decVector &velocity,
+bool changeNotify ){
 	pPrepareLocalMatrix();
 	
 	if( pHasLocalMatrix ){
 		const decDMatrix attmat( pLocalMatrix.QuickMultiply( matrix ) );
 		const decDVector scale( attmat.GetScale() );
 		const decDMatrix nor( attmat.Normalized() );
-		pRepositionResource( nor.GetPosition(), nor.ToQuaternion(), scale, changeNotify );
+		pRepositionResource( nor.GetPosition(), nor.ToQuaternion(), scale, velocity, changeNotify );
 		
 	}else{
 		const decDVector scale( matrix.GetScale() );
 		const decDMatrix nor( matrix.Normalized() );
-		pRepositionResource( nor.GetPosition(), nor.ToQuaternion(), scale, changeNotify );
+		pRepositionResource( nor.GetPosition(), nor.ToQuaternion(), scale, velocity, changeNotify );
 	}
 }
 
 void debpColliderAttachment::Reposition( const decDVector &position,
-const decQuaternion &orientation, const decDVector &scale, bool changeNotify ){
+const decQuaternion &orientation, const decDVector &scale, const decVector &velocity,
+bool changeNotify ){
 	pPrepareLocalMatrix();
 	
 	if( pHasLocalMatrix ){
@@ -165,14 +167,15 @@ const decQuaternion &orientation, const decDVector &scale, bool changeNotify ){
 			decDMatrix::CreateWorld( position, orientation, scale ) ) );
 		const decDVector amscale( attmat.GetScale() );
 		const decDMatrix nor( attmat.Normalized() );
-		pRepositionResource( nor.GetPosition(), nor.ToQuaternion(), amscale, changeNotify );
+		pRepositionResource( nor.GetPosition(), nor.ToQuaternion(), amscale, velocity, changeNotify );
 		
 	}else{
-		pRepositionResource( position, orientation, scale, changeNotify );
+		pRepositionResource( position, orientation, scale, velocity, changeNotify );
 	}
 }
 
-void debpColliderAttachment::Transform( const decDMatrix &matrix, bool changeNotify ){
+void debpColliderAttachment::Transform( const decDMatrix &matrix, const decVector &velocity,
+bool changeNotify ){
 	deResource * const resource = pAttachment->GetResource();
 	
 	switch( resource->GetResourceManager()->GetResourceType() ){
@@ -272,6 +275,7 @@ void debpColliderAttachment::Transform( const decDMatrix &matrix, bool changeNot
 		deMicrophone &microphone = *( ( deMicrophone* )resource );
 		microphone.SetPosition( matrix * microphone.GetPosition() );
 		microphone.SetOrientation( microphone.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		microphone.SetVelocity( velocity );
 		}break;
 		
 	case deResourceManager::ertNavigationSpace:{
@@ -306,6 +310,7 @@ void debpColliderAttachment::Transform( const decDMatrix &matrix, bool changeNot
 		deSpeaker &speaker = *( ( deSpeaker* )resource );
 		speaker.SetPosition( matrix * speaker.GetPosition() );
 		speaker.SetOrientation( speaker.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		speaker.SetVelocity( velocity );
 		}break;
 		
 	case deResourceManager::ertTouchSensor:{
@@ -362,7 +367,8 @@ void debpColliderAttachment::pPrepareLocalMatrix(){
 }
 
 void debpColliderAttachment::pRepositionResource( const decDVector &position,
-const decQuaternion &orientation, const decDVector &scale, bool changeNotify ){
+const decQuaternion &orientation, const decDVector &scale, const decVector &velocity,
+bool changeNotify ){
 	deResource * const resource = pAttachment->GetResource();
 	
 	switch( resource->GetResourceManager()->GetResourceType() ){
@@ -461,6 +467,7 @@ const decQuaternion &orientation, const decDVector &scale, bool changeNotify ){
 		deMicrophone &microphone = *( ( deMicrophone* )resource );
 		microphone.SetPosition( position );
 		microphone.SetOrientation( orientation );
+		microphone.SetVelocity( velocity );
 		}break;
 		
 	case deResourceManager::ertNavigationSpace:{
@@ -495,6 +502,7 @@ const decQuaternion &orientation, const decDVector &scale, bool changeNotify ){
 		deSpeaker &speaker = *( ( deSpeaker* )resource );
 		speaker.SetPosition( position );
 		speaker.SetOrientation( orientation );
+		speaker.SetVelocity( velocity );
 		}break;
 		
 	case deResourceManager::ertTouchSensor:{

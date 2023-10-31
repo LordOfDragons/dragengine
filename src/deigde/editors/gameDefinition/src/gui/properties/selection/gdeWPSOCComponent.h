@@ -78,6 +78,8 @@ private:
 	igdeEditPathReference pEditPathSkin;
 	igdeEditPathReference pEditPathRig;
 	igdeEditPathReference pEditPathAnimator;
+	igdeEditPathReference pEditPathAnimation;
+	igdeTextFieldReference pEditMove;
 	igdeEditPathReference pEditPathOcclusionMesh;
 	igdeEditPathReference pEditPathAudioModel;
 	igdeTextFieldReference pEditPlaybackController;

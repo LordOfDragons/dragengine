@@ -34,6 +34,12 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlotManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalSharedEffectSlot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalSharedEffectSlotManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -199,13 +205,16 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationMode.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationQuality.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationQuality.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPMaxEnvSlots.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.cpp">
@@ -245,6 +254,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalASpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalFakeSpeaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeaker.cpp">
@@ -471,6 +483,12 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlotManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalSharedEffectSlot.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalSharedEffectSlotManager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalFilter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -648,13 +666,16 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationMode.h">
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationQuality.h">
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationQuality.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPMaxEnvSlots.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.h">
@@ -694,6 +715,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalASpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalFakeSpeaker.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeaker.h">

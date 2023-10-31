@@ -30,21 +30,21 @@ pin Dragengine.Scenery
  * \brief Display image.
  */
 class DisplayImage extends Widget
-	private var CanvasImage pCanvasImage
-	private var RepeatMode pRepeatMode
-	private var Image pImage
-	private var bool pProtectImageColorTransform
+	var CanvasImage pCanvasImage
+	var RepeatMode pRepeatMode
+	var Image pImage
+	var bool pProtectImageColorTransform
 	
 	
 	
 	/** \brief Create display image widget. */
-	public func new() this(null, RepeatMode.once)
+	func new() this(null, RepeatMode.once)
 	end
 	
-	public func new(Image image) this(image, RepeatMode.once)
+	func new(Image image) this(image, RepeatMode.once)
 	end
 	
-	public func new(Image image, RepeatMode repeatMode)
+	func new(Image image, RepeatMode repeatMode)
 		pRepeatMode = repeatMode
 		pImage = image
 		pProtectImageColorTransform = false
@@ -58,23 +58,23 @@ class DisplayImage extends Widget
 		setDesignerSelector("Image")
 	end
 	
-	public func new(Image image, String designerSelector) this(image)
+	func new(Image image, String designerSelector) this(image)
 		setDesignerSelector(designerSelector)
 	end
 	
-	public func new(Image image, RepeatMode repeatMode, String designerSelector) this(image, repeatMode)
+	func new(Image image, RepeatMode repeatMode, String designerSelector) this(image, repeatMode)
 		setDesignerSelector(designerSelector)
 	end
 	
 	
 	
 	/** \brief Image to display or \em null if not set. */
-	public func Image getImage()
+	func Image getImage()
 		return pImage
 	end
 	
 	/** \brief Set image to display. */
-	public func void setImage(Image image)
+	func void setImage(Image image)
 		if pImage == image
 			return
 		end
@@ -112,7 +112,7 @@ class DisplayImage extends Widget
 	end
 	
 	/** \brief Repeat mode. */
-	public func RepeatMode getRepeatMode()
+	func RepeatMode getRepeatMode()
 		return pRepeatMode
 	end
 	
@@ -120,7 +120,7 @@ class DisplayImage extends Widget
 	 * \brief Set repeat mode.
 	 * \details Has to be one of REPEAT_* .
 	 */
-	public func void setRepeatMode(RepeatMode repeatMode)
+	func void setRepeatMode(RepeatMode repeatMode)
 		if repeatMode == pRepeatMode
 			return
 		end
@@ -131,33 +131,33 @@ class DisplayImage extends Widget
 	end
 	
 	/** \brief Image color transform. */
-	public func ColorMatrix getImageColorTransform()
+	func ColorMatrix getImageColorTransform()
 		return pCanvasImage.getColorTransform()
 	end
 	
 	/** \brief Set color transformation. */
-	public func void setImageColorTransform(ColorMatrix transform)
+	func void setImageColorTransform(ColorMatrix transform)
 		pCanvasImage.setColorTransform(transform)
 	end
 	
 	/** \brief Protect custom set image color transform. */
-	public func bool getProtectImageColorTransform()
+	func bool getProtectImageColorTransform()
 		return pProtectImageColorTransform
 	end
 	
 	/** \brief Set protect custom set image color transform. */
-	public func void setProtectImageColorTransform(bool protect)
+	func void setProtectImageColorTransform(bool protect)
 		pProtectImageColorTransform = protect
 	end
 	
 	
 	
 	/** \brief Minimal size of widget. */
-	public func Point getMinimumSize()
+	func Point getMinimumSize()
 		if pImage == null or isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
-		/*if pRepeatMode == RepeatMode.stretch
+		/*if pRepeatMode == RepeatMode.stretch or pRepeatMode == RepeatMode.stretchRatio
 			return Point.new()
 		end*/
 		return getPadding().getSize() + pImage.getSize()
@@ -176,20 +176,20 @@ class DisplayImage extends Widget
 	 * \brief State changed.
 	 * \details Sends event to listeners.
 	 */
-	public func void onStateChanged(StateChangeEvent event)
+	func void onStateChanged(StateChangeEvent event)
 		super.onStateChanged(event)
 		updateCanvasImage()
 	end
 	
 	/** \brief Padding changed. */
-	public func void onPaddingChanged()
+	func void onPaddingChanged()
 		updateCanvasImage()
 	end
 	
 	
 	
 	/** Update canvas image. */
-	public func void updateCanvasImage()
+	func void updateCanvasImage()
 		if pImage == null
 			return
 		end
@@ -238,13 +238,38 @@ class DisplayImage extends Widget
 			pCanvasImage.setRepeatY(repeatY)
 			pCanvasImage.setPosition(position)
 			pCanvasImage.setSize(Point.new(imageWidth * repeatX, imageHeight * repeatY))
+			
+		case RepeatMode.center
+			pCanvasImage.setRepeatX(1)
+			pCanvasImage.setRepeatY(1)
+			pCanvasImage.setPosition(position + (size - pImage.getSize()) / 2)
+			pCanvasImage.setSize(pImage.getSize())
+			
+		case RepeatMode.stretchRatio
+			var Point imageSize = pImage.getSize()
+			var Point newSize = size
+			if imageSize > Point.new()
+				var int stretched = imageSize.getY() * size.getX() / imageSize.getX()
+				if stretched <= size.getY()
+					newSize = Point.new(size.getX(), stretched)
+					
+				else
+					stretched = imageSize.getX() * size.getY() / imageSize.getY()
+					newSize = Point.new(stretched, size.getY())
+				end
+			end
+			
+			pCanvasImage.setRepeatX(1)
+			pCanvasImage.setRepeatY(1)
+			pCanvasImage.setPosition(position + (size - newSize) / 2)
+			pCanvasImage.setSize(newSize)
 		end
 	end
 	
 	
 	
 	/** \brief Size changed. */
-	public func void onResize(WidgetEvent event)
+	func void onResize(WidgetEvent event)
 		super.onResize(event)
 		updateCanvasImage()
 	end

@@ -51,10 +51,12 @@ igdeGDCComponent::igdeGDCComponent( const igdeGDCComponent &component ) :
 pModelPath( component.pModelPath ),
 pSkinPath( component.pSkinPath ),
 pRigPath( component.pRigPath ),
-pAnimPath( component.pAnimPath ),
+pAnimatorPath( component.pAnimatorPath ),
 pOccMeshPath( component.pOccMeshPath ),
 pAudioModelPath( component.pAudioModelPath ),
 pPlaybackController( component.pPlaybackController ),
+pAnimationPath( component.pAnimationPath ),
+pMove( component.pMove ),
 pDoNotScale( component.pDoNotScale ),
 pStatic( component.pStatic ),
 pRenderEnvMap( component.pRenderEnvMap ),
@@ -68,7 +70,7 @@ pOrientation( component.pOrientation ),
 pBoneName( component.pBoneName )
 {
 	int i;
-	for( i=0; i<=epLightShadowIgnore; i++ ){
+	for( i=0; i<=epMove; i++ ){
 		pPropertyNames[ i ] = component.pPropertyNames[ i ];
 	}
 	
@@ -96,7 +98,15 @@ void igdeGDCComponent::SetRigPath( const char *path ){
 }
 
 void igdeGDCComponent::SetAnimatorPath( const char *path ){
-	pAnimPath = path;
+	pAnimatorPath = path;
+}
+
+void igdeGDCComponent::SetAnimationPath( const char *path ){
+	pAnimationPath = path;
+}
+
+void igdeGDCComponent::SetMove( const char *move ){
+	pMove = move;
 }
 
 void igdeGDCComponent::SetOcclusionMeshPath( const char *path ){
@@ -171,7 +181,7 @@ void igdeGDCComponent::SetPropertyName( int property, const char *name ){
 
 bool igdeGDCComponent::HasPropertyWithName( const char *name ) const{
 	int j;
-	for( j=0; j<=epLightShadowIgnore; j++ ){
+	for( j=0; j<=epMove; j++ ){
 		if( pPropertyNames[ j ] == name ){
 			return true;
 		}

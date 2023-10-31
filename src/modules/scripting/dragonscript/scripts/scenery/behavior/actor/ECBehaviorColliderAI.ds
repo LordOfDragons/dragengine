@@ -84,7 +84,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/**
@@ -93,7 +93,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		 * \param collider Collider involded in the collision.
 		 * \param info Information about collision partner.
 		 */
-		public func void collisionResponse(Instance instance, Collider collider, CollisionInfo info)
+		func void collisionResponse(Instance instance, Collider collider, CollisionInfo info)
 		end
 		
 		/**
@@ -105,7 +105,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		 * \param collider Collider involded in the collision.
 		 * \param hitCollider Hit collider.
 		 */
-		public func bool canHitCollider(Instance instance, Collider collider, Collider hitCollider)
+		func bool canHitCollider(Instance instance, Collider collider, Collider hitCollider)
 			return true
 		end
 		
@@ -114,7 +114,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		 * \param instance Behavior instance owning \em collider.
 		 * \param collider Collider involded in the collision.
 		 */
-		public func void colliderChanged(Instance instance, Collider collider)
+		func void colliderChanged(Instance instance, Collider collider)
 		end
 	end
 	
@@ -126,10 +126,10 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -137,23 +137,23 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements ColliderListener
-		private var ECBehaviorColliderAI pECBehavior
-		private var ECBehaviorCollider.Instance pBaseCollider
-		private var ColliderVolume pCollider
-		private var Vector pGravity
-		private var Array pListeners
+		var ECBehaviorColliderAI pECBehavior
+		var ECBehaviorCollider.Instance pBaseCollider
+		var ColliderVolume pCollider
+		var Vector pGravity
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorColliderAI ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorColliderAI ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
 			
@@ -161,7 +161,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
+		func void dispose()
 			if pCollider != null
 				pCollider.setColliderListener(null)
 				pCollider.setOwner(null)
@@ -178,7 +178,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var BehaviorElement element = getElement()
 			
 			pCollider = createCollider(stub)
@@ -217,22 +217,22 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorColliderAI getECBehavior()
+		func ECBehaviorColliderAI getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Base collider behavior instance. */
-		public func ECBehaviorCollider.Instance getBaseCollider()
+		func ECBehaviorCollider.Instance getBaseCollider()
 			return pBaseCollider
 		end
 		
 		/** \brief Collider AI. */
-		public func ColliderVolume getCollider()
+		func ColliderVolume getCollider()
 			return pCollider
 		end
 		
 		/** \brief Default gravity to apply. */
-		public func Vector getGravity()
+		func Vector getGravity()
 			return pGravity
 		end
 		
@@ -241,14 +241,22 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		 * 
 		 * Default value is \em null which means using element game world gravity.
 		 */
-		public func void setGravity(Vector gravity)
+		func void setGravity(Vector gravity)
 			pGravity = gravity
 		end
 		
 		
 		
+		/**
+		 * \brief Shape of collider.
+		 * \version 1.19
+		 */
+		func ShapeList getShape()
+			return pCollider.getShape()
+		end
+		
 		/** \brief Set shape of collider. */
-		public func void setShape(ShapeList shape)
+		func void setShape(ShapeList shape)
 			pCollider.setShape(shape)
 		end
 		
@@ -263,7 +271,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		 * \param height Height of the actor from the top most position down to the ground.
 		 *               A good value is 1.8m .
 		 */
-		public func void setShapeHumanoid(float radius, float height)
+		func void setShapeHumanoid(float radius, float height)
 			var float capsuleHeight = height * 0.5 - radius
 			var float capsuleCenter = radius + capsuleHeight
 			
@@ -275,18 +283,18 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		
 		
 		/** \brief Set element position and orientation from collider. */
-		public func void setGeometryFromCollider()
+		func void setGeometryFromCollider()
 			getElement().setGeometry(pCollider.getPosition(), pCollider.getOrientation())
 		end
 		
 		/** \brief Clear all velocities. */
-		public func void stopMoving()
+		func void stopMoving()
 			pCollider.setLinearVelocity(Vector.new())
 			pCollider.setAngularVelocity(Vector.new())
 		end
 		
 		/** \brief Clear angular velocities. */
-		public func void stopTurning()
+		func void stopTurning()
 			pCollider.setAngularVelocity(Vector.new())
 		end
 		
@@ -295,7 +303,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		 * 
 		 * If default gravity is null uses element game world gravity.
 		 */
-		public func void applyGravity(float elapsed)
+		func void applyGravity(float elapsed)
 			if pGravity != null
 				applyGravity(pGravity, elapsed)
 				
@@ -309,30 +317,30 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		 * 
 		 * Gravity has to be negative to pull actor towards ground.
 		 */
-		public func void applyGravity(Vector gravity, float elapsed)
+		func void applyGravity(Vector gravity, float elapsed)
 			pCollider.setLinearVelocity(pCollider.getLinearVelocity() + gravity * elapsed)
 		end
 		
 		/** \brief Add linear velocity. */
-		public func void addLinearVelocity(Vector velocity)
+		func void addLinearVelocity(Vector velocity)
 			pCollider.setLinearVelocity(pCollider.getLinearVelocity() + velocity)
 		end
 		
 		/** \brief Set orientation and linear velocity from locomotion. */
-		public func void setFromLocomotion(Locomotion locomotion)
+		func void setFromLocomotion(Locomotion locomotion)
 			pCollider.setOrientation(locomotion.getOrientationQuaternion())
 			pCollider.setLinearVelocity(locomotion.getLinearVelocity())
 		end
 		
 		/** \brief Set orientation and linear velocity from locomotion. */
-		public func void setFromLocomotion(ECBehaviorLocomotion.Instance behavior)
+		func void setFromLocomotion(ECBehaviorLocomotion.Instance behavior)
 			setFromLocomotion(behavior.getLocomotion())
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -340,44 +348,48 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief State changed (visble, touchable). */
-		public func void stateChanged()
-			pCollider.setEnabled(getElement().getTouchable())
+		func void stateChanged()
+			if pCollider != null
+				pCollider.setEnabled(getElement().getTouchable())
+			end
 		end
 		
 		/** \brief Position or orientation changed. */
-		public func void geometryChanged()
-			var BehaviorElement element = getElement()
-			pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+		func void geometryChanged()
+			if pCollider != null
+				var BehaviorElement element = getElement()
+				pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+			end
 		end
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
+		func void addToGameWorld()
 			getElement().getGameWorld().getWorld().addCollider(pCollider)
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
+		func void removeFromGameWorld()
 			getElement().getGameWorld().getWorld().removeCollider(pCollider)
 		end
 		
 		
 		
 		/** \brief Colliders can hit each other. */
-		public func bool canHitCollider(Collider owner, Collider collider)
+		func bool canHitCollider(Collider owner, Collider collider)
 			return pListeners.find(block Listener each
 				each.canHitCollider(this, owner, collider)
 			end) != null
 		end
 		
 		/** \brief Collision detected. */
-		public func void collisionResponse(Collider owner, CollisionInfo info)
+		func void collisionResponse(Collider owner, CollisionInfo info)
 			if pListeners.getCount() > 0
 				pListeners.forEach(block Listener each
 					each.collisionResponse(this, owner, info)
@@ -390,7 +402,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		end
 		
 		/** \brief Collider position or orientation changed. */
-		public func void colliderChanged(Collider owner)
+		func void colliderChanged(Collider owner)
 			pListeners.forEach(block Listener each
 				each.colliderChanged(this, owner)
 			end)
@@ -399,7 +411,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				geometryChanged()
@@ -413,7 +425,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			pCollider.getLinearVelocity().writeToFile(writer)
@@ -423,18 +435,18 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorCollider pBaseCollider
-	private var ECComposeCollisionFilter pCollisionFilter
-	private var Array pListenerFactories
+	var ECBehaviorCollider pBaseCollider
+	var ECComposeCollisionFilter pCollisionFilter
+	var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider baseCollider) \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider baseCollider) \
 	this(eclass, baseCollider, "colliderAI.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider baseCollider, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider baseCollider, \
 	String prefix) super(eclass)
 		if baseCollider == null
 			throw ENullPointer.new("baseCollider")
@@ -466,7 +478,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pBaseCollider = null
 		pListenerFactories = null
 		super.dispose()
@@ -475,17 +487,17 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	
 	
 	/** \brief Base collider behavior. */
-	public func ECBehaviorCollider getBaseCollider()
+	func ECBehaviorCollider getBaseCollider()
 		return pBaseCollider
 	end
 	
 	/** \brief Collision filter for AI collider. */
-	public func ECComposeCollisionFilter getCollisionFilter()
+	func ECComposeCollisionFilter getCollisionFilter()
 		return pCollisionFilter
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -497,17 +509,17 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -516,7 +528,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -528,7 +540,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorColliderAI.
 	 */
-	static public func ECBehaviorColliderAI getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorColliderAI getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorColliderAI each
 			return true
 		end) cast ECBehaviorColliderAI
@@ -540,7 +552,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorColliderAI.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -549,7 +561,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

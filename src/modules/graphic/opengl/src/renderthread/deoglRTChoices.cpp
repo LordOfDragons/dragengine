@@ -24,6 +24,7 @@
 #include "deoglRenderThread.h"
 #include "deoglRTChoices.h"
 #include "deoglRTLogger.h"
+#include "../gi/deoglGI.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../extensions/deoglExtensions.h"
 
@@ -67,7 +68,11 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	pRealTransparentParticles = false;
 	
 	// GI move using probes using ray cache instead of all rays
+	#ifdef GI_USE_RAY_CACHE
 	pGIMoveUsingCache = true;
+	#else
+	pGIMoveUsingCache = false;
+	#endif
 	
 	// use render stereo rendering for VR
 	pVRRenderStereo = true;

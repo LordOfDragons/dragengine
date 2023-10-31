@@ -64,15 +64,15 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Enabled changed. */
-		public func void enabledChanged(Instance instance)
+		func void enabledChanged(Instance instance)
 		end
 		
 		/** \brief Looking at element changed. */
-		public func void lookAtChanged(Instance instance)
+		func void lookAtChanged(Instance instance)
 		end
 	end
 	
@@ -84,10 +84,10 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -95,7 +95,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -104,33 +104,33 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorLookAt pECBehavior
-		private var ECBehaviorColliderAI.Instance pColliderAI
-		private var ECBehaviorCollider.Instance pCollider
-		private var ECBehaviorComponent.Instance pComponent
-		private var ECBehaviorLocomotion.Instance pLocomotion
+		var ECBehaviorLookAt pECBehavior
+		var ECBehaviorColliderAI.Instance pColliderAI
+		var ECBehaviorCollider.Instance pCollider
+		var ECBehaviorComponent.Instance pComponent
+		var ECBehaviorLocomotion.Instance pLocomotion
 		
-		private var ColliderCollisionTest pTest
-		private var Vector pOrigin
-		private var bool pHasOrigin
-		private var bool pUseLocomotion
+		var ColliderCollisionTest pTest
+		var Vector pOrigin
+		var bool pHasOrigin
+		var bool pUseLocomotion
+		var String pTestBone
+		var float pRange
 		
-		private var float pRange
+		var DVector pLookAtOrigin
+		var DVector pLookAtDirection
+		var Element pLookAtElement
+		var int pLookAtBone
+		var String pLookAtBoneName
+		var float pLookAtDistance
+		var DVector pLookAtHitPoint
 		
-		private var DVector pLookAtOrigin
-		private var DVector pLookAtDirection
-		private var Element pLookAtElement
-		private var int pLookAtBone
-		private var String pLookAtBoneName
-		private var float pLookAtDistance
-		private var DVector pLookAtHitPoint
-		
-		private var Array pListeners
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorLookAt ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorLookAt ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
 			pUseLocomotion = false
@@ -146,7 +146,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
+		func void dispose()
 			pTest = null
 			pLocomotion = null
 			pColliderAI = null
@@ -161,7 +161,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var BehaviorElement element = getElement()
 			var Collider collider
 			
@@ -192,11 +192,11 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			// create colliision test and add it to element collider
 			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
 			var Vector testDirection = Vector.new(0, 0, pRange)
-			var String testBone = pECBehavior.getTestBone().getValue(stub)
+			pTestBone = pECBehavior.getTestBone().getValueOrNull(stub)
 			
-			if testBone != null and not testBone.empty()
+			if pTestBone != null
 				pTest = ColliderCollisionTest.new(collisionFilter, \
-					pComponent.getComponent(), testBone, pOrigin, testDirection)
+					pComponent.getComponent(), pTestBone, pOrigin, testDirection)
 				
 			else
 				pTest = ColliderCollisionTest.new(collisionFilter, pOrigin, testDirection)
@@ -214,39 +214,39 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorLookAt getECBehavior()
+		func ECBehaviorLookAt getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief ColliderAI behavior instance. */
-		public func ECBehaviorColliderAI.Instance getColliderAI()
+		func ECBehaviorColliderAI.Instance getColliderAI()
 			return pColliderAI
 		end
 		
 		/** \brief Collider behavior instance. */
-		public func ECBehaviorCollider.Instance getCollider()
+		func ECBehaviorCollider.Instance getCollider()
 			return pCollider
 		end
 		
 		/** \brief Component behavior instance or null if not used. */
-		public func ECBehaviorComponent.Instance getComponent()
+		func ECBehaviorComponent.Instance getComponent()
 			return pComponent
 		end
 		
 		/** \brief Locomotion behavior instance or null if not used. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
+		func ECBehaviorLocomotion.Instance getLocomotion()
 			return pLocomotion
 		end
 		
 		
 		
 		/** \brief Enable look-at. */
-		public func bool getEnabled()
+		func bool getEnabled()
 			return pTest.getEnabled()
 		end
 		
 		/** \brief Set if look-at is enabled. */
-		public func void setEnabled(bool enabled)
+		func void setEnabled(bool enabled)
 			if enabled == pTest.getEnabled()
 				return
 			end
@@ -270,7 +270,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		 * By default no test collider is set in which case ra-ytesting is used. Using shapes
 		 * like a sphere is useful to enlarge the hit area for example with 3rd person views.
 		 */
-		public func void setTestCollider(ShapeList shape)
+		func void setTestCollider(ShapeList shape)
 			var ColliderVolume collider = ColliderVolume.new()
 			collider.setShape(shape)
 			pTest.setCollider(collider)
@@ -282,31 +282,31 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		 * By default no shape is set in which case ra-ytesting is used. Using shapes like a
 		 * sphere is useful to enlarge the hit area for example with 3rd person views.
 		 */
-		public func void setSphereTestCollider(float radius)
+		func void setSphereTestCollider(float radius)
 			var ShapeList shape = ShapeList.new()
 			shape.addSphere(Vector.new(), DEMath.max(radius, 0.0))
 			setTestCollider(shape)
 		end
 		
 		/** \brief Clear test collider reverting to ray-tracing. */
-		public func void clearTestCollider()
+		func void clearTestCollider()
 			pTest.setCollider(null)
 		end
 		
 		/** \brief Set test collision filter. */
-		public func void setCollisionFilter(CollisionFilter filter)
+		func void setCollisionFilter(CollisionFilter filter)
 			pTest.setCollisionFilter(filter)
 		end
 		
 		
 		
 		/** \brief Test range. */
-		public func float getRange()
+		func float getRange()
 			return pRange
 		end
 		
 		/** \brief Set test range. */
-		public func void setRange(float range)
+		func void setRange(float range)
 			range = DEMath.max(range, 0.0)
 			if DEMath.fabs(range - pRange) < 0.001
 				return
@@ -317,19 +317,27 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		end
 		
 		/** \brief Test origin. */
-		public func Vector getOrigin()
+		func Vector getOrigin()
 			return pOrigin
 		end
 		
 		/** \brief Use locomotion. */
-		public func bool getUseLocomotion()
+		func bool getUseLocomotion()
 			return pUseLocomotion
+		end
+		
+		/**
+		 * \brief Name of test bone name or null to use component.
+		 * \version 1.19
+		 */
+		func String getTestBone()
+			return pTestBone
 		end
 		
 		
 		
 		/** \brief Look-at element or null. */
-		public func Element getLookAtElement()
+		func Element getLookAtElement()
 			return pLookAtElement
 		end
 		
@@ -337,7 +345,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		 * \brief Look-at element if of type BehaviorElement or null.
 		 * \version 1.4 
 		 */
-		public func BehaviorElement getLookAtBehaviorElement()
+		func BehaviorElement getLookAtBehaviorElement()
 			if pLookAtElement != null and pLookAtElement castable BehaviorElement
 				return pLookAtElement cast BehaviorElement
 			end
@@ -345,32 +353,32 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		end
 		
 		/** \brief Is looking at an element. */
-		public func bool hasLookAtElement()
+		func bool hasLookAtElement()
 			return pLookAtElement != null
 		end
 		
 		/** \brief Is not looking at an element. */
-		public func bool hasNotLookAtElement()
+		func bool hasNotLookAtElement()
 			return pLookAtElement == null
 		end
 		
 		/** \brief Look-at bone or -1. */
-		public func int getLookAtBone()
+		func int getLookAtBone()
 			return pLookAtBone
 		end
 		
 		/** \brief Look-at bone name or null. */
-		public func String getLookAtBoneName()
+		func String getLookAtBoneName()
 			return pLookAtBoneName
 		end
 		
 		/** \brief Distance in meters to look-at hit point. */
-		public func float getLookAtDistance()
+		func float getLookAtDistance()
 			return pLookAtDistance
 		end
 		
 		/** \brief Look-at hit point or \em null. */
-		public func DVector getLookAtHitPoint()
+		func DVector getLookAtHitPoint()
 			if pLookAtHitPoint == null and pLookAtElement != null
 				pLookAtHitPoint = pLookAtOrigin + pLookAtDirection.normalize() * pLookAtDistance
 			end
@@ -378,19 +386,19 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		end
 		
 		/** \brief Test origin used for last look-at test. */
-		public func DVector getLookAtOrigin()
+		func DVector getLookAtOrigin()
 			return pLookAtOrigin
 		end
 		
 		/** \brief Test direction used for last look-at test. */
-		public func DVector getLookAtDirection()
+		func DVector getLookAtDirection()
 			return pLookAtDirection
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -398,14 +406,14 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Post thinking after physics processing is finished. */
-		public func void postThink(float elapsed)
+		func void postThink(float elapsed)
 			update(elapsed)
 		end
 		
@@ -473,7 +481,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		end
 		
 		/** \brief Set look-at element. */
-		public func void setLookAtElement(Element element, int bone, String boneName, float distance)
+		func void setLookAtElement(Element element, int bone, String boneName, float distance)
 			if pLookAtElement == element and pLookAtBone == bone
 				pLookAtHitPoint = null
 				pLookAtDistance = distance
@@ -509,15 +517,15 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorColliderAI pColliderAI
-	private var ECBehaviorCollider pCollider
-	private var ECBehaviorComponent pComponent
-	private var ECBehaviorLocomotion pLocomotion
-	private var ECPFloat pRange
-	private var ECPVector pOrigin
-	private var ECPString pTestBone
-	private var ECComposeCollisionFilter pCollisionFilter
-	private var Array pListenerFactories
+	var ECBehaviorColliderAI pColliderAI
+	var ECBehaviorCollider pCollider
+	var ECBehaviorComponent pComponent
+	var ECBehaviorLocomotion pLocomotion
+	var ECPFloat pRange
+	var ECPVector pOrigin
+	var ECPString pTestBone
+	var ECComposeCollisionFilter pCollisionFilter
+	var Array pListenerFactories
 	
 	
 	
@@ -526,17 +534,17 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em component, \em locomotion.
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
 	ECBehaviorComponent component, ECBehaviorLocomotion locomotion) \
 	this(eclass, colliderAI, component, locomotion, "lookAt.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	ECBehaviorComponent component, ECBehaviorLocomotion locomotion) \
 	this(eclass, collider, component, locomotion, "lookAt.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
 	ECBehaviorComponent component, ECBehaviorLocomotion locomotion, String prefix) \
 	this(eclass, colliderAI, null, component, locomotion, prefix)
 		if colliderAI == null
@@ -544,7 +552,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		end
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	ECBehaviorComponent component, ECBehaviorLocomotion locomotion, String prefix) \
 	this(eclass, null, collider, component, locomotion, prefix)
 		if collider == null
@@ -587,7 +595,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pColliderAI = null
 		pCollider = null
 		pComponent = null
@@ -599,47 +607,47 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	
 	
 	/** \brief Collider AI behavior or null. */
-	public func ECBehaviorColliderAI getColliderAI()
+	func ECBehaviorColliderAI getColliderAI()
 		return pColliderAI
 	end
 	
 	/** \brief Collider behavior or null. */
-	public func ECBehaviorCollider getCollider()
+	func ECBehaviorCollider getCollider()
 		return pCollider
 	end
 	
 	/** \brief Component behavior or null. */
-	public func ECBehaviorComponent getComponent()
+	func ECBehaviorComponent getComponent()
 		return pComponent
 	end
 	
 	/** \brief Locomotion behavior or null. */
-	public func ECBehaviorLocomotion getLocomotion()
+	func ECBehaviorLocomotion getLocomotion()
 		return pLocomotion
 	end
 	
 	/** \brief Test range. */
-	public func ECPFloat getRange()
+	func ECPFloat getRange()
 		return pRange
 	end
 	
 	/** \brief Test origin. */
-	public func ECPVector getOrigin()
+	func ECPVector getOrigin()
 		return pOrigin
 	end
 	
 	/** \brief Test bone. */
-	public func ECPString getTestBone()
+	func ECPString getTestBone()
 		return pTestBone
 	end
 	
 	/** \brief Collision filter for AI collider. */
-	public func ECComposeCollisionFilter getCollisionFilter()
+	func ECComposeCollisionFilter getCollisionFilter()
 		return pCollisionFilter
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -651,17 +659,17 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -670,7 +678,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -682,7 +690,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorLookAt.
 	 */
-	static public func ECBehaviorLookAt getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorLookAt getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorLookAt each
 			return true
 		end) cast ECBehaviorLookAt
@@ -694,7 +702,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorLookAt.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -703,7 +711,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

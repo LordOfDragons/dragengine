@@ -205,7 +205,8 @@ protected:
 	
 public:
 	igdeEditPropertyValue_ActionEditRawValue( igdeEditPropertyValue &widget ) : 
-	igdeAction( "!", "Edit raw property value" ), pWidget( widget ){ }
+	igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiConfig ),
+		"Edit raw property value" ), pWidget( widget ){ }
 	
 	virtual void OnAction(){
 		decString value( pWidget.GetValue() );
@@ -228,7 +229,8 @@ protected:
 	
 public:
 	igdeEditPropertyValue_ActionEditList( igdeEditPropertyValue &widget ) :
-		igdeAction( "...", "Edit list" ), pWidget( widget ){ }
+		igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiEdit ),
+			"Edit list" ), pWidget( widget ){ }
 	
 	virtual void OnAction(){
 		pWidget.GetActionEditRawValue()->OnAction();
@@ -245,7 +247,8 @@ protected:
 	
 public:
 	igdeEditPropertyValue_ActionEditTriggerExpression( igdeEditPropertyValue &widget ) :
-		igdeAction( "...", "Edit trigger expression" ), pWidget( widget ){ }
+		igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiEdit ),
+			"Edit trigger expression" ), pWidget( widget ){ }
 	
 	virtual void OnAction(){
 		igdeTriggerTargetList *triggerTargetList = pWidget.GetTriggerTargets();
@@ -280,7 +283,8 @@ protected:
 	
 public:
 	igdeEditPropertyValue_ActionEditShape( igdeEditPropertyValue &widget ) :
-		igdeAction( "...", "Edit shape" ), pWidget( widget ){ }
+		igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiEdit ),
+			"Edit shape" ), pWidget( widget ){ }
 	
 	virtual void OnAction(){
 		pWidget.GetActionEditRawValue()->OnAction();
@@ -297,7 +301,8 @@ protected:
 	
 public:
 	igdeEditPropertyValue_ActionEditShapeList( igdeEditPropertyValue &widget ) :
-		igdeAction( "...", "Edit shape list" ), pWidget( widget ){ }
+		igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiEdit ),
+			"Edit shape list" ), pWidget( widget ){ }
 	
 	virtual void OnAction(){
 		pWidget.GetActionEditRawValue()->OnAction();
@@ -753,190 +758,197 @@ void igdeEditPropertyValue::pUpdateEditWidgets(){
 	
 	pPreventEditing = true;
 	
-	switch( pGDProperty->GetType() ){
-	case igdeGDProperty::eptString:
-	default:
+	try{
+		switch( pGDProperty->GetType() ){
+		case igdeGDProperty::eptString:
+		default:
+			pSwitcher->SetCurrent( 0 );
+			pString->SetText( pValue );
+			break;
+			
+		case igdeGDProperty::eptInteger:
+			pSwitcher->SetCurrent( 1 );
+			pInteger->SetInteger( pValue.ToIntValid() );
+			break;
+			
+		case igdeGDProperty::eptPoint2:{
+			pSwitcher->SetCurrent( 2 );
+			int values[ 2 ] = { 0, 0 };
+			pCodec.DecodeFixedIntList( pValue, values, 2 );
+			pPoint->SetPoint( decPoint( values[ 0 ], values[ 1 ] ) );
+			}break;
+			
+		case igdeGDProperty::eptPoint3:{
+			pSwitcher->SetCurrent( 3 );
+			int values[ 3 ] = { 0, 0, 0 };
+			pCodec.DecodeFixedIntList( pValue, values, 3 );
+			pPoint3->SetPoint3( decPoint3( values[ 0 ], values[ 1 ], values[ 2 ] ) );
+			}break;
+			
+		case igdeGDProperty::eptFloat:
+			pSwitcher->SetCurrent( 4 );
+			pFloat->SetFloat( pValue.ToFloatValid() );
+			break;
+			
+		case igdeGDProperty::eptVector2:{
+			pSwitcher->SetCurrent( 5 );
+			float values[ 2 ] = { 0.0f, 0.0f };
+			pCodec.DecodeFixedFloatList( pValue, values, 2 );
+			pVector2->SetVector2( decVector2( values[ 0 ], values[ 1 ] ) );
+			}break;
+			
+		case igdeGDProperty::eptVector3:{
+			pSwitcher->SetCurrent( 6 );
+			float values[ 3 ] = { 0.0f, 0.0f, 0.0f };
+			pCodec.DecodeFixedFloatList( pValue, values, 3 );
+			pVector->SetVector( decVector( values[ 0 ], values[ 1 ], values[ 2 ] ) );
+			}break;
+			
+		case igdeGDProperty::eptColor:{
+			pSwitcher->SetCurrent( 7 );
+			float values[ 3 ] = { 0.0f, 0.0f, 0.0f };
+			pCodec.DecodeFixedFloatList( pValue, values, 3 );
+			pColor->SetColor( decColor( values[ 0 ], values[ 1 ], values[ 2 ] ) );
+			}break;
+			
+		case igdeGDProperty::eptBoolean:
+			pSwitcher->SetCurrent( 8 );
+			DEASSERT_TRUE( pValue == "0" || pValue == "1" );
+			pBoolean->SetChecked( pValue != "0" );
+			break;
+			
+		case igdeGDProperty::eptPath:
+			pSwitcher->SetCurrent( 9 );
+			pPath->GetCustomPatternList().RemoveAllFilePatterns();
+			
+			switch( pGDProperty->GetPathPatternType() ){
+			case igdeGDProperty::epptAll:
+				pPath->SetResourceType( igdeEnvironment::efpltAll );
+				break;
+				
+			case igdeGDProperty::epptModel:
+			case igdeGDProperty::epptAudioModel:
+				pPath->SetResourceType( igdeEnvironment::efpltModel );
+				break;
+				
+			case igdeGDProperty::epptSkin:
+				pPath->SetResourceType( igdeEnvironment::efpltSkin );
+				break;
+				
+			case igdeGDProperty::epptRig:
+				pPath->SetResourceType( igdeEnvironment::efpltRig );
+				break;
+				
+			case igdeGDProperty::epptAnimation:
+				pPath->SetResourceType( igdeEnvironment::efpltAnimation );
+				break;
+				
+			case igdeGDProperty::epptAnimator:
+				pPath->SetResourceType( igdeEnvironment::efpltAnimator );
+				break;
+				
+			case igdeGDProperty::epptImage:
+				pPath->SetResourceType( igdeEnvironment::efpltImage );
+				break;
+				
+			case igdeGDProperty::epptOcclusionMesh:
+				pPath->SetResourceType( igdeEnvironment::efpltOcclusionMesh );
+				break;
+				
+			case igdeGDProperty::epptNavigationSpace:
+				pPath->SetResourceType( igdeEnvironment::efpltNavigationSpace );
+				break;
+				
+			case igdeGDProperty::epptParticleEmitter:
+				pPath->SetResourceType( igdeEnvironment::efpltParticleEmitter );
+				break;
+				
+			case igdeGDProperty::epptSound:
+				pPath->SetResourceType( igdeEnvironment::efpltSound );
+				break;
+				
+			case igdeGDProperty::epptSynthesizer:
+				pPath->SetResourceType( igdeEnvironment::efpltSynthesizer );
+				break;
+				
+			case igdeGDProperty::epptVideo:
+				pPath->SetResourceType( igdeEnvironment::efpltVideo );
+				break;
+				
+			case igdeGDProperty::epptFont:
+				pPath->SetResourceType( igdeEnvironment::efpltFont );
+				break;
+				
+			case igdeGDProperty::epptSky:
+				pPath->SetResourceType( igdeEnvironment::efpltSky );
+				break;
+				
+			case igdeGDProperty::epptCustom:
+			default:
+				pPath->SetResourceType( igdeEnvironment::efpltAll );
+				pPath->GetCustomPatternList() = pGDProperty->GetCustomPathPattern();
+				break;
+			}
+			
+			pPath->SetSelectPathActions();
+			pPath->SetPath( pValue );
+			break;
+			
+		case igdeGDProperty::eptRange:
+			pSwitcher->SetCurrent( 10 );
+			pRange->SetRange( pGDProperty->GetMinimumValue(), pGDProperty->GetMaximumValue() );
+			pRange->SetTickSpacing( ( pGDProperty->GetMaximumValue() - pGDProperty->GetMinimumValue() ) * 0.1f );
+			pRange->SetValue( pValue.ToFloatValid() );
+			break;
+			
+		case igdeGDProperty::eptSelect:{
+			pSwitcher->SetCurrent( 11 );
+			
+			const decStringList &options = pGDProperty->GetOptions();
+			const int count = options.GetCount();
+			int i;
+			
+			pSelect->RemoveAllItems();
+			for( i=0; i<count; i++ ){
+				pSelect->AddItem( options.GetAt( i ) );
+			}
+			pSelect->SetText( pValue );
+			}break;
+			
+		case igdeGDProperty::eptList:
+			pSwitcher->SetCurrent( 12 );
+			pList->SetText( pValue );
+			break;
+			
+		case igdeGDProperty::eptTriggerExpression:
+			pSwitcher->SetCurrent( 13 );
+			pTriggerExpression->SetText( pValue );
+			break;
+			
+		case igdeGDProperty::eptTriggerTarget:
+			pSwitcher->SetCurrent( 14 );
+			pTriggerTarget->SetText( pValue );
+			break;
+			
+		case igdeGDProperty::eptShape:
+			pSwitcher->SetCurrent( 15 );
+			pShape->SetText( pValue );
+			break;
+			
+		case igdeGDProperty::eptShapeList:
+			pSwitcher->SetCurrent( 16 );
+			pShapeList->SetText( pValue );
+			break;
+			
+		case igdeGDProperty::eptIdentifier:
+			pSwitcher->SetCurrent( 17 );
+			pIdentifier->SetText( pValue );
+			break;
+		}
+		
+	}catch( const deException &e ){
 		pSwitcher->SetCurrent( 0 );
 		pString->SetText( pValue );
-		break;
-		
-	case igdeGDProperty::eptInteger:
-		pSwitcher->SetCurrent( 1 );
-		pInteger->SetInteger( pValue.ToInt() );
-		break;
-		
-	case igdeGDProperty::eptPoint2:{
-		pSwitcher->SetCurrent( 2 );
-		int values[ 2 ] = { 0, 0 };
-		pCodec.DecodeFixedIntList( pValue, values, 2 );
-		pPoint->SetPoint( decPoint( values[ 0 ], values[ 1 ] ) );
-		}break;
-		
-	case igdeGDProperty::eptPoint3:{
-		pSwitcher->SetCurrent( 3 );
-		int values[ 3 ] = { 0, 0, 0 };
-		pCodec.DecodeFixedIntList( pValue, values, 3 );
-		pPoint3->SetPoint3( decPoint3( values[ 0 ], values[ 1 ], values[ 2 ] ) );
-		}break;
-		
-	case igdeGDProperty::eptFloat:
-		pSwitcher->SetCurrent( 4 );
-		pFloat->SetFloat( pValue.ToFloat() );
-		break;
-		
-	case igdeGDProperty::eptVector2:{
-		pSwitcher->SetCurrent( 5 );
-		float values[ 2 ] = { 0.0f, 0.0f };
-		pCodec.DecodeFixedFloatList( pValue, values, 2 );
-		pVector2->SetVector2( decVector2( values[ 0 ], values[ 1 ] ) );
-		}break;
-		
-	case igdeGDProperty::eptVector3:{
-		pSwitcher->SetCurrent( 6 );
-		float values[ 3 ] = { 0.0f, 0.0f, 0.0f };
-		pCodec.DecodeFixedFloatList( pValue, values, 3 );
-		pVector->SetVector( decVector( values[ 0 ], values[ 1 ], values[ 2 ] ) );
-		}break;
-		
-	case igdeGDProperty::eptColor:{
-		pSwitcher->SetCurrent( 7 );
-		float values[ 3 ] = { 0.0f, 0.0f, 0.0f };
-		pCodec.DecodeFixedFloatList( pValue, values, 3 );
-		pColor->SetColor( decColor( values[ 0 ], values[ 1 ], values[ 2 ] ) );
-		}break;
-		
-	case igdeGDProperty::eptBoolean:
-		pSwitcher->SetCurrent( 8 );
-		pBoolean->SetChecked( pValue != "0" );
-		break;
-		
-	case igdeGDProperty::eptPath:
-		pSwitcher->SetCurrent( 9 );
-		pPath->GetCustomPatternList().RemoveAllFilePatterns();
-		
-		switch( pGDProperty->GetPathPatternType() ){
-		case igdeGDProperty::epptAll:
-			pPath->SetResourceType( igdeEnvironment::efpltAll );
-			break;
-			
-		case igdeGDProperty::epptModel:
-		case igdeGDProperty::epptAudioModel:
-			pPath->SetResourceType( igdeEnvironment::efpltModel );
-			break;
-			
-		case igdeGDProperty::epptSkin:
-			pPath->SetResourceType( igdeEnvironment::efpltSkin );
-			break;
-			
-		case igdeGDProperty::epptRig:
-			pPath->SetResourceType( igdeEnvironment::efpltRig );
-			break;
-			
-		case igdeGDProperty::epptAnimation:
-			pPath->SetResourceType( igdeEnvironment::efpltAnimation );
-			break;
-			
-		case igdeGDProperty::epptAnimator:
-			pPath->SetResourceType( igdeEnvironment::efpltAnimator );
-			break;
-			
-		case igdeGDProperty::epptImage:
-			pPath->SetResourceType( igdeEnvironment::efpltImage );
-			break;
-			
-		case igdeGDProperty::epptOcclusionMesh:
-			pPath->SetResourceType( igdeEnvironment::efpltOcclusionMesh );
-			break;
-			
-		case igdeGDProperty::epptNavigationSpace:
-			pPath->SetResourceType( igdeEnvironment::efpltNavigationSpace );
-			break;
-			
-		case igdeGDProperty::epptParticleEmitter:
-			pPath->SetResourceType( igdeEnvironment::efpltParticleEmitter );
-			break;
-			
-		case igdeGDProperty::epptSound:
-			pPath->SetResourceType( igdeEnvironment::efpltSound );
-			break;
-			
-		case igdeGDProperty::epptSynthesizer:
-			pPath->SetResourceType( igdeEnvironment::efpltSynthesizer );
-			break;
-			
-		case igdeGDProperty::epptVideo:
-			pPath->SetResourceType( igdeEnvironment::efpltVideo );
-			break;
-			
-		case igdeGDProperty::epptFont:
-			pPath->SetResourceType( igdeEnvironment::efpltFont );
-			break;
-			
-		case igdeGDProperty::epptSky:
-			pPath->SetResourceType( igdeEnvironment::efpltSky );
-			break;
-			
-		case igdeGDProperty::epptCustom:
-		default:
-			pPath->SetResourceType( igdeEnvironment::efpltAll );
-			pPath->GetCustomPatternList() = pGDProperty->GetCustomPathPattern();
-			break;
-		}
-		
-		pPath->SetSelectPathActions();
-		pPath->SetPath( pValue );
-		break;
-		
-	case igdeGDProperty::eptRange:
-		pSwitcher->SetCurrent( 10 );
-		pRange->SetRange( pGDProperty->GetMinimumValue(), pGDProperty->GetMaximumValue() );
-		pRange->SetTickSpacing( ( pGDProperty->GetMaximumValue() - pGDProperty->GetMinimumValue() ) * 0.1f );
-		pRange->SetValue( pValue.ToFloat() );
-		break;
-		
-	case igdeGDProperty::eptSelect:{
-		pSwitcher->SetCurrent( 11 );
-		
-		const decStringList &options = pGDProperty->GetOptions();
-		const int count = options.GetCount();
-		int i;
-		
-		pSelect->RemoveAllItems();
-		for( i=0; i<count; i++ ){
-			pSelect->AddItem( options.GetAt( i ) );
-		}
-		pSelect->SetText( pValue );
-		}break;
-		
-	case igdeGDProperty::eptList:
-		pSwitcher->SetCurrent( 12 );
-		pList->SetText( pValue );
-		break;
-		
-	case igdeGDProperty::eptTriggerExpression:
-		pSwitcher->SetCurrent( 13 );
-		pTriggerExpression->SetText( pValue );
-		break;
-		
-	case igdeGDProperty::eptTriggerTarget:
-		pSwitcher->SetCurrent( 14 );
-		pTriggerTarget->SetText( pValue );
-		break;
-		
-	case igdeGDProperty::eptShape:
-		pSwitcher->SetCurrent( 15 );
-		pShape->SetText( pValue );
-		break;
-		
-	case igdeGDProperty::eptShapeList:
-		pSwitcher->SetCurrent( 16 );
-		pShapeList->SetText( pValue );
-		break;
-		
-	case igdeGDProperty::eptIdentifier:
-		pSwitcher->SetCurrent( 17 );
-		pIdentifier->SetText( pValue );
-		break;
 	}
 	
 	pPreventEditing = false;

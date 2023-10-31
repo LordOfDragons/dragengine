@@ -144,7 +144,7 @@
 	#define pInstOutlineSolidity pSharedSPB[ spbIndex ].instOutlineSolidity
 #endif
 #ifdef DYNAMIC_SKIN_CLIP_PLANE
-	#define pInstClipPlane pSharedSPB[ spbIndex ].instClipPlane
+	#define pInstSkinClipPlane pSharedSPB[ spbIndex ].instSkinClipPlane
 #endif
 #ifdef DYNAMIC_SKIN_CLIP_PLANE_BORDER
 	#define pInstSkinClipPlaneBorder pSharedSPB[ spbIndex ].instSkinClipPlaneBorder

@@ -60,12 +60,8 @@ void meWPWorldListener::PathFindTestChanged( meWorld* ){
 	pPanel.UpdatePathFindTest();
 }
 
-void meWPWorldListener::SectorCountChanged( meWorld* ){
-	pPanel.UpdateWorld();
-}
-
-void meWPWorldListener::SectorSizeChanged( meWorld* ){
-	pPanel.UpdateWorld();
+void meWPWorldListener::MusicChanged( meWorld* ){
+	pPanel.UpdateMusic();
 }
 
 void meWPWorldListener::PropertiesChanged( meWorld* ){

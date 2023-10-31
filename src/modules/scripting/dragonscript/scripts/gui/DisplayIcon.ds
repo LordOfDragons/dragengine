@@ -29,8 +29,8 @@ pin Dragengine.Scenery
  * \brief Display icon.
  * \version 1.16
  * 
- * Same as DisplayImage with RepeatMode.once and centering icon. Designer selector
- * is "Icon" instead of "Image" to allow separate styling.
+ * Same as DisplayImage with RepeatMode.center. Designer selector is "Icon" instead of "Image"
+ * to allow separate styling.
  */
 class DisplayIcon extends DisplayImage
 	/** \brief Create display icon widget. */
@@ -40,21 +40,7 @@ class DisplayIcon extends DisplayImage
 	public func new(Image icon) this(icon, "Icon")
 	end
 	
-	public func new(Image icon, String designerSelector) super(icon, RepeatMode.once)
+	public func new(Image icon, String designerSelector) super(icon, RepeatMode.center)
 		setDesignerSelector(designerSelector)
-	end
-	
-	
-	
-	/** \brief Update canvas image. */
-	public func void updateCanvasImage()
-		super.updateCanvasImage()
-		
-		var BorderSize padding = getPadding()
-		var Point size = Point.new().largest(getSize() - padding.getSize())
-		var Point position = Point.new(padding.getLeft(), padding.getTop())
-		var CanvasImage canvas = getCanvasImage()
-		
-		canvas.setPosition(position + (size - canvas.getSize()) / 2)
 	end
 end

@@ -87,12 +87,12 @@ class ADRuleAnimationDifference extends ADRule
 		pLeadMoveName = name
 	end
 	
-	/** \brief Leading move time. */
+	/** \brief Time relative to leading move playtime. */
 	public func float getLeadingMoveTime()
 		return pLeadMoveTime
 	end
 	
-	/** \brief Set leading move time. */
+	/** \brief Set time relative to leading move playtime. */
 	public func void setLeadingMoveTime(float time)
 		pLeadMoveTime = time
 	end
@@ -110,12 +110,12 @@ class ADRuleAnimationDifference extends ADRule
 		pRefMoveName = name
 	end
 	
-	/** \brief Reference move time. */
+	/** \brief Time relative to reference move playtime. */
 	public func float getReferenceMoveTime()
 		return pRefMoveTime
 	end
 	
-	/** \brief Set reference move time. */
+	/** \brief Set time relative to reference move playtime. */
 	public func void setReferenceMoveTime(float time)
 		pRefMoveTime = time
 	end

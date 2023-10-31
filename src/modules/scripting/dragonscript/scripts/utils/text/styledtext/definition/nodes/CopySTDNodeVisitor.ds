@@ -1,0 +1,118 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Definition.Nodes
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Styled text definition node creating copy of styled text definition.
+ * \version 1.19
+ * 
+ * This class is useful as base class for visitors processing some content of styled text
+ * definitions without needing to process all. Typical examples are visitors resolving dynamic
+ * content including dropping or adding nodes.
+ * 
+ * To use this visitor assign it the definition to add nodes to and call initDefinition().
+ * The following code is an example usage:
+ * 
+ * \code{.ds}
+ * // Source definition to copy
+ * var StyledTextDefinition sourceDefinition = ...
+ * 
+ * // Create visitor. This creates an empty definition
+ * var CopySTDNodeVisitor visitor = CopySTDNodeVisitor.new()
+ * 
+ * // Init definition from source. Copies parameters and styles and removes all nodes.
+ * // After this call the definition stored in the visitor is ready to be used
+ * visitor.initDefinition(sourceDefinition)
+ * 
+ * // Visit all nodes in the source document
+ * visitor.visitAllNodes(sourceDefinition)
+ * 
+ * // The definition is now ready to be used. Before visiting again call setDefinition()
+ * // to assign a new definition or the old one is overwritten
+ * var StyledTextDefinition copiedDefinition = visitor.getDefinition()
+ * \endcode
+ */
+class CopySTDNodeVisitor extends DefaultSTDNodeVisitor
+	var StyledTextDefinition pDefinition
+	
+	
+	
+	/** \brief Create visitor with empty definition. */
+	func new()
+		pDefinition = StyledTextDefinition.new()
+	end
+	
+	
+	
+	/** \brief Definition to add nodes to. */
+	func StyledTextDefinition getDefinition()
+		return pDefinition
+	end
+	
+	/** \brief Set definition to add nodes to. */
+	func void setDefinition(StyledTextDefinition definition)
+		if definition == null
+			throw ENullPointer.new("definition")
+		end
+		pDefinition = definition
+	end
+	
+	/**
+	 * \brief Init definition to add nodes to from another definition.
+	 * 
+	 * Copies definition parameters and styles and removes all nodes.
+	 */
+	func void initDefinition(StyledTextDefinition definition)
+		pDefinition.removeAllNodes()
+		pDefinition.removeAllStyles()
+		
+		pDefinition.setPageStyle(STDStyle.new(definition.getPageStyle()))
+		pDefinition.setDefaultStyle(STDStyle.new(definition.getDefaultStyle()))
+		
+		definition.forEachStyle(block STDStyle each
+			pDefinition.addStyle(STDStyle.new(each))
+		end)
+		pDefinition.setPageSize(definition.getPageSize())
+	end
+	
+	/** \brief Convenience call to visit all nodes in the definition with this visitor. */
+	func void visitAllNodes(StyledTextDefinition definition)
+		definition.forEachNode(block STDNode each
+			each.visit(this)
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Visit node.
+	 * 
+	 * Creates copy of node and adds it to the definition.
+	 */
+	func void visitNode(STDNode node)
+		pDefinition.addNode(node.copy())
+	end
+end

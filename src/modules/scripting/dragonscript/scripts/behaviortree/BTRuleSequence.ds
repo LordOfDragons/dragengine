@@ -39,26 +39,41 @@ pin Dragengine.Utils
  * returns BTResult.failure .
  */
 class BTRuleSequence extends BTRuleList
-	/** \brief Looping. */
-	public var bool pLooping
+	var bool pLooping
+	var bool pDoNoFail
 	
 	
 	
 	/** \brief Create behavior tree rule. */
-	public func new( String id ) super( id )
-		this.pLooping = false
+	func new(String id) super(id)
 	end
 	
 	
 	
 	/** \brief Looping. */
-	public func bool getLooping()
-		return this.pLooping
+	func bool getLooping()
+		return pLooping
 	end
 	
 	/** \brief Set looping. */
-	public func void setLooping( bool looping )
-		this.pLooping = looping
+	func void setLooping(bool looping)
+		pLooping = looping
+	end
+	
+	/**
+	 * \brief Return success if all child actions fail.
+	 * \version 1.19
+	 */
+	func bool getDoNotFail()
+		return pDoNoFail
+	end
+	
+	/**
+	 * \brief Set to return success if all child actions fail.
+	 * \version 1.19
+	 */
+	func void setDoNotFail(bool doNotFail)
+		pDoNoFail = doNotFail
 	end
 	
 	
@@ -68,56 +83,63 @@ class BTRuleSequence extends BTRuleList
 	 * 
 	 * \returns Value from BTAction.eReturnValues .
 	 */
-	public func BTResult run( BTContext context )
+	func BTResult run(BTContext context)
 		var BTRule rule = context.getCurrentRule()
 		
 		if rule == this
 			// first time the rule is run
-			if this.getRuleCount() == 0 or not this.evaluateConditions( context )
-				return BTResult.failure  // context does another step
+			if getRuleCount() == 0 or not evaluateConditions(context)
+				return pDoNoFail if BTResult.success else BTResult.failure  // context does another step
 			end
 			
-			context.setCurrentRule( this.getRuleAt( 0 ) )
+			context.setCurrentRule(getRuleAt(0))
 			return BTResult.success  // context does another step
 			
 		else
 			// child rule has run. check last result
-			var int index = this.indexOfRule( rule )
+			var int index = indexOfRule(rule)
 			
 			select context.getLastResult()
 			case BTResult.running
 				return BTResult.running  // context stops stepping
 				
 			case BTResult.success
-				if not this.evaluateConditions( context )
+				if not evaluateConditions(context)
 					// condition failed. pass up to parent
-					context.setCurrentRule( this )
-					return BTResult.failure
+					context.setCurrentRule(this)
+					return pDoNoFail if BTResult.success else BTResult.failure
 				end
 				
-				if index < this.getRuleCount()
+				if index < getRuleCount() - 1
 					// more actions to run
-					context.setCurrentRule( this.getRuleAt( index + 1 ) )
+					context.setCurrentRule(getRuleAt(index + 1))
 					
 				else
 					// finished all actions successfully. pass up to parent unless looping
-					if this.pLooping
-						context.setCurrentRule( this.getRuleAt( 0 ) )
+					if pLooping
+						context.setCurrentRule(getRuleAt(0))
 						
 					else
-						context.setCurrentRule( this )
+						context.setCurrentRule(this)
 					end
 				end
 				return BTResult.success  // context does another step
 				
 			case BTResult.failure
 				// sequence failed. pass up to parent
-				context.setCurrentRule( this )
-				return BTResult.failure  // context does another step
+				context.setCurrentRule(this)
+				return pDoNoFail if BTResult.success else BTResult.failure  // context does another step
 				
 			else
 				throw EInvalidParam.new()
 			end
 		end
+	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleSequence(id='{}')".format(Array.newWith(getID()))
 	end
 end

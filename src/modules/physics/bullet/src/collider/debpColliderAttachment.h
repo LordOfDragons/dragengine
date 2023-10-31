@@ -98,7 +98,7 @@ public:
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
-	void Reposition( const decDMatrix &matrix, bool changeNotify );
+	void Reposition( const decDMatrix &matrix, const decVector &velocity, bool changeNotify );
 	
 	/**
 	 * Reposition attached resource using a matrix modified by the local matrix.
@@ -106,21 +106,21 @@ public:
 	 *          notification will be send if changeNotify is true.
 	 */
 	void Reposition( const decDVector &position, const decQuaternion &orientation,
-		const decDVector &scaling, bool changeNotify );
+		const decDVector &scaling, const decVector &velocity, bool changeNotify );
 	
 	/**
 	 * Transform attached resource using a relative matrix.
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
-	void Transform( const decDMatrix &matrix, bool changeNotify );
+	void Transform( const decDMatrix &matrix, const decVector &velocity, bool changeNotify );
 	/*@}*/
 	
 private:
 	void pCleanUp();
 	void pPrepareLocalMatrix();
 	void pRepositionResource( const decDVector &position, const decQuaternion &orientation,
-		const decDVector &scaling, bool changeNotify );
+		const decDVector &scaling, const decVector &velocity, bool changeNotify );
 };
 
 #endif

@@ -1030,8 +1030,7 @@ void deClassComponent::nfSetTextureTransformAt::RunFunction( dsRunTime *rt, dsVa
 	const int index = rt->GetValue( 0 )->GetInt();
 	const decTexMatrix2 &transform = ds.GetClassTexMatrix2()->GetTexMatrix( rt->GetValue( 1 )->GetRealObject() );
 	
-	deComponentTexture &ctex = component.GetTextureAt( index );
-	ctex.SetTransform( transform );
+	component.GetTextureAt( index ).SetTransform( transform );
 	
 	component.NotifyTextureChanged( index );
 }
@@ -1212,6 +1211,48 @@ void deClassComponent::nfSetHintMovement::RunFunction( dsRunTime *rt, dsValue *m
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
+// public func bool getEnableGI()
+deClassComponent::nfGetEnableGI::nfGetEnableGI( const sInitData &init ) :
+dsFunction( init.clsCom, "getEnableGI", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassComponent::nfGetEnableGI::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	rt->PushBool( component.GetEnableGI() );
+}
+
+// public func void setEnableGI( bool enable )
+deClassComponent::nfSetEnableGI::nfSetEnableGI( const sInitData &init ) :
+dsFunction( init.clsCom, "setEnableGI", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enable
+}
+void deClassComponent::nfSetEnableGI::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	component.SetEnableGI( rt->GetValue( 0 )->GetBool() );
+}
+
+// public func int getHintGIImportance()
+deClassComponent::nfGetHintGIImportance::nfGetHintGIImportance( const sInitData &init ) :
+dsFunction( init.clsCom, "getHintGIImportance", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassComponent::nfGetHintGIImportance::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	rt->PushInt( component.GetHintGIImportance() );
+}
+
+// public func void setHintGIImportance( int importance )
+deClassComponent::nfSetHintGIImportance::nfSetHintGIImportance( const sInitData &init ) :
+dsFunction( init.clsCom, "setHintGIImportance", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // importance
+}
+void deClassComponent::nfSetHintGIImportance::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	component.SetHintGIImportance( rt->GetValue( 0 )->GetInt() );
+}
+
 
 
 // Class deClassComponent
@@ -1368,6 +1409,10 @@ void deClassComponent::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetHintMovement( init ) );
 	AddFunction( new nfSetHintMovement( init ) );
+	AddFunction( new nfGetEnableGI( init ) );
+	AddFunction( new nfSetEnableGI( init ) );
+	AddFunction( new nfGetHintGIImportance( init ) );
+	AddFunction( new nfSetHintGIImportance( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

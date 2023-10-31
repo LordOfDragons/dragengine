@@ -279,6 +279,26 @@ void igdeViewRenderWindow::NotifyMouseWheeled( const decPoint &position, const d
 	}
 }
 
+void igdeViewRenderWindow::NotifyMouseEnter(){
+	const decObjectOrderedSet listeners( pListeners );
+	const int count = listeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( igdeMouseKeyListener* )listeners.GetAt( i ) )->OnMouseEnter( this );
+	}
+}
+
+void igdeViewRenderWindow::NotifyMouseLeave(){
+	const decObjectOrderedSet listeners( pListeners );
+	const int count = listeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( igdeMouseKeyListener* )listeners.GetAt( i ) )->OnMouseLeave( this );
+	}
+}
+
 
 
 void igdeViewRenderWindow::CreateNativeWidget(){

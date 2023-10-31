@@ -52,7 +52,7 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElementClass extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       var ECBehaviorBehaviorTree btbehavior = ECBehaviorBehaviorTree.new(this)
  *       btbehavior.getPath().setValue("/content/myBehavior.debtree")
  *       btbehavior.getRun().setValue(true)
@@ -78,7 +78,7 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElementClass extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       var ECBehaviorBehaviorTree btSpecific = ECBehaviorBehaviorTree.new(this, "specific")
  *       btSpecific.getPath().setValue("/content/mySpecificBehavior.debtree")
  *       btSpecific.getRun().setValue(true)
@@ -116,7 +116,7 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElementClass extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       var ECBehaviorBehaviorTree btree = ECBehaviorBehaviorTree.new(this)
  *       btSpecific.getPath().setValue("/content/basic.debtree")
  *       //btSpecific.getRun().setValue(false) // the default is false
@@ -128,7 +128,7 @@ pin Dragengine.Utils
  * end
  * 
  * class MyActorAI extends BAAIBehaviorTree
- *    public func new()
+ *    func new()
  *       // load behavior tree to use. this is not required but allows to use different
  *       // behavior trees for different AI routines. if not used the "/content/basic.debtree"
  *       // would be used as defined in MyElementClass.
@@ -142,7 +142,7 @@ pin Dragengine.Utils
  *       setContext(BTContextAI.new(this, ECBehaviorBehaviorTree.getInstanceIn(getActor()).getContext(), btree)
  *       
  *       // run behavior tree during think()
- *       setRunning( true )
+ *       setRunning(true)
  *    end
  * end
  * \endcode
@@ -157,23 +157,23 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElementClass extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       var ECBehaviorBehaviorTree btbehavior = ECBehaviorBehaviorTree.new(this)
  *       btbehavior.getPath().setValue("/content/mySpecificBehavior.desm")
  *       
  *       // add factory to create actions and conditions later on. this example uses
  *       // a code block for simplicity. using classes implementing ActionConditionFactory
  *       // is preferred since it allows to reuse factories across element classes.
- *       btbehavior.setActionConditionFactory( block ECBehaviorBehaviorTree.Instance instance
+ *       btbehavior.setActionConditionFactory(block ECBehaviorBehaviorTree.Instance instance
  *          // add condition evaluating to true if "player.insideZone" trigger is in fired state.
  *          // the condition can be used in the behavior tree using the name "player is inside zone".
- *          instance.setCondition("player is inside zone", BTConditionTrigger.new( \
+ *          instance.setCondition("player is inside zone", BTConditionTrigger.new(\
  *             "player.insideZone", BTConditionTrigger.TestMode.fired))
  *          
  *          // add action pulsing (fire and immediately reset) "player.damage" trigger.
  *          // the action can be run in the behavior tree using the name "hurt playe".
  *          instance.setAction("hurt player", BTActionTrigger.new("player.damage", BTActionTrigger.Action.pulse))
- *       end )
+ *       end)
  *    end
  * end
  * \endcode
@@ -182,147 +182,221 @@ pin Dragengine.Utils
  * the context is run by the behavior itself.
  */
 class ECBehaviorBehaviorTree extends DefaultECBehavior
+	/**
+	 * \brief Listener for behavior instance events.
+	 * \version 1.19
+	 */
+	interface Listener
+		/** \brief Before stepping behavior tree. */
+		func void behaviorTreeUpdate(Instance instance, BTContext context, float elapsed)
+		
+		/** \brief Stepping behavior tree Failed. */
+		func void behaviorTreeFailed(Instance instance, BTContext context)
+		
+		/** \brief Behavior tree has been restarted. */
+		func void behaviorTreeRestarted(Instance instance, BTContext context)
+	end
+	
+	/**
+	 * \brief Default implementation of behavior instance listener.
+	 * \version 1.19
+	 */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		func new()
+		end
+		
+		/** \brief Before stepping behavior tree. */
+		func void behaviorTreeUpdate(Instance instance, BTContext context, float elapsed)
+		end
+		
+		/** \brief Stepping behavior tree Failed. */
+		func void behaviorTreeFailed(Instance instance, BTContext context)
+		end
+		
+		/** \brief Behavior tree has been restarted. */
+		func void behaviorTreeRestarted(Instance instance, BTContext context)
+		end
+	end
+	
+	/**
+	 * \brief Factory creating listeners.
+	 * \version 1.19
+	 */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/**
+	 * \brief Factory creating listeners using block.
+	 * \version 1.19
+	 */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
 	/** \brief Factory assigining actions and conditions to behavior tree. */
 	interface ActionConditionFactory
 		/** \brief Assign actions and conditions to behavior tree. */
-		func void setActionsConditions( Instance instance )
+		func void setActionsConditions(Instance instance)
 	end
 	
 	/** \brief Factory assigining actions and conditions to behavior tree using a block. */
 	class BlockActionConditionFactory implements ActionConditionFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter. */
-		public func new( Block factoryBlock )
+		func new(Block factoryBlock)
 			if factoryBlock == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = factoryBlock
+			pBlock = factoryBlock
 		end
 		
 		/** \brief Assign actions and conditions to behavior tree. */
-		public func void setActionsConditions( Instance instance )
-			this.pBlock.run( instance )
+		func void setActionsConditions(Instance instance)
+			pBlock.run(instance)
 		end
 	end
 	
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorBehaviorTree pECBehavior
-		private var BehaviorTree pBehaviorTree
-		private var BTContext pContext
-		private var bool pRun
-		private var bool pFailed
+		var ECBehaviorBehaviorTree pECBehavior
+		var BehaviorTree pBehaviorTree
+		var BTContext pContext
+		var bool pRun
+		var bool pFailed
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorBehaviorTree ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pFailed = false
+		func new(ECBehaviorBehaviorTree ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pFailed = false
+			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
-			this.pContext = null
-			this.pBehaviorTree = null
+		func void dispose()
+			pContext = null
+			pBehaviorTree = null
+			pListeners = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pRun = this.pECBehavior.getRun().getValue( stub )
+		func void init(StubElement stub)
+			pRun = pECBehavior.getRun().getValue(stub)
 			
-			this.pBehaviorTree = this.loadBehaviorTree( stub )
-			if this.pBehaviorTree == null
-				this.pBehaviorTree = BehaviorTree.new()
+			pBehaviorTree = loadBehaviorTree(stub)
+			if pBehaviorTree == null
+				pBehaviorTree = BehaviorTree.new()
 			end
 			
-			this.pContext = this.createContext( stub, this.pBehaviorTree )
+			pContext = createContext(stub, pBehaviorTree)
 			if BaseGameApp.getApp() != null
-				this.pContext.setConsole( BaseGameApp.getApp().getConsole() )
+				pContext.setConsole(BaseGameApp.getApp().getConsole())
 			end
 			
-			this.setRequiresThink( this.pRun )
+			setRequiresThink(pRun)
+			pECBehavior.createListeners(this)
 		end
 		
 		/** \brief Load behavior tree. */
-		protected func BehaviorTree loadBehaviorTree( StubElement stub )
-			return this.pECBehavior.getBehaviorTree().getBehaviorTree( stub, this.getElement().getClass() )
+		protected func BehaviorTree loadBehaviorTree(StubElement stub)
+			return pECBehavior.getBehaviorTree().getBehaviorTree(stub, getElement().getClass())
 		end
 		
 		/** \brief Create context. */
-		protected func BTContext createContext( StubElement stub, BehaviorTree behaviorTree )
-			return BTContext.new( behaviorTree )
+		protected func BTContext createContext(StubElement stub, BehaviorTree behaviorTree)
+			return BTContext.new(behaviorTree)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorBehaviorTree getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorBehaviorTree getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Behavior tree. */
-		public func BehaviorTree getBehaviorTree()
-			return this.pBehaviorTree
+		func BehaviorTree getBehaviorTree()
+			return pBehaviorTree
 		end
 		
 		/** \brief Context. */
-		public func BTContext getContext()
-			return this.pContext
+		func BTContext getContext()
+			return pContext
 		end
 		
 		/** \brief Run behavior tree on element thinking. */
-		public func bool getRun()
-			return this.pRun
+		func bool getRun()
+			return pRun
 		end
 		
 		/** \brief Behavior tree failed and will not run again. */
-		public func bool getFailed()
-			return this.pFailed
+		func bool getFailed()
+			return pFailed
 		end
 		
 		
 		
 		/** \brief Think about what the element is going to do in this frame. */
-		public func void think( float elapsed )
-			if not this.pRun and not this.pFailed
+		func void think(float elapsed)
+			if not pRun and not pFailed
 				return
 			end
 			
+			notifyUpdate(pContext, elapsed)
+			
 			try
-				if this.pContext.stepBehaviorTree()
+				if pContext.stepBehaviorTree()
 					return
 				end
 				
 			catch Exception e
 			end
 			
-			this.pFailed = true
-			this.setRequiresThink( false )
+			pFailed = true
+			setRequiresThink(false)
 			
-			this.pECBehavior.setActionsConditions( this )
+			pECBehavior.setActionsConditions(this)
+			notifyFailed(pContext)
 		end
 		
 		/** \brief Restart behavior tree to run it again. */
 		protected func void restartContext()
-			if not this.pRun
+			if not pRun
 				return
 			end
 			
-			this.pContext.reset()
-			this.pFailed = false
-			this.setRequiresThink( true )
+			pContext.reset()
+			pFailed = false
+			setRequiresThink(true)
+			notifyRestarted(pContext)
 		end
 		
-		/** \brief Set action to behavior tree.
-		 */
-		public func void setAction( String name, BTAction action )
-			this.pContext.setAction( name, action )
+		/** \brief Set action to behavior tree. */
+		func void setAction(String name, BTAction action)
+			pContext.setAction(name, action)
 		end
 		
 		/**
@@ -330,13 +404,13 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		 * 
 		 * Block receives arguments BTContext context and Dictionary parameters.
 		 */
-		public func void setAction( String name, Block actionBlock )
-			this.pContext.setAction( name, actionBlock )
+		func void setAction(String name, Block actionBlock)
+			pContext.setAction(name, actionBlock)
 		end
 		
 		/** \brief Set condition to behavior tree. */
-		public func void setCondition( String name, BTCondition condition )
-			this.pContext.setCondition( name, condition )
+		func void setCondition(String name, BTCondition condition)
+			pContext.setCondition(name, condition)
 		end
 		
 		/**
@@ -344,119 +418,185 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		 * 
 		 * Block receives arguments BTContext context and Dictionary parameters and returns bool.
 		 */
-		public func void setCondition( String name, Block conditionBlock )
-			this.pContext.setCondition( name, conditionBlock )
+		func void setCondition(String name, Block conditionBlock)
+			pContext.setCondition(name, conditionBlock)
+		end
+		
+		
+		
+		/**
+		 * \brief Add listener.
+		 * \version 1.19
+		 */
+		func void addListener(Listener listener)
+			if listener == null
+				throw ENullPointer.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/**
+		 * \brief Remove listener.
+		 * \version 1.19
+		 */
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		/**
+		 * \brief Notify listeners behavior tree restarted.
+		 * \version 1.19
+		 */
+		func void notifyRestarted(BTContext context)
+			if context == null
+				throw ENullPointer.new()
+			end
+			
+			pListeners.forEach(block Listener each
+				each.behaviorTreeRestarted(this, context)
+			end)
+		end
+		
+		/**
+		 * \brief Notify listeners behavior tree failed.
+		 * \version 1.19
+		 */
+		func void notifyFailed(BTContext context)
+			if context == null
+				throw ENullPointer.new()
+			end
+			
+			pListeners.forEach(block Listener each
+				each.behaviorTreeFailed(this, context)
+			end)
+		end
+		
+		/**
+		 * \brief Notify listeners behavior tree update before running.
+		 * \version 1.19
+		 * \note Updates are send each think even if the behavior tree is currently paused.
+		 */
+		func void notifyUpdate(BTContext context, float elapsed)
+			if context == null
+				throw ENullPointer.new()
+			end
+			
+			pListeners.forEach(block Listener each
+				each.behaviorTreeUpdate(this, context, elapsed)
+			end)
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-				this.pRun = flags.getAt( 0 )
-				this.pFailed = flags.getAt( 1 )
+				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+				pRun = flags.getAt(0)
+				pFailed = flags.getAt(1)
 				
-				if this.pRun
-					this.pContext.readFromFile( env, reader )
+				if pRun
+					pContext.readFromFile(env, reader)
 				end
 				
-				this.setRequiresThink( this.pRun and not this.pFailed )
+				setRequiresThink(pRun and not pFailed)
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 2 )
-			flags.setAt( 0, this.pRun )
-			flags.setAt( 1, this.pFailed )
-			flags.writeToFile( writer )
+			var PersistencyFlags flags = PersistencyFlags.new(2)
+			flags.setAt(0, pRun)
+			flags.setAt(1, pFailed)
+			flags.writeToFile(writer)
 			
-			if this.pRun
-				this.pContext.writeToFile( env, writer )
+			if pRun
+				pContext.writeToFile(env, writer)
 			end
 		end
 	end
 	
 	
 	
-	private var ECPBehaviorTree pBehaviorTree
-	private var ECPBoolean pRun
-	private var Array pActionConditionFactories
+	var ECPBehaviorTree pBehaviorTree
+	var ECPBoolean pRun
+	var Array pActionConditionFactories
+	var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) \
-	this( eclass, BaseGameApp.getApp().getLoaders(), "" )
+	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders(), "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String id ) \
-	this( eclass, BaseGameApp.getApp().getLoaders(), id )
+	func new(BehaviorElementClass eclass, String id)\
+	this(eclass, BaseGameApp.getApp().getLoaders(), id)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String id, String prefix ) \
-	this( eclass, BaseGameApp.getApp().getLoaders(), id, prefix )
+	func new(BehaviorElementClass eclass, String id, String prefix)\
+	this(eclass, BaseGameApp.getApp().getLoaders(), id, prefix)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, Loaders loaders ) this( eclass, loaders, "" )
+	func new(BehaviorElementClass eclass, Loaders loaders) this(eclass, loaders, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, Loaders loaders, String id ) \
-	this( eclass, loaders, id, id.empty() if "behaviorTree" else "behaviorTree(" + id + ")" )
+	func new(BehaviorElementClass eclass, Loaders loaders, String id) \
+	this(eclass, loaders, id, id.empty() if "behaviorTree" else "behaviorTree(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, Loaders loaders, String id, String subID ) \
-	this( eclass, loaders, id, subID, subID + "." )
+	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID)\
+	this(eclass, loaders, id, subID, subID + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, Loaders loaders, String id, String subID, \
-	String prefix ) super( eclass, id )
-		this.pBehaviorTree = ECPBehaviorTree.new( prefix + "path", loaders.getBehaviorTree() )
-		eclass.addProperty( this.pBehaviorTree )
+	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID,\
+	String prefix) super(eclass, id)
+		pBehaviorTree = ECPBehaviorTree.new(prefix + "path", loaders.getBehaviorTree())
+		eclass.addProperty(pBehaviorTree)
 		
-		this.pRun = ECPBoolean.new( prefix + "run", false )
-		eclass.addProperty( this.pRun )
+		pRun = ECPBoolean.new(prefix + "run", false)
+		eclass.addProperty(pRun)
 		
-		this.pActionConditionFactories = Array.new()
+		pActionConditionFactories = Array.new()
+		pListenerFactories = Array.new()
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pActionConditionFactories = null
+	func void dispose()
+		pListenerFactories = null
+		pActionConditionFactories = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Behavior tree. */
-	public func ECPBehaviorTree getBehaviorTree()
-		return this.pBehaviorTree
+	func ECPBehaviorTree getBehaviorTree()
+		return pBehaviorTree
 	end
 	
 	/** \brief Run behavior tree during element thinking. */
-	public func ECPBoolean getRun()
-		return this.pRun
+	func ECPBoolean getRun()
+		return pRun
 	end
 	
 	/** \brief Add action and condition factory. */
-	public func void addActionConditionFactory( ActionConditionFactory factory )
+	func void addActionConditionFactory(ActionConditionFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pActionConditionFactories.add( factory )
+		pActionConditionFactories.add(factory)
 	end
 	
 	/**
@@ -464,27 +604,68 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * 
 	 * This is a convenience method for using BlockActionConditionFactory.
 	 */
-	public func void addActionConditionFactory( Block factory )
-		this.addActionConditionFactory( BlockActionConditionFactory.new( factory ) )
+	func void addActionConditionFactory(Block factory)
+		addActionConditionFactory(BlockActionConditionFactory.new(factory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ActionConditionFactory. */
-	public func void forEachActionConditionFactory( Block ablock )
-		this.pActionConditionFactories.forEach( ablock )
+	func void forEachActionConditionFactory(Block ablock)
+		pActionConditionFactories.forEach(ablock)
 	end
 	
 	/** \brief Assign actions and conditions to behavior instance. */
-	public func void setActionsConditions( Instance instance )
-		this.pActionConditionFactories.forEach( block ActionConditionFactory each
-			each.setActionsConditions( instance )
-		end )
+	func void setActionsConditions(Instance instance)
+		pActionConditionFactories.forEach(block ActionConditionFactory each
+			each.setActionsConditions(instance)
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Add listener factory.
+	 * \version 1.19
+	 */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * \version 1.19
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/**
+	 * \brief Visit listener factories with block with argument ListenerFactory.
+	 * \version 1.19
+	 */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Create listeners from factories adding them to behavior instance.
+	 * \version 1.19
+	 */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -495,10 +676,10 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorBehaviorTree getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorBehaviorTree each
+	static func ECBehaviorBehaviorTree getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorBehaviorTree each
 			return true
-		end ) cast ECBehaviorBehaviorTree
+		end) cast ECBehaviorBehaviorTree
 	end
 	
 	/**
@@ -507,10 +688,10 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorBehaviorTree with specific identifier.
 	 */
-	static public func ECBehaviorBehaviorTree getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorBehaviorTree each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorBehaviorTree
+	static func ECBehaviorBehaviorTree getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorBehaviorTree each
+			return each.getID().equals(id)
+		end) cast ECBehaviorBehaviorTree
 	end
 	
 	/**
@@ -519,10 +700,10 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * Returns list contains ECBehaviorBehaviorTree behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorBehaviorTree each
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorBehaviorTree each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -534,10 +715,10 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * of type ECBehaviorBehaviorTree.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -546,10 +727,10 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorBehaviorTree.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -558,16 +739,16 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * Returns list contains ECBehaviorBehaviorTree.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

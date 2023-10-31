@@ -31,9 +31,14 @@ class lpeLangPack;
 
 
 /**
- * \brief Language pack entry.
+ * Language pack entry.
  */
 class lpeLangPackEntry : public deObject{
+public:
+	typedef deTObjectReference<lpeLangPackEntry> Ref;
+	
+	
+	
 private:
 	lpeLangPack *pLangPack;
 	
@@ -43,45 +48,67 @@ private:
 	bool pSelected;
 	bool pActive;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new entry. */
+	/** Creates a new entry. */
 	lpeLangPackEntry();
-	/** \brief Creates a new entry as a copy of another entry. */
+	
+	/** Creates a new entry as a copy of another entry. */
 	lpeLangPackEntry( const lpeLangPackEntry &entry );
-	/** \brief Cleans up the entry. */
-	virtual ~lpeLangPackEntry();
+	
+protected:
+	/** Cleans up the entry. */
+	virtual ~lpeLangPackEntry() override;
 	/*@}*/
 	
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the parent language pack or NULL if there is none. */
+	/** Retrieves the parent language pack or NULL if there is none. */
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
-	/** \brief Sets the parent language pack or NULL if there is none. */
+	
+	/** Sets the parent language pack or NULL if there is none. */
 	void SetLangPack( lpeLangPack *langpack );
 	
-	/** \brief Retrieves the name. */
+	
+	
+	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
-	/** \brief Sets the name. */
+	
+	/** Sets the name. */
 	void SetName( const char *name );
-	/** \brief Retrieves the textu. */
+	
+	/** Retrieves the textu. */
 	inline const decUnicodeString &GetText() const{ return pText; }
-	/** \brief Sets the text. */
+	
+	/** Sets the text. */
 	void SetText( const decUnicodeString &text );
 	
-	/** \brief Determines if the entry is the active one. */
+	
+	
+	/** Determines if the entry is the active one. */
 	inline bool GetActive() const{ return pActive; }
-	/** \brief Sets if the entry is the active one. */
+	
+	/** Sets if the entry is the active one. */
 	void SetActive( bool active );
-	/** \brief Determines if the entry is selected. */
+	
+	/** Determines if the entry is selected. */
 	inline bool GetSelected() const{ return pSelected; }
-	/** \brief Sets if the entry is selected. */
+	
+	/** Sets if the entry is selected. */
 	void SetSelected( bool selected );
 	
-	/** \brief Notifies the listeners that the entry changed. */
+	
+	
+	/** Notifies the listeners that the entry changed. */
 	void NotifyChanged();
-	/** \brief Notifies the listeners that the entry name changed. */
+	
+	/** Notifies the listeners that the entry name changed. */
 	void NotifyNameChanged();
 	/*@}*/
 };

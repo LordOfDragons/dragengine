@@ -31,60 +31,59 @@ pin Dragengine.Utils
  * \brief Base class for behavior tree rules using child rules.
  */
 abstract class BTRuleList extends BTRule
-	/** \brief Array of BTRule. */
-	private var Array pRules
+	var Array pRules
 	
 	
 	
 	/** \brief Create behavior tree rule. */
-	public func new( String id ) super( id )
-		this.pRules = Array.new()
+	func new(String id) super(id)
+		pRules = Array.new()
 	end
 	
 	
 	
 	/** \brief Number of rules. */
-	public func int getRuleCount()
-		return this.pRules.getCount()
+	func int getRuleCount()
+		return pRules.getCount()
 	end
 	
 	/** \brief Get rule at index. */
-	public func BTRule getRuleAt( int index )
-		return this.pRules.getAt( index ) cast BTRule
+	func BTRule getRuleAt(int index)
+		return pRules.getAt(index) cast BTRule
 	end
 	
 	/** \brief Index of rule or -1 if absent. */
-	public func int indexOfRule( BTRule rule )
-		return this.pRules.indexOf( rule )
+	func int indexOfRule(BTRule rule)
+		return pRules.indexOf(rule)
 	end
 	
 	/** \brief Add rule. */
-	public func void addRule( BTRule rule )
+	func void addRule(BTRule rule)
 		if rule == null or rule.getParent() != null
 			throw EInvalidParam.new()
 		end
 		
-		this.pRules.add( rule )
-		rule.setParent( this )
+		pRules.add(rule)
+		rule.setParent(this)
 	end
 	
 	/** \brief Remove rule. */
-	public func void removeRule( BTRule rule )
-		this.pRules.remove( rule )
+	func void removeRule(BTRule rule)
+		pRules.remove(rule)
 	end
 	
 	/** \brief Remove all rules. */
-	public func void removeAllRules()
-		this.pRules.removeAll()
+	func void removeAllRules()
+		pRules.removeAll()
 	end
 	
 	/** \brief Visit rules with block with parameter BTRule. */
-	public func void forEach( Block ablock )
-		this.pRules.forEach( ablock )
+	func void forEach(Block ablock)
+		pRules.forEach(ablock)
 	end
 	
 	/** \brief Find rule with block with parameter BTRule. */
-	public func BTRule find( Block ablock )
-		return this.pRules.find( ablock ) cast BTRule
+	func BTRule find(Block ablock)
+		return pRules.find(ablock) cast BTRule
 	end
 end

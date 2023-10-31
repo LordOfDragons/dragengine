@@ -41,6 +41,8 @@
 #include "../gdeGameDefinition.h"
 #include "../property/gdeProperty.h"
 
+#include <deigde/gamedefinition/class/igdeGDClass.h>
+
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
@@ -58,7 +60,8 @@ pName( name ),
 pScaleMode( esmUniform ),
 
 pIsGhost( false ),
-pCanInstantiate( true ){
+pCanInstantiate( true ),
+pInheritSubObjects( igdeGDClass::FilterSubObjectsAll ){
 }
 
 gdeObjectClass::gdeObjectClass( const gdeObjectClass &objectClass ) :
@@ -74,7 +77,8 @@ pHideTags( objectClass.pHideTags ),
 pPartialHideTags( objectClass.pPartialHideTags ),
 
 pIsGhost( objectClass.pIsGhost ),
-pCanInstantiate( objectClass.pCanInstantiate )
+pCanInstantiate( objectClass.pCanInstantiate ),
+pInheritSubObjects( objectClass.pInheritSubObjects )
 {
 	deObjectReference objRef;
 	int i, count;
@@ -560,6 +564,18 @@ void gdeObjectClass::SetCanInstantiate( bool canInstantiate ){
 	}
 	
 	pCanInstantiate = canInstantiate;
+	
+	if( pGameDefinition ){
+		pGameDefinition->NotifyObjectClassChanged( this );
+	}
+}
+
+void gdeObjectClass::SetInheritSubObjects( int filter ){
+	if( pInheritSubObjects == filter ){
+		return;
+	}
+	
+	pInheritSubObjects = filter;
 	
 	if( pGameDefinition ){
 		pGameDefinition->NotifyObjectClassChanged( this );

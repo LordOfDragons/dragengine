@@ -196,9 +196,43 @@ void deoalEnvironment::SetLayerMask( const decLayerMask &layerMask ){
 	}
 }
 
+void deoalEnvironment::PrepareQuickDispose(){
+	if( pEnvProbe ){
+		pEnvProbe->SetOctreeNode( nullptr );
+	}
+}
+
+
+
+float deoalEnvironment::Distance( const deoalEnvironment &env, bool withPan ) const{
+	const float d1 = env.pCompareReverbGain - pCompareReverbGain;
+	const float d2 = env.pCompareReverbGainLF - pCompareReverbGainLF;
+	const float d3 = env.pCompareReverbGainHF - pCompareReverbGainHF;
+	const float d4 = env.pCompareReverbDecayTime - pCompareReverbDecayTime;
+	const float d5 = env.pCompareReverbDecayHFRatio - pCompareReverbDecayHFRatio;
+	const float d6 = env.pCompareReverbDecayLFRatio - pCompareReverbDecayLFRatio;
+	const float d7 = env.pCompareReverbReflectionGain - pCompareReverbReflectionGain;
+	const float d8 = env.pCompareReverbReflectionDelay - pCompareReverbReflectionDelay;
+	const float d9 = env.pCompareReverbLateReverbGain - pCompareReverbLateReverbGain;
+	const float d10 = env.pCompareReverbLateReverbDelay - pCompareReverbLateReverbDelay;
+	const float d11 = env.pCompareReverbEchoTime - pCompareReverbEchoTime;
+	
+	float distanceSquared = d1 * d1 + d2 * d2 + d3 * d3 + d4 * d4 + d5 * d5
+		+ d6 * d6 + d7 * d7 + d8 * d8 + d9 * d9 + d10 * d10 + d11 * d11;
+	
+	if( withPan ){
+		distanceSquared += ( env.pCompareReverbReflectionPan - pCompareReverbReflectionPan ).LengthSquared();
+		distanceSquared += ( env.pCompareReverbLateReverbPan - pCompareReverbLateReverbPan ).LengthSquared();
+	}
+	
+	return sqrtf( distanceSquared );
+}
+
 
 
 void deoalEnvironment::Update(){
+	pSetSilent();
+	
 	if( ! pWorld || ! pAudioThread.GetActiveMicrophone() ){
 		return;
 	}
@@ -213,8 +247,8 @@ void deoalEnvironment::Update(){
 	const decQuaternion &micOrient = microphone.GetOrientation();
 	const decDVector &micPos = microphone.GetPosition();
 	const float distanceSquared = ( float )( ( micPos - pPosition ).LengthSquared() );
-	const deoalConfiguration::eAurealizationModes aurealizationMode =
-		pAudioThread.GetConfiguration().GetAurealizationMode();
+	const deoalConfiguration::eAuralizationModes AuralizationMode =
+		pAudioThread.GetConfiguration().GetAuralizationMode();
 	
 	if( distanceSquared > pRangeSquared ){
 		return;
@@ -225,7 +259,7 @@ void deoalEnvironment::Update(){
 	pGainMedium = 1.0f;
 	pGainHigh = 1.0f;
 	
-	switch( aurealizationMode ){
+	switch( AuralizationMode ){
 	case deoalConfiguration::eamDirectSound:
 	case deoalConfiguration::eamFull:
 		pDirectPath( microphone, micPos );
@@ -250,7 +284,7 @@ void deoalEnvironment::Update(){
 	pReverbLateReverbPan.SetZero();
 	pReverbEchoTime = 0.25f;
 	
-	switch( aurealizationMode ){
+	switch( AuralizationMode ){
 	case deoalConfiguration::eamFull:
 		pEnvReflection( microphone, micPos, micOrient );
 		break;
@@ -260,6 +294,8 @@ void deoalEnvironment::Update(){
 	}
 	
 	pCalcEffectParameters();
+	pCalcEffectKeepAliveTimeout();
+	pCalcCompareParameters();
 	
 	pValid = true;
 	
@@ -494,7 +530,7 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 	// of the location the sound source is located in. this estimation can be calculated
 	// in ~1ms and can also be further optimized if required. the environment parameters
 	// are then the combination of the two room parameters. this allows situations to
-	// work out properly where the sound source is located in a room with drstically
+	// work out properly where the sound source is located in a room with drastically
 	// different reverberation.
 	#ifdef LISTENER_CENTRIC_RAY_CAST
 		//deoalEnvProbe &probe = *pWorld->GetEnvProbeManager().GetProbeEstimateRoom(
@@ -582,7 +618,7 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 		
 	}else{
 		pListenerSmooth.SetGoal( listener );
-		pListenerSmooth.Update( pAudioThread.GetElapsed() );
+		pListenerSmooth.Update( pAudioThread.GetElapsedFull() );
 		pListenerSmooth.AssignTo( listener );
 	}
 	
@@ -725,4 +761,56 @@ void deoalEnvironment::pCalcEffectParameters(){
 		pBandPassGainLF = 0.0f;
 		pBandPassGainHF = 0.0f;
 	}
+}
+
+void deoalEnvironment::pCalcEffectKeepAliveTimeout(){
+	// update slot with effect parameters if changed. this also resets keep-alive and sets the
+	// keep-alive timeout. this timeout is used to clear the effect after the source stopped
+	// using the effect slot to improve performance. as timeout the largest delay or ech time
+	// is used. it just has to be long enough for all residue sound to vanish
+	const float delay = pReverbReflectionDelay + pReverbLateReverbDelay;
+	
+	pEffectKeepAliveTimeout = delay + pReverbDecayTime;
+	
+	pEffectKeepAliveTimeout = decMath::max( pEffectKeepAliveTimeout,
+		delay + pReverbDecayTime * pReverbDecayHFRatio );
+	
+	pEffectKeepAliveTimeout = decMath::max( pEffectKeepAliveTimeout,
+		delay + pReverbDecayTime * pReverbDecayLFRatio );
+}
+
+void deoalEnvironment::pCalcCompareParameters(){
+	pCompareReverbGain = pReverbGain;
+	pCompareReverbGainLF = pReverbGainLF;
+	pCompareReverbGainHF = pReverbGainHF;
+	pCompareReverbDecayTime = decMath::linearStep( pReverbDecayTime,
+		AL_EAXREVERB_MIN_DECAY_TIME, AL_EAXREVERB_MAX_DECAY_TIME );
+	pCompareReverbDecayHFRatio = decMath::linearStep( pReverbDecayHFRatio,
+		AL_EAXREVERB_MIN_DECAY_HFRATIO, AL_EAXREVERB_MAX_DECAY_HFRATIO );
+	pCompareReverbDecayLFRatio = decMath::linearStep( pReverbDecayLFRatio,
+		AL_EAXREVERB_MIN_DECAY_LFRATIO, AL_EAXREVERB_MAX_DECAY_LFRATIO );
+	pCompareReverbReflectionGain = decMath::linearStep( pReverbReflectionGain,
+		AL_EAXREVERB_MIN_REFLECTIONS_GAIN, AL_EAXREVERB_MAX_REFLECTIONS_GAIN );
+	pCompareReverbReflectionDelay = decMath::linearStep( pReverbReflectionDelay,
+		AL_EAXREVERB_MIN_REFLECTIONS_DELAY, AL_EAXREVERB_MAX_REFLECTIONS_DELAY );
+	pCompareReverbReflectionPan = pCalcComparePan( pReverbReflectionPan );
+	pCompareReverbLateReverbGain = decMath::linearStep( pReverbLateReverbGain,
+		AL_EAXREVERB_MIN_LATE_REVERB_GAIN, AL_EAXREVERB_MAX_LATE_REVERB_GAIN );
+	pCompareReverbLateReverbDelay = decMath::linearStep( pReverbLateReverbDelay,
+		AL_EAXREVERB_MIN_LATE_REVERB_DELAY, AL_EAXREVERB_MAX_LATE_REVERB_DELAY );
+	pCompareReverbLateReverbPan = pCalcComparePan( pReverbLateReverbPan );
+	pCompareReverbEchoTime = decMath::linearStep( pReverbEchoTime,
+		AL_EAXREVERB_MIN_ECHO_TIME, AL_EAXREVERB_MAX_ECHO_TIME );
+}
+
+decVector deoalEnvironment::pCalcComparePan( const decVector &pan ) const{
+	const float length = pan.Length();
+	if( length < 0.01f ){
+		return decVector();
+	}
+	
+	const float azimuth = atan2f( -pan.x, pan.z );
+	const float elevation = atan2f( pan.y, sqrtf( pan.x * pan.x + pan.z * pan.z ) );
+	return decVector( decMath::linearStep( azimuth, -PI, PI ),
+		decMath::linearStep( elevation, -HALF_PI, HALF_PI ), length );
 }

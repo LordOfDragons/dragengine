@@ -35,9 +35,9 @@ pin Dragengine.Utils
  * 
  * Adds support for sub title transmission to actor.
  * 
- * For doing sub title text output conversation scripts have to be used. This allow for
- * the highest control over the conversation. For first person only self conversation
- * or receiving transmissions using conversation scripts can be cumbersome. For this
+ * For using sub title text output instead of conversation scripts to display short
+ * bursts of text. For use in first person view to do self conversation or receiving
+ * transmissions for which conversation scripts can be cumbersome to use. For this
  * situation this behavior provides a simpler solution.
  * 
  * The behavior acts similar to CActionActorSpeak.executeSubTitle() in that it supports
@@ -57,13 +57,18 @@ pin Dragengine.Utils
  * it there is no reason to use multiple transmissions since the sub titles can be styled
  * 
  * Element class property prefix is "transmission".
+ * 
+ * \par Version 1.19
+ * 
+ * If part has empty string the subtitle is hidden. This allows empty parts to be used
+ * to created pauses between parts.
  */
 class ECBehaviorActorTransmission extends DefaultECBehavior
 	/** \brief Immutable transmission part. */
 	class Part
-		private var UnicodeString pText
-		private var StringID pStyle
-		private var float pTimeout
+		var UnicodeString pText
+		var StringID pStyle
+		var float pTimeout
 		
 		/**
 		 * \brief Create transmission part.
@@ -72,7 +77,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * \param style Identifier of style to adjust font, color or sub title in general or null.
 		 * \param timeout Time in seconds to display transmission part.
 		 */
-		public func new(UnicodeString text, StringID style, float timeout)
+		func new(UnicodeString text, StringID style, float timeout)
 			if text == null
 				throw ENullPointer.new("text")
 			end
@@ -83,17 +88,17 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		end
 		
 		/** \brief Text to speak. */
-		public func UnicodeString getText()
+		func UnicodeString getText()
 			return pText
 		end
 		
 		/** \brief Identifier of style to adjust font, color or sub title in general or null. */
-		public func StringID getStyle()
+		func StringID getStyle()
 			return pStyle
 		end
 		
 		/** \brief Time in seconds to display transmission part. */
-		public func float getTimeout()
+		func float getTimeout()
 			return pTimeout
 		end
 	end
@@ -113,19 +118,19 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Transmission started. */
-		public func void transmissionStart(Instance instance)
+		func void transmissionStart(Instance instance)
 		end
 		
 		/** \brief Display part. */
-		public func void partDisplayed(Instance instance, Part part)
+		func void partDisplayed(Instance instance, Part part)
 		end
 		
 		/** \brief Transmission finished. */
-		public func void transmissionFinished(Instance instance)
+		func void transmissionFinished(Instance instance)
 		end
 	end
 	
@@ -137,10 +142,10 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -148,7 +153,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -159,47 +164,47 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Wait in conversation if running. */
 		class WaitInConversation extends ECBehaviorConversationActor.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				if instance == null
 					throw ENullPointer.new("instance")
 				end
 				pInstance = instance
 			end
 			
-			public func void enterConversation(ECBehaviorConversationActor.Instance instance)
+			func void enterConversation(ECBehaviorConversationActor.Instance instance)
 				if pInstance.getClearEnterConversation()
 					pInstance.clear()
 				end
 			end
 			
-			public func bool wait(ECBehaviorConversationActor.Instance instance)
+			func bool wait(ECBehaviorConversationActor.Instance instance)
 				return pInstance.getWaitInConversation() and pInstance.isRunning()
 			end
 		end
 		
 		
 		
-		private var ECBehaviorActorTransmission pECBehavior
+		var ECBehaviorActorTransmission pECBehavior
 		
-		private var ECBehaviorConversationActor.Instance pConversationActor
+		var ECBehaviorConversationActor.Instance pConversationActor
 		
-		private var Array pParts
-		private var bool pWaitInConversation
-		private var bool pClearEnterConversation
-		private var StringID pStyle
-		private var float pTimeout
+		var Array pParts
+		var bool pWaitInConversation
+		var bool pClearEnterConversation
+		var StringID pStyle
+		var float pTimeout
 		
-		private var SubTitleBoxText pSubTitleText
-		private var float pRemainingDisplayTime
+		var SubTitleBoxText pSubTitleText
+		var float pRemainingDisplayTime
 		
-		private var Array pListeners
+		var Array pListeners
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new(ECBehaviorActorTransmission ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorActorTransmission ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			
 			pParts = Array.new()
@@ -209,7 +214,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			pConversationActor = null
 			pListeners = null
 			
@@ -219,7 +224,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			pWaitInConversation = pECBehavior.getWaitInConversation().getValue(stub)
 			pClearEnterConversation = pECBehavior.getClearEnterConversation().getValue(stub)
 			pStyle = pECBehavior.getStyle().getValue(stub)
@@ -232,24 +237,24 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorActorTransmission getECBehavior()
+		func ECBehaviorActorTransmission getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Conversation actor behavior. */
-		public func ECBehaviorConversationActor.Instance getConversationActor()
+		func ECBehaviorConversationActor.Instance getConversationActor()
 			return pConversationActor
 		end
 		
 		
 		
 		/** \brief Wait in conversation is enabled. */
-		public func bool getWaitInConversation()
+		func bool getWaitInConversation()
 			return pWaitInConversation
 		end
 		
 		/** \brief Set to wait in conversation is enabled. */
-		public func void setWaitInConversation(bool waitInConversation)
+		func void setWaitInConversation(bool waitInConversation)
 			pWaitInConversation = waitInConversation
 		end
 		
@@ -257,7 +262,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * \brief Clear transmission upon entering conversation.
 		 * \version 1.16
 		 */
-		public func bool getClearEnterConversation()
+		func bool getClearEnterConversation()
 			return pClearEnterConversation
 		end
 		
@@ -265,35 +270,51 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * \brief Set to clear transmission upon entering conversation.
 		 * \version 1.16
 		 */
-		public func void setClearEnterConversation(bool clearEnterConversation)
+		func void setClearEnterConversation(bool clearEnterConversation)
 			pClearEnterConversation = clearEnterConversation
 		end
 		
 		/** \brief Style to use. */
-		public func StringID getStyle()
+		func StringID getStyle()
 			return pStyle
 		end
 		
 		/** \brief Set style to use. */
-		public func void setStyle(StringID style)
+		func void setStyle(StringID style)
 			pStyle = style
 		end
 		
 		/** \brief Timeout in seconds to display each part. */
-		public func float getTimeout()
+		func float getTimeout()
 			return pTimeout
 		end
 		
 		/** \brief Set timeout in seconds to display each part. */
-		public func void setTimeout(float timeout)
+		func void setTimeout(float timeout)
 			pTimeout = DEMath.max(timeout, 0.0)
 		end
 		
 		
 		
 		/** \brief Transmission is running. */
-		public func bool isRunning()
+		func bool isRunning()
 			return pParts.getCount() > 0 or pRemainingDisplayTime > 0
+		end
+		
+		/**
+		 * \brief Count of parts.
+		 * \version 1.19
+		 */
+		func int getPartCount()
+			return pParts.getCount()
+		end
+		
+		/**
+		 * \brief Part at index.
+		 * \version 1.19
+		 */
+		func Part getPartAt(int index)
+			return pParts.getAt(index) cast Part
 		end
 		
 		/**
@@ -304,7 +325,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * 
 		 * \param text Text to speak.
 		 */
-		public func void addPart(UnicodeString text)
+		func void addPart(UnicodeString text)
 			addPart(text, pStyle, pTimeout)
 		end
 		
@@ -317,7 +338,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * \param text Text to speak.
 		 * \param timeout Time in seconds to display transmission part.
 		 */
-		public func void addPart(UnicodeString text, float timeout)
+		func void addPart(UnicodeString text, float timeout)
 			addPart(text, pStyle, timeout)
 		end
 		
@@ -330,7 +351,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * \param text Text to speak.
 		 * \param style Identifier of style to adjust font, color or sub title in general or null.
 		 */
-		public func void addPart(UnicodeString text, StringID style)
+		func void addPart(UnicodeString text, StringID style)
 			addPart(text, style, pTimeout)
 		end
 		
@@ -344,7 +365,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * \param style Identifier of style to adjust font, color or sub title in general or null.
 		 * \param timeout Time in seconds to display transmission part.
 		 */
-		public func void addPart(UnicodeString text, StringID style, float timeout)
+		func void addPart(UnicodeString text, StringID style, float timeout)
 			if pParts.getCount() == 255
 				throw EInvalidParam.new("too many parts")
 			end
@@ -367,8 +388,20 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			displayPart(part)
 		end
 		
+		/**
+		 * \brief Add transmission part with empty text.
+		 * \version 1.19
+		 * 
+		 * Hides the sub title box. Can be used to create pauses between parts.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners.
+		 */
+		func void addPause(float timeout)
+			addPart(UnicodeString.new(), pStyle, timeout)
+		end
+		
 		/** \brief Clear all parts and hide subtitle. */
-		public func void clear()
+		func void clear()
 			if not isRunning()
 				return
 			end
@@ -388,12 +421,12 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		
 		
 		/** \brief Sub title. */
-		public func ConversationPlaybackSubTitle getSubTitle()
+		func ConversationPlaybackSubTitle getSubTitle()
 			return pECBehavior.getSubTitle()
 		end
 		
 		/** \brief Sub title text or null if not set. */
-		public func SubTitleBoxText getSubTitleText()
+		func SubTitleBoxText getSubTitleText()
 			return pSubTitleText
 		end
 		
@@ -419,18 +452,35 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			end
 			
 			pParts.remove(part)
-			
-			var SubTitleBoxText text = pConversationActor.createSubTitleText(part.getText(), part.getStyle())
-			getSubTitle().addSubTitleText(text.subtitleWidget())
-			setSubTitleText(text)
-			
+			displaySubTitleText(part)
 			pRemainingDisplayTime = part.getTimeout()
-			
 			onPartDisplayed(part)
 			
 			pListeners.forEach(block Listener each
 				each.partDisplayed(this, part)
 			end)
+		end
+		
+		/**
+		 * \brief Display sub title text for part.
+		 * \version 1.19
+		 * 
+		 * Default implementation uses ECBehaviorConversationActor.createSubTitleText() to
+		 * create sub title text. The created sub title text is added to getSubTitle() then
+		 * assigned to this instance using setSubTitleText(). If text is empty SubTitleBoxText()
+		 * is called with null argument.
+		 */
+		protected func void displaySubTitleText(Part part)
+			var UnicodeString text = part.getText()
+			
+			if text.getLength() > 0
+				var SubTitleBoxText stbt = pConversationActor.createSubTitleText(text, part.getStyle())
+				getSubTitle().addSubTitleText(stbt.subtitleWidget())
+				setSubTitleText(stbt)
+				
+			else
+				setSubTitleText(null)
+			end
 		end
 		
 		/** \brief Transmission started. */
@@ -448,7 +498,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -456,7 +506,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
@@ -465,7 +515,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		/**
 		 * \brief Frame update.
 		 */
-		public func void think(float elapsed)
+		func void think(float elapsed)
 			pRemainingDisplayTime -= elapsed
 			if pRemainingDisplayTime > 0
 				return
@@ -487,7 +537,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		end
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
@@ -522,7 +572,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(2)
@@ -550,29 +600,29 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorConversationActor pConversationActor
-	private var ECPBoolean pWaitInConversation
-	private var ECPBoolean pClearEnterConversation
-	private var ECPStringID pStyle
-	private var ECPFloat pTimeout
-	private var Array pListenerFactories
-	private var ConversationPlaybackSubTitle pSubTitle
+	var ECBehaviorConversationActor pConversationActor
+	var ECPBoolean pWaitInConversation
+	var ECPBoolean pClearEnterConversation
+	var ECPStringID pStyle
+	var ECPFloat pTimeout
+	var Array pListenerFactories
+	var ConversationPlaybackSubTitle pSubTitle
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor) \
+	func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor) \
 	this(eclass, conversationActor, BaseGameApp.getApp().getWindowSubTitle())
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor, \
+	func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor, \
 	ConversationPlaybackSubTitle subTitle) \
 	this(eclass, conversationActor, subTitle, "transmission.")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor, \
+	func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor, \
 	ConversationPlaybackSubTitle subTitle, String prefix) super(eclass)
 		if conversationActor == null
 			throw ENullPointer.new("conversationActor")
@@ -601,7 +651,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pConversationActor = null
 		pListenerFactories = null
 		pSubTitle = null
@@ -611,12 +661,12 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	
 	
 	/** \brief Conversation actor behavior to animate. */
-	public func ECBehaviorConversationActor getConversationActor()
+	func ECBehaviorConversationActor getConversationActor()
 		return pConversationActor
 	end
 	
 	/** \brief Enable wait in conversation. */
-	public func ECPBoolean getWaitInConversation()
+	func ECPBoolean getWaitInConversation()
 		return pWaitInConversation
 	end
 	
@@ -624,27 +674,27 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	 * \brief Clear transmission upon entering conversation.
 	 * \version 1.16
 	 */
-	public func ECPBoolean getClearEnterConversation()
+	func ECPBoolean getClearEnterConversation()
 		return pClearEnterConversation
 	end
 	
 	/** \brief Style. */
-	public func ECPStringID getStyle()
+	func ECPStringID getStyle()
 		return pStyle
 	end
 	
 	/** \brief Timeout. */
-	public func ECPFloat getTimeout()
+	func ECPFloat getTimeout()
 		return pTimeout
 	end
 	
 	/** \brief Sub title. */
-	public func ConversationPlaybackSubTitle getSubTitle()
+	func ConversationPlaybackSubTitle getSubTitle()
 		return pSubTitle
 	end
 	
 	/** \brief Set sub title. */
-	public func void setSubTitle(ConversationPlaybackSubTitle subTitle)
+	func void setSubTitle(ConversationPlaybackSubTitle subTitle)
 		if subTitle == null
 			throw ENullPointer.new("subTitle")
 		end
@@ -652,7 +702,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -664,17 +714,17 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -683,7 +733,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -693,7 +743,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorConversationActor.
 	 */
-	static public func ECBehaviorActorTransmission getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorActorTransmission getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorActorTransmission each
 			return true
 		end) cast ECBehaviorActorTransmission
@@ -706,7 +756,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	 * of type ECBehaviorActorTransmission.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -715,7 +765,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

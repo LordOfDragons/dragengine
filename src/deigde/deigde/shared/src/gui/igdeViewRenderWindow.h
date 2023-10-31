@@ -186,6 +186,12 @@ public:
 	
 	/** \brief Notify listeners user wheeled mouse. */
 	virtual void NotifyMouseWheeled( const decPoint &position, const decPoint &change, int modifiers );
+	
+	/** \brief Notify listeners mouse entered widget. */
+	virtual void NotifyMouseEnter();
+	
+	/** \brief Notify listeners mouse left widget. */
+	virtual void NotifyMouseLeave();
 	/*@}*/
 	
 	

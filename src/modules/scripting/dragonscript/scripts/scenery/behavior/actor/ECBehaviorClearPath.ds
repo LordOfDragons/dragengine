@@ -81,35 +81,35 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Visitor for make element clear path. */
-		private class ClearPathElement extends ElementVisitor
-			private var Instance pInstance
+		protected class ClearPathElement extends ElementVisitor
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void visitBehaviorElement(BehaviorElement element)
+			func void visitBehaviorElement(BehaviorElement element)
 				pInstance.clearPathBehaviorElement(element)
 			end
 		end
 		
 		
 		
-		private var ECBehaviorClearPath pECBehavior
-		private var ECBehaviorLocomotion.Instance pLocomotion
+		var ECBehaviorClearPath pECBehavior
+		var ECBehaviorLocomotion.Instance pLocomotion
 		
-		private var ColliderCollisionTest pCollisionTest
-		private var ElementVisitor pClearPathElement
-		private var bool pEnabled
+		var ColliderCollisionTest pCollisionTest
+		var ElementVisitor pClearPathElement
+		var bool pEnabled
 		
-		private var float pCheckInterval
-		private var float pCheckTimer
-		private var float pClearPathTime
+		var float pCheckInterval
+		var float pCheckTimer
+		var float pClearPathTime
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new(ECBehaviorClearPath ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorClearPath ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			
 			pClearPathElement = ClearPathElement.new(this)
@@ -125,7 +125,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			pLocomotion = null
 			pClearPathElement = null
 			
@@ -137,7 +137,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		
 		
 		/** \brief Initialize from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var Collider collider = pLocomotion.getColliderAI().getCollider()
 			if collider == null
 				return
@@ -159,39 +159,39 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorClearPath getECBehavior()
+		func ECBehaviorClearPath getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Actor mover behavior. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
+		func ECBehaviorLocomotion.Instance getLocomotion()
 			return pLocomotion
 		end
 		
 		
 		
 		/** \brief Collider collision test. */
-		public func ColliderCollisionTest getCollisionTest()
+		func ColliderCollisionTest getCollisionTest()
 			return pCollisionTest
 		end
 		
 		/** \brief Clear path element visitor. */
-		public func ElementVisitor getClearPathElement()
+		func ElementVisitor getClearPathElement()
 			return pClearPathElement
 		end
 		
 		/** \brief Set clear path element visitor. */
-		public func void setClearPathElement(ElementVisitor visitor)
+		func void setClearPathElement(ElementVisitor visitor)
 			pClearPathElement = visitor
 		end
 		
 		/** \brief Stepping aside is enabled. */
-		public func bool getEnabled()
+		func bool getEnabled()
 			return pEnabled
 		end
 		
 		/** \brief Set if stepping aside is enabled. */
-		public func void setEnabled(bool enabled)
+		func void setEnabled(bool enabled)
 			if enabled == pEnabled
 				return
 			end
@@ -204,32 +204,32 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		end
 		
 		/** \brief Check interval in seconds. */
-		public func float getCheckInterval()
+		func float getCheckInterval()
 			return pCheckInterval
 		end
 		
 		/** \brief Set check interval in seconds. */
-		public func void setCheckInterval(float interval)
+		func void setCheckInterval(float interval)
 			pCheckInterval = DEMath.max(interval, 0.0)
 		end
 		
 		/** \brief Check timer. */
-		public func float getCheckTimer()
+		func float getCheckTimer()
 			return pCheckTimer
 		end
 		
 		/** \brief Set check timer. */
-		public func void setCheckTimer(float timer)
+		func void setCheckTimer(float timer)
 			pCheckTimer = timer
 		end
 		
 		/** \brief Clear path time in seconds indicating how far ahead the actors clear path. */
-		public func float getClearPathTime()
+		func float getClearPathTime()
 			return pClearPathTime
 		end
 		
 		/** \brief Set path time in seconds indicating how far ahead the actors clear path. */
-		public func void setClearPathTime(float time)
+		func void setClearPathTime(float time)
 			pClearPathTime = DEMath.max(time, 0.0)
 		end
 		
@@ -240,14 +240,14 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		 * 
 		 * Uses sphere shape located a distance above ground.
 		 */
-		public func void setShapeSphere(float radius, float distanceAboveGround)
+		func void setShapeSphere(float radius, float distanceAboveGround)
 			var ShapeList shape = ShapeList.new()
 			shape.addSphere(Vector.new(0, distanceAboveGround, 0), radius)
 			(pCollisionTest.getCollider() cast ColliderVolume).setShape(shape)
 		end
 		
 		/** \brief Add collider required for collision test as collider to ignore. */
-		public func void addIgnoreColliderTo(Collider collider)
+		func void addIgnoreColliderTo(Collider collider)
 			collider.addIgnoreCollider(pCollisionTest.getCollider())
 		end
 		
@@ -255,7 +255,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		 * \brief Add collider to ignore to collider required for collision test.
 		 * \version 1.17
 		 */
-		public func void addIgnoreCollider(Collider collider)
+		func void addIgnoreCollider(Collider collider)
 			pCollisionTest.getCollider().addIgnoreCollider(collider)
 		end
 		
@@ -268,7 +268,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		 * collision test and vice versa. The ECBehaviorColliderAI from ECBehaviorLocomotion
 		 * is automatically made mutually ignore.
 		 */
-		public func void mutualIgnoreColliders(Collider collider)
+		func void mutualIgnoreColliders(Collider collider)
 			addIgnoreColliderTo(collider)
 			addIgnoreCollider(collider)
 		end
@@ -276,18 +276,18 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		
 		
 		/** \brief Collision test is armed. */
-		public func bool isTestArmed()
+		func bool isTestArmed()
 			return pCollisionTest.getEnabled()
 		end
 		
 		/** \brief Arm collision test with direction. */
-		public func void armTest(Vector direction)
+		func void armTest(Vector direction)
 			pCollisionTest.setDirection(direction)
 			pCollisionTest.setEnabled(true)
 		end
 		
 		/** \brief Disarm collision test. */
-		public func void disarmTest()
+		func void disarmTest()
 			pCollisionTest.setEnabled(false)
 		end
 		
@@ -298,7 +298,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		 * 
 		 * Called by think().
 		 */
-		public func void update(float elapsed)
+		func void update(float elapsed)
 			if not pEnabled
 				return
 			end
@@ -326,14 +326,14 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		
 		
 		/** \brief Clear path if required. */
-		public func void clearPath(float elapsed)
+		func void clearPath(float elapsed)
 			if pCollisionTest.getHasCollision()
 				clearPath(pCollisionTest.hitCollider(0).getOwner() cast Element)
 			end
 		end
 		
 		/** \brief Start collision test for next interval if applicable. */
-		public func void startTest(float elapsed)
+		func void startTest(float elapsed)
 			var Vector velocity = pLocomotion.getLocomotion().getLinearVelocity()
 			var float speed = velocity.getLength()
 			if speed < 0.01
@@ -373,12 +373,20 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		 * Called by ClearPathElement visitor. If element has ECBehaviorStepAsidebehavior
 		 * calls stepAsideBehaviorElement(). Does nothing if collider velocity is too small
 		 */
-		public func void clearPathBehaviorElement(BehaviorElement element)
-			var ECBehaviorStepAside.Instance stepAside = ECBehaviorStepAside.getInstanceIn(element)
-			if stepAside == null
-				return
+		func void clearPathBehaviorElement(BehaviorElement element)
+			var ECBehaviorStepAside.Instance behavior = ECBehaviorStepAside.getInstanceIn(element)
+			if behavior != null
+				clearPathBehavior(behavior)
 			end
-			
+		end
+		
+		/**
+		 * \brief Clear path behavior element.
+		 * \version 1.19
+		 * 
+		 * Calls stepAsideBehaviorElement(). Does nothing if collider velocity is too small
+		 */
+		func void clearPathBehavior(ECBehaviorStepAside.Instance behavior)
 			var Vector velocity = pLocomotion.getLocomotion().getLinearVelocity()
 			var float speed = velocity.getLength()
 			if speed < 0.1
@@ -386,21 +394,21 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			end
 			
 			var BehaviorElement owner = getElement()
-			stepAside.stepAsideBehaviorElement(owner, owner.getPosition(), \
+			behavior.stepAsideBehaviorElement(owner, owner.getPosition(),\
 				DVector.new(velocity).normalize(), speed)
 		end
 		
 		
 		
 		/** \brief Think about what to do for the next frame update. */
-		public func void think(float elapsed)
+		func void think(float elapsed)
 			update(elapsed)
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
@@ -416,7 +424,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(1)
@@ -431,20 +439,20 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorLocomotion pLocomotion
-	private var ECComposeCollisionFilter pCollisionFilter
-	private var ECPBoolean pEnabled
-	private var ECPFloat pCheckInterval
-	private var ECPFloat pClearPathTime
+	var ECBehaviorLocomotion pLocomotion
+	var ECComposeCollisionFilter pCollisionFilter
+	var ECPBoolean pEnabled
+	var ECPFloat pCheckInterval
+	var ECPFloat pClearPathTime
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion) \
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion) \
 	this(eclass, locomotion, "clearPath.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, String prefix) super(eclass)
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, String prefix) super(eclass)
 		if locomotion == null
 			throw ENullPointer.new("locomotion")
 		end
@@ -476,7 +484,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pLocomotion = null
 		super.dispose()
 	end
@@ -484,34 +492,34 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	
 	
 	/** \brief Locomotion behavior. */
-	public func ECBehaviorLocomotion getLocomotion()
+	func ECBehaviorLocomotion getLocomotion()
 		return pLocomotion
 	end
 	
 	/** \brief Collision filter. */
-	public func ECComposeCollisionFilter getCollisionFilter()
+	func ECComposeCollisionFilter getCollisionFilter()
 		return pCollisionFilter
 	end
 	
 	/** \brief Behavior is initially enabled. */
-	public func ECPBoolean getEnabled()
+	func ECPBoolean getEnabled()
 		return pEnabled
 	end
 	
 	/** \brief Check interval in seconds. */
-	public func ECPFloat getCheckInterval()
+	func ECPFloat getCheckInterval()
 		return pCheckInterval
 	end
 	
 	/** \brief Clear path time in seconds indicating how far ahead the actors clear path. */
-	public func ECPFloat getClearPathTime()
+	func ECPFloat getClearPathTime()
 		return pClearPathTime
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -523,7 +531,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorClearPath.
 	 */
-	static public func ECBehaviorClearPath getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorClearPath getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorClearPath each
 			return true
 		end) cast ECBehaviorClearPath
@@ -535,7 +543,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorClearPath.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -544,7 +552,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

@@ -536,6 +536,10 @@ deObject *decObjectOrderedSet::operator[]( int index ) const{
 
 
 decObjectOrderedSet &decObjectOrderedSet::operator=( const decObjectOrderedSet &set ){
+	if( &set == this ){
+		return *this;
+	}
+	
 	deObject *object;
 	
 	RemoveAll();

@@ -82,10 +82,10 @@ gdeUOCCTextureSetScale::~gdeUOCCTextureSetScale(){
 
 void gdeUOCCTextureSetScale::Undo(){
 	pTexture->SetScale( pOldValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }
 
 void gdeUOCCTextureSetScale::Redo(){
 	pTexture->SetScale( pNewValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }

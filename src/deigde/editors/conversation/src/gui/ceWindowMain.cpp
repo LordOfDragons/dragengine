@@ -224,6 +224,11 @@ void ceWindowMain::SaveConversation( const char *filename ){
 		return;
 	}
 	
+	ceLangPack * const langpack = pConversation->GetLanguagePack();
+	if( langpack && langpack->GetChanged() ){
+		pLoadSaveSystem->SaveLangPack( *langpack );
+	}
+	
 	const decString basePath( pConversation->GetDirectoryPath() );
 	
 	pLoadSaveSystem->SaveConversation( pConversation, filename );
@@ -660,6 +665,82 @@ public:
 	}
 };
 
+
+class cActionViewAttachLangPack : public cActionBase{
+public:
+	cActionViewAttachLangPack( ceWindowMain &window ) : cActionBase( window,
+		"Attach language pack...",
+		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ),
+		"Load language pack attaching it to conversation" ){}
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ) override{
+		decString filename( conversation->GetLangPackPath() );
+		if( igdeCommonDialogs::GetFileOpen( &pWindow, "Open Language Pack",
+		*pWindow.GetEnvironment().GetFileSystemGame(),
+		pWindow.GetLoadSaveSystem().GetLangPackFPList(), filename ) ){
+			ceLangPack * const langpack = conversation->GetLanguagePack();
+			if( langpack && langpack->GetChanged() ){
+				switch( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNoCancel,
+				"Attach Language Pack", "Language pack changed. Save before attaching a new one?" ) ){
+				case igdeCommonDialogs::ebYes:
+					pWindow.GetLoadSaveSystem().SaveLangPack( *langpack );
+					break;
+					
+				case igdeCommonDialogs::ebNo:
+					break;
+					
+				case igdeCommonDialogs::ebCancel:
+				default:
+					break;
+				}
+			}
+			conversation->SetLanguagePack( nullptr );
+			
+			conversation->SetLangPackPath( filename );
+			conversation->SetLanguagePack( pWindow.GetLoadSaveSystem().LoadLangPack( filename ) );
+		}
+		return nullptr;
+	}
+};
+
+class cActionViewDetachLangPack : public cActionBase{
+public:
+	cActionViewDetachLangPack( ceWindowMain &window ) : cActionBase( window,
+		"Detach language pack...",
+		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ),
+		"Detach language pack from conversation" ){}
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ) override{
+		ceLangPack * const langpack = conversation->GetLanguagePack();
+		if( ! langpack ){
+			return nullptr;
+		}
+		
+		if( langpack->GetChanged() ){
+			switch( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNoCancel,
+			"Detach Language Pack", "Language pack changed. Save before detaching?" ) ){
+			case igdeCommonDialogs::ebYes:
+				pWindow.GetLoadSaveSystem().SaveLangPack( *langpack );
+				break;
+				
+			case igdeCommonDialogs::ebNo:
+				break;
+				
+			case igdeCommonDialogs::ebCancel:
+			default:
+				break;
+			}
+		}
+		
+		conversation->SetLanguagePack( nullptr );
+		return nullptr;
+	}
+	
+	virtual void Update( const ceConversation &conversation ) override{
+		SetEnabled( conversation.GetLanguagePack() != nullptr );
+	}
+};
+
 }
 
 
@@ -724,6 +805,8 @@ void ceWindowMain::pCreateActions(){
 	pActionViewCTGSLoad.TakeOver( new cActionViewCTGSLoad( *this ) );
 	pActionViewCTGSSave.TakeOver( new cActionViewCTGSSave( *this ) );
 	pActionViewShowRuleOfThirdsAid.TakeOver( new cActionViewShowRuleOfThirdsAid( *this ) );
+	pActionViewAttachLangPack.TakeOver( new cActionViewAttachLangPack( *this ) );
+	pActionViewDetachLangPack.TakeOver( new cActionViewDetachLangPack( *this ) );
 	
 	
 	// register for updating
@@ -746,6 +829,8 @@ void ceWindowMain::pCreateActions(){
 	AddUpdateAction( pActionViewCTGSLoad );
 	AddUpdateAction( pActionViewCTGSSave );
 	AddUpdateAction( pActionViewShowRuleOfThirdsAid );
+	AddUpdateAction( pActionViewAttachLangPack );
+	AddUpdateAction( pActionViewDetachLangPack );
 }
 
 void ceWindowMain::pCreateToolBarFile(){
@@ -832,4 +917,8 @@ void ceWindowMain::pCreateMenuView(igdeMenuCascade& menu)
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCheck( menu, pActionViewShowRuleOfThirdsAid );
+	
+	helper.MenuSeparator( menu );
+	helper.MenuCommand( menu, pActionViewAttachLangPack );
+	helper.MenuCommand( menu, pActionViewDetachLangPack );
 }

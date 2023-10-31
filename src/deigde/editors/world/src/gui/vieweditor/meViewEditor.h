@@ -205,26 +205,32 @@ public:
 	/** \brief A key on the keyboard has been released. Return true if handled. */
 	virtual bool OnKeyRelease( deInputEvent::eKeyCodes key, bool shift, bool control );
 	
-	/** \brief The left mouse button has been pressed. Return true if handled. */
+	/** \brief The left mouse button has been pressed. */
 	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
 	
-	/** \brief The left mouse button has been released. Return true if handled. */
+	/** \brief The left mouse button has been released. */
 	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
 	
-	/** \brief The right mouse button has been pressed. Return true if handled. */
+	/** \brief The right mouse button has been pressed. */
 	virtual void OnRightMouseButtonPress( int x, int y, bool shift, bool control );
 	
-	/** \brief The right mouse button has been released. Return true if handled. */
+	/** \brief The right mouse button has been released. */
 	virtual void OnRightMouseButtonRelease( int x, int y, bool shift, bool control );
 	
-	/** \brief The mouse has been moved. Return true if handled. */
+	/** \brief The mouse has been moved. */
 	virtual void OnMouseMove( int x, int y, bool shift, bool control );
 	
 	/**
 	 * \brief The mouse wheel has been used. Steps contains the number of steps
-	 *        up (positive) or down (negative). Return true if handled.
+	 *        up (positive) or down (negative)
 	 */
 	virtual void OnMouseWheel( int steps, bool shift, bool control );
+	
+	/** \brief The mouse entered view. */
+	virtual void OnMouseEnter();
+	
+	/** \brief The mouse left view. */
+	virtual void OnMousLeave();
 	/*@}*/
 };
 

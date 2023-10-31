@@ -197,7 +197,11 @@ void debpCollider::SetParentWorld( debpWorld *parentWorld ){
 			pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
 		}
 		
-		// tell all touch sensors we are leaving
+		// tell all touch sensors we are leaving. we can not delay this like we do if the
+		// collider moves because removing a collider from the world often happens right
+		// before disposing of game elements. not telling leaving immediately to the game
+		// scripts can cause difficult bugs
+		/*
 		const int tttCount = pTrackingTouchSensors.GetCount();
 		int i;
 		for( i=0; i<tttCount; i++ ){
@@ -207,6 +211,8 @@ void debpCollider::SetParentWorld( debpWorld *parentWorld ){
 				touchSensor.GetLeavingColliders().AddIfAbsent( this );
 			}
 		}
+		*/
+		pRemoveFromAllTrackingTouchSensors();
 	}
 	
 	pParentWorld = parentWorld;
@@ -867,6 +873,8 @@ void debpCollider::AllCollisionTestsRemoved(){
 //////////////////////
 
 void debpCollider::pCleanUp(){
+	pRemoveFromAllTrackingTouchSensors();
+	
 	AllCollisionTestsRemoved();
 	
 	if( pConstraints ){
@@ -879,8 +887,6 @@ void debpCollider::pCleanUp(){
 		delete [] pAttachments;
 	}
 	
-	pRemoveFromAllTrackingTouchSensors();
-	
 	if( pDebugDrawer ){
 		pDebugDrawer->FreeReference();
 	}
@@ -891,9 +897,7 @@ void debpCollider::pRemoveFromAllTrackingTouchSensors(){
 	int i;
 	
 	for( i=0; i< count; i++ ){
-		debpTouchSensor &touchSensor = *( ( debpTouchSensor* )pTrackingTouchSensors.GetAt( i ) );
-		touchSensor.GetLeavingColliders().RemoveIfPresent( this );
-		touchSensor.GetTouchingColliders().RemoveIfPresent( this );
+		( ( debpTouchSensor* )pTrackingTouchSensors.GetAt( i ) )->RemoveColliderImmediately( this );
 	}
 	
 	pTrackingTouchSensors.RemoveAll();

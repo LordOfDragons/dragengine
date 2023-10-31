@@ -53,96 +53,96 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Start moving along rail. */
-		func void startMoving( Instance instance )
+		func void startMoving(Instance instance)
 		
 		/** \brief Stop moving. */
-		func void stopMoving( Instance instance )
+		func void stopMoving(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Start moving along rail. */
-		public func void startMoving( Instance instance )
+		func void startMoving(Instance instance)
 		end
 		
 		/** \brief Stop moving. */
-		public func void stopMoving( Instance instance )
+		func void stopMoving(Instance instance)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Trigger listener to activate light. */
 		public class MoveListener extends ECBehaviorTriggered.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
-				this.pInstance.startMoving()
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+				pInstance.startMoving()
 			end
 		end
 		
 		
 		
-		private var ECBehaviorMoveOnRail pECBehavior
-		private var ECBehaviorCollider.Instance pCollider
-		private var ECComposeMoveOnRail.Mover pMover
-		private var ECBehaviorTriggered.Instance pTrigger
-		private var TSTriggerTable pTriggerTable
-		private var TSNamedTriggerTarget pTargetMoving
-		private var Array pListeners
+		var ECBehaviorMoveOnRail pECBehavior
+		var ECBehaviorCollider.Instance pCollider
+		var ECComposeMoveOnRail.Mover pMover
+		var ECBehaviorTriggered.Instance pTrigger
+		var TSTriggerTable pTriggerTable
+		var TSNamedTriggerTarget pTargetMoving
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorMoveOnRail ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pTriggerTable = ecbehavior.getTriggerTable()
-			this.pListeners = Array.new()
-			this.pTargetMoving = TSNamedTriggerTarget.new()
+		func new(ECBehaviorMoveOnRail ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pTriggerTable = ecbehavior.getTriggerTable()
+			pListeners = Array.new()
+			pTargetMoving = TSNamedTriggerTarget.new()
 			
-			this.pCollider = ecbehavior.getCollider().instance( element )
+			pCollider = ecbehavior.getCollider().instance(element)
 			
-			this.setRequiresEnterFrame( true )
+			setRequiresEnterFrame(true)
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
-			this.pMover = null
-			this.pTrigger = null
-			this.pTargetMoving = null
-			this.pListeners = null
-			this.pCollider = null
+		func void dispose()
+			pMover = null
+			pTrigger = null
+			pTargetMoving = null
+			pListeners = null
+			pCollider = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pMover = this.createMover( stub )
+		func void init(StubElement stub)
+			pMover = createMover(stub)
 			
-			if this.pTriggerTable != null
-				this.pTrigger = this.getTriggerBehavior()
-				this.pTrigger.addListener( MoveListener.new( this ) )
+			if pTriggerTable != null
+				pTrigger = getTriggerBehavior()
+				pTrigger.addListener(MoveListener.new(this))
 				
-				this.pTargetMoving.setName( this.pECBehavior.getTargetMoving().getValue( stub ) )
+				pTargetMoving.setName(pECBehavior.getTargetMoving().getValue(stub))
 			end
 			
-			this.pECBehavior.createListeners( this )
+			pECBehavior.createListeners(this)
 		end
 		
 		/**
@@ -150,278 +150,284 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 		 * 
 		 * Default implementation uses ECComposeMoveOnRail.createMover().
 		 */
-		protected func ECComposeMoveOnRail.Mover createMover( StubElement stub )
-			return this.pECBehavior.getMoveOnRail().createMover( this.pCollider.getCollider(), stub )
+		protected func ECComposeMoveOnRail.Mover createMover(StubElement stub)
+			return pECBehavior.getMoveOnRail().createMover(pCollider.getCollider(), stub)
 		end
 		
 		
 		
 		/** \brief Collider behavior or \em null. */
-		public func ECBehaviorCollider.Instance getCollider()
-			return this.pCollider
+		func ECBehaviorCollider.Instance getCollider()
+			return pCollider
 		end
 		
 		/** \brief Get trigger behavior. */
 		protected func ECBehaviorTriggered.Instance getTriggerBehavior()
-			return this.pECBehavior.getTrigger().instance( this.getElement() )
+			return pECBehavior.getTrigger().instance(getElement())
 		end
 		
 		
 		
 		/** \brief Mover. */
-		public func ECComposeMoveOnRail.Mover getMover()
-			return this.pMover
+		func ECComposeMoveOnRail.Mover getMover()
+			return pMover
 		end
 		
 		/** \brief Start moving along rail if at rest. */
-		public func void startMoving()
-			var bool moving = this.pMover.isMoving()
+		func void startMoving()
+			var bool moving = pMover.isMoving()
 			
-			this.pMover.startMoving()
+			pMover.startMoving()
 			
-			if this.pMover.isMoving() and not moving
-				this.setRequiresThink( true )
-				this.pTargetMoving.fire()
-				this.pListeners.forEach( block Listener each
-					each.startMoving( this )
-				end )
+			if pMover.isMoving() and not moving
+				setRequiresThink(true)
+				pTargetMoving.fire()
+				pListeners.forEach(block Listener each
+					each.startMoving(this)
+				end)
 			end
 		end
 		
 		
 		
 		/** \brief Trigger table to link trigger expression to or \em null if not set. */
-		public func TSTriggerTable getTriggerTable()
-			return this.pTriggerTable
+		func TSTriggerTable getTriggerTable()
+			return pTriggerTable
 		end
 		
 		/** \brief Trigger table to link trigger expression to or \em null if not set. */
-		protected func void setTriggerTable( TSTriggerTable triggerTable )
-			this.pTriggerTable = triggerTable
+		protected func void setTriggerTable(TSTriggerTable triggerTable)
+			pTriggerTable = triggerTable
 		end
 		
 		/** \brief Trigger activate or \em null. */
-		public func ECBehaviorTriggered.Instance getTrigger()
-			return this.pTrigger
+		func ECBehaviorTriggered.Instance getTrigger()
+			return pTrigger
 		end
 		
 		/** \brief Trigger target to reflect moving state. */
-		public func TSNamedTriggerTarget getTargetMoving()
-			return this.pTargetMoving
+		func TSNamedTriggerTarget getTargetMoving()
+			return pTargetMoving
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			if this.pTriggerTable != null
-				this.pTargetMoving.acquireTarget( this.pTriggerTable )
+		func void addToGameWorld()
+			if pTriggerTable == null
+				return
+			end
+			
+			pTargetMoving.acquireTarget(pTriggerTable)
+			
+			if pMover.isMoving()
+				pTargetMoving.fire()
 			end
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			this.pTargetMoving.dropTarget()
-			this.pMover.setRail( null )
+		func void removeFromGameWorld()
+			pTargetMoving.dropTarget()
+			pMover.setRail(null)
 		end
 		
 		/** \brief Frame update started. */
-		public func void enterFrame()
-			this.pMover.attachRail( this.getElement().getGameWorld().getRailList() )
+		func void enterFrame()
+			pMover.attachRail(getElement().getGameWorld().getRailList())
 			
-			if this.pTrigger != null and this.pTrigger.getState()
-				this.startMoving()
+			if pTrigger != null and pTrigger.getState()
+				startMoving()
 			end
 		end
 		
 		/** \brief Think about what to do for the next frame update. */
-		public func void think( float elapsed )
-			var bool moving = this.pMover.isMoving()
+		func void think(float elapsed)
+			var bool moving = pMover.isMoving()
 			
-			this.pMover.update( elapsed )
-			this.setRequiresThink( this.pMover.isMoving() )
+			pMover.update(elapsed)
+			setRequiresThink(pMover.isMoving())
 			
-			if moving and not this.pMover.isMoving()
-				this.pTargetMoving.reset()
-				this.pListeners.forEach( block Listener each
-					each.stopMoving( this )
-				end )
+			if moving and not pMover.isMoving()
+				pTargetMoving.reset()
+				pListeners.forEach(block Listener each
+					each.stopMoving(this)
+				end)
 			end
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var DVector position = DVector.readFromFile( reader )
-				var Quaternion orientation = Quaternion.readFromFile( reader )
-				this.pCollider.getCollider().setGeometry( position, orientation )
+				var DVector position = DVector.readFromFile(reader)
+				var Quaternion orientation = Quaternion.readFromFile(reader)
+				pCollider.getCollider().setGeometry(position, orientation)
 				
-				this.pMover.readFromFile( env, reader )
-				this.setRequiresThink( this.pMover.isMoving() )
+				pMover.readFromFile(env, reader)
+				setRequiresThink(pMover.isMoving())
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			var Collider collider = this.pCollider.getCollider()
-			collider.getPosition().writeToFile( writer )
-			collider.getOrientation().writeToFile( writer )
+			var Collider collider = pCollider.getCollider()
+			collider.getPosition().writeToFile(writer)
+			collider.getOrientation().writeToFile(writer)
 			
-			this.pMover.writeToFile( env, writer )
+			pMover.writeToFile(env, writer)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorCollider pCollider
-	private var ECComposeMoveOnRail pMoveOnRail
-	private var ECBehaviorTriggered pTrigger
-	private var ECPString pTargetMoving
-	private var TSTriggerTable pTriggerTable
-	private var Array pListenerFactories
+	var ECBehaviorCollider pCollider
+	var ECComposeMoveOnRail pMoveOnRail
+	var ECBehaviorTriggered pTrigger
+	var ECPString pTargetMoving
+	var TSTriggerTable pTriggerTable
+	var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
-	this( eclass, collider, null )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	this(eclass, collider, null)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	TSTriggerTable triggerTable ) this( eclass, collider, triggerTable, "moveOnRail" )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable) this(eclass, collider, triggerTable, "moveOnRail")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	TSTriggerTable triggerTable, String subID ) \
-	this( eclass, collider, triggerTable, subID, subID + "." )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable, String subID) \
+	this(eclass, collider, triggerTable, subID, subID + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	TSTriggerTable triggerTable, String subID, String prefix ) super( eclass )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable, String subID, String prefix) super(eclass)
 		if collider == null
-			throw ENullPointer.new( "collider" )
+			throw ENullPointer.new("collider")
 		end
-		if getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pCollider = collider
-		this.pTriggerTable = triggerTable
-		this.pListenerFactories = Array.new()
+		pCollider = collider
+		pTriggerTable = triggerTable
+		pListenerFactories = Array.new()
 		
-		this.pMoveOnRail = ECComposeMoveOnRail.new( eclass, prefix )
+		pMoveOnRail = ECComposeMoveOnRail.new(eclass, prefix)
 		
-		this.pTrigger = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
+		pTrigger = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
 		
-		this.pTargetMoving = ECPString.new( prefix + "targetMoving", "" )
-		eclass.addProperty( this.pTargetMoving )
+		pTargetMoving = ECPString.new(prefix + "targetMoving", "")
+		eclass.addProperty(pTargetMoving)
 		
 		// ensure collider is kinematic
 		var ECComposeCollider ccollider = collider.getCollider()
-		ccollider.getPhysicsType().setEnumeration( CollisionResponse.kinematic )
-		ccollider.getLocalGravity().setVector( Vector.new() )
+		ccollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		ccollider.getLocalGravity().setVector(Vector.new())
 		
-		ccollider.collisionCategoryReplace( LayerMask.newWith( BaseGameApp.CollisionFilterBit.dynamic ) )
+		ccollider.collisionCategoryReplace(LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic))
 		
 		// ensure component is dynamic if present
 		if collider.getComponent() != null
 			var ECComposeComponent ccomponent = collider.getComponent().getComponent()
-			ccomponent.getHintMovement().setEnumeration( ComponentHintMovement.dynamic )
-			ccomponent.getRenderEnvMap().setValue( false )
+			ccomponent.getHintMovement().setEnumeration(ComponentHintMovement.dynamic)
+			ccomponent.getRenderEnvMap().setValue(false)
 		end
 		
 		// add behavior to class
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pCollider = null
-		this.pListenerFactories = null
+	func void dispose()
+		pCollider = null
+		pListenerFactories = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Collider behavior. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
 	/** \brief Composeable move on rail for element class. */
-	public func ECComposeMoveOnRail getMoveOnRail()
-		return this.pMoveOnRail
+	func ECComposeMoveOnRail getMoveOnRail()
+		return pMoveOnRail
 	end
 	
 	/** \brief Trigger move. */
-	public func ECBehaviorTriggered getTrigger()
-		return this.pTrigger
+	func ECBehaviorTriggered getTrigger()
+		return pTrigger
 	end
 	
 	/** \brief Target move. */
-	public func ECPString getTargetMoving()
-		return this.pTargetMoving
+	func ECPString getTargetMoving()
+		return pTargetMoving
 	end
 	
 	/** \brief Trigger table or \em null if not used. */
-	public func TSTriggerTable getTriggerTable()
-		return this.pTriggerTable
+	func TSTriggerTable getTriggerTable()
+		return pTriggerTable
 	end
 	
 	/** \brief Set trigger table. */
-	protected func void setTriggerTable( TSTriggerTable triggerTable )
-		this.pTriggerTable = triggerTable
+	protected func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -432,10 +438,10 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorMoveOnRail getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorMoveOnRail each
+	static func ECBehaviorMoveOnRail getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorMoveOnRail each
 			return true
-		end ) cast ECBehaviorMoveOnRail
+		end) cast ECBehaviorMoveOnRail
 	end
 	
 	/**
@@ -444,16 +450,16 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorMoveOnRail.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create element class behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

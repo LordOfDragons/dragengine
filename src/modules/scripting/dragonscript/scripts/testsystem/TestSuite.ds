@@ -51,26 +51,26 @@ class TestSuite
 	
 	
 	/** \brief Identifier. */
-	private var String pID
+	var String pID
 	
 	/** \brief Display  name. */
-	private var UnicodeString pName
+	var UnicodeString pName
 	
 	/** \brief Test cases as Array of TestCase. */
-	private var Array pTestCases
+	var Array pTestCases
 	
 	/** \brief Test state. */
-	private var State pState
+	var State pState
 	
 	/** \brief Exception if test case failed. */
-	private var Exception pException
+	var Exception pException
 	
 	
 	
 	/**
 	 * \brief Create test suite.
 	 */
-	public func new( String id, UnicodeString name )
+	func new( String id, UnicodeString name )
 		if id == null
 			throw ENullPointer.new( "id" )
 		end
@@ -90,22 +90,22 @@ class TestSuite
 	
 	
 	/** \brief Identifier. */
-	public func String getID()
+	func String getID()
 		return this.pID
 	end
 	
 	/** \brief Display name. */
-	public func UnicodeString getName()
+	func UnicodeString getName()
 		return this.pName
 	end
 	
 	/** \brief Test state. */
-	public func State getState()
+	func State getState()
 		return this.pState
 	end
 	
 	/** \brief Set test state. */
-	public func void setState( State state )
+	func void setState( State state )
 		if state == null
 			throw ENullPointer.new( "state" )
 		end
@@ -114,41 +114,41 @@ class TestSuite
 	end
 	
 	/** \brief Exception if test suite failed. */
-	public func Exception getException()
+	func Exception getException()
 		return this.pException
 	end
 	
 	/** \brief Set exception if test suite failed. */
-	public func void setException( Exception exception )
+	func void setException( Exception exception )
 		this.pException = exception
 	end
 	
 	
 	
 	/** \brief Count of test cases. */
-	public func int getTestCaseCount()
+	func int getTestCaseCount()
 		return this.pTestCases.getCount()
 	end
 	
 	/** \brief Get test case at index. */
-	public func TestCase getTestCaseAt( int index )
+	func TestCase getTestCaseAt( int index )
 		return this.pTestCases.getAt( index ) cast TestCase
 	end
 	
 	/** \brief Get test case with identifier or null if not found. */
-	public func TestCase getTestCaseWithID( String id )
+	func TestCase getTestCaseWithID( String id )
 		return this.pTestCases.find( block TestCase each
 			return each.getID().equals( id )
 		end ) cast TestCase
 	end
 	
 	/** \brief Index of test or -1 if absent. */
-	public func int indexOfTestCase( TestCase testCase )
+	func int indexOfTestCase( TestCase testCase )
 		return this.pTestCases.indexOf( testCase )
 	end
 	
 	/** \brief Add test case. */
-	public func void addTestCase( TestCase testCase )
+	func void addTestCase( TestCase testCase )
 		if testCase == null
 			throw ENullPointer.new( "testCase" )
 		end
@@ -160,13 +160,13 @@ class TestSuite
 	end
 	
 	/** brief Remove test case. */
-	public func void removeTestCase( TestCase testCase )
+	func void removeTestCase( TestCase testCase )
 		this.pTestCases.remove( testCase )
 		testCase.setTestSuite( null )
 	end
 	
 	/** \brief Remove all test cases. */
-	public func void removeAllTestCases()
+	func void removeAllTestCases()
 		this.pTestCases.forEach( block TestCase each
 			each.setTestSuite( null )
 		end )
@@ -178,7 +178,7 @@ class TestSuite
 	 * 
 	 * Block receives as single parameter TestCase instance.
 	 */
-	public func void forEachTestCase( Block ablock )
+	func void forEachTestCase( Block ablock )
 		this.pTestCases.forEach( ablock )
 	end
 	
@@ -190,7 +190,7 @@ class TestSuite
 	 * 
 	 * \returns Found TestCase or null.
 	 */
-	public func TestCase findTestCase( Block ablock )
+	func TestCase findTestCase( Block ablock )
 		return this.pTestCases.find( ablock ) cast TestCase
 	end
 	
@@ -198,7 +198,7 @@ class TestSuite
 	 * \brief Collect failed test cases.
 	 * \returns Array of TestCase.
 	 */
-	public func Array failedTestCases()
+	func Array failedTestCases()
 		return this.pTestCases.collect( block TestCase each
 			return each.getState() == TestCase.State.failed
 		end )
@@ -206,10 +206,10 @@ class TestSuite
 	
 	
 	/** \brief Initialize test suite. */
-	public func void init()
+	func void init()
 	end
 	
 	/** \brief Tear down after test suite finished. */
-	public func void tearDown()
+	func void tearDown()
 	end
 end

@@ -38,134 +38,154 @@ pin Dragengine.Utils
 class ECBehaviorParameterTable extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorParameterTable pECBehavior
-		private var ParameterTable pParameterTable
+		var ECBehaviorParameterTable pECBehavior
+		var ParameterTable pParameterTable
 		
 		
 		
 		/** \brief Create instance. */
-		public func new( ECBehaviorParameterTable ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorParameterTable ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		/** \brief Dispose of instance. */
-		public func void dispose()
-			this.pParameterTable = null
+		func void dispose()
+			pParameterTable = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pParameterTable = ParameterTable.new()
+		func void init(StubElement stub)
+			pParameterTable = ParameterTable.new()
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorParameterTable getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorParameterTable getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Parameter table. */
-		public func ParameterTable getParameterTable()
-			return this.pParameterTable
+		func ParameterTable getParameterTable()
+			return pParameterTable
 		end
 		
 		
 		
 		/** \brief Get boolean parameter value or default value if parameter is not set. */
-		public func bool getParameterValue( String parameter, bool defaultValue )
-			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		func bool getParameterValue(String parameter, bool defaultValue)
+			return pParameterTable.getAt(parameter).getValue(defaultValue)
 		end
 		
 		/** \brief Get integer parameter value or default value if parameter is not set. */
-		public func int getParameterValue( String parameter, int defaultValue )
-			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		func int getParameterValue(String parameter, int defaultValue)
+			return pParameterTable.getAt(parameter).getValue(defaultValue)
 		end
 		
 		/** \brief Get floating point parameter value or default value if parameter is not set. */
-		public func float getParameterValue( String parameter, float defaultValue )
-			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		func float getParameterValue(String parameter, float defaultValue)
+			return pParameterTable.getAt(parameter).getValue(defaultValue)
 		end
 		
 		/** \brief Get string parameter value or default value if parameter is not set. */
-		public func String getParameterValue( String parameter, String defaultValue )
-			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		func String getParameterValue(String parameter, String defaultValue)
+			return pParameterTable.getAt(parameter).getValue(defaultValue)
 		end
 		
 		/** \brief Get persistable parameter value or default value if parameter is not set. */
-		public func Persistable getParameterValue( String parameter, Persistable defaultValue )
-			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		func Persistable getParameterValue(String parameter, Persistable defaultValue)
+			return pParameterTable.getAt(parameter).getValue(defaultValue)
 		end
 		
 		
 	
 		/** \brief Set boolean parameter value. */
-		public func void setParameterValue( String parameter, bool value )
-			this.pParameterTable.getAt( parameter ).setValue( value )
+		func void setParameterValue(String parameter, bool value)
+			pParameterTable.getAt(parameter).setValue(value)
 		end
 		
 		/** \brief Set integer parameter value. */
-		public func void setParameterValue( String parameter, int value )
-			this.pParameterTable.getAt( parameter ).setValue( value )
+		func void setParameterValue(String parameter, int value)
+			pParameterTable.getAt(parameter).setValue(value)
 		end
 		
 		/** \brief Set floating point parameter value. */
-		public func void setParameterValue( String parameter, float value )
-			this.pParameterTable.getAt( parameter ).setValue( value )
+		func void setParameterValue(String parameter, float value)
+			pParameterTable.getAt(parameter).setValue(value)
 		end
 		
 		/** \brief Set string parameter value. */
-		public func void setParameterValue( String parameter, String value )
-			this.pParameterTable.getAt( parameter ).setValue( value )
+		func void setParameterValue(String parameter, String value)
+			pParameterTable.getAt(parameter).setValue(value)
 		end
 		
 		/** \brief Set persistable parameter value. */
-		public func void setParameterValue( String parameter, Persistable value )
-			this.pParameterTable.getAt( parameter ).setValue( value )
+		func void setParameterValue(String parameter, Persistable value)
+			pParameterTable.getAt(parameter).setValue(value)
 		end
 		
 		
 		
 		/** \brief Clear parameter value setting it to \em null. */
-		public func void clearParameterValue( String parameter )
-			this.pParameterTable.getAt( parameter ).clearValue()
+		func void clearParameterValue(String parameter)
+			pParameterTable.getAt(parameter).clearValue()
 		end
 		
 		
 		
 		/** \brief Parameter value is \em null. */
-		public func bool isParameterNull( String parameter )
-			return this.pParameterTable.getAt( parameter ).isNull()
+		func bool isParameterNull(String parameter)
+			return pParameterTable.getAt(parameter).isNull()
 		end
 		
 		/** \brief Parameter value is not \em null. */
-		public func bool isParameterNotNull( String parameter )
-			return this.pParameterTable.getAt( parameter ).isNotNull()
+		func bool isParameterNotNull(String parameter)
+			return pParameterTable.getAt(parameter).isNotNull()
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte()
+			case 0
+			case 1
+				pParameterTable.readFromFile(env, reader)
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write element to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(1)
+			pParameterTable.writeToFile(env, writer)
 		end
 	end
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) this( eclass, "parameterTable." )
+	func new(BehaviorElementClass eclass) this(eclass, "parameterTable.")
 	end
 	
-	public func new( BehaviorElementClass eclass, String prefix ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	func new(BehaviorElementClass eclass, String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -176,10 +196,10 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorParameterTable.
 	 */
-	static public func ECBehaviorParameterTable getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorParameterTable each
+	static func ECBehaviorParameterTable getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorParameterTable each
 			return true
-		end ) cast ECBehaviorParameterTable
+		end) cast ECBehaviorParameterTable
 	end
 	
 	/**
@@ -188,16 +208,16 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorParameterTable.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

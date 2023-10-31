@@ -30,55 +30,54 @@ pin Dragengine.Scenery
  * \brief Mouse pointer using image.
  */
 class ImageMousePointer extends DefaultMousePointer
-	/** \brief Image. */
-	private var Image pImage
+	var Image pImage
 	
 	
 	
 	/** \brief Create mouse pointer. */
-	public func new()
+	func new()
 	end
 	
 	
 	
 	/** \brief Image or \em null if not set. */
-	public func Image getImage()
-		return this.pImage
+	func Image getImage()
+		return pImage
 	end
 	
 	/** \brief Set image. */
-	public func void setImage( Image image )
-		if image == this.pImage
+	func void setImage(Image image)
+		if image == pImage
 			return
 		end
 		
-		this.pImage = image
+		pImage = image
 		
 		if image != null
-			this.setSize( image.getSize() )
+			setSize(image.getSize())
 			
 		else
-			this.setSize( Point.new() )
+			setSize(Point.new())
 		end
 		
-		this.updateCanvas()
+		updateCanvas()
 	end
 	
 	
 	
 	/** \brief Update canvas. */
-	public func void updateCanvas()
-		var CanvasView canvasView = this.getCanvasView()
+	func void updateCanvas()
+		var CanvasView canvasView = getCanvasView()
 		
 		canvasView.removeAllCanvas()
 		
-		if this.pImage == null
+		if pImage == null
 			return
 		end
 		
 		var CanvasImage canvasImage = CanvasImage.new()
-		canvasImage.setImage( this.pImage )
-		canvasImage.setSize( this.pImage.getSize() )
-		canvasView.addCanvas( canvasImage )
+		canvasImage.setImage(pImage)
+		canvasImage.setSize(pImage.getSize())
+		canvasView.addCanvas(canvasImage)
 	end
 end

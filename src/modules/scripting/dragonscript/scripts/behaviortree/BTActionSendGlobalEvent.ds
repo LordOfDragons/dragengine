@@ -33,94 +33,87 @@ pin Dragengine.Utils
  * This action always returns BTResult.success.
  */
 class BTActionSendGlobalEvent implements BTAction
-	/** \brief Global event instance to send event to. */
-	private var GlobalEvents pGlobalEvents
-	
-	/** \brief Event to send. */
-	private var String pEvent
-	
-	/** \brief Optional source of event. */
-	private var Object pSource
-	
-	/** \brief Optional parameter to send with event. */
-	private var Object pData
+	var GlobalEvents pGlobalEvents
+	var String pEvent
+	var Object pSource
+	var Object pData
 	
 	
 	
 	/** \brief Create action using BaseGameApp global events. */
-	public func new( String event ) this( BaseGameApp.getApp().getGlobalEvents(), event )
+	func new(String event) this(BaseGameApp.getApp().getGlobalEvents(), event)
 	end
 	
 	/** \brief Create action using BaseGameApp global events. */
-	public func new( String event, Object source, Object data ) this( \
-	BaseGameApp.getApp().getGlobalEvents(), event, source, data )
+	func new(String event, Object source, Object data) this(\
+	BaseGameApp.getApp().getGlobalEvents(), event, source, data)
 	end
 	
 	/** \brief Create action. */
-	public func new( GlobalEvents globalEvents, String event ) this( globalEvents, event, null, null )
+	func new(GlobalEvents globalEvents, String event) this(globalEvents, event, null, null)
 	end
 	
 	/** \brief Create action. */
-	public func new( GlobalEvents globalEvents, String event, Object source, Object data )
+	func new(GlobalEvents globalEvents, String event, Object source, Object data)
 		if globalEvents == null
-			throw ENullPointer.new( "globalEvents" )
+			throw ENullPointer.new("globalEvents")
 		end
 		if event == null
-			throw ENullPointer.new( "event" )
+			throw ENullPointer.new("event")
 		end
 		
-		this.pGlobalEvents = globalEvents
-		this.pEvent = event
-		this.pSource = source
-		this.pData = data
+		pGlobalEvents = globalEvents
+		pEvent = event
+		pSource = source
+		pData = data
 	end
 	
 	
 	
 	/** \brief Global event instance to send event to. */
-	public func GlobalEvents getGlobalEvents()
-		return this.pGlobalEvents
+	func GlobalEvents getGlobalEvents()
+		return pGlobalEvents
 	end
 	
 	/** \brief Set global event instance to send event to. */
-	public func void setGlobalEvents( GlobalEvents globalEvents )
+	func void setGlobalEvents(GlobalEvents globalEvents)
 		if globalEvents == null
 			throw ENullPointer.new()
 		end
-		this.pGlobalEvents = globalEvents
+		pGlobalEvents = globalEvents
 	end
 	
 	/** \brief Event to send. */
-	public func String getEvent()
-		return this.pEvent
+	func String getEvent()
+		return pEvent
 	end
 	
 	/** \brief Set event to send. */
-	public func void setEvent( String event )
+	func void setEvent(String event)
 		if event == null
 			throw ENullPointer.new()
 		end
-		this.pEvent = event
+		pEvent = event
 	end
 	
 	/** \brief Optional source of event. */
-	public func Object getSource()
-		return this.pSource
+	func Object getSource()
+		return pSource
 	end
 	
 	/** \brief Set optional source of event. */
-	public func void setSource( Object source )
-		this.pSource = source
+	func void setSource(Object source)
+		pSource = source
 	end
 	
 	/** \brief Optional parameter to send with event. */
-	public func Object getData()
-		return this.pData
+	func Object getData()
+		return pData
 	end
 	
 	/** \brief Set optional parameter to send with event. */
-	public func void setData( Object data )
-		this.pData = data
+	func void setData(Object data)
+		pData = data
 	end
 	
 	
@@ -130,8 +123,8 @@ class BTActionSendGlobalEvent implements BTAction
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func BTResult runAction( BTContext context, Dictionary parameters )
-		this.pGlobalEvents.sendEvent( this.pEvent, this.pSource, this.pData )
+	func BTResult runAction(BTContext context, Dictionary parameters)
+		pGlobalEvents.sendEvent(pEvent, pSource, pData)
 		return BTResult.success
 	end
 end

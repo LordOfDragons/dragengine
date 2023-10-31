@@ -56,10 +56,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIAreaTracker::deoglGIAreaTracker() :
+deoglGIAreaTracker::deoglGIAreaTracker( int giimportance ) :
 pAllLeaving( false ),
 pWorld( NULL ),
 pUpdateThreshold( 1.0 ),
+pGIImportance( giimportance ),
 pValid( false ){
 }
 
@@ -104,6 +105,15 @@ void deoglGIAreaTracker::SetLayerMask( const decLayerMask &layerMask ){
 
 void deoglGIAreaTracker::SetUpdateThreshold( double threshold ){
 	pUpdateThreshold = threshold;
+}
+
+void deoglGIAreaTracker::SetGIImportance( int importance ){
+	if( importance == pGIImportance ){
+		return;
+	}
+	
+	pGIImportance = importance;
+	pValid = false;
 }
 
 void deoglGIAreaTracker::SetPosition( const decDVector &position ){
@@ -179,6 +189,9 @@ void deoglGIAreaTracker::ClearChanges(){
 }
 
 bool deoglGIAreaTracker::RejectComponent( const deoglRComponent &component ) const{
+	if( component.GetGIImportance() < pGIImportance ){
+		return true;
+	}
 	if( component.GetLayerMask().IsNotEmpty() && pLayerMask.MatchesNot( component.GetLayerMask() ) ){
 		return true;
 	}
@@ -197,6 +210,30 @@ bool deoglGIAreaTracker::RejectComponent( const deoglRComponent &component ) con
 bool deoglGIAreaTracker::ComponentTouches( const deoglRComponent &component ) const{
 	return pValid && component.GetMaximumExtend() > pBox.minExtend
 		&& component.GetMinimumExtend() < pBox.maxExtend;
+}
+
+
+int deoglGIAreaTracker::GIImportanceFromGIQuality( deoglConfiguration::eGIQuality quality ){
+	switch( quality ){
+	case deoglConfiguration::egiqVeryHigh:
+		return 1;
+		
+	case deoglConfiguration::egiqHigh:
+		return 2;
+		
+	case deoglConfiguration::egiqMedium:
+		return 3;
+		
+	case deoglConfiguration::egiqLow:
+		return 4;
+		
+	case deoglConfiguration::egiqVeryLow:
+		return 5;
+		
+	case deoglConfiguration::egiqOff:
+	default:
+		return 6;
+	}
 }
 
 

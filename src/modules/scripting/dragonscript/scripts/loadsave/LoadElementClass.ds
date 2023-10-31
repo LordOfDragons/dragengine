@@ -155,8 +155,12 @@ class LoadElementClass extends BaseXmlLoader
 		var String propName = tag.getAttributeNamed("name")
 		
 		if not eclass.hasPropertyNamed(propName)
-			printOnConsole(tag, "The class " + eclass.getClassname() + "(" + baseClassName \
-				+ ") does not have a property '" + propName + "'.")
+			if propName.findString("._", 1) != -1
+				return // IGDE only property name. do not report it missing
+			end
+			
+			printOnConsole(tag, "The class {}({}) does not have a property '{}'.".format(\
+				Array.newWith(eclass.getClassname(), baseClassName, propName)))
 			return
 		end
 		
@@ -183,6 +187,9 @@ class LoadElementClass extends BaseXmlLoader
 			
 		elif tagName.equals("point")
 			propValue = readPoint(tag)
+			
+		elif tagName.equals("point3")
+			propValue = readPoint3(tag)
 			
 		elif tagName.equals("borderSize")
 			propValue = readBorderSize(tag)
@@ -275,6 +282,12 @@ class LoadElementClass extends BaseXmlLoader
 				elif tagName.equals("point")
 					propValue = readPoint(element)
 					
+				elif tagName.equals("point3")
+					propValue = readPoint3(element)
+					
+				elif tagName.equals("borderSize")
+					propValue = readBorderSize(element)
+					
 				elif tagName.equals("rectArea")
 					propValue = readRectArea(element)
 					
@@ -346,6 +359,12 @@ class LoadElementClass extends BaseXmlLoader
 			elif tagName.equals("point")
 				list.add(readPoint(element))
 				
+			elif tagName.equals("point3")
+				list.add(readPoint3(element))
+				
+			elif tagName.equals("borderSize")
+				list.add(readBorderSize(element))
+				
 			elif tagName.equals("rectArea")
 				list.add(readRectArea(element))
 				
@@ -400,6 +419,12 @@ class LoadElementClass extends BaseXmlLoader
 				
 			elif tagName.equals("point")
 				dict.setAt(key, readPoint(element))
+				
+			elif tagName.equals("point3")
+				dict.setAt(key, readPoint3(element))
+				
+			elif tagName.equals("borderSize")
+				dict.setAt(key, readBorderSize(element))
 				
 			elif tagName.equals("rectArea")
 				dict.setAt(key, readRectArea(element))

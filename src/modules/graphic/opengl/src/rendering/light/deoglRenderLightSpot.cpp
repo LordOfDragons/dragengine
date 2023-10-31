@@ -1586,13 +1586,14 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight ){
 		}
 	}
 	
-	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightGIAmbientRatio );
+	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbientGI );
 	if( target != -1 ){
 		if( plan.GetNoAmbientLight() ){
-			paramBlock.SetParameterDataFloat( target, 0.0f );
+			paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
 			
 		}else{
-			paramBlock.SetParameterDataFloat( target, light.GetAmbientRatio() );
+			paramBlock.SetParameterDataVec3( target,
+				lightColor * ( light.GetIntensity() * light.GetAmbientRatio() ) );
 		}
 	}
 	

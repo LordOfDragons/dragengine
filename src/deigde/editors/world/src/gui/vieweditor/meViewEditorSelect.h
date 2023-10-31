@@ -92,6 +92,9 @@ public:
 	
 	/** The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
 	virtual void OnMouseWheel( int steps, bool shift, bool control );
+	
+	/** The mouse left view. */
+	virtual void OnMousLeave();
 	/*@}*/
 	
 private:

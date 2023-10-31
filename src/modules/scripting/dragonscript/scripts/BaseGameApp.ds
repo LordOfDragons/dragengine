@@ -493,9 +493,7 @@ class BaseGameApp extends Game
 		pSkinAnnotations = createSkinAnnotations()
 		pConnectionTracker = createConnectionTracker()
 		pNetworkStateTracker = createNetworkStateTracker()
-		
-		pScreenshotCreator = ScreenshotCreator.new()
-		pScreenshotCreator.setConsole(pConsole)
+		pScreenshotCreator = createScreenshotCreator()
 		
 		pCommandManager = CommandManager.new()
 		pConsoleCommands = ConsoleCommandList.new()
@@ -1116,6 +1114,18 @@ class BaseGameApp extends Game
 	end
 	
 	/**
+	 * \brief Create screen shot creater.
+	 * \version 1.19
+	 * 
+	 * Creates instance of ScreenshotCreator and assigns console.
+	 */
+	protected func ScreenshotCreator createScreenshotCreator()
+		var ScreenshotCreator creator = ScreenshotCreator.new()
+		creator.setConsole(pConsole)
+		return creator
+	end
+	
+	/**
 	 * \brief Create element classes and add them to element class list.
 	 * 
 	 * Element classes list contains all element classes world files are allowed to be used.
@@ -1134,6 +1144,7 @@ class BaseGameApp extends Game
 	 * - BaseLightClass named "BaseLight"
 	 * - BaseForceFieldClass named "BaseForceField"
 	 * - EnvironmentMapClass named "EnvironmentMap"
+	 * - HiddenElementClass named "HiddenElement"
 	 * - IgnoreElementClass named "MapperNote" (helper IGDE class)
 	 * - IgnoreElementClass named "VirtualElement" (helper IGDE class)
 	 * - InfoConvoCoordSystem named "InfoConvoCoordSystem"
@@ -1164,6 +1175,7 @@ class BaseGameApp extends Game
 		pElementClassList.add(PhysicsElementClass.new())
 		pElementClassList.add(AnimatedElementClass.new(pLoaders, pTriggerTable))
 		pElementClassList.add(TwoStateAnimatedElementClass.new(pLoaders, pTriggerTable))
+		pElementClassList.add(HiddenElementClass.new(pLoaders, pTriggerTable))
 		pElementClassList.add(RandomElementClass.new(pElementClassList))
 		pElementClassList.add(BaseLightClass.new())
 		pElementClassList.add(BaseSpeakerClass.new())

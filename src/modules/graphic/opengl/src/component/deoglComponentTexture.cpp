@@ -90,7 +90,7 @@ void deoglComponentTexture::SyncToRender(){
 			pRTexture->SetSkin( pSkin->GetRSkin() );
 			
 		}else{
-			pRTexture->SetSkin( NULL );
+			pRTexture->SetSkin( nullptr );
 		}
 		
 		// update dynamic skin
@@ -98,7 +98,7 @@ void deoglComponentTexture::SyncToRender(){
 			pRTexture->SetDynamicSkin( pDynamicSkin->GetRDynamicSkin() );
 			
 		}else{
-			pRTexture->SetDynamicSkin( NULL );
+			pRTexture->SetDynamicSkin( nullptr );
 		}
 		
 		// other stuff
@@ -184,7 +184,7 @@ void deoglComponentTexture::DynamicSkinRenderableRequiresSync( deoglDSRenderable
 
 void deoglComponentTexture::TextureChanged( const deComponentTexture &texture ){
 	// skin
-	deoglSkin *skin = NULL;
+	deoglSkin *skin = nullptr;
 	if( texture.GetSkin() ){
 		skin = ( deoglSkin* )texture.GetSkin()->GetPeerGraphic();
 	}
@@ -196,7 +196,7 @@ void deoglComponentTexture::TextureChanged( const deComponentTexture &texture ){
 	}
 	
 	// dynamic skin
-	deoglDynamicSkin *dynamicSkin = NULL;
+	deoglDynamicSkin *dynamicSkin = nullptr;
 	if( texture.GetDynamicSkin() ){
 		dynamicSkin = ( deoglDynamicSkin* )texture.GetDynamicSkin()->GetPeerGraphic();
 	}

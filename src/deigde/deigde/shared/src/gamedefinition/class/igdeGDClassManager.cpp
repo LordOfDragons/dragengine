@@ -311,7 +311,6 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				gdClass->SetIsGhost( firstInheritClass->GetIsGhost() );
 				gdClass->SetCanInstantiate( firstInheritClass->GetCanInstantiate() );
 				gdClass->SetScaleMode( firstInheritClass->GetScaleMode() );
-				
 				gdClass->SetCategory( firstInheritClass->GetCategory() );
 				
 				/*
@@ -323,7 +322,7 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 					const igdeGDCComponent &component = *firstInheritClass->GetComponentList().GetAt( 0 );
 					bool hasComponent = false;
 					
-					for( j=0; j<=igdeGDCComponent::epLightShadowIgnore; j++ ){
+					for( j=0; j<=igdeGDCComponent::epMove; j++ ){
 						if( component.IsPropertySet( j ) ){
 							hasComponent = true;
 							break;
@@ -404,7 +403,7 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				component.SetOrientation( inheritClassComponent->GetOrientation() );
 				component.SetBoneName( inheritClassComponent->GetBoneName() );
 				
-				for( k=0; k<=igdeGDCComponent::epLightShadowIgnore; k++ ){
+				for( k=0; k<=igdeGDCComponent::epMove; k++ ){
 					component.SetPropertyName( k, inheritComponentPrefix + inheritClassComponent->GetPropertyName( k ) );
 				}
 				
@@ -423,8 +422,8 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 					component.SetRigPath( propertyValue );
 				}
 				
-				const decString &nameAnim = component.GetPropertyName( igdeGDCComponent::epAnimator );
-				if( ! nameAnim.IsEmpty() && gdClass->GetDefaultPropertyValue( nameAnim, propertyValue ) ){
+				const decString &nameAnimator = component.GetPropertyName( igdeGDCComponent::epAnimator );
+				if( ! nameAnimator.IsEmpty() && gdClass->GetDefaultPropertyValue( nameAnimator, propertyValue ) ){
 					component.SetAnimatorPath( propertyValue );
 				}
 				
@@ -456,6 +455,16 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				const decString &nameLightShadowIgnore = component.GetPropertyName( igdeGDCComponent::epLightShadowIgnore );
 				if( ! nameLightShadowIgnore.IsEmpty() && gdClass->GetDefaultPropertyValue( nameLightShadowIgnore, propertyValue ) ){
 					component.SetLightShadowIgnore( propertyValue == "1" );
+				}
+				
+				const decString &nameAnimation = component.GetPropertyName( igdeGDCComponent::epAnimation );
+				if( ! nameAnimation.IsEmpty() && gdClass->GetDefaultPropertyValue( nameAnimation, propertyValue ) ){
+					component.SetAnimationPath( propertyValue );
+				}
+				
+				const decString &nameMove = component.GetPropertyName( igdeGDCComponent::epMove );
+				if( ! nameMove.IsEmpty() && gdClass->GetDefaultPropertyValue( nameMove, propertyValue ) ){
+					component.SetMove( propertyValue );
 				}
 			}
 		}

@@ -380,13 +380,15 @@ class ECBehaviorLight extends DefaultECBehavior
 		
 		/** \brief State changed (visible, touchable). */
 		public func void stateChanged()
-			if this.getElement().getVisible()
-				if not this.pCustomLightHandling
-					this.pLight.setActivated( this.pActivated )
+			if pLight != null
+				if this.getElement().getVisible()
+					if not this.pCustomLightHandling
+						this.pLight.setActivated( this.pActivated )
+					end
+					
+				else
+					this.pLight.setActivated( false )
 				end
-				
-			else
-				this.pLight.setActivated( false )
 			end
 		end
 		

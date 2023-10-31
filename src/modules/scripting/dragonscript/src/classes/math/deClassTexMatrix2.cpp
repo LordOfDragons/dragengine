@@ -234,7 +234,7 @@ deClassTexMatrix2::nfNewSRT2::nfNewSRT2( const sInitData &init ) : dsFunction( i
 	p_AddParameter( init.clsFlt ); // translationU
 	p_AddParameter( init.clsFlt ); // translationV
 }
-void deClassTexMatrix2::nfNewCenterSRT2::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassTexMatrix2::nfNewSRT2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassTexMatrix2 &clsTexMatrix2 = *( ( deClassTexMatrix2* )GetOwnerClass() );
 	const float scalingU = rt->GetValue( 0 )->GetFloat();
 	const float scalingV = rt->GetValue( 1 )->GetFloat();
@@ -272,7 +272,7 @@ deClassTexMatrix2::nfNewCenterSRT2::nfNewCenterSRT2( const sInitData &init ) : d
 	p_AddParameter( init.clsFlt ); // translationU
 	p_AddParameter( init.clsFlt ); // translationV
 }
-void deClassTexMatrix2::nfNewSRT2::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassTexMatrix2::nfNewCenterSRT2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassTexMatrix2 &clsTexMatrix2 = *( ( deClassTexMatrix2* )GetOwnerClass() );
 	const float scalingU = rt->GetValue( 0 )->GetFloat();
 	const float scalingV = rt->GetValue( 1 )->GetFloat();
@@ -281,6 +281,18 @@ void deClassTexMatrix2::nfNewSRT2::RunFunction( dsRunTime *rt, dsValue *myself )
 	const float translationV = rt->GetValue( 4 )->GetFloat();
 	
 	clsTexMatrix2.PushTexMatrix( rt, decTexMatrix2::CreateCenterSRT( scalingU, scalingV, rotation * DEG2RAD, translationU, translationV ) );
+}
+
+// public static func TexMatrix newCenterRotation( float rotation )
+deClassTexMatrix2::nfNewCenterRotation::nfNewCenterRotation( const sInitData &init ) :
+dsFunction( init.clsTexMat, "newCenterRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat ){
+	p_AddParameter( init.clsFlt ); // rotation
+}
+void deClassTexMatrix2::nfNewCenterRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassTexMatrix2 &clsTexMatrix2 = *( ( deClassTexMatrix2* )GetOwnerClass() );
+	const float rotation = rt->GetValue( 0 )->GetFloat();
+	
+	clsTexMatrix2.PushTexMatrix( rt, decTexMatrix2::CreateCenterRotation( rotation * DEG2RAD ) );
 }
 
 // public func destructor()
@@ -687,6 +699,7 @@ void deClassTexMatrix2::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNewSRT2( init ) );
 	AddFunction( new nfNewCenterSRT( init ) );
 	AddFunction( new nfNewCenterSRT2( init ) );
+	AddFunction( new nfNewCenterRotation( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetAt( init ) );

@@ -30,36 +30,53 @@ class lpeLangPackEntry;
 
 
 /**
- * \brief Language pack listener.
+ * Language pack listener.
  */
 class lpeLangPackListener : public deObject{
+public:
+	typedef deTObjectReference<lpeLangPackListener> Ref;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new langpack listener. */
 	lpeLangPackListener();
+	
+protected:
 	/** Cleans up the listener. */
-	virtual ~lpeLangPackListener();
+	virtual ~lpeLangPackListener() override;
 	/*@}*/
 	
+	
+	
+	
+public:
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Changed or saved state changed. */
+	/** Changed or saved state changed. */
 	virtual void StateChanged( lpeLangPack *langpack );
-	/** \brief Undo changed. */
+	
+	/** Undo changed. */
 	virtual void UndoChanged( lpeLangPack *langpack );
-	/** \brief Language pack parameters changed. */
+	
+	/** Language pack parameters changed. */
 	virtual void LangPackChanged( lpeLangPack *langpack );
 	
-	/** \brief Entries have been added or removed. */
+	/** Entries have been added or removed. */
 	virtual void EntryStructureChanged ( lpeLangPack *langpack );
-	/** \brief An entry changed. */
+	
+	/** An entry changed. */
 	virtual void EntryChanged( lpeLangPack *langpack, lpeLangPackEntry *entry );
-	/** \brief An entry name changed. */
+	
+	/** An entry name changed. */
 	virtual void EntryNameChanged( lpeLangPack *langpack, lpeLangPackEntry *entry );
-	/** \brief Selection of one or mote entries changed. */
+	
+	/** Selection of one or mote entries changed. */
 	virtual void EntrySelectionChanged( lpeLangPack *langpack );
-	/** \brief Active entry changed. */
+	
+	/** Active entry changed. */
 	virtual void ActiveEntryChanged( lpeLangPack *langpack );
 	/*@}*/
 };

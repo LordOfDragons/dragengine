@@ -71,7 +71,7 @@ pInstance( instance ),
 pAnimator( animator ),
 pControllerMapping( controllerMapping ),
 pFirstLink( firstLink ),
-pCreatedRule( NULL ){
+pCreatedRule( nullptr ){
 }
 
 dearCreateRuleVisitor::~dearCreateRuleVisitor(){
@@ -83,7 +83,7 @@ dearCreateRuleVisitor::~dearCreateRuleVisitor(){
 ///////////////
 
 void dearCreateRuleVisitor::Reset(){
-	pCreatedRule = NULL;
+	pCreatedRule = nullptr;
 }
 
 bool dearCreateRuleVisitor::HasCreatedRule() const{

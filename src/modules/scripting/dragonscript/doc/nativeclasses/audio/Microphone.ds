@@ -104,6 +104,11 @@ class Microphone
 	 */
 	public func void setSpeakerGain(float gain)
 	end
+	
+	/** \brief Parent world or \em null if not added to a world. */
+	public func World getParentWorld()
+		return null
+	end
 	/*@}*/
 	
 	

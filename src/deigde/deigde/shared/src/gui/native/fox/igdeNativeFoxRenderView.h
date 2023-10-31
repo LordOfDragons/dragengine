@@ -144,6 +144,8 @@ public:
 	long onMouseMove( FXObject*, FXSelector, void* );
 	long onMouseWheel( FXObject*, FXSelector, void* );
 	long onDoubleClicked( FXObject*, FXSelector, void* );
+	long onMouseEnter( FXObject*, FXSelector, void* );
+	long onMouseLeave( FXObject*, FXSelector, void* );
 	
 	long onTimeoutRetryMap( FXObject*, FXSelector, void* );
 	/*@}*/

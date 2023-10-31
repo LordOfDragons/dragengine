@@ -27,52 +27,49 @@ namespace Dragengine.Gui.MousePointers.Factories
  * \brief Default mouse pointer factory.
  */
 public class DefaultMousePointerFactory implements MousePointerFactory
-	/** \brief Mouse pointer size. */
-	private var Point pSize
-	
-	/** \brief Canvas offset relative to mouse position. */
-	private var Point pOffset
+	var Point pSize
+	var Point pOffset
 	
 	
 	
 	/** \brief Create mosue pointer factory. */
-	public func new()
-		this.pSize = Point.new()
-		this.pOffset = Point.new()
+	func new()
+		pSize = Point.new()
+		pOffset = Point.new()
 	end
 	
 	/** \brief Create copy of mouse pointer factory. */
-	public func new( DefaultMousePointerFactory factory )
-		this.pSize = factory.pSize
-		this.pOffset = factory.pOffset
+	func new(DefaultMousePointerFactory factory)
+		pSize = factory.pSize
+		pOffset = factory.pOffset
 	end
 	
 	
 	
 	/** \brief Mouse pointer size. */
-	public func Point getSize()
-		return this.pSize
+	func Point getSize()
+		return pSize
 	end
 	
 	/** \brief Set mouse pointer size. */
-	public func void setSize( Point size )
+	func void setSize(Point size)
 		if size == null
 			throw EInvalidParam.new()
 		end
-		this.pSize = size
+		pSize = size
 	end
 	
 	/** \brief Canvas offset relative to mouse position. */
-	public func Point getOffset()
-		return this.pOffset
+	func Point getOffset()
+		return pOffset
 	end
 	
 	/** \brief Set canvas offset relative to mouse position. */
-	public func void setOffset( Point offset )
+	func void setOffset(Point offset)
 		if offset == null
 			throw EInvalidParam.new()
 		end
-		this.pOffset
+		pOffset = offset
 	end
 	
 	
@@ -84,12 +81,12 @@ public class DefaultMousePointerFactory implements MousePointerFactory
 	 * | size | Point | setSize |
 	 * | offset | Point | setOffset |
 	 */
-	public func void setParameter( String name, Object value )
-		if name.equals( "size" )
-			this.setSize( value cast Point )
+	func void setParameter(String name, Object value)
+		if name.equals("size")
+			setSize(value cast Point)
 			
-		elif name.equals( "offset" )
-			this.setOffset( value cast Point )
+		elif name.equals("offset")
+			setOffset(value cast Point)
 			
 		else
 			throw EInvalidParam.new()
@@ -97,20 +94,20 @@ public class DefaultMousePointerFactory implements MousePointerFactory
 	end
 	
 	/** \brief Create copy of factory. */
-	public func MousePointerFactory copyFactory()
-		return DefaultMousePointerFactory.new( this )
+	func MousePointerFactory copyFactory()
+		return DefaultMousePointerFactory.new(this)
 	end
 	
 	/** \brief Create mouse pointer. */
-	public func MousePointer createMousePointer()
+	func MousePointer createMousePointer()
 		var DefaultMousePointer mousePointer = DefaultMousePointer.new()
-		this.initDefaultMousePointer( mousePointer )
+		initDefaultMousePointer(mousePointer)
 		return mousePointer
 	end
 	
 	/** \brief Initialize default part of mouse pointer. */
-	protected func void initDefaultMousePointer( DefaultMousePointer mousePointer )
-		mousePointer.setSize( this.pSize )
-		mousePointer.setOffset( this.pOffset )
+	protected func void initDefaultMousePointer(DefaultMousePointer mousePointer)
+		mousePointer.setSize(pSize)
+		mousePointer.setOffset(pOffset)
 	end
 end

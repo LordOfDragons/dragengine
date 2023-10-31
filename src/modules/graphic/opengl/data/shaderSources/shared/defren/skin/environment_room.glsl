@@ -46,7 +46,7 @@ vec3 calcEnvRoomDir( in vec2 tc, in vec3 normal ){
 	// use the fractional part of the texture coordinate to allow multiple copies of rooms
 	// to be rendered if the texture coordinate exceeds the 0..1 range. the (0.5, 0.5)
 	// texture coordinate is the center of the unit cube representing the surface
-	vec3 enterPos = vec3( fract( tc ) * vec2( 2.0 ) - vec2( 1.0 ), -1.0 );
+	vec3 enterPos = vec3( fract( tc ) * vec2( 2 ) - vec2( 1 ), -1 );
 	
 	// offset the enter position to match the true cube map origin. this offset is required
 	// if the cube map origin is not located exactly at the center of the room. this is
@@ -62,17 +62,17 @@ vec3 calcEnvRoomDir( in vec2 tc, in vec3 normal ){
 	// 
 	// the first block does ray-plane intersection tests with the positive X, Y and Z axis.
 	// the second block does ray-plane intersection tests with the negative X and Y axis.
-	vec3 divider = mix( vec3( 1.0 ) / roomDir, vec3( 1000.0 ),
-		lessThan( abs( roomDir ), vec3( 0.0001 ) ) );
+	vec3 divider = mix( vec3( 1 ) / roomDir, vec3( 1000 ),
+		lessThan( abs( roomDir ), vec3( 0.001 ) ) );
 	
 	vec4 lambda;
 	
-	lambda.xyz = ( vec3( 1.0 ) - enterPos ) * divider;
-	lambda.xyz = mix( lambda.xyz, vec3( 1000.0 ), lessThan( lambda.xyz, vec3( 0.0 ) ) );
+	lambda.xyz = ( vec3( 1 ) - enterPos ) * divider;
+	lambda.xyz = mix( lambda.xyz, vec3( 1000 ), lessThan( lambda.xyz, vec3( 0 ) ) );
 	lambda.y = min( lambda.y, lambda.z );
 	
-	lambda.zw = ( vec2( -1.0 ) - enterPos.xy ) * divider.xy;
-	lambda.zw = mix( lambda.zw, vec2( 1000.0 ), lessThan( lambda.zw, vec2( 0.0 ) ) );
+	lambda.zw = ( vec2( -1 ) - enterPos.xy ) * divider.xy;
+	lambda.zw = mix( lambda.zw, vec2( 1000 ), lessThan( lambda.zw, vec2( 0 ) ) );
 	lambda.xy = min( lambda.xy, lambda.zw );
 	
 	lambda.x = min( lambda.x, lambda.y );

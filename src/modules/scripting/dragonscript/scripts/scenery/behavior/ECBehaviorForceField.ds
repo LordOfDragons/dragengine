@@ -362,13 +362,15 @@ class ECBehaviorForceField extends DefaultECBehavior
 		
 		/** \brief State changed (visible, touchable). */
 		public func void stateChanged()
-			if this.getElement().getVisible()
-				if not this.pCustomForceFieldHandling
-					this.pForceField.setEnabled( this.pEnabled )
+			if pForceField != null
+				if this.getElement().getVisible()
+					if not this.pCustomForceFieldHandling
+						this.pForceField.setEnabled( this.pEnabled )
+					end
+					
+				else
+					this.pForceField.setEnabled( false )
 				end
-				
-			else
-				this.pForceField.setEnabled( false )
 			end
 		end
 		

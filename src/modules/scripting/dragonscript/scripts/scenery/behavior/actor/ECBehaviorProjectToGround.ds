@@ -471,7 +471,9 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		
 		/** \brief State changed (visble, touchable). */
 		public func void stateChanged()
-			this.pTouchSensor.setEnabled( this.getElement().getTouchable() )
+			if pTouchSensor != null
+				this.pTouchSensor.setEnabled( this.getElement().getTouchable() )
+			end
 		end
 		
 		/** \brief Add element to game world. */

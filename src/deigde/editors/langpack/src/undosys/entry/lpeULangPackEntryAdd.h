@@ -23,20 +23,20 @@
 #ifndef _LPEULANGPACKENTRYADD_H_
 #define _LPEULANGPACKENTRYADD_H_
 
+#include "../../langpack/lpeLangPack.h"
+#include "../../langpack/entry/lpeLangPackEntry.h"
+
 #include <deigde/undo/igdeUndo.h>
-
-class lpeLangPack;
-class lpeLangPackEntry;
-
 
 
 /**
- * \brief Undo action add language pack entry.
+ * Undo action add language pack entry.
  */
 class lpeULangPackEntryAdd : public igdeUndo{
 private:
-	lpeLangPack *pLangPack;
-	lpeLangPackEntry *pEntry;
+	const lpeLangPack::Ref pLangPack;
+	const lpeLangPackEntry::Ref pEntry;
+	const lpeLangPackEntry::Ref pRefEntry;
 	
 	
 	
@@ -44,11 +44,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackEntryAdd( lpeLangPack *langpack, lpeLangPackEntry *entry );
+	lpeULangPackEntryAdd( lpeLangPack *langpack, lpeLangPackEntry *entry, lpeLangPackEntry *refEntry );
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~lpeULangPackEntryAdd();
+	virtual ~lpeULangPackEntryAdd() override;
 	/*@}*/
 	
 	
@@ -57,10 +57,10 @@ public:
 	/** \description Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	virtual void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	virtual void Redo() override;
 	/*@}*/
 };
 

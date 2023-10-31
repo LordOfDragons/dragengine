@@ -25,6 +25,7 @@
 #include "deoalATLeakTracker.h"
 #include "../configuration/deoalConfiguration.h"
 
+#include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deBarrier.h>
@@ -51,6 +52,7 @@ class deoalRayTraceResult;
 class deoalSharedBufferList;
 class deoalSoundRayInteractionList;
 class deoalEffectSlotManager;
+class deoalSharedEffectSlotManager;
 class deoalSourceManager;
 class deoalSpeakerList;
 class deoalWOVCollectElements;
@@ -95,6 +97,7 @@ private:
 	deoalExtensions *pExtensions;
 	deoalCapabilities *pCapabilities;
 	deoalEffectSlotManager *pEffectSlotManager;
+	deoalSharedEffectSlotManager *pSharedEffectSlotManager;
 	deoalSourceManager *pSourceManager;
 	deoalSharedBufferList *pSharedBufferList;
 	
@@ -109,8 +112,11 @@ private:
 	deoalAMicrophone *pDeactiveMicrophone;
 	deoalAWorld *pActiveWorld;
 	
+	decObjectSet pProcessOnceWorld;
+	
 	decTimer pTimerElapsed;
 	float pElapsed;
+	float pElapsedFull;
 	
 	// time history
 	decTimeHistory pTimeHistoryMain;
@@ -275,6 +281,9 @@ public:
 	/** Effect slot manager. */
 	inline deoalEffectSlotManager &GetEffectSlotManager() const{ return *pEffectSlotManager; }
 	
+	/** Shared effect slot manager. */
+	inline deoalSharedEffectSlotManager &GetSharedEffectSlotManager() const{ return *pSharedEffectSlotManager; }
+	
 	/** Source manager. */
 	inline deoalSourceManager &GetSourceManager() const{ return *pSourceManager; }
 	
@@ -303,6 +312,9 @@ public:
 	
 	/** Elapsed time. */
 	inline float GetElapsed() const{ return pElapsed; }
+	
+	/** Elapsed time since the last full update. */
+	inline float GetElapsedFull() const{ return pElapsedFull; }
 	
 	/** FPS Rate. */
 	inline int GetFPSRate() const{ return pFPSRate; }

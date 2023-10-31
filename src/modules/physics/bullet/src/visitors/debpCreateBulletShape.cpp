@@ -182,7 +182,7 @@ printf( "debpCreateBulletShape.VisitShapeSphere: r=%g as=(%g,%g) pos=(%g,%g,%g)\
 		
 		sphereShape = new btSphereShape( radius );
 		if( pNoMargin ){
-			sphereShape->setMargin( ( btScalar )0.0 );
+			sphereShape->setMargin( BT_ZERO );
 		}
 		sphereShape->setUserPointer( ( void* )( intptr_t )( pShapeIndex + 1 ) );
 		
@@ -206,11 +206,11 @@ printf( "debpCreateBulletShape.VisitShapeSphere: r=%g as=(%g,%g) pos=(%g,%g,%g)\
 			compoundShape = new btCompoundShape( true );
 			compoundShape->addChildShape( transform, sphereShape ); // setLocalScaling has to come before addChildShape
 			if( pNoMargin ){
-				compoundShape->setMargin( ( btScalar )0.0 );
+				compoundShape->setMargin( BT_ZERO );
 			}
 			compoundShape->setUserPointer( ( void* )( intptr_t )( pShapeIndex + 1 ) );
 			
-			compoundShape->setLocalScaling( btVector3( ( btScalar )axisScaling.x, ( btScalar )1.0, ( btScalar )axisScaling.y ) );
+			compoundShape->setLocalScaling( btVector3( ( btScalar )axisScaling.x, BT_ONE, ( btScalar )axisScaling.y ) );
 				// setLocalScaling has to come last or scaling does not propagate
 			
 			bulletShapeCompound = new debpBulletCompoundShape( compoundShape );
@@ -294,8 +294,8 @@ void debpCreateBulletShape::VisitShapeBox( decShapeBox &box ){
 	if( ( btScalar )smallestHalfExtends - margin < minSafeSize ){
 		margin = ( btScalar )smallestHalfExtends - minSafeSize;
 		
-		if( margin < ( btScalar )0.0 ){
-			margin = ( btScalar )0.0;
+		if( margin < BT_ZERO ){
+			margin = BT_ZERO;
 		}
 	}
 	
@@ -327,7 +327,7 @@ printf( "debpCreateBulletShape.VisitShapeBox: hull\n" );
 			
 			bulletShapeHull = new debpBulletShape( hullShape );
 			shapeToAdd = bulletShapeHull;
-			margin = ( btScalar )0.0;
+			margin = BT_ZERO;
 			
 		}else{
 			boxShape = new btBoxShape( btVector3( ( btScalar )halfExtends.x, ( btScalar )halfExtends.y, ( btScalar )halfExtends.z ) );
@@ -342,7 +342,7 @@ boxShape->getHalfExtentsWithoutMargin().getY(), boxShape->getHalfExtentsWithoutM
 		}
 		
 		if( pNoMargin ){
-			margin = ( btScalar )0.0;
+			margin = BT_ZERO;
 		}
 		shapeToAdd->GetShape()->setMargin( margin );
 		
@@ -392,7 +392,7 @@ void debpCreateBulletShape::VisitShapeCylinder( decShapeCylinder &cylinder ){
 	try{
 		cylinderShape = new btCylinderShape( bthe );
 		if( pNoMargin ){
-			cylinderShape->setMargin( ( btScalar )0.0 );
+			cylinderShape->setMargin( BT_ZERO );
 		}
 		cylinderShape->setUserPointer( ( void* )( intptr_t )( pShapeIndex + 1 ) );
 		
@@ -459,7 +459,7 @@ void debpCreateBulletShape::VisitShapeCapsule( decShapeCapsule &capsule ){
 	try{
 		capsuleShape = new btMultiSphereShape( ( const btVector3 * )&positions[ 0 ], ( const btScalar * )&radi[ 0 ], 2 );
 		if( pNoMargin ){
-			capsuleShape->setMargin( ( btScalar )0.0 );
+			capsuleShape->setMargin( BT_ZERO );
 		}
 		capsuleShape->setUserPointer( ( void* )( intptr_t )( pShapeIndex + 1 ) );
 		
@@ -526,7 +526,7 @@ void debpCreateBulletShape::VisitShapeHull( decShapeHull &hull ){
 		hullShape->recalcLocalAabb();
 		
 		if( pNoMargin ){
-			hullShape->setMargin( ( btScalar )0 );
+			hullShape->setMargin( BT_ZERO );
 		}
 		hullShape->setUserPointer( ( void* )( intptr_t )( pShapeIndex + 1 ) );
 		
@@ -594,7 +594,7 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 	try{
 		compoundShape = new btCompoundShape( true );
 		if( pNoMargin ){
-			compoundShape->setMargin( ( btScalar )0.0 );
+			compoundShape->setMargin( BT_ZERO );
 		}
 		compoundShape->setUserPointer( ( void* )( intptr_t )( pShapeIndex + 1 ) );
 			// setLocalScaling has to come last or scaling does not propagate.

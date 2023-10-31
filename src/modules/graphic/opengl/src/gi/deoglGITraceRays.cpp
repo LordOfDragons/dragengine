@@ -78,15 +78,19 @@ int deoglGITraceRays::ConfigRaysPerProbe( const deoglConfiguration &config ){
 	case deoglConfiguration::egiqHigh:
 	default:
 		return 128;
+		// return 192;
 		
 	case deoglConfiguration::egiqMedium:
 		return 64;
+		// return 192;
 		
 	case deoglConfiguration::egiqLow:
 		return 32;
+		// return 128;
 		
 	case deoglConfiguration::egiqVeryLow:
 		return 16;
+		// return 128;
 	}
 }
 

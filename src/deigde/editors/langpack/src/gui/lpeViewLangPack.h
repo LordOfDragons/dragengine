@@ -22,44 +22,52 @@
 #ifndef _LPEVIEWLANGPACK_H_
 #define _LPEVIEWLANGPACK_H_
 
+#include "../langpack/lpeLangPack.h"
+#include "../langpack/lpeLangPackListener.h"
+
 #include <deigde/gui/igdeIconListBoxReference.h>
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 class lpeLangPackEntry;
-class lpeViewLangPackListener;
 class lpeWindowMain;
-class lpeLangPack;
 
 
 
 /**
- * \brief Language pack view.
+ * Language pack view.
  */
 class lpeViewLangPack : public igdeContainerBorder{
 private:
 	lpeWindowMain &pWindowMain;
-	lpeViewLangPackListener *pListener;
+	lpeLangPackListener::Ref pListener;
 	
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
+	lpeLangPack::Ref pRefLangPack;
 	
 	igdeTextFieldReference pEditFilter;
 	igdeIconListBoxReference pListEntries;
 	igdeTextFieldReference pEditEntryName;
 	igdeTextAreaReference pEditEntryText;
+	igdeTextFieldReference pEditRefText;
+	
+	
+	
+public:
+	bool preventUpdate;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create view. */
+	/** Create view. */
 	lpeViewLangPack( lpeWindowMain &windowMain );
 	
 protected:
-	/** \brief Cleanup view. */
-	virtual ~lpeViewLangPack();
+	/** Cleanup view. */
+	virtual ~lpeViewLangPack() override;
 	/*@}*/
 	
 	
@@ -67,33 +75,48 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Language pack or NULL. */
-	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
+	/** Language pack or nullptr. */
+	inline const lpeLangPack::Ref &GetLangPack() const{ return pLangPack; }
 	
-	/** \brief Set language pack or NULL. */
+	/** Set language pack or nullptr. */
 	void SetLangPack( lpeLangPack *langpack );
 	
-	/** \brief Retrieves the active entry or NULL if there is none. */
+	/** Reference language pack or nullptr. */
+	inline const lpeLangPack::Ref &GetReferenceLangPack() const{ return pRefLangPack; }
+	
+	/** Set reference language pack or nullptr. */
+	void SetReferenceLangPack( lpeLangPack *langpack );
+	
+	/** Retrieves the active entry or nullptr if there is none. */
 	lpeLangPackEntry *GetActiveEntry() const;
 	
 	
 	
-	/** \brief Update list with entries. */
+	/** Update list with entries. */
 	void UpdateEntries();
 	
-	/** \brief Sorts the entry list. */
+	/** Sorts the entry list. */
 	void SortEntries();
 	
-	/** \brief Select active entry. */
+	/** Select active entry. */
 	void SelectActiveEntry();
 	
-	/** \brief Update active entry. */
+	/** Select entry with name. */
+	void SelectEntryNamed( const char *name );
+	
+	/** Select entry. */
+	void SelectEntry( lpeLangPackEntry *entry );
+	
+	/** Select next missing. */
+	void SelectNextMissingEntry();
+	
+	/** Update active entry. */
 	void UpdateActiveEntry();
 	
-	/** \brief Update entry selection. */
+	/** Update entry selection. */
 	void UpdateEntrySelection();
 	
-	/** \brief Update a specific entry. */
+	/** Update a specific entry. */
 	void UpdateEntry( lpeLangPackEntry *entry );
 	/*@}*/
 };

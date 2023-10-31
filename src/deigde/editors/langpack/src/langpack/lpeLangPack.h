@@ -33,9 +33,14 @@ class lpeLangPackListener;
 
 
 /**
- * \brief Editable language pack.
+ * Editable language pack.
  */
 class lpeLangPack : public igdeEditableEntity{
+public:
+	typedef deTObjectReference<lpeLangPack> Ref;
+	
+	
+	
 private:
 	decString pIdentifier;
 	decUnicodeString pName;
@@ -47,13 +52,16 @@ private:
 	
 	decObjectSet pListeners;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new skin. */
+	/** Creates a new skin. */
 	lpeLangPack( igdeEnvironment *environment );
-	/** \brief Cleans up the skin. */
-	virtual ~lpeLangPack();
+	
+	/** Cleans up the skin. */
+	virtual ~lpeLangPack() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -80,43 +88,43 @@ public:
 	
 	/** \name Entries */
 	/*@{*/
-	/** \brief Retrieves the entry list read-only. */
+	/** Retrieves the entry list read-only. */
 	inline const lpeLangPackEntryList &GetEntryList() const{ return pEntryList; }
-	/** \brief Retrieves the entry selection. */
+	/** Retrieves the entry selection. */
 	inline lpeLangPackEntrySelection &GetEntrySelection(){ return pEntrySelection; }
 	inline const lpeLangPackEntrySelection &GetEntrySelection() const{ return pEntrySelection; }
-	/** \brief Adds a new entry. */
+	/** Adds a new entry. */
 	void AddEntry( lpeLangPackEntry *entry );
-	/** \brief Removes a entry. */
+	/** Removes a entry. */
 	void RemoveEntry( lpeLangPackEntry *entry );
-	/** \brief Removes all entries. */
+	/** Removes all entries. */
 	void RemoveAllEntries();
 	/*@}*/
 	
 	/** \name Notifiers */
 	/*@{*/
-	/** \brief Adds a listener. */
+	/** Adds a listener. */
 	void AddListener( lpeLangPackListener *listener );
-	/** \brief Removes a listener. */
+	/** Removes a listener. */
 	void RemoveListener( lpeLangPackListener *listener );
 	
-	/** \brief Notifies all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
-	/** \brief Notifies all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged();
+	/** Notifies all listeners that the changed or saved state changed. */
+	virtual void NotifyStateChanged() override;
+	/** Notifies all listeners that the undo system changed. */
+	virtual void NotifyUndoChanged() override;
 	
-	/** \brief Notifies all that a language pack parameter changed. */
+	/** Notifies all that a language pack parameter changed. */
 	void NotifyLangPackChanged();
 	
-	/** \brief Notifies all that entries have been added or removed. */
+	/** Notifies all that entries have been added or removed. */
 	void NotifyEntryStructureChanged();
-	/** \brief Notifies all that an entry changed. */
+	/** Notifies all that an entry changed. */
 	void NotifyEntryChanged( lpeLangPackEntry *entry );
-	/** \brief Notifies all that an entry name changed. */
+	/** Notifies all that an entry name changed. */
 	void NotifyEntryNameChanged( lpeLangPackEntry *entry );
-	/** \brief Notifies all that one or more entries changed selection. */
+	/** Notifies all that one or more entries changed selection. */
 	void NotifyEntrySelectionChanged();
-	/** \brief Active entry changed. */
+	/** Active entry changed. */
 	void NotifyActiveEntryChanged();
 	/*@}*/
 };

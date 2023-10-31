@@ -116,7 +116,7 @@ private:
 	igdeIconReference pIconSettingsEngine;
 	igdeIconReference pIconSettingsTexPropList;
 	
-	static const int pStockImageCount = igdeEnvironment::esiSmallWarning + 1;
+	static const int pStockImageCount = igdeEnvironment::esiConfig + 1;
 	igdeIconReference pStockIcons[ pStockImageCount ];
 	
 	static const int pStockSkinCount = igdeEnvironment::essEditRimOutline + 1;

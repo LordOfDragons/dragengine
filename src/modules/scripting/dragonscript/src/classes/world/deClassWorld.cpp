@@ -1755,6 +1755,40 @@ void deClassWorld::nfRayHitsClosest::RunFunction( dsRunTime *rt, dsValue *myself
 
 
 
+// public func int hashCode()
+deClassWorld::nfHashCode::nfHashCode( const sInitData &init ) :
+dsFunction( init.clsWorld, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+
+void deClassWorld::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sWorldNatDat &nd = *( ( sWorldNatDat* )p_GetNativeData( myself ) );
+	
+	// hash code = memory location
+	rt->PushInt( ( int )( intptr_t )nd.world );
+}
+
+// public func bool equals( Object obj )
+deClassWorld::nfEquals::nfEquals( const sInitData &init ) :
+dsFunction( init.clsWorld, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+	p_AddParameter( init.clsObject ); // obj
+}
+void deClassWorld::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sWorldNatDat &nd = *( ( sWorldNatDat* )p_GetNativeData( myself ) );
+	deClassWorld * const clsWorld = ( deClassWorld* )GetOwnerClass();
+	dsValue * const obj = rt->GetValue( 0 );
+	
+	if( obj->GetType()->GetPrimitiveType() != DSPT_OBJECT || ! obj->GetRealObject()
+	|| obj->GetRealObject()->GetType() != clsWorld ){
+		rt->PushBool( false );
+		
+	}else{
+		const sWorldNatDat &other = *( ( sWorldNatDat* )p_GetNativeData( obj ) );
+		rt->PushBool( nd.world == other.world );
+	}
+}
+
+
+
 // Class deClassWorld
 ///////////////////////
 
@@ -1808,6 +1842,7 @@ void deClassWorld::CreateClassMembers( dsEngine *engine ){
 	init.clsInt = engine->GetClassInt();
 	init.clsFlt = engine->GetClassFloat();
 	init.clsBool = engine->GetClassBool();
+	init.clsObject = engine->GetClassObject();
 	init.clsCam = pClsCam;
 	init.clsClr = pClsClr;
 	init.clsCol = pClsCol;
@@ -1970,6 +2005,9 @@ void deClassWorld::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfColliderMoveHitsClosest( init ) );
 	AddFunction( new nfRayHits( init ) );
 	AddFunction( new nfRayHitsClosest( init ) );
+	
+	AddFunction( new nfEquals( init ) );
+	AddFunction( new nfHashCode( init ) );
 }
 
 

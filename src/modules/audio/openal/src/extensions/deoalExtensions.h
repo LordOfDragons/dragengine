@@ -29,7 +29,7 @@ class deoalAudioThread;
 
 
 /**
- * \brief OpenAL Extensions.
+ * OpenAL Extensions.
  */
 class deoalExtensions{
 public:
@@ -65,10 +65,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create extensions. */
+	/** Create extensions. */
 	deoalExtensions( deoalAudioThread &audioThread );
 	
-	/** \brief Clean up extensions. */
+	/** Clean up extensions. */
 	~deoalExtensions();
 	/*@}*/
 	
@@ -76,48 +76,54 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Print summary of findings. */
+	/** Scan device extensions. */
+	void ScanDeviceExtensions();
+	
+	/** Scan context extensions. */
+	void ScanContextExtensions();
+	
+	/** Print summary of findings. */
 	void PrintSummary();
 	
-	/** \brief Returns true if all required extensions are present. */
+	/** Returns true if all required extensions are present. */
 	bool VerifyPresence();
 	
 	
 	
-	/** \brief Major version. */
+	/** Major version. */
 	inline int GetVersionMajor() const{ return pVersionMajor; }
 	
-	/** \brief Minor version. */
+	/** Minor version. */
 	inline int GetVersionMinor() const{ return pVersionMinor; }
 	
-	/** \brief List of extension strings supported by hardware. */
+	/** List of extension strings supported by hardware. */
 	inline const decStringList &GetStringListExtensions() const{ return pStrListExtensions; }
 	
 	
 	
-	/** \brief Extensions is supported. */
+	/** Extensions is supported. */
 	bool GetHasExtension( eExtensions extension ) const;
 	
-	/** \brief Name of extension. */
+	/** Name of extension. */
 	const char *GetExtensionName( eExtensions extension ) const;
 	
-	/** \brief Disable extension. */
+	/** Disable extension. */
 	void DisableExtension( eExtensions extension );
 	
 	
 	
-	/** \brief EFX major version. */
+	/** EFX major version. */
 	inline int GetEfxVersionMajor() const{ return pEfxVersionMajor; }
 	
-	/** \brief EFX minor version. */
+	/** EFX minor version. */
 	inline int GetEfxVersionMinor() const{ return pEfxVersionMinor; }
 	
 	
 	
-	/** \brief EFX is supported. */
+	/** EFX is supported. */
 	inline bool GetHasEFX() const{ return pHasEFX; }
 	
-	/** \brief HRTF is supported. */
+	/** HRTF is supported. */
 	inline bool GetHasHRTF() const{ return pHasHRTF; }
 	/*@}*/
 	
@@ -125,7 +131,6 @@ public:
 	
 private:
 	void pScanVersion();
-	void pScanExtensions();
 	void pDisableExtensions();
 	
 	void pFetchRequiredFunctions();

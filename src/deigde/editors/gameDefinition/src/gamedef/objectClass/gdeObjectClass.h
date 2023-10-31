@@ -88,6 +88,7 @@ private:
 	
 	bool pIsGhost;
 	bool pCanInstantiate;
+	int pInheritSubObjects;
 	
 	gdeOCBillboardList pBillboards;
 	gdeOCCameraList pCameras;
@@ -413,6 +414,12 @@ public:
 	
 	/** Set if object can be instantiated. */
 	void SetCanInstantiate( bool canInstantiate );
+	
+	/** Inherit sub objects. */
+	inline int GetInheritSubObjects() const{ return pInheritSubObjects; }
+	
+	/** Set inherit sub objects. */
+	void SetInheritSubObjects( int filter );
 	
 	
 	

@@ -384,6 +384,48 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 		/* backwards compatibility */ || tagName == "canInstanciate" ){
 			gdClass->SetCanInstantiate( GetCDataBool( *tag ) );
 			
+		}else if( tagName == "replaceSubObjects" ){
+			const decStringList keys( decString( GetCDataString( *tag ) ).Split( ',' ) );
+			int j, filter = igdeGDClass::FilterSubObjectsAll;
+			const int keyCount = keys.GetCount();
+			
+			for( j=0; j<keyCount; j++ ){
+				const decString &key = keys.GetAt( j );
+				
+				if( key == "billboards" ){
+					filter &= ~igdeGDClass::efsoBillboards;
+					
+				}else if( key == "components" ){
+					filter &= ~igdeGDClass::efsoComponents;
+					
+				}else if( key == "lights" ){
+					filter &= ~igdeGDClass::efsoLights;
+					
+				}else if( key == "snapPoints" ){
+					filter &= ~igdeGDClass::efsoSnapPoints;
+					
+				}else if( key == "particleEmitters" ){
+					filter &= ~igdeGDClass::efsoParticleEmitters;
+					
+				}else if( key == "forceFields" ){
+					filter &= ~igdeGDClass::efsoForceFields;
+					
+				}else if( key == "envMapProbes" ){
+					filter &= ~igdeGDClass::efsoEnvMapProbes;
+					
+				}else if( key == "speakers" ){
+					filter &= ~igdeGDClass::efsoSpeakers;
+					
+				}else if( key == "navigationSpaces" ){
+					filter &= ~igdeGDClass::efsoNavigationSpaces;
+					
+				}else if( key == "navigationBlockers" ){
+					filter &= ~igdeGDClass::efsoNavigationBlockers;
+				}
+			}
+			
+			gdClass->SetInheritSubObjects( filter );
+			
 		}else if( tagName == "inherit" ){
 			pParseClassInherit( *tag, gdClass );
 			
@@ -537,6 +579,12 @@ void igdeXMLGameDefinition::pParseClassComponent( const decXmlElementTag &root, 
 					
 				}else if( strcmp( value, "lightShadowIgnore" ) == 0 ){
 					component->SetPropertyName( igdeGDCComponent::epLightShadowIgnore, GetAttributeString( *tag, "property" ) );
+					
+				}else if( strcmp( value, "animation" ) == 0 ){
+					component->SetPropertyName( igdeGDCComponent::epAnimation, GetAttributeString( *tag, "property" ) );
+					
+				}else if( strcmp( value, "move" ) == 0 ){
+					component->SetPropertyName( igdeGDCComponent::epMove, GetAttributeString( *tag, "property" ) );
 					
 				}else{
 					LogWarnUnknownValue( *tag, value );

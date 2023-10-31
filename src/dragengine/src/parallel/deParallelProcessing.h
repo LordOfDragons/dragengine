@@ -74,8 +74,11 @@ public:
 	/** \brief Game engine. */
 	inline deEngine &GetEngine() const{ return pEngine; }
 	
-	/** \brief Number of detected CPU cores. */
+	/** \brief Count of detected CPU cores. */
 	inline int GetCoreCount() const{ return pCoreCount; }
+	
+	/** \brief Count of threads. */
+	inline int GetThreadCount() const{ return pThreadCount; }
 	
 	/**
 	 * \brief Update task processing.

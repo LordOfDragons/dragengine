@@ -302,6 +302,7 @@ void deoalAWorld::RemoveSpeaker( deoalASpeaker *speaker ){
 	
 	speaker->SetParentWorld( nullptr );
 	speaker->SetEnabled( false );
+	speaker->SetPositionless( true );
 	speaker->SetWorldMarkedRemove( false );
 	
 	if( speaker->GetLLWorldPrev() ){

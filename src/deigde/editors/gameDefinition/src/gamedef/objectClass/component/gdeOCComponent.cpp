@@ -52,10 +52,12 @@ gdeOCComponent::gdeOCComponent( const gdeOCComponent &component ) :
 pModelPath( component.pModelPath ),
 pSkinPath( component.pSkinPath ),
 pRigPath( component.pRigPath ),
-pAnimPath( component.pAnimPath ),
+pAnimatorPath( component.pAnimatorPath ),
 pOccMeshPath( component.pOccMeshPath ),
 pAudioModelPath( component.pAudioModelPath ),
 pPlaybackController( component.pPlaybackController ),
+pAnimationPath( component.pAnimationPath ),
+pMove( component.pMove ),
 pDoNotScale( component.pDoNotScale ),
 pStatic( component.pStatic ),
 pRenderEnvMap( component.pRenderEnvMap ),
@@ -81,7 +83,7 @@ pActiveTexture( NULL )
 			texture = NULL;
 		}
 		
-		for( i=0; i<=epLightShadowIgnore; i++ ){
+		for( i=0; i<=epMove; i++ ){
 			pPropertyNames[ i ] = component.pPropertyNames[ i ];
 		}
 		
@@ -117,7 +119,15 @@ void gdeOCComponent::SetRigPath( const char *path ){
 }
 
 void gdeOCComponent::SetAnimatorPath( const char *path ){
-	pAnimPath = path;
+	pAnimatorPath = path;
+}
+
+void gdeOCComponent::SetAnimationPath( const char *path ){
+	pAnimationPath = path;
+}
+
+void gdeOCComponent::SetMove( const char *move ){
+	pMove = move;
 }
 
 void gdeOCComponent::SetOcclusionMeshPath( const char *path ){
@@ -192,7 +202,7 @@ void gdeOCComponent::SetPropertyName( eProperties property, const char *name ){
 
 bool gdeOCComponent::HasPropertyWithName( const char *name ) const{
 	int i;
-	for( i=0; i<=epLightShadowIgnore; i++ ){
+	for( i=0; i<=epMove; i++ ){
 		if( pPropertyNames[ i ] == name ){
 			return true;
 		}

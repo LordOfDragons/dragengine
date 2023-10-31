@@ -458,6 +458,12 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 		if( hasGIStateRender ){
 			pRenderGI->RenderLightGIRay( plan );
 		}
+		
+		// required or update probes compute shaders accessing light texture written by
+		// lighting (including RenderLightGIRay above) can cause garbage to be read
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+			| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
+		
 		pRenderGI->UpdateProbes( plan );
 		SetViewport( plan );
 	}

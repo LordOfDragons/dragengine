@@ -82,10 +82,10 @@ gdeUOCCTextureSetColorTint::~gdeUOCCTextureSetColorTint(){
 
 void gdeUOCCTextureSetColorTint::Undo(){
 	pTexture->SetColorTint( pOldValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }
 
 void gdeUOCCTextureSetColorTint::Redo(){
 	pTexture->SetColorTint( pNewValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }

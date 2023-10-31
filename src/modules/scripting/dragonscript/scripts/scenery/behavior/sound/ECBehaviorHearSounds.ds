@@ -65,81 +65,103 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Element become audible. */
-		func void elementAudible( Instance instance, Element element )
+		func void elementAudible(Instance instance, Element element)
 		
 		/** \brief Element became inaudible. */
-		func void elementInaudible( Instance instance, Element element )
+		func void elementInaudible(Instance instance, Element element)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Element become audible. */
-		public func void elementAudible( Instance instance, Element element )
+		func void elementAudible(Instance instance, Element element)
 		end
 		
 		/** \brief Element became inaudible. */
-		public func void elementInaudible( Instance instance, Element element )
+		func void elementInaudible(Instance instance, Element element)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements SoundLevelMeterListener
-		private var ECBehaviorHearSounds pECBehavior
-		private var ECBehaviorCollider.Instance pCollider
-		private var SoundLevelMeter pSoundLevelMeter
-		private var float pAudibleDistance
-		private var float pVolumeThreshold
-		private var Array pAudibleElements
-		private var Array pListeners
+		private class TrackedElement
+			var Speaker pSpeaker
+			var Element pElement
+			
+			func new(Speaker speaker, Element element)
+				pSpeaker = speaker
+				pElement = element
+			end
+			
+			func Speaker getSpeaker()
+				return pSpeaker
+			end
+			
+			func Element getElement()
+				return pElement
+			end
+		end
+		
+		
+		
+		var ECBehaviorHearSounds pECBehavior
+		var ECBehaviorCollider.Instance pCollider
+		var SoundLevelMeter pSoundLevelMeter
+		var float pAudibleDistance
+		var float pVolumeThreshold
+		var Array pTrackedElements
+		var Array pAudibleElements
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorHearSounds ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pAudibleDistance = ecbehavior.getAudibleDistance().getValue()
-			this.pVolumeThreshold = ecbehavior.getVolumeThreshold().getValue()
-			this.pAudibleElements = Array.new()
-			this.pListeners = Array.new()
+		func new(ECBehaviorHearSounds ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pAudibleDistance = ecbehavior.getAudibleDistance().getValue()
+			pVolumeThreshold = ecbehavior.getVolumeThreshold().getValue()
+			pTrackedElements = Array.new()
+			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
-			if this.pSoundLevelMeter != null
-				this.pSoundLevelMeter.setListener( null )
-				this.pSoundLevelMeter = null
+		func void dispose()
+			if pSoundLevelMeter != null
+				pSoundLevelMeter.setListener(null)
+				pSoundLevelMeter = null
 			end
-			this.pAudibleElements = null
-			this.pCollider = null
-			this.pListeners = null
+			pAudibleElements = null
+			pTrackedElements = null
+			pCollider = null
+			pListeners = null
 			
 			super.dispose()
 		end
@@ -147,35 +169,35 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			if this.pECBehavior.getCollider() != null
-				this.pCollider = this.pECBehavior.getCollider().instance( this.getElement() )
+		func void init(StubElement stub)
+			if pECBehavior.getCollider() != null
+				pCollider = pECBehavior.getCollider().instance(getElement())
 			end
 			
-			this.pSoundLevelMeter = this.createSoundLevelMeter( stub )
+			pSoundLevelMeter = createSoundLevelMeter(stub)
 			
-			if this.pCollider != null and this.pCollider.getCollider() != null
-				this.attachSoundLevelMeter( stub, this.pCollider )
+			if pCollider != null and pCollider.getCollider() != null
+				attachSoundLevelMeter(stub, pCollider)
 			end
 			
-			this.pSoundLevelMeter.setListener( this )
+			pSoundLevelMeter.setListener(this)
 			
-			this.pECBehavior.createListeners( this )
+			pECBehavior.createListeners(this)
 		end
 		
 		/**
 		 * \brief Create sound level meter.
 		 */
-		protected func SoundLevelMeter createSoundLevelMeter( StubElement stub )
+		protected func SoundLevelMeter createSoundLevelMeter(StubElement stub)
 			var SoundLevelMeter soundLevelMeter = SoundLevelMeter.new()
 			
-			soundLevelMeter.setPosition( this.getElement().getPosition() )
-			soundLevelMeter.setOrientation( this.getElement().getOrientation() )
+			soundLevelMeter.setPosition(getElement().getPosition())
+			soundLevelMeter.setOrientation(getElement().getOrientation())
 			
-			soundLevelMeter.setAudibleDistance( stub.getPropertyFloatFor( \
-				this.pECBehavior.getAudibleDistance().getName(), this.pAudibleDistance ) )
+			soundLevelMeter.setAudibleDistance(stub.getPropertyFloatFor(\
+				pECBehavior.getAudibleDistance().getName(), pAudibleDistance))
 			
-			soundLevelMeter.setLayerMask( this.pECBehavior.getLayerMask() )
+			soundLevelMeter.setLayerMask(pECBehavior.getLayerMask())
 			
 			return soundLevelMeter
 		end
@@ -185,224 +207,253 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		 * 
 		 * Default implementation calls ECComposeAttachResource.attach().
 		 */
-		protected func void attachSoundLevelMeter( StubElement stub, ECBehaviorCollider.Instance collider )
-			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pSoundLevelMeter, stub )
+		protected func void attachSoundLevelMeter(StubElement stub, ECBehaviorCollider.Instance collider)
+			pECBehavior.getAttach().attach(collider.getCollider(), pSoundLevelMeter, stub)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorHearSounds getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorHearSounds getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Collider behavior or null if not attached. */
-		public func ECBehaviorCollider.Instance getCollider()
-			return this.pCollider
+		func ECBehaviorCollider.Instance getCollider()
+			return pCollider
 		end
 		
 		/** \brief Sound level meter. */
-		public func SoundLevelMeter getSoundLevelMeter()
-			return this.pSoundLevelMeter
+		func SoundLevelMeter getSoundLevelMeter()
+			return pSoundLevelMeter
 		end
 		
 		/** \brief Audible distance in meters. */
-		public func float getAudibleDistance()
-			return this.pAudibleDistance
+		func float getAudibleDistance()
+			return pAudibleDistance
 		end
 		
 		/** \brief Set audible range in meters. */
-		protected func void setAudibleDistance( float range )
-			this.pAudibleDistance = DEMath.max( range, 1.0 )
-			this.pSoundLevelMeter.setAudibleDistance( this.pAudibleDistance )
+		protected func void setAudibleDistance(float range)
+			pAudibleDistance = DEMath.max(range, 1.0)
+			pSoundLevelMeter.setAudibleDistance(pAudibleDistance)
 		end
 		
 		/** \brief Volume threshold required for elements to be considered audible. */
-		public func float getVolumeThreshold()
-			return this.pVolumeThreshold
+		func float getVolumeThreshold()
+			return pVolumeThreshold
 		end
 		
 		/** \brief Set volume threshold required for elements to be considered audible. */
-		protected func void setVolumeThreshold( float volume )
-			this.pVolumeThreshold = DEMath.max( volume, 0.0 )
-			// this.pSoundLevelMeter.setVolumeThreshold( this.pVolumeThreshold )
+		protected func void setVolumeThreshold(float volume)
+			pVolumeThreshold = DEMath.max(volume, 0.0)
+			// pSoundLevelMeter.setVolumeThreshold(pVolumeThreshold)
 		end
 		
 		
 		
 		/** \brief Behavior element is listening. */
-		public func bool getListening()
-			return this.pSoundLevelMeter.getEnabled()
+		func bool getListening()
+			return pSoundLevelMeter.getEnabled()
 		end
 		
 		/** \brief Set if behavior element is listening. */
-		public func void setListening( bool listening )
-			this.pSoundLevelMeter.setEnabled( listening )
+		func void setListening(bool listening)
+			pSoundLevelMeter.setEnabled(listening)
 		end
 		
 		
 		
 		/** \brief Number of audible elements. */
-		public func int getAudibleElementCount()
-			return this.pAudibleElements.getCount()
+		func int getAudibleElementCount()
+			return pTrackedElements.getCount()
 		end
 		
 		/** \brief Audible element at index. */
-		public func Element getAudibleElementAt( int index )
-			return this.pAudibleElements.getAt( index ) cast Element
+		func Element getAudibleElementAt(int index)
+			prepareAudibleElements()
+			return pAudibleElements.getAt(index) cast Element
 		end
 		
 		/** \brief Element is audible. */
-		public func bool isElementAudible( Element element )
-			return this.pAudibleElements.has( element )
+		func bool isElementAudible(Element element)
+			prepareAudibleElements()
+			return pAudibleElements.has(element)
 		end
 		
-		/** \brief Add audible element. */
-		protected func void addAudibleElement( Element element )
-			this.pAudibleElements.add( element )
+		/** \deprecated Use addAudibleElement(Speaker,Element). */
+		protected func void addAudibleElement(Element element)
+			var int i, count = pSoundLevelMeter.getAudibleSpeakerCount()
+			var SoundLevelMeterSpeaker speaker
+			for i = 0 to count
+				speaker = pSoundLevelMeter.getAudibleSpeakerAt(i)
+				if speaker.getSpeaker().getOwner() == element
+					addAudibleElement(speaker.getSpeaker(), element)
+					return
+				end
+			end
+		end
+		
+		/**
+		 * \brief Add audible element.
+		 * \version 1.19
+		 */
+		protected func void addAudibleElement(Speaker speaker, Element element)
+			pTrackedElements.add(TrackedElement.new(speaker, element))
+			pAudibleElements = null
 		end
 		
 		/** \brief Remove audible element. */
-		protected func void removeAudibleElement( Element element )
-			this.pAudibleElements.remove( element )
+		protected func void removeAudibleElement(Element element)
+			pTrackedElements.removeIf(block TrackedElement each
+				return each.getElement() == element
+			end)
+			pAudibleElements = null
 		end
 		
 		/** \brief Remove all audible elements. */
 		protected func void removeAllAudibleElements()
-			this.pAudibleElements.removeAll()
+			pTrackedElements.removeAll()
+			pAudibleElements = null
 		end
 		
 		/** \brief Get volume of element. */
-		public func float getAudibleElementVolume( Element element )
-			if not this.pAudibleElements.has( element )
-				return 0.0
-			end
+		func float getAudibleElementVolume(Element element)
+			var TrackedElement tracked = pTrackedElements.find(block TrackedElement each
+				return each.getElement() == element
+			end) cast TrackedElement
 			
-			var int i, count = this.pSoundLevelMeter.getAudibleSpeakerCount()
-			var SoundLevelMeterSpeaker speaker
-			var Object owner
-			
-			for i = 0 to count
-				speaker = this.pSoundLevelMeter.getAudibleSpeakerAt( i )
-				if speaker.getSpeaker().getOwner() == element
-					return speaker.getVolume()
-				end
-			end
-			
-			return 0.0
+			return tracked != null if tracked.getSpeaker().getVolume() else 0
 		end
 		
 		/** \brief Visit audible elements with block with parameter Element. */
-		public func void forEachAudibleElement( Block ablock )
-			this.pAudibleElements.forEach( ablock )
+		func void forEachAudibleElement(Block ablock)
+			prepareAudibleElements()
+			pAudibleElements.forEach(ablock)
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			this.getElement().getGameWorld().getWorld().addSoundLevelMeter( this.pSoundLevelMeter )
+		func void addToGameWorld()
+			getElement().getGameWorld().getWorld().addSoundLevelMeter(pSoundLevelMeter)
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			while this.pAudibleElements.getCount() > 0
-				var int index = this.pAudibleElements.getCount() - 1
-				var Element element = this.pAudibleElements.getAt( index ) cast Element
-				this.pAudibleElements.removeFrom( index )
-				
-				this.pListeners.forEach( block Listener each
-					each.elementInaudible( this, element )
-				end )
-			end
+		func void removeFromGameWorld()
+			prepareAudibleElements()
+			pTrackedElements.removeAll()
 			
-			this.getElement().getGameWorld().getWorld().removeSoundLevelMeter( this.pSoundLevelMeter )
+			pAudibleElements.forEach(block Element element
+				pListeners.forEach(block Listener listener
+					listener.elementInaudible(this, element)
+				end)
+			end)
+			pAudibleElements = null
+			
+			getElement().getGameWorld().getWorld().removeSoundLevelMeter(pSoundLevelMeter)
 		end
 		
 		
 		
 		/** \brief Speaker become audible. */
-		public func void speakerAudible( SoundLevelMeterSpeaker speaker )
-			var Object owner = speaker.getSpeaker().getOwner()
+		func void speakerAudible(SoundLevelMeterSpeaker speaker)
+			var Speaker engSpeaker = speaker.getSpeaker()
+			
+			if pTrackedElements.find(block TrackedElement each
+				return each.getSpeaker().equals(engSpeaker)
+			end) != null
+				return
+			end
+			
+			var Object owner = engSpeaker.getOwner()
 			if not owner castable Element
 				return
 			end
 			
 			var Element element = owner cast Element
-			if this.pAudibleElements.has( element )
-				return
-			end
 			
-			this.pAudibleElements.add( element )
+			pTrackedElements.add(TrackedElement.new(engSpeaker, element))
+			pAudibleElements = null
 			
-			this.pListeners.forEach( block Listener each
-				each.elementAudible( this, element )
-			end )
+			pListeners.forEach(block Listener each
+				each.elementAudible(this, element)
+			end)
 		end
 		
 		/** \brief Speaker became inaudible. */
-		public func void speakerInaudible( Speaker speaker )
-			var Object owner = speaker.getOwner()
-			if not owner castable Element
+		func void speakerInaudible(Speaker speaker)
+			var TrackedElement tracked = pTrackedElements.find(block TrackedElement each
+				return each.getSpeaker().equals(speaker)
+			end) cast TrackedElement
+			
+			if tracked == null
 				return
 			end
 			
-			var Element element = owner cast Element
-			if not this.pAudibleElements.has( element )
-				return
+			pTrackedElements.remove(tracked)
+			pAudibleElements = null
+			
+			var Element element = tracked.getElement()
+			pListeners.forEach(block Listener each
+				each.elementInaudible(this, element)
+			end)
+		end
+		
+		
+		
+		private func void prepareAudibleElements()
+			if pAudibleElements == null
+				pAudibleElements = pTrackedElements.map(block TrackedElement each
+					return each.getElement()
+				end)
 			end
-			
-			this.pAudibleElements.remove( element )
-			
-			this.pListeners.forEach( block Listener each
-				each.elementInaudible( this, element )
-			end )
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				this.setListening( env.readBool( reader ) )
+				setListening(env.readBool(reader))
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			env.writeBool( writer, this.getListening() )
+			env.writeBool(writer, getListening())
 		end
 	end
 	
 	
 	
-	private var ECBehaviorCollider pCollider
-	private var ECComposeAttachResource pAttach
-	private var ECPFloat pAudibleDistance
-	private var ECPFloat pVolumeThreshold
-	private var LayerMask pLayerMask
-	private var Array pListenerFactories
+	var ECBehaviorCollider pCollider
+	var ECComposeAttachResource pAttach
+	var ECPFloat pAudibleDistance
+	var ECPFloat pVolumeThreshold
+	var LayerMask pLayerMask
+	var Array pListenerFactories
 	
 	
 	
@@ -411,75 +462,75 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em collider.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
-	this( eclass, collider, "hearSound." )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	this(eclass, collider, "hearSound.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	String prefix ) super( eclass )
-		if getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pCollider = collider
-		this.pListenerFactories = Array.new()
+		pCollider = collider
+		pListenerFactories = Array.new()
 		
-		this.pAudibleDistance = ECPFloat.new( prefix + "audibleDistance", 100, 1 )
-		eclass.addProperty( this.pAudibleDistance )
+		pAudibleDistance = ECPFloat.new(prefix + "audibleDistance", 100, 1)
+		eclass.addProperty(pAudibleDistance)
 		
-		this.pVolumeThreshold = ECPFloat.new( prefix + "volumeThreshold", 0.01, 0 )
-		eclass.addProperty( this.pVolumeThreshold )
+		pVolumeThreshold = ECPFloat.new(prefix + "volumeThreshold", 0.01, 0)
+		eclass.addProperty(pVolumeThreshold)
 		
-		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.audio )
+		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pCollider = null
-		this.pListenerFactories = null
+	func void dispose()
+		pCollider = null
+		pListenerFactories = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Collider behavior or null to not attach. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
 	/** \brief Attach resource. */
-	public func ECComposeAttachResource getAttach()
-		return this.pAttach
+	func ECComposeAttachResource getAttach()
+		return pAttach
 	end
 	
 	/** \brief Audible distance. */
-	public func ECPFloat getAudibleDistance()
-		return this.pAudibleDistance
+	func ECPFloat getAudibleDistance()
+		return pAudibleDistance
 	end
 	
 	/** \brief Volume threshold required for elements to be considered audible. */
-	public func ECPFloat getVolumeThreshold()
-		return this.pVolumeThreshold
+	func ECPFloat getVolumeThreshold()
+		return pVolumeThreshold
 	end
 	
 	/** \brief Layer mask. */
-	public func LayerMask getLayerMask()
-		return this.pLayerMask
+	func LayerMask getLayerMask()
+		return pLayerMask
 	end
 	
 	/** \brief Set layer mask. */
-	public func void setLayerMask( LayerMask layerMask )
-		this.pLayerMask = layerMask
+	func void setLayerMask(LayerMask layerMask)
+		pLayerMask = layerMask
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -487,27 +538,27 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -518,10 +569,10 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorHearSounds.
 	 */
-	static public func ECBehaviorHearSounds getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorHearSounds each
+	static func ECBehaviorHearSounds getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorHearSounds each
 			return true
-		end ) cast ECBehaviorHearSounds
+		end) cast ECBehaviorHearSounds
 	end
 	
 	/**
@@ -530,16 +581,16 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorHearSounds.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

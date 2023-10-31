@@ -58,6 +58,9 @@ void meWorldNotifier::LumimeterChanged( meWorld* ){
 void meWorldNotifier::PathFindTestChanged( meWorld* ){
 }
 
+void meWorldNotifier::MusicChanged( meWorld *world ){
+}
+
 void meWorldNotifier::LightingChanged( meWorld* ){
 }
 

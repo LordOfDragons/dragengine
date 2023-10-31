@@ -680,6 +680,8 @@ btCollisionObject *colObjB, ContactResultCallback& resultCallback ){
 
 struct sContactResultBoolean : btManifoldResult{
 	bool hasContact;
+	// btVector3 hackPointInWorld;
+	// btScalar hackDepth;
 	
 	sContactResultBoolean( const btCollisionObjectWrapper *obj0Wrap,
 		const btCollisionObjectWrapper *obj1Wrap ) :
@@ -690,6 +692,8 @@ struct sContactResultBoolean : btManifoldResult{
 	virtual void addContactPoint( const btVector3 &normalOnBInWorld,
 	const btVector3 &pointInWorld, btScalar depth ){
 		hasContact = true;
+			// hackPointInWorld = pointInWorld;
+			// hackDepth = depth;
 	}
 };
 
@@ -792,9 +796,6 @@ btCollisionObject *colObjA, btCollisionObject *colObjB ){
 		
 		btCollisionAlgorithm * const algorithm = getDispatcher()->findAlgorithm(
 			&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS );
-			// BT_CONTACT_POINT_ALGORITHMS
-			// sometimes bullet sucks like nothing else. box-box collision is instable as hell
-			// and no sign why.
 		
 		if( ! algorithm ){
 			return false;
@@ -807,8 +808,9 @@ btCollisionObject *colObjA, btCollisionObject *colObjB ){
 		getDispatcher()->freeCollisionAlgorithm( algorithm );
 		
 		pDelayedOperation->Unlock();
-// 			if(doDebug) printf( "Done\n" );
 		
+			// if(result.hasContact) pWorld.GetBullet().LogInfoFormat("BulletBug.safeContactPairTest: (%g,%g,%g) %g",
+			// 	result.hackPointInWorld.x(), result.hackPointInWorld.y(), result.hackPointInWorld.z(), result.hackDepth);
 		return result.hasContact;
 		
 	}catch( const deException & ){

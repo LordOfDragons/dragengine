@@ -3,6 +3,7 @@ precision highp int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
+// #include "shared/defren/sanitize_light.glsl"
 
 uniform vec4 pTCBloomTransform;
 uniform vec2 pTCBloomClamp;
@@ -96,6 +97,8 @@ void main( void ){
 	
 	vec3 params = texelFetch( texToneMapParams, tcParams, 0 ).rgb; // r=avgLum, g=scaleLum, b=lwhite, a=n/a
 	vec4 color = texelFetch( texColor, tc, 0 );
+	
+// 	color.rgb = sanitizeLight( color.rgb ); // final safe guard
 	
 	vec2 tcBloom = min( vTexCoord * pTCBloomTransform.xy + pTCBloomTransform.zw, pTCBloomClamp );
 	

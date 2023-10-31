@@ -1045,7 +1045,7 @@ void debpParticleEmitterInstanceType::ParticleCastMatrix( decDMatrix &matrix ){
 
 void debpParticleEmitterInstanceType::ParticleCreateTrailEmitter( sParticle &particle ){
 	const deParticleEmitterType &engType = pInstance->GetParticleEmitter()->GetEmitter()->GetTypeAt( pType );
-	if( ! engType.GetTrailEmitter() ){
+	if( ! engType.GetTrailEmitter() || ! pInstance->GetParentWorld() ){
 		return;
 	}
 	
@@ -1250,6 +1250,10 @@ public:
 };
 
 bool debpParticleEmitterInstanceType::ParticleTestCollision( sParticle &particle, float elapsed ){
+	if( ! pInstance->GetParentWorld() ){
+		return true; // happens during loading while warmstarting
+	}
+	
 	// pBullet->LogInfoFormat( "step particle %i: elapsed=%g displacement=(%g,%g,%g)", p, elapsed, displacement.getX(), displacement.getY(), displacement.getZ() );
 	const deParticleEmitterType &engType = pInstance->GetParticleEmitter()->GetEmitter()->GetTypeAt( pType );
 	debpCollisionWorld &dynamicsWorld = *pInstance->GetParentWorld()->GetDynamicsWorld();

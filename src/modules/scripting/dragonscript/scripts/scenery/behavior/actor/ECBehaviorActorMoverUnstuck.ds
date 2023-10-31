@@ -1,0 +1,360 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to unstuck actors moved by ECBehaviorActorMover.
+ * \version 1.19
+ * 
+ * This behavior helps in situations where an actor moving along a path ends up in a stuck
+ * position. This can happen due to other behaviors like ECBehaviorAvoidCollision trying
+ * to avoid obstacles as well as due to game events pushing the actor into unfavorable
+ * positions.
+ * 
+ * This behavior attaches to ECBehaviorActorMover to track if actor is moving. If the actor
+ * is moving the position of the actor is examined after an interval. If the position does
+ * not change by a threshold amount relative to the last tracked position the actor is
+ * considered stuck and ECBehaviorActorMover.updatePath() is called to calculate a new path.
+ * 
+ * The default interval is 3 seconds. The threshold is factor multiplied by the distance the
+ * actor would travel unobstructed using the movement speed set in ECBehaviorActorMover.
+ * The default threshold is 0.2 (20% of expected movement distance).
+ * 
+ * These parameters can be adjusted to match the actors.
+ * 
+ * This behavior can be temporarily disabled at runtime if required. By default the behavior
+ * is enabled.
+ * 
+ * To use this behavior add it to the element class after ECBehaviorActorMover.
+ * 
+ * Requires these behaviors to be present:
+ * - ECBehaviorActorMover
+ */
+class ECBehaviorActorMoverUnstuck extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Listen to actor mover events. */
+		private class MoverEvents extends ECBehaviorActorMover.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void startMoving(ECBehaviorActorMover.Instance instance)
+				pInstance.startTracking()
+			end
+			
+			func void stopMoving(ECBehaviorActorMover.Instance instance)
+				pInstance.stopTracking()
+			end
+		end
+		
+		
+		
+		var ECBehaviorActorMoverUnstuck pECBehavior
+		var ECBehaviorActorMover.Instance pActorMover
+		
+		var float pInterval
+		var float pThreshold
+		var bool pEnabled
+		
+		var DVector pLastPosition
+		var float pMovedDistance
+		var float pExpectedDistance
+		
+		var float pUpdateElapsed
+		
+		
+		
+		/** \brief Create behavior instance. */
+		func new(ECBehaviorActorMoverUnstuck ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pEnabled = true
+			pActorMover = ecbehavior.getActorMover().instance(element)
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			pActorMover = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize from stub. */
+		func void init(StubElement stub)
+			pInterval = pECBehavior.getInterval().getValue(stub)
+			pThreshold = pECBehavior.getThreshold().getValue(stub)
+			
+			pActorMover.addListener(MoverEvents.new(this))
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorActorMoverUnstuck getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Actor mover behavior. */
+		func ECBehaviorActorMover.Instance getActorMover()
+			return pActorMover
+		end
+		
+		
+		
+		/** \brief Update interval. */
+		func float getInterval()
+			return pInterval
+		end
+		
+		/** \brief Set interval. */
+		func void setInterval(float interval)
+			pInterval = DEMath.max(interval, 0.0)
+		end
+		
+		/** \brief Distance threshold. */
+		func float getThreshold()
+			return pThreshold
+		end
+		
+		/** \brief Set distance threshold. */
+		func void setThreshold(float threshold)
+			pThreshold = DEMath.clamp(threshold, 0.0, 1.0)
+		end
+		
+		/** \brief Enable unstucking. */
+		func bool getEnabled()
+			return pEnabled
+		end
+		
+		/** \brief Set if unstucking is enabled. */
+		func void setEnabled(bool enabled)
+			pEnabled = enabled
+		end
+		
+		
+		
+		/** \brief Start tracking. */
+		func void startTracking()
+			if not pEnabled or pActorMover.hasNoGoal()
+				return
+			end
+				
+			pLastPosition = getElement().getPosition()
+			pMovedDistance = 0
+			pExpectedDistance = 0
+			pUpdateElapsed = 0
+			setRequiresThink(true)
+		end
+		
+		/** \brief Stop tracking. */
+		func void stopTracking()
+			setRequiresThink(false)
+			pLastPosition = null
+		end
+		
+		/** \brief Behavior is tracking actor. */
+		func bool isTracking()
+			return pLastPosition != null
+		end
+		
+		/** \brief Update tracking. */
+		func void update(float elapsed)
+			// dispose protection: pActorMover == null
+			if not pEnabled or pActorMover == null or pActorMover.hasNoGoal() or pActorMover.getPause()
+				return
+			end
+			
+			var DVector position = getElement().getPosition()
+			if pLastPosition != null
+				pMovedDistance += (position - pLastPosition).getLength()
+			end
+			pLastPosition = position
+			
+			pExpectedDistance += pActorMover.getLocomotion().getLocomotion().getAnalogMovingSpeed() * elapsed
+			
+			pUpdateElapsed += elapsed
+			if pUpdateElapsed < pInterval
+				return
+			end
+			
+			pUpdateElapsed = 0
+			
+			if pExpectedDistance > 0.1 and pMovedDistance < pExpectedDistance * pThreshold
+				unstuckActor()
+			end
+			
+			pMovedDistance = 0
+			pExpectedDistance = 0
+		end
+		
+		/** \brief Unstuck actor. */
+		func void unstuckActor()
+			pActorMover.updatePath()
+		end
+		
+		
+		
+		/** \brief Think about what to do for the next frame update. */
+		func void think(float elapsed)
+			update(elapsed)
+		end
+		
+		/** \brief Remove element from game world. */
+		func void removeFromGameWorld()
+			stopTracking()
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte()
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				pEnabled = flags.getAt(0)
+				
+				pInterval = reader.readFloat()
+				pThreshold = reader.readFloat()
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0)
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pEnabled)
+			flags.writeToFile(writer)
+			
+			writer.writeFloat(pInterval)
+			writer.writeFloat(pThreshold)
+		end
+	end
+	
+	
+	
+	var ECBehaviorActorMover pActorMover
+	var ECPFloat pInterval
+	var ECPFloat pThreshold
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 */
+	func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover)\
+	this(eclass, actorMover, "actorMoverUnstuck.")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover,\
+	String prefix) super(eclass)
+		if actorMover == null
+			throw ENullPointer.new("actorMover")
+		end
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
+		end
+		
+		pActorMover = actorMover
+		
+		eclass.addProperty(pInterval = ECPFloat.new(prefix + "interval", 3, 0))
+		eclass.addProperty(pThreshold = ECPFloat.new(prefix + "threshold", 0.2, 0, 1))
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pActorMover = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Actor mover behavior. */
+	func ECBehaviorActorMover getActorMover()
+		return pActorMover
+	end
+	
+	/** \brief Update interval. */
+	func ECPFloat getInterval()
+		return pInterval
+	end
+	
+	/** \brief Distance threshold. */
+	func ECPFloat getThreshold()
+		return pThreshold
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorActorMoverUnstuck.
+	 */
+	static func ECBehaviorActorMoverUnstuck getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorActorMoverUnstuck each
+			return true
+		end) cast ECBehaviorActorMoverUnstuck
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorActorMoverUnstuck.Instance .
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

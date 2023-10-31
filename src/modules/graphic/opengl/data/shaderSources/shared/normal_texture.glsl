@@ -24,9 +24,8 @@ vec3 normalLoadDirect( in sampler2DArray sampler, in vec3 texCoord ){
 // decode normal using shifted floating point method.
 // use this method for RGB16F, RGB32F, RGB8_SNORM or RGB16_SNORM textures.
 // normal is potentially not normalized.
-// normal is potentially not normalized.
 vec3 normalDecodeShiftedFloat( in vec3 encoded ){
-	return encoded * vec3( 2.0 ) + vec3( -1.0 );
+	return encoded * vec3( 2 ) + vec3( -1 );
 }
 
 // load normal from sampler using shifted floating point method.
@@ -92,10 +91,10 @@ vec3 normalEncodeShiftedInt( in vec3 normal ){
 // use this method for RG8 or RG16 textures.
 // normal is potentially not normalized.
 vec3 normalDecodeSphereMap( in vec2 encoded ){
-	vec2 fenc = encoded * vec2( 4.0 ) - vec2( 2.0 );
+	vec2 fenc = encoded * vec2( 4 ) - vec2( 2 );
 	float f = dot( fenc, fenc );
-	float g = sqrt( 1.0 - f * 0.25 );
-	return vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
+	float g = sqrt( 1 - f * 0.25 );
+	return vec3( fenc.xy * vec2( g ), f * 0.5 - 1 );
 }
 
 // load normal from sampler using sphere map method.
@@ -120,7 +119,13 @@ vec3 normalLoadSphereMap( in sampler2DArray sampler, in vec3 texCoord ){
 // encode normal using sphere map method.
 // use this method for RG8 or RG16 textures. normal has to be normalized.
 vec2 normalEncodeSphereMap( in vec3 normal ){
-	return normal.xy / vec2( sqrt( 8.0001 - 7.9999 * normal.z ) ) + vec2( 0.5 );
+	return normal.xy / vec2( sqrt( 8.001 - 7.999 * normal.z ) ) + vec2( 0.5 );
+}
+
+
+// sanitize normal. if normal is near 0 returns (0,0,1). otherwise normalizes the normal
+vec3 sanitizeNormal( in vec3 normal ){
+	return length( normal ) > 0.001 ? normalize( normal ) : vec3( 0, 0, 1 );
 }
 
 

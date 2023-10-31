@@ -197,7 +197,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy another animator rule to this animator rule. */
-	virtual aeRule &operator=( const aeRule &copy );
+	aeRule &operator=( const aeRule &copy );
 	/*@}*/
 	
 	/** \name Helper */

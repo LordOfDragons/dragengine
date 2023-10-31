@@ -110,6 +110,7 @@ public:
 private:
 	struct sInitData{
 		dsClass *clsWorld, *clsVoid, *clsInt, *clsFlt, *clsBool;
+		dsClass *clsObject;
 		dsClass *clsCam, *clsClr, *clsCol, *clsCI, *clsComp;
 		dsClass *clsDVec, *clsHT, *clsLig, *clsCF, *clsMat;
 		dsClass *clsMic, *clsNS, *clsSkyInst, *clsSpk, *clsTer;
@@ -258,6 +259,9 @@ private:
 	DEF_NATFUNC( nfColliderMoveHitsClosest );
 	DEF_NATFUNC( nfRayHits );
 	DEF_NATFUNC( nfRayHitsClosest );
+	
+	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC( nfHashCode );
 #undef DEF_NATFUNC
 };
 

@@ -184,6 +184,10 @@ private:
 	
 	DEF_NATFUNC( nfGetHintMovement );
 	DEF_NATFUNC( nfSetHintMovement );
+	DEF_NATFUNC( nfGetEnableGI );
+	DEF_NATFUNC( nfSetEnableGI );
+	DEF_NATFUNC( nfGetHintGIImportance );
+	DEF_NATFUNC( nfSetHintGIImportance );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

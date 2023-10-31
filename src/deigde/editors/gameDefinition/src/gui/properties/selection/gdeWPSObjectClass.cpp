@@ -49,6 +49,7 @@
 #include "../../../undosys/objectClass/gdeUOCPropertyValuesFromSubObjects.h"
 #include "../../../undosys/objectClass/gdeUOCToggleIsGhost.h"
 #include "../../../undosys/objectClass/gdeUOCToggleCanInstantiate.h"
+#include "../../../undosys/objectClass/gdeUOCSetInheritSubObjects.h"
 #include "../../../undosys/objectClass/property/gdeUOCPropertyAdd.h"
 #include "../../../undosys/objectClass/property/gdeUOCPropertyRemove.h"
 #include "../../../undosys/objectClass/property/gdeUOCPSetName.h"
@@ -98,6 +99,7 @@
 #include "../../../undosys/objectClass/texture/gdeUOCTextureSetScale.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeContainerReference.h>
@@ -288,6 +290,26 @@ public:
 	
 	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
 		return new gdeUOCToggleCanInstantiate( objectClass );
+	}
+	
+	virtual void Update(){ /* empty on purpose! */ }
+};
+
+class cActionInheritSubObjects : public cBaseAction {
+	const int pMask;
+public:
+	cActionInheritSubObjects( gdeWPSObjectClass &panel, int mask, const char *text,
+	const char *description ) : cBaseAction( panel, text, nullptr, description ), pMask( mask ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		int filter = objectClass->GetInheritSubObjects();
+		if( ( filter & pMask ) == pMask ){
+			filter &= ~pMask;
+			
+		}else{
+			filter |= pMask;
+		}
+		return new gdeUOCSetInheritSubObjects( objectClass, filter );
 	}
 	
 	virtual void Update(){ /* empty on purpose! */ }
@@ -1163,6 +1185,30 @@ pGameDefinition( NULL )
 	helper.Button( frameLine, pBtnInheritPropertyPrefixReset, new cActionInheritResetPropertyPrefix( *this ), true );
 	
 	
+	// inherit sub objects
+	helper.GroupBoxFlow( content, groupBox, "Inherit Sub-Objects:", false, true );
+	helper.CheckBox( groupBox, pChkInheritSOBillboards, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoBillboards, "Billboards", "Inherit billboards" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOComponents, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoComponents, "Components", "Inherit components" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOLights, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoLights, "Lights", "Inherit lights" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOSnapPoints, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoSnapPoints, "Snap Points", "Inherit snap points" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOParticleEmitters, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoParticleEmitters, "Particle Emitters", "Inherit particle emitters" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOForceFields, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoForceFields, "Force Fields", "Inherit force fields" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOEnvMapProbes, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoEnvMapProbes, "Environment Map Probes", "Inherit environment map probes" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOSpeakers, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoSpeakers, "Speakers", "Inherit speakers" ), true );
+	helper.CheckBox( groupBox, pChkInheritSONavigationSpaces, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoNavigationSpaces, "Navigation Spaces", "Inherit navigation spaces" ), true );
+	helper.CheckBox( groupBox, pChkInheritSONavigationBlockers, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoNavigationBlockers, "Navigation Blockers", "Inherit navigation blockers" ), true );
+	
+	
 	// properties
 	helper.GroupBoxFlow( content, groupBox, "Properties:" );
 	pEditProperties.TakeOver( new cEditProperties( *this ) );
@@ -1396,12 +1442,24 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	gdeWPTagList &partialHideTags = ( gdeWPTagList& )( igdeWidget& )pListPartialHideTags;
 	
 	if( objectClass ){
+		const int iso = objectClass->GetInheritSubObjects();
+		
 		pEditName->SetText( objectClass->GetName() );
 		pEditDescription->SetText( objectClass->GetDescription() );
 		pEditDefaultInheritPropertyPrefix->SetText( objectClass->GetDefaultInheritPropertyPrefix() );
 		pCBScaleMode->SetSelectionWithData( ( void* )( intptr_t )objectClass->GetScaleMode() );
 		pChkIsGhost->SetChecked( objectClass->GetIsGhost() );
 		pChkCanInstantiate->SetChecked( objectClass->GetCanInstantiate() );
+		pChkInheritSOBillboards->SetChecked( (iso & igdeGDClass::efsoBillboards ) != 0 );
+		pChkInheritSOComponents->SetChecked( (iso & igdeGDClass::efsoComponents ) != 0 );
+		pChkInheritSOLights->SetChecked( (iso & igdeGDClass::efsoLights ) != 0 );
+		pChkInheritSOSnapPoints->SetChecked( (iso & igdeGDClass::efsoSnapPoints ) != 0 );
+		pChkInheritSOParticleEmitters->SetChecked( (iso & igdeGDClass::efsoParticleEmitters ) != 0 );
+		pChkInheritSOForceFields->SetChecked( (iso & igdeGDClass::efsoForceFields ) != 0 );
+		pChkInheritSOEnvMapProbes->SetChecked( (iso & igdeGDClass::efsoEnvMapProbes ) != 0 );
+		pChkInheritSOSpeakers->SetChecked( (iso & igdeGDClass::efsoSpeakers ) != 0 );
+		pChkInheritSONavigationSpaces->SetChecked( (iso & igdeGDClass::efsoNavigationSpaces ) != 0 );
+		pChkInheritSONavigationBlockers->SetChecked( (iso & igdeGDClass::efsoNavigationBlockers ) != 0 );
 		pCBCategory->SetText( objectClass->GetCategory() );
 		pCBCategory->SetInvalidValue( ! pCBCategory->GetText().IsEmpty()
 			&& ! pCBCategory->GetSelectedItem() );
@@ -1417,6 +1475,16 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 		pCBScaleMode->SetSelectionWithData( ( void* )( intptr_t )gdeObjectClass::esmFixed );
 		pChkIsGhost->SetChecked( false );
 		pChkCanInstantiate->SetChecked( true );
+		pChkInheritSOBillboards->SetChecked( true );
+		pChkInheritSOComponents->SetChecked( true );
+		pChkInheritSOLights->SetChecked( true );
+		pChkInheritSOSnapPoints->SetChecked( true );
+		pChkInheritSOParticleEmitters->SetChecked( true );
+		pChkInheritSOForceFields->SetChecked( true );
+		pChkInheritSOEnvMapProbes->SetChecked( true );
+		pChkInheritSOSpeakers->SetChecked( true );
+		pChkInheritSONavigationSpaces->SetChecked( true );
+		pChkInheritSONavigationBlockers->SetChecked( true );
 		pCBCategory->ClearText();
 		pCBCategory->SetInvalidValue( false );
 		properties.SetPropertyList( NULL );
@@ -1432,6 +1500,16 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	pCBScaleMode->SetEnabled( enabled );
 	pChkIsGhost->SetEnabled( enabled );
 	pChkCanInstantiate->SetEnabled( enabled );
+	pChkInheritSOBillboards->SetEnabled( enabled );
+	pChkInheritSOComponents->SetEnabled( enabled );
+	pChkInheritSOLights->SetEnabled( enabled );
+	pChkInheritSOSnapPoints->SetEnabled( enabled );
+	pChkInheritSOParticleEmitters->SetEnabled( enabled );
+	pChkInheritSOForceFields->SetEnabled( enabled );
+	pChkInheritSOEnvMapProbes->SetEnabled( enabled );
+	pChkInheritSOSpeakers->SetEnabled( enabled );
+	pChkInheritSONavigationSpaces->SetEnabled( enabled );
+	pChkInheritSONavigationBlockers->SetEnabled( enabled );
 	pCBCategory->SetEnabled( enabled );
 	pActionPropertyValueSet->Update();
 	

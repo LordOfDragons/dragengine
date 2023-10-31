@@ -81,7 +81,7 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
-	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
+	vec3 normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	reflectDir = reflect( fragmentDirection, normal );
 	
@@ -131,7 +131,7 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDirBounced ){
 	#define solidity aoSolidity.b
 	
 	// calculate fresnel reflection
-	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
+	vec3 normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -reflectDir, normal ) ), 1.0 );
 	reflectDirBounced = reflect( reflectDir, normal );
 	
@@ -314,7 +314,7 @@ inout float closestBorderDistance, inout vec3 closestColor ){
 			if( hitDistance < order2Distance ){
 				float scale = 1.0;
 				
-				if( order2WeightSum > 0.0 ){
+				if( order2WeightSum > 0.001 ){
 					scale = max( min( order2WeightSum, 1.0 - envMapWeights.y ), 0.0 ) / order2WeightSum;
 				}
 				
@@ -389,14 +389,14 @@ void colorEnvMapReflection( in vec3 position, in vec3 reflectDir, in float rough
 		float scale = 1.0;
 		
 		if( order1WeightSum + order2WeightSum > 1.0 ){
-			scale = max( min( order2WeightSum, 1.0 - order1WeightSum ), 0.0 ) / order2WeightSum;
+			scale = max( min( order2WeightSum, 1.0 - order1WeightSum ), 0.0 ) / max( order2WeightSum, 0.001 );
 		}
 		
 		order1Color += order2Color * vec3( scale );
 		order1WeightSum += order2WeightSum * scale;
 	}
 	
-	if( order1WeightSum > 0.0 ){
+	if( order1WeightSum > 0.001 ){
 		color = order1Color / vec3( order1WeightSum );
 		
 	}else{

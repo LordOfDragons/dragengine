@@ -160,7 +160,7 @@ class TouchSensor
 	end
 	
 	/**
-	 * \brief Visit all touching elements..
+	 * \brief Visit all touching elements.
 	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
 	 */
 	public func void allHits( ColliderListener listener )

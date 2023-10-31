@@ -82,10 +82,10 @@ gdeUOCCTextureSetPathSkin::~gdeUOCCTextureSetPathSkin(){
 
 void gdeUOCCTextureSetPathSkin::Undo(){
 	pTexture->SetPathSkin( pOldValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }
 
 void gdeUOCCTextureSetPathSkin::Redo(){
 	pTexture->SetPathSkin( pNewValue );
-	pObjectClass->NotifyComponentsChanged();
+	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
 }

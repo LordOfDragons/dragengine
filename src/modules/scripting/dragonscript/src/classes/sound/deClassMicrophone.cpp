@@ -30,6 +30,7 @@
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
 #include "../physics/deClassLayerMask.h"
+#include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -287,6 +288,17 @@ void deClassMicrophone::nfSetSpeakerGain::RunFunction( dsRunTime *rt, dsValue *m
 	microphone.SetSpeakerGain( rt->GetValue( 0 )->GetFloat() );
 }
 
+// public func World getParentWorld()
+deClassMicrophone::nfGetParentWorld::nfGetParentWorld( const sInitData &init ) :
+dsFunction( init.clsMic, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld ){
+}
+void deClassMicrophone::nfGetParentWorld::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	const deScriptingDragonScript &ds = *( ( deClassMicrophone* )GetOwnerClass() )->GetScriptModule();
+	
+	ds.GetClassWorld()->PushWorld( rt, microphone.GetParentWorld() );
+}
+
 
 
 // Speakers
@@ -414,6 +426,7 @@ void deClassMicrophone::CreateClassMembers( dsEngine *engine ){
 	init.clsSpk = pClsSpk;
 	init.clsLayerMask = pScrMgr->GetClassLayerMask();
 	init.clsMicrophoneType = pClsMicrophoneType;
+	init.clsWorld = pScrMgr->GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -438,6 +451,7 @@ void deClassMicrophone::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetSpeakerGain( init ) );
 	AddFunction( new nfSetSpeakerGain( init ) );
+	AddFunction( new nfGetParentWorld( init ) );
 	
 	AddFunction( new nfAddSpeaker( init ) );
 	AddFunction( new nfRemoveSpeaker( init ) );

@@ -11,7 +11,7 @@ envLibrary = parent_env.Clone()
 
 # parameters
 distVersionMajor = 1
-distVersionMinor = 3
+distVersionMinor = 4
 srcdir = 'dragonscript-{}.{}'.format(distVersionMajor, distVersionMinor)
 
 if envLibrary[ 'OSWindows' ]:
@@ -28,7 +28,7 @@ else:
 		distVersionMajor, distVersionMinor) )
 	libLinkName = 'dscript'
 
-# check if system libpng is present
+# check if system dragonscript is present
 envLibrary.Append( CPPPATH = [ envLibrary[ 'with_dragonscript_inc' ] ] )
 envLibrary.Append( LIBPATH = [ envLibrary[ 'with_dragonscript_lib' ] ] )
 
@@ -68,6 +68,7 @@ def dragonscriptBuild( target, source, env ):
 		if env['OSWindows'] and env['CROSSCOMPILE_CLANG']:
 			useSanitize = False
 		
+		f.write('version = "{}.{}"\n'.format(distVersionMajor, distVersionMinor))
 		f.write('with_debug = "{}"\n'.format('yes' if envLibrary['with_debug'] else 'no'))
 		f.write('with_sanitize = "{}"\n'.format('yes' if useSanitize else 'no'))
 		f.write('with_verbose = "no"\n')
@@ -129,7 +130,7 @@ depends = parent_env.Alias( 'lib_dragonscript', library )
 envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
 
 parent_targets[ 'lib_dragonscript' ] = {
-	'name' : 'Internal libpng library',
+	'name' : 'Internal DragonScript library',
 	'cpppath' : [ envLibrary.Dir( 'include' ) ],
 	'libpath' : [ envLibrary.Dir( 'lib' ) ],
 	'libs' : libs,

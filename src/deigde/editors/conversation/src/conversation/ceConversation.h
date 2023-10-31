@@ -31,6 +31,7 @@
 #include "target/ceTargetList.h"
 #include "coordsystem/ceCoordSystemList.h"
 #include "prop/cePropList.h"
+#include "../langpack/ceLangPack.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 
@@ -143,7 +144,11 @@ private:
 	decString pCTSPath;
 	decString pCTAPath;
 	decString pCTFIPath;
+	decString pLangPackPath;
+	decString pLangPackEntryName;
 	sPasteSnippetDialogParams pPasteSnippetDialogParams;
+	
+	ceLangPack::Ref pLangPack;
 	
 	decObjectSet pListeners;
 	
@@ -210,24 +215,30 @@ public:
 	
 	/** CTS path. */
 	inline const decString &GetCTSPath() const{ return pCTSPath; }
-	
-	/** Set CTS path. */
 	void SetCTSPath( const char *path );
 	
 	/** CTA path. */
 	inline const decString &GetCTAPath() const{ return pCTAPath; }
-	
-	/** Set CTA path. */
 	void SetCTAPath( const char *path );
 	
 	/** CTFI path. */
 	inline const decString &GetCTFIPath() const{ return pCTFIPath; }
-	
-	/** Set CTFI path. */
 	void SetCTFIPath( const char *path );
+	
+	/** Language pack path. */
+	inline const decString &GetLangPackPath() const{ return pLangPackPath; }
+	void SetLangPackPath( const char *path );
+	
+	/** Language pack entry name. */
+	inline const decString &GetLangPackEntryName() const{ return pLangPackEntryName; }
+	void SetLangPackEntryName( const char *name );
 	
 	/** Paste snippet dialog parameters. */
 	inline sPasteSnippetDialogParams &GetPasteSnippetDialogParams(){ return pPasteSnippetDialogParams; }
+	
+	/** Language pack or nullptr. */
+	inline const ceLangPack::Ref &GetLanguagePack() const{ return pLangPack; }
+	void SetLanguagePack( ceLangPack *langpack );
 	/*@}*/
 	
 	
@@ -295,6 +306,8 @@ public:
 	void AllCameraShots( ceCameraShotList &list ) const;
 	/*@}*/
 	
+	
+	
 	/** \name Gestures */
 	/*@{*/
 	/** Retrieves the gesture list read-only. */
@@ -317,6 +330,8 @@ public:
 	ceGestureList AllGestures() const;
 	void AllGestures( ceGestureList &list ) const;
 	/*@}*/
+	
+	
 	
 	/** \name FacePoses */
 	/*@{*/
@@ -343,6 +358,8 @@ public:
 	ceFacePoseList AllFacePoses() const;
 	void AllFacePoses( ceFacePoseList &list ) const;
 	/*@}*/
+	
+	
 	
 	/** \name Files */
 	/*@{*/
@@ -374,6 +391,8 @@ public:
 	void AllTopics( const char *fileName, ceConversationTopicList &list ) const;
 	/*@}*/
 	
+	
+	
 	/** \name Actors */
 	/*@{*/
 	/** Retrieves the actor list read-only. */
@@ -391,6 +410,8 @@ public:
 	/** Sets the active actor or NULL if none is active. */
 	void SetActiveActor( ceConversationActor *actor );
 	/*@}*/
+	
+	
 	
 	/** \name Coordinate Systems */
 	/*@{*/
@@ -410,6 +431,8 @@ public:
 	void SetActiveCoordSystem( ceCoordSystem *coordSystem );
 	/*@}*/
 	
+	
+	
 	/** \name Props */
 	/*@{*/
 	/** Retrieves the prop list read-only. */
@@ -427,6 +450,8 @@ public:
 	/** Sets the active prop or NULL if none is active. */
 	void SetActiveProp( ceProp *prop );
 	/*@}*/
+	
+	
 	
 	/** \name Notifiers */
 	/*@{*/
@@ -562,6 +587,9 @@ public:
 	void NotifyPlaybackTriggerTableChanged();
 	/** Notifies all that playback mising words changed. */
 	void NotifyPlaybackMissingWordsChanged();
+	
+	/** Notify listeners language pack changed. */
+	void NotifyLanguagePackChanged();
 	/*@}*/
 	
 	

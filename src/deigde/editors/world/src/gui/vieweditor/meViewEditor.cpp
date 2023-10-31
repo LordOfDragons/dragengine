@@ -283,3 +283,9 @@ void meViewEditor::OnMouseMove( int x, int y, bool shift, bool control ){
 
 void meViewEditor::OnMouseWheel( int steps, bool shift, bool control ){
 }
+
+void meViewEditor::OnMouseEnter(){
+}
+
+void meViewEditor::OnMousLeave(){
+}
