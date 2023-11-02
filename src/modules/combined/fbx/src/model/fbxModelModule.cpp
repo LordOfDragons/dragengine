@@ -148,14 +148,14 @@ void fbxModelModule::pLoadModel( deModel &model, fbxScene &scene ){
 	deObjectReference refLoadRig;
 	fbxRig *loadRig = NULL;
 	if( nodePose ){
-		refLoadRig.TakeOver( new fbxRig( scene, *nodePose ) );
+		refLoadRig.TakeOver( new fbxRig( scene, nodePose ) );
 		loadRig = ( fbxRig* )( deObject* )refLoadRig;
 		//loadRig->DebugPrintStructure( *this, "LoadModel ", true );
 		loadModel.MatchClusters( *loadRig );
 		loadModel.BuildWeights();
 	}
 	
-	//loadModel.DebugPrintStructure( *this, "LoadModel ", true );
+	// loadModel.DebugPrintStructure( *this, "LoadSkin ", true );
 	
 	// load textures
 	pLoadModelTextures( model, loadModel );
@@ -228,12 +228,12 @@ void fbxModelModule::pLoadModelTextures( deModel &model, const fbxModel &loadMod
 		
 		const fbxNode &node = *loadModel.GetScene().NodeWithID( connection.OtherID( idModel ) );
 		if( node.GetName() == "Material" ){
-			pLoadModelTexture( model, node );
+			pLoadModelTexture( model, loadModel, node );
 		}
 	}
 }
 
-void fbxModelModule::pLoadModelTexture( deModel &model, const fbxNode &nodeMaterial ){
+void fbxModelModule::pLoadModelTexture( deModel &model, const fbxModel &loadModel, const fbxNode &nodeMaterial ){
 	const decString &name = nodeMaterial.GetPropertyAt( 1 )->CastString().GetValue();
 	const int width = 1024;
 	const int height = 1024;
@@ -242,6 +242,7 @@ void fbxModelModule::pLoadModelTexture( deModel &model, const fbxNode &nodeMater
 	try{
 		texture = new deModelTexture( name, width, height );
 		texture->SetDecalOffset( model.GetTextureCount() );
+		texture->SetDoubleSided( ! loadModel.GetCulling());
 		model.AddTexture( texture );
 		
 	}catch( const deException & ){

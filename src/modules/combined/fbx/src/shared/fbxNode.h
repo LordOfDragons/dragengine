@@ -34,6 +34,7 @@
 
 
 class fbxProperty;
+class fbxScene;
 
 class decBaseFileReader;
 class decBaseFileWriter;
@@ -74,10 +75,10 @@ public:
 	fbxNode();
 	
 	/** \brief Load node. */
-	fbxNode( decBaseFileReader &reader );
+	fbxNode( fbxScene &scene, decBaseFileReader &reader );
 	
 	/** \brief Load node with already read end offset. */
-	fbxNode( decBaseFileReader &reader, int endOffset );
+	fbxNode( fbxScene &scene, decBaseFileReader &reader, int endOffset );
 	
 protected:
 	/** \brief Clean up node. */
@@ -184,7 +185,7 @@ public:
 	
 	
 private:
-	void pRead( decBaseFileReader &reader, int endOffset );
+	void pRead( fbxScene &scene, decBaseFileReader &reader, int endOffset );
 	fbxNode *pProp70Named( const char *name ) const;
 	void pInitID();
 	void pPrepareTransformation();
