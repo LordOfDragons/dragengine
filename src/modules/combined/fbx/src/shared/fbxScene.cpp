@@ -485,6 +485,12 @@ void fbxScene::Save(decBaseFileWriter &writer ){
 
 void fbxScene::DebugPrintStructure( deBaseModule &module, bool verbose ) const{
 	module.LogInfoFormat( "FBX Scene (version %d.%d):", pVersion / 1000, pVersion % 1000 );
+	module.LogInfoFormat( "Axes: up=%d front=%d coord=%d", pUpAxis, pFrontAxis, pCoordAxis );
+	module.LogInfoFormat( "UnitScaleFactor: %g", pUnitScaleFactor );
+	module.LogInfoFormat( "Transformation: [%g,%g,%g,%g] [%g,%g,%g,%g] [%g,%g,%g,%g]",
+		pTransformation.a11, pTransformation.a12, pTransformation.a13, pTransformation.a14,
+		pTransformation.a21, pTransformation.a22, pTransformation.a23, pTransformation.a24,
+		pTransformation.a31, pTransformation.a32, pTransformation.a33, pTransformation.a34);
 	pNode->DebugPrintStructure( module, "", verbose );
 }
 
