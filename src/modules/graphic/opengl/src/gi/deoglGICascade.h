@@ -196,6 +196,11 @@ public:
 	
 	
 	
+	/** Probe position. */
+	decVector ProbePosition( int index ) const;
+	
+	
+	
 	/** Probes inside view with epfValid cleared are present. */
 	inline bool HasInvalidProbesInsideView() const{ return pHasInvalidProbesInsideView; }
 	
@@ -220,6 +225,9 @@ public:
 	
 	/** Count of probes to update. */
 	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
+	
+	/** Index of probe if in list of update probes otherwise -1. */
+	int IndexOfUpdateProbe( int probeIndex ) const;
 	
 	/** Count of probes to ray cache update. */
 	inline int GetRayCacheProbeCount() const{ return pRayCacheProbeCount; }

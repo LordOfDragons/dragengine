@@ -179,6 +179,12 @@ decPoint3 deoglGICascade::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
 
 
 
+decVector deoglGICascade::ProbePosition( int index ) const{
+	return pProbes[ index ].position + pProbes[ index ].offset;
+}
+
+
+
 void deoglGICascade::SetRequiresFullUpdateInsideView( bool requiresUpdate ){
 	pRequiresFullUpdateInsideView = requiresUpdate;
 }
@@ -199,6 +205,16 @@ void deoglGICascade::PrepareUBOClearProbes( deoglSPBlockUBO &ubo ) const{
 		ubo.SetParameterDataArrayUVec4( 0, i, pClearProbes[ j ],
 			pClearProbes[ j + 1 ], pClearProbes[ j + 2 ], pClearProbes[ j + 3 ] );
 	}
+}
+
+int deoglGICascade::IndexOfUpdateProbe( int probeIndex ) const{
+	int i;
+	for( i=0; i<pUpdateProbeCount; i++ ){
+		if( probeIndex == pUpdateProbes[ i ] ){
+			return i;
+		}
+	}
+	return -1;
 }
 
 

@@ -59,12 +59,16 @@ private:
 	const deoglPipeline *pPipelineDebugProbeXRay;
 	const deoglPipeline *pPipelineDebugProbeOffset;
 	const deoglPipeline *pPipelineDebugProbeOffsetXRay;
+	const deoglPipeline *pPipelineDebugProbeRays;
+	const deoglPipeline *pPipelineDebugProbeRaysXRay;
 	const deoglPipeline *pPipelineDebugProbeUpdatePass1;
 	const deoglPipeline *pPipelineDebugProbeUpdatePass2;
 	
 	deoglSPBSingleUse::Ref pUBORenderLightSingleUse;
 	deoglSPBlockUBO::Ref pUBORenderLight;
 	
+	deoglSPBlockSSBO::Ref pSSBODebugRayLight;
+	int pDebugRayLightIndex;
 	
 	
 	deoglDebugInformation::Ref pDebugInfoGI;
