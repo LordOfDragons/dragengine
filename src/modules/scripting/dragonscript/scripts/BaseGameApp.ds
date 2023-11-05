@@ -997,7 +997,7 @@ class BaseGameApp extends Game
 		end
 		
 		if pTranslationManager.getActive() == null
-			// backwards compatibility
+			// backward compatibility
 			var UnicodeString lpName = defaultLanguagePackName
 			var String paramValue = pConfiguration.getStringAt("defaultLanguagePackName", null)
 			if paramValue != null

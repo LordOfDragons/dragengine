@@ -662,7 +662,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			// body turn
 			if isMoving()
 				// slightly larger than 90 degrees required to get normalizing affecting only
-				// moving orientations pointing strictly backwards
+				// moving orientations pointing strictly backward
 				pMovingBodyTurn = DEMath.normalize(pMovingDirection, -90.1, 90.1)
 				
 			else
