@@ -527,11 +527,6 @@ class CommandsBAAMovement
 				helper.keyboardBindKeyCode(InputEventKey.s, "toggleRun")
 			end
 			
-			if helper.hasGamepad()
-				helper.gamepadBindStick(0, "analogMoveLR", "analogMoveFB")
-				helper.gamepadBindStick(1, "analogLookLR", "analogLookUD")
-			end
-			
 		case InputScheme.wasd
 			if helper.hasMouse()
 				helper.mouseBindMove("analogLookLR", "analogLookUD")
@@ -550,13 +545,20 @@ class CommandsBAAMovement
 				helper.keyboardBindKeyCode(InputEventKey.shift, InputEventKeyLocation.left, "toggleRun")
 			end
 			
-			if helper.hasGamepad()
-				helper.gamepadBindStick(0, "analogMoveLR", "analogMoveFB")
-				helper.gamepadBindStick(1, "analogLookLR", "analogLookUD")
-			end
-			
 		else
 			throw EInvalidParam.new()
+		end
+		
+		if helper.hasGamepad()
+			if helper.gamepadBindStick(0, "analogMoveLR", "analogMoveFB")
+				helper.gamepadBindStick(1, "analogLookLR", "analogLookUD")
+				
+			else
+				helper.bindAxis(helper.getGamepad(), 0, "analogMoveLR")
+				helper.bindAxis(helper.getGamepad(), 1, "analogMoveFB")
+				helper.bindAxis(helper.getGamepad(), 2, "analogLookLR")
+				helper.bindAxis(helper.getGamepad(), 3, "analogLookUD")
+			end
 		end
 		
 		if helper.hasVRHand(true)

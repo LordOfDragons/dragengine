@@ -567,6 +567,31 @@ class DefaultBindingHelper
 	end
 	
 	/**
+	 * \brief Bind command to gamepad trigger.
+	 * \version 1.20
+	 * 
+	 * \param trigger Number of trigger starting with 0 for the first.
+	 * \param command Name of command to bind to horizontal movement or null.
+	 * \returns true if gamepad is present and all commands have been bound.
+	 */
+	public func bool gamepadBindTrigger(int trigger, String command)
+		return bindTrigger(pGamepad, InputDeviceAxisType.trigger, trigger, command)
+	end
+	
+	/**
+	 * \brief Bind command to gamepad trigger.
+	 * \version 1.20
+	 * 
+	 * \param trigger Number of trigger starting with 0 for the first.
+	 * \param pull Name of command to bind to pull or null.
+	 * \param release Name of command to bind to release or null.
+	 * \returns true if gamepad is present and all commands have been bound.
+	 */
+	public func bool gamepadBindTrigger(int trigger, String pull, String release)
+		return bindTrigger(pGamepad, InputDeviceAxisType.trigger, trigger, pull, release)
+	end
+	
+	/**
 	 * \brief Bind command to gamepad button.
 	 * 
 	 * \param button Number of button starting with 0 for the first.
@@ -583,6 +608,26 @@ class DefaultBindingHelper
 		end
 		
 		return bindButton(pGamepad, button, command)
+	end
+	
+	/**
+	 * \brief Bind command to gamepad button.
+	 * 
+	 * \param button Number of button starting with 0 for the first.
+	 * \param type Type of button.
+	 * \param command Name of command to bind to button or null.
+	 * \returns true if gamepad is present and command has been bound.
+	 */
+	public func bool gamepadBindButton(int button, InputDeviceButtonType type, String command)
+		if button < 0
+			throw EInvalidParam.new()
+		end
+		
+		if pGamepad == null or command == null
+			return false
+		end
+		
+		return bindButton(pGamepad, type, button, command)
 	end
 	
 	/*@}*/
@@ -779,7 +824,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind.
 	 * \returns true if button is present on device and bound to command.
 	 */
-	public func bool bindButton(InputDevice device, int button , String command)
+	public func bool bindButton(InputDevice device, int button, String command)
 		if button < 0 or button >= device.getButtonCount()
 			return false
 		end
@@ -802,7 +847,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind.
 	 * \returns true if button is present on device and bound to command.
 	 */
-	public func bool bindButton(InputDevice device, InputDeviceButtonType type, int button , String command)
+	public func bool bindButton(InputDevice device, InputDeviceButtonType type, int button, String command)
 		if button < 0 or button >= device.getButtonCount()
 			return false
 		end
