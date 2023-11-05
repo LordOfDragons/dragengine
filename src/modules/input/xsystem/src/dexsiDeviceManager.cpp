@@ -142,12 +142,17 @@ void dexsiDeviceManager::LogDevices(){
 		
 		const int buttonCount = device.GetButtonCount();
 		if( buttonCount > 0 ){
-			pModule.LogInfo( "  Buttons:" );
-			for( j=0; j<buttonCount; j++ ){
-				const dexsiDeviceButton &button = *device.GetButtonAt( j );
-				pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
-					button.GetName().GetString(), button.GetID().GetString(),
-					button.GetEvdevCode(), j );
+			if( device.GetType() == deInputDevice::edtKeyboard ){
+				pModule.LogInfoFormat( "  Keys: %d", buttonCount );
+				
+			}else{
+				pModule.LogInfo( "  Buttons:" );
+				for( j=0; j<buttonCount; j++ ){
+					const dexsiDeviceButton &button = *device.GetButtonAt( j );
+					pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
+						button.GetName().GetString(), button.GetID().GetString(),
+						button.GetEvdevCode(), j );
+				}
 			}
 		}
 	}

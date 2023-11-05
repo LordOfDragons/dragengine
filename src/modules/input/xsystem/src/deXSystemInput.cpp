@@ -146,7 +146,7 @@ bool deXSystemInput::Init(){
 		
 		pDevices = new dexsiDeviceManager( *this );
 		pDevices->UpdateDeviceList();
-		//pDevices->LogDevices();
+		pDevices->LogDevices();
 		
 	}catch( const deException & ){
 		CleanUp();
