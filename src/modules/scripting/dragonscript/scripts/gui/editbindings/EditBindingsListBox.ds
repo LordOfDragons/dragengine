@@ -43,15 +43,15 @@ pin Dragengine.Utils
 class EditBindingsListBox extends ListBox
 	/** \brief Capture binding result listener. */
 	public class CaptureFinished implements WindowDialog.ResultListener
-		private var EditBindingsListBox pListBox
+		var EditBindingsListBox pListBox
 		
 		/** \brief Create listener. */
-		public func new(EditBindingsListBox listBox)
+		func new(EditBindingsListBox listBox)
 			pListBox = listBox
 		end
 		
 		/** \brief Dialog closed with result. */
-		public func void onResult(Object result)
+		func void onResult(Object result)
 			if result != null
 				pListBox.selectedAddCapturedBinding(\
 					result cast WindowCaptureBinding.CaptureResult, false)
@@ -61,19 +61,19 @@ class EditBindingsListBox extends ListBox
 	
 	/** \brief Reassign result listener. */
 	public class ReassignResult implements WindowDialog.ResultListener
-		private var EditBindingsListBox pListBox
+		var EditBindingsListBox pListBox
 		
 		/** \brief Captured binding. */
-		private var WindowCaptureBinding.CaptureResult pCaptured
+		var WindowCaptureBinding.CaptureResult pCaptured
 		
 		/** \brief Create listener. */
-		public func new(EditBindingsListBox listBox, WindowCaptureBinding.CaptureResult captured)
+		func new(EditBindingsListBox listBox, WindowCaptureBinding.CaptureResult captured)
 			pListBox = listBox
 			pCaptured = captured
 		end
 		
 		/** \brief Dialog closed with result. */
-		public func void onResult(Object result)
+		func void onResult(Object result)
 			if result cast bool
 				pListBox.selectedAddCapturedBinding(pCaptured, true)
 			end
@@ -85,23 +85,23 @@ class EditBindingsListBox extends ListBox
 	 * \version 1.7
 	 */
 	public class DoubleClickCaptureBinding extends ClickedActionListener
-		private var EditBindingsListBox pListBox
+		var EditBindingsListBox pListBox
 		
 		/** \brief Create listener. */
-		public func new(EditBindingsListBox listBox)
+		func new(EditBindingsListBox listBox)
 			pListBox = listBox
 			setMultiClickCount(2)
 		end
 		
 		/** Double click detected. */
-		public func void onAction()
+		func void onAction()
 			pListBox.selectedCaptureBinding()
 		end
 	end
 	
 	
 	
-	private var TranslationManager pTranslationManager
+	var TranslationManager pTranslationManager
 	
 	
 	
@@ -110,7 +110,7 @@ class EditBindingsListBox extends ListBox
 	 * 
 	 * \param model Model to use.
 	 */
-	public func new(EditBindingsListModel model) this(model, EditBindingsListRenderer.new())
+	func new(EditBindingsListModel model) this(model, EditBindingsListRenderer.new())
 	end
 	
 	/**
@@ -119,7 +119,7 @@ class EditBindingsListBox extends ListBox
 	 * \param model Model to use.
 	 * \param renderer Renderer to use.
 	 */
-	public func new(EditBindingsListModel model, EditBindingsListRenderer renderer) \
+	func new(EditBindingsListModel model, EditBindingsListRenderer renderer) \
 	super(model, renderer)
 		pTranslationManager = TranslationManager.get()
 		setDesignerSelector(getDesignerSelector() + ".EditBindings")
@@ -134,7 +134,7 @@ class EditBindingsListBox extends ListBox
 	 * 
 	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
 	 */
-	public func TranslationManager getTranslationManager()
+	func TranslationManager getTranslationManager()
 		return pTranslationManager
 	end
 	
@@ -144,14 +144,14 @@ class EditBindingsListBox extends ListBox
 	 * 
 	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
 	 */
-	public func void setTranslationManager(TranslationManager translationManager)
+	func void setTranslationManager(TranslationManager translationManager)
 		pTranslationManager = translationManager
 	end
 	
 	
 	
 	/** \brief Capture and add binding for selected entry if any is selected. */
-	public func void selectedCaptureBinding()
+	func void selectedCaptureBinding()
 		var int selection = getSelectedElement()
 		if selection == -1
 			return
@@ -179,7 +179,7 @@ class EditBindingsListBox extends ListBox
 	end
 	
 	/** \brief Remove all key bindings of selected entry if any is selected. */
-	public func void selectedRemoveBindings()
+	func void selectedRemoveBindings()
 		var int selection = getSelectedElement()
 		if selection == -1
 			return
@@ -200,13 +200,13 @@ class EditBindingsListBox extends ListBox
 	end
 	
 	/** \brief Add capture result as binding to selected entry. */
-	public func void selectedAddCapturedBinding(\
+	func void selectedAddCapturedBinding(\
 	WindowCaptureBinding.CaptureResult captured, bool reassign)
 		var int selection = getSelectedElement()
 		if selection == -1
 			return
 		end
-// 		
+		
 		var EditBindingsListModel model = getModel() cast EditBindingsListModel
 		var EditBindingsListModelEntry entry = model.getAt(selection) cast EditBindingsListModelEntry
 		var BindingManager bindingManager = model.getBindingManager()
@@ -335,7 +335,7 @@ class EditBindingsListBox extends ListBox
 	
 	
 	/** \brief Key pressed event. */
-	public func void onKeyPress(KeyEvent event)
+	func void onKeyPress(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.backspace, InputEventKey.delete
 			selectedRemoveBindings()
@@ -349,7 +349,7 @@ class EditBindingsListBox extends ListBox
 	end
 	
 	/** \brief Mouse button pressed. */
-	public func void onButtonPress(MouseEvent event)
+	func void onButtonPress(MouseEvent event)
 		super.onButtonPress(event)
 		
 		if event.getButton() == InputEventMouseButton.right
@@ -358,7 +358,7 @@ class EditBindingsListBox extends ListBox
 	end
 	
 	/** \brief Gamepad button has been pressed. */
-	public func void onGamepadButtonPressed(GamepadEvent event)
+	func void onGamepadButtonPressed(GamepadEvent event)
 		if event.getCode() == 0
 			selectedCaptureBinding()
 			

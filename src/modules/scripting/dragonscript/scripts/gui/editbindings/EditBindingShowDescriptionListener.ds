@@ -32,13 +32,13 @@ pin Dragengine.Scenery
  * \version 1.16
  */
 class EditBindingShowDescriptionListener extends DefaultListModelListener
-	private var EditBindingsListBox pListBox
-	private var TextModel pModelInfo
+	var EditBindingsListBox pListBox
+	var TextModel pModelInfo
 	
 	
 	
 	/** \brief Create listener. */
-	public func new(EditBindingsListBox listBox, TextModel modelInfo)
+	func new(EditBindingsListBox listBox, TextModel modelInfo)
 		if listBox == null
 			throw ENullPointer.new("listBox")
 		end
@@ -53,19 +53,19 @@ class EditBindingShowDescriptionListener extends DefaultListModelListener
 	
 	
 	/** \brief Selection changed. */
-	public func void selectionChanged(ListModel listModel)
+	func void selectionChanged(ListModel listModel)
 		updateModelInfo()
 	end
 	
 	/** \brief Content changed. */
-	public func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
+	func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
 		updateModelInfo()
 	end
 	
 	
 	
 	/** \brief Update info model. */
-	public func void updateModelInfo()
+	func void updateModelInfo()
 		if pListBox.getModel().getSelected() != -1
 			var EditBindingsListModelEntry selected = pListBox.getModel().getAt(\
 				pListBox.getModel().getSelected()) cast EditBindingsListModelEntry

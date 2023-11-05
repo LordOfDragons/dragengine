@@ -77,6 +77,7 @@ pin Dragengine.Utils
  * - "interactPrompt{(id)}.verb": ECPUnicodeString
  * - "interactPrompt{(id)}.description": ECPUnicodeString
  * - "interactPrompt{(id)}.command": ECPString
+ * - "interactPrompt{(id)}.alternativeCommands": ECPStringList
  * - "interactPrompt{(id)}.enabled": ECPBoolean
  * - "interactPrompt{(id)}.bones": ECPStringList
  * - "interactPrompt{(id)}.maximumDistance": ECPFloat
@@ -92,6 +93,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		var UnicodeString pVerb
 		var UnicodeString pDescription
 		var String pCommand
+		var Array pAlternativeCommands
 		var bool pEnabled
 		var Array pBones
 		var float pMaximumDistance
@@ -102,6 +104,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		/** \brief Create behavior instance. */
 		func new(ECBehaviorInteractPrompt ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
+			pAlternativeCommands = Array.new()
 		end
 		
 		
@@ -115,6 +118,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 			pVideo = pECBehavior.getVideo().getVideo(stub, eclass)
 			pStyle = pECBehavior.getStyle().getValue(stub)
 			pCommand = pECBehavior.getCommand().getValue(stub)
+			pAlternativeCommands = pECBehavior.getAlternativeCommands().getList(stub, codec)
 			pEnabled = pECBehavior.getEnabled().getValue(stub)
 			pBones = pECBehavior.getBones().getList(stub, codec)
 			pMaximumDistance = pECBehavior.getMaximumDistance().getValue(stub)
@@ -223,6 +227,14 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 			pCommand = command
 		end
 		
+		/**
+		 * \brief Alternative commands as Array of String.
+		 * \version 1.20
+		 */
+		func Array getAlternativeCommands()
+			return pAlternativeCommands
+		end
+		
 		/** \brief Prompt is enabled. */
 		func bool getEnabled()
 			return pEnabled
@@ -311,6 +323,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	var ECPUnicodeString pDescription
 	var ECPString pDescriptionTranslate
 	var ECPString pCommand
+	var ECPStringList pAlternativeCommands
 	var ECPBoolean pEnabled
 	var ECPStringList pBones
 	var ECPFloat pMaximumDistance
@@ -347,6 +360,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		eclass.addProperty(pDescription = ECPUnicodeString.new(prefix + "description", ""))
 		eclass.addProperty(pDescriptionTranslate = ECPString.new(prefix + "descriptionTranslate", ""))
 		eclass.addProperty(pCommand = ECPString.new(prefix + "command", ""))
+		eclass.addProperty(pAlternativeCommands = ECPStringList.new(prefix + "alternativeCommands"))
 		eclass.addProperty(pEnabled = ECPBoolean.new(prefix + "enabled", true))
 		eclass.addProperty(pBones = ECPStringList.new(prefix + "bones"))
 		eclass.addProperty(pMaximumDistance = ECPFloat.new(prefix + "maximumDistance", 1000, 0))
@@ -401,6 +415,14 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	/** \brief Command. */
 	func ECPString getCommand()
 		return pCommand
+	end
+	
+	/**
+	 * \brief Alternative commands.
+	 * \version 1.20
+	 */
+	func ECPStringList getAlternativeCommands()
+		return pAlternativeCommands
 	end
 	
 	/** \brief Prompt is enabled. */
