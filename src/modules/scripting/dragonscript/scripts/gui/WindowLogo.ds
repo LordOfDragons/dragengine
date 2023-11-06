@@ -657,11 +657,8 @@ class WindowLogo extends Window
 	/** \brief Gamepad axis has moved. */
 	func void onGamepadAxisMoved(GamepadEvent event)
 		super.onGamepadAxisMoved(event)
-		if event.getAxisValue() > 0.5
-			select event.getInputDevice().getAxisAt(event.getCode()).getType()
-			case InputDeviceAxisType.trigger
-				onPlayerSkip()
-			end
+		if event.getAxisValue() > 0.5 and event.getInputAxisType() == InputDeviceAxisType.trigger
+			onPlayerSkip()
 		end
 	end
 	
