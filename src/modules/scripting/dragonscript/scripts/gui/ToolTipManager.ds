@@ -35,42 +35,40 @@ pin Dragengine.Utils.StyledText.Definition
  * Supports tool tips of type String and StyledTextDocument
  */
 class ToolTipManager
-	/**
-	 * \deprecated Since 1.14 .
-	 */
+	/** \deprecated Since 1.14 . */
 	class ListenMousePointer extends DefaultMousePointerListener
-		private var ToolTipManager pManager
+		var ToolTipManager pManager
 		
-		public func new(ToolTipManager manager)
+		func new(ToolTipManager manager)
 			pManager = manager
 		end
 		
 		/** \brief Mouse pointer changed. */
-		public func void onMousePointerChanged(MousePointerEvent event)
+		func void onMousePointerChanged(MousePointerEvent event)
 			pManager.update()
 		end
 		
 		/** \brief Mouse pointer has been hidden. */
-		public func void onMousePointerHidden(MousePointerEvent event)
+		func void onMousePointerHidden(MousePointerEvent event)
 			pManager.update()
 		end
 		
 		/** \brief Mouse pointer has been shown. */
-		public func void onMousePointerShown(MousePointerEvent event)
+		func void onMousePointerShown(MousePointerEvent event)
 			pManager.update()
 		end
 		
 		/** \brief Mouse pointer moved. */
-		public func void onMousePointerMoved(MousePointerEvent event)
+		func void onMousePointerMoved(MousePointerEvent event)
 			pManager.update()
 		end
 	end
 	
 	
 	
-	private var Desktop pDesktop
-	private var WindowToolTip pPopup
-	private var Object pToolTip
+	var Desktop pDesktop
+	var WindowToolTip pPopup
+	var Object pToolTip
 	
 	
 	
@@ -78,7 +76,7 @@ class ToolTipManager
 	 * \brief Create tool tip manager.
 	 * \param desktop Desktop widget to listen on.
 	 */
-	public func new(Desktop desktop)
+	func new(Desktop desktop)
 		if desktop == null
 			throw ENullPointer.new("desktop")
 		end
@@ -90,7 +88,7 @@ class ToolTipManager
 	end
 	
 	/** \brief Dispose of tool tip manager. */
-	public func void dispose()
+	func void dispose()
 		setPopup(null)
 		pToolTip = null
 		
@@ -100,12 +98,12 @@ class ToolTipManager
 	
 	
 	/** \brief Desktop to listen on. */
-	public func Desktop getDesktop()
+	func Desktop getDesktop()
 		return pDesktop
 	end
 	
 	/** \brief Popup window. */
-	public func WindowToolTip getPopup()
+	func WindowToolTip getPopup()
 		return pPopup
 	end
 	
@@ -132,7 +130,7 @@ class ToolTipManager
 	end
 	
 	/** \brief Shown tool tip or null. */
-	public func Object getToolTip()
+	func Object getToolTip()
 		return pToolTip
 	end
 	
@@ -161,7 +159,7 @@ class ToolTipManager
 	
 	
 	/** \brief Update tool tip. */
-	public func void update()
+	func void update()
 		var Widget widget = pDesktop.getHoverWidget()
 		var Object toolTip
 		
@@ -248,7 +246,7 @@ class ToolTipManager
 	 * \brief Tool tip changed.
 	 * \version 1.14
 	 */
-	public func void onToolTipChanged()
+	func void onToolTipChanged()
 	end
 end
 

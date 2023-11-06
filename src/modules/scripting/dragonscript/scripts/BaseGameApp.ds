@@ -253,6 +253,22 @@ class BaseGameApp extends Game
 		public static fixed var int custom = 3
 	end
 	
+	/**
+	 * \brief Global event send if input devices have been attached or detached.
+	 * \version 1.20
+	 * 
+	 * The event receives no additional data.
+	 */
+	public static var String eventDeviceAttachedDetached = "deviceAttachedDetached"
+	
+	/**
+	 * \brief Global event send if input device parameters have changed.
+	 * \version 1.20
+	 * 
+	 * The event receives no additional data.
+	 */
+	public static var String eventDeviceParamsChanged = "deviceParamsChanged"
+	
 	
 	
 	/**
@@ -596,9 +612,26 @@ class BaseGameApp extends Game
 	 * 
 	 * There is usually no need to overwrite this method in a subclass. If you do so
 	 * super-call this method first.
+	 * 
+	 * \par Version 1.20
+	 * 
+	 * Upon receiving an event of type InputEventType.deviceAttachedDetached or
+	 * InputEventType.deviceParamsChanged a global event is send. The event name is
+	 * BaseGameApp.eventDeviceAttachedDetached respectively BaseGameApp.eventDeviceParamsChanged.
+	 * Both events receive no additional arguments. The event is send before the active
+	 * InputProcessor receives the event for processing.
 	 */
 	public func void inputEvent(InputEvent event)
 		pBindingManager.checkInputEvent(event)
+		
+		select event.getType()
+		case InputEventType.deviceAttachedDetached
+			pGlobalEvents.sendEvent(eventDeviceAttachedDetached)
+			
+		case InputEventType.deviceParamsChanged
+			pGlobalEvents.sendEvent(eventDeviceParamsChanged)
+		end
+		
 		pInputProcessor.inputEvent(event)
 	end
 	
@@ -938,6 +971,9 @@ class BaseGameApp extends Game
 		
 		try
 			desktop.setGuiTheme(guitheme)
+			if Engine.isCompatibleVersionNewer(1, 19)
+				desktop.setGamepadController(GamepadController.new(pGlobalEvents, desktop))
+			end
 			setDesktop(desktop)
 			
 		catch Exception e

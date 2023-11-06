@@ -123,6 +123,8 @@ class GamepadEvent extends ModifiableEvent
 		return pAxisValue
 	end
 	
+	
+	
 	/**
 	 * \brief Input device or null.
 	 * \version 1.20
@@ -141,23 +143,48 @@ class GamepadEvent extends ModifiableEvent
 	end
 	
 	/**
+	 * \brief Input device button or null.
+	 * \version 1.20
+	 * 
+	 * Call this only for events of type idGamepadButtonPressed or idGamepadButtonReleased.
+	 */
+	func InputDeviceButton getInputDeviceButton()
+		var InputDevice device = getInputDevice()
+		if device == null
+			return null
+		end
+		
+		return device.getButtonAt(pCode)
+	end
+	
+	/**
 	 * \brief Input button type or null if not valid.
 	 * \version 1.20
 	 * 
 	 * Call this only for events of type idGamepadButtonPressed or idGamepadButtonReleased.
 	 */
 	func InputDeviceButtonType getInputButtonType()
-		var InputDevice device = getInputDevice()
-		if device == null
-			return null
-		end
-		
-		var InputDeviceButton button = device.getButtonAt(pCode)
+		var InputDeviceButton button = getInputDeviceButton()
 		if button == null
 			return null
 		end
 		
 		return button.getType()
+	end
+	
+	/**
+	 * \brief Input device axis or null.
+	 * \version 1.20
+	 * 
+	 * Call this only for events of type idGamepadAxisPressed or idGamepadAxisReleased.
+	 */
+	func InputDeviceAxis getInputDeviceAxis()
+		var InputDevice device = getInputDevice()
+		if device == null
+			return null
+		end
+		
+		return device.getAxisAt(pCode)
 	end
 	
 	/**
@@ -167,12 +194,7 @@ class GamepadEvent extends ModifiableEvent
 	 * Call this only for events of type idGamepadAxisMoved.
 	 */
 	func InputDeviceAxisType getInputAxisType()
-		var InputDevice device = getInputDevice()
-		if device == null
-			return null
-		end
-		
-		var InputDeviceAxis axis = device.getAxisAt(pCode)
+		var InputDeviceAxis axis = getInputDeviceAxis()
 		if axis == null
 			return null
 		end

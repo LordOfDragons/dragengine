@@ -310,7 +310,7 @@ class DisplayInteractPromptEntry extends Panel
 				pLabelDescription.setText(null)
 				pLabelDescription.setVisible(false)
 				
-				pPanelBindings.setVisible(false)
+				clearCommands()
 				
 				setDesignerSelector(pBaseSelectorName)
 			end

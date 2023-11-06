@@ -37,21 +37,19 @@ pin Dragengine.Utils
  * name is displayed.
  */
 class EnumListElementRenderer extends DefaultListElementRenderer
-	private var Dictionary pMap
+	var Dictionary pMap
 	
 	
 	
-	/**
-	 * \brief Create list element renderer.
-	 */
-	public func new()
+	/** \brief Create list element renderer. */
+	func new()
 		pMap = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Set name for enumeration value. */
-	public func void setNameFor(Enumeration value, String name)
+	func void setNameFor(Enumeration value, String name)
 		if value == null
 			throw ENullPointer.new("value")
 		end
@@ -63,17 +61,17 @@ class EnumListElementRenderer extends DefaultListElementRenderer
 	end
 	
 	/** \brief Remove name for enumeration value if present. */
-	public func void removeNameFor(Enumeration value)
+	func void removeNameFor(Enumeration value)
 		pMap.removeIfExisting(value)
 	end
 	
 	/** \brief Remove all enumeration value names. */
-	public func void removeAllNames()
+	func void removeAllNames()
 		pMap.removeAll()
 	end
 	
 	/** \brief Name for enumeration value or null if not set. */
-	public func String nameFor(Enumeration value)
+	func String nameFor(Enumeration value)
 		if value == null
 			return null
 		end
@@ -85,14 +83,14 @@ class EnumListElementRenderer extends DefaultListElementRenderer
 	 * 
 	 * Block receives as first argument Enumeration value and as second argument String name.
 	 */
-	public func void forEachName(Block ablock)
+	func void forEachName(Block ablock)
 		pMap.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Update renderer value. */
-	public func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
+	func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
 		var Enumeration value = element cast Enumeration
 		var String text
 		
