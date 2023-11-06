@@ -87,13 +87,15 @@ class GamepadController extends FrameUpdateListener
 		focusY
 	end
 	
-	private class AxisState
+	/** \brief Axis state. */
+	protected class AxisState
 		var InputEventSource pSystem
 		var int pDevice
 		var int pAxis
 		var AxisTarget pTarget
 		var float pValue
 		
+		/** \brief Create axis state. */
 		func new(InputEventSource system, int device, int axis, AxisTarget target)
 			pSystem = system
 			pDevice = device
@@ -101,10 +103,12 @@ class GamepadController extends FrameUpdateListener
 			pTarget = target
 		end
 		
+		/** \brief Axis state matches event parameters. */
 		func bool matches(InputEventSource system, int device, int axis)
 			return pSystem == system and pDevice == device and pAxis == axis
 		end
 		
+		/** \brief Update axis state using value sending events to controller if required. */
 		func void update(GamepadController controller, float value)
 			select pTarget
 			case AxisTarget.button
@@ -123,6 +127,7 @@ class GamepadController extends FrameUpdateListener
 			pValue = value
 		end
 		
+		/** \brief Combine mouse movement. */
 		func Vector2 combineMouse(Vector2 result)
 			select pTarget
 			case AxisTarget.mouseX
@@ -136,6 +141,7 @@ class GamepadController extends FrameUpdateListener
 			end
 		end
 		
+		/** \brief Combine focus. */
 		func Vector2 combineFocus(Vector2 result)
 			select pTarget
 			case AxisTarget.focusX
@@ -147,6 +153,11 @@ class GamepadController extends FrameUpdateListener
 			else
 				return result
 			end
+		end
+		
+		/** \brief Clear value to 0. */
+		func void clear()
+			pValue = 0
 		end
 	end
 	
@@ -253,6 +264,22 @@ class GamepadController extends FrameUpdateListener
 		case GamepadEvent.idGamepadButtonReleased
 			processEventButtonRelease(event cast GamepadEvent)
 		end
+	end
+	
+	/**
+	 * \brief Clear mouse movement and accumulated states.
+	 * 
+	 * Call this after switching input processor away from the widget. This will clear all
+	 * accumulated mouse movement to stop moving the mouse until the input processing switches
+	 * back to the widget.
+	 */
+	func void clear()
+		pButtonPressCount = 0
+		pMouseMoveAccum = Vector2.new()
+		
+		pAxisStates.forEach(block AxisState each
+			each.clear()
+		end)
 	end
 	
 	

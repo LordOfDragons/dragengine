@@ -852,6 +852,10 @@ class BaseGameApp extends Game
 	/** \brief Set input processor. */
 	public func void setInputProcessor(InputProcessor inputProcessor)
 		pInputProcessor = inputProcessor
+		
+		if pDesktop != null and pDesktop.getGamepadController() != null
+			pDesktop.getGamepadController().clear()
+		end
 	end
 	
 	/** \brief Set input processor to forward events to desktop widget. */

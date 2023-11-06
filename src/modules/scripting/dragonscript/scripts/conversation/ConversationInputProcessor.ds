@@ -34,10 +34,26 @@ pin Dragengine.Utils
  * Can skip actor speaking or entire conversation if required.
  */
 class ConversationInputProcessor extends DefaultInputProcessor
+	private class FastForwardSpeakingTrigger extends GamepadTriggerTracker.DefaultListener
+		var WeakReference pProcessor
+		
+		func new(ConversationInputProcessor processor)
+			pProcessor = WeakReference.new(processor)
+		end
+		
+		func void triggerPulled(InputEventSource system, int device, int axis, int trigger)
+			var ConversationInputProcessor processor = pProcessor.get() cast ConversationInputProcessor
+			if processor != null
+				processor.fastForwardSpeaking()
+			end
+		end
+	end
+	
+	
 	var ConversationPlayback pPlayback
 	var BindingManager pBindingManager
 	var Array pAllowedCommands
-	
+	var GamepadTriggerTracker pGamepadTriggerTracker
 	
 	
 	/** \brief Create conversation input processor. */
@@ -48,6 +64,8 @@ class ConversationInputProcessor extends DefaultInputProcessor
 		
 		pPlayback = playback
 		pAllowedCommands = Array.new()
+		pGamepadTriggerTracker = GamepadTriggerTracker.new()
+		pGamepadTriggerTracker.addListener(FastForwardSpeakingTrigger.new(this))
 	end
 	
 	
@@ -75,6 +93,14 @@ class ConversationInputProcessor extends DefaultInputProcessor
 	/** \brief Set command names allowed during conversation. */
 	func void setAllowedCommands(Array list)
 		pAllowedCommands = list
+	end
+	
+	/**
+	 * \brief Gamepad trigger tracker.
+	 * \version 1.20
+	 */
+	func GamepadTriggerTracker getGamepadTriggerTracker()
+		return pGamepadTriggerTracker
 	end
 	
 	
@@ -110,16 +136,13 @@ class ConversationInputProcessor extends DefaultInputProcessor
 			//if event.getCode() == InputEventMouseButton.left
 				fastForwardSpeaking()
 			//end
-			
-		case InputEventType.buttonPress
-			//if event.getCode() == 0
-				fastForwardSpeaking()
-			//end
 		end
+		
+		pGamepadTriggerTracker.inputEvent(event)
 	end
 	
 	/** \brief Fast forward speaking. */
-	protected func void fastForwardSpeaking()
+	func void fastForwardSpeaking()
 		pPlayback.fastForwardSpeaking()
 	end
 end
