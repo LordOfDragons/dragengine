@@ -51,8 +51,6 @@ class Button extends Container
 	
 	/** \brief Create button. */
 	public func new()
-		pPressed = false
-		pHasGrab = false
 		pText = ""
 		pActionListeners = Array.new()
 		

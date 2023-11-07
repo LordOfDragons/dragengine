@@ -38,78 +38,190 @@ pin Dragengine.Utils
  * constructor.
  */
 class PanelPlayerChoiceEntry extends Panel
-	/** \brief Action listener to use if the entry is selected. */
-	private var ActionListener pAction
-	
-	/** \brief Label. */
-	private var Label pLabel
-	
-	/** \brief Image. */
-	private var DisplayImage pImage
+	var ActionListener pAction
+	var Label pLabel
+	var DisplayImage pImage
+	var bool pHasGrab
+	var bool pPressed
 	
 	
 	
 	/** \brief Create player choice option. */
-	public func new( String text, ActionListener action ) this( text, null, action )
+	func new(String text, ActionListener action) this(text, null, action)
 	end
 	
 	/** \brief Create player choice option. */
-	public func new( String text, Image image, ActionListener action )
+	func new(String text, Image image, ActionListener action)
 		if action == null
 			throw EInvalidParam.new()
 		end
 		
-		this.runWhileBlockingLayout( block
-			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x, 5 ) )
-			this.setCanFocus( true )
-			this.setStateChangeNotifyChildren( true )
+		runWhileBlockingLayout(block
+			setLayout(CentrizedBoxLayout.new(LayoutAxis.x, 5))
+			setCanFocus(true)
+			setStateChangeNotifyChildren(true)
 			
 			if image != null
-				this.pImage = DisplayImage.new( image, RepeatMode.stretch )
-				this.addWidget( this.pImage )
+				pImage = DisplayImage.new(image, RepeatMode.stretch)
+				addWidget(pImage)
 			end
 			
-			this.pLabel = Label.new( text )
-			this.pLabel.setWordWrap( true )
-			this.addWidget( this.pLabel )
+			pLabel = Label.new(text)
+			pLabel.setWordWrap(true)
+			addWidget(pLabel)
 			
-			this.setDesignerSelector( "PlayerChoiceEntry" )
-		end )
+			setDesignerSelector("PlayerChoiceEntry")
+		end)
 		
-		this.pAction = action
+		pAction = action
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		super.dispose()
-		this.pImage = null
-		this.pLabel = null
-		this.pAction = null
+		pImage = null
+		pLabel = null
+		pAction = null
 	end
 	
 	
 	
 	/** \brief Select action. */
-	public func ActionListener getAction()
-		return this.pAction
+	func ActionListener getAction()
+		return pAction
 	end
 	
 	/** \brief Label widget. */
-	public func Label getLabel()
-		return this.pLabel
+	func Label getLabel()
+		return pLabel
 	end
 	
 	/** \brief Display image widget or null if no image has been used in the constructor. */
-	public func DisplayImage getImage()
-		return this.pImage
+	func DisplayImage getImage()
+		return pImage
 	end
 	
 	
 	
-	/** \brief Mouse button pressed. */
-	public func void onButtonPress( MouseEvent event )
-		super.onButtonPress( event )
-		this.pAction.onAction( ActionEvent.new( this, ActionEvent.idAction, 0 ) )
+	/**
+	 * \brief Button is pressed.
+	 * \version 1.20
+	 */
+	func bool getPressed()
+		return pPressed
+	end
+	
+	/**
+	 * \brief Set if button is pressed.
+	 * \version 1.20
+	 */
+	func void setPressed(bool pressed)
+		if pressed == pPressed
+			return
+		end
+		
+		pPressed = pressed
+		
+		runWhileBlockingLayout(block
+			notifyBorderParametersChanged()
+			notifyChildrenParentStateChanged()
+			onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	
+	
+	/**
+	 * \brief Fire button press action.
+	 * \version 1.20
+	 */
+	func void fireAction(int modifiers)
+		pAction.onAction(ActionEvent.new(this, ActionEvent.idAction, 0))
+	end
+	
+	
+	/** \brief Key on the keyboard has been pressed. */
+	func void onKeyPress(KeyEvent event)
+		select event.getKeyCode()
+		case InputEventKey.enter
+			sendEventToListeners(event, false)
+			fireAction(0)
+			
+		case InputEventKey.space
+			setPressed(true)
+			sendEventToListeners(event, false)
+			
+		else
+			super.onKeyPress(event)
+		end
+	end
+	
+	/** Key on the keyboard has been released. */
+	func void onKeyRelease(KeyEvent event)
+		select event.getKeyCode()
+		case InputEventKey.space
+			if getPressed()
+				sendEventToListeners(event, false)
+				setPressed(false)
+				fireAction(0)
+				
+			else
+				sendEventToListeners(event, false)
+			end
+			
+		else
+			super.onKeyRelease(event)
+		end
+	end
+	
+	/** \brief Mouse button has been pressed. */
+	func void onButtonPress(MouseEvent event)
+		if event.getButton() == InputEventMouseButton.left
+			if getCanFocus()
+				grabFocus()
+			end
+			
+			captureMouse()
+			pHasGrab = true
+			setPressed(true)
+			
+			sendEventToListeners(event, false)
+			
+		else
+			super.onButtonPress(event)
+		end
+	end
+	
+	/** \brief Mouse button has been released. */
+	func void onButtonRelease(MouseEvent event)
+		if event.getButton() == InputEventMouseButton.left
+			pHasGrab = false
+			releaseMouse()
+			
+			if pPressed
+				sendEventToListeners(event, false)
+				setPressed(false)
+				fireAction(event.getModifiers())
+				
+			else
+				sendEventToListeners(event, false)
+			end
+			
+		else
+			super.onButtonRelease(event)
+		end
+	end
+	
+	/** \brief Mouse has moved. */
+	func void onMouseMove(MouseEvent event)
+		if pHasGrab
+			setPressed(isPointInside(event.getPosition()))
+			sendEventToListeners(event, false)
+			
+		else
+			super.onMouseMove(event)
+		end
 	end
 	
 	
@@ -118,13 +230,13 @@ class PanelPlayerChoiceEntry extends Panel
 	 * Overrides Widget.onDesignerSelectorChanged(). Sets designer selector of label to
 	 * "Label.{selector}" and display image to "Image.{selector}".
 	 */
-	public func void onDesignerSelectorChanged()
-		var String selector = this.getDesignerSelector()
+	func void onDesignerSelectorChanged()
+		var String selector = getDesignerSelector()
 		
-		this.pLabel.setDesignerSelector( "Label." + selector )
+		pLabel.setDesignerSelector("Label." + selector)
 		
-		if this.pImage != null
-			this.pImage.setDesignerSelector( "Image." + selector )
+		if pImage != null
+			pImage.setDesignerSelector("Image." + selector)
 		end
 	end
 end
