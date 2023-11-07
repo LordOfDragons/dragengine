@@ -430,11 +430,11 @@ class GamepadController extends FrameUpdateListener
 	 * 
 	 * Input is value in the range from 0 to 1. Output is mapped value in the range from 0 to 1.
 	 * Mapping is used to make mouse movement for small stick value smaller for precise control
-	 * and larger for large stick values. The default implementation applies a power of 2 to the
+	 * and larger for large stick values. The default implementation applies a power of 1.5 to the
 	 * input value.
 	 */
 	protected func float mapMouseMovement(float factor)
-		return DEMath.pow(factor, 2)
+		return DEMath.pow(factor, 1.5)
 	end
 	
 	
