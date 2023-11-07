@@ -648,6 +648,7 @@ class TextField extends TextWidget
 		case InputEventMouseButton.left
 			setCursorPositionNear(event.getPosition())
 			pOldCursorPos = UTF8Navigator.new(pCursorPos)
+			popupVirtualKeyboard()
 			captureMouse()
 			
 		case InputEventMouseButton.right
