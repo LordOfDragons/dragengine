@@ -231,6 +231,9 @@ public:
 	/** \brief Add mouse wheel changed event. */
 	void AddMouseWheelChanged( int device, int axis, int x, int y, int state,
 		const timeval &eventTime );
+	
+	/** \brief Add device attached/detached event. */
+	void AddDeviceAttachedDetached( const timeval &eventTime );
 	/*@}*/
 	
 	

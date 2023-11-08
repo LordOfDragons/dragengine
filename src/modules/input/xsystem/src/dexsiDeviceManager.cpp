@@ -54,11 +54,14 @@ pModule( module ),
 pX11CoreMouse( NULL ),
 pX11CoreKeyboard( NULL ),
 pPrimaryMouse( NULL ),
-pPrimaryKeyboard( NULL )
+pPrimaryKeyboard( NULL ),
+pInotifyFd( -1 ),
+pInotifyWatchEvdev( -1 )
 {
 	try{
 		pCreateDevices();
 		pFindPrimaryDevices();
+		pStartWatchEvdev();
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -118,41 +121,54 @@ int dexsiDeviceManager::IndexOfWithID( const char *id ){
 
 
 
-void dexsiDeviceManager::LogDevices(){
-	const int count = pDevices.GetCount();
-	int i, j;
+void dexsiDeviceManager::Update(){
+	pUpdateWatchEvdev();
 	
+	const int deviceCount = pDevices.GetCount();
+	int i;
+	for( i=0; i<deviceCount; i++ ){
+		( ( dexsiDevice* )pDevices.GetAt( i ) )->Update();
+	}
+}
+
+void dexsiDeviceManager::LogDevices(){
 	pModule.LogInfo( "Input Devices:" );
 	
+	const int count = pDevices.GetCount();
+	int i;
 	for( i=0; i<count; i++ ){
-		const dexsiDevice &device = *( ( dexsiDevice* )pDevices.GetAt( i ) );
-		pModule.LogInfoFormat( "- '%s' (%s) [%d]", device.GetName().GetString(),
-			device.GetID().GetString(), device.GetType() );
-		
-		const int axisCount = device.GetAxisCount();
-		if( axisCount > 0 ){
-			pModule.LogInfo( "  Axes:" );
-			for( j=0; j<axisCount; j++ ){
-				const dexsiDeviceAxis &axis = *device.GetAxisAt( j );
-				pModule.LogInfoFormat( "    - '%s' (%s) %d .. %d [%d %d]",
-					axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
-					axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat() );
-			}
+		LogDevice( *( ( dexsiDevice* )pDevices.GetAt( i ) ) );
+	}
+}
+
+void dexsiDeviceManager::LogDevice( const dexsiDevice &device ){
+	pModule.LogInfoFormat( "- '%s' (%s) [%d]", device.GetName().GetString(),
+		device.GetID().GetString(), device.GetType() );
+	
+	const int axisCount = device.GetAxisCount();
+	int i;
+	if( axisCount > 0 ){
+		pModule.LogInfo( "  Axes:" );
+		for( i=0; i<axisCount; i++ ){
+			const dexsiDeviceAxis &axis = *device.GetAxisAt( i );
+			pModule.LogInfoFormat( "    - '%s' (%s) %d .. %d [%d %d]",
+				axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
+				axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat() );
 		}
-		
-		const int buttonCount = device.GetButtonCount();
-		if( buttonCount > 0 ){
-			if( device.GetType() == deInputDevice::edtKeyboard ){
-				pModule.LogInfoFormat( "  Keys: %d", buttonCount );
-				
-			}else{
-				pModule.LogInfo( "  Buttons:" );
-				for( j=0; j<buttonCount; j++ ){
-					const dexsiDeviceButton &button = *device.GetButtonAt( j );
-					pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
-						button.GetName().GetString(), button.GetID().GetString(),
-						button.GetEvdevCode(), j );
-				}
+	}
+	
+	const int buttonCount = device.GetButtonCount();
+	if( buttonCount > 0 ){
+		if( device.GetType() == deInputDevice::edtKeyboard ){
+			pModule.LogInfoFormat( "  Keys: %d", buttonCount );
+			
+		}else{
+			pModule.LogInfo( "  Buttons:" );
+			for( i=0; i<buttonCount; i++ ){
+				const dexsiDeviceButton &button = *device.GetButtonAt( i );
+				pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
+					button.GetName().GetString(), button.GetID().GetString(),
+					button.GetEvdevCode(), i );
 			}
 		}
 	}
@@ -195,6 +211,7 @@ decString dexsiDeviceManager::NormalizeID( const char *id ){
 //////////////////////
 
 void dexsiDeviceManager::pCleanUp(){
+	pStopWatchEvdev();
 	pDevices.RemoveAll();
 	if( pX11CoreKeyboard ){
 		pX11CoreKeyboard->FreeReference();
@@ -480,4 +497,124 @@ void dexsiDeviceManager::pFindPrimaryDevices(){
 		pModule.LogError( "No keyboard device found" );
 		DETHROW( deeInvalidParam );
 	}
+}
+
+void dexsiDeviceManager::pStartWatchEvdev(){
+	pInotifyFd = inotify_init1( IN_NONBLOCK );
+	if( pInotifyFd < 0 ){
+		pModule.LogWarn( "Failed monitoring event device directory (1)" );
+	}
+	
+	pInotifyWatchEvdev = inotify_add_watch( pInotifyFd, "/dev/input", IN_CREATE | IN_DELETE );
+	if( pInotifyWatchEvdev < 0 ){
+		pModule.LogWarn( "Failed monitoring event device directory (2)" );
+	}
+	
+	pModule.LogInfo( "Watching event device directory" );
+}
+
+void dexsiDeviceManager::pStopWatchEvdev(){
+	if( pInotifyWatchEvdev >= 0 ){
+		inotify_rm_watch( pInotifyFd, pInotifyWatchEvdev );
+		pInotifyWatchEvdev = -1;
+	}
+	
+	if( pInotifyFd >= 0 ){
+		close( pInotifyFd );
+		pInotifyFd = -1;
+	}
+}
+
+void dexsiDeviceManager::pUpdateWatchEvdev(){
+	bool devicesChanged = false;
+	
+	while( true ){
+		inotify_event event {};
+		const ssize_t length = read( pInotifyFd, &event, sizeof( event ) );  
+		if( length <= 0 ){
+			break;
+		}
+		
+		if( event.len == 0 ){
+			continue;
+		}
+		
+		if( ( event.mask & IN_CREATE ) == IN_CREATE ){
+			if( ( event.mask & IN_ISDIR ) != IN_ISDIR ){
+				continue;
+			}
+			
+			const decString fname( event.name );
+			if( fname.BeginsWith( "event" ) ){
+				devicesChanged |= pEvdevAppeared( decString( "/dev/input/" ) + fname );
+			}
+			
+		}else if( ( event.mask & IN_DELETE ) == IN_DELETE ){
+			if( ( event.mask & IN_ISDIR ) != IN_ISDIR ){
+				continue;
+			}
+			
+			const decString fname( event.name );
+			if( fname.BeginsWith( "event" ) ){
+				devicesChanged |= pEvdevDisappeared( decString( "/dev/input/" ) + fname );
+			}
+		}
+	}
+	
+	if( devicesChanged ){
+		timeval eventTime;
+		gettimeofday( &eventTime, NULL );
+		pModule.AddDeviceAttachedDetached( eventTime );
+	}
+}
+
+bool dexsiDeviceManager::pEvdevAppeared( const decString &path ){
+	pModule.LogInfoFormat( "Event device file appeared: %s", path.GetString() );
+	
+	try{
+		const dexsiDeviceLibEvent::Ref device( dexsiDeviceLibEvent::Ref::New(
+			new dexsiDeviceLibEvent( pModule, path ) ) );
+		
+		switch( device->GetType() ){
+		case deInputDevice::edtGamepad:
+			device->SetIndex( pDevices.GetCount() );
+			pDevices.Add( device );
+			pModule.LogInfoFormat( "Device attached: %s", device->GetID().GetString() );
+			LogDevice( device );
+			return true;
+			
+		default:
+			break;
+		}
+		
+	}catch( const deException & ){
+		// ignore
+	}
+	
+	return false;
+}
+
+bool dexsiDeviceManager::pEvdevDisappeared( const decString &path ){
+	pModule.LogInfoFormat( "Event device file disappeared: %s", path.GetString() );
+	
+	const int count = pDevices.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		dexsiDevice * const device = ( ( dexsiDevice* )pDevices.GetAt( i ) );
+		if( device->GetSource() != dexsiDevice::esLibevdev ){
+			continue;
+		}
+		
+		const dexsiDeviceLibEvent &evd = *( dexsiDeviceLibEvent* )device;
+		if( evd.GetEvdevPath() != path ){
+			continue;
+		}
+		
+		pModule.LogInfoFormat( "Device deatached: %s", evd.GetID().GetString() );
+		pDevices.Remove( device );
+		return true;
+	}
+	
+	return false;
 }

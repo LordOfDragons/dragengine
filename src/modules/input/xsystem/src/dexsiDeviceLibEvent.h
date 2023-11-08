@@ -30,6 +30,12 @@
  * \brief X-System libEvent input device.
  */
 class dexsiDeviceLibEvent : public dexsiDevice{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<dexsiDeviceLibEvent> Ref;
+	
+	
+	
 private:
 	decString pEvdevPath;
 	int pEvdevFile;

@@ -315,12 +315,7 @@ deInputEvent::eKeyLocation location ){
 
 void deXSystemInput::ProcessEvents(){
 	pQueryMousePosition( true );
-	
-	const int deviceCount = pDevices->GetCount();
-	int i;
-	for( i=0; i<deviceCount; i++ ){
-		pDevices->GetAt( i )->Update();
-	}
+	pDevices->Update();
 }
 
 void deXSystemInput::ClearEvents(){
@@ -552,6 +547,15 @@ const timeval& eventTime ){
 	event.SetX( x );
 	event.SetY( y );
 	event.SetValue( ( float )( x + y ) );
+	event.SetTime( eventTime );
+	queue.AddEvent( event );
+}
+
+void deXSystemInput::AddDeviceAttachedDetached( const timeval &eventTime ){
+	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
+	deInputEvent event;
+	
+	event.SetType( deInputEvent::eeDevicesAttachedDetached );
 	event.SetTime( eventTime );
 	queue.AddEvent( event );
 }
