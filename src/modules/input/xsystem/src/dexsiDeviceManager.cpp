@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <linux/limits.h>
 
 #include "dexsiDevice.h"
 #include "dexsiDeviceAxis.h"
@@ -56,7 +57,10 @@ pX11CoreKeyboard( NULL ),
 pPrimaryMouse( NULL ),
 pPrimaryKeyboard( NULL ),
 pInotifyFd( -1 ),
-pInotifyWatchEvdev( -1 )
+pInotifyWatchEvdev( -1 ),
+pInotifyBufferLen( 1024 * ( sizeof( inotify_event ) + 16) ),
+pInotifyBuffer( new uint8_t[ pInotifyBufferLen ] ),
+pTimeoutDelayProbeDevices( 0.0f )
 {
 	try{
 		pCreateDevices();
@@ -122,6 +126,7 @@ int dexsiDeviceManager::IndexOfWithID( const char *id ){
 
 
 void dexsiDeviceManager::Update(){
+	pUpdateDelayProbeDevices();
 	pUpdateWatchEvdev();
 	
 	const int deviceCount = pDevices.GetCount();
@@ -212,6 +217,7 @@ decString dexsiDeviceManager::NormalizeID( const char *id ){
 
 void dexsiDeviceManager::pCleanUp(){
 	pStopWatchEvdev();
+	delete [] pInotifyBuffer;
 	pDevices.RemoveAll();
 	if( pX11CoreKeyboard ){
 		pX11CoreKeyboard->FreeReference();
@@ -425,7 +431,7 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 	int i, bp;
 	
 	for( bp=0; bp<2; bp++ ){
-		for( i=0; i<24; i++ ){
+		for( i=0; i<32; i++ ){
 			pathDevice.Format( basePath[ bp ], i );
 			
 			try{
@@ -501,13 +507,15 @@ void dexsiDeviceManager::pFindPrimaryDevices(){
 
 void dexsiDeviceManager::pStartWatchEvdev(){
 	pInotifyFd = inotify_init1( IN_NONBLOCK );
-	if( pInotifyFd < 0 ){
+	if( pInotifyFd == -1 ){
 		pModule.LogWarn( "Failed monitoring event device directory (1)" );
+		return;
 	}
 	
 	pInotifyWatchEvdev = inotify_add_watch( pInotifyFd, "/dev/input", IN_CREATE | IN_DELETE );
-	if( pInotifyWatchEvdev < 0 ){
+	if( pInotifyWatchEvdev == -1 ){
 		pModule.LogWarn( "Failed monitoring event device directory (2)" );
+		return;
 	}
 	
 	pModule.LogInfo( "Watching event device directory" );
@@ -526,39 +534,37 @@ void dexsiDeviceManager::pStopWatchEvdev(){
 }
 
 void dexsiDeviceManager::pUpdateWatchEvdev(){
-	bool devicesChanged = false;
+	const ssize_t length = read( pInotifyFd, pInotifyBuffer, pInotifyBufferLen );
+	if( length <= 0 ){
+		return;
+	}
 	
-	while( true ){
-		inotify_event event {};
-		const ssize_t length = read( pInotifyFd, &event, sizeof( event ) );  
-		if( length <= 0 ){
-			break;
+	bool devicesChanged = false;
+	ssize_t position = 0;
+	
+	while( position < length ){
+		const inotify_event &event = *( ( inotify_event* )( pInotifyBuffer + position ) );
+		
+		if( event.len > 0 ){
+			if( ( event.mask & IN_CREATE ) == IN_CREATE ){
+				if( ( event.mask & IN_ISDIR ) != IN_ISDIR ){
+					const decString fname( event.name );
+					if( fname.BeginsWith( "event" ) ){
+						pEvdevAppeared( decString( "/dev/input/" ) + fname );
+					}
+				}
+				
+			}else if( ( event.mask & IN_DELETE ) == IN_DELETE ){
+				if( ( event.mask & IN_ISDIR ) != IN_ISDIR ){
+					const decString fname( event.name );
+					if( fname.BeginsWith( "event" ) ){
+						devicesChanged |= pEvdevDisappeared( decString( "/dev/input/" ) + fname );
+					}
+				}
+			}
 		}
 		
-		if( event.len == 0 ){
-			continue;
-		}
-		
-		if( ( event.mask & IN_CREATE ) == IN_CREATE ){
-			if( ( event.mask & IN_ISDIR ) != IN_ISDIR ){
-				continue;
-			}
-			
-			const decString fname( event.name );
-			if( fname.BeginsWith( "event" ) ){
-				devicesChanged |= pEvdevAppeared( decString( "/dev/input/" ) + fname );
-			}
-			
-		}else if( ( event.mask & IN_DELETE ) == IN_DELETE ){
-			if( ( event.mask & IN_ISDIR ) != IN_ISDIR ){
-				continue;
-			}
-			
-			const decString fname( event.name );
-			if( fname.BeginsWith( "event" ) ){
-				devicesChanged |= pEvdevDisappeared( decString( "/dev/input/" ) + fname );
-			}
-		}
+		position += sizeof( inotify_event ) + event.len;
 	}
 	
 	if( devicesChanged ){
@@ -568,30 +574,14 @@ void dexsiDeviceManager::pUpdateWatchEvdev(){
 	}
 }
 
-bool dexsiDeviceManager::pEvdevAppeared( const decString &path ){
+void dexsiDeviceManager::pEvdevAppeared( const decString &path ){
 	pModule.LogInfoFormat( "Event device file appeared: %s", path.GetString() );
 	
-	try{
-		const dexsiDeviceLibEvent::Ref device( dexsiDeviceLibEvent::Ref::New(
-			new dexsiDeviceLibEvent( pModule, path ) ) );
-		
-		switch( device->GetType() ){
-		case deInputDevice::edtGamepad:
-			device->SetIndex( pDevices.GetCount() );
-			pDevices.Add( device );
-			pModule.LogInfoFormat( "Device attached: %s", device->GetID().GetString() );
-			LogDevice( device );
-			return true;
-			
-		default:
-			break;
-		}
-		
-	}catch( const deException & ){
-		// ignore
+	if( ! pDelayProbeDevices.Has( path ) ){
+		pDelayProbeDevices.Add( path );
+		pTimeoutDelayProbeDevices = 2.0f;
+		pTimerDelayProbeDevices.Reset();
 	}
-	
-	return false;
 }
 
 bool dexsiDeviceManager::pEvdevDisappeared( const decString &path ){
@@ -614,6 +604,63 @@ bool dexsiDeviceManager::pEvdevDisappeared( const decString &path ){
 		pModule.LogInfoFormat( "Device deatached: %s", evd.GetID().GetString() );
 		pDevices.Remove( device );
 		return true;
+	}
+	
+	return false;
+}
+
+
+
+void dexsiDeviceManager::pUpdateDelayProbeDevices(){
+	const int count = pDelayProbeDevices.GetCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	pTimeoutDelayProbeDevices -= pTimerDelayProbeDevices.GetElapsedTime();
+	if( pTimeoutDelayProbeDevices > 0.0f ){
+		return;
+	}
+	
+	pTimeoutDelayProbeDevices = 0.0f;
+	
+	bool devicesChanged = false;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		devicesChanged |= pProbeDevice( pDelayProbeDevices.GetAt( i ) );
+	}
+	pDelayProbeDevices.RemoveAll();
+	
+	if( devicesChanged ){
+		timeval eventTime;
+		gettimeofday( &eventTime, NULL );
+		pModule.AddDeviceAttachedDetached( eventTime );
+	}
+}
+
+bool dexsiDeviceManager::pProbeDevice( const decString &path ){
+	pModule.LogInfoFormat( "Probing event device file: %s", path.GetString() );
+	
+	try{
+		const dexsiDeviceLibEvent::Ref device( dexsiDeviceLibEvent::Ref::New(
+			new dexsiDeviceLibEvent( pModule, path ) ) );
+		
+		switch( device->GetType() ){
+		case deInputDevice::edtGamepad:
+			device->SetIndex( pDevices.GetCount() );
+			pDevices.Add( device );
+			pModule.LogInfoFormat( "Device attached: %s", device->GetID().GetString() );
+			LogDevice( device );
+			return true;
+			
+		default:
+			pModule.LogInfoFormat( "Unsupported device type: %d", device->GetType() );
+			break;
+		}
+		
+	}catch( const deException &e ){
+		pModule.LogException( e );
 	}
 	
 	return false;

@@ -304,10 +304,10 @@ class DisplayInteractPromptEntry extends Panel
 				pDisplayVideo.setVideo(null)
 				pDisplayVideo.setVisible(false)
 				
-				pLabelVerb.setText(null)
+				pLabelVerb.setText("")
 				pLabelVerb.setVisible(false)
 				
-				pLabelDescription.setText(null)
+				pLabelDescription.setText("")
 				pLabelDescription.setVisible(false)
 				
 				clearCommands()
@@ -389,6 +389,7 @@ class DisplayInteractPromptEntry extends Panel
 			if pCommand == null and pAlternativeCommands.getCount() == 0
 				pPanelBindings.forEachWidget(block Widget each
 					each.setVisible(false)
+					clearBindingWidget(each)
 				end)
 				return null
 			end
@@ -444,9 +445,12 @@ class DisplayInteractPromptEntry extends Panel
 			pPanelBindings.setVisible(usedCount > 0)
 			
 			for index = usedCount to widgetCount
-				pPanelBindings.getWidget(index).setVisible(false)
+				widget = pPanelBindings.getWidget(index)
+				widget.setVisible(false)
+				clearBindingWidget(widget)
 			end
 		end)
+		pPanelBindings.doLayoutIfBlocked()
 	end
 	
 	/**
@@ -471,5 +475,13 @@ class DisplayInteractPromptEntry extends Panel
 	
 	protected func void updateBindingWidget(Widget widget, InputDevice device, InputDeviceAxis axis)
 		(widget cast DisplayInputSource).set(null, axis)
+	end
+	
+	/**
+	 * \brief Clear widget of all bindings.
+	 * \version 1.20
+	 */
+	protected func void clearBindingWidget(Widget widget)
+		(widget cast DisplayInputSource).clear()
 	end
 end

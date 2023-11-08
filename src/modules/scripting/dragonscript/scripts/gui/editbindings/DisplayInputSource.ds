@@ -35,80 +35,80 @@ pin Dragengine.Scenery
  * input sources as well as only input devices can be shown.
  */
 class DisplayInputSource extends Panel
-	private var int pIconHeight
+	var int pIconHeight
 	
-	private var InputDevice pInputDevice
-	private var InputDeviceButton pInputButton
-	private var InputDeviceAxis pInputAxis
+	var InputDevice pInputDevice
+	var InputDeviceButton pInputButton
+	var InputDeviceAxis pInputAxis
 	
-	private var DisplayImage pDisplayImageDevice
-	private var Label pLabelDevice
-	private var DisplayImage pDisplayImageSource
-	private var Label pLabelSource
+	var DisplayImage pDisplayImageDevice
+	var Label pLabelDevice
+	var DisplayImage pDisplayImageSource
+	var Label pLabelSource
 	
 	
 	
 	/** \brief Create display input source widget. */
-	public func new( int iconHeight )
+	func new(int iconHeight)
 		if iconHeight < 1
-			throw EInvalidParam.new( "iconHeight < 1" )
+			throw EInvalidParam.new("iconHeight < 1")
 		end
 		
-		this.pIconHeight = iconHeight
+		pIconHeight = iconHeight
 		
-		this.runWhileBlockingLayout( block
-			this.setLayout( FlowLayout.new( LayoutAxis.x, 2 ) )
+		runWhileBlockingLayout(block
+			setLayout(FlowLayout.new(LayoutAxis.x, 2))
 			
-			this.addWidget( Panel.new( StackLayout.new(), block Panel panel
-				panel.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.x ), block Panel centrized
-					this.pDisplayImageDevice = DisplayImage.new()
-					this.pDisplayImageDevice.setMinimumSize( Point.new( iconHeight, iconHeight ) )
-					this.pDisplayImageDevice.setProtectMinimumSize( true )
-					centrized.addWidget( this.pDisplayImageDevice )
-				end ) )
+			addWidget(Panel.new(StackLayout.new(), block Panel panel
+				panel.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel centrized
+					pDisplayImageDevice = DisplayImage.new()
+					pDisplayImageDevice.setMinimumSize(Point.new(iconHeight, iconHeight))
+					pDisplayImageDevice.setProtectMinimumSize(true)
+					centrized.addWidget(pDisplayImageDevice)
+				end))
 				
-				this.pLabelDevice = Label.new( " " )
-				panel.addWidget( this.pLabelDevice )
-			end ) )
+				pLabelDevice = Label.new(" ")
+				panel.addWidget(pLabelDevice)
+			end))
 			
-			this.addWidget( Panel.new( StackLayout.new(), block Panel panel
-				panel.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.x ), block Panel centrized
-					this.pDisplayImageSource = DisplayImage.new()
-					this.pDisplayImageSource.setMinimumSize( Point.new( iconHeight, iconHeight ) )
-					this.pDisplayImageSource.setProtectMinimumSize( true )
-					centrized.addWidget( this.pDisplayImageSource )
-				end ) )
+			addWidget(Panel.new(StackLayout.new(), block Panel panel
+				panel.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel centrized
+					pDisplayImageSource = DisplayImage.new()
+					pDisplayImageSource.setMinimumSize(Point.new(iconHeight, iconHeight))
+					pDisplayImageSource.setProtectMinimumSize(true)
+					centrized.addWidget(pDisplayImageSource)
+				end))
 				
-				this.pLabelSource = Label.new( " " )
-				panel.addWidget( this.pLabelSource )
-			end ) )
+				pLabelSource = Label.new(" ")
+				panel.addWidget(pLabelSource)
+			end))
 			
 			// has to come last since it modifies child widgets
-			this.setDesignerSelector( "DisplayInputSource" )
-		end )
+			setDesignerSelector("DisplayInputSource")
+		end)
 	end
 	
 	/** \brief Create display input source widget. */
-	public func new( int iconHeight, InputDevice device ) this( iconHeight )
-		this.set( device )
+	func new(int iconHeight, InputDevice device) this(iconHeight)
+		set(device)
 	end
 	
 	/** \brief Create display input source widget. */
-	public func new( int iconHeight, InputDevice device, InputDeviceButton button ) this( iconHeight )
-		this.set( device, button )
+	func new(int iconHeight, InputDevice device, InputDeviceButton button) this(iconHeight)
+		set(device, button)
 	end
 	
 	/** \brief Create display input source widget. */
-	public func new( int iconHeight, InputDevice device, InputDeviceAxis axis ) this( iconHeight )
-		this.set( device, axis )
+	func new(int iconHeight, InputDevice device, InputDeviceAxis axis) this(iconHeight)
+		set(device, axis)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		this.pDisplayImageDevice = null
-		this.pLabelDevice = null
-		this.pDisplayImageSource = null
-		this.pLabelSource = null
+	func void dispose()
+		pDisplayImageDevice = null
+		pLabelDevice = null
+		pDisplayImageSource = null
+		pLabelSource = null
 		
 		super.dispose()
 	end
@@ -116,66 +116,66 @@ class DisplayInputSource extends Panel
 	
 	
 	/** \brief Icon height. */
-	public func int getIconHeight()
-		return this.pIconHeight
+	func int getIconHeight()
+		return pIconHeight
 	end
 	
 	/** \brief Set icon height. */
-	public func void setIconHeight( int height )
+	func void setIconHeight(int height)
 		if height < 1
-			throw EInvalidParam.new( "height < 1" )
+			throw EInvalidParam.new("height < 1")
 		end
 		
-		if height == this.pIconHeight
+		if height == pIconHeight
 			return
 		end
 		
-		this.pIconHeight = height
+		pIconHeight = height
 		
-		this.updateWidgets()
+		updateWidgets()
 	end
 	
 	/** \brief Input device or null if not set. */
-	public func InputDevice getInputDevice()
-		return this.pInputDevice
+	func InputDevice getInputDevice()
+		return pInputDevice
 	end
 	
 	/** \brief Input button or null if not set. */
-	public func InputDeviceButton getInputButton()
-		return this.pInputButton
+	func InputDeviceButton getInputButton()
+		return pInputButton
 	end
 	
 	/** \brief Input axis or null if not set. */
-	public func InputDeviceAxis getInputAxis()
-		return this.pInputAxis
+	func InputDeviceAxis getInputAxis()
+		return pInputAxis
 	end
 	
 	
 	
 	/** \brief Clear. */
-	public func void clear()
-		if this.pInputDevice == null and this.pInputButton == null and this.pInputAxis == null
+	func void clear()
+		if pInputDevice == null and pInputButton == null and pInputAxis == null
 			return
 		end
 		
-		this.pInputDevice = null
-		this.pInputButton = null
-		this.pInputAxis = null
+		pInputDevice = null
+		pInputButton = null
+		pInputAxis = null
 		
-		this.updateWidgets()
+		updateWidgets()
 	end
 	
 	/** \brief Set input device. */
-	public func void set( InputDevice device )
-		if this.pInputDevice == device and this.pInputButton == null and this.pInputAxis == null
+	func void set(InputDevice device)
+		if pInputDevice == device and pInputButton == null and pInputAxis == null
 			return
 		end
 		
-		this.pInputDevice = device
-		this.pInputButton = null
-		this.pInputAxis = null
+		pInputDevice = device
+		pInputButton = null
+		pInputAxis = null
 		
-		this.updateWidgets()
+		updateWidgets()
 	end
 	
 	/**
@@ -183,19 +183,19 @@ class DisplayInputSource extends Panel
 	 * 
 	 * If device is not null shows device and button otherwise only button.
 	 */
-	public func void set( InputDevice device, InputDeviceButton button )
+	func void set(InputDevice device, InputDeviceButton button)
 		if button == null
-			throw ENullPointer.new( "button" )
+			throw ENullPointer.new("button")
 		end
-		if this.pInputDevice == device and this.pInputButton == button and this.pInputAxis == null
+		if pInputDevice == device and pInputButton == button and pInputAxis == null
 			return
 		end
 		
-		this.pInputDevice = device
-		this.pInputButton = button
-		this.pInputAxis = null
+		pInputDevice = device
+		pInputButton = button
+		pInputAxis = null
 		
-		this.updateWidgets()
+		updateWidgets()
 	end
 	
 	/**
@@ -203,19 +203,19 @@ class DisplayInputSource extends Panel
 	 * 
 	 * If device is not null shows device and axis otherwise only axis.
 	 */
-	public func void set( InputDevice device, InputDeviceAxis axis )
+	func void set(InputDevice device, InputDeviceAxis axis)
 		if axis == null
-			throw ENullPointer.new( "axis" )
+			throw ENullPointer.new("axis")
 		end
-		if this.pInputDevice == device and this.pInputButton == null and this.pInputAxis == axis
+		if pInputDevice == device and pInputButton == null and pInputAxis == axis
 			return
 		end
 		
-		this.pInputDevice = device
-		this.pInputButton = null
-		this.pInputAxis = axis
+		pInputDevice = device
+		pInputButton = null
+		pInputAxis = axis
 		
-		this.updateWidgets()
+		updateWidgets()
 	end
 	
 	
@@ -229,114 +229,114 @@ class DisplayInputSource extends Panel
 	 * - Device label: Label.<selector>
 	 * - Source label: Label.<selector>
 	 */
-	public func void setDesignerSelector( String selector )
-		if selector.equals( this.getDesignerSelector() )
+	func void setDesignerSelector(String selector)
+		if selector.equals(getDesignerSelector())
 			return
 		end
 		
-		super.setDesignerSelector( selector )
+		super.setDesignerSelector(selector)
 		
-		this.pDisplayImageDevice.setDesignerSelector( "Image." + selector )
-		this.pLabelDevice.setDesignerSelector( "Label." + selector )
-		this.pDisplayImageSource.setDesignerSelector( "Image." + selector )
-		this.pLabelSource.setDesignerSelector( "Label." + selector )
+		pDisplayImageDevice.setDesignerSelector("Image." + selector)
+		pLabelDevice.setDesignerSelector("Label." + selector)
+		pDisplayImageSource.setDesignerSelector("Image." + selector)
+		pLabelSource.setDesignerSelector("Label." + selector)
 	end
 	
 	
 	/** \brief Update widgets. */
 	protected func void updateWidgets()
-		this.runWhileBlockingLayout( block
-			if this.pInputDevice != null
-				var Image image = this.pInputDevice.getLargestDisplayIconY( this.pIconHeight )
+		runWhileBlockingLayout(block
+			if pInputDevice != null
+				var Image image = pInputDevice.getLargestDisplayIconY(pIconHeight)
 				if image != null
-					this.pDisplayImageDevice.setImage( image )
-					this.pDisplayImageDevice.setMinimumSize( null )
+					pDisplayImageDevice.setImage(image)
+					pDisplayImageDevice.setMinimumSize(null)
 					
 				else
-					this.pDisplayImageDevice.setImage( null )
-					this.pDisplayImageDevice.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
+					pDisplayImageDevice.setImage(null)
+					pDisplayImageDevice.setMinimumSize(Point.new(pIconHeight, pIconHeight))
 				end
 				
-				var String text = this.pInputDevice.getDisplayText()
+				var String text = pInputDevice.getDisplayText()
 				if text.empty()
 					text = " "
 				end
-				this.pLabelDevice.setText( text )
+				pLabelDevice.setText(text)
 				
 			else
-				this.pDisplayImageDevice.setImage( null )
-				this.pDisplayImageDevice.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
+				pDisplayImageDevice.setImage(null)
+				pDisplayImageDevice.setMinimumSize(Point.new(pIconHeight, pIconHeight))
 				
-				this.pLabelDevice.setText( " " )
+				pLabelDevice.setText(" ")
 			end
 			
-			if this.pInputButton != null
-				var Image image = this.pInputButton.getLargestDisplayIconY( this.pIconHeight )
+			if pInputButton != null
+				var Image image = pInputButton.getLargestDisplayIconY(pIconHeight)
 				if image != null
-					this.pDisplayImageSource.setImage( image )
-					this.pDisplayImageSource.setMinimumSize( null )
+					pDisplayImageSource.setImage(image)
+					pDisplayImageSource.setMinimumSize(null)
 					
 				else
-					this.pDisplayImageSource.setImage( null )
-					this.pDisplayImageSource.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
+					pDisplayImageSource.setImage(null)
+					pDisplayImageSource.setMinimumSize(Point.new(pIconHeight, pIconHeight))
 				end
-				this.pDisplayImageSource.setVisible( true )
+				pDisplayImageSource.setVisible(true)
 				
-				var String text = this.pInputButton.getDisplayText()
+				var String text = pInputButton.getDisplayText()
 				if text.empty()
 					text = " "
 				end
-				this.pLabelSource.setText( text )
-				this.pLabelSource.setVisible( true )
+				pLabelSource.setText(text)
+				pLabelSource.setVisible(true)
 				
-				this.pDisplayImageDevice.setVisible( this.pInputDevice != null )
-				this.pLabelDevice.setVisible( this.pInputDevice != null )
+				pDisplayImageDevice.setVisible(pInputDevice != null)
+				pLabelDevice.setVisible(pInputDevice != null)
 				
-			elif this.pInputAxis != null
-				var Image image = this.pInputAxis.getLargestDisplayIconY( this.pIconHeight )
+			elif pInputAxis != null
+				var Image image = pInputAxis.getLargestDisplayIconY(pIconHeight)
 				if image != null
-					this.pDisplayImageSource.setImage( image )
-					this.pDisplayImageSource.setMinimumSize( null )
+					pDisplayImageSource.setImage(image)
+					pDisplayImageSource.setMinimumSize(null)
 					
 				else
-					this.pDisplayImageSource.setImage( null )
-					this.pDisplayImageSource.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
+					pDisplayImageSource.setImage(null)
+					pDisplayImageSource.setMinimumSize(Point.new(pIconHeight, pIconHeight))
 				end
-				this.pDisplayImageSource.setVisible( true )
+				pDisplayImageSource.setVisible(true)
 				
-				var String text = this.pInputAxis.getDisplayText()
+				var String text = pInputAxis.getDisplayText()
 				if text.empty()
 					text = " "
 				end
-				this.pLabelSource.setText( text )
-				this.pLabelSource.setVisible( true )
+				pLabelSource.setText(text)
+				pLabelSource.setVisible(true)
 				
-				this.pDisplayImageDevice.setVisible( this.pInputDevice != null )
-				this.pLabelDevice.setVisible( this.pInputDevice != null )
+				pDisplayImageDevice.setVisible(pInputDevice != null)
+				pLabelDevice.setVisible(pInputDevice != null)
 				
 			else
-				this.pDisplayImageSource.setImage( null )
-				this.pDisplayImageSource.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
-				this.pDisplayImageSource.setVisible( false )
+				pDisplayImageSource.setImage(null)
+				pDisplayImageSource.setMinimumSize(Point.new(pIconHeight, pIconHeight))
+				pDisplayImageSource.setVisible(false)
 				
-				this.pLabelSource.setText( " " )
-				this.pLabelSource.setVisible( false )
+				pLabelSource.setText(" ")
+				pLabelSource.setVisible(false)
 				
-				this.pDisplayImageDevice.setVisible( true )
-				this.pLabelDevice.setVisible( true )
+				pDisplayImageDevice.setVisible(true)
+				pLabelDevice.setVisible(true)
 			end
-		end )
+		end)
 		
-		this.doLayoutIfBlocked()
+		doLayoutIfBlocked()
 	end
 	
 	
 	
 	/** \brief Size changed. */
 	/*
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.updateWidgets()
+	func void onResize(WidgetEvent event)
+		super.onResize(event)
+		updateWidgets()
 	end
 	*/
 end

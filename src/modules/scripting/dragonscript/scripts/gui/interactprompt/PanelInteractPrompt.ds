@@ -42,11 +42,51 @@ pin Dragengine.Utils
  * - "InteractPrompt": The prompt panel.
  */
 class PanelInteractPrompt extends Panel implements ListModelListener
+	/** \brief Bindings changed listener. */
+	protected class BindingsChanged extends DefaultBindingManagerListener
+		var PanelInteractPrompt pPanel
+		
+		func new(PanelInteractPrompt panel)
+			pPanel = panel
+		end
+		
+		func void allAxisBindingsRemoved(BindingManager manager)
+			pPanel.reloadAllWidgets()
+		end
+		
+		func void allButtonBindingsRemoved(BindingManager manager)
+			pPanel.reloadAllWidgets()
+		end
+		
+		func void axisBindingAdded(BindingManager manager, Binding binding)
+			pPanel.reloadAllWidgets()
+		end
+		
+		func void axisBindingRemoved(BindingManager manager, Binding binding)
+			pPanel.reloadAllWidgets()
+		end
+		
+		func void buttonBindingAdded(BindingManager manager, Binding binding)
+			pPanel.reloadAllWidgets()
+		end
+		
+		func void buttonBindingRemoved(BindingManager manager, Binding binding)
+			pPanel.reloadAllWidgets()
+		end
+		
+		func void devicesReloaded(BindingManager manager)
+			pPanel.reloadAllWidgets()
+		end
+	end
+	
+	
+	
 	var BindingManager pBindingManager
 	var int pBindingIconHeight
 	var DisplayInteractPromptEntry.Placement pPlacement
 	var DefaultListModel pModel
 	var String pEntryBaseSelectorName
+	var BindingsChanged pBindingsChanged
 	
 	
 	
@@ -77,17 +117,27 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 		pBindingIconHeight = DEMath.max(bindingIconHeight, 1)
 		pPlacement = placement
 		pEntryBaseSelectorName = entryBaseSelectorName
+		
 		pModel = DefaultListModel.new()
 		pModel.addListener(this)
 		
 		setLayout(BoxLayout.new(LayoutAxis.x))
 		setDesignerSelector(designerSelector)
+		
+		pBindingsChanged = BindingsChanged.new(this)
+		pBindingManager.addListener(pBindingsChanged)
 	end
 	
 	/** \brief Dispose of widget. */
 	func void dispose()
+		if pBindingsChanged != null
+			pBindingManager.removeListener(pBindingsChanged)
+			pBindingsChanged = null
+		end
+		
 		pModel = null
 		pBindingManager = null
+		
 		super.dispose()
 	end
 	
@@ -174,8 +224,28 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 			end
 			
 			for i = count to widgetCount
-				getWidget(i).setVisible(false)
+				widget = getWidget(i)
+				widget.setVisible(false)
+				updateWidget(widget, null)
 			end
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	/**
+	 * \brief Reload all widgets.
+	 * \version 1.20
+	 * 
+	 * Call this if bindings changed in a way a simple updateWidget() can not recognize it.
+	 * Clears first all widgets then calls updateWidget().
+	 */
+	func void reloadAllWidgets()
+		runWhileBlockingLayout(block
+			forEachWidget(block Widget each
+				each.setVisible(false)
+				updateWidget(each, null)
+			end)
+			updateWidgets()
 		end)
 		doLayoutIfBlocked()
 	end

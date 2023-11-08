@@ -25,6 +25,8 @@
 #include "dexsiXInclude.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/utils/decTimer.h>
 
 class deXSystemInput;
 class dexsiDevice;
@@ -50,6 +52,12 @@ private:
 	
 	int pInotifyFd;
 	int pInotifyWatchEvdev;
+	const ssize_t pInotifyBufferLen;
+	uint8_t *pInotifyBuffer;
+	
+	decStringList pDelayProbeDevices;
+	float pTimeoutDelayProbeDevices;
+	decTimer pTimerDelayProbeDevices;
 	
 	
 	
@@ -130,8 +138,11 @@ private:
 	void pStartWatchEvdev();
 	void pStopWatchEvdev();
 	void pUpdateWatchEvdev();
-	bool pEvdevAppeared( const decString &path );
+	void pEvdevAppeared( const decString &path );
 	bool pEvdevDisappeared( const decString &path );
+	
+	void pUpdateDelayProbeDevices();
+	bool pProbeDevice( const decString &path );
 };
 
 #endif
