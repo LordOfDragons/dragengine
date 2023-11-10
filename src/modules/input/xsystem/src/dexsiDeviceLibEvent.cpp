@@ -78,12 +78,21 @@ pEvdevMapKeys( NULL )
 	// retrieve device parameters
 	SetName( libevdev_get_name( pEvdevDevice ) );
 	
-	const int bustype = libevdev_get_id_bustype( pEvdevDevice );
-	const int vendor = libevdev_get_id_vendor( pEvdevDevice );
-	const int product = libevdev_get_id_product( pEvdevDevice );
-	const int version = libevdev_get_id_version( pEvdevDevice );
-	string.Format( "%s%d%04x%04x%04x%04x", XINP_DEVID_PREFIX, esLibevdev,
-		bustype, vendor, product, version );
+	const char * const unique = libevdev_get_uniq( pEvdevDevice );
+	if( unique ){
+		string.Format( "%s%d%s", XINP_DEVID_PREFIX, esLibevdev,
+			module.GetDevices()->NormalizeID( unique ).GetString() );
+		
+	}else{
+		const int bustype = libevdev_get_id_bustype( pEvdevDevice );
+		const int vendor = libevdev_get_id_vendor( pEvdevDevice );
+		const int product = libevdev_get_id_product( pEvdevDevice );
+		const int version = libevdev_get_id_version( pEvdevDevice );
+		
+		string.Format( "%s%d%04x%04x%04x%04x", XINP_DEVID_PREFIX, esLibevdev,
+			bustype, vendor, product, version );
+	}
+	
 	SetID( string );
 	
 	// try to identify what kind of device this is

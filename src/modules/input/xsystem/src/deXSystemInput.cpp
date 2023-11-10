@@ -29,7 +29,6 @@
 #include "dexsiDeviceAxis.h"
 #include "dexsiDeviceButton.h"
 #include "dexsiDeviceFeedback.h"
-#include "dexsiDeviceManager.h"
 #include "dexsiDeviceCoreMouse.h"
 #include "dexsiDeviceCoreKeyboard.h"
 
@@ -88,14 +87,8 @@ pLastMouseY( 0 ),
 
 pIsListening( false ),
 
-pOldAccelNom( 0 ),
-pOldAccelDenom( 0 ),
-pOldThreshold( 0 ),
-
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
-
-pDevices( NULL ),
 
 pKeyStates( NULL ){
 }
@@ -144,7 +137,7 @@ bool deXSystemInput::Init(){
 			pKeyStates[ i ] = false;
 		}
 		
-		pDevices = new dexsiDeviceManager( *this );
+		pDevices.TakeOver( new dexsiDeviceManager( *this ) );
 		pDevices->UpdateDeviceList();
 		pDevices->LogDevices();
 		
@@ -157,10 +150,8 @@ bool deXSystemInput::Init(){
 }
 
 void deXSystemInput::CleanUp(){
-	if( pDevices ){
-		delete pDevices;
-		pDevices = NULL;
-	}
+	pDevices = nullptr;
+	
 	if( pKeyStates ){
 		delete [] pKeyStates;
 		pKeyStates = NULL;

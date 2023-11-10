@@ -52,10 +52,6 @@
 
 dexsiDeviceManager::dexsiDeviceManager( deXSystemInput &module ) :
 pModule( module ),
-pX11CoreMouse( NULL ),
-pX11CoreKeyboard( NULL ),
-pPrimaryMouse( NULL ),
-pPrimaryKeyboard( NULL ),
 pInotifyFd( -1 ),
 pInotifyWatchEvdev( -1 ),
 pInotifyBufferLen( 1024 * ( sizeof( inotify_event ) + 16) ),
@@ -218,13 +214,6 @@ decString dexsiDeviceManager::NormalizeID( const char *id ){
 void dexsiDeviceManager::pCleanUp(){
 	pStopWatchEvdev();
 	delete [] pInotifyBuffer;
-	pDevices.RemoveAll();
-	if( pX11CoreKeyboard ){
-		pX11CoreKeyboard->FreeReference();
-	}
-	if( pX11CoreMouse ){
-		pX11CoreMouse->FreeReference();
-	}
 }
 
 
@@ -458,11 +447,11 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 
 
 void dexsiDeviceManager::pCreateDevices(){
-	pX11CoreMouse = new dexsiDeviceCoreMouse( pModule );
+	pX11CoreMouse.TakeOver( new dexsiDeviceCoreMouse( pModule ) );
 	pX11CoreMouse->SetIndex( pDevices.GetCount() );
 	pDevices.Add( pX11CoreMouse );
 	
-	pX11CoreKeyboard = new dexsiDeviceCoreKeyboard( pModule );
+	pX11CoreKeyboard.TakeOver( new dexsiDeviceCoreKeyboard( pModule ) );
 	pX11CoreKeyboard->SetIndex( pDevices.GetCount() );
 	pDevices.Add( pX11CoreKeyboard );
 	
@@ -496,12 +485,10 @@ void dexsiDeviceManager::pFindPrimaryDevices(){
 	}
 	
 	if( ! pPrimaryMouse ){
-		pModule.LogError( "No mouse device found" );
-		DETHROW( deeInvalidParam );
+		pModule.LogInfo( "No mouse device found" );
 	}
 	if( ! pPrimaryKeyboard ){
-		pModule.LogError( "No keyboard device found" );
-		DETHROW( deeInvalidParam );
+		pModule.LogInfo( "No keyboard device found" );
 	}
 }
 

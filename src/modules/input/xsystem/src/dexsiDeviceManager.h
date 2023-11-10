@@ -23,32 +23,38 @@
 #define _DEXSIDEVICEMANAGER_H_
 
 #include "dexsiXInclude.h"
+#include "dexsiDeviceCoreMouse.h"
+#include "dexsiDeviceCoreKeyboard.h"
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decTimer.h>
 
 class deXSystemInput;
 class dexsiDevice;
-class dexsiDeviceCoreMouse;
-class dexsiDeviceCoreKeyboard;
 
 
 
 /**
  * X-System input devices.
  */
-class dexsiDeviceManager{
+class dexsiDeviceManager : public deObject{
+public:
+	typedef deTObjectReference<dexsiDeviceManager> Ref;
+	
+	
+	
 private:
 	deXSystemInput &pModule;
 	
 	decObjectOrderedSet pDevices;
 	
-	dexsiDeviceCoreMouse *pX11CoreMouse;
-	dexsiDeviceCoreKeyboard *pX11CoreKeyboard;
+	dexsiDeviceCoreMouse::Ref pX11CoreMouse;
+	dexsiDeviceCoreKeyboard::Ref pX11CoreKeyboard;
 	
-	dexsiDevice *pPrimaryMouse;
-	dexsiDevice *pPrimaryKeyboard;
+	dexsiDevice::Ref pPrimaryMouse;
+	dexsiDevice::Ref pPrimaryKeyboard;
 	
 	int pInotifyFd;
 	int pInotifyWatchEvdev;
@@ -67,12 +73,14 @@ public:
 	/** Create device list. */
 	dexsiDeviceManager( deXSystemInput &module );
 	
+protected:
 	/** Clean up device list. */
-	~dexsiDeviceManager();
+	virtual ~dexsiDeviceManager();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Module Management */
 	/*@{*/
 	/** Update list of available devices. */
@@ -95,16 +103,16 @@ public:
 	
 	
 	/** Core mouse device. */
-	inline dexsiDeviceCoreMouse *GetX11CoreMouse() const{ return pX11CoreMouse; }
+	inline const dexsiDeviceCoreMouse::Ref &GetX11CoreMouse() const{ return pX11CoreMouse; }
 	
 	/** Core keyboard device. */
-	inline dexsiDeviceCoreKeyboard *GetX11CoreKeyboard() const{ return pX11CoreKeyboard; }
+	inline const dexsiDeviceCoreKeyboard::Ref &GetX11CoreKeyboard() const{ return pX11CoreKeyboard; }
 	
 	/** Primary mouse device. */
-	inline dexsiDevice *GetPrimaryMouse() const{ return pPrimaryMouse; }
+	inline const dexsiDevice::Ref &GetPrimaryMouse() const{ return pPrimaryMouse; }
 	
 	/** Primary keyboard device. */
-	inline dexsiDevice *GetPrimaryKeyboard() const{ return pPrimaryKeyboard; }
+	inline const dexsiDevice::Ref &GetPrimaryKeyboard() const{ return pPrimaryKeyboard; }
 	
 	
 	
