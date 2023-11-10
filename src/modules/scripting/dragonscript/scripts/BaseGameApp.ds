@@ -975,9 +975,7 @@ class BaseGameApp extends Game
 		
 		try
 			desktop.setGuiTheme(guitheme)
-			if Engine.isCompatibleVersionNewer(1, 19)
-				desktop.setGamepadController(GamepadController.new(pGlobalEvents, desktop))
-			end
+			desktop.setGamepadController(GamepadController.new(pGlobalEvents, desktop))
 			setDesktop(desktop)
 			
 		catch Exception e
