@@ -1038,6 +1038,10 @@ void main( void ){
 			}
 		#endif
 		
+		#if GI_RAY
+		shadow = step( 0.75, shadow );
+		#endif
+		
 		vec3 shadowColor = vec3( shadow );
 		
 		// calculate the transparent shadow value
