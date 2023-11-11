@@ -860,6 +860,27 @@ class Widget
 		end
 	end
 	
+	/**
+	 * \brief Set tooltip from translation entry.
+	 * \version 1.20
+	 */
+	func void setTranslatedToolTip(TranslationManager translationManager, String name)
+		var UnicodeString text
+		
+		if translationManager != null
+			text = translationManager.translate(name, null)
+		end
+		if text == null
+			text = EngineTranslations.get().translate(name, null)
+		end
+		
+		if text != null
+			setToolTip(text.toUTF8())
+			
+		else
+			setToolTip(null)
+		end
+	end
 	
 	
 	/**

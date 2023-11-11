@@ -45,16 +45,77 @@ pin Dragengine.Utils
  * - Binding label (selected): 'Label.' + base-selector + '.Binding.Selected'
  */
 class EditBindingsListRenderer extends DefaultListElementRenderer
-	private var int pWidthDisplayName
-	private var int pIconHeight
-	private var WeightLayout.LayoutSettings pLSDisplayName
-	private var WeightLayout.LayoutSettings pLSBindings
-	private var TranslationManager pTranslationManager
+	/**
+	 * \brief Action deleting binding.
+	 * \version 1.20
+	 * 
+	 * Deleting the binding is delayed by one frame update to avoid problems if widget is
+	 * removed while action runs.
+	 */
+	protected class ActionDeleteBinding implements ActionListener
+		var EditBindingsListModel pModel
+		var EditBindingsListModelEntry pEntry
+		var Binding pBinding
+		
+		func new(EditBindingsListModel model, EditBindingsListModelEntry entry, Binding binding)
+			pModel = model
+			pEntry = entry
+			pBinding = binding
+		end
+		
+		func void onAction(ActionEvent event)
+			TimerBlock.new(0, false, block
+				var int index = pModel.indexOf(pEntry)
+				if index != -1
+					if pEntry.hasAxisBinding(pBinding)
+						pModel.getBindingManager().removeAxisBinding(pBinding)
+						
+					elif pEntry.hasButtonBinding(pBinding)
+						pModel.getBindingManager().removeButtonBinding(pBinding)
+					end
+					
+					pModel.notifyContentChanged(index, index)
+				end
+			end)
+		end
+	end
+	
+	/**
+	 * \brief Action add binding.
+	 * \version 1.20
+	 * 
+	 * Calls EditBindingsListBox.selectedCaptureBinding() .
+	 */
+	protected class ActionAddBinding implements ActionListener
+		var EditBindingsListBox pListBox
+		var EditBindingsListModel pModel
+		var EditBindingsListModelEntry pEntry
+		
+		func new(EditBindingsListBox listBox, EditBindingsListModel model, EditBindingsListModelEntry entry)
+			pListBox = listBox
+			pModel = model
+			pEntry = entry
+		end
+		
+		func void onAction(ActionEvent event)
+			if pModel.has(pEntry)
+				pListBox.captureBinding(pEntry)
+			end
+		end
+	end
+	
+	
+	
+	var int pWidthDisplayName
+	var int pIconHeight
+	var WeightLayout.LayoutSettings pLSDisplayName
+	var WeightLayout.LayoutSettings pLSBindings
+	var TranslationManager pTranslationManager
 	
 	
 	
 	/** \brief Create element renderer. */
-	public func new()
+	func new()
 		pTranslationManager = TranslationManager.get()
 		pIconHeight = 32
 		pLSBindings = WeightLayout.LayoutSettings.new(1)
@@ -65,12 +126,12 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	
 	
 	/** \brief Width of display name in pixels. */
-	public func int getWidthDisplayName()
+	func int getWidthDisplayName()
 		return pWidthDisplayName
 	end
 	
 	/** \brief Set width of display name in pixels. */
-	public func void setWidthDisplayName(int width)
+	func void setWidthDisplayName(int width)
 		if width < 1
 			throw EInvalidParam.new()
 		end
@@ -84,12 +145,12 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	end
 	
 	/** \brief Icon height. */
-	public func int getIconHeight()
+	func int getIconHeight()
 		return pIconHeight
 	end
 	
 	/** \brief Set icon height. */
-	public func void setIconHeight(int height)
+	func void setIconHeight(int height)
 		pIconHeight = height
 	end
 	
@@ -99,7 +160,7 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	 * 
 	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
 	 */
-	public func TranslationManager getTranslationManager()
+	func TranslationManager getTranslationManager()
 		return pTranslationManager
 	end
 	
@@ -109,7 +170,7 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	 * 
 	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
 	 */
-	public func void setTranslationManager(TranslationManager translationManager)
+	func void setTranslationManager(TranslationManager translationManager)
 		pTranslationManager = translationManager
 	end
 	
@@ -121,7 +182,7 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	 * Renderer is a Panel containing as first element a command Label and as second element
 	 * a Panel with all bindings. Bindings are Label widgets with a border.
 	 */
-	public func Widget createRenderer(ListBox listBox)
+	func Widget createRenderer(ListBox listBox)
 		return Panel.new(WeightLayout.new(LayoutAxis.x, 5), block Panel panel
 			panel.addWidget(Label.new(" "), pLSDisplayName)
 			panel.addWidget(Panel.new(FlowLayout.new(\
@@ -130,7 +191,7 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	end
 	
 	/** \brief Update renderer with object state. */
-	public func void updateRenderer(ListBox listBox, Widget renderer, Object element, \
+	func void updateRenderer(ListBox listBox, Widget renderer, Object element, \
 	bool selected, bool focused)
 		var EditBindingsListModelEntry entry = element cast EditBindingsListModelEntry
 		var EditBindingsListModel model = listBox.getModel() cast EditBindingsListModel
@@ -161,13 +222,20 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 			bindingPanel.runWhileBlockingLayout(block
 				bindingPanel.removeAllWidgets()
 				
+				if listBox castable EditBindingsListBox
+					bindingPanel.addWidget(createAddBindingWidget(\
+						listBox cast EditBindingsListBox, model, entry, selected))
+				end
+				
 				entry.forEachAxisBinding(block Binding each
-					bindingPanel.addWidget(createBindingWidget(model, entry, selected, \
-						each, EditBindingsListModelEntry.InputSource.axis))
+					bindingPanel.addWidget(wrapBindingWidget(model, entry, selected, each,\
+						createBindingWidget(model, entry, selected, each,\
+							EditBindingsListModelEntry.InputSource.axis)))
 				end)
 				entry.forEachButtonBinding(block Binding each
-					bindingPanel.addWidget(createBindingWidget(model, entry, selected, \
-						each, EditBindingsListModelEntry.InputSource.button))
+					bindingPanel.addWidget(wrapBindingWidget(model, entry, selected, each,\
+						createBindingWidget(model, entry, selected, each,\
+							EditBindingsListModelEntry.InputSource.button)))
 				end)
 			end)
 			
@@ -181,7 +249,7 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	 * \brief Create widget representing binding.
 	 * 
 	 * Default implementation create instance of DisplayInputSource if input has display
-	 * information othetwise calls createBindingWidgetFallback().
+	 * information otherwise calls createBindingWidgetFallback().
 	 * 
 	 * If \em binding is null create a placeholder element used to measure default size.
 	 * 
@@ -286,5 +354,60 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 		end
 		
 		return label
+	end
+	
+	/**
+	 * \brief Wrap binding widget.
+	 * \version 1.20
+	 * 
+	 * Default implementations creates a panel with BorderLayout. The widget is placed in the
+	 * content area. A button to delete the binding is placed in the right area.
+	 */
+	protected func Container wrapBindingWidget(EditBindingsListModel model,\
+	EditBindingsListModelEntry entry, bool selected, Binding binding, Widget widget)
+		return Panel.new(BorderLayout.new(), block Panel p
+			var String designerSelector = getDesignerSelector()
+			
+			if selected
+				p.setDesignerSelector("Panel." + designerSelector + ".Binding.Selected")
+				
+			else
+				p.setDesignerSelector("Panel." + designerSelector + ".Binding")
+			end
+			
+			p.addWidget(widget, BorderLayout.Area.content)
+			p.addWidget(createRemoveBindingWidget(model, entry, selected, binding),\
+				BorderLayout.Area.right)
+		end)
+	end
+	
+	/**
+	 * \brief Create widget to remove binding.
+	 * \version 1.20
+	 * 
+	 * Default implementation creates a Button with a delete icon. Upon clicking the butten
+	 * the action ActionDeleteBinding is run.
+	 */
+	protected func Widget createRemoveBindingWidget(EditBindingsListModel model,\
+	EditBindingsListModelEntry entry, bool selected, Binding binding)
+		var Button button = Button.new(" ", ActionDeleteBinding.new(model, entry, binding))
+		button.setDesignerSelector("Button.EditBindingsEntry.DeleteBinding")
+		button.setTranslatedToolTip(TranslationManager.get(), "UI.EditBinding.DeleteBinding.ToolTip")
+		return button
+	end
+	
+	/**
+	 * \brief Create widget to add binding.
+	 * \version 1.20
+	 * 
+	 * Default implementation creates a Button with a add icon. Upon clicking the button
+	 * the action ActionAddBinding is run.
+	 */
+	protected func Widget createAddBindingWidget(EditBindingsListBox listBox,\
+	EditBindingsListModel model, EditBindingsListModelEntry entry, bool selected)
+		var Button button = Button.new(" ", ActionAddBinding.new(listBox, model, entry))
+		button.setDesignerSelector("Button.EditBindingsEntry.AddBinding")
+		button.setTranslatedToolTip(TranslationManager.get(), "UI.EditBinding.AddBinding.ToolTip")
+		return button
 	end
 end
