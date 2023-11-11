@@ -152,9 +152,9 @@ void dexsiDeviceManager::LogDevice( const dexsiDevice &device ){
 		pModule.LogInfo( "  Axes:" );
 		for( i=0; i<axisCount; i++ ){
 			const dexsiDeviceAxis &axis = *device.GetAxisAt( i );
-			pModule.LogInfoFormat( "    - '%s' (%s) %d .. %d [%d %d]",
-				axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
-				axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat() );
+			pModule.LogInfoFormat( "    - '%s' (%s)[%d] %d .. %d [%d %d]",
+				axis.GetName().GetString(), axis.GetID().GetString(), axis.GetType(),
+				axis.GetMinimum(), axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat() );
 		}
 	}
 	
@@ -167,9 +167,9 @@ void dexsiDeviceManager::LogDevice( const dexsiDevice &device ){
 			pModule.LogInfo( "  Buttons:" );
 			for( i=0; i<buttonCount; i++ ){
 				const dexsiDeviceButton &button = *device.GetButtonAt( i );
-				pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
+				pModule.LogInfoFormat( "    - '%s' (%s)[%d] %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
-					button.GetEvdevCode(), i );
+					button.GetType(), button.GetEvdevCode(), i );
 			}
 		}
 	}
