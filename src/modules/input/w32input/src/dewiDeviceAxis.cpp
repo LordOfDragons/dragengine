@@ -23,6 +23,7 @@
 
 #include "dewiDevice.h"
 #include "dewiDeviceAxis.h"
+#include "dewiDeviceWinRTController.h"
 #include "deWindowsInput.h"
 
 #include <dragengine/deEngine.h>
@@ -57,7 +58,10 @@ pWheelChange( 0 ),
 pValue( 0.0f ),
 pChangedValue( 0.0f ),
 
-pWICode( -1 ){
+pWICode( -1 ),
+pWinRTReadingIndexAxis( -1 ),
+pWinRTReadingIndexSwitch( -1 ),
+pWinRTReadingDirectionSwitch( 0 ){
 }
 
 dewiDeviceAxis::~dewiDeviceAxis(){
@@ -173,6 +177,18 @@ void dewiDeviceAxis::SetWICode( int code ){
 	pWICode = code;
 }
 
+void dewiDeviceAxis::SetWinRTReadingIndexAxis( int index ){
+	pWinRTReadingIndexAxis = index;
+}
+
+void dewiDeviceAxis::SetWinRTReadingIndexSwitch( int index ){
+	pWinRTReadingIndexSwitch = index;
+}
+
+void dewiDeviceAxis::SetWinRTReadingDirectionSwitch( int direction ){
+	pWinRTReadingDirectionSwitch = direction;
+}
+
 
 
 void dewiDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
@@ -224,6 +240,87 @@ void dewiDeviceAxis::SendEvents( dewiDevice &device ){
 		pChangedValue = 0.0f;
 		device.GetModule().AddAxisChanged( device.GetIndex(), pIndex, pValue, pLastEventTime );
 	}
+}
+
+void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
+	// get reading depending on axis type
+	int reading;
+	
+	if( pWinRTReadingIndexAxis != -1 ){
+		reading = ( int )decMath::linearStep( device.GetReadingAxis( pWinRTReadingIndexAxis ),
+			0.0, 1.0, ( double )pMinimum, ( double )pMaximum );
+
+	}else if( pWinRTReadingIndexSwitch != -1 ){
+		if( pWinRTReadingDirectionSwitch == 0 ){
+			switch( device.GetReadingSwitch( pWinRTReadingIndexSwitch ) ){
+			case wrgi::GameControllerSwitchPosition::Right:
+			case wrgi::GameControllerSwitchPosition::UpRight:
+			case wrgi::GameControllerSwitchPosition::DownRight:
+				reading = pMaximum;
+				break;
+
+			case wrgi::GameControllerSwitchPosition::Left:
+			case wrgi::GameControllerSwitchPosition::DownLeft:
+			case wrgi::GameControllerSwitchPosition::UpLeft:
+				reading = pMinimum;
+				break;
+
+			default:
+				reading = ( pMinimum + pMaximum ) / 2;
+			}
+
+		}else{
+			switch( device.GetReadingSwitch( pWinRTReadingIndexSwitch ) ){
+			case wrgi::GameControllerSwitchPosition::Up:
+			case wrgi::GameControllerSwitchPosition::UpRight:
+			case wrgi::GameControllerSwitchPosition::UpLeft:
+				reading = pMaximum;
+				break;
+
+			case wrgi::GameControllerSwitchPosition::Down:
+			case wrgi::GameControllerSwitchPosition::DownRight:
+			case wrgi::GameControllerSwitchPosition::DownLeft:
+				reading = pMinimum;
+				break;
+
+			default:
+				reading = ( pMinimum + pMaximum ) / 2;
+			}
+		}
+
+	}else{
+		reading = ( pMinimum + pMaximum ) / 2;
+	}
+
+	// convert reading to value
+	float value;
+
+	if( reading < pDeadZoneLower ){
+		value = decMath::linearStep( ( float )reading,
+			( float )pMinimum, ( float )pDeadZoneLower, -1.0f, 0.0f );
+
+	}else if( reading > pDeadZoneUpper ){
+		value = decMath::linearStep( ( float )reading,
+			( float )pDeadZoneUpper, ( float )pMaximum, 0.0f, 1.0f );
+
+	}else{
+		value = 0.0f;
+	}
+
+	// update
+	if( pAbsolute ){
+		pChangedValue = value;
+
+	}else{
+		pChangedValue += value;
+	}
+
+	if( fabsf( pChangedValue - pValue ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+
+	pLastEventTime = device.GetReadingTime();
+	device.SetDirtyAxesValues( true );
 }
 
 

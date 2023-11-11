@@ -32,7 +32,7 @@
 #include "deWindowsInput.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/app/deOSUnix.h>
+#include <dragengine/app/deOSWindows.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/input/deInputDevice.h>
