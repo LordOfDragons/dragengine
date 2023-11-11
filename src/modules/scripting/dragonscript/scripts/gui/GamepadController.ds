@@ -172,6 +172,7 @@ class GamepadController extends FrameUpdateListener
 	var bool pDirtyDevices
 	var int pButtonPressCount
 	var Vector2 pMouseMoveAccum
+	var float pMouseMovementAcceleration
 	
 	
 	
@@ -192,6 +193,7 @@ class GamepadController extends FrameUpdateListener
 		pMouseSpeed = 1200
 		pEnabled = true
 		pMouseMoveAccum = Vector2.new()
+		pMouseMovementAcceleration = 1.5
 		
 		pGlobalEvents = globalEvents
 		pInvalidateDevices = InvalidateDevices.new(this)
@@ -248,6 +250,34 @@ class GamepadController extends FrameUpdateListener
 	/** \brief Set mouse speed in pixels per second. */
 	func void setMouseSpeed(float speed)
 		pMouseSpeed = speed
+	end
+	
+	/**
+	 * \brief Mouse movement acceleration.
+	 * 
+	 * Applies a remapping of the mouse movement. With a value of 1 the mouse movement is
+	 * not modified. With a value larger than 1 small mouse movement is slowed down while
+	 * larger mouse movement is accelerated. This makes it easier to do precise mouse
+	 * movement near the desired target while moving large distances is faster. The default
+	 * value is 1.5 . Typical values are 1, 1.5 or 2. Values less than 1 are usually not
+	 * that useful but can be experimented with if desired.
+	 */
+	func float getMouseMovementAcceleration()
+		return pMouseMovementAcceleration
+	end
+	
+	/**
+	 * \brief Mouse movement acceleration.
+	 * 
+	 * Applies a remapping of the mouse movement. With a value of 1 the mouse movement is
+	 * not modified. With a value larger than 1 small mouse movement is slowed down while
+	 * larger mouse movement is accelerated. This makes it easier to do precise mouse
+	 * movement near the desired target while moving large distances is faster. The default
+	 * value is 1.5 . Typical values are 1, 1.5 or 2. Values less than 1 are usually not
+	 * that useful but can be experimented with if desired.
+	 */
+	func void setMouseMovementAcceleration(float acceleration)
+		pMouseMovementAcceleration = DEMath.max(acceleration, 0.1)
 	end
 	
 	
@@ -430,11 +460,11 @@ class GamepadController extends FrameUpdateListener
 	 * 
 	 * Input is value in the range from 0 to 1. Output is mapped value in the range from 0 to 1.
 	 * Mapping is used to make mouse movement for small stick value smaller for precise control
-	 * and larger for large stick values. The default implementation applies a power of 1.5 to the
-	 * input value.
+	 * and larger for large stick values. The default implementation applies the mouse
+	 * acceleration as power to the input value.
 	 */
 	protected func float mapMouseMovement(float factor)
-		return DEMath.pow(factor, 1.5)
+		return DEMath.pow(factor, pMouseMovementAcceleration)
 	end
 	
 	

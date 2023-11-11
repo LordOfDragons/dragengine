@@ -1013,7 +1013,7 @@ class DefaultBindingHelper
 					end
 				end
 				
-			elif number == 1
+			elif number == axisVert
 				if up != null
 					var Command command = pCommandManager.getNamed(up)
 					if command != null
