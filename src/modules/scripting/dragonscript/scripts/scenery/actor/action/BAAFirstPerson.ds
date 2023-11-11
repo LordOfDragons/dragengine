@@ -59,18 +59,18 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	public class Factory implements PersistencyFactory, ECBehaviorActorAIAction.ActionFactory
 		public static fixed var String NAME = "BAAFirstPerson"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
 			return BAAFirstPerson.new()
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		public static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 		
-		public func BaseActorAction createAction( ECBehaviorActorAIAction.Instance instance )
+		func BaseActorAction createAction(ECBehaviorActorAIAction.Instance instance)
 			return BAAFirstPerson.new()
 		end
 	end
@@ -83,13 +83,13 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * For performance reasons updating the actor geometry not done during colliderChanged()
 	 * but during postThink() when project to ground has been done. Between postThink() and
 	 * the next elementThink() actor geometry has to be updated or the actor element matrix
-	 * is out of sync when AI operates on it. This parameter is used to keep track of this.
+	 * is out of sync when AI operates on it. This parameter is used to keep track of 
 	 */
 	protected var bool moveIfColliderChanged
 	
 	
 	
-	private var float pLandingAngle
+	var float pLandingAngle
 	
 	/** \brief Collider AI Behavior. */
 	protected var ECBehaviorColliderAI.Instance colliderAI
@@ -115,56 +115,56 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	
 	
 	/** \brief Create actor action. */
-	public func new()
-		this.moveIfColliderChanged = true
-		this.pLandingAngle = 120
+	func new()
+		moveIfColliderChanged = true
+		pLandingAngle = 120
 	end
 	
 	
 	
 	/** \brief Angle in degrees between falling direction and ground normal to land. */
-	public func float getLandingAngle()
-		return this.pLandingAngle
+	func float getLandingAngle()
+		return pLandingAngle
 	end
 	
 	/** \brief Set angle in degrees between falling direction and ground normal to land. */
-	public func void setLandingAngle( float angle )
-		this.pLandingAngle = DEMath.clamp( angle, 0.0, 180.0 )
+	func void setLandingAngle(float angle)
+		pLandingAngle = DEMath.clamp(angle, 0.0, 180.0)
 	end
 	
 	/** \brief Collider AI behavior. */
-	public func ECBehaviorColliderAI.Instance getColliderAI()
-		return this.colliderAI
+	func ECBehaviorColliderAI.Instance getColliderAI()
+		return colliderAI
 	end
 	
 	/** \brief Player input looking around behavior. */
-	public func ECBehaviorPlayerInputLook.Instance getPlayerInputLook()
-		return this.playerInputLook
+	func ECBehaviorPlayerInputLook.Instance getPlayerInputLook()
+		return playerInputLook
 	end
 	
 	/** \brief Player input moving behavior. */
-	public func ECBehaviorPlayerInputMove.Instance getPlayerInputMove()
-		return this.playerInputMove
+	func ECBehaviorPlayerInputMove.Instance getPlayerInputMove()
+		return playerInputMove
 	end
 	
 	/** \brief Player input crouching behavior. */
-	public func ECBehaviorPlayerInputCrouch.Instance getPlayerInputCrouch()
-		return this.playerInputCrouch
+	func ECBehaviorPlayerInputCrouch.Instance getPlayerInputCrouch()
+		return playerInputCrouch
 	end
 	
 	/** \brief Project to ground behavior. */
-	public func ECBehaviorProjectToGround.Instance getProjectToGround()
-		return this.projectToGround
+	func ECBehaviorProjectToGround.Instance getProjectToGround()
+		return projectToGround
 	end
 	
 	/** \brief Foot steps behavior. */
-	public func ECBehaviorFootSteps.Instance getFootSteps()
-		return this.footSteps
+	func ECBehaviorFootSteps.Instance getFootSteps()
+		return footSteps
 	end
 	
 	/** \brief Actor mover behavior. */
-	public func ECBehaviorActorMover.Instance getActorMover()
-		return this.actorMover
+	func ECBehaviorActorMover.Instance getActorMover()
+		return actorMover
 	end
 	
 	
@@ -177,14 +177,14 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - initLocomotion()
 	 * - initLocomotionPlayer()  if player controls this actor only
 	 */
-	public func void activate( BehaviorElement actor )
-		super.activate( actor )
+	func void activate(BehaviorElement actor)
+		super.activate(actor)
 		
-		this.initPlayerInput()
-		this.initLocomotion()
+		initPlayerInput()
+		initLocomotion()
 		
-		if this.isControlledByPlayer() 
-			this.initLocomotionPlayer()
+		if isControlledByPlayer() 
+			initLocomotionPlayer()
 		end
 	end
 	
@@ -196,10 +196,10 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - initLocomotion()
 	 * - initLocomotionPlayer()
 	 */
-	public func void playerTakesControl()
-		this.initPlayerInput()
-		this.initLocomotion()
-		this.initLocomotionPlayer()
+	func void playerTakesControl()
+		initPlayerInput()
+		initLocomotion()
+		initLocomotionPlayer()
 	end
 	
 	/**
@@ -209,9 +209,9 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - initPlayerInput()
 	 * - initLocomotion()
 	 */
-	public func void playerReleasesControl()
-		this.initPlayerInput()
-		this.initLocomotion()
+	func void playerReleasesControl()
+		initPlayerInput()
+		initLocomotion()
 	end
 	
 	/**
@@ -226,9 +226,9 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - animatorInstance.apply()
 	 * - convoActor.updateAfterLocomotion() if present
 	 */
-	public func void think( float elapsed )
-		this.moveIfColliderChanged = false
-		super.think( elapsed )
+	func void think(float elapsed)
+		moveIfColliderChanged = false
+		super.think(elapsed)
 	end
 	
 	/**
@@ -241,170 +241,170 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - Update position and orientation if not using ECBehaviorProjectToGround
 	 * - updateLocomotionPost()
 	 */
-	public func void postThink( float elapsed )
-		if this.projectToGround == null
-			this.colliderAI.setGeometryFromCollider()
+	func void postThink(float elapsed)
+		if projectToGround == null
+			colliderAI.setGeometryFromCollider()
 		end
 		
-		this.updateLocomotionPost( elapsed )
+		updateLocomotionPost(elapsed)
 		
-		this.moveIfColliderChanged = true
+		moveIfColliderChanged = true
 	end
 	
 	
 	
 	/** \brief Start moving forward. */
-	public func void moveForwardStart()
-		this.playerInputMove.setMoveForward( true )
+	func void moveForwardStart()
+		playerInputMove.setMoveForward(true)
 	end
 	
 	/** \brief Stop moving forward. */
-	public func void moveForwardStop()
-		this.playerInputMove.setMoveForward( false )
+	func void moveForwardStop()
+		playerInputMove.setMoveForward(false)
 	end
 	
 	/** \brief Start moving backward. */
-	public func void moveBackwardStart()
-		this.playerInputMove.setMoveBackward( true )
+	func void moveBackwardStart()
+		playerInputMove.setMoveBackward(true)
 	end
 	
 	/** \brief Stop moving backward. */
-	public func void moveBackwardStop()
-		this.playerInputMove.setMoveBackward( false )
+	func void moveBackwardStop()
+		playerInputMove.setMoveBackward(false)
 	end
 	
 	/** \brief Start moving left. */
-	public func void moveLeftStart()
-		this.playerInputMove.setMoveLeft( true )
+	func void moveLeftStart()
+		playerInputMove.setMoveLeft(true)
 	end
 	
 	/** \brief Stop moving left. */
-	public func void moveLeftStop()
-		this.playerInputMove.setMoveLeft( false )
+	func void moveLeftStop()
+		playerInputMove.setMoveLeft(false)
 	end
 	
 	/** \brief Start moving right. */
-	public func void moveRightStart()
-		this.playerInputMove.setMoveRight( true )
+	func void moveRightStart()
+		playerInputMove.setMoveRight(true)
 	end
 	
 	/** \brief Stop moving right. */
-	public func void moveRightStop()
-		this.playerInputMove.setMoveRight( false )
+	func void moveRightStop()
+		playerInputMove.setMoveRight(false)
 	end
 	
 	/** \brief Analog moving forward/backward. */
-	public func void analogMoveFB( float amount, bool sticky )
+	func void analogMoveFB(float amount, bool sticky)
 		if sticky
-			this.playerInputMove.setAnalogMoveForwardBackwardSticky( amount )
+			playerInputMove.setAnalogMoveForwardBackwardSticky(-amount)
 			
 		else
-			this.playerInputMove.setAnalogMoveForwardBackward( -amount )
+			playerInputMove.setAnalogMoveForwardBackward(-amount)
 		end
 	end
 	
 	/** \brief Analog moving left/right. */
-	public func void analogMoveLR( float amount, bool sticky )
+	func void analogMoveLR(float amount, bool sticky)
 		if sticky
-			this.playerInputMove.setAnalogMoveLeftRightSticky( amount )
+			playerInputMove.setAnalogMoveLeftRightSticky(amount)
 			
 		else
-			this.playerInputMove.setAnalogMoveLeftRight( amount )
+			playerInputMove.setAnalogMoveLeftRight(amount)
 		end
 	end
 	
 	/** \brief Start running. */
-	public func void runStart()
-		this.playerInputMove.setRun( true )
+	func void runStart()
+		playerInputMove.setRun(true)
 	end
 	
 	/** \brief Stop running. */
-	public func void runStop()
-		this.playerInputMove.setRun( false )
+	func void runStop()
+		playerInputMove.setRun(false)
 	end
 	
 	/** \brief Toggle running. */
-	public func void runToggle()
-		this.playerInputMove.toggleRun()
+	func void runToggle()
+		playerInputMove.toggleRun()
 	end
 	
 	
 	
 	/** \brief Start looking left. */
-	public func void lookLeftStart()
-		this.playerInputLook.setLookLeft( true )
+	func void lookLeftStart()
+		playerInputLook.setLookLeft(true)
 	end
 	
 	/** \brief Stop looking left. */
-	public func void lookLeftStop()
-		this.playerInputLook.setLookLeft( false )
+	func void lookLeftStop()
+		playerInputLook.setLookLeft(false)
 	end
 	
 	/** \brief Start looking right. */
-	public func void lookRightStart()
-		this.playerInputLook.setLookRight( true )
+	func void lookRightStart()
+		playerInputLook.setLookRight(true)
 	end
 	
 	/** \brief Stop looking right. */
-	public func void lookRightStop()
-		this.playerInputLook.setLookRight( false )
+	func void lookRightStop()
+		playerInputLook.setLookRight(false)
 	end
 	
 	/** \brief Start looking up. */
-	public func void lookUpStart()
-		this.playerInputLook.setLookUp( true )
+	func void lookUpStart()
+		playerInputLook.setLookUp(true)
 	end
 	
 	/** \brief Stop looking up. */
-	public func void lookUpStop()
-		this.playerInputLook.setLookUp( false )
+	func void lookUpStop()
+		playerInputLook.setLookUp(false)
 	end
 	
 	/** \brief Start looking down. */
-	public func void lookDownStart()
-		this.playerInputLook.setLookDown( true )
+	func void lookDownStart()
+		playerInputLook.setLookDown(true)
 	end
 	
 	/** \brief Stop looking down. */
-	public func void lookDownStop()
-		this.playerInputLook.setLookDown( false )
+	func void lookDownStop()
+		playerInputLook.setLookDown(false)
 	end
 	
 	/** \brief Analog looking left/right. */
-	public func void analogLookLR( float amount, bool sticky )
+	func void analogLookLR(float amount, bool sticky)
 		if sticky
-			this.playerInputLook.setAnalogLookHorizontalSticky( -amount )
+			playerInputLook.setAnalogLookHorizontalSticky(-amount)
 			
 		else
-			this.playerInputLook.setAnalogLookHorizontal( -amount )
+			playerInputLook.setAnalogLookHorizontal(-amount)
 		end
 	end
 	
 	/** \brief Analog looking up/down. */
-	public func void analogLookUD( float amount, bool sticky )
+	func void analogLookUD(float amount, bool sticky)
 		if sticky
-			this.playerInputLook.setAnalogLookVerticalSticky( amount )
+			playerInputLook.setAnalogLookVerticalSticky(amount)
 			
 		else
-			this.playerInputLook.setAnalogLookVertical( -amount )
+			playerInputLook.setAnalogLookVertical(-amount)
 		end
 	end
 	
 	
 	
 	/** \brief Start crouching. */
-	public func void crouchStart()
-		this.playerInputCrouch.setCrouch( true )
+	func void crouchStart()
+		playerInputCrouch.setCrouch(true)
 	end
 	
 	/** \brief Stop crouching. */
-	public func void crouchStop()
-		this.playerInputCrouch.setCrouch( true )
+	func void crouchStop()
+		playerInputCrouch.setCrouch(true)
 	end
 	
 	/** \brief Toggle crouching. */
-	public func void crouchToggle()
-		this.playerInputCrouch.toggleCrouch()
+	func void crouchToggle()
+		playerInputCrouch.toggleCrouch()
 	end
 	
 	
@@ -419,22 +419,22 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 		
 		if actor castable BaseActor
 			var BaseActor baseActor = actor cast BaseActor
-			this.colliderAI = baseActor.getColliderAI()
-			this.projectToGround = baseActor.getProjectToGround()
-			this.footSteps = baseActor.getFootSteps()
-			this.actorMover = baseActor.getActorMover()
-			this.playerInputLook = baseActor.getPlayerInputLook()
-			this.playerInputCrouch = baseActor.getPlayerInputCrouch()
-			this.playerInputMove = baseActor.getPlayerInputMove()
+			colliderAI = baseActor.getColliderAI()
+			projectToGround = baseActor.getProjectToGround()
+			footSteps = baseActor.getFootSteps()
+			actorMover = baseActor.getActorMover()
+			playerInputLook = baseActor.getPlayerInputLook()
+			playerInputCrouch = baseActor.getPlayerInputCrouch()
+			playerInputMove = baseActor.getPlayerInputMove()
 			
 		else
-			this.colliderAI = ECBehaviorColliderAI.getInstanceIn( actor )
-			this.projectToGround = ECBehaviorProjectToGround.getInstanceIn( actor )
-			this.footSteps = ECBehaviorFootSteps.getInstanceIn( actor )
-			this.actorMover = ECBehaviorActorMover.getInstanceIn( actor )
-			this.playerInputLook = ECBehaviorPlayerInputLook.getInstanceIn( actor )
-			this.playerInputCrouch = ECBehaviorPlayerInputCrouch.getInstanceIn( actor )
-			this.playerInputMove = ECBehaviorPlayerInputMove.getInstanceIn( actor )
+			colliderAI = ECBehaviorColliderAI.getInstanceIn(actor)
+			projectToGround = ECBehaviorProjectToGround.getInstanceIn(actor)
+			footSteps = ECBehaviorFootSteps.getInstanceIn(actor)
+			actorMover = ECBehaviorActorMover.getInstanceIn(actor)
+			playerInputLook = ECBehaviorPlayerInputLook.getInstanceIn(actor)
+			playerInputCrouch = ECBehaviorPlayerInputCrouch.getInstanceIn(actor)
+			playerInputMove = ECBehaviorPlayerInputMove.getInstanceIn(actor)
 		end
 	end
 	
@@ -444,7 +444,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * Sets ECBehaviorPlayerInputMove to LocomotionType.natural .
 	 */
 	protected func void initPlayerInput()
-		this.playerInputMove.setLocomotionType( ECBehaviorPlayerInputMove.LocomotionType.natural )
+		playerInputMove.setLocomotionType(ECBehaviorPlayerInputMove.LocomotionType.natural)
 	end
 	
 	/**
@@ -466,7 +466,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - Turn in-place adjust time: 1
 	 */
 	protected func void initLocomotion()
-		locomotion.initHuman( this.playerInputMove.getSpeedWalk() )
+		locomotion.initHuman(playerInputMove.getSpeedWalk())
 	end
 	
 	/**
@@ -482,9 +482,9 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 */
 	protected func void initLocomotionPlayer()
 		var Locomotion l = locomotion.getLocomotion()
-		l.setAdjustTimeVertical( 0 )
-		l.setAdjustTimeHorizontal( 0 )
-		l.setAdjustTimeLinearVelocity( 0.5 )
+		l.setAdjustTimeVertical(0)
+		l.setAdjustTimeHorizontal(0)
+		l.setAdjustTimeLinearVelocity(0.5)
 	end
 	
 	
@@ -495,19 +495,19 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * Called for player controlled actors only. If ECBehaviorActorMover has a goal set
 	 * does nothing to not interfere.
 	 */
-	protected func void doTurnLook( float elapsed )
-		if this.actorMover.hasGoal()
+	protected func void doTurnLook(float elapsed)
+		if actorMover.hasGoal()
 			return
 		end
 		
-		var float deltaHorizontal = this.playerInputLook.calculateLookHorizontal( elapsed )
-		var float deltaVertical = this.playerInputLook.calculateLookVertical( elapsed )
+		var float deltaHorizontal = playerInputLook.calculateLookHorizontal(elapsed)
+		var float deltaVertical = playerInputLook.calculateLookVertical(elapsed)
 		
 		if BaseGameApp.getApp() != null and BaseGameApp.getApp().getInverseLookVertical()
 			deltaVertical = -deltaVertical
 		end
 		
-		this.applyLookAroundChanges( deltaHorizontal, deltaVertical )
+		applyLookAroundChanges(deltaHorizontal, deltaVertical)
 	end
 	
 	/**
@@ -515,22 +515,22 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * 
 	 * Called for player controlled actors only.
 	 */
-	protected func void applyLookAroundChanges( float deltaHorizontal, float deltaVertical )
-		locomotion.applyLookAround( deltaHorizontal, deltaVertical )
+	protected func void applyLookAroundChanges(float deltaHorizontal, float deltaVertical)
+		locomotion.applyLookAround(deltaHorizontal, deltaVertical)
 	end
 	
 	/**
 	 * \brief Update locomotion.
 	 */
-	protected func void updateLocomotion( float elapsed )
-		locomotion.update( elapsed )
+	protected func void updateLocomotion(float elapsed)
+		locomotion.update(elapsed)
 	end
 	
 	/**
 	 * \brief Post-Update locomotion.
 	 */
-	protected func void updateLocomotionPost( float elapsed )
-		locomotion.updatePost( elapsed )
+	protected func void updateLocomotionPost(float elapsed)
+		locomotion.updatePost(elapsed)
 	end
 	
 	/**
@@ -542,13 +542,13 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * Actor is considered not touching ground if ProjectToGround has not found a ground
 	 * collider during the last postThink() call.
 	 */
-	protected func void updateAICollider( float elapsed )
-		if this.projectToGround == null or this.projectToGround.getTouchesGround()
-			this.colliderAI.setFromLocomotion( locomotion )
+	protected func void updateAICollider(float elapsed)
+		if projectToGround == null or projectToGround.getTouchesGround()
+			colliderAI.setFromLocomotion(locomotion)
 			
 		else
-			this.colliderAI.applyGravity( elapsed )
-			this.colliderAI.stopTurning()
+			colliderAI.applyGravity(elapsed)
+			colliderAI.stopTurning()
 		end
 	end
 	
@@ -561,9 +561,9 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * Default implementation returns \em true if the angle between the falling direction
 	 * and the ground hit normal is larger than the landing angle.
 	 */
-	protected func bool doesActorLand( Collider owner, CollisionInfo info )
-		return this.projectToGround.getDirection().normalize() \
-			* info.getNormal() < DEMath.cos( this.pLandingAngle )
+	protected func bool doesActorLand(Collider owner, CollisionInfo info)
+		return projectToGround.getDirection().normalize() \
+			* info.getNormal() < DEMath.cos(pLandingAngle)
 	end
 	
 	
@@ -575,9 +575,9 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - doTurnLook()
 	 * - playerUpdateLocomotion()
 	 */
-	public func void playerThink( float elapsed )
-		this.doTurnLook( elapsed )
-		this.playerUpdateLocomotion( elapsed )
+	func void playerThink(float elapsed)
+		doTurnLook(elapsed)
+		playerUpdateLocomotion(elapsed)
 	end
 	
 	/**
@@ -585,13 +585,13 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * 
 	 * If ECBehaviorActorMover has a goal set does nothing to not interfere.
 	 */
-	protected func void playerUpdateLocomotion( float elapsed )
-		if this.actorMover.hasGoal()
+	protected func void playerUpdateLocomotion(float elapsed)
+		if actorMover.hasGoal()
 			return
 		end
 		
-		this.playerInputCrouch.updateLocomotion( elapsed )
-		this.playerInputMove.updateLocomotion( elapsed )
+		playerInputCrouch.updateLocomotion(elapsed)
+		playerInputMove.updateLocomotion(elapsed)
 	end
 	
 	
@@ -603,14 +603,14 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * actor impacts with the ground at opposite direction than the project to ground test
 	 * direction enable projecting to ground again.
 	 */
-	public func void collisionResponse( Collider owner, CollisionInfo info )
-		if this.projectToGround == null or this.projectToGround.getTouchesGround()
+	func void collisionResponse(Collider owner, CollisionInfo info)
+		if projectToGround == null or projectToGround.getTouchesGround()
 			var Vector velocity = owner.getLinearVelocity()
 			var Vector normal = info.getNormal()
-			owner.setLinearVelocity( velocity - normal * ( normal * velocity ) )
+			owner.setLinearVelocity(velocity - normal * (normal * velocity))
 			
 		else
-			this.projectToGround.setTouchesGround( this.doesActorLand( owner, info ) )
+			projectToGround.setTouchesGround(doesActorLand(owner, info))
 		end
 	end
 	
@@ -619,17 +619,17 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * 
 	 * Returns always \em true.
 	 */
-	public func bool canHitCollider( Collider owner, Collider collider )
+	func bool canHitCollider(Collider owner, Collider collider)
 		return true
 	end
 	
 	/**
 	 * \brief Collider changed.
 	 */
-	public func void colliderChanged( Collider owner )
+	func void colliderChanged(Collider owner)
 		// update actor geometry if between postThink() and next elementThink().
-		if this.moveIfColliderChanged
-			actor.setGeometry( owner.getPosition(), owner.getOrientation() )
+		if moveIfColliderChanged
+			actor.setGeometry(owner.getPosition(), owner.getOrientation())
 		end
 	end
 	
@@ -645,7 +645,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 end

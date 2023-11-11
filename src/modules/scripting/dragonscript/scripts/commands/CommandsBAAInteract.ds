@@ -158,10 +158,11 @@ class CommandsBAAInteract
 			if helper.gamepadBindTrigger(1, "primaryAction")
 				helper.gamepadBindTrigger(0, "secondaryAction")
 				
-			elif helper.gamepadBindTrigger(0, "primaryAction")
-				helper.gamepadBindButton(0, InputDeviceButtonType.action, "secondaryAction")
-				
-			elif helper.gamepadBindButton(0, InputDeviceButtonType.action, "primaryAction")
+			else
+				helper.gamepadBindTrigger(0, "primaryAction")
+			end
+			
+			if helper.gamepadBindButton(0, InputDeviceButtonType.action, "primaryAction")
 				helper.gamepadBindButton(1, InputDeviceButtonType.action, "secondaryAction")
 				
 			else
