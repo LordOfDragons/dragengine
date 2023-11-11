@@ -137,7 +137,15 @@ public:
 		 * If finger spreading is supported 4 axes of type eatFingerSpread are added in
 		 * this order: thumb-index, index-middle, middle-ring, ring-pinky.
 		 */
-		eatFingerSpread
+		eatFingerSpread,
+		
+		/**
+		 * \brief Battery level.
+		 * \version 1.20
+		 * 
+		 * Indicates the battery charge level in the range from 0 (discharged) to 1 (fully charged).
+		 */
+		eatBatteryLevel
 	};
 	
 	

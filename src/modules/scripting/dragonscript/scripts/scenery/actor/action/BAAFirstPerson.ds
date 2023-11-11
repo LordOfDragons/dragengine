@@ -383,7 +383,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	/** \brief Analog looking up/down. */
 	func void analogLookUD(float amount, bool sticky)
 		if sticky
-			playerInputLook.setAnalogLookVerticalSticky(amount)
+			playerInputLook.setAnalogLookVerticalSticky(-amount)
 			
 		else
 			playerInputLook.setAnalogLookVertical(-amount)

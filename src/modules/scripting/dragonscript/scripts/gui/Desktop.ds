@@ -1517,29 +1517,6 @@ class Desktop extends Container
 		end
 	end
 	
-	/** Gamepad axis moved. */
-	func void onGamepadAxisMoved(GamepadEvent event)
-		// if some lazy bum send his message up to the parent ignore it
-		if event.getSource() != this
-			return
-		end
-		
-		select event.getInputAxisType()
-		case InputDeviceAxisType.stick
-			//processEvent(MouseEvent.new(this, MouseEvent.idMouseMoved id, int button, int modifiers, Point position, InputEventSource system, int device))
-			// simulate mouse moved. requires frame updater to continuously apply the movement
-			// until the stick is back to the center
-			
-		case InputDeviceAxisType.hat
-			// simulate key-event left/right/up/down arrow. requires tracking hat axis value
-			// to know when value switches between -1..-0.5 (press left,down), -0.5..0.5 (release), 0.5..1 (press right,up)
-			
-		case InputDeviceAxisType.trigger
-			// simulate mouse-button left/right event (trigger 0=left, 1=right). requires tracking
-			// trigger value to know when value switches between 0..0.5 (relese), 0.5..1 (press)
-		end
-	end
-	
 	/**
 	 * \brief Size changed.
 	 * 

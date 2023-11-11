@@ -356,17 +356,4 @@ class EditBindingsListBox extends ListBox
 			selectedRemoveBindings()
 		end
 	end
-	
-	/** \brief Gamepad button has been pressed. */
-	func void onGamepadButtonPressed(GamepadEvent event)
-		if event.getCode() == 0
-			selectedCaptureBinding()
-			
-		elif event.getCode() == 1
-			selectedRemoveBindings()
-			
-		else
-			super.onGamepadButtonPressed(event)
-		end
-	end
 end
