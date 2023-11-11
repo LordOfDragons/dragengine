@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include "dewiDeviceButton.h"
+#include "dewiDeviceWinRTController.h"
 #include "deWindowsInput.h"
 
 #include <dragengine/deEngine.h>
@@ -47,7 +48,8 @@ pWICode( 0 ),
 pWIChar( -1 ),
 pKeyCode( deInputEvent::ekcUndefined ),
 pMatchPriority( 10 ),
-pKeyLocation( deInputEvent::eklNone )
+pKeyLocation( deInputEvent::eklNone ),
+pWinRTReadingIndex( -1 )
 {
 }
 
@@ -69,6 +71,10 @@ void dewiDeviceButton::SetName( const char *name ){
  
 void dewiDeviceButton::SetPressed( bool pressed ){
 	pPressed = pressed;
+}
+
+void dewiDeviceButton::SetType( deInputDeviceButton::eButtonTypes type ){
+	pType = type;
 }
 
 
@@ -131,6 +137,10 @@ void dewiDeviceButton::SetKeyLocation( deInputEvent::eKeyLocation location ){
 	pKeyLocation = location;
 }
 
+void dewiDeviceButton::SetWinRTReadingIndex( int index ){
+	pWinRTReadingIndex = index;
+}
+
 
 
 void dewiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
@@ -138,10 +148,30 @@ void dewiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 	
 	info.SetID( pID );
 	info.SetName( pName );
+	info.SetType( pType );
 	
 	info.SetDisplayImage( pDisplayImage );
 	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
 		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
 	}
 	info.SetDisplayText( pDisplayText );
+}
+
+void dewiDeviceButton::WinRTReading( dewiDeviceWinRTController &device ){
+	if( pWinRTReadingIndex == -1 ){
+		return;
+	}
+
+	if( device.GetReadingButton( pWinRTReadingIndex ) ){
+		if( ! pPressed ){
+			pPressed = true;
+			pModule.AddButtonPressed( device.GetIndex(), pWinRTReadingIndex, device.GetReadingTime() );
+		}
+
+	}else{
+		if( pPressed ){
+			pPressed = false;
+			pModule.AddButtonReleased( device.GetIndex(), pWinRTReadingIndex, device.GetReadingTime() );
+		}
+	}
 }

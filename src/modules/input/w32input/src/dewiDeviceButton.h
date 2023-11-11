@@ -28,19 +28,26 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputEvent.h>
+#include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/resources/image/deImageReference.h>
 
-class deInputDeviceButton;
 class deWindowsInput;
+class dewiDeviceWinRTController;
 
 
 /**
  * Windows input device button.
  */
 class dewiDeviceButton : public deObject{
+public:
+	typedef deTObjectReference<dewiDeviceButton> Ref;
+	
+	
+	
 private:
 	deWindowsInput &pModule;
 	
+	deInputDeviceButton::eButtonTypes pType;
 	decString pID;
 	decString pName;
 	bool pPressed;
@@ -54,6 +61,7 @@ private:
 	deInputEvent::eKeyCodes pKeyCode;
 	int pMatchPriority;
 	deInputEvent::eKeyLocation pKeyLocation;
+	int pWinRTReadingIndex;
 	
 	
 	
@@ -93,6 +101,12 @@ public:
 	
 	/** Set if button is presssed. */
 	void SetPressed( bool pressed );
+	
+	/** Button type. */
+	inline deInputDeviceButton::eButtonTypes GetType() const{ return pType; }
+	
+	/** Set button type. */
+	void SetType( deInputDeviceButton::eButtonTypes type );
 	
 	
 	
@@ -145,11 +159,20 @@ public:
 	
 	/** Set key location. */
 	void SetKeyLocation( deInputEvent::eKeyLocation location );
+
+	/** WinRT reading index. */
+	inline int GetWinRTReadingIndex() const{ return pWinRTReadingIndex; }
+
+	/** Set WinRT reading index. */
+	void SetWinRTReadingIndex( int index );
 	
 	
 	
 	/** Update engine input device information button. */
 	void GetInfo( deInputDeviceButton &info ) const;
+
+	/** Process WinRT reading. */
+	void WinRTReading( dewiDeviceWinRTController &device );
 	/*@}*/
 };
 

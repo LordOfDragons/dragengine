@@ -87,6 +87,9 @@ deBaseInputModule( loadableModule ),
 
 pOSWindows( NULL ),
 
+pScreenWidth( 0 ),
+pScreenHeight( 0 ),
+
 pWindowWidth( 0 ),
 pWindowHeight( 0 ),
 
@@ -105,9 +108,7 @@ pKeyStates( NULL ),
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
 
-pKeyModifiers( 0 ),
-
-pDevices( NULL )
+pKeyModifiers( 0 )
 {
 	try{
 		pKeyStates = new BYTE[ 256 ];
@@ -155,18 +156,15 @@ bool deWindowsInput::Init(){
 	
 	AppActivationChanged();
 	
-	pDevices = new dewiDeviceManager( *this );
+	pDevices.TakeOver( new dewiDeviceManager( *this ) );
 	pDevices->UpdateDeviceList();
-	//pDevices->LogDevices();
+	pDevices->LogDevices();
 	
 	return true;
 }
 
 void deWindowsInput::CleanUp(){
-	if( pDevices ){
-		delete pDevices;
-		pDevices = NULL;
-	}
+	pDevices = nullptr;
 	
 	pSetAutoRepeatEnabled( pSystemAutoRepeatEnabled );
 	pOSWindows = NULL;
@@ -182,10 +180,9 @@ int deWindowsInput::GetDeviceCount(){
 }
 
 deInputDevice *deWindowsInput::GetDeviceAt( int index ){
-	deInputDevice *device = NULL;
+	deInputDevice * const device = new deInputDevice;
 	
 	try{
-		device = new deInputDevice;
 		pDevices->GetAt( index )->GetInfo( *device );
 		
 	}catch( const deException & ){
@@ -307,12 +304,7 @@ int deWindowsInput::ButtonMatchingKeyChar( int device, int character, deInputEve
 
 void deWindowsInput::ProcessEvents(){
 	pQueryMousePosition( true );
-	
-	const int deviceCount = pDevices->GetCount();
-	int i;
-	for( i=0; i<deviceCount; i++ ){
-		pDevices->GetAt( i )->Update();
-	}
+	pDevices->Update();
 }
 
 void deWindowsInput::ClearEvents(){
@@ -589,14 +581,23 @@ int state, DWORD eventTime ){
 	queue.AddEvent( event );
 }
 
+void deWindowsInput::AddDevicesAttachedDetached( DWORD eventTime ){
+	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
+	deInputEvent event;
+	
+	event.SetType( deInputEvent::eeDevicesAttachedDetached );
+	event.SetTime( pConvertEventTime( eventTime ) );
+	queue.AddEvent( event );
+}
+
+
 
 
 // Private Functions
 //////////////////////
 
 void deWindowsInput::pCenterPointer(){
-	const deRenderWindow * const renderWindow =
-		GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
 	if( ! renderWindow ){
 		return;
 	}
