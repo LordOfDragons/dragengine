@@ -81,7 +81,7 @@ pEvdevMapKeys( NULL )
 	const char * const unique = libevdev_get_uniq( pEvdevDevice );
 	if( unique ){
 		string.Format( "%s%d%s", XINP_DEVID_PREFIX, esLibevdev,
-			module.GetDevices()->NormalizeID( unique ).GetString() );
+			dexsiDeviceManager::NormalizeID( unique ).GetString() );
 		
 	}else{
 		const int bustype = libevdev_get_id_bustype( pEvdevDevice );

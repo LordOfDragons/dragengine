@@ -151,6 +151,7 @@ private:
 	
 	void pUpdateDelayProbeDevices();
 	bool pProbeDevice( const decString &path );
+	void pUpdateDeviceIndices();
 };
 
 #endif

@@ -288,6 +288,7 @@ public:
 	
 private:
 	void pPrepareXDeviceTypeAtoms();
+	void pUpdateDeviceIndices();
 };
 
 #endif

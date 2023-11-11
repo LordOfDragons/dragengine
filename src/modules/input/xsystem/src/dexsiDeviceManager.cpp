@@ -555,6 +555,8 @@ void dexsiDeviceManager::pUpdateWatchEvdev(){
 	}
 	
 	if( devicesChanged ){
+		pUpdateDeviceIndices();
+		
 		timeval eventTime;
 		gettimeofday( &eventTime, NULL );
 		pModule.AddDeviceAttachedDetached( eventTime );
@@ -651,4 +653,12 @@ bool dexsiDeviceManager::pProbeDevice( const decString &path ){
 	}
 	
 	return false;
+}
+
+void dexsiDeviceManager::pUpdateDeviceIndices(){
+	const int count = pDevices.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( dexsiDevice* )pDevices.GetAt( i ) )->SetIndex( i );
+	}
 }
