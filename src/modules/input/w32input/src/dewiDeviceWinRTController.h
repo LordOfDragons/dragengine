@@ -30,9 +30,11 @@
 #include <winrt/Windows.Gaming.Input.h>
 
 #include <dragengine/input/deInputEvent.h>
+#include <winrt/Windows.Devices.Power.h>
 
 namespace wrf = winrt::Windows::Foundation;
 namespace wrgi = winrt::Windows::Gaming::Input;
+namespace wrdp = winrt::Windows::Devices::Power;
 
 
 
@@ -56,6 +58,8 @@ private:
 	int pReadingButtonSize;
 	DWORD pReadingTime;
 
+	wrdp::BatteryReport pBatteryReport;
+	
 	
 
 public:
@@ -91,6 +95,9 @@ public:
 
 	/** Reading time. */
 	inline DWORD GetReadingTime() const{ return pReadingTime; }
+
+	/** Battery report. */
+	inline const wrdp::BatteryReport &GetBatteryReport() const{ return pBatteryReport; }
 	/*@}*/
 };
 

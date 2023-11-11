@@ -62,7 +62,8 @@ private:
 	int pMatchPriority;
 	deInputEvent::eKeyLocation pKeyLocation;
 	int pWinRTReadingIndex;
-	
+	bool pIsBatteryCharging;
+
 	
 	
 public:
@@ -166,6 +167,12 @@ public:
 	/** Set WinRT reading index. */
 	void SetWinRTReadingIndex( int index );
 	
+	/** Is battery charging. */
+	inline bool GetIsBatteryCharging() const{ return pIsBatteryCharging; }
+
+	/** Set is battery charging. */
+	void SetIsBatteryCharging( bool isBatteryCharging );
+
 	
 	
 	/** Update engine input device information button. */

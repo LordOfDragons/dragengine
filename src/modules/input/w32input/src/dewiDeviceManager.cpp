@@ -154,12 +154,12 @@ void dewiDeviceManager::LogDevice( const dewiDevice &device ) const{
 		pModule.LogInfo( "  Axes:" );
 		for( i=0; i<axisCount; i++ ){
 			const dewiDeviceAxis &axis = *device.GetAxisAt( i );
-			pModule.LogInfoFormat( "    - '%s' (%s) %d .. %d [%d %d]",
-				axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
-				axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat() );
+			pModule.LogInfoFormat( "    - '%s' (%s)[%d] %d .. %d [%d %d]",
+				axis.GetName().GetString(), axis.GetID().GetString(), axis.GetType(),
+				axis.GetMinimum(), axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat() );
 		}
 	}
-		
+	
 	if( device.GetType() == deInputDevice::edtKeyboard){
 		pModule.LogInfoFormat( "  Buttons: %d", device.GetButtonCount() );
 
@@ -169,9 +169,9 @@ void dewiDeviceManager::LogDevice( const dewiDevice &device ) const{
 			pModule.LogInfo( "  Buttons:" );
 			for( i=0; i<buttonCount; i++ ){
 				const dewiDeviceButton &button = *device.GetButtonAt( i );
-				pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
+				pModule.LogInfoFormat( "    - '%s' (%s)[%d] %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
-					button.GetWICode(), i );
+					button.GetType(), button.GetWICode(), i );
 			}
 		}
 	}

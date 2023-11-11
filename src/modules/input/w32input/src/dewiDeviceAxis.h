@@ -74,8 +74,10 @@ private:
 	
 	int pWICode;
 	int pWinRTReadingIndexAxis;
+	bool pWinRTInverseAxis;
 	int pWinRTReadingIndexSwitch;
 	int pWinRTReadingDirectionSwitch;
+	bool pIsBatteryLevel;
 	
 	
 	
@@ -206,6 +208,12 @@ public:
 	/** Set WinRT reading index axis. */
 	void SetWinRTReadingIndexAxis( int index );
 
+	/** Inverse axis. */
+	inline bool GetWinRTInverseAxis() const{ return pWinRTInverseAxis; }
+
+	/** Set inverse axis. */
+	void SetWinRTInverseAxis( bool winRTInverseAxis );
+
 	/** WinRT reading index switch. */
 	inline int GetWinRTReadingIndexSwitch() const{ return pWinRTReadingIndexSwitch; }
 
@@ -217,6 +225,12 @@ public:
 
 	/** Set WinRT reading switch direction. */
 	void SetWinRTReadingDirectionSwitch( int direction );
+
+	/** Is battery level. */
+	inline bool GetIsBatteryLevel() const{ return pIsBatteryLevel; }
+
+	/** Set is battery level. */
+	void SetIsBatteryLevel( bool isBatteryLevel );
 	
 	
 	

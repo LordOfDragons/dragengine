@@ -40,6 +40,10 @@
 #include <dragengine/input/deInputEventQueue.h>
 #include <dragengine/systems/deInputSystem.h>
 
+#include <winrt/Windows.System.Power.h>
+
+namespace wrsp = winrt::Windows::System::Power;
+
 
 
 // Class dewiDeviceWinRTController
@@ -53,7 +57,8 @@ dewiDeviceWinRTController::dewiDeviceWinRTController(
 dewiDevice( module, esWinRTController ),
 pController( controller ),
 pGamepad( wrgi::Gamepad::FromGameController( controller ) ),
-pReadingButtonSize( 0 )
+pReadingButtonSize( 0 ),
+pBatteryReport( {} )
 {
 	decString string;
 
@@ -78,11 +83,10 @@ pReadingButtonSize( 0 )
 		const dewiDeviceAxis::Ref axis( dewiDeviceAxis::Ref::New( new dewiDeviceAxis( module ) ) );
 		axis->SetIndex( GetAxisCount() );
 		axis->SetAbsolute( true );
-		axis->SetMinimum( -10000 );
-		axis->SetMaximum( 10000 );
-		axis->SetWinRTReadingIndexAxis( i );
+		axis->SetMinimum( -1000 );
+		axis->SetMaximum( 1000 );
 
-		if( pGamepad ){
+		if( pGamepad && count >= 6 ){
 			switch( i ){
 			case 0:
 				axis->SetType( deInputDeviceAxis::eatStick );
@@ -90,7 +94,8 @@ pReadingButtonSize( 0 )
 				axis->SetID( "sxl" );
 				axis->SetDisplayText( "L" );
 				axis->SetName( "Left Stick X" );
-				axis->SetFlat( 1000 );
+				axis->SetFlat( 100 );
+				axis->SetWinRTReadingIndexAxis( 1 );
 				break;
 
 			case 1:
@@ -99,7 +104,9 @@ pReadingButtonSize( 0 )
 				axis->SetID( "syl" );
 				axis->SetDisplayText( "L" );
 				axis->SetName( "Left Stick Y" );
-				axis->SetFlat( 1000 );
+				axis->SetFlat( 100 );
+				axis->SetWinRTReadingIndexAxis( 0 );
+				axis->SetWinRTInverseAxis( true );
 				break;
 
 			case 2:
@@ -108,7 +115,8 @@ pReadingButtonSize( 0 )
 				axis->SetID( "sxr" );
 				axis->SetDisplayText( "R" );
 				axis->SetName( "Right Stick X" );
-				axis->SetFlat( 1000 );
+				axis->SetFlat( 100 );
+				axis->SetWinRTReadingIndexAxis( 3 );
 				break;
 
 			case 3:
@@ -117,7 +125,9 @@ pReadingButtonSize( 0 )
 				axis->SetID( "syr" );
 				axis->SetDisplayText( "R" );
 				axis->SetName( "Right Stick Y" );
-				axis->SetFlat( 1000 );
+				axis->SetFlat( 100 );
+				axis->SetWinRTReadingIndexAxis( 2 );
+				axis->SetWinRTInverseAxis( true );
 				break;
 
 			case 4:
@@ -126,6 +136,7 @@ pReadingButtonSize( 0 )
 				axis->SetID( "trl" );
 				axis->SetDisplayText( "L" );
 				axis->SetName( "Left Trigger" );
+				axis->SetWinRTReadingIndexAxis( 4 );
 				break;
 
 			case 5:
@@ -134,6 +145,7 @@ pReadingButtonSize( 0 )
 				axis->SetID( "trr" );
 				axis->SetDisplayText( "R" );
 				axis->SetName( "Right Trigger" );
+				axis->SetWinRTReadingIndexAxis( 5 );
 				break;
 
 			default:
@@ -145,6 +157,7 @@ pReadingButtonSize( 0 )
 				axis->SetDisplayText( string );
 				string.Format( "Axis %d", i );
 				axis->SetName( string );
+				axis->SetWinRTReadingIndexAxis( i );
 			}
 
 		}else{
@@ -156,6 +169,7 @@ pReadingButtonSize( 0 )
 			axis->SetDisplayText( string );
 			string.Format( "Axis %d", i );
 			axis->SetName( string );
+			axis->SetWinRTReadingIndexAxis( i );
 		}
 
 		AddAxis( axis );
@@ -168,8 +182,8 @@ pReadingButtonSize( 0 )
 		const dewiDeviceAxis::Ref axis( dewiDeviceAxis::Ref::New( new dewiDeviceAxis( module ) ) );
 		axis->SetIndex( GetAxisCount() );
 		axis->SetAbsolute( true );
-		axis->SetMinimum( -10000 );
-		axis->SetMaximum( 10000 );
+		axis->SetMinimum( -1 );
+		axis->SetMaximum( 1 );
 		axis->SetType( deInputDeviceAxis::eatHat );
 		axis->SetWinRTReadingIndexSwitch( i );
 		
@@ -180,16 +194,14 @@ pReadingButtonSize( 0 )
 			axis->SetWinRTReadingDirectionSwitch( 0 );
 			string.Format( "Hat %d X", i );
 			axis->SetName( string );
-			axis->SetFlat( 1000 );
 			
 		}else{
 			axis->SetDisplayImages( "stickY" );
 			string.Format( "hy%d", i / 2 );
 			axis->SetID( string );
-			axis->SetWinRTReadingDirectionSwitch( 1 );
+			axis->SetWinRTReadingDirectionSwitch( -1 );
 			string.Format( "Hat %d Y", i );
 			axis->SetName( string );
-			axis->SetFlat( 1000 );
 		}
 
 		string.Format( "H%d", ( i / 2 ) + 1 );
@@ -349,7 +361,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxLeftBumper:
 		case wrgi::GameControllerButtonLabel::LeftBumper:
-			button->SetName( "ShoulderLeft" );
+			button->SetName( "Shoulder Left" );
 			button->SetType( deInputDeviceButton::ebtShoulderLeft );
 			button->SetDisplayImages( "button" );
 			button->SetID( "bashl" );
@@ -358,7 +370,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxRightBumper:
 		case wrgi::GameControllerButtonLabel::RightBumper:
-			button->SetName( "ShoulderRight" );
+			button->SetName( "Shoulder Right" );
 			button->SetType( deInputDeviceButton::ebtShoulderRight );
 			button->SetDisplayImages( "button" );
 			button->SetID( "bashr" );
@@ -367,7 +379,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxLeftTrigger:
 		case wrgi::GameControllerButtonLabel::LeftTrigger:
-			button->SetName( "TriggerLeft" );
+			button->SetName( "Trigger Left" );
 			button->SetType( deInputDeviceButton::ebtTrigger );
 			button->SetDisplayImages( "button" );
 			button->SetID( "batl" );
@@ -376,7 +388,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxRightTrigger:
 		case wrgi::GameControllerButtonLabel::RightTrigger:
-			button->SetName( "TriggerRight" );
+			button->SetName( "Trigger Right" );
 			button->SetType( deInputDeviceButton::ebtTrigger );
 			button->SetDisplayImages( "button" );
 			button->SetID( "batr" );
@@ -385,7 +397,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxLeftStickButton:
 		case wrgi::GameControllerButtonLabel::LeftStickButton:
-			button->SetName( "StickLeft" );
+			button->SetName( "Stick Left" );
 			button->SetType( deInputDeviceButton::ebtStick );
 			button->SetDisplayImages( "button" );
 			button->SetID( "bastl" );
@@ -394,7 +406,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxRightStickButton:
 		case wrgi::GameControllerButtonLabel::RightStickButton:
-			button->SetName( "StickRight" );
+			button->SetName( "Stick Right" );
 			button->SetType( deInputDeviceButton::ebtStick );
 			button->SetDisplayImages( "button" );
 			button->SetID( "bastr" );
@@ -403,7 +415,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxPaddle1:
 		case wrgi::GameControllerButtonLabel::Paddle1:
-			button->SetName( "Paddle1" );
+			button->SetName( "Paddle 1" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "bap1" );
@@ -412,7 +424,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxPaddle2:
 		case wrgi::GameControllerButtonLabel::Paddle2:
-			button->SetName( "Paddle2" );
+			button->SetName( "Paddle 2" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "bap2" );
@@ -421,7 +433,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxPaddle3:
 		case wrgi::GameControllerButtonLabel::Paddle3:
-			button->SetName( "Paddle3" );
+			button->SetName( "Paddle 3" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "bap3" );
@@ -430,7 +442,7 @@ pReadingButtonSize( 0 )
 
 		case wrgi::GameControllerButtonLabel::XboxPaddle4:
 		case wrgi::GameControllerButtonLabel::Paddle4:
-			button->SetName( "Paddle4" );
+			button->SetName( "Paddle 4" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "bap4" );
@@ -502,7 +514,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		case wrgi::GameControllerButtonLabel::Left1:
-			button->SetName( "Left1" );
+			button->SetName( "Left 1" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "baleft1" );
@@ -510,7 +522,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		case wrgi::GameControllerButtonLabel::Left2:
-			button->SetName( "Left2" );
+			button->SetName( "Left 2" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "baleft2" );
@@ -518,7 +530,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		case wrgi::GameControllerButtonLabel::Left3:
-			button->SetName( "Left3" );
+			button->SetName( "Left 3" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "baleft3" );
@@ -526,7 +538,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		case wrgi::GameControllerButtonLabel::Right1:
-			button->SetName( "Right1" );
+			button->SetName( "Right 1" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "baright1" );
@@ -534,7 +546,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		case wrgi::GameControllerButtonLabel::Right2:
-			button->SetName( "Right2" );
+			button->SetName( "Right 2" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "baright2" );
@@ -542,7 +554,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		case wrgi::GameControllerButtonLabel::Right3:
-			button->SetName( "Right3" );
+			button->SetName( "Right 3" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "baright3" );
@@ -566,7 +578,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		case wrgi::GameControllerButtonLabel::DownLeftArrow:
-			button->SetName( "DownLeftArrow" );
+			button->SetName( "Down-Left Arrow" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "badla" );
@@ -574,7 +586,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		case wrgi::GameControllerButtonLabel::DialLeft:
-			button->SetName( "DialLeft" );
+			button->SetName( "Dial Left" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "badiall" );
@@ -582,7 +594,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		case wrgi::GameControllerButtonLabel::DialRight:
-			button->SetName( "DialRight" );
+			button->SetName( "Dial Right" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
 			button->SetID( "badialr" );
@@ -598,7 +610,7 @@ pReadingButtonSize( 0 )
 			break;
 
 		default:
-			string.Format( "Button%d", i );
+			string.Format( "Button %d", i );
 			button->SetName( string );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
@@ -607,6 +619,34 @@ pReadingButtonSize( 0 )
 			string.Format( "%d", i );
 			button->SetDisplayText( string );
 		}
+
+		AddButton( button );
+	}
+
+	// if battery charge is supported add battery level axis
+	const wrdp::BatteryReport batteryReport = controller.TryGetBatteryReport();
+	if( batteryReport.RemainingCapacityInMilliwattHours() && batteryReport.FullChargeCapacityInMilliwattHours() ){
+		const dewiDeviceAxis::Ref axis( dewiDeviceAxis::Ref::New( new dewiDeviceAxis( module ) ) );
+		axis->SetIndex( GetAxisCount() );
+		axis->SetType( deInputDeviceAxis::eatBatteryLevel );
+		axis->SetID( "batlvl" );
+		axis->SetAbsolute( true );
+		axis->SetMinimum( 0 );
+		axis->SetMaximum( 100 );
+		axis->SetName( "Battery Level" );
+		axis->SetDisplayText( "Bat" );
+		axis->SetIsBatteryLevel( true );
+
+		AddAxis( axis );
+	}
+
+	if( batteryReport.Status() != wrsp::BatteryStatus::NotPresent ){
+		const dewiDeviceButton::Ref button( dewiDeviceButton::Ref::New( new dewiDeviceButton( module ) ) );
+		button->SetType( deInputDeviceButton::ebtBatteryCharging );
+		button->SetID( "batcha" );
+		button->SetName( "Battery Charging" );
+		button->SetDisplayText( "BatCh" );
+		button->SetIsBatteryCharging( true );
 
 		AddButton( button );
 	}
@@ -639,6 +679,9 @@ void dewiDeviceWinRTController::Update(){
 		winrt::array_view<bool>( pReadingButton.get(), pReadingButton.get() + pReadingButtonSize ),
 		pReadingSwitch, pReadingAxis );
 	pReadingTime = timeGetTime();
+
+	
+	pBatteryReport = pController.TryGetBatteryReport();
 
 	int i, count = GetAxisCount();
 	for( i=0; i<count; i++ ){
