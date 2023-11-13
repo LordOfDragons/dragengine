@@ -263,7 +263,7 @@ class cActionShowTranslationEntry : public igdeAction{
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionShowTranslationEntry( ceWPAActorSpeak &panel ) : igdeAction( "Text from translation entry...",
+	cActionShowTranslationEntry( ceWPAActorSpeak &panel ) : igdeAction( "Show translation entry...",
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongLeft ),
 		"Show language pack translation entry" ), pPanel( panel ){}
 	
