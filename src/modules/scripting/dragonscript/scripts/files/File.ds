@@ -31,31 +31,31 @@ namespace Dragengine
  * This object though can then be used with appropriate other objects to load files.
  */
 class File
-	private var Array pComponents
-	private var String pPrefix
+	var Array pComponents
+	var String pPrefix
 	
 	
 	
 	/** \brief Create File with root path. */
-	public func new()
-		this.pComponents = Array.new()
-		this.pPrefix = "/"
+	func new()
+		pComponents = Array.new()
+		pPrefix = "/"
 	end
 	
 	/** \brief Create copy of file. */
-	public func new( File file )
-		this.pComponents = Array.new( file.pComponents )
-		this.pPrefix = file.pPrefix
+	func new(File file)
+		pComponents = Array.new(file.pComponents)
+		pPrefix = file.pPrefix
 	end
 	
 	/**
 	 * \brief Create File from filename.
 	 * \param filename Filename to parse.
 	 */
-	public func new( String filename )
-		this.pComponents = Array.new()
-		this.pPrefix = ""
-		this.pParseFilename( filename )
+	func new(String filename)
+		pComponents = Array.new()
+		pPrefix = ""
+		pParseFilename(filename)
 	end
 	
 	/**
@@ -63,10 +63,10 @@ class File
 	 * \param parent Path to parse filename relative to.
 	 * \param filename Filename to parse.
 	 */
-	public func new( File parent, String filename )
-		this.pComponents = Array.new( parent.pComponents )
-		this.pPrefix = parent.pPrefix
-		this.pParseFilename( filename )
+	func new(File parent, String filename)
+		pComponents = Array.new(parent.pComponents)
+		pPrefix = parent.pPrefix
+		pParseFilename(filename)
 	end
 	
 	/**
@@ -74,11 +74,11 @@ class File
 	 * \param parent Path to parse filename relative to.
 	 * \param filename Filename to parse.
 	 */
-	public func new( String parent, String filename )
-		this.pComponents = Array.new()
-		this.pPrefix = ""
-		this.pParseFilename( parent )
-		this.pParseFilename( filename )
+	func new(String parent, String filename)
+		pComponents = Array.new()
+		pPrefix = ""
+		pParseFilename(parent)
+		pParseFilename(filename)
 	end
 	
 	/**
@@ -87,82 +87,82 @@ class File
 	 * \param filename Filename to parse.
 	 * \throws EInvalidParam \em filename is absolute.
 	 */
-	public func new( File parent, File filename )
+	func new(File parent, File filename)
 		if filename.isAbsolute()
 			throw EInvalidParam.new()
 		end
 		
-		this.pComponents = Array.new( parent.pComponents )
-		this.pPrefix = parent.pPrefix
-		filename.pComponents.forEach( block String each
+		pComponents = Array.new(parent.pComponents)
+		pPrefix = parent.pPrefix
+		filename.pComponents.forEach(block String each
 			if each.empty()
 				// this is either the root prefix right at the beginning (no components)
 				// or an empty path in which case it is ignored
-				if this.pComponents.getCount() == 0
-					this.pPrefix = "/"
+				if pComponents.getCount() == 0
+					pPrefix = "/"
 				end
 				
-			elif each.equals( ".." )
-				if this.pComponents.getCount() == 0
-					throw Exception.new( "Can not move into parent directory of root" )
+			elif each.equals("..")
+				if pComponents.getCount() == 0
+					throw Exception.new("Can not move into parent directory of root")
 				end
-				this.pComponents.removeFrom( this.pComponents.getCount() - 1 )
+				pComponents.removeFrom(pComponents.getCount() - 1)
 				
-			elif not each.equals( "." )
-				this.pComponents.add( each )
+			elif not each.equals(".")
+				pComponents.add(each)
 			end
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Path prefix. */
-	public func String getPrefix()
-		return this.pPrefix
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	/** \brief Count of components. */
-	public func int getComponentCount()
-		return this.pComponents.getCount()
+	func int getComponentCount()
+		return pComponents.getCount()
 	end
 	
 	/** \brief Component at index. */
-	public func String getComponentAt( int index )
-		return this.pComponents.getAt( index ) cast String
+	func String getComponentAt(int index)
+		return pComponents.getAt(index) cast String
 	end
 	
 	
 	
 	/** \brief String representation of path. */
-	public func String getPath()
-		if this.pComponents.getCount() == 0
-			return this.pPrefix
+	func String getPath()
+		if pComponents.getCount() == 0
+			return pPrefix
 		end
 		
-		return this.pPrefix + ( this.pComponents.fold( block String a, String b
+		return pPrefix + (pComponents.fold(block String a, String b
 			return a + "/" + b
-		end ) cast String )
+		end) cast String)
 	end
 	
 	/** \brief Parent directory of path or \em null if not present. */
-	public func File getParent()
-		if this.pComponents.getCount() == 0 and this.pPrefix.empty() 
+	func File getParent()
+		if pComponents.getCount() == 0 and pPrefix.empty() 
 			return null
 		end
 		
 		var File parent = File.new()
-		parent.pPrefix = this.pPrefix
-		parent.pComponents = this.pComponents.slice( 0, -1 )
+		parent.pPrefix = pPrefix
+		parent.pComponents = pComponents.slice(0, -1)
 		return parent
 	end
 	
 	/** \brief Name of path which is the last path component or the prefix if empty. */
-	public func String getName()
-		if this.pComponents.getCount() == 0
-			return this.pPrefix
+	func String getName()
+		if pComponents.getCount() == 0
+			return pPrefix
 		end
 		
-		return this.pComponents.getAt( -1 ) cast String
+		return pComponents.getAt(-1) cast String
 	end
 	
 	
@@ -171,21 +171,21 @@ class File
 	 * \brief Path is absolute.
 	 * \details Path is absolute if prefix is '/'.
 	 */
-	public func bool isAbsolute()
-		return this.pPrefix.equals( "/" )
+	func bool isAbsolute()
+		return pPrefix.equals("/")
 	end
 	
 	/**
 	 * \brief Path is relative.
 	 * \details Path is relative if prefix is empty.
 	 */
-	public func bool isRelative()
-		return this.pPrefix.empty()
+	func bool isRelative()
+		return pPrefix.empty()
 	end
 	
 	/** \brief Path is empty. */
-	public func bool isEmpty()
-		return this.pComponents.getCount() == 0
+	func bool isEmpty()
+		return pComponents.getCount() == 0
 	end
 	
 	
@@ -195,8 +195,8 @@ class File
 	 * 
 	 * \returns true if path begins with '/'.
 	 */
-	public static func bool isAbsolute( String path )
-		return not path.empty() and path.getAt( 0 ) == '/'
+	public static func bool isAbsolute(String path)
+		return not path.empty() and path.getAt(0) == '/'
 	end
 	
 	/**
@@ -208,12 +208,12 @@ class File
 	 * 
 	 * This method is safe to be used with path containing '..' at the beginning.
 	 */
-	public static func File absolutePath( String path, String baseDirectory )
-		if isAbsolute( path )
-			return File.new( path )
+	public static func File absolutePath(String path, String baseDirectory)
+		if isAbsolute(path)
+			return File.new(path)
 			
 		else
-			return File.new( baseDirectory, path )
+			return File.new(baseDirectory, path)
 		end
 	end
 	
@@ -224,14 +224,14 @@ class File
 	 * 
 	 * Typically used to check if a file is inside a directory.
 	 */
-	public func bool isParentOf( File file )
-		var int i, count = this.pComponents.getCount()
-		if file.pComponents.getCount() < count or not this.pPrefix.equals( file.pPrefix )
+	func bool isParentOf(File file)
+		var int i, count = pComponents.getCount()
+		if file.pComponents.getCount() < count or not pPrefix.equals(file.pPrefix)
 			return false
 		end
 		
 		for i = 0 to count
-			if not this.pComponents.getAt( i ).equals( file.pComponents.getAt( i ) )
+			if not pComponents.getAt(i).equals(file.pComponents.getAt(i))
 				return false
 			end
 		end
@@ -239,15 +239,52 @@ class File
 		return true
 	end
 	
+	/**
+	 * \brief File is a direct or indirect parent of another file.
+	 * \version 1.20
+	 * 
+	 * Typically used to check if a file is inside a directory.
+	 */
+	func bool isParentOf(String path)
+		return isParentOf(File.new(path))
+	end
+	
+	/**
+	 * \brief Relative path or null.
+	 * \version 1.20
+	 * 
+	 * If isParentOf(file) is true returns relative path to this path.
+	 */
+	func File relativePath(File file)
+		if not isParentOf(file)
+			return null
+		end
+		
+		var File newPath = File.new()
+		newPath.pPrefix = ""
+		newPath.pComponents = file.pComponents.slice(pComponents.getCount())
+		return newPath
+	end
+	
+	/**
+	 * \brief Relative path or null.
+	 * \version 1.20
+	 * 
+	 * If isParentOf(file) is true returns relative path to this path.
+	 */
+	func File relativePath(String path)
+		return relativePath(File.new(path))
+	end
+	
 	
 	
 	/** \brief Hash code of File. */
-	public func int hashCode()
-		return this.getPath().hashCode()
+	func int hashCode()
+		return getPath().hashCode()
 		/*
-		return this.pComponents.inject( pPrefix.hashCode(), block String a, String b
+		return pComponents.inject(pPrefix.hashCode(), block String a, String b
 			return a + b.hashCode()
-		end ) cast int
+		end) cast int
 		*/
 	end
 	
@@ -256,9 +293,9 @@ class File
 	 * \param object Object to check.
 	 * \returns True if both objects describe the same filename.
 	 */
-	public func bool equals( Object object )
+	func bool equals(Object object)
 		if object castable File
-			return this.getPath().equals( ( object cast File ).getPath() )
+			return getPath().equals((object cast File).getPath())
 			
 		else
 			return false
@@ -269,8 +306,8 @@ class File
 	 * \brief String representation of this filename.
 	 * \details Same as getPath().
 	 */
-	public func String toString()
-		return this.getPath()
+	func String toString()
+		return getPath()
 	end
 	
 	
@@ -280,8 +317,8 @@ class File
 	 * \param parent Path to parse filename relative to.
 	 * \param filename Filename to parse.
 	 */
-	public func File +( File file )
-		return File.new( this, file )
+	func File +(File file)
+		return File.new(this, file)
 	end
 	
 	/**
@@ -289,8 +326,28 @@ class File
 	 * \param parent Path to parse filename relative to.
 	 * \param filename Filename to parse.
 	 */
-	public func File +( String file )
-		return File.new( this, file )
+	func File +(String file)
+		return File.new(this, file)
+	end
+	
+	/**
+	 * \brief Relative path or null.
+	 * \version 1.20
+	 * 
+	 * If file.isParentOf(this) is true returns relative path to file.
+	 */
+	func File -(File directory)
+		return directory.relativePath(this)
+	end
+	
+	/**
+	 * \brief Relative path or null.
+	 * \version 1.20
+	 * 
+	 * If file.isParentOf(this) is true returns relative path to file.
+	 */
+	func File -(String directory)
+		return File.new(directory).relativePath(this)
 	end
 	
 	
@@ -302,7 +359,7 @@ class File
 	 *
 	 * \param filename Filename to parse into components.
 	 */
-	private func void pParseFilename( String filename )
+	private func void pParseFilename(String filename)
 		var String component
 		var int offset = 0
 		var int deliIndex
@@ -313,32 +370,32 @@ class File
 		// current path list array
 		while offset < len
 			// find path separator
-			deliIndex = filename.find( '/', offset )
+			deliIndex = filename.find('/', offset)
 			if deliIndex == -1
 				deliIndex = len
 			end
 			
 			// extract path component
-			component = filename.substring( offset, deliIndex )
+			component = filename.substring(offset, deliIndex)
 			offset = deliIndex + 1
 			
 			// merge component with current components
 			if component.empty()
 				// this is either the root prefix right at the beginning (no components)
 				// or an empty path in which case it is ignored
-				if this.pComponents.getCount() == 0
-					this.pPrefix = "/"
+				if pComponents.getCount() == 0
+					pPrefix = "/"
 				end
 				
-			elif component.equals( ".." )
-				if this.pComponents.getCount() == 0
-					throw Exception.new( "Can not move into parent directory of root" )
+			elif component.equals("..")
+				if pComponents.getCount() == 0
+					throw Exception.new("Can not move into parent directory of root")
 				end
 				
-				this.pComponents.removeFrom( this.pComponents.getCount() - 1 )
+				pComponents.removeFrom(pComponents.getCount() - 1)
 				
-			elif not component.equals( "." )
-				this.pComponents.add( component )
+			elif not component.equals(".")
+				pComponents.add(component)
 			end
 		end
 	end
