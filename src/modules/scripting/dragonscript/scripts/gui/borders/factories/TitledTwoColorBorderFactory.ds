@@ -27,22 +27,22 @@ namespace Dragengine.Gui.Borders.Factories
  * \brief Factory for TitledTwoColorBorder.
  */
 public class TitledTwoColorBorderFactory extends TwoColorBorderFactory
-	private var String pText
-	private var Font pFont
-	private var Color pTextColor
+	var String pText
+	var Font pFont
+	var Color pTextColor
 	
 	
 	
 	/** \brief Create titled two color border factory. */
-	public func new()
+	func new()
 	end
 	
-	public func new(String text)
+	func new(String text)
 		setText(text)
 	end
 	
 	/** \brief Create copy of border factory. */
-	public func new(TitledTwoColorBorderFactory factory) super(factory)
+	func new(TitledTwoColorBorderFactory factory) super(factory)
 		pText = factory.pText
 		pFont = factory.pFont
 		pTextColor = factory.pTextColor
@@ -51,39 +51,39 @@ public class TitledTwoColorBorderFactory extends TwoColorBorderFactory
 	
 	
 	/** \brief Text or null to use widget title. */
-	public func String getText()
+	func String getText()
 		return pText
 	end
 	
 	/** \brief Set text or null to use widget title. */
-	public func void setText(String text)
+	func void setText(String text)
 		pText = text
 	end
 	
 	/** \brief Font or null to use widget font. */
-	public func Font getFont()
+	func Font getFont()
 		return pFont
 	end
 	
 	/** \brief Set font or null to use widget font. */
-	public func void setFont(Font font)
+	func void setFont(Font font)
 		pFont = font
 	end
 	
 	/** \brief Text color or null to use widget text color. */
-	public func Color getTextColor()
+	func Color getTextColor()
 		return pTextColor
 	end
 	
 	/** \brief Set text color or null to use widget text color. */
-	public func void setTextColor(Color color)
+	func void setTextColor(Color color)
 		pTextColor = color
 	end
 	
 	
 	
 	/** \brief Create border. */
-	public func Border createBorder()
+	func Border createBorder()
 		var TitledTwoColorBorder border = TitledTwoColorBorder.new()
 		
 		border.setRaised(getRaised())
@@ -97,12 +97,12 @@ public class TitledTwoColorBorderFactory extends TwoColorBorderFactory
 	end
 	
 	/** \brief Create factory copy. */
-	public func BorderFactory copyFactory()
+	func BorderFactory copyFactory()
 		return TitledTwoColorBorderFactory.new(this)
 	end
 	
 	/** \brief Set parameter. */
-	public func void setParameter(String name, Object value)
+	func void setParameter(String name, Object value)
 		if name.equals("text")
 			setText(value cast String)
 			

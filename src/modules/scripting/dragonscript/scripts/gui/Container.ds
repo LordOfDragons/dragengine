@@ -33,45 +33,44 @@ pin Dragengine.Scenery
  * \brief Groups child widgets arranged by a layout instance.
  */
 class Container extends Widget
-	private var Layout pLayout
-	private var Array pChildren
-	private var bool pBlockLayout
-	private var bool pHasBlockedDoLayout
-	private var Point pCachedMinSize
-	private var Point pCachedMinSizeForWidthSize
-	private var int pCachedMinSizeForWidthWidth
-	private var Point pCachedMinSizeForHeightSize
-	private var int pCachedMinSizeForHeightHeight
-	private var bool pStateChangeNotifyChildren
+	var Layout pLayout
+	var Array pChildren
+	var bool pBlockLayout
+	var bool pHasBlockedDoLayout
+	var Point pCachedMinSize
+	var Point pCachedMinSizeForWidthSize
+	var int pCachedMinSizeForWidthWidth
+	var Point pCachedMinSizeForHeightSize
+	var int pCachedMinSizeForHeightHeight
+	var bool pStateChangeNotifyChildren
 	
 	
 	
 	/** Creates a new container. */
-	public func new() this( 0, 0, 0, 0 )
+	func new() this(0, 0, 0, 0)
 	end
 	
 	/** Creates a new container located at (x,y) with the given size. */
-	public func new( int x, int y, int width, int height ) \
-	this( Point.new( x, y ), Point.new( width, height ) )
+	func new(int x, int y, int width, int height) this(Point.new(x, y), Point.new(width, height))
 	end
 	
 	/** Creates a new container located at (x,y) with the given size. */
-	public func new( Point position, Point size ) super( position, size )
-		this.pChildren = Array.new()
-		this.pLayout = BoxLayout.new( LayoutAxis.y, 0 )
-		this.pBlockLayout = false
-		this.pHasBlockedDoLayout = false
+	func new(Point position, Point size) super(position, size)
+		pChildren = Array.new()
+		pLayout = BoxLayout.new(LayoutAxis.y, 0)
+		pBlockLayout = false
+		pHasBlockedDoLayout = false
 	end
 	
 	/** \brief Create container with layout. */
-	public func new( Layout layout )
+	func new(Layout layout)
 		if layout == null
 			throw EInvalidParam.new()
 		end
-		this.pChildren = Array.new()
-		this.pLayout = layout
-		this.pBlockLayout = false
-		this.pHasBlockedDoLayout = false
+		pChildren = Array.new()
+		pLayout = layout
+		pBlockLayout = false
+		pHasBlockedDoLayout = false
 	end
 	
 	/**
@@ -80,16 +79,16 @@ class Container extends Widget
 	 * Block receives container as argument. Block call is wrapped inside runWhileBlockingLayout()
 	 * for efficiency. doLayout() will be called after leaving the block.
 	 */
-	public func new( Layout layout, Block blockAddContent ) this( layout )
+	func new(Layout layout, Block blockAddContent) this(layout)
 		try
-			this.setLayout( layout )
-			this.runWhileBlockingLayout( block
-				blockAddContent.run( this )
-			end )
-			this.doLayoutIfBlocked()
+			setLayout(layout)
+			runWhileBlockingLayout(block
+				blockAddContent.run(this)
+			end)
+			doLayoutIfBlocked()
 			
 		catch Exception e
-			this.dispose()
+			dispose()
 			throw
 		end
 	end
@@ -100,8 +99,8 @@ class Container extends Widget
 	 * Disposes of the widget. This cleans all references and prepars the widget
 	 * for beeing freed. If the widget is already disposed nothing happens.
 	 */
-	public func void dispose()
-		this.pBlockLayout = true
+	func void dispose()
+		pBlockLayout = true
 		
 		var int index
 		var Widget widget
@@ -110,23 +109,23 @@ class Container extends Widget
 		// over widgets doing funny things. for this reason parent is cleared first then
 		// the widget removed. pay attention the widget might vanish between clearing the
 		// parent and removing the widget. disposing comes last when nothing can break anymore
-		while this.pChildren.getCount() > 0
-			index = this.pChildren.getCount() - 1
-			widget = this.pChildren.getAt( index ) cast Widget
+		while pChildren.getCount() > 0
+			index = pChildren.getCount() - 1
+			widget = pChildren.getAt(index) cast Widget
 			
 			widget.setParent(null)
 			
-			if index < this.pChildren.getCount()
-				this.pChildren.removeFrom( index )
+			if index < pChildren.getCount()
+				pChildren.removeFrom(index)
 			end
 			
 			widget.dispose()
 		end
 		
-		this.pLayout = null
+		pLayout = null
 		
-		if this.getCanvasContent() != null
-			this.getCanvasContent().removeAllCanvas()
+		if getCanvasContent() != null
+			getCanvasContent().removeAllCanvas()
 		end
 		
 		super.dispose()
@@ -135,32 +134,32 @@ class Container extends Widget
 	
 	
 	/** Retrieve the layout of the container. */
-	public func Layout getLayout()
-		return this.pLayout
+	func Layout getLayout()
+		return pLayout
 	end
 	
 	/**
 	 * Retrieve width of area for child widgets excluding the padding.
 	 * This calculates the the width remaining after subtracting the padding.
 	 */
-	public func int getContainerWidth()
-		return DEMath.max( this.getWidth() - this.getPadding().getWidth(), 0 )
+	func int getContainerWidth()
+		return DEMath.max(getWidth() - getPadding().getWidth(), 0)
 	end
 	
 	/**
 	 * Retrieve height of area for child widgets excluding the padding.
 	 * This calculates the the height remaining after subtracting the padding.
 	 */
-	public func int getContainerHeight()
-		return DEMath.max( this.getHeight() - this.getPadding().getHeight(), 0 )
+	func int getContainerHeight()
+		return DEMath.max(getHeight() - getPadding().getHeight(), 0)
 	end
 	
 	/**
 	 * Size of area for child widgets excluding the padding.
 	 * This calculates the size remaining after subtracting the padding.
 	 */
-	public func Point getContainerSize()
-		return Point.new( this.getContainerWidth(), this.getContainerHeight() )
+	func Point getContainerSize()
+		return Point.new(getContainerWidth(), getContainerHeight())
 	end
 	
 	/**
@@ -168,18 +167,18 @@ class Container extends Widget
 	 * 
 	 * If widget has no mouse pointer the parent mouse pointer is used.
 	 */
-	public func void setMousePointer( MousePointerFactory mousePointer )
-		if mousePointer == this.getMousePointer()
+	func void setMousePointer(MousePointerFactory mousePointer)
+		if mousePointer == getMousePointer()
 			return
 		end
 		
-		super.setMousePointer( mousePointer )
+		super.setMousePointer(mousePointer)
 		
-		var Desktop desktop = this.getDesktop()
+		var Desktop desktop = getDesktop()
 		if desktop != null
 			var Widget hoverWidget = getHoverWidget()
-			if hoverWidget != null and hoverWidget.hasParent( this )
-				desktop.setActiveMousePointer( hoverWidget.getFirstMousePointer() )
+			if hoverWidget != null and hoverWidget.hasParent(this)
+				desktop.setActiveMousePointer(hoverWidget.getFirstMousePointer())
 			end
 		end
 	end
@@ -187,26 +186,26 @@ class Container extends Widget
 	
 	
 	/** Set layout. */
-	public func void setLayout( Layout layout )
+	func void setLayout(Layout layout)
 		if layout == null
 			throw EInvalidParam.new()
 		end
 		
-		if layout == this.pLayout
+		if layout == pLayout
 			return
 		end
 		
-		this.pChildren.forEach( block Widget each
-			this.pLayout.removeWidget( each )
-		end )
+		pChildren.forEach(block Widget each
+			pLayout.removeWidget(each)
+		end)
 		
-		this.pLayout = layout
+		pLayout = layout
 		
-		this.pChildren.forEach( block Widget each
-			this.pLayout.addWidget( each, null )
-		end )
+		pChildren.forEach(block Widget each
+			pLayout.addWidget(each, null)
+		end)
 		
-		this.doLayout()
+		doLayout()
 	end
 	
 	
@@ -218,8 +217,8 @@ class Container extends Widget
 	 * Be careful to disable blocking even in case of exceptions. Also make sure to restore
 	 * the block layout call in place before changing it by yourself to not break chains.
 	 */
-	public func bool getBlockLayout()
-		return this.pBlockLayout
+	func bool getBlockLayout()
+		return pBlockLayout
 	end
 	
 	/**
@@ -229,8 +228,8 @@ class Container extends Widget
 	 * Be careful to disable blocking even in case of exceptions. Also make sure to restore
 	 * the block layout call in place before changing it by yourself to not break chains.
 	 */
-	public func void setBlockLayout( bool blockLayout )
-		this.pBlockLayout = blockLayout
+	func void setBlockLayout(bool blockLayout)
+		pBlockLayout = blockLayout
 	end
 	
 	/**
@@ -242,70 +241,70 @@ class Container extends Widget
 	 * case of exceptions. You still have to call doLayout() to trigger an update after
 	 * returning from the method call. This method call can be nested safely.
 	 */
-	public func void runWhileBlockingLayout( Block ablock )
-		if this.pBlockLayout
+	func void runWhileBlockingLayout(Block ablock)
+		if pBlockLayout
 			ablock.run()
 			return
 		end
 		
-		this.pBlockLayout = true
+		pBlockLayout = true
 		
 		try
 			ablock.run()
-			this.pBlockLayout = false
+			pBlockLayout = false
 			
 		catch Exception e
-			this.pBlockLayout = false
+			pBlockLayout = false
 			throw
 		end
 	end
 	
 	/** \brief doLayout calls happened during runWhileBlockingLayout. */
-	public func bool getHasBlockedDoLayout()
-		return this.pHasBlockedDoLayout
+	func bool getHasBlockedDoLayout()
+		return pHasBlockedDoLayout
 	end
 	
 	/** \brief Set if doLayout calls happened during runWhileBlockingLayout. */
-	public func void setHasBlockedDoLayout( bool hasBlockedDoLayout )
-		this.pHasBlockedDoLayout = hasBlockedDoLayout
+	func void setHasBlockedDoLayout(bool hasBlockedDoLayout)
+		pHasBlockedDoLayout = hasBlockedDoLayout
 	end
 	
 	/** Retrieve number of child widgets. */
-	public func int getWidgetCount()
-		return this.pChildren.getCount()
+	func int getWidgetCount()
+		return pChildren.getCount()
 	end
 	
 	/** Retrieve widget at the given index position. */
-	public func Widget getWidget(int index)
-		return this.pChildren.getAt( index ) cast Widget
+	func Widget getWidget(int index)
+		return pChildren.getAt(index) cast Widget
 	end
 	
 	/** Retrieves the index of the widget or -1 if not found. */
-	public func int indexOfWidget( Widget widget )
-		return this.pChildren.indexOf( widget )
+	func int indexOfWidget(Widget widget)
+		return pChildren.indexOf(widget)
 	end
 	
 	/** Determines if the widget is part of the container. */
-	public func bool hasWidget( Widget widget )
-		return this.pChildren.has( widget )
+	func bool hasWidget(Widget widget)
+		return pChildren.has(widget)
 	end
 	
 	/** \brief Widget at coordinates or \em null if not found. */
-	public func Widget getWidgetAt( Point position )
-		if not this.isPointInside( position )
+	func Widget getWidgetAt(Point position)
+		if not isPointInside(position)
 			return null
 		end
 		
-		var int i, count = this.pChildren.getCount()
+		var int i, count = pChildren.getCount()
 		var Widget widget
 		
 		for i = count - 1 downto 0
-			widget = this.pChildren.getAt( i ) cast Widget
+			widget = pChildren.getAt(i) cast Widget
 			if not widget.getVisible()
 				continue
 			end
 			
-			widget = widget.getWidgetAt( position - widget.getPosition() )
+			widget = widget.getWidgetAt(position - widget.getPosition())
 			if widget != null
 				return widget
 			end
@@ -315,23 +314,23 @@ class Container extends Widget
 	end
 	
 	/** Adds a widget to this container using default settings. */
-	public func void addWidget( Widget widget )
-		this.addWidget( widget, null )
+	func void addWidget(Widget widget)
+		addWidget(widget, null)
 	end
 	
 	/** Adds a widget to this container using the specified settings. */
-	public func void addWidget( Widget widget, Object settings )
-		if widget == this or widget.hasParent( this )
+	func void addWidget(Widget widget, Object settings)
+		if widget == this or widget.hasParent(this)
 			throw EInvalidParam.new()
 		end
 		
-		this.pLayout.addWidget( widget, settings )
-		this.pChildren.add( widget )
+		pLayout.addWidget(widget, settings)
+		pChildren.add(widget)
 		
-		widget.setParent( this )
+		widget.setParent(this)
 		
-		this.getCanvasContent().addCanvas( widget.getCanvasWidget() )
-		widget.getCanvasWidget().setOrder( ( this.pChildren.getCount() - 1 ) cast float )
+		getCanvasContent().addCanvas(widget.getCanvasWidget())
+		widget.getCanvasWidget().setOrder((pChildren.getCount() - 1) cast float)
 		
 		doLayout()
 	end
@@ -339,50 +338,50 @@ class Container extends Widget
 	/**
 	 * \brief Remove widget without disposing.
 	 */
-	public func void removeWidget( Widget widget )
-		if not this.pChildren.has( widget )
+	func void removeWidget(Widget widget)
+		if not pChildren.has(widget)
 			throw EInvalidParam.new()
 		end
 		
-		this.pLayout.removeWidget( widget )
-		this.pChildren.remove( widget )
+		pLayout.removeWidget(widget)
+		pChildren.remove(widget)
 		
-		this.getCanvasContent().removeCanvas( widget.getCanvasWidget() )
-		this.reorderChildCanvas()
+		getCanvasContent().removeCanvas(widget.getCanvasWidget())
+		reorderChildCanvas()
 		
-		widget.setParent( null )
+		widget.setParent(null)
 		
-		this.doLayout()
+		doLayout()
 	end
 	
 	/**
 	 * \brief Remove and dispose all widgets.
 	 */
-	public func void removeAllWidgets()
+	func void removeAllWidgets()
 		// forEach with a block is not used here since it is possible a child widget removes
 		// another child widget during setParent() or dispose()
-		this.runWhileBlockingLayout( block
+		runWhileBlockingLayout(block
 			var Widget widget
 			var int index
 			
-			while this.pChildren.getCount() > 0
-				index = this.pChildren.getCount() - 1
-				widget = this.pChildren.getAt( index ) cast Widget
+			while pChildren.getCount() > 0
+				index = pChildren.getCount() - 1
+				widget = pChildren.getAt(index) cast Widget
 				
 				widget.setParent(null)
 				
-				this.pLayout.removeWidget( widget )
-				this.pChildren.removeFrom( index )
+				pLayout.removeWidget(widget)
+				pChildren.removeFrom(index)
 				
 				widget.dispose()
 			end
-		end )
+		end)
 		
-		if this.getCanvasContent() != null
-			this.getCanvasContent().removeAllCanvas()
+		if getCanvasContent() != null
+			getCanvasContent().removeAllCanvas()
 		end
 		
-		this.doLayout()
+		doLayout()
 	end
 	
 	/**
@@ -390,8 +389,8 @@ class Container extends Widget
 	 * 
 	 * Block is called with single parameter of type Widget.
 	 */
-	public func void forEachWidget( Block ablock )
-		this.pChildren.forEach( ablock )
+	func void forEachWidget(Block ablock)
+		pChildren.forEach(ablock)
 	end
 	
 	/**
@@ -400,8 +399,8 @@ class Container extends Widget
 	 * Works like Array.inject(). Block receives as first argument the Object injected value
 	 * and as second argument Widget widget.
 	 */
-	public func Object injectWidget( Object injectValue, Block ablock )
-		return this.pChildren.inject( injectValue, ablock )
+	func Object injectWidget(Object injectValue, Block ablock)
+		return pChildren.inject(injectValue, ablock)
 	end
 	
 	/**
@@ -410,21 +409,21 @@ class Container extends Widget
 	 * Block is called with single parameter of type Widget and has to return true to stop
 	 * visiting and return widget or false to continue visiting.
 	 */
-	public func Widget findWidget( Block ablock )
-		return this.pChildren.find( ablock ) cast Widget
+	func Widget findWidget(Block ablock)
+		return pChildren.find(ablock) cast Widget
 	end
 	
 	/** Find first widget that can grab the focus or null if none exists. */
-	public func Widget findFocusableWidget()
+	func Widget findFocusableWidget()
 		/* incorrect block context
-		if this.getEnabled() and this.getVisible()
+		if getEnabled() and getVisible()
 			var Widget widget = super.findFocusableWidget()
 			
 			if widget == null
-				this.pChildren.forEachWhile( block Widget each
+				pChildren.forEachWhile(block Widget each
 					widget = each.findFocusableWidget()
 					return widget == null
-				end )
+				end)
 			end
 			
 			return widget
@@ -433,7 +432,7 @@ class Container extends Widget
 		return null
 		*/
 		
-		if not this.getEnabled() or not this.getVisible()
+		if not getEnabled() or not getVisible()
 			return null
 		end
 		
@@ -442,9 +441,9 @@ class Container extends Widget
 			return widget
 		end
 		
-		var int i, count = this.pChildren.getCount()
+		var int i, count = pChildren.getCount()
 		for i = 0 to count
-			widget = ( this.pChildren.getAt( i ) cast Widget ).findFocusableWidget()
+			widget = (pChildren.getAt(i) cast Widget).findFocusableWidget()
 			if widget != null
 				return widget
 			end
@@ -454,8 +453,8 @@ class Container extends Widget
 	end
 	
 	/** Find last widget that can grab the focus or null if none exists. */
-	public func Widget findLastFocusableWidget()
-		if not this.getEnabled() or not this.getVisible()
+	func Widget findLastFocusableWidget()
+		if not getEnabled() or not getVisible()
 			return null
 		end
 		
@@ -464,9 +463,9 @@ class Container extends Widget
 			return widget
 		end
 		
-		var int i, count = this.pChildren.getCount()
+		var int i, count = pChildren.getCount()
 		for i = count - 1 downto 0
-			widget = ( this.pChildren.getAt( i ) cast Widget ).findLastFocusableWidget()
+			widget = (pChildren.getAt(i) cast Widget).findLastFocusableWidget()
 			if widget != null
 				return widget
 			end
@@ -478,39 +477,39 @@ class Container extends Widget
 	/**
 	 * \brief Find next widget in the focus cycle that can grab the focus.
 	 */
-	public func Widget nextFocusWidgetAfter( Widget widget )
-		if not this.getEnabled() or not this.getVisible()
+	func Widget nextFocusWidgetAfter(Widget widget)
+		if not getEnabled() or not getVisible()
 			return null
 		end
 		
-		var int index = this.pChildren.indexOf( widget )
+		var int index = pChildren.indexOf(widget)
 		if index == -1
 			throw EInvalidParam.new()
 		end
 		
 		// find next focusable widget in the remaining list of widget otherwise continue with parent if present
-		var int i, count = this.pChildren.getCount()
+		var int i, count = pChildren.getCount()
 		var Widget testWidget
 		
 		for i = index + 1 to count
-			testWidget = ( this.pChildren.getAt( i ) cast Widget ).findFocusableWidget()
+			testWidget = (pChildren.getAt(i) cast Widget).findFocusableWidget()
 			if testWidget != null
 				return testWidget
 			end
 		end
 		
-		return this.nextFocusWidget()
+		return nextFocusWidget()
 	end
 	
 	/**
 	 * \brief Find previous widget in the focus cycle that can grab the focus.
 	 */
-	public func Widget prevFocusWidgetAfter( Widget widget )
-		if not this.getEnabled() or not this.getVisible()
+	func Widget prevFocusWidgetAfter(Widget widget)
+		if not getEnabled() or not getVisible()
 			return null
 		end
 		
-		var int index = this.pChildren.indexOf( widget )
+		var int index = pChildren.indexOf(widget)
 		if index == -1
 			throw EInvalidParam.new()
 		end
@@ -520,38 +519,38 @@ class Container extends Widget
 		var int i
 		
 		for i = index - 1 downto 0
-			testWidget = ( this.pChildren.getAt( i ) cast Widget ).findLastFocusableWidget()
+			testWidget = (pChildren.getAt(i) cast Widget).findLastFocusableWidget()
 			if testWidget != null
 				return testWidget
 			end
 		end
 		
-		return this.prevFocusWidget()
+		return prevFocusWidget()
 	end
 	
 	/** Move widget from one position to another. */
-	public func void moveWidget( Widget widget, int newPosition )
-		var int index = this.pChildren.indexOf( widget )
+	func void moveWidget(Widget widget, int newPosition)
+		var int index = pChildren.indexOf(widget)
 		
-		this.pChildren.move( index, newPosition )
-		this.reorderChildCanvas()
+		pChildren.move(index, newPosition)
+		reorderChildCanvas()
 		
-		this.doLayout()
+		doLayout()
 	end
 	
 	
 	
 	/** Returns the minimal size calculated by our layout object for this widget. */
-	public func Point getMinimumSize()
-		if this.isMinimumSizeSet()
+	func Point getMinimumSize()
+		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		
-		if this.pCachedMinSize == null
-			this.pCachedMinSize = this.pLayout.getMinimumSize( this )
+		if pCachedMinSize == null
+			pCachedMinSize = pLayout.getMinimumSize(this)
 		end
 		
-		return this.pCachedMinSize
+		return pCachedMinSize
 	end
 	
 	
@@ -560,34 +559,34 @@ class Container extends Widget
 	 * \brief Minimum size of widget using reference widget width and variable height.
 	 * \details Default implementation uses getMinimumSize().
 	 */
-	public func Point getMinimumSizeForWidth( int width )
-		if this.isMinimumSizeSet()
+	func Point getMinimumSizeForWidth(int width)
+		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		
-		if this.pCachedMinSizeForWidthSize == null or width != this.pCachedMinSizeForWidthWidth
-			this.pCachedMinSizeForWidthSize = this.pLayout.getMinimumSizeForWidth( this, width )
-			this.pCachedMinSizeForWidthWidth = width
+		if pCachedMinSizeForWidthSize == null or width != pCachedMinSizeForWidthWidth
+			pCachedMinSizeForWidthSize = pLayout.getMinimumSizeForWidth(this, width)
+			pCachedMinSizeForWidthWidth = width
 		end
 		
-		return this.pCachedMinSizeForWidthSize
+		return pCachedMinSizeForWidthSize
 	end
 	
 	/**
 	 * \brief Minimum size of widget using reference widget height and variable width.
 	 * \details Default implementation uses getMinimumSize().
 	 */
-	public func Point getMinimumSizeForHeight( int height )
-		if this.isMinimumSizeSet()
+	func Point getMinimumSizeForHeight(int height)
+		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		
-		if this.pCachedMinSizeForHeightSize == null or height != this.pCachedMinSizeForHeightHeight
-			this.pCachedMinSizeForHeightSize = this.pLayout.getMinimumSizeForHeight( this, height )
-			this.pCachedMinSizeForHeightHeight = height
+		if pCachedMinSizeForHeightSize == null or height != pCachedMinSizeForHeightHeight
+			pCachedMinSizeForHeightSize = pLayout.getMinimumSizeForHeight(this, height)
+			pCachedMinSizeForHeightHeight = height
 		end
 		
-		return this.pCachedMinSizeForHeightSize
+		return pCachedMinSizeForHeightSize
 	end
 	
 	
@@ -595,8 +594,8 @@ class Container extends Widget
 	/**
 	 * Layout parent if existing. Modified version to respect layout blocking.
 	 */
-	public func void layoutParent()
-		if not this.pBlockLayout
+	func void layoutParent()
+		if not pBlockLayout
 			super.layoutParent()
 		end
 	end
@@ -607,39 +606,39 @@ class Container extends Widget
 	 * changes to the minimum, preferred and maximum size are tracked to call
 	 * layoutParent() only if required.
 	 */
-	public func void doLayout()
-		if this.pBlockLayout
-			this.pHasBlockedDoLayout = true
+	func void doLayout()
+		if pBlockLayout
+			pHasBlockedDoLayout = true
 			return
 		end
 		
 		//var bool parentRequiresLayout
 		
 		// put aside the old min, pref and max size to check for changes later on
-		//var Point oldMinSize = this.pCachedMinSize
-		if this.pChildren.getCount() > 0
-			this.runWhileBlockingLayout( block
-				this.pLayout.doLayout( this )
-			end )
+		//var Point oldMinSize = pCachedMinSize
+		if pChildren.getCount() > 0
+			runWhileBlockingLayout(block
+				pLayout.doLayout(this)
+			end)
 		end
 		
-		this.pHasBlockedDoLayout = false
+		pHasBlockedDoLayout = false
 		
 		// reset the cached size so we can check the new values
-		this.pCachedMinSize = null
-		this.pCachedMinSizeForWidthSize = null
-		this.pCachedMinSizeForHeightSize = null
+		pCachedMinSize = null
+		pCachedMinSizeForWidthSize = null
+		pCachedMinSizeForHeightSize = null
 		
 		// check if the min, pref or max size are still the same
-		//parentRequiresLayout = not this.getMinimumSize().equals( oldMinSize ) \
+		//parentRequiresLayout = not getMinimumSize().equals(oldMinSize) \
 		
 		// layout the parent if required
 		//if parentRequiresLayout
-		if not this.isMinimumSizeSet()
+		if not isMinimumSizeSet()
 			// if the minimum size is set the layout of the parent does not change. this is
 			// the case because all getMinimumSize* method calls return the minimum size.
 			// avoiding the layoutParent call in this case improves performance
-			this.layoutParent()
+			layoutParent()
 		end
 		//end
 	end
@@ -651,17 +650,17 @@ class Container extends Widget
 	 * doLayout() if not required. This method is typically called after calling
 	 * runWhileBlockingLayout().
 	 */
-	public func void doLayoutIfBlocked()
-		if this.pHasBlockedDoLayout
-			this.doLayout()
+	func void doLayoutIfBlocked()
+		if pHasBlockedDoLayout
+			doLayout()
 		end
 	end
 	
 	
 	
 	/** Notifies that the current focus widget can no longer hold the focus. */
-	public func void giveUpFocus()
-		var Container parent = this.getParent()
+	func void giveUpFocus()
+		var Container parent = getParent()
 		
 		if parent != null
 			parent.giveUpFocus()
@@ -672,27 +671,27 @@ class Container extends Widget
 	 * Request to capture the mouse for the specified widget. Returns true if the request
 	 * has been accepted.
 	 */
-	public func bool requestCaptureMouse( Widget widget )
-		var Container parent = this.getParent()
+	func bool requestCaptureMouse(Widget widget)
+		var Container parent = getParent()
 		if parent != null
-			return parent.requestCaptureMouse( widget )
+			return parent.requestCaptureMouse(widget)
 		end
 		return true
 	end
 	
 	/** Request to release mouse capture. Returns true  if the request has been accepted. */
-	public func bool requestReleaseMouse( Widget widget )
-		var Container parent = this.getParent()
+	func bool requestReleaseMouse(Widget widget)
+		var Container parent = getParent()
 		if parent != null
-			return parent.requestReleaseMouse( widget )
+			return parent.requestReleaseMouse(widget)
 		end
 		return true
 	end
 	
 	/** Determines if the container allows child widgets to grab the focus. */
-	public func bool allowsChildGrabFocus()
-		var Container parent = this.getParent()
-		if not this.getEnabled() or not this.getVisible() or parent == null
+	func bool allowsChildGrabFocus()
+		var Container parent = getParent()
+		if not getEnabled() or not getVisible() or parent == null
 			return false
 		end
 		return parent.allowsChildGrabFocus()
@@ -705,14 +704,14 @@ class Container extends Widget
 	 * widget is visible and that the widget boundaries lie inside the
 	 * viewable area of the container.
 	 */
-	public func bool isChildVisible( Widget child )
+	func bool isChildVisible(Widget child)
 		if not child.getVisible()
 			return false
 		end
 		
 		var Point childPosition = child.getPosition()
 		
-		if ( childPosition + child.getSize() ).isAtMost( 0 ) or childPosition >= this.getSize()
+		if (childPosition + child.getSize()).isAtMost(0) or childPosition >= getSize()
 			return false
 		end
 		
@@ -720,8 +719,8 @@ class Container extends Widget
 	end
 	
 	/** \brief Focus widget is inside container somewhere. */
-	public func bool hasFocusWidget()
-		var Desktop desktop = this.getDesktop()
+	func bool hasFocusWidget()
+		var Desktop desktop = getDesktop()
 		if desktop == null
 			return false
 		end
@@ -731,7 +730,7 @@ class Container extends Widget
 			return false
 		end
 		
-		return focusWidget.hasParent( this )
+		return focusWidget.hasParent(this)
 	end
 	
 	/**
@@ -739,7 +738,7 @@ class Container extends Widget
 	 * 
 	 * Tests if the hover widget is this widget.
 	 */
-	public func bool isMouseInside()
+	func bool isMouseInside()
 		var Widget hoverWidget = getHoverWidget()
 		return hoverWidget == this or (hoverWidget != null and hoverWidget.hasParent(this))
 	end
@@ -750,22 +749,22 @@ class Container extends Widget
 	 * \brief Notify children if state changed.
 	 * \version 1.5
 	 */
-	public func bool getStateChangeNotifyChildren()
-		return this.pStateChangeNotifyChildren
+	func bool getStateChangeNotifyChildren()
+		return pStateChangeNotifyChildren
 	end
 	
 	/**
 	 * \brief Set to notify children if state changed.
 	 * \version 1.5
 	 */
-	public func void setStateChangeNotifyChildren( bool notify )
-		this.pStateChangeNotifyChildren = notify
+	func void setStateChangeNotifyChildren(bool notify)
+		pStateChangeNotifyChildren = notify
 	end
 	
 	
 	
 	/** Set if widget is enabled. */
-	public func void setEnabled(bool enabled)
+	func void setEnabled(bool enabled)
 		if enabled == getEnabled()
 			return
 		end
@@ -781,26 +780,26 @@ class Container extends Widget
 	
 	
 	/** \brief Widget has been hidden. */
-	public func void onHidden( WidgetEvent event )
-		super.onHidden( event )
+	func void onHidden(WidgetEvent event)
+		super.onHidden(event)
 		
-		if this.hasFocusWidget()
-			this.giveUpFocus()
+		if hasFocusWidget()
+			giveUpFocus()
 		end
 	end
 	
 	/** \brief State changed. */
-	public func void onStateChanged( StateChangeEvent event )
-		super.onStateChanged( event )
+	func void onStateChanged(StateChangeEvent event)
+		super.onStateChanged(event)
 		
-		if this.hasFocusWidget() and not this.getEnabled()
-			this.giveUpFocus()
+		if hasFocusWidget() and not getEnabled()
+			giveUpFocus()
 		end
 		
-		this.runWhileBlockingLayout( block
-			this.notifyChildrenParentStateChanged(false)
-		end )
-		this.doLayoutIfBlocked()
+		runWhileBlockingLayout(block
+			notifyChildrenParentStateChanged(false)
+		end)
+		doLayoutIfBlocked()
 	end
 	
 	/**
@@ -808,13 +807,13 @@ class Container extends Widget
 	 * 
 	 * Calls onParentStateChanged() on all child widgets.
 	 */
-	public func void onParentStateChanged()
-		if this.pStateChangeNotifyChildren
-			this.runWhileBlockingLayout( block
+	func void onParentStateChanged()
+		if pStateChangeNotifyChildren
+			runWhileBlockingLayout(block
 				super.onParentStateChanged()
-				this.notifyChildrenParentStateChanged()
-			end )
-			this.doLayoutIfBlocked()
+				notifyChildrenParentStateChanged()
+			end)
+			doLayoutIfBlocked()
 			
 		else
 			super.onParentStateChanged()
@@ -828,9 +827,9 @@ class Container extends Widget
 	 * Calls onParentStateChanged() on all child widgets. Supports forcing update on the
 	 * entire children chain.
 	 */
-	public func void onParentStateChanged(bool force)
+	func void onParentStateChanged(bool force)
 		if pStateChangeNotifyChildren or force
-			runWhileBlockingLayout( block
+			runWhileBlockingLayout(block
 				super.onParentStateChanged(force)
 				notifyChildrenParentStateChanged(force)
 			end)
@@ -842,54 +841,68 @@ class Container extends Widget
 	end
 	
 	/** \brief Notify children about parent state change. */
-	public func void notifyChildrenParentStateChanged()
-		this.pChildren.forEach( block Widget each
+	func void notifyChildrenParentStateChanged()
+		pChildren.forEach(block Widget each
 			each.onParentStateChanged()
-		end )
+		end)
 	end
 	
 	/**
 	 * \brief Notify children about parent state change.
 	 * \version 1.7
 	 */
-	public func void notifyChildrenParentStateChanged(bool force)
+	func void notifyChildrenParentStateChanged(bool force)
 		pChildren.forEach(block Widget each
 			each.onParentStateChanged(force)
 		end)
 	end
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.doLayout()
+	func void onResize(WidgetEvent event)
+		super.onResize(event)
+		doLayout()
 	end
 	
 	/** \brief Padding changed. */
-	public func void onPaddingChanged()
-		this.doLayout()
+	func void onPaddingChanged()
+		doLayout()
 	end
 	
 	/** Notification that the gui theme changed. */
-	public func void onGuiThemeChanged()
-		this.runWhileBlockingLayout( block
+	func void onGuiThemeChanged()
+		runWhileBlockingLayout(block
 			super.onGuiThemeChanged()
 			
-			this.pChildren.forEach( block Widget each
+			pChildren.forEach(block Widget each
 				if not each.isGuiThemeSet()
 					each.onGuiThemeChanged()
 				end
-			end )
-		end )
+			end)
+		end)
 		
-		this.doLayout() // theoretically a layout could have different properties with different gui themes
+		doLayout() // theoretically a layout could have different properties with different gui themes
+	end
+	
+	/**
+	 * \brief Translation manager or active language pack changed.
+	 * \version 1.20
+	 */
+	func void onTranslationChanged()
+		runWhileBlockingLayout(block
+			super.onTranslationChanged()
+			pChildren.forEach(block Widget each
+				each.onTranslationChanged()
+			end)
+		end)
+		doLayoutIfBlocked()
 	end
 	
 	/** Update order of all child widget canvas. */
-	public func void reorderChildCanvas()
-		var int i, count = this.pChildren.getCount()
+	func void reorderChildCanvas()
+		var int i, count = pChildren.getCount()
 		
 		for i = 0 to count
-			( this.pChildren.getAt( i ) cast Widget ).getCanvasWidget().setOrder( i cast float )
+			(pChildren.getAt(i) cast Widget).getCanvasWidget().setOrder(i cast float)
 		end
 	end
 	
@@ -898,16 +911,16 @@ class Container extends Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onMouseEnter( MouseEvent event )
-		if this.pStateChangeNotifyChildren
-			this.runWhileBlockingLayout( block
-				this.notifyChildrenParentStateChanged(false)
-				super.onMouseEnter( event )
-			end )
-			this.doLayoutIfBlocked()
+	func void onMouseEnter(MouseEvent event)
+		if pStateChangeNotifyChildren
+			runWhileBlockingLayout(block
+				notifyChildrenParentStateChanged(false)
+				super.onMouseEnter(event)
+			end)
+			doLayoutIfBlocked()
 			
 		else
-			super.onMouseEnter( event )
+			super.onMouseEnter(event)
 		end
 	end
 	
@@ -916,16 +929,16 @@ class Container extends Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onMouseLeave( MouseEvent event )
-		if this.pStateChangeNotifyChildren
-			this.runWhileBlockingLayout( block
-				this.notifyChildrenParentStateChanged(false)
-				super.onMouseLeave( event )
-			end )
-			this.doLayoutIfBlocked()
+	func void onMouseLeave(MouseEvent event)
+		if pStateChangeNotifyChildren
+			runWhileBlockingLayout(block
+				notifyChildrenParentStateChanged(false)
+				super.onMouseLeave(event)
+			end)
+			doLayoutIfBlocked()
 			
 		else
-			super.onMouseLeave( event )
+			super.onMouseLeave(event)
 		end
 	end
 end

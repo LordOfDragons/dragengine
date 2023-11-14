@@ -32,92 +32,77 @@ pin Dragengine.Utils
  */
 class Label extends Widget implements TextModelListener
 	/** \brief Align text left side. */
-	public fixed var int left = 0
+	public static fixed var int left = 0
 	
 	/** \brief Align text right side. */
-	public fixed var int right = 1
+	public static fixed var int right = 1
 	
 	/** \brief Align text center. */
-	public fixed var int center = 2
+	public static fixed var int center = 2
 	
 	/** \brief Align text at top side. */
-	public fixed var int top = 0
+	public static fixed var int top = 0
 	
 	/** \brief Align text at bottom side. */
-	public fixed var int bottom = 4
+	public static fixed var int bottom = 4
 	
 	/** \brief Align text middled. */
-	public fixed var int middle = 8
+	public static fixed var int middle = 8
 	
 	/** \brief Align text top-left. */
-	public fixed var int topLeft = top | left
+	public static fixed var int topLeft = top | left
 	
 	/** \brief Align text middle-center. */
-	public fixed var int topCenter = top | center
+	public static fixed var int topCenter = top | center
 	
 	/** \brief Align text top-right. */
-	public fixed var int topRight = top | right
+	public static fixed var int topRight = top | right
 	
 	/** \brief Align text middle-left. */
-	public fixed var int middleLeft = middle | left
+	public static fixed var int middleLeft = middle | left
 	
 	/** \brief Align text middle-center. */
-	public fixed var int middleCenter = middle | center
+	public static fixed var int middleCenter = middle | center
 	
 	/** \brief Align text middle-right. */
-	public fixed var int middleRight = middle | right
+	public static fixed var int middleRight = middle | right
 	
 	/** \brief Align text bottom-left. */
-	public fixed var int bottomLeft = bottom | left
+	public static fixed var int bottomLeft = bottom | left
 	
 	/** \brief Align text middle-center. */
-	public fixed var int bottomCenter = bottom | center
+	public static fixed var int bottomCenter = bottom | center
 	
 	/** \brief Align text bottom-right. */
-	public fixed var int bottomRight = bottom | right
+	public static fixed var int bottomRight = bottom | right
 	
 	/** \brief Default alignment middle-center. */
-	public fixed var int defaultAlignment = middleCenter
+	public static fixed var int defaultAlignment = middleCenter
 	
 	
 	
-	/** \brief Text Layout. */
-	private var TextLayout pTextLayout
-	
-	/** \brief Text Model. */
-	private var TextModel pModel
-	
-	/** \brief Text alignment. */
-	private var int pAlignment
-	
-	/** \brief Maximal width of text before break occurs. */
-	private var int pMaxWidth
-	
-	/** \brief Minimum Size of the text with max width applied. */
-	private var Point pMinTextSize
-	
-	/** \brief Word wrap if line is too long. */
-	private var bool pWordWrap
-	
-	/** \brief Cached minimum size for getMinimumSizeForWidth or \em null to calculate next time. */
-	private var Point pMinSizeForWidthSize
-	
-	/** \brief Width used for cached minimum size for getMinimumSizeForWidth if set. */
-	private var int pMinSizeForWidthWidth
+	var TextLayout pTextLayout
+	var TextModel pModel
+	var int pAlignment
+	var int pMaxWidth
+	var Point pMinTextSize
+	var bool pWordWrap
+	var Point pMinSizeForWidthSize
+	var int pMinSizeForWidthWidth
 	
 	
 	
 	/** \brief Create label. */
-	public func new(String text) this(DefaultTextModel.new(text), defaultAlignment)
+	func new(String text) this(DefaultTextModel.new(text), defaultAlignment)
 	end
 	
-	public func new(String text, int alignment) this(DefaultTextModel.new(text), alignment)
+	func new(String text, int alignment) this(DefaultTextModel.new(text), alignment)
 	end
 	
-	public func new(TextModel model) this(model, defaultAlignment)
+	func new(TextModel model) this(model, defaultAlignment)
 	end
 	
-	public func new(TextModel model, int alignment)
+	func new(TextModel model, int alignment)
 		if model == null
 			throw EInvalidParam.new()
 		end
@@ -137,16 +122,16 @@ class Label extends Widget implements TextModelListener
 		//updateCanvasText() // there is no font yet so this is a waste of time
 	end
 	
-	public func new(String text, String designerSelector) this(text)
+	func new(String text, String designerSelector) this(text)
 		setDesignerSelector(designerSelector)
 	end
 	
-	public func new(TextModel model, String designerSelector) this(model)
+	func new(TextModel model, String designerSelector) this(model)
 		setDesignerSelector(designerSelector)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		pModel.removeListener(this)
 		pModel = null
 		
@@ -156,12 +141,12 @@ class Label extends Widget implements TextModelListener
 	
 	
 	/** \brief Text model. */
-	public func TextModel getModel()
+	func TextModel getModel()
 		return pModel
 	end
 	
 	/** \brief Set text model. */
-	public func void setModel(TextModel model)
+	func void setModel(TextModel model)
 		if model == null
 			throw EInvalidParam.new()
 		end
@@ -179,17 +164,17 @@ class Label extends Widget implements TextModelListener
 	end
 	
 	/** \brief Text. */
-	public func String getText()
+	func String getText()
 		return pModel.getText()
 	end
 	
 	/** \brief Set text. */
-	public func void setText(String text)
+	func void setText(String text)
 		pModel.setText(text)
 	end
 	
 	/** \brief Text alignment. */
-	public func int getAlignment()
+	func int getAlignment()
 		return pAlignment
 	end
 	
@@ -197,7 +182,7 @@ class Label extends Widget implements TextModelListener
 	 * \brief Set text alignment.
 	 * \param alignment One of left, right, center combined with one of top, bottom, middle.
 	 */
-	public func void setAlignment(int alignment)
+	func void setAlignment(int alignment)
 		if (alignment & right == right and alignment & center == center) \
 		or (alignment & bottom == bottom and alignment & middle == middle)
 			throw EInvalidParam.new()
@@ -213,12 +198,12 @@ class Label extends Widget implements TextModelListener
 	end
 	
 	/** \brief Maximal width of text before break occurs. */
-	public func int getMaximalWidth()
+	func int getMaximalWidth()
 		return pMaxWidth
 	end
 	
 	/** \brief Set maximal width of text before break occurs. */
-	public func void setMaximalWidth(int width)
+	func void setMaximalWidth(int width)
 		if width < 0
 			throw EInvalidParam.new()
 		end
@@ -233,12 +218,12 @@ class Label extends Widget implements TextModelListener
 	end
 	
 	/** \brief Word wrap if line is too long. */
-	public func bool getWordWrap()
+	func bool getWordWrap()
 		return pWordWrap
 	end
 	
 	/** \brief Set word wrap if line is too long. */
-	public func void setWordWrap(bool wordWrap)
+	func void setWordWrap(bool wordWrap)
 		if wordWrap == pWordWrap
 			return
 		end
@@ -252,7 +237,7 @@ class Label extends Widget implements TextModelListener
 	
 	
 	/** \brief Size of text. */
-	public func Point getTextSize()
+	func Point getTextSize()
 		var BorderSize padding = getPadding()
 		return Point.new(\
 			pTextLayout.getWidth() + padding.getWidth(), \
@@ -262,7 +247,7 @@ class Label extends Widget implements TextModelListener
 	
 	
 	/** \brief Minimal size of widget. */
-	public func Point getMinimumSize()
+	func Point getMinimumSize()
 		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
@@ -275,7 +260,7 @@ class Label extends Widget implements TextModelListener
 	 * \brief Minimum size of widget using reference widget width and variable height.
 	 * \details Default implementation uses getMinimumSize().
 	 */
-	public func Point getMinimumSizeForWidth(int width)
+	func Point getMinimumSizeForWidth(int width)
 		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
@@ -294,7 +279,7 @@ class Label extends Widget implements TextModelListener
 		//      is less then width then using getMinimumSize() is good enough since
 		//      the size never can be larger. uses the optimized minimum version as
 		//      long as the width is not smaller potentially forcing different height.
-		var TextLayout textLayout = TextLayout.new(pModel.getText(), font)
+		var TextLayout textLayout = TextLayout.new(translate(pModel.getText()), font)
 		var BorderSize padding = getPadding()
 		var int maxWidth = pMaxWidth
 		
@@ -319,24 +304,24 @@ class Label extends Widget implements TextModelListener
 	
 	
 	/** \brief Font changed. */
-	public func void onSetFont()
+	func void onSetFont()
 		updateCanvasText()
 		layoutParent()
 	end
 	
 	/** \brief Foreground color changed. */
-	public func void onSetTextColor()
+	func void onSetTextColor()
 		updateCanvasText()
 	end
 	
 	/** \brief Size changed. */
-	public func void onResize(WidgetEvent event)
+	func void onResize(WidgetEvent event)
 		super.onResize(event)
 		updateCanvasText()
 	end
 	
 	/** \brief Gui theme changed. */
-	public func void onGuiThemeChanged()
+	func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
 		
 		updateCanvasText()
@@ -347,9 +332,19 @@ class Label extends Widget implements TextModelListener
 	 * \brief State changed.
 	 * \details Sends event to listeners.
 	 */
-	public func void onStateChanged(StateChangeEvent event)
+	func void onStateChanged(StateChangeEvent event)
 		super.onStateChanged(event)
 		updateCanvasText()
+	end
+	
+	/**
+	 * \brief Translation manager or active language pack changed.
+	 * \version 1.20
+	 */
+	func void onTranslationChanged()
+		super.onTranslationChanged()
+		updateCanvasText()
+		layoutParent()
 	end
 	
 	
@@ -420,7 +415,7 @@ class Label extends Widget implements TextModelListener
 	
 	/** \brief Update text layout. */
 	private func void updateTextLayout()
-		pTextLayout = TextLayout.new(pModel.getText(), getFont())
+		pTextLayout = TextLayout.new(translate(pModel.getText()), getFont())
 		
 		if pWordWrap
 			pTextLayout.setMaximalWidth(DEMath.max(\
@@ -448,7 +443,7 @@ class Label extends Widget implements TextModelListener
 	
 	
 	/** \brief Text changed. */
-	public func void textChanged(TextModel textModel)
+	func void textChanged(TextModel textModel)
 		updateCanvasText()
 		layoutParent()
 	end

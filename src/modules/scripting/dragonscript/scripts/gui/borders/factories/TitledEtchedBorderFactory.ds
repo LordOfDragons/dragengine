@@ -26,25 +26,24 @@ namespace Dragengine.Gui.Borders.Factories
 /**
  * Factory for TitledEtchedBorder.
  */
-public class TitledEtchedBorderFactory extends TitledTwoColorBorderFactory
+class TitledEtchedBorderFactory extends TitledTwoColorBorderFactory
 	/** Creates a new border factory. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create copy of border factory. */
-	public func new(TitledEtchedBorderFactory factory) super(factory)
+	func new(TitledEtchedBorderFactory factory) super(factory)
 	end
 	
 	
 	
 	/** Create border. */
-	public func Border createBorder()
+	func Border createBorder()
 		var TitledEtchedBorder border = TitledEtchedBorder.new()
 		
 		border.setRaised(getRaised())
 		border.setColorHighlight(getColorHighlight())
 		border.setColorShadow(getColorShadow())
-		border.setText(getText())
 		border.setText(getText())
 		border.setFont(getFont())
 		border.setTextColor(getTextColor())
@@ -53,7 +52,7 @@ public class TitledEtchedBorderFactory extends TitledTwoColorBorderFactory
 	end
 	
 	/** \brief Create factory copy. */
-	public func BorderFactory copyFactory()
+	func BorderFactory copyFactory()
 		return TitledEtchedBorderFactory.new(this)
 	end
 end

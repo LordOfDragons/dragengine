@@ -53,65 +53,65 @@ class Window extends Container
 	
 	
 	
-	private var Decoration pDecoration
-	private var WindowState pWindowState
-	private var Widget pActiveWidget
-	private var bool pCanReorder
-	private var bool pCanMove
-	private var bool pCanResize
-	private var bool pCanActivate
-	private var bool pCanClose
-	private var bool pCanMaximize
-	private var bool pCanMinimize
-	private var bool pAlwaysOnTop
-	private var bool pActivated
-	private var Array pWindowListeners
-	private var WindowModal pBlockingWindow
-	private var bool pProtectDecoration
-	private var Color pModalDarkenColor
-	private var bool pProtectModalDarkenColor
+	var Decoration pDecoration
+	var WindowState pWindowState
+	var Widget pActiveWidget
+	var bool pCanReorder
+	var bool pCanMove
+	var bool pCanResize
+	var bool pCanActivate
+	var bool pCanClose
+	var bool pCanMaximize
+	var bool pCanMinimize
+	var bool pAlwaysOnTop
+	var bool pActivated
+	var Array pWindowListeners
+	var WindowModal pBlockingWindow
+	var bool pProtectDecoration
+	var Color pModalDarkenColor
+	var bool pProtectModalDarkenColor
 	
 	
 	
 	/** \brief Create window. */
-	public func new() this( 0, 0, 100, 100 )
+	func new() this(0, 0, 100, 100)
 	end
 	
 	/** \brief Create window with the given geometry. */
-	public func new( int x, int y, int width, int height ) \
-	this( Point.new( x, y ), Point.new( width, height ) )
+	func new(int x, int y, int width, int height) \
+	this(Point.new(x, y), Point.new(width, height))
 	end
 	
 	/** \brief Create window with the given geometry. */
-	public func new( Point position, Point size ) super( position, size )
-		this.pWindowState = WindowState.normal
-		this.pCanReorder = true
-		this.pCanMove = true
-		this.pCanResize = true
-		this.pCanActivate = true
-		this.pCanClose = true
-		this.pCanMaximize = true
-		this.pCanMinimize = true
+	func new(Point position, Point size) super(position, size)
+		pWindowState = WindowState.normal
+		pCanReorder = true
+		pCanMove = true
+		pCanResize = true
+		pCanActivate = true
+		pCanClose = true
+		pCanMaximize = true
+		pCanMinimize = true
 		pAlwaysOnTop = false
-		this.pActivated = false
-		this.pModalDarkenColor = Color.new( 0.65, 0.65, 0.65 )
+		pActivated = false
+		pModalDarkenColor = Color.new(0.65, 0.65, 0.65)
 		
-		this.pProtectDecoration = false
-		this.pProtectModalDarkenColor = false
+		pProtectDecoration = false
+		pProtectModalDarkenColor = false
 		
-		this.setDesignerSelector( "Window" )
-		this.pWindowListeners = Array.new()
-		this.setCanFocus( false )
+		setDesignerSelector("Window")
+		pWindowListeners = Array.new()
+		setCanFocus(false)
 	end
 	
 	
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		this.pWindowListeners = null
-		this.pBlockingWindow = null
-		this.pActiveWidget = null
-		this.pDecoration = null
+	func void dispose()
+		pWindowListeners = null
+		pBlockingWindow = null
+		pActiveWidget = null
+		pDecoration = null
 		
 		super.dispose()
 	end
@@ -122,20 +122,20 @@ class Window extends Container
 	 * \brief Close window.
 	 * \details Removes window from parent and disposes of the window.
 	 */
-	public func void close()
-		if this.pBlockingWindow != null
-			this.pBlockingWindow.close()
+	func void close()
+		if pBlockingWindow != null
+			pBlockingWindow.close()
 		end
 		
-		this.onClosing( WindowEvent.new( this, WindowEvent.idWindowClosing ) )
+		onClosing(WindowEvent.new(this, WindowEvent.idWindowClosing))
 		
-		this.safeDispose()
+		safeDispose()
 	end
 	
 	
 	
 	/** \brief Set window title. */
-	public func void setTitle(String title)
+	func void setTitle(String title)
 		var bool titleChanged = not title.equals(getTitle())
 		
 		super.setTitle(title)
@@ -146,33 +146,33 @@ class Window extends Container
 	end
 	
 	/** \brief Decoration of window. */
-	public func Decoration getDecoration()
-		return this.pDecoration
+	func Decoration getDecoration()
+		return pDecoration
 	end
 	
 	/**
 	 * \brief Set decoration of window.
 	 * \details If null create from gui theme.
 	 */
-	public func void setDecoration( Decoration decoration )
-		if decoration == this.pDecoration
+	func void setDecoration(Decoration decoration)
+		if decoration == pDecoration
 			return
 		end
 		
-		if this.pDecoration != null
-			this.getCanvasWidget().removeCanvas( this.pDecoration.getCanvas() )
-			this.pDecoration.setWindow( null )
+		if pDecoration != null
+			getCanvasWidget().removeCanvas(pDecoration.getCanvas())
+			pDecoration.setWindow(null)
 		end
 		
-		this.pDecoration = decoration
+		pDecoration = decoration
 		
 		if decoration != null
-			decoration.setWindow( this )
-			decoration.getCanvas().setOrder( 3.0 )
-			this.getCanvasWidget().addCanvas( decoration.getCanvas() )
+			decoration.setWindow(this)
+			decoration.getCanvas().setOrder(3.0)
+			getCanvasWidget().addCanvas(decoration.getCanvas())
 		end
 		
-		this.updateCanvasGeometry()
+		updateCanvasGeometry()
 	end
 	
 	/**
@@ -180,43 +180,43 @@ class Window extends Container
 	 * 
 	 * If no decoration is set an empty border size is returned.
 	 */
-	public func BorderSize getDecorationSize()
-		if this.pDecoration == null
+	func BorderSize getDecorationSize()
+		if pDecoration == null
 			return BorderSize.new()
 		end
-		return this.pDecoration.getBorderSize()
+		return pDecoration.getBorderSize()
 	end
 	
 	/** \brief Window state. */
-	public func WindowState getWindowState()
-		return this.pWindowState
+	func WindowState getWindowState()
+		return pWindowState
 	end
 	
 	/** \brief Set window state. */
-	public func void setWindowState( WindowState state )
-		if this.pWindowState == state
+	func void setWindowState(WindowState state)
+		if pWindowState == state
 			return
 		end
 		
-		this.pWindowState = state
-		if this.pDecoration != null
-			this.pDecoration.onWindowParametersChanged()
+		pWindowState = state
+		if pDecoration != null
+			pDecoration.onWindowParametersChanged()
 		end
 		
-		var Container parent = this.getParent()
+		var Container parent = getParent()
 		if parent != null and parent castable Desktop
-			( parent cast Desktop ).windowStateChanged( this )
+			(parent cast Desktop).windowStateChanged(this)
 		end
 		
 		select state
 		case WindowState.normal
-			this.onRestored( WindowEvent.new( this, WindowEvent.idWindowRestored ) )
+			onRestored(WindowEvent.new(this, WindowEvent.idWindowRestored))
 			
 		case WindowState.minimized
-			this.onMinimized( WindowEvent.new( this, WindowEvent.idWindowMinimized ) )
+			onMinimized(WindowEvent.new(this, WindowEvent.idWindowMinimized))
 			
 		case WindowState.maximized
-			this.onMaximized( WindowEvent.new( this, WindowEvent.idWindowMaximized ) )
+			onMaximized(WindowEvent.new(this, WindowEvent.idWindowMaximized))
 		end
 		
 		// onStateChanged() ???
@@ -225,132 +225,132 @@ class Window extends Container
 	
 	
 	/** \brief Protect custom set decoration. */
-	public func bool getProtectDecoration()
-		return this.pProtectDecoration
+	func bool getProtectDecoration()
+		return pProtectDecoration
 	end
 	
 	/** \brief Set protect custom set decoration. */
-	public func void setProtectDecoration( bool protect )
-		this.pProtectDecoration = protect
+	func void setProtectDecoration(bool protect)
+		pProtectDecoration = protect
 	end
 	
 	/** \brief Darkening color while modal window is in use. */
-	public func Color getModalDarkenColor()
-		return this.pModalDarkenColor
+	func Color getModalDarkenColor()
+		return pModalDarkenColor
 	end
 	
 	/** \brief Set darkening color while modal window is in use. */
-	public func void setModalDarkenColor( Color color )
-		this.pModalDarkenColor = color
+	func void setModalDarkenColor(Color color)
+		pModalDarkenColor = color
 	end
 	
 	/** \brief Protect custom set modal window darkening color. */
-	public func bool getProtectModalDarkenColor()
-		return this.pProtectModalDarkenColor
+	func bool getProtectModalDarkenColor()
+		return pProtectModalDarkenColor
 	end
 	
 	/** \brief Set protect custom set modal window darkening color. */
-	public func void setProtectModalDarkenColor( bool protect )
-		this.pProtectModalDarkenColor = protect
+	func void setProtectModalDarkenColor(bool protect)
+		pProtectModalDarkenColor = protect
 	end
 	
 	
 	
 	/** \brief Window can be reordered. */
-	public func bool getCanReorder()
-		return this.pCanReorder
+	func bool getCanReorder()
+		return pCanReorder
 	end
 	
 	/** \brief Set if window can be reordered. */
-	public func void setCanReorder( bool canReorder )
-		this.pCanReorder = canReorder
+	func void setCanReorder(bool canReorder)
+		pCanReorder = canReorder
 	end
 	
 	/** \brief Window can be moved. */
-	public func bool getCanMove()
-		return this.pCanMove
+	func bool getCanMove()
+		return pCanMove
 	end
 	
 	/** \brief Set if window can be moved. */
-	public func void setCanMove( bool canMove )
-		this.pCanMove = canMove
+	func void setCanMove(bool canMove)
+		pCanMove = canMove
 		// TODO state change on decoration
 	end
 	
 	/** \brief Window can be resized. */
-	public func bool getCanResize()
-		return this.pCanResize
+	func bool getCanResize()
+		return pCanResize
 	end
 	
 	/** \brief Set window can be resized. */
-	public func void setCanResize( bool canResize )
-		this.pCanResize = canResize
+	func void setCanResize(bool canResize)
+		pCanResize = canResize
 		// TODO state change on decoration
 	end
 	
 	/** \brief Window can be activated. */
-	public func bool getCanActivate()
-		return this.pCanActivate
+	func bool getCanActivate()
+		return pCanActivate
 	end
 	
 	/** \brief Set if window can be activated. */
-	public func void setCanActivate( bool canActivate )
-		this.pCanActivate = canActivate
+	func void setCanActivate(bool canActivate)
+		pCanActivate = canActivate
 	end
 	
 	/** \brief Window can be closed. */
-	public func bool getCanClose()
-		return this.pCanClose
+	func bool getCanClose()
+		return pCanClose
 	end
 	
 	/** \brief Set if window can be closed. */
-	public func void setCanClose( bool canClose )
-		if canClose == this.pCanClose
+	func void setCanClose(bool canClose)
+		if canClose == pCanClose
 			return
 		end
 		
-		this.pCanClose = canClose
+		pCanClose = canClose
 		
-		if this.pDecoration != null
-			this.pDecoration.onWindowParametersChanged()
+		if pDecoration != null
+			pDecoration.onWindowParametersChanged()
 		end
 		// onStateChanged() ???
 	end
 	
 	/** \brief Window can be maximized. */
-	public func bool getCanMaximize()
-		return this.pCanMaximize
+	func bool getCanMaximize()
+		return pCanMaximize
 	end
 	
 	/** \brief Set if window can be maximized. */
-	public func void setCanMaximize( bool canMaximize )
-		if canMaximize == this.pCanMaximize
+	func void setCanMaximize(bool canMaximize)
+		if canMaximize == pCanMaximize
 			return
 		end
 		
-		this.pCanMaximize = canMaximize
+		pCanMaximize = canMaximize
 		
-		if this.pDecoration != null
-			this.pDecoration.onWindowParametersChanged()
+		if pDecoration != null
+			pDecoration.onWindowParametersChanged()
 		end
 		// onStateChanged() ???
 	end
 	
 	/** \brief Window can be minimized. */
-	public func bool getCanMinimize()
-		return this.pCanMinimize
+	func bool getCanMinimize()
+		return pCanMinimize
 	end
 	
 	/** \brief Set if window can be minimized. */
-	public func void setCanMinimize( bool canMinimize )
-		if canMinimize == this.pCanMinimize
+	func void setCanMinimize(bool canMinimize)
+		if canMinimize == pCanMinimize
 			return
 		end
 		
-		this.pCanMinimize = canMinimize
+		pCanMinimize = canMinimize
 		
-		if this.pDecoration != null
-			this.pDecoration.onWindowParametersChanged()
+		if pDecoration != null
+			pDecoration.onWindowParametersChanged()
 		end
 		// onStateChanged() ???
 	end
@@ -359,7 +359,7 @@ class Window extends Container
 	 * \brief Window is always on top of all others.
 	 * \version 1.15
 	 */
-	public func bool getAlwaysOnTop()
+	func bool getAlwaysOnTop()
 		return pAlwaysOnTop
 	end
 	
@@ -367,36 +367,36 @@ class Window extends Container
 	 * \brief Set if window is always on top of all others.
 	 * \version 1.15
 	 */
-	public func void setAlwaysOnTop(bool alwaysOnTop)
+	func void setAlwaysOnTop(bool alwaysOnTop)
 		pAlwaysOnTop = alwaysOnTop
 	end
 	
 	
 	
 	/** \brief Window is activated. */
-	public func bool getActivated()
-		return this.pActivated
+	func bool getActivated()
+		return pActivated
 	end
 	
 	/** \brief Set if window is activated. */
-	public func void setActivated( bool activated )
-		if this.pActivated == activated
+	func void setActivated(bool activated)
+		if pActivated == activated
 			return
 		end
 		
-		this.pActivated = activated
+		pActivated = activated
 		
-		this.notifyBorderParametersChanged()
+		notifyBorderParametersChanged()
 		
-		if this.pDecoration != null
-			this.pDecoration.onWindowParametersChanged()
+		if pDecoration != null
+			pDecoration.onWindowParametersChanged()
 		end
 		
 		if activated
-			this.onActivated( WindowEvent.new( this, WindowEvent.idWindowActivated ) )
+			onActivated(WindowEvent.new(this, WindowEvent.idWindowActivated))
 			
 		else
-			this.onDeactivated( WindowEvent.new( this, WindowEvent.idWindowDeactivated ) )
+			onDeactivated(WindowEvent.new(this, WindowEvent.idWindowDeactivated))
 		end
 	end
 	
@@ -410,13 +410,13 @@ class Window extends Container
 	 *          - First focusable widget otherwise
 	 *          - Window itself
 	 */
-	public func void grabFocus()
-		if not this.pCanActivate or not this.getEnabled() or not this.getVisible()
+	func void grabFocus()
+		if not pCanActivate or not getEnabled() or not getVisible()
 			return
 		end
 		
 		// focus active widget or first focusable widget
-		var Widget widget = this.getActiveWidget()
+		var Widget widget = getActiveWidget()
 		if widget != null
 			widget.grabFocus()
 			return
@@ -425,31 +425,31 @@ class Window extends Container
 		// otherwise focus the window itself unless already focused. not done using
 		// super.grabFocus() since this checks if the window can focus. in this case
 		// though the window always grabs the focus ignoring the can-focus parameter
-		if this.getHasFocus()
+		if getHasFocus()
 			return
 		end
 		
-		this.requestGrabFocus( this )
+		requestGrabFocus(this)
 	end
 	
 	/** \brief Request to focus the specified widget. */
-	public func void requestGrabFocus( Widget widget )
-		super.requestGrabFocus( widget )
+	func void requestGrabFocus(Widget widget)
+		super.requestGrabFocus(widget)
 		
-		if widget == this or not this.pCanActivate
+		if widget == this or not pCanActivate
 			return
 		end
 		
-		if this.pActiveWidget == null
-			this.pActiveWidget = widget
+		if pActiveWidget == null
+			pActiveWidget = widget
 			
 		elif widget.getHasFocus()
-			this.pActiveWidget = widget
+			pActiveWidget = widget
 		end
 	end
 	
 	/** \brief Active widget or null if there is none. */
-	public func Widget getActiveWidget()
+	func Widget getActiveWidget()
 		if pActiveWidget != null
 			if pActiveWidget.getParent() == null /* removed or disposed while active */ \
 			or not pActiveWidget.getCanFocus() \
@@ -459,15 +459,15 @@ class Window extends Container
 			end
 		end
 		
-		if this.pActiveWidget == null
-			this.pActiveWidget = this.findFocusableWidget()
+		if pActiveWidget == null
+			pActiveWidget = findFocusableWidget()
 			
-			if this.pActiveWidget == this
-				this.pActiveWidget = null // we do not look for ourself or we loop
+			if pActiveWidget == this
+				pActiveWidget = null // we do not look for ourself or we loop
 			end
 		end
 		
-		return this.pActiveWidget
+		return pActiveWidget
 	end
 	
 	/**
@@ -475,13 +475,13 @@ class Window extends Container
 	 * 
 	 * Used to set the initial active widget for a window.
 	 */
-	public func void setActiveWidget( Widget widget )
-		this.pActiveWidget = widget
+	func void setActiveWidget(Widget widget)
+		pActiveWidget = widget
 	end
 	
 	/** Tries to aquire the focus for the active widget. */
-	public func void activeWidgetGrabFocus()
-		var Widget widget = this.getActiveWidget()
+	func void activeWidgetGrabFocus()
+		var Widget widget = getActiveWidget()
 		if widget != null
 			widget.grabFocus()
 		end
@@ -492,28 +492,28 @@ class Window extends Container
 	 * \details Similar to Container.nextFocusWidgetAfter but wraps around if no suitable
 	 *          Widget is found until the last widget in the window.
 	 */
-	public func Widget nextFocusWidgetAfter( Widget widget )
-		if not this.getEnabled() or not this.getVisible()
+	func Widget nextFocusWidgetAfter(Widget widget)
+		if not getEnabled() or not getVisible()
 			return null
 		end
 		
-		var int index = this.indexOfWidget( widget )
+		var int index = indexOfWidget(widget)
 		if index == -1
 			throw EInvalidParam.new()
 		end
 		
 		// find next focusable widget in the list of widgets wrapping around if required
-		var int i, count = this.getWidgetCount()
+		var int i, count = getWidgetCount()
 		var Widget testWidget
 		
 		for i = index + 1 to count
-			testWidget = this.getWidget( i ).findFocusableWidget()
+			testWidget = getWidget(i).findFocusableWidget()
 			if testWidget != null
 				return testWidget
 			end
 		end
 		
-		return this.findFocusableWidget()
+		return findFocusableWidget()
 	end
 	
 	/**
@@ -521,12 +521,12 @@ class Window extends Container
 	 * \details Similar to Container.prevFocusWidgetAfter but wraps around if no suitable
 	 *          Widget is found until the first widget in the window.
 	 */
-	public func Widget prevFocusWidgetAfter( Widget widget )
-		if not this.getEnabled() or not this.getVisible()
+	func Widget prevFocusWidgetAfter(Widget widget)
+		if not getEnabled() or not getVisible()
 			return null
 		end
 		
-		var int index = this.indexOfWidget( widget )
+		var int index = indexOfWidget(widget)
 		if index == -1
 			throw EInvalidParam.new()
 		end
@@ -536,51 +536,51 @@ class Window extends Container
 		var int i
 		
 		for i = index - 1 downto 0
-			testWidget = this.getWidget( i ).findLastFocusableWidget()
+			testWidget = getWidget(i).findLastFocusableWidget()
 			if testWidget != null
 				return testWidget
 			end
 		end
 		
-		return this.findLastFocusableWidget()
+		return findLastFocusableWidget()
 	end
 	
 	
 	
 	/** \brief Modal window blocking this window or \em null. */
-	public func WindowModal getBlockingWindow()
-		return this.pBlockingWindow
+	func WindowModal getBlockingWindow()
+		return pBlockingWindow
 	end
 	
 	/**
 	 * \brief Set modal window blocking this window or \em null.
 	 * \details This call is for WindowModal only. Do not call directly.
 	 */
-	public func void setBlockingWindow( WindowModal window )
-		if window == this.pBlockingWindow
+	func void setBlockingWindow(WindowModal window)
+		if window == pBlockingWindow
 			return
 		end
 		
-		if this.pBlockingWindow != null
-			this.setEnabled( true )
-			this.setColorTransformation( ColorMatrix.new() )
+		if pBlockingWindow != null
+			setEnabled(true)
+			setColorTransformation(ColorMatrix.new())
 		end
 		
-		this.pBlockingWindow = window
+		pBlockingWindow = window
 		
 		if window != null
-			this.setEnabled( false )
-			this.setColorTransformation( ColorMatrix.newScaling( this.pModalDarkenColor ) )
+			setEnabled(false)
+			setColorTransformation(ColorMatrix.newScaling(pModalDarkenColor))
 		end
 	end
 	
 	/** \brief Get top most blocking window or \em null. */
-	public func Window getTopBlockingWindow()
-		if this.pBlockingWindow == null
+	func Window getTopBlockingWindow()
+		if pBlockingWindow == null
 			return null
 		end
 		
-		var Window window = this.pBlockingWindow
+		var Window window = pBlockingWindow
 		while window.pBlockingWindow != null
 			window = window.pBlockingWindow
 		end
@@ -590,10 +590,10 @@ class Window extends Container
 	
 	
 	/** \brief Move window to the center of the parent desktop. */
-	public func void centerWindow()
-		var Container parent = this.getParent()
+	func void centerWindow()
+		var Container parent = getParent()
 		if parent != null
-			this.setPosition( ( parent.getSize() - this.getSize() ) / 2 )
+			setPosition((parent.getSize() - getSize()) / 2)
 		end
 	end
 	
@@ -615,23 +615,23 @@ class Window extends Container
 	 *       This can be done before or after the call since fitToContent()
 	 *       ignore the set can-resize value.
 	 */
-	public func void fitToContent()
-		this.setSize( this.getLayout().getMinimumSize( this ) )
+	func void fitToContent()
+		setSize(getLayout().getMinimumSize(this))
 	end
 	
 	
 	
 	/** \brief Move window to the top. */
-	public func void moveToTop()
-		var Container parent = this.getParent()
+	func void moveToTop()
+		var Container parent = getParent()
 		var int position = parent.getWidgetCount() - 1
 		
-		if parent.indexOfWidget( this ) < position
-			parent.moveWidget( this, position )
+		if parent.indexOfWidget(this) < position
+			parent.moveWidget(this, position)
 		end
 		
-		if this.pBlockingWindow != null
-			this.pBlockingWindow.moveAboveBlockWindow()
+		if pBlockingWindow != null
+			pBlockingWindow.moveAboveBlockWindow()
 		end
 		
 		if not pAlwaysOnTop
@@ -643,66 +643,66 @@ class Window extends Container
 	end
 	
 	/** \brief Move window to the bottom. */
-	public func void moveToBottom()
-		var Container parent = this.getParent()
+	func void moveToBottom()
+		var Container parent = getParent()
 		
-		if parent.indexOfWidget( this ) > 0
-			parent.moveWidget( this, 0 )
+		if parent.indexOfWidget(this) > 0
+			parent.moveWidget(this, 0)
 		end
 		
-		if this.pBlockingWindow != null
-			this.pBlockingWindow.moveAboveBlockWindow()
+		if pBlockingWindow != null
+			pBlockingWindow.moveAboveBlockWindow()
 		end
 	end
 	
 	/** \brief Move window right above the given window. */
-	public func void moveAbove( Window window )
+	func void moveAbove(Window window)
 		if window == this
 			throw EInvalidParam.new()
 		end
 		
-		var Container parent = this.getParent()
-		var int myIndex = parent.indexOfWidget( this )
-		var int otherIndex = parent.indexOfWidget( window )
+		var Container parent = getParent()
+		var int myIndex = parent.indexOfWidget(this)
+		var int otherIndex = parent.indexOfWidget(window)
 		
 		if myIndex < otherIndex
-			parent.moveWidget( this, otherIndex )
+			parent.moveWidget(this, otherIndex)
 			
 		elif myIndex > otherIndex + 1
-			parent.moveWidget( this, otherIndex + 1 )
+			parent.moveWidget(this, otherIndex + 1)
 		end
 		
-		if this.pBlockingWindow != null
-			this.pBlockingWindow.moveAboveBlockWindow()
+		if pBlockingWindow != null
+			pBlockingWindow.moveAboveBlockWindow()
 		end
 	end
 	
 	/** \brief Move window right below the given window. */
-	public func void moveBelow( Window window )
+	func void moveBelow(Window window)
 		if window == this
 			throw EInvalidParam.new()
 		end
 		
-		var Container parent = this.getParent()
-		var int myIndex = parent.indexOfWidget( this )
-		var int otherIndex = parent.indexOfWidget( window )
+		var Container parent = getParent()
+		var int myIndex = parent.indexOfWidget(this)
+		var int otherIndex = parent.indexOfWidget(window)
 		
 		if myIndex < otherIndex - 1
-			parent.moveWidget( this, otherIndex - 1 )
+			parent.moveWidget(this, otherIndex - 1)
 			
 		elif myIndex > otherIndex
-			parent.moveWidget( this, otherIndex )
+			parent.moveWidget(this, otherIndex)
 		end
 		
-		if this.pBlockingWindow != null
-			this.pBlockingWindow.moveAboveBlockWindow()
+		if pBlockingWindow != null
+			pBlockingWindow.moveAboveBlockWindow()
 		end
 	end
 	
 	
 	
 	/** \brief Widget position in window coordinates. */
-	public func Point getWindowPosition()
+	func Point getWindowPosition()
 		return Point.new()
 	end
 	
@@ -713,23 +713,23 @@ class Window extends Container
 	 * \details The default implementation forwards the request to the parent with
 	 *          the Window or a subclass thereof intercepting.
 	 */
-	public func Window getWindow()
+	func Window getWindow()
 		return this
 	end
 	
 	
 	
 	/** \brief Add window listener. */
-	public func void addWindowListener( WindowListener listener )
+	func void addWindowListener(WindowListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		this.pWindowListeners.add( listener )
+		pWindowListeners.add(listener)
 	end
 	
 	/** \brief Remove window listener. */
-	public func void removeWindowListener( WindowListener listener )
-		this.pWindowListeners.remove( listener )
+	func void removeWindowListener(WindowListener listener)
+		pWindowListeners.remove(listener)
 	end
 	
 	
@@ -739,77 +739,77 @@ class Window extends Container
 	 * \details If there are no listeners the event is send to the parent if
 	 *          \em sendToParent is \em true.
 	 */
-	public func void sendEventToListeners( Event event, bool sendToParent )
+	func void sendEventToListeners(Event event, bool sendToParent)
 		var int identifier = event.getIdentifier()
 		
-		if WindowEvent.isWindowEvent( identifier )
-			if this.pWindowListeners != null and this.pWindowListeners.getCount() > 0
+		if WindowEvent.isWindowEvent(identifier)
+			if pWindowListeners != null and pWindowListeners.getCount() > 0
 				select identifier
 				case WindowEvent.idWindowActivated
-					this.pWindowListeners.forEach( block WindowListener each
-						each.onWindowActivated( event cast WindowEvent )
-					end )
+					pWindowListeners.forEach(block WindowListener each
+						each.onWindowActivated(event cast WindowEvent)
+					end)
 					
 				case WindowEvent.idWindowDeactivated
-					this.pWindowListeners.forEach( block WindowListener each
-						each.onWindowDeactivated( event cast WindowEvent )
-					end )
+					pWindowListeners.forEach(block WindowListener each
+						each.onWindowDeactivated(event cast WindowEvent)
+					end)
 					
 				case WindowEvent.idWindowClosing
-					this.pWindowListeners.forEach( block WindowListener each
-						each.onWindowClosing( event cast WindowEvent )
-					end )
+					pWindowListeners.forEach(block WindowListener each
+						each.onWindowClosing(event cast WindowEvent)
+					end)
 					
 				case WindowEvent.idWindowRestored
-					this.pWindowListeners.forEach( block WindowListener each
-						each.onWindowRestored( event cast WindowEvent )
-					end )
+					pWindowListeners.forEach(block WindowListener each
+						each.onWindowRestored(event cast WindowEvent)
+					end)
 					
 				case WindowEvent.idWindowMinimized
-					this.pWindowListeners.forEach( block WindowListener each
-						each.onWindowMinimized( event cast WindowEvent )
-					end )
+					pWindowListeners.forEach(block WindowListener each
+						each.onWindowMinimized(event cast WindowEvent)
+					end)
 					
 				case WindowEvent.idWindowMaximized
-					this.pWindowListeners.forEach( block WindowListener each
-						each.onWindowMaximized( event cast WindowEvent )
-					end )
+					pWindowListeners.forEach(block WindowListener each
+						each.onWindowMaximized(event cast WindowEvent)
+					end)
 				end
 				
 			elif sendToParent
-				var Container parent = this.getParent()
+				var Container parent = getParent()
 				if parent != null
-					parent.sendEvent( event )
+					parent.sendEvent(event)
 				end
 			end
 			
 		else
-			super.sendEventToListeners( event, sendToParent )
+			super.sendEventToListeners(event, sendToParent)
 		end
 	end
 	
 	
 	
 	/** \brief Widget has been shown. */
-	public func void onShown( WidgetEvent event )
-		super.onShown( event )
+	func void onShown(WidgetEvent event)
+		super.onShown(event)
 		
-		if not this.pActivated and this.pCanActivate and this.getEnabled()
-			this.activeWidgetGrabFocus()
+		if not pActivated and pCanActivate and getEnabled()
+			activeWidgetGrabFocus()
 		end
 	end
 	
 	/** \brief State changed. */
-	public func void onStateChanged( StateChangeEvent event )
-		super.onStateChanged( event )
+	func void onStateChanged(StateChangeEvent event)
+		super.onStateChanged(event)
 		
 		// if enabled changed
-		if not this.pActivated and this.pCanActivate and this.getVisible() and this.getEnabled()
-			this.activeWidgetGrabFocus()
+		if not pActivated and pCanActivate and getVisible() and getEnabled()
+			activeWidgetGrabFocus()
 		end
 		
-		if this.pDecoration != null
-			this.pDecoration.onWindowParametersChanged()
+		if pDecoration != null
+			pDecoration.onWindowParametersChanged()
 		end
 	end
 	
@@ -817,89 +817,98 @@ class Window extends Container
 	 * \brief Window has been activated.
 	 * \details Sends event to listeners.
 	 */
-	public func void onActivated( WindowEvent event )
-		this.sendEventToListeners( event, false )
+	func void onActivated(WindowEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief Window has been deactivated.
 	 * \details Sends event to listeners.
 	 */
-	public func void onDeactivated( WindowEvent event )
-		this.sendEventToListeners( event, false )
+	func void onDeactivated(WindowEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief Window is closing.
 	 * \details Sends event to listeners.
 	 */
-	public func void onClosing( WindowEvent event )
-		this.sendEventToListeners( event, false )
+	func void onClosing(WindowEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief Window state switched to normal.
 	 * \details Sends event to listeners.
 	 */
-	public func void onRestored( WindowEvent event )
-		this.sendEventToListeners( event, false )
+	func void onRestored(WindowEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief Window has been minimized.
 	 * \details Sends event to listeners.
 	 */
-	public func void onMinimized( WindowEvent event )
-		this.sendEventToListeners( event, false )
+	func void onMinimized(WindowEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief Window has been maximized.
 	 * \details Sends event to listeners.
 	 */
-	public func void onMaximized( WindowEvent event )
-		this.sendEventToListeners( event, false )
+	func void onMaximized(WindowEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	
 	
 	/** \brief Designer selector changed. */
-	public func void onDesignerSelectorChanged()
+	func void onDesignerSelectorChanged()
 		super.onDesignerSelectorChanged()
-		this.setDecorationFromDesigner()
+		setDecorationFromDesigner()
 	end
 	
 	/** \brief Gui theme changed. */
-	public func void onGuiThemeChanged()
+	func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
-		this.setDecorationFromDesigner()
+		setDecorationFromDesigner()
 	end
 	
 	/** \brief Designer changed. */
-	public func void onDesignerChanged()
+	func void onDesignerChanged()
 		super.onDesignerChanged()
-		this.setDecorationFromDesigner()
+		setDecorationFromDesigner()
 	end
 	
 	/** \brief Desktop size changed. */
-	public func void onDesktopResized()
+	func void onDesktopResized()
+	end
+	
+	/**
+	 * \brief Translation manager or active language pack changed.
+	 * \version 1.20
+	 */
+	func void onTranslationChanged()
+		super.onTranslationChanged()
+		setDecorationFromDesigner()
 	end
 	
 	
 	
 	/** \brief Set decoration from designer if not protected. */
 	protected func void setDecorationFromDesigner()
-		if this.pProtectDecoration
+		if pProtectDecoration
 			return
 		end
 		
-		var WindowDesigner designer = this.getDesigner() cast WindowDesigner
+		var WindowDesigner designer = getDesigner() cast WindowDesigner
 		
 		if designer != null
-			this.setDecoration( designer.createDecoration() )
+			setDecoration(designer.createDecoration())
 			
 		else
-			this.setDecoration( null )
+			setDecoration(null)
 		end
 	end
 	
@@ -917,9 +926,9 @@ class Window extends Container
 	 *          been processed.
 	 */
 	protected func void updateCanvasGeometry()
-		var Border border = this.getBorder()
-		var Point position = this.getPosition()
-		var Point size = this.getSize()
+		var Border border = getBorder()
+		var Point position = getPosition()
+		var Point size = getSize()
 		var BorderSize borderSize = BorderSize.new()
 		
 		if border != null
@@ -927,32 +936,32 @@ class Window extends Container
 		end
 		
 		var BorderSize decorationSize
-		if this.pDecoration != null
-			decorationSize = this.pDecoration.getBorderSize()
+		if pDecoration != null
+			decorationSize = pDecoration.getBorderSize()
 			
 		else
 			decorationSize = BorderSize.new()
 		end
 		
-		var Point decorationOffset = Point.new( decorationSize.getLeft(), decorationSize.getTop() )
-		var Point offset = Point.new( borderSize.getLeft(), borderSize.getTop() ) + decorationOffset
+		var Point decorationOffset = Point.new(decorationSize.getLeft(), decorationSize.getTop())
+		var Point offset = Point.new(borderSize.getLeft(), borderSize.getTop()) + decorationOffset
 		
-		this.getCanvasWidget().setPosition( position - offset )
-		this.getCanvasWidget().setSize( size + borderSize.getSize() + decorationSize.getSize() )
+		getCanvasWidget().setPosition(position - offset)
+		getCanvasWidget().setSize(size + borderSize.getSize() + decorationSize.getSize())
 		
-		this.getCanvasBackground().setPosition( offset )
-		this.getCanvasBackground().setSize( size )
+		getCanvasBackground().setPosition(offset)
+		getCanvasBackground().setSize(size)
 		
-		this.getCanvasContent().setPosition( offset )
-		this.getCanvasContent().setSize( size )
+		getCanvasContent().setPosition(offset)
+		getCanvasContent().setSize(size)
 		
 		if border != null
-			border.getCanvas().setPosition( decorationOffset )
-			border.resizeCanvas( this.getSize() )
+			border.getCanvas().setPosition(decorationOffset)
+			border.resizeCanvas(getSize())
 		end
 		
-		if this.pDecoration != null
-			this.pDecoration.resizeCanvas()
+		if pDecoration != null
+			pDecoration.resizeCanvas()
 		end
 	end
 	
@@ -966,8 +975,8 @@ class Window extends Container
 	 * grabs the focus. This is suitable configuration for windows acting as a background
 	 * with other interactive windows placed ontop of it.
 	 */
-	public func void becomeBackgroundWindow()
-		this.setCanActivate( false )
-		this.setCanFocus( false )
+	func void becomeBackgroundWindow()
+		setCanActivate(false)
+		setCanFocus(false)
 	end
 end

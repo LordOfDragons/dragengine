@@ -28,18 +28,17 @@ namespace Dragengine.Utils
  * For internal use.
  */
 class EngineTranslations
-	private static var TranslationManager pTranslationManager = null
+	static var TranslationManager pTranslationManager = null
 	
-	private func new()
+	func new()
 	end
 	
-	public static func TranslationManager get()
+	static func TranslationManager get()
 		if pTranslationManager == null
 			pTranslationManager = TranslationManager.new()
 			pTranslationManager.addFromDirectory("/shareddata/languages", true)
 			pTranslationManager.setFallbackWithId("en")
-			pTranslationManager.setActiveWithIdIfPresent("en")
-			// TODO use operating system languag to activate
+			pTranslationManager.setActiveWithIdIfPresent(Engine.getUserLocaleLanguage())
 		end
 		return pTranslationManager
 	end

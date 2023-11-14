@@ -41,7 +41,7 @@ pin Dragengine.Utils
  */
 class IMMTextDisplay extends Panel
 	/** \brief States. */
-	public enum State
+	enum State
 		/** \brief Text hidden. */
 		hidden
 		
@@ -57,19 +57,18 @@ class IMMTextDisplay extends Panel
 	
 	
 	
-	private var InteractiveMainMenu pMainMenu
-	private var TranslationManager pTranslationManager
-	private var String pText
-	private var String pRealText
-	private var Label pLabel
-	private var float pFadeTime
-	private var float pElapsedTime
-	private var State pState
+	var InteractiveMainMenu pMainMenu
+	var String pText
+	var String pRealText
+	var Label pLabel
+	var float pFadeTime
+	var float pElapsedTime
+	var State pState
 	
 	
 	
 	/** \brief Create text display for interactive main menu. */
-	public func new(InteractiveMainMenu mainMenu)
+	func new(InteractiveMainMenu mainMenu)
 		if mainMenu == null
 			throw EInvalidParam.new()
 		end
@@ -95,15 +94,10 @@ class IMMTextDisplay extends Panel
 		
 		//setVisible(false)
 		setTransparency(0.0)
-		
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			pTranslationManager = app.getTranslationManager()
-		end
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		super.dispose()
 		pLabel = null
 	end
@@ -111,17 +105,17 @@ class IMMTextDisplay extends Panel
 	
 	
 	/** \brief Interactive main menu. */
-	public func InteractiveMainMenu getMainMenu()
+	func InteractiveMainMenu getMainMenu()
 		return pMainMenu
 	end
 	
 	/** \brief Text to display. */
-	public func String getText()
+	func String getText()
 		return pText
 	end
 	
 	/** \brief Set text to display. */
-	public func void setText(String text)
+	func void setText(String text)
 		if text.equals(pText)
 			return
 		end
@@ -136,22 +130,22 @@ class IMMTextDisplay extends Panel
 	end
 	
 	/** \brief Clear text to display. */
-	public func void clearText()
+	func void clearText()
 		setText("")
 	end
 	
 	/** \brief Fade time. */
-	public func float getFadeTime()
+	func float getFadeTime()
 		return pFadeTime
 	end
 	
 	/** \brief Set fade time. */
-	public func void setFadeTime(float time)
+	func void setFadeTime(float time)
 		pFadeTime = DEMath.max(time, 0.0)
 	end
 	
 	/** \brief Elapsed fade time. */
-	public func float getElapsedTime()
+	func float getElapsedTime()
 		return pElapsedTime
 	end
 	
@@ -161,7 +155,7 @@ class IMMTextDisplay extends Panel
 	end
 	
 	/** \brief State. */
-	public func State getState()
+	func State getState()
 		return pState
 	end
 	
@@ -171,33 +165,17 @@ class IMMTextDisplay extends Panel
 	end
 	
 	/** \brief Reset. */
-	public func void reset()
+	func void reset()
 		pText = ""
 		pRealText = ""
 		pElapsedTime = 0
 		pState = State.hidden
 	end
 	
-	/**
-	 * \brief Translation manager or null.
-	 * \version 1.16
-	 */
-	public func TranslationManager getTranslationManager()
-		return pTranslationManager
-	end
-	
-	/**
-	 * \brief Set translation manager or null.
-	 * \version 1.16
-	 */
-	public func void setTranslationManager(TranslationManager translationManager)
-		pTranslationManager = translationManager
-	end
-	
 	
 	
 	/** \brief Update camera. */
-	public func void update(float elapsed)
+	func void update(float elapsed)
 		select pState
 		case State.fadeIn
 			pElapsedTime += elapsed
@@ -261,7 +239,7 @@ class IMMTextDisplay extends Panel
 	
 	
 	/** \brief Label. */
-	public func Label getLabel()
+	func Label getLabel()
 		return pLabel
 	end
 end

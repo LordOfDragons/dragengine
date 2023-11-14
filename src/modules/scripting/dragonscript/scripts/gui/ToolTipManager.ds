@@ -233,7 +233,7 @@ class ToolTipManager
 			pPopup.addWidget(dst)
 			
 		else
-			var Label label = Label.new(pToolTip.toString(), "Label.WindowToolTip")
+			var Label label = Label.new(pDesktop.translate(pToolTip.toString()), "Label.WindowToolTip")
 			label.setMaximalWidth(300)
 			label.setWordWrap(true)
 			pPopup.addWidget(label)

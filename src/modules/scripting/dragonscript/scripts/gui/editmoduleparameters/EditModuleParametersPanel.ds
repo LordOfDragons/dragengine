@@ -165,8 +165,6 @@ class EditModuleParametersPanel extends Panel
 	/** \brief Create content with a SwitchPanel of EMPSystem instances. */
 	protected func void createContent()
 		runWhileBlockingLayout(block
-			var TranslationManager tm = EngineTranslations.get()
-			
 			setLayout(BorderLayout.new(2))
 			setDesignerSelector("Panel.EditModuleParametersPanel")
 			
@@ -182,50 +180,42 @@ class EditModuleParametersPanel extends Panel
 			
 			// add systems if they have parameters in order of preference
 			if GraphicSystem.getParameterCount() > 0
-				addButtonSystem(panelButtons, tm.translate(\
-					"UI.Settings.ModuleParameters.Graphic").toUTF8())
+				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.Graphic")
 				pPanelSystems.addWidget(EMPSystem.new(GraSysParamWrapper.new()))
 			end
 			
 			if AudioSystem.getParameterCount() > 0
-				addButtonSystem(panelButtons, tm.translate(\
-					"UI.Settings.ModuleParameters.Audio").toUTF8())
+				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.Audio")
 				pPanelSystems.addWidget(EMPSystem.new(AudSysParamWrapper.new()))
 			end
 			
 			if PhysicsSystem.getParameterCount() > 0
-				addButtonSystem(panelButtons, tm.translate(\
-					"UI.Settings.ModuleParameters.Physics").toUTF8())
+				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.Physics")
 				pPanelSystems.addWidget(EMPSystem.new(PhySysParamWrapper.new()))
 			end
 			
 			if InputSystem.getParameterCount() > 0
-				addButtonSystem(panelButtons, tm.translate(\
-					"UI.Settings.ModuleParameters.Input").toUTF8())
+				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.Input")
 				pPanelSystems.addWidget(EMPSystem.new(InpSysParamWrapper.new()))
 			end
 			
 			if NetworkSystem.getParameterCount() > 0
-				addButtonSystem(panelButtons, tm.translate(\
-					"UI.Settings.ModuleParameters.Network").toUTF8())
+				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.Network")
 				pPanelSystems.addWidget(EMPSystem.new(NetSysParamWrapper.new()))
 			end
 			
 			if AnimatorSystem.getParameterCount() > 0
-				addButtonSystem(panelButtons, tm.translate(\
-					"UI.Settings.ModuleParameters.Animator").toUTF8())
+				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.Animator")
 				pPanelSystems.addWidget(EMPSystem.new(AmrSysParamWrapper.new()))
 			end
 			
 			if AISystem.getParameterCount() > 0
-				addButtonSystem(panelButtons, tm.translate(\
-					"UI.Settings.ModuleParameters.AI").toUTF8())
+				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.AI")
 				pPanelSystems.addWidget(EMPSystem.new(AISysParamWrapper.new()))
 			end
 			
 			if SynthesizerSystem.getParameterCount() > 0
-				addButtonSystem(panelButtons, tm.translate(\
-					"UI.Settings.ModuleParameters.Synthesizer").toUTF8())
+				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.Synthesizer")
 				pPanelSystems.addWidget(EMPSystem.new(SynthSysParamWrapper.new()))
 			end
 			
@@ -242,8 +232,8 @@ class EditModuleParametersPanel extends Panel
 			
 			// add check box to enable advanced parameters
 			addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel panel
-				var CheckBox checkAdvanced = CheckBox.new(tm.translate(\
-					"UI.Settings.ModuleParameters.AdvancedParameters").toUTF8())
+				var CheckBox checkAdvanced = CheckBox.new(\
+					"@UI.Settings.ModuleParameters.AdvancedParameters")
 				checkAdvanced.getToggleModel().addListener(ToggleAdvancedListener.new(this))
 				panel.addWidget(checkAdvanced)
 			end), BorderLayout.Area.bottom)

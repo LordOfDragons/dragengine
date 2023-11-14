@@ -30,24 +30,21 @@ pin Dragengine.Utils
  * Subclass is required to implement createWidget(), saveSettings() and resetSettings().
  */
 abstract class DefaultWindowSettingsSheet implements WindowSettingsSheet
-	/** \brief Unique identifier. */
-	private var String pIdentifier
-	
-	/** \brief Title. */
-	private var String pTitle
+	var String pIdentifier
+	var String pTitle
 	
 	
 	
 	/**
 	 * \brief Create DefaultWindowSettingsSheet.
 	 */
-	public func new( String identifier, String title )
+	func new(String identifier, String title)
 		if identifier.empty()
-			throw EInvalidParam.new( "identifier invalid" )
+			throw EInvalidParam.new("identifier invalid")
 		end
 		
-		this.pIdentifier = identifier
-		this.setTitle( title )
+		pIdentifier = identifier
+		setTitle(title)
 	end
 	
 	
@@ -56,15 +53,15 @@ abstract class DefaultWindowSettingsSheet implements WindowSettingsSheet
 	 * 
 	 * Typically used to save settings in the game configuration.
 	 */
-	public func String getIdentifier()
-		return this.pIdentifier
+	func String getIdentifier()
+		return pIdentifier
 	end
 	
 	/**
 	 * \brief Title shown in toggle button.
 	 */
-	public func String getTitle()
-		return this.pTitle
+	func String getTitle()
+		return pTitle
 	end
 	
 	/**
@@ -72,11 +69,11 @@ abstract class DefaultWindowSettingsSheet implements WindowSettingsSheet
 	 * 
 	 * Has no affect after the sheet button has been created.
 	 */
-	public func void setTitle( String title )
+	func void setTitle(String title)
 		if title == null
-			throw ENullPointer.new( "title" )
+			throw ENullPointer.new("title")
 		end
 		
-		this.pTitle = title
+		pTitle = title
 	end
 end

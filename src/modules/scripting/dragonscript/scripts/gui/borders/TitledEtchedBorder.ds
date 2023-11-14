@@ -31,22 +31,22 @@ pin Dragengine.Scenery
  */
 class TitledEtchedBorder extends TitledTwoColorBorder
 	/** \brief Create titled etched border. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create titled etched border. */
-	public func new(String text) super(text)
+	func new(String text) super(text)
 	end
 	
 	
 	
 	/** \brief Border size. */
-	public func BorderSize getBorderSize()
+	func BorderSize getBorderSize()
 		return BorderSize.new(2, getTextSize().getY(), 2, 2)
 	end
 	
 	/** \brief Update canvas. */
-	public func void updateCanvas()
+	func void updateCanvas()
 		var Widget widget = getWidget()
 		if widget == null
 			return
@@ -54,7 +54,7 @@ class TitledEtchedBorder extends TitledTwoColorBorder
 		
 		var Color textColor = getTextColor()
 		var Font font = getFont()
-		var String text = getText()
+		var String text = widget.translate(getText())
 		var Point textSize = getTextSize()
 		
 		var CanvasView borderCanvas = getCanvasView()

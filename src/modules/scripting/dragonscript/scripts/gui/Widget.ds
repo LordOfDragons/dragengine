@@ -131,6 +131,8 @@ class Widget
 	
 	var Clipboard pClipboard
 	
+	var TranslationManager pTranslationManager
+	
 	
 	
 	/** \brief Create widget. */
@@ -857,28 +859,6 @@ class Widget
 		var Desktop desktop = getDesktop()
 		if desktop != null and getHoverWidget() == this and desktop.getToolTipManager() != null
 			desktop.getToolTipManager().update()
-		end
-	end
-	
-	/**
-	 * \brief Set tooltip from translation entry.
-	 * \version 1.20
-	 */
-	func void setTranslatedToolTip(TranslationManager translationManager, String name)
-		var UnicodeString text
-		
-		if translationManager != null
-			text = translationManager.translate(name, null)
-		end
-		if text == null
-			text = EngineTranslations.get().translate(name, null)
-		end
-		
-		if text != null
-			setToolTip(text.toUTF8())
-			
-		else
-			setToolTip(null)
 		end
 	end
 	
@@ -1635,6 +1615,91 @@ class Widget
 	
 	
 	/**
+	 * \brief Translation manager to use for this widget.
+	 * \version 1.20
+	 * 
+	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
+	 * 
+	 * If an explicit translation manager is assigned it is used. Otherwise the translation
+	 * manager of the parent widget is requested. If the parent can not provide a translation
+	 * manager TranslationManager.get() is used.
+	 */
+	func TranslationManager getTranslationManager()
+		if pTranslationManager != null
+			return pTranslationManager
+		end
+		
+		var TranslationManager tm
+		if pParent != null
+			tm = pParent.getTranslationManager()
+		end
+		
+		if tm == null
+			tm = TranslationManager.get()
+		end
+		
+		return tm
+	end
+	
+	/**
+	 * \brief Set translation manager to use.
+	 * \version 1.20
+	 */
+	func void setTranslationManager(TranslationManager translationManager)
+		if pTranslationManager == translationManager
+			return
+		end
+		
+		pTranslationManager = translationManager
+		
+		onTranslationChanged()
+	end
+	
+	/**
+	 * \brief Widget has language translation set explicitly.
+	 * \version 1.20
+	 */
+	func bool isTranslationManagerSet()
+		return pTranslationManager != null
+	end
+	
+	/**
+	 * \brief Translate text if it is a translateable.
+	 * \version 1.20
+	 * 
+	 * Translates text of the form "@Translation.Entry.Name". If the translation entry can not
+	 * be found the text itself is returned. Translation is first attempted using
+	 * getTranslationManager(). If this yields no result EngineTranslations.get() is used.
+	 */
+	func String translate(String text)
+		if text.startsWith("@")
+			var UnicodeString t = translateEntry(text.substring(1))
+			if t != null
+				text = t.toUTF8()
+			end
+		end
+		return text
+	end
+	
+	/**
+	 * \brief Get translation for translation entry name if found.
+	 * \version 1.20
+	 * 
+	 * If the translation entry can not be found null is returned. Translation is first
+	 * attempted using getTranslationManager(). If this yields no result
+	 * EngineTranslations.get() is used.
+	 */
+	func UnicodeString translateEntry(String name)
+		var UnicodeString t = getTranslationManager().translate(name, null)
+		if t == null
+			t = EngineTranslations.get().translate(name, null)
+		end
+		return t
+	end
+	
+	
+	
+	/**
 	 * Notification that a mouse button has been pressed. The default behaviour
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
@@ -2088,6 +2153,16 @@ class Widget
 	
 	/** \brief Designer changed. */
 	func void onDesignerChanged()
+	end
+	
+	/**
+	 * \brief Translation manager or active language pack changed.
+	 * \version 1.20
+	 */
+	func void onTranslationChanged()
+		if pBorder != null
+			pBorder.onWidgetParametersChanged()
+		end
 	end
 	
 	

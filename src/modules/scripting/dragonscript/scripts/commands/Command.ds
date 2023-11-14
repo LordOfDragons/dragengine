@@ -210,23 +210,18 @@ class Command
 	 * \param translationManager TranslationManager to use or null.
 	 */
 	public func String translateDescription(TranslationManager translationManager)
-		var UnicodeString text
+		var UnicodeString t
 		
 		if pTranslateDescription != null
 			if translationManager != null
-				text = translationManager.translate(pTranslateDescription, null)
+				t = translationManager.translate(pTranslateDescription, null)
 			end
-			if text == null
-				text = EngineTranslations.get().translate(pTranslateDescription, null)
+			if t == null
+				t = EngineTranslations.get().translate(pTranslateDescription, null)
 			end
 		end
 		
-		if text != null
-			return text.toUTF8()
-			
-		else
-			return pDescription
-		end
+		return t != null if t.toUTF8() else pDescription
 	end
 	
 	/**

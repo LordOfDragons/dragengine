@@ -110,13 +110,11 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	var int pIconHeight
 	var WeightLayout.LayoutSettings pLSDisplayName
 	var WeightLayout.LayoutSettings pLSBindings
-	var TranslationManager pTranslationManager
 	
 	
 	
 	/** \brief Create element renderer. */
 	func new()
-		pTranslationManager = TranslationManager.get()
 		pIconHeight = 32
 		pLSBindings = WeightLayout.LayoutSettings.new(1)
 		setDesignerSelector("EditBindingsEntry")
@@ -155,23 +153,18 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	end
 	
 	/**
-	 * \brief Translation manager for command display name and description.
+	 * \deprecated Use ListBox.getTranslationManager() instead.
 	 * \version 1.16
-	 * 
-	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
 	 */
 	func TranslationManager getTranslationManager()
-		return pTranslationManager
+		return TranslationManager.get()
 	end
 	
 	/**
-	 * \brief Set translation manager for command display name and description.
+	 * \deprecated Use ListBox.getTranslationManager() instead.
 	 * \version 1.16
-	 * 
-	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
 	 */
 	func void setTranslationManager(TranslationManager translationManager)
-		pTranslationManager = translationManager
 	end
 	
 	
@@ -199,6 +192,7 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 		var Panel panel = renderer cast Panel
 		var Label labelName = panel.getWidget(0) cast Label
 		var Panel bindingPanel = panel.getWidget(1) cast Panel
+		var Command command
 		
 		panel.runWhileBlockingLayout(block
 			if selected
@@ -217,7 +211,13 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 				return null
 			end
 			
-			labelName.setText(entry.getCommand().translateDisplayName(pTranslationManager))
+			command = entry.getCommand()
+			if command.getTranslateDisplayName() != null
+				labelName.setText("@" + command.getTranslateDisplayName())
+				
+			else
+				labelName.setText(command.getDisplayName())
+			end
 			
 			bindingPanel.runWhileBlockingLayout(block
 				bindingPanel.removeAllWidgets()
@@ -392,7 +392,7 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	EditBindingsListModelEntry entry, bool selected, Binding binding)
 		var Button button = Button.new(" ", ActionDeleteBinding.new(model, entry, binding))
 		button.setDesignerSelector("Button.EditBindingsEntry.DeleteBinding")
-		button.setTranslatedToolTip(TranslationManager.get(), "UI.EditBinding.DeleteBinding.ToolTip")
+		button.setToolTip("@UI.EditBinding.DeleteBinding.ToolTip")
 		return button
 	end
 	
@@ -407,7 +407,7 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	EditBindingsListModel model, EditBindingsListModelEntry entry, bool selected)
 		var Button button = Button.new(" ", ActionAddBinding.new(listBox, model, entry))
 		button.setDesignerSelector("Button.EditBindingsEntry.AddBinding")
-		button.setTranslatedToolTip(TranslationManager.get(), "UI.EditBinding.AddBinding.ToolTip")
+		button.setToolTip("@UI.EditBinding.AddBinding.ToolTip")
 		return button
 	end
 end
