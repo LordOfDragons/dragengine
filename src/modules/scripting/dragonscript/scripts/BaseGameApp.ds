@@ -572,8 +572,6 @@ class BaseGameApp extends Game
 			pConsoleCommands.removeAll()
 		end
 		
-		pTranslationManager = null
-		
 		pInputProcessor = null
 		
 		if pDesktop != null
@@ -600,6 +598,8 @@ class BaseGameApp extends Game
 		TimerManager.giveUpAllTimersDefault()
 		
 		pConsole = null
+		
+		pTranslationManager = null
 		
 		pApp = null
 	end

@@ -91,7 +91,9 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		var Video pVideo
 		var String pStyle
 		var UnicodeString pVerb
+		var String pVerbTranslate
 		var UnicodeString pDescription
+		var String pDescriptionTranslate
 		var String pCommand
 		var Array pAlternativeCommands
 		var bool pEnabled
@@ -123,29 +125,10 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 			pBones = pECBehavior.getBones().getList(stub, codec)
 			pMaximumDistance = pECBehavior.getMaximumDistance().getValue(stub)
 			pSettings = pECBehavior.getSettings().getValue(stub)
-			
-			var TranslationManager tm = pECBehavior.getTranslationManager()
-			if tm != null
-				var String translate = pECBehavior.getVerbTranslate().getValue(stub)
-				if translate.empty()
-					pVerb = pECBehavior.getVerb().getValue(stub)
-					
-				else
-					pVerb = tm.translate(translate)
-				end
-				
-				translate = pECBehavior.getDescriptionTranslate().getValue(stub)
-				if translate.empty()
-					pDescription = pECBehavior.getDescription().getValue(stub)
-					
-				else
-					pDescription = tm.translate(translate)
-				end
-				
-			else
-				pVerb = pECBehavior.getVerb().getValue(stub)
-				pDescription = pECBehavior.getDescription().getValue(stub)
-			end
+			pVerbTranslate = pECBehavior.getVerbTranslate().getValueOrNull(stub)
+			pVerb = pECBehavior.getVerb().getValue(stub)
+			pDescriptionTranslate = pECBehavior.getDescriptionTranslate().getValueOrNull(stub)
+			pDescription = pECBehavior.getDescription().getValue(stub)
 		end
 		
 		
@@ -190,6 +173,10 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		
 		/** \brief Verb. */
 		func UnicodeString getVerb()
+			var TranslationManager tm = pECBehavior.getTranslationManager()
+			if tm != null and pVerbTranslate != null
+				return tm.translate(pVerbTranslate)
+			end
 			return pVerb
 		end
 		
@@ -199,10 +186,15 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 				throw ENullPointer.new("verb")
 			end
 			pVerb = verb
+			pVerbTranslate = null
 		end
 		
 		/** \brief Description. */
 		func UnicodeString getDescription()
+			var TranslationManager tm = pECBehavior.getTranslationManager()
+			if tm != null and pDescriptionTranslate != null
+				return tm.translate(pDescriptionTranslate)
+			end
 			return pDescription
 		end
 		
@@ -212,6 +204,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 				throw ENullPointer.new("description")
 			end
 			pDescription = description
+			pDescriptionTranslate = null
 		end
 		
 		/** \brief Command. */
