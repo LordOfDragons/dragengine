@@ -39,6 +39,11 @@ class deDebugDrawerShape;
  * \brief Height terrain navigation space type.
  */
 class meHeightTerrainNavSpaceType : public deObject{
+public:
+	typedef deTObjectReference<meHeightTerrainNavSpaceType> Ref;
+	
+	
+	
 private:
 	meHeightTerrainNavSpace *pNavSpace;
 	
