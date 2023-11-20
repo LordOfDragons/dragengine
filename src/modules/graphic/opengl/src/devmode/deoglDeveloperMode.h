@@ -96,6 +96,7 @@ private:
 	bool pGIShowProbeOffsets;
 	bool pGIShowProbeUpdate;
 	int pGIShowCascade;
+	bool pGIShowProbeRays;
 	
 	deoglTexture *pTextureDebugImage;
 	deoglFramebuffer *pFBODebugImage;
@@ -191,6 +192,7 @@ public:
 	inline bool GetGIShowProbeOffsets() const{ return pGIShowProbeOffsets; }
 	inline bool GetGIShowProbeUpdate() const{ return pGIShowProbeUpdate; }
 	inline int GetGIShowCascade() const{ return pGIShowCascade; }
+	inline bool GetGIShowProbeRays() const{ return pGIShowProbeRays; }
 	
 	
 	
@@ -266,6 +268,7 @@ private:
 	void pCmdGIShowProbeOffsets( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdGIShowProbeUpdate( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdGIShowCascade( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbeRays( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	bool pBaseCmdBool( const decUnicodeArgumentList &command, decUnicodeString &answer,
 		bool &variable, const char *commandName );

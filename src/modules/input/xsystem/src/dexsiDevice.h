@@ -39,26 +39,29 @@ class deInputDevice;
 
 
 /**
- * \brief X-System input device.
+ * X-System input device.
  */
 class dexsiDevice : public deObject{
 public:
-	/** \brief Source identifier. */
+	/** Type holding strong reference. */
+	typedef deTObjectReference<dexsiDevice> Ref;
+	
+	/** Source identifier. */
 	enum eSources{
-		/** \brief X11. */
+		/** X11. */
 		esX11,
 		
-		/** \brief XInput. */
+		/** XInput. */
 		esXInput,
 		
-		/** \brief Libevdev. */
+		/** Libevdev. */
 		esLibevdev,
 		
-		/** \brief Joystick API. */
+		/** Joystick API. */
 		esJoystickApi
 	};
 	
-	/** \brief X type. */
+	/** X type. */
 	enum eXDeviceTypes{
 		exdtKeyboard,
 		exdtMouse,
@@ -118,14 +121,14 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create device. */
+	/** Create device. */
 	dexsiDevice( deXSystemInput &module, eSources source );
 	
-	/** \brief Create device from device information. */
+	/** Create device from device information. */
 	dexsiDevice( deXSystemInput &module, const XIDeviceInfo &info );
 	
 protected:
-	/** \brief Clean up device. */
+	/** Clean up device. */
 	virtual ~dexsiDevice();
 	/*@}*/
 	
@@ -134,150 +137,150 @@ protected:
 public:
 	/** \name Module Management */
 	/*@{*/
-	/** \brief X-System input module. */
+	/** X-System input module. */
 	inline deXSystemInput &GetModule() const{ return pModule; }
 	
-	/** \brief Index. */
+	/** Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
-	/** \brief Set index. */
+	/** Set index. */
 	void SetIndex( int index );
 	
-	/** \brief Source. */
+	/** Source. */
 	inline eSources GetSource() const{ return pSource; }
 	
 	
 	
-	/** \brief Device type. */
+	/** Device type. */
 	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
 	
-	/** \brief Set device type. */
+	/** Set device type. */
 	void SetType( deInputDevice::eDeviceTypes type );
 	
-	/** \brief Identifier. */
+	/** Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
-	/** \brief Set identifier. */
+	/** Set identifier. */
 	void SetID( const char *id );
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Display image. */
+	/** Display image. */
 	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
-	/** \brief Display icons (deImage*). */
+	/** Display icons (deImage*). */
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
-	/** \brief Set display image and icons. */
+	/** Set display image and icons. */
 	void SetDisplayImages( const char *name );
 	
-	/** \brief Display text. */
+	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
-	/** \brief Set display text. */
+	/** Set display text. */
 	void SetDisplayText( const char *text );
 	
 	
 	
-	/** \brief Number of buttons. */
+	/** Number of buttons. */
 	int GetButtonCount() const;
 	
-	/** \brief Add button. */
+	/** Add button. */
 	void AddButton( dexsiDeviceButton *button );
 	
-	/** \brief Button at index. */
+	/** Button at index. */
 	dexsiDeviceButton *GetButtonAt( int index ) const;
 	
-	/** \brief Button with identifier or \em NULL if absent. */
+	/** Button with identifier or \em NULL if absent. */
 	dexsiDeviceButton *GetButtonWithID( const char *id ) const;
 	
-	/** \brief Button with X11 code or \em NULL if absent. */
+	/** Button with X11 code or \em NULL if absent. */
 	dexsiDeviceButton *GetButtonWithX11Code( int code ) const;
 	
-	/** \brief Index of button with identifier or -1 if absent. */
+	/** Index of button with identifier or -1 if absent. */
 	int IndexOfButtonWithID( const char *id ) const;
 	
-	/** \brief Index of button with X11 code or -1 if absent. */
+	/** Index of button with X11 code or -1 if absent. */
 	int IndexOfButtonWithX11Code( int code ) const;
 	
 	
 	
-	/** \brief Number of axiss. */
+	/** Number of axiss. */
 	int GetAxisCount() const;
 	
-	/** \brief Add axis. */
+	/** Add axis. */
 	void AddAxis( dexsiDeviceAxis *axis );
 	
-	/** \brief Axis at index. */
+	/** Axis at index. */
 	dexsiDeviceAxis *GetAxisAt( int index ) const;
 	
-	/** \brief Axis with identifier or \em NULL if absent. */
+	/** Axis with identifier or \em NULL if absent. */
 	dexsiDeviceAxis *GetAxisWithID( const char *id ) const;
 	
-	/** \brief Axis with X11 code or \em NULL if absent. */
+	/** Axis with X11 code or \em NULL if absent. */
 	dexsiDeviceAxis *GetAxisWithX11Code( int code ) const;
 	
-	/** \brief Index of axis with identifier or -1 if absent. */
+	/** Index of axis with identifier or -1 if absent. */
 	int IndexOfAxisWithID( const char *id ) const;
 	
-	/** \brief Index of axis with X11 code or -1 if absent. */
+	/** Index of axis with X11 code or -1 if absent. */
 	int IndexOfAxisWithX11Code( int code ) const;
 	
 	
 	
-	/** \brief Number of feedbacks. */
+	/** Number of feedbacks. */
 	int GetFeedbackCount() const;
 	
-	/** \brief Add feedback. */
+	/** Add feedback. */
 	void AddFeedback( dexsiDeviceFeedback *feedback );
 	
-	/** \brief Feedback at index. */
+	/** Feedback at index. */
 	dexsiDeviceFeedback *GetFeedbackAt( int index ) const;
 	
-	/** \brief Feedback with identifier or \em NULL if absent. */
+	/** Feedback with identifier or \em NULL if absent. */
 	dexsiDeviceFeedback *GetFeedbackWithID( const char *id ) const;
 	
-	/** \brief Index of feedback with identifier or -1 if absent. */
+	/** Index of feedback with identifier or -1 if absent. */
 	int IndexOfFeedbackWithID( const char *id ) const;
 	
 	
 	
-	/** \brief First key code. */
+	/** First key code. */
 	inline int GetX11FirstKeyCode() const{ return pX11FirstKeyCode; }
 	
-	/** \brief Key code count. */
+	/** Key code count. */
 	inline int GetX11KeyCodeCount() const{ return pX11KeyCodeCount; }
 	
-	/** \brief Reset key code map. */
+	/** Reset key code map. */
 	void ResetX11KeyCodeMap( int firstKeyCode, int keyCodeCount );
 	
-	/** \brief Set key code map entry. */
+	/** Set key code map entry. */
 	void SetLookupX11KeyCode( int keyCode, int button );
 	
-	/** \brief Get button for key code or -1 if not found. */
+	/** Get button for key code or -1 if not found. */
 	int LookupX11KeyCode( int keyCode ) const;
 	
 	
 	
-	/** \brief One or more axes values are dirty. */
+	/** One or more axes values are dirty. */
 	inline bool GetDirtyAxesValues() const{ return pDirtyAxesValues; }
 	
-	/** \brief Set if one or more axes values are dirty. */
+	/** Set if one or more axes values are dirty. */
 	void SetDirtyAxesValues( bool dirty );
 	
 	
 	
-	/** \brief Update engine input device information. */
+	/** Update engine input device information. */
 	void GetInfo( deInputDevice &info ) const;
 	
-	/** \brief Update device state. */
+	/** Update device state. */
 	virtual void Update();
 	
-	/** \brief Send axis events if dirty. */
+	/** Send axis events if dirty. */
 	void SendDirtyAxisEvents();
 	/*@}*/
 	
@@ -285,6 +288,7 @@ public:
 	
 private:
 	void pPrepareXDeviceTypeAtoms();
+	void pUpdateDeviceIndices();
 };
 
 #endif

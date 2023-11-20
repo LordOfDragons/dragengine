@@ -503,12 +503,7 @@ class TextArea extends TextWidget implements RangeModelListener
 			return
 		end
 		
-		var TranslationManager translationManager
-		if BaseGameApp.getApp() != null
-			translationManager = BaseGameApp.getApp().getTranslationManager()
-		end
-		
-		var MenuPopup menu = createContextMenu(position, translationManager)
+		var MenuPopup menu = createContextMenu(position, getTranslationManager())
 		if menu.getWidgetCount() == 0
 			menu.safeDispose()
 			return
@@ -521,26 +516,36 @@ class TextArea extends TextWidget implements RangeModelListener
 	
 	/**
 	 * \brief Create context menu at position relative to widget.
-	 * \version 1.16
+	 * \version 1.20
 	 * \param position Position relative to text are the context menu has to be created for.
-	 * \param translationManager Translation manager to use or null.
 	 */
-	protected func MenuPopup createContextMenu(Point position, TranslationManager translationManager)
+	protected func MenuPopup createContextMenu(Point position)
 		var bool hasSelection = pSelectionStart != null
 		var bool hasClipboard = getClipboard() != null
 		var bool hasClip = hasClipboard and getClipboard().hasClip()
 		var bool writeable = not getReadOnly()
 		var MenuPopup menu = MenuPopup.new()
 		
-		menu.addItemCommand(menu, "UI.Menu.Cut", "Cut", null, writeable and hasSelection and hasClipboard, ActionCut.new(this))
-		menu.addItemCommand(menu, "UI.Menu.Copy", "Copy", null, hasSelection and hasClipboard, ActionCopy.new(this))
-		menu.addItemCommand(menu, "UI.Menu.Paste", "Paste", null, writeable and hasClip, ActionPaste.new(this))
+		menu.addItemCommand(menu, "@UI.Menu.Cut", null,\
+			writeable and hasSelection and hasClipboard, ActionCut.new(this))
+		menu.addItemCommand(menu, "@UI.Menu.Copy", null,\
+			hasSelection and hasClipboard, ActionCopy.new(this))
+		menu.addItemCommand(menu, "@UI.Menu.Paste", null,\
+			writeable and hasClip, ActionPaste.new(this))
 		
 		menu.addWidget(MenuItemSeparator.new())
-		menu.addItemCommand(menu, "UI.Menu.SelectAll", "Select All", null, true, ActionSelectAll.new(this))
-		menu.addItemCommand(menu, "UI.Menu.Deselect", "Deselect", null, hasSelection, ActionDeselect.new(this))
+		menu.addItemCommand(menu, "@UI.Menu.SelectAll", null, true, ActionSelectAll.new(this))
+		menu.addItemCommand(menu, "@UI.Menu.Deselect", null, hasSelection, ActionDeselect.new(this))
 		
 		return menu
+	end
+	
+	/**
+	 * \deprecated Use createContextMenu(Point).
+	 * \version 1.16
+	 */
+	protected func MenuPopup createContextMenu(Point position, TranslationManager translationManager)
+		return createContextMenu(position)
 	end
 	
 	
@@ -739,6 +744,7 @@ class TextArea extends TextWidget implements RangeModelListener
 		case InputEventMouseButton.left
 			setCursorPositionNear(event.getPosition())
 			pOldCursorPos = UTF8Navigator.new(pCursorPos)
+			popupVirtualKeyboard()
 			captureMouse()
 			
 		case InputEventMouseButton.right

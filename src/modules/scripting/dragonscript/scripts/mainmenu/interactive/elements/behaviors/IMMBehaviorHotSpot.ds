@@ -293,14 +293,9 @@ class IMMBehaviorHotSpot extends DefaultECBehavior
 			var IMMTextDisplay textDisplay = pECBehavior.getTextDisplay()
 			if textDisplay != null
 				var String text = pDisplayText
-
 				if pDisplayTextTranslate != null
-					var TranslationManager tm = textDisplay.getTranslationManager()
-					if tm != null
-						text = tm.translate(pDisplayTextTranslate).toUTF8()
-					end
+					text = "@" + pDisplayTextTranslate
 				end
-
 				textDisplay.setText(text)
 			end
 			

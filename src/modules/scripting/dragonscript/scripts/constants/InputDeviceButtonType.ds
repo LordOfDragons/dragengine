@@ -106,4 +106,10 @@ enum InputDeviceButtonType
 	 * Tap of a touch pad.
 	 */
 	touchPad
+	
+	/**
+	 * \brief Battery is charging.
+	 * \version 1.20
+	 */
+	batteryCharging
 end

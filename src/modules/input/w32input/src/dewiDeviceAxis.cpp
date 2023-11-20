@@ -23,6 +23,7 @@
 
 #include "dewiDevice.h"
 #include "dewiDeviceAxis.h"
+#include "dewiDeviceWinRTController.h"
 #include "deWindowsInput.h"
 
 #include <dragengine/deEngine.h>
@@ -57,7 +58,12 @@ pWheelChange( 0 ),
 pValue( 0.0f ),
 pChangedValue( 0.0f ),
 
-pWICode( -1 ){
+pWICode( -1 ),
+pWinRTReadingIndexAxis( -1 ),
+pWinRTInverseAxis( false ),
+pWinRTReadingIndexSwitch( -1 ),
+pWinRTReadingDirectionSwitch( 0 ),
+pIsBatteryLevel( false ){
 }
 
 dewiDeviceAxis::~dewiDeviceAxis(){
@@ -173,6 +179,25 @@ void dewiDeviceAxis::SetWICode( int code ){
 	pWICode = code;
 }
 
+void dewiDeviceAxis::SetWinRTReadingIndexAxis( int index ){
+	pWinRTReadingIndexAxis = index;
+}
+
+void dewiDeviceAxis::SetWinRTInverseAxis( bool winRTInverseAxis ){
+	pWinRTInverseAxis = winRTInverseAxis;
+}
+
+void dewiDeviceAxis::SetWinRTReadingIndexSwitch( int index ){
+	pWinRTReadingIndexSwitch = index;
+}
+
+void dewiDeviceAxis::SetWinRTReadingDirectionSwitch( int direction ){
+	pWinRTReadingDirectionSwitch = direction;
+}
+
+void dewiDeviceAxis::SetIsBatteryLevel( bool isBatteryLevel ){
+	pIsBatteryLevel = isBatteryLevel;
+}
 
 
 void dewiDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
@@ -224,6 +249,127 @@ void dewiDeviceAxis::SendEvents( dewiDevice &device ){
 		pChangedValue = 0.0f;
 		device.GetModule().AddAxisChanged( device.GetIndex(), pIndex, pValue, pLastEventTime );
 	}
+}
+
+void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
+	// get reading depending on axis type
+	int reading;
+	
+	if( pWinRTReadingIndexAxis != -1 ){
+		double realReading = device.GetReadingAxis( pWinRTReadingIndexAxis );
+		
+		if( pWinRTInverseAxis ){
+			realReading = 1.0 - realReading;
+		}
+
+		reading = ( int )decMath::linearStep( realReading, 0.0, 1.0, ( double )pMinimum, ( double )pMaximum );
+
+	}else if( pWinRTReadingIndexSwitch != -1 ){
+		switch( pWinRTReadingDirectionSwitch ){
+		case 0:
+			switch( device.GetReadingSwitch( pWinRTReadingIndexSwitch ) ){
+			case wrgi::GameControllerSwitchPosition::Right:
+			case wrgi::GameControllerSwitchPosition::UpRight:
+			case wrgi::GameControllerSwitchPosition::DownRight:
+				reading = pMaximum;
+				break;
+
+			case wrgi::GameControllerSwitchPosition::Left:
+			case wrgi::GameControllerSwitchPosition::DownLeft:
+			case wrgi::GameControllerSwitchPosition::UpLeft:
+				reading = pMinimum;
+				break;
+
+			default:
+				reading = ( pMinimum + pMaximum ) / 2;
+			}
+			break;
+
+		case 1:
+			switch( device.GetReadingSwitch( pWinRTReadingIndexSwitch ) ){
+			case wrgi::GameControllerSwitchPosition::Up:
+			case wrgi::GameControllerSwitchPosition::UpRight:
+			case wrgi::GameControllerSwitchPosition::UpLeft:
+				reading = pMaximum;
+				break;
+
+			case wrgi::GameControllerSwitchPosition::Down:
+			case wrgi::GameControllerSwitchPosition::DownRight:
+			case wrgi::GameControllerSwitchPosition::DownLeft:
+				reading = pMinimum;
+				break;
+
+			default:
+				reading = ( pMinimum + pMaximum ) / 2;
+			}
+			break;
+
+		case -1:
+			switch( device.GetReadingSwitch( pWinRTReadingIndexSwitch ) ){
+			case wrgi::GameControllerSwitchPosition::Up:
+			case wrgi::GameControllerSwitchPosition::UpRight:
+			case wrgi::GameControllerSwitchPosition::UpLeft:
+				reading = pMinimum;
+				break;
+
+			case wrgi::GameControllerSwitchPosition::Down:
+			case wrgi::GameControllerSwitchPosition::DownRight:
+			case wrgi::GameControllerSwitchPosition::DownLeft:
+				reading = pMaximum;
+				break;
+
+			default:
+				reading = ( pMinimum + pMaximum ) / 2;
+			}
+			break;
+
+		default:
+			reading = ( pMinimum + pMaximum ) / 2;
+		}
+
+	}else if( pIsBatteryLevel ){
+		const wrdp::BatteryReport &report = device.GetBatteryReport();
+		reading = pMaximum;
+
+		if( report.RemainingCapacityInMilliwattHours() && report.FullChargeCapacityInMilliwattHours() ){
+			const float percentage = ( float )report.RemainingCapacityInMilliwattHours().GetInt32()
+				/ ( float )report.FullChargeCapacityInMilliwattHours().GetInt32();
+			reading = ( int )( percentage * ( float )pMaximum );
+		}
+
+	}else{
+		reading = ( pMinimum + pMaximum ) / 2;
+	}
+
+	// convert reading to value
+	float value;
+
+	if( reading < pDeadZoneLower ){
+		value = decMath::linearStep( ( float )reading,
+			( float )pMinimum, ( float )pDeadZoneLower, -1.0f, 0.0f );
+
+	}else if( reading > pDeadZoneUpper ){
+		value = decMath::linearStep( ( float )reading,
+			( float )pDeadZoneUpper, ( float )pMaximum, 0.0f, 1.0f );
+
+	}else{
+		value = 0.0f;
+	}
+
+	// update
+	if( pAbsolute ){
+		pChangedValue = value;
+
+	}else{
+		pChangedValue += value;
+	}
+
+	if( fabsf( pChangedValue - pValue ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+
+	pLastEventTime = device.GetReadingTime();
+	device.SetDirtyAxesValues( true );
 }
 
 

@@ -101,7 +101,7 @@ public class TwoColorBorderFactory implements BorderFactory
 			setRaised(value cast bool)
 			
 		elif name.equals("colorHighlight") \
-		/* backwards compatibility */ or name.equals("colorHilight")
+		/* backward compatibility */ or name.equals("colorHilight")
 			setColorHighlight(value cast Color)
 			
 		elif name.equals("colorShadow")

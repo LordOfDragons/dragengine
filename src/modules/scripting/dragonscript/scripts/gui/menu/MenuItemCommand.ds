@@ -33,16 +33,16 @@ pin Dragengine.Gui.Layouts
  * Shows label and optionally an icon. Fires action if clicked.
  */
 class MenuItemCommand extends MenuItem
-	private var String pText
-	private var Image pIcon
+	var String pText
+	var Image pIcon
 	
-	private var Label pWidgetText
-	private var DisplayImage pWidgetIcon
+	var Label pWidgetText
+	var DisplayImage pWidgetIcon
 	
 	
 	
 	/** \brief Create menu item command. */
-	public func new(String text)
+	func new(String text)
 		pText = text
 		
 		setDesignerSelector("MenuItem.Command")
@@ -52,7 +52,7 @@ class MenuItemCommand extends MenuItem
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(Image icon, String text) this(text)
+	func new(Image icon, String text) this(text)
 		pIcon = icon
 		
 		if icon != null
@@ -65,17 +65,17 @@ class MenuItemCommand extends MenuItem
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(String text, ActionListener action) this(text)
+	func new(String text, ActionListener action) this(text)
 		addActionListener(action)
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(Image icon, String text, ActionListener action) this(icon, text)
+	func new(Image icon, String text, ActionListener action) this(icon, text)
 		addActionListener(action)
 	end
 	
 	/** \brief Dispose of menu item. */
-	public func void dispose()
+	func void dispose()
 		pWidgetIcon = null
 		pWidgetText = null
 		super.dispose()
@@ -84,12 +84,12 @@ class MenuItemCommand extends MenuItem
 	
 	
 	/** \brief Text. */
-	public func String getText()
+	func String getText()
 		return pText
 	end
 	
 	/** \brief Set text. */
-	public func void setText(String text)
+	func void setText(String text)
 		if text.equals(pText)
 			return
 		end
@@ -99,7 +99,7 @@ class MenuItemCommand extends MenuItem
 	end
 	
 	/** \brief Icon. */
-	public func Image getIcon()
+	func Image getIcon()
 		return pIcon
 	end
 	
@@ -108,7 +108,7 @@ class MenuItemCommand extends MenuItem
 	 * 
 	 * Has no effect if no icon has been set in the constructor.
 	 */
-	public func void setIcon(Image icon)
+	func void setIcon(Image icon)
 		if icon == pIcon
 			return
 		end
@@ -123,7 +123,7 @@ class MenuItemCommand extends MenuItem
 	
 	
 	/** \brief Designer selector changed. */
-	public func void onDesignerSelectorChanged()
+	func void onDesignerSelectorChanged()
 		if pWidgetIcon != null
 			pWidgetIcon.setDesignerSelector("Image." + getDesignerSelector())
 		end
@@ -135,7 +135,7 @@ class MenuItemCommand extends MenuItem
 	
 	
 	/** \brief Fire action. */
-	public func void fireAction(int modifiers)
+	func void fireAction(int modifiers)
 		super.fireAction(modifiers)
 		closeMenuPopup()
 	end

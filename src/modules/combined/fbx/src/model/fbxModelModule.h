@@ -80,7 +80,7 @@ private:
 	
 	void pLoadModelTextures( deModel &model, const fbxModel &loadModel );
 	
-	void pLoadModelTexture( deModel &model, const fbxNode &nodeMaterial );
+	void pLoadModelTexture( deModel &model, const fbxModel &loadModel, const fbxNode &nodeMaterial );
 	
 	void pLoadModelLod( deModel &model, deModelLOD &lod,
 		const fbxModel &loadModel, const fbxRig *loadRig );

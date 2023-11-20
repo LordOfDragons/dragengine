@@ -488,12 +488,10 @@ class WindowSettings extends WindowModal
 	 * \warning Called from constructor wrapped by runWhileBlockingLayout.
 	 */
 	protected func void createContent()
-		var TranslationManager tm = EngineTranslations.get()
-		
 		setLayout(BorderLayout.new())
 		setCanMinimize(false)
 		setCanClose(false)
-		setTitle(tm.translate("UI.Settings.Title").toUTF8())
+		setTitle("@UI.Settings.Title")
 		
 		addWidget(Panel.new(BorderLayout.new(), block Panel panel
 			pPanelSheets = SwitchPanel.new()
@@ -513,13 +511,13 @@ class WindowSettings extends WindowModal
 		end), BorderLayout.Area.content)
 		
 		pPanelButtonsDialog = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel panel
-			pButtonSave = Button.new(tm.translate("UI.Settings.Save").toUTF8(), ActionSave.new(this))
+			pButtonSave = Button.new("@UI.Settings.Save", ActionSave.new(this))
 			panel.addWidget(pButtonSave)
 			
-			pButtonReset = Button.new(tm.translate("UI.Settings.Reset").toUTF8(), ActionReset.new(this))
+			pButtonReset = Button.new("@UI.Settings.Reset", ActionReset.new(this))
 			panel.addWidget(pButtonReset)
 			
-			pButtonCancel = Button.new(tm.translate("UI.Settings.Cancel").toUTF8(), ActionCancel.new(this))
+			pButtonCancel = Button.new("@UI.Settings.Cancel", ActionCancel.new(this))
 			panel.addWidget(pButtonCancel)
 		end)
 		addWidget(pPanelButtonsDialog, BorderLayout.Area.bottom)

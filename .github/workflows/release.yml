@@ -17,7 +17,7 @@ on:
         description: 'Changelog Page Number'
         required: true
         type: string
-        default: 'XXXX'
+        default: 'X-Y{-Z}'
 
 jobs:
   build_linux:
@@ -138,7 +138,7 @@ jobs:
             
             Contains installers for End-Users (gamers) as well as Development tools for Game developers.
             
-            See https://dragondreams.ch/?page_id=${{ github.event.inputs.changelogPageNumber }} for the full listing.
+            See https://dragondreams.ch/index.php/changelog-release-${{ github.event.inputs.changelogPageNumber }} for the full listing.
             
             For End-Users and Game Developers:
             - install-dragengine-${{ github.event.inputs.version }}-linux64.sh

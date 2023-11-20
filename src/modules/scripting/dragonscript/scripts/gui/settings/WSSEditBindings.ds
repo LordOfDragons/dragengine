@@ -29,8 +29,8 @@ pin Dragengine.Utils
  * \brief WindowSettingsSheet editing input bindings.
  */
 class WSSEditBindings extends DefaultWindowSettingsSheet
-	private var BindingManager pBindingManager
-	private var CommandManager pCommandManager
+	var BindingManager pBindingManager
+	var CommandManager pCommandManager
 	
 	
 	
@@ -39,23 +39,22 @@ class WSSEditBindings extends DefaultWindowSettingsSheet
 	 * 
 	 * Uses binding manager from BaseGameWorld.
 	 */
-	public func new() this(BaseGameApp.getApp().getBindingManager(), \
+	func new() this(BaseGameApp.getApp().getBindingManager(),\
 	BaseGameApp.getApp().getCommandManager())
 	end
 	
-	public func new(String identifier, String title) this(BaseGameApp.getApp().getBindingManager(), \
+	func new(String identifier, String title) this(BaseGameApp.getApp().getBindingManager(),\
 	BaseGameApp.getApp().getCommandManager(), identifier, title)
 	end
 	
 	/**
 	 * \brief Create window settings sheet.
 	 */
-	public func new(BindingManager bindingManager, CommandManager commandManager) \
-	this(bindingManager, commandManager, "bindings",\
-	EngineTranslations.get().translate("UI.Settings.Bindings").toUTF8())
+	func new(BindingManager bindingManager, CommandManager commandManager) \
+	this(bindingManager, commandManager, "bindings", "@UI.Settings.Bindings")
 	end
 	
-	public func new(BindingManager bindingManager, CommandManager commandManager, \
+	func new(BindingManager bindingManager, CommandManager commandManager,\
 	String identifier, String title) super(identifier, title)
 		if bindingManager == null
 			throw ENullPointer.new("bindingManager")
@@ -71,12 +70,12 @@ class WSSEditBindings extends DefaultWindowSettingsSheet
 	
 	
 	/** \brief Binding manager to use. */
-	public func BindingManager getBindingManager()
+	func BindingManager getBindingManager()
 		return pBindingManager
 	end
 	
 	/** \brief Command manager to use. */
-	public func CommandManager getCommandManager()
+	func CommandManager getCommandManager()
 		return pCommandManager
 	end
 	
@@ -87,7 +86,7 @@ class WSSEditBindings extends DefaultWindowSettingsSheet
 	 * 
 	 * Creates instance of EditBindingsPanel.
 	 */
-	public func Widget createWidget()
+	func Widget createWidget()
 		var EditBindingsPanel editBindings = EditBindingsPanel.new(pBindingManager)
 		addCommands(editBindings)
 		return editBindings
@@ -96,14 +95,14 @@ class WSSEditBindings extends DefaultWindowSettingsSheet
 	/**
 	 * Save settings.
 	 */
-	public func void saveSettings(Widget widget)
+	func void saveSettings(Widget widget)
 		(widget cast EditBindingsPanel).applyChanges()
 	end
 	
 	/**
 	 * Reset settings.
 	 */
-	public func void resetSettings(Widget widget)
+	func void resetSettings(Widget widget)
 		(widget cast EditBindingsPanel).resetChanges()
 	end
 	
@@ -162,7 +161,7 @@ class WSSEditBindings extends DefaultWindowSettingsSheet
 	protected func void modelAddButton(Array list, String name)
 		var Command command = pCommandManager.getNamed(name)
 		if command != null
-			list.add(EditBindingsListModelEntry.new(command, \
+			list.add(EditBindingsListModelEntry.new(command,\
 				EditBindingsListModelEntry.InputSource.button))
 		end
 	end
@@ -173,7 +172,7 @@ class WSSEditBindings extends DefaultWindowSettingsSheet
 	protected func void modelAddAxis(Array list, String name)
 		var Command command = pCommandManager.getNamed(name)
 		if command != null
-			list.add(EditBindingsListModelEntry.new(command, \
+			list.add(EditBindingsListModelEntry.new(command,\
 				EditBindingsListModelEntry.InputSource.axis))
 		end
 	end

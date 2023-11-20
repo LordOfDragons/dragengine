@@ -40,11 +40,11 @@ pin Dragengine.Utils
  * Using the applyChanges() method the changes are applied to the original binding manager.
  */
 class EditBindingsPanel extends Panel
-	private var BindingManager pBindingManager
-	private var BindingManager pEditBindingManager
-	private var EditBindingsListModel pModel
-	private var EditBindingsListBox pListBox
-	private var DefaultTextModel pModelInfo
+	var BindingManager pBindingManager
+	var BindingManager pEditBindingManager
+	var EditBindingsListModel pModel
+	var EditBindingsListBox pListBox
+	var DefaultTextModel pModelInfo
 	
 	
 	
@@ -56,7 +56,7 @@ class EditBindingsPanel extends Panel
 	 * 
 	 * \param bindingManager Bining manager to edit.
 	 */
-	public func new(BindingManager bindingManager)
+	func new(BindingManager bindingManager)
 		if bindingManager == null
 			throw EInvalidParam.new()
 		end
@@ -75,7 +75,7 @@ class EditBindingsPanel extends Panel
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		pModel = null
 		pListBox = null
 		pModelInfo = null
@@ -85,17 +85,17 @@ class EditBindingsPanel extends Panel
 	
 	
 	/** \brief Working copy of binding manager. */
-	public func BindingManager getEditBindingManager()
+	func BindingManager getEditBindingManager()
 		return pEditBindingManager
 	end
 	
 	/** \brief Edit bindings list model. */
-	public func EditBindingsListModel getModel()
+	func EditBindingsListModel getModel()
 		return pModel
 	end
 	
 	/** \brief Edit bindings list box. */
-	public func EditBindingsListBox getListBox()
+	func EditBindingsListBox getListBox()
 		return pListBox
 	end
 	
@@ -103,14 +103,14 @@ class EditBindingsPanel extends Panel
 	 * \brief Text model to display command descriptions.
 	 * \version1.16
 	 */
-	public func DefaultTextModel getModelInfo()
+	func DefaultTextModel getModelInfo()
 		return pModelInfo
 	end
 	
 	
 	
 	/** \brief Reset working binding manager to original binding manager. */
-	public func void resetChanges()
+	func void resetChanges()
 		pEditBindingManager.removeAllAxisBindings()
 		pBindingManager.forEachAxisBinding(block Binding each
 			pEditBindingManager.addAxisBinding(Binding.new(each))
@@ -127,7 +127,7 @@ class EditBindingsPanel extends Panel
 	end
 	
 	/** \brief Copy working binding manager to original binding manager. */
-	public func void applyChanges()
+	func void applyChanges()
 		pModel.forEachEntry(block EditBindingsListModelEntry entry
 			pBindingManager.removeBindingsWithCommand(entry.getCommand())
 			
@@ -163,7 +163,7 @@ class EditBindingsPanel extends Panel
 			textArea.setDesignerSelector("TextArea.EditBindings.CommandInfo")
 			p.addWidget(ScrollPanel.new(textArea, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
 			
-			p.addWidget(Label.new(EngineTranslations.get().translate("UI.Settings.Bindings.Usage").toUTF8()))
+			p.addWidget(Label.new("@UI.Settings.Bindings.Usage"))
 		end), BorderLayout.Area.bottom)
 	end
 end

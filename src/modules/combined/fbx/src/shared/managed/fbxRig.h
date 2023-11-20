@@ -23,6 +23,8 @@
 #define _FBXRIG_H_
 
 
+#include "../fbxNode.h"
+
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
@@ -31,7 +33,6 @@
 #include <dragengine/common/string/decString.h>
 
 
-class fbxNode;
 class fbxScene;
 class fbxRigBone;
 
@@ -50,7 +51,7 @@ public:
 	
 private:
 	fbxScene &pScene;
-	fbxNode &pNodePose;
+	const fbxNode::Ref pNodePose;
 	decObjectOrderedSet pBones;
 	decMatrix pMatrix;
 	decMatrix pMatrixInverse;
@@ -61,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxRig( fbxScene &scene, fbxNode &nodePose );
+	fbxRig( fbxScene &scene, fbxNode *nodePose );
 	
 protected:
 	/** \brief Clean up connection. */
@@ -106,6 +107,11 @@ public:
 	/** \brief Debug print node structure. */
 	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
 	/*@}*/
+	
+	
+	
+private:
+	void pAddRootBone( fbxScene &scene, fbxNode &nodeRoot );
 };
 
 #endif

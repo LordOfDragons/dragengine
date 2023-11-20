@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Debug Probe Rays</name>
+	
+	<texture name='texCacheDistance' target='0'/>
+	<texture name='texGIProbeOffset' target='1'/>
+	<texture name='texLight' target='2'/>
+	
+	<uniformBlock name='GIParameters' target='1'/>
+	<uniformBlock name='RayData' target='2'/>
+	<uniformBlock name='GIRayDirections' target='4'/>
+	
+	<parameter name='pMatrixNormal'/> <!-- 0 -->
+	<parameter name='pMatrixMV'/> <!-- 1 -->
+	<parameter name='pMatrixMVP'/> <!-- 2 -->
+	<parameter name='pMatrixP'/> <!-- 3 -->
+	<parameter name='pGICascade'/> <!-- 4 -->
+	<parameter name='pGIDebugProbe'/> <!-- 5 -->
+	<parameter name='pGIRaysPerProbe'/> <!-- 6 -->
+	<parameter name='pGIProbesPerLine'/> <!-- 7 -->
+	<parameter name='pProbePosition'/> <!-- 8 -->
+	<parameter name='pUpdateDataRayOffset'/> <!-- 9 -->
+	<parameter name='pRayDataValid'/> <!-- 10 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/defren/gi/debugProbeRays.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/gi/debugProbeRays.glsl</sourceCode>
+</shader>

@@ -244,6 +244,7 @@ pGIShowProbes( false ),
 pGIShowProbeOffsets( false ),
 pGIShowProbeUpdate( false ),
 pGIShowCascade( 0 ),
+pGIShowProbeRays( false ),
 
 pTextureDebugImage( NULL ),
 pFBODebugImage( NULL ),
@@ -490,6 +491,10 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 				
 			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_cascade" ) ){
 				pCmdGIShowCascade( command, answer );
+				result = true;
+				
+			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_probe_rays" ) ){
+				pCmdGIShowProbeRays( command, answer );
 				result = true;
 			}
 		}
@@ -1203,6 +1208,10 @@ void deoglDeveloperMode::pCmdGIShowProbeUpdate( const decUnicodeArgumentList &co
 
 void deoglDeveloperMode::pCmdGIShowCascade( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	pBaseCmdInt( command, answer, pGIShowCascade, "dm_gi_show_cascade" );
+}
+
+void deoglDeveloperMode::pCmdGIShowProbeRays( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	pBaseCmdBool( command, answer, pGIShowProbeRays, "dm_gi_show_probe_rays" );
 }
 
 

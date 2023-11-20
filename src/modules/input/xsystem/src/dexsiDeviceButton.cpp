@@ -43,6 +43,7 @@
 dexsiDeviceButton::dexsiDeviceButton( deXSystemInput &module ) :
 pModule( module ),
 pPressed( false ),
+pType( deInputDeviceButton::ebtGeneric ),
 pX11Code( 0 ),
 pEvdevCode( 0 ),
 pKeyCode( deInputEvent::ekcUndefined ),
@@ -68,6 +69,10 @@ void dexsiDeviceButton::SetName( const char *name ){
 
 void dexsiDeviceButton::SetPressed( bool pressed ){
 	pPressed = pressed;
+}
+
+void dexsiDeviceButton::SetType( deInputDeviceButton::eButtonTypes type ){
+	pType = type;
 }
 
 
@@ -137,6 +142,7 @@ void dexsiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 	
 	info.SetID( pID );
 	info.SetName( pName );
+	info.SetType( pType );
 	
 	info.SetDisplayImage( pDisplayImage );
 	for( i=0; i<pDisplayIcons.GetCount(); i++ ){

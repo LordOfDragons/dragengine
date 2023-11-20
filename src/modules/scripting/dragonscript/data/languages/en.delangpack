@@ -6,6 +6,8 @@
 	<missingText>(No Translation)</missingText>
 	<translation name='UI.Yes'>Yes</translation>
 	<translation name='UI.No'>No</translation>
+	<translation name='UI.Accept'>Accept</translation>
+	<translation name='UI.Cancel'>Cancel</translation>
 	<translation name='UI.Menu.Cut'>Cut</translation>
 	<translation name='UI.Menu.Copy'>Copy</translation>
 	<translation name='UI.Menu.Paste'>Paste</translation>
@@ -36,6 +38,8 @@ Do you want to re-assign?</translation>
 	<translation name='UI.Settings.ModuleParameters.Tooltip.Reset'>Reset to default value</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectParameterValue'>Select Parameter Value</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectValue'>Select value.</translation>
+	<translation name='UI.Settings.Label.Language'>Language</translation>
+	<translation name='UI.Settings.ToolTip.Language'>Select language</translation>
 	<translation name='UI.Command.Quit.DisplayName'>Quit</translation>
 	<translation name='UI.Command.Quit.Description'>Quit game returning to desktop.</translation>
 	<translation name='UI.Command.Screenshot.DisplayName'>Screenshot</translation>
@@ -90,4 +94,6 @@ Do you want to re-assign?</translation>
 	<translation name='UI.Command.MenuRight.Description'>Menu right hand.</translation>
 	<translation name='UI.Command.MenuLeft.DisplayName'>Menu Left Hand</translation>
 	<translation name='UI.Command.MenuLeft.Description'>Menu left hand.</translation>
+	<translation name='UI.EditBinding.DeleteBinding.ToolTip'>Delete binding</translation>
+	<translation name='UI.EditBinding.AddBinding.ToolTip'>Add binding</translation>
 </languagePack>

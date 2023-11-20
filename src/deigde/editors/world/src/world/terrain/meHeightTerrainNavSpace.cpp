@@ -646,94 +646,81 @@ void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
 	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
 		return; // this is a problem. we can not load the file without an environment
 	}
-	if( pPathNavSpace.IsEmpty() ){
-		return;
-	}
-	
-	decPath path;
-	path.SetFromUnix( pPathNavSpace );
 	
 	meWorld &world = pHTSector->GetHeightTerrain()->GetWorld();
 	world.GetUndoSystem()->RemoveAll(); // sorry, no better way yet to keep this consistent... without using a complex undo action
 	
-	igdeLoadSaveHTNavSpace loadNavSpace( *world.GetEnvironment(), LOGSOURCE );
-	deHeightTerrainNavSpace *engNavSpace = NULL;
-	meHeightTerrainNavSpaceFace *newFace = NULL;
-	meHeightTerrainNavSpaceType *newType = NULL;
-	decBaseFileReader *fileReader = NULL;
-	int i, j;
-	
-	try{
-		pBulkUpdate = true;
+	if( ! pPathNavSpace.IsEmpty() ){
+		const decString baseDir( pHTSector->GetHeightTerrain()->GetBaseDirectory() );
+		const decPath path( decPath::AbsolutePathUnix( pPathNavSpace, baseDir ) );
 		
-		fileReader = pEngine.GetVirtualFileSystem()->OpenFileForReading( path );
-		engNavSpace = new deHeightTerrainNavSpace;
-		loadNavSpace.Load( *engNavSpace, *fileReader );
-		fileReader->FreeReference();
-		fileReader = NULL;
-		
-		int typeCount = pTypes.GetCount();
-		for( i=0; i<typeCount; i++ ){
-			( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->RemoveAllFaces();
-		}
-		
-		const int navFaceCount = engNavSpace->GetFaceCount();
-		const deNavigationSpaceFace * const navFaces = engNavSpace->GetFaces();
-		const unsigned int *navCorners = engNavSpace->GetCorners();
-		
-		for( i=0; i<navFaceCount; i++ ){
-			const int cornerCount = navFaces[ i ].GetCornerCount();
-			const int navType = ( int )navFaces[ i ].GetType();
+		if( pEngine.GetVirtualFileSystem()->ExistsFile( path ) ){
+			igdeLoadSaveHTNavSpace loadNavSpace( *world.GetEnvironment(), LOGSOURCE );
+			deHeightTerrainNavSpace *engNavSpace = NULL;
+			int i, j;
 			
-			meHeightTerrainNavSpaceType *type = NULL;
-			for( j=0; j<typeCount; j++ ){
-				meHeightTerrainNavSpaceType * const checkType = ( meHeightTerrainNavSpaceType* )pTypes.GetAt( j );
-				if( checkType->GetType() == navType ){
-					type = checkType;
-					break;
-				}
-			}
-			
-			if( ! type ){
-				decString name( "Type " );
-				name.AppendValue( navType );
+			try{
+				pBulkUpdate = true;
 				
-				newType = new meHeightTerrainNavSpaceType;
-				newType->SetName( name );
-				newType->SetType( navType );
-				AddType( newType );
-				type = newType;
-				newType = NULL;
-				typeCount = pTypes.GetCount();
+				engNavSpace = new deHeightTerrainNavSpace;
+				loadNavSpace.Load( *engNavSpace, decBaseFileReader::Ref::New(
+					pEngine.GetVirtualFileSystem()->OpenFileForReading( path ) ) );
+				
+				int typeCount = pTypes.GetCount();
+				for( i=0; i<typeCount; i++ ){
+					( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->RemoveAllFaces();
+				}
+				
+				const int navFaceCount = engNavSpace->GetFaceCount();
+				const deNavigationSpaceFace * const navFaces = engNavSpace->GetFaces();
+				const unsigned int *navCorners = engNavSpace->GetCorners();
+				
+				for( i=0; i<navFaceCount; i++ ){
+					const int cornerCount = navFaces[ i ].GetCornerCount();
+					const int navType = ( int )navFaces[ i ].GetType();
+					
+					meHeightTerrainNavSpaceType *type = NULL;
+					for( j=0; j<typeCount; j++ ){
+						meHeightTerrainNavSpaceType * const checkType = ( meHeightTerrainNavSpaceType* )pTypes.GetAt( j );
+						if( checkType->GetType() == navType ){
+							type = checkType;
+							break;
+						}
+					}
+					
+					if( ! type ){
+						decString name( "Type " );
+						name.AppendValue( navType );
+						
+						const meHeightTerrainNavSpaceType::Ref newType(
+							meHeightTerrainNavSpaceType::Ref::New( new meHeightTerrainNavSpaceType ) );
+						newType->SetName( name );
+						newType->SetType( navType );
+						AddType( newType );
+						type = newType;
+						typeCount = pTypes.GetCount();
+					}
+					
+					const meHeightTerrainNavSpaceFace::Ref newFace(
+						meHeightTerrainNavSpaceFace::Ref::New( new meHeightTerrainNavSpaceFace ) );
+					decIntList &newFacePoints = newFace->GetNavPoints();
+					for( j=0; j<cornerCount; j++ ){
+						newFacePoints.Add( ( int )*navCorners++ );
+					}
+					type->AddFace( newFace );
+				}
+				
+				pBulkUpdate = false;
+				
+			}catch( const deException &e ){
+				pBulkUpdate = false;
+				world.GetLogger()->LogException( LOGSOURCE, e );
 			}
-			
-			newFace = new meHeightTerrainNavSpaceFace;
-			decIntList &newFacePoints = newFace->GetNavPoints();
-			for( j=0; j<cornerCount; j++ ){
-				newFacePoints.Add( ( int )*navCorners++ );
-			}
-			type->AddFace( newFace );
-			newFace = NULL;
 		}
-		
-		pBulkUpdate = false;
-		
-	}catch( const deException &e ){
-		if( newFace ){
-			delete newFace;
-		}
-		if( newType ){
-			delete newType;
-		}
-		if( fileReader ){
-			fileReader->FreeReference();
-		}
-		pBulkUpdate = false;
-		world.GetLogger()->LogException( LOGSOURCE, e );
-		return;
 	}
 	
 	const int typeCount = pTypes.GetCount();
+	int i;
 	for( i=0; i<typeCount; i++ ){
 		( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->UpdateDDFaces();
 	}

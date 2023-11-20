@@ -1021,22 +1021,8 @@ deoglShadowMapper &shadowMapper ){
 			renderParamBlock.SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
 				matrixGI.GetRotationMatrix().QuickInvert() );
 			
-			// for static shadow maps we use the clear depth trick. depth offsets though
-			// interfere with this trick. the depth scale and front/back face specific offsets
-			// can cause back faces to peek through. while no problem for the regular case
-			// with depth clearing these peek through parts can cause major problems.
-			// for this reason both front and back faces have to be equal. both should be
-			// slightly pushing depth backwards. furthermore depth offset scaling has to
-			// be disabled
-			// 
-			// NOTE we have a problem here. even if front and back faces share the same
-			//      point in the VBO the GPU can add a slight error while calculating
-			//      the interpolation. this can cause a stray pixel of back face popping
-			//      up at the edge of geometry because the front face did not cover the
-			//      exact same pixels as it should. this inconsistent behavior causes
-			//      problems. for this reason this trick is disabled until a better idea
 			renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-				0.0f/*sl.zscale*/, sl.zoffset, 0.0f/*-sl.zscale*/, -sl.zoffset ); // due to disabled
+				sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 			
 			renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 		}

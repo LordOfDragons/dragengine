@@ -52,10 +52,10 @@ interface WindowSettingsSheet
 	/**
 	 * \brief Save all settings.
 	 */
-	func void saveSettings( Widget widget )
+	func void saveSettings(Widget widget)
 	
 	/**
 	 * \brief Reset all settings.
 	 */
-	func void resetSettings( Widget widget )
+	func void resetSettings(Widget widget)
 end

@@ -1193,7 +1193,7 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	const float smOffsetScale = smSize / pGIShadowSize;
 	const float smOffsetBias = smOffsetScale;
 	
-	pGIShadowLayer.zscale = smOffsetScale * smDepthScaleFactor * smDepthScale;
+	pGIShadowLayer.zscale = smOffsetScale * 0.5f;
 	pGIShadowLayer.zoffset = smOffsetBias * smDepthScaleFactor * smDepthScale;
 	// sky shadow uses this to eliminate artifacts in cascades: 1, 1.5, 2, 2.5
 	// pGIShadowLayer.zscale *= 2.5f;

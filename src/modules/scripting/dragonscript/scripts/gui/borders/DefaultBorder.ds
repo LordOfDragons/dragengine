@@ -30,68 +30,65 @@ pin Dragengine.Scenery
  * Default border implementation drawing nothing at all.
  */
 class DefaultBorder implements Border
-	/** Canvas view for the border. */
-	private var CanvasView pCanvas
-	
-	/** Widget the border is assigned to or null if there is none. */
-	private var Widget pWidget
+	var CanvasView pCanvas
+	var Widget pWidget
 	
 	
 	
 	/** Creates a new border. */
-	public func new()
-		this.pCanvas = CanvasView.new()
+	func new()
+		pCanvas = CanvasView.new()
 	end
 	
 	
 	
 	/** Widget the border is assigned to or null if there is none. */
-	public func Widget getWidget()
-		return this.pWidget
+	func Widget getWidget()
+		return pWidget
 	end
 	
 	/** Set widget the border is assigned to or null if there is none. */
-	public func void setWidget( Widget widget )
-		if widget == this.pWidget
+	func void setWidget(Widget widget)
+		if widget == pWidget
 			return
 		end
 		
-		this.pWidget = widget
+		pWidget = widget
 		
-		this.onWidgetChanged()
+		onWidgetChanged()
 	end
 	
 	/** Border size. */
-	public func BorderSize getBorderSize()
+	func BorderSize getBorderSize()
 		return BorderSize.new()
 	end
 	
 	/** Canvas to render this border. */
-	public func Canvas getCanvas()
-		return this.pCanvas
+	func Canvas getCanvas()
+		return pCanvas
 	end
 	
 	/** Canvas to render this border. */
-	public func CanvasView getCanvasView()
-		return this.pCanvas
+	func CanvasView getCanvasView()
+		return pCanvas
 	end
 	
 	/** Resize canvas to fit widget if widget is set. */
-	public func void resizeCanvas( Point widgetSize )
-		this.pCanvas.setSize( widgetSize + this.getBorderSize().getSize() )
-		this.updateCanvas()
+	func void resizeCanvas(Point widgetSize)
+		pCanvas.setSize(widgetSize + getBorderSize().getSize())
+		updateCanvas()
 	end
 	
 	/** Update canvas. Overwrite to create canvas content. */
-	public func void updateCanvas()
+	func void updateCanvas()
 	end
 	
 	/**
 	 * Layout widget parent container. Call if parameters of the border changed in a
 	 * way the border size is affected.
 	 */
-	public func void layoutContainer()
-		var Widget widget = this.getWidget()
+	func void layoutContainer()
+		var Widget widget = getWidget()
 		if widget == null
 			return
 		end
@@ -107,17 +104,17 @@ class DefaultBorder implements Border
 	
 	
 	/** Gui theme of the widget changed. */
-	public func void onGuiThemeChanged()
-		this.updateCanvas()
+	func void onGuiThemeChanged()
+		updateCanvas()
 	end
 	
 	/** Widget changed. */
-	public func void onWidgetChanged()
-		this.updateCanvas()
+	func void onWidgetChanged()
+		updateCanvas()
 	end
 	
 	/** Widget parameters changed. */
-	public func void onWidgetParametersChanged()
-		this.updateCanvas()
+	func void onWidgetParametersChanged()
+		updateCanvas()
 	end
 end

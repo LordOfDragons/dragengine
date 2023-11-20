@@ -58,21 +58,21 @@ pID( 0 ),
 pDirtyTransformation( true ){
 }
 
-fbxNode::fbxNode( decBaseFileReader &reader ) :
+fbxNode::fbxNode( fbxScene &scene, decBaseFileReader &reader ) :
 pNodeProperties70( NULL ),
 pID( 0 ),
 pDirtyTransformation( true )
 {
-	pRead( reader, reader.ReadUInt() );
+	pRead( scene, reader, reader.ReadUInt() );
 	pInitID();
 }
 
-fbxNode::fbxNode( decBaseFileReader &reader, int endOffset ) :
+fbxNode::fbxNode( fbxScene &scene, decBaseFileReader &reader, int endOffset ) :
 pNodeProperties70( NULL ),
 pID( 0 ),
 pDirtyTransformation( true )
 {
-	pRead( reader, endOffset );
+	pRead( scene, reader, endOffset );
 	pInitID();
 }
 
@@ -467,9 +467,24 @@ void fbxNode::DebugPrintStructure( deBaseModule &module, const decString &prefix
 // Private Functions
 //////////////////////
 
-void fbxNode::pRead( decBaseFileReader &reader, int endOffset ){
-	const int countProperties = reader.ReadUInt();
-	const int propertyListByteCount = reader.ReadUInt();
+void fbxNode::pRead( fbxScene &scene, decBaseFileReader &reader, int endOffset ){
+	int countProperties;
+	
+	if( scene.GetVersion() < 7500 ){
+		countProperties = reader.ReadUInt();
+		
+	}else{
+		countProperties = ( int )reader.ReadULong();
+	}
+	
+	int propertyListByteCount;
+	if( scene.GetVersion() < 7500 ){
+		propertyListByteCount = reader.ReadUInt();
+		
+	}else{
+		propertyListByteCount = ( int )reader.ReadULong();
+	}
+	
 	pName = reader.ReadString8();
 	
 	const int endOfPropertyList = reader.GetPosition() + propertyListByteCount;
@@ -499,20 +514,30 @@ void fbxNode::pRead( decBaseFileReader &reader, int endOffset ){
 		return; // no node list
 	}
 	
+	const int markerOffset = scene.GetVersion() < 7500 ? 9 : 17;
+	
 	deObjectReference node;
 	while( true ){
-		const int checkEndOffset = reader.ReadUInt();
+		int checkEndOffset;
+		
+		if( scene.GetVersion() < 7500 ){
+			checkEndOffset = reader.ReadUInt();
+			
+		}else{
+			checkEndOffset = ( int )reader.ReadULong();
+		}
+		
 		if( checkEndOffset == 0 ){
 			// end of list marker
-			if( reader.GetPosition() + 9 != endOffset ){
-				DETHROW_INFO( deeInvalidFileFormat, "reader.position + 9 > endOffset" );
+			if( reader.GetPosition() + markerOffset != endOffset ){
+				DETHROW_INFO( deeInvalidFileFormat, "reader.position + markerOffset > endOffset" );
 			}
 			
 			reader.SetPosition( endOffset );
 			break;
 		}
 		
-		node.TakeOver( new fbxNode( reader, checkEndOffset ) );
+		node.TakeOver( new fbxNode( scene, reader, checkEndOffset ) );
 		pNodes.Add( node );
 	}
 }

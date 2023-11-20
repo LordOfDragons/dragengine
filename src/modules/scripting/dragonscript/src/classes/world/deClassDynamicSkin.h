@@ -90,10 +90,13 @@ private:
 	
 	DEF_NATFUNC( nfGetTypeAt );
 	
+	DEF_NATFUNC( nfGetValueAt );
 	DEF_NATFUNC( nfSetValueAt );
 	
+	DEF_NATFUNC( nfGetColorAt );
 	DEF_NATFUNC( nfSetColorAt );
 	
+	DEF_NATFUNC( nfGetImageAt );
 	DEF_NATFUNC( nfSetImageAt );
 	
 	DEF_NATFUNC( nfGetCanvasAt );
@@ -101,8 +104,10 @@ private:
 	DEF_NATFUNC( nfSetCanvasAt2 );
 	DEF_NATFUNC( nfSetCanvasAt3 );
 	
+	DEF_NATFUNC( nfGetCameraAt );
 	DEF_NATFUNC( nfSetCameraAt );
 	
+	DEF_NATFUNC( nfGetVideoPlayerAt );
 	DEF_NATFUNC( nfSetVideoPlayerAt );
 	
 	DEF_NATFUNC( nfHashCode );

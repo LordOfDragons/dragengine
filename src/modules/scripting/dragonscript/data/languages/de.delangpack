@@ -6,6 +6,8 @@
 	<missingText>(Keine Übersetzung)</missingText>
 	<translation name='UI.Yes'>Ja</translation>
 	<translation name='UI.No'>Nein</translation>
+	<translation name='UI.Accept'>Bestätigen</translation>
+	<translation name='UI.Cancel'>Abbrechen</translation>
 	<translation name='UI.Menu.Cut'>Ausschneiden</translation>
 	<translation name='UI.Menu.Copy'>Kopieren</translation>
 	<translation name='UI.Menu.Paste'>Einfügen</translation>
@@ -36,6 +38,8 @@ Neu zuweisen?</translation>
 	<translation name='UI.Settings.ModuleParameters.Tooltip.Reset'>Auf Standardwert zurücksetzen</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectParameterValue'>Parameterwert auswählen</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectValue'>Wert auswählen.</translation>
+	<translation name='UI.Settings.Label.Language'>Sprache</translation>
+	<translation name='UI.Settings.ToolTip.Language'>Sprache wählen</translation>
 	<translation name='UI.Command.Quit.DisplayName'>Beenden</translation>
 	<translation name='UI.Command.Quit.Description'>Spiel direkt beenden und zum Desktop zurückkehren.</translation>
 	<translation name='UI.Command.Screenshot.DisplayName'>Screenshot</translation>
@@ -90,4 +94,6 @@ Neu zuweisen?</translation>
 	<translation name='UI.Command.MenuRight.Description'>Menu anzeigen mit der rechten Hand.</translation>
 	<translation name='UI.Command.MenuLeft.DisplayName'>Menu linke Hand</translation>
 	<translation name='UI.Command.MenuLeft.Description'>Menu anzeigen mit der linken Hand.</translation>
+	<translation name='UI.EditBinding.DeleteBinding.ToolTip'>Steuerung löschen</translation>
+	<translation name='UI.EditBinding.AddBinding.ToolTip'>Steuerung hinzufügen</translation>
 </languagePack>

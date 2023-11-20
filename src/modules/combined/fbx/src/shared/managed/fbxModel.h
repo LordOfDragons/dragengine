@@ -42,11 +42,11 @@ class deModelWeight;
 
 
 /**
- * \brief FBX managed model.
+ * FBX managed model.
  */
 class fbxModel : public deObject{
 public:
-	/** \brief Type holding strong reference. */
+	/** Type holding strong reference. */
 	typedef deTObjectReference<fbxModel> Ref;
 	
 	
@@ -87,16 +87,18 @@ private:
 	sVertex *pVertices;
 	int pVertexCount;
 	
+	bool pCulling;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create connection. */
+	/** Create connection. */
 	fbxModel( fbxScene &scene, fbxNode &nodeGeometry );
 	
 protected:
-	/** \brief Clean up connection. */
+	/** Clean up connection. */
 	virtual ~fbxModel();
 	/*@}*/
 	
@@ -105,57 +107,57 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Scene. */
+	/** Scene. */
 	inline fbxScene &GetScene() const{ return pScene; }
 	
-	/** \brief Geometry node. */
+	/** Geometry node. */
 	inline fbxNode &GetNodeGeometry() const{ return pNodeGeomtry; }
 	
-	/** \brief Model node. */
+	/** Model node. */
 	inline fbxNode &GetNodeModel() const{ return *pNodeModel; }
 	
-	/** \brief Deformer node. */
+	/** Deformer node. */
 	inline fbxNode *GetNodeDeformer() const{ return pNodeDeformer; }
 	
-	/** \brief Geometry ID. */
+	/** Geometry ID. */
 	inline int64_t GetGeometryID() const{ return pGeometryID; }
 	
-	/** \brief Model ID. */
+	/** Model ID. */
 	inline int64_t GetModelID() const{ return pModelID; }
 	
-	/** \brief Deformer ID. */
+	/** Deformer ID. */
 	inline int64_t GetDeformerID() const{ return pDeformerID; }
 	
 	
 	
-	/** \brief Count of clusters. */
+	/** Count of clusters. */
 	int GetClusterCount() const;
 	
-	/** \brief Cluster at index. */
+	/** Cluster at index. */
 	fbxModelCluster *GetClusterAt( int index ) const;
 	
-	/** \brief Named cluster or NULL if absent. */
+	/** Named cluster or NULL if absent. */
 	fbxModelCluster *GetClusterNamed( const char *name ) const;
 	
-	/** \brief Match clusters against rig. */
+	/** Match clusters against rig. */
 	void MatchClusters( const fbxRig &rig );
 	
-	/** \brief Build weights. */
+	/** Build weights. */
 	void BuildWeights();
 	
-	/** \brief Count of vertices. */
+	/** Count of vertices. */
 	inline int GetVertexCount() const{ return pVertexCount; }
 	
-	/** \brief Vertex position. */
+	/** Vertex position. */
 	inline const decVector &GetVertexPositionAt( int index ) const{ return pVertices[ index ].position; }
 	
-	/** \brief Vertex weight set. */
+	/** Vertex weight set. */
 	inline int GetVertexWeightSetAt( int index ) const{ return pVertices[ index ].weightSet; }
 	
-	/** \brief Get weight. */
+	/** Get weight. */
 	const deModelWeight &GetWeightAt( int index ) const;
 	
-	/** \brief Weight sets. */
+	/** Weight sets. */
 	inline const decIntList &GetWeightSetWeights() const{ return pWeightSetWeights; }
 	inline const decIntList &GetWeightSetsFirstWeight() const{ return pWeightSetsFirstWeight; }
 	inline const decIntList &GetWeightSetsWeightsCount() const{ return pWeightSetsWeightsCount; }
@@ -163,12 +165,15 @@ public:
 	
 	
 	
-	/** \brief Matrix. */
+	/** Matrix. */
 	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
+	/** Culling. */
+	inline bool GetCulling() const{ return pCulling; }
 	
 	
-	/** \brief Debug print node structure. */
+	
+	/** Debug print node structure. */
 	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
 	/*@}*/
 	

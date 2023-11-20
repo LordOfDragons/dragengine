@@ -34,73 +34,99 @@ pin Dragengine.Utils
  * Can skip actor speaking or entire conversation if required.
  */
 class ConversationInputProcessor extends DefaultInputProcessor
-	private var ConversationPlayback pPlayback
-	private var BindingManager pBindingManager
-	private var Array pAllowedCommands
+	private class FastForwardSpeakingTrigger extends GamepadTriggerTracker.DefaultListener
+		var WeakReference pProcessor
+		
+		func new(ConversationInputProcessor processor)
+			pProcessor = WeakReference.new(processor)
+		end
+		
+		func void triggerPulled(InputEventSource system, int device, int axis, int trigger)
+			var ConversationInputProcessor processor = pProcessor.get() cast ConversationInputProcessor
+			if processor != null
+				processor.fastForwardSpeaking()
+			end
+		end
+	end
 	
+	
+	var ConversationPlayback pPlayback
+	var BindingManager pBindingManager
+	var Array pAllowedCommands
+	var GamepadTriggerTracker pGamepadTriggerTracker
 	
 	
 	/** \brief Create conversation input processor. */
-	public func new( ConversationPlayback playback )
+	func new(ConversationPlayback playback)
 		if playback == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pPlayback = playback
-		this.pAllowedCommands = Array.new()
+		pPlayback = playback
+		pAllowedCommands = Array.new()
+		pGamepadTriggerTracker = GamepadTriggerTracker.new()
+		pGamepadTriggerTracker.addListener(FastForwardSpeakingTrigger.new(this))
 	end
 	
 	
 	
 	/** \brief Conversation playback. */
-	public func ConversationPlayback getPlayback()
-		return this.pPlayback
+	func ConversationPlayback getPlayback()
+		return pPlayback
 	end
 	
 	/** \brief Binding manager or \em null to not allow bindings. */
-	public func BindingManager getBindingManager()
-		return this.pBindingManager
+	func BindingManager getBindingManager()
+		return pBindingManager
 	end
 	
 	/** \brief Set binding manager or \em null to not allow bindings. */
-	public func void setBindingManager( BindingManager manager )
-		this.pBindingManager = manager
+	func void setBindingManager(BindingManager manager)
+		pBindingManager = manager
 	end
 	
 	/** \brief Command names allowed during conversation. */
-	public func Array getAllowedCommands()
-		return this.pAllowedCommands
+	func Array getAllowedCommands()
+		return pAllowedCommands
 	end
 	
 	/** \brief Set command names allowed during conversation. */
-	public func void setAllowedCommands( Array list )
-		this.pAllowedCommands = list
+	func void setAllowedCommands(Array list)
+		pAllowedCommands = list
+	end
+	
+	/**
+	 * \brief Gamepad trigger tracker.
+	 * \version 1.20
+	 */
+	func GamepadTriggerTracker getGamepadTriggerTracker()
+		return pGamepadTriggerTracker
 	end
 	
 	
 	
 	/** \brief Process input event. */
-	public func void inputEvent( InputEvent event )
+	func void inputEvent(InputEvent event)
 		select event.getType()
 		case InputEventType.keyPress
 			if event.getKeyCode() == InputEventKey.space
-				this.fastForwardSpeaking()
+				fastForwardSpeaking()
 				
-			elif this.pBindingManager != null
-				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getSource(), event.getDevice(), event.getCode() )
+			elif pBindingManager != null
+				var Binding binding = pBindingManager.findButtonBinding(\
+					event.getSource(), event.getDevice(), event.getCode())
 				
-				if binding != null and this.pAllowedCommands.has( binding.getCommand().getName() )
+				if binding != null and pAllowedCommands.has(binding.getCommand().getName())
 					binding.getCommand().start()
 				end
 			end
 			
 		case InputEventType.keyRelease
-			if this.pBindingManager != null
-				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getSource(), event.getDevice(), event.getCode() )
+			if pBindingManager != null
+				var Binding binding = pBindingManager.findButtonBinding(\
+					event.getSource(), event.getDevice(), event.getCode())
 				
-				if binding != null and this.pAllowedCommands.has( binding.getCommand().getName() )
+				if binding != null and pAllowedCommands.has(binding.getCommand().getName())
 					binding.getCommand().stop()
 					return
 				end
@@ -108,13 +134,15 @@ class ConversationInputProcessor extends DefaultInputProcessor
 			
 		case InputEventType.mousePress
 			//if event.getCode() == InputEventMouseButton.left
-				this.fastForwardSpeaking()
+				fastForwardSpeaking()
 			//end
 		end
+		
+		pGamepadTriggerTracker.inputEvent(event)
 	end
 	
 	/** \brief Fast forward speaking. */
-	protected func void fastForwardSpeaking()
-		this.pPlayback.fastForwardSpeaking()
+	func void fastForwardSpeaking()
+		pPlayback.fastForwardSpeaking()
 	end
 end

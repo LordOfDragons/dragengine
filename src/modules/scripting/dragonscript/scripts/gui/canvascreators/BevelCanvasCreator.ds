@@ -104,7 +104,7 @@ class BevelCanvasCreator extends DefaultCanvasCreator
 	 */
 	public func void setParameter(String name, Object value)
 		if name.equals("colorHighlight") \
-		/* backwards compatibility */ or name.equals("colorHilight")
+		/* backward compatibility */ or name.equals("colorHilight")
 			setColorHighlight(value cast Color)
 			
 		elif name.equals("colorShadow")

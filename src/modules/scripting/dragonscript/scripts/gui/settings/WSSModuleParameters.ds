@@ -30,8 +30,7 @@ pin Dragengine.Utils
  */
 class WSSModuleParameters extends DefaultWindowSettingsSheet
 	/** \brief Create window settings sheet. */
-	public func new() this("moduleParameters",\
-	EngineTranslations.get().translate("UI.Settings.ModuleParameters").toUTF8())
+	public func new() this("moduleParameters", "@UI.Settings.ModuleParameters")
 	end
 	
 	public func new(String identifier, String title) super(identifier, title)

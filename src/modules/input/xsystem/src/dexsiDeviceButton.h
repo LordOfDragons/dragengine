@@ -28,9 +28,9 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputEvent.h>
+#include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/resources/image/deImageReference.h>
 
-class deInputDeviceButton;
 class deXSystemInput;
 
 
@@ -45,6 +45,7 @@ private:
 	decString pID;
 	decString pName;
 	bool pPressed;
+	deInputDeviceButton::eButtonTypes pType;
 	
 	deImageReference pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
@@ -94,6 +95,12 @@ public:
 	
 	/** Set if button is presssed. */
 	void SetPressed( bool pressed );
+	
+	/** Type. */
+	inline deInputDeviceButton::eButtonTypes GetType() const{ return pType; }
+	
+	/** Set type. */
+	void SetType( deInputDeviceButton::eButtonTypes type );
 	
 	
 	

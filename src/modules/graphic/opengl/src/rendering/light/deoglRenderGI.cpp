@@ -126,6 +126,20 @@ enum eSPDebugProbeOffset{
 	spdpoGIDebugCascade
 };
 
+enum eSPDebugProbeRays{
+	spdprMatrixNormal,
+	spdprMatrixMV,
+	spdprMatrixMVP,
+	spdprMatrixP,
+	spdprGICascade,
+	spdprGIDebugProbe,
+	spdprGIRaysPerProbe,
+	spdprGIProbesPerLine,
+	spdprProbePosition,
+	spdprUpdateDataRayOffset,
+	spdprRayDataValid
+};
+
 enum eSPDebugProbeUpdate{
 	spdpuPosTransform,
 	spdpuTCTransform,
@@ -147,7 +161,8 @@ enum eSPDebugProbeUpdate{
 ////////////////////////////
 
 deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
-deoglRenderLightBase( renderThread )
+deoglRenderLightBase( renderThread ),
+pDebugRayLightIndex( -1 )
 {
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
@@ -272,6 +287,14 @@ deoglRenderLightBase( renderThread )
 		
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineDebugProbeOffsetXRay = pipelineManager.GetWith( pipconf );
+		
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Rays" );
+		pipconf2.SetShader( renderThread, sources, defines );
+		pPipelineDebugProbeRays = pipelineManager.GetWith( pipconf2 );
+		
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineDebugProbeRaysXRay = pipelineManager.GetWith( pipconf );
 		
 		
 		pipconf2.SetEnableDepthTest( false );
@@ -1031,7 +1054,8 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderDebugOverlay" );
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
-	if( ! devmode.GetEnabled() || ( ! devmode.GetGIShowProbes() && ! devmode.GetGIShowProbeUpdate() ) ){
+	if( ! devmode.GetEnabled() || ( ! devmode.GetGIShowProbes() && ! devmode.GetGIShowProbeUpdate()
+	&& ! devmode.GetGIShowProbeRays() ) ){
 		return;
 	}
 	
@@ -1065,8 +1089,8 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		
 		pUBORenderLight->Activate();
 		
-		tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
-		tsmgr.EnableArrayTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampNearest() );
 		tsmgr.EnableArrayTexture( 2, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 2 );
 		
@@ -1091,6 +1115,78 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		tsmgr.DisableStagesAbove( 0 );
 		
 		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_LINES, 0, 2, probeCount.x * probeCount.y * probeCount.z ) );
+	}
+	
+	// probe rays
+	if( devmode.GetGIShowProbeRays() ){
+		deoglGIRayCache &rayCache = giState->GetRayCache();
+		
+		if( ! pSSBODebugRayLight ){
+			pSSBODebugRayLight.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etGpu ) );
+			pSSBODebugRayLight->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+			pSSBODebugRayLight->SetParameterCount( 1 );
+			pSSBODebugRayLight->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, GI_MAX_RAYS_PER_PROBE );
+			pSSBODebugRayLight->MapToStd140();
+			pSSBODebugRayLight->SetBindingPoint( 2 );
+			pSSBODebugRayLight->EnsureBuffer();
+		}
+		
+		const deoglPipeline &pipeline = xray ? *pPipelineDebugProbeRaysXRay : *pPipelineDebugProbeRays;
+		pipeline.Activate();
+		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+		
+		const decPoint3 gridCoord( cascade.ShiftedGrid2LocalGrid(
+			cascade.World2Grid( plan.GetCameraPosition() ) ) );
+		const int probeIndex = cascade.GridCoord2ProbeIndex( gridCoord );
+		const decVector probePosition( cascade.ProbePosition( probeIndex ) - cascade.GetFieldOrigin() );
+		
+		decPoint updateDataRayOffset( -1, -1 );
+		bool rayDataValid = false;
+		
+		if( probeIndex == pDebugRayLightIndex ){
+			rayDataValid = true;
+			
+		}else{
+			pDebugRayLightIndex = -1;
+		}
+		
+		if( &giState->GetActiveCascade() == &cascade ){
+			const int updateIndex = cascade.IndexOfUpdateProbe( probeIndex );
+			if( updateIndex != -1 ){
+				updateDataRayOffset.x = ( updateIndex % rayCache.GetProbesPerLine() ) * rayCache.GetRaysPerProbe();
+				updateDataRayOffset.y = updateIndex / rayCache.GetProbesPerLine();
+				
+				pDebugRayLightIndex = probeIndex;
+				rayDataValid = true;
+				
+				OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+					| GL_TEXTURE_FETCH_BARRIER_BIT ) );
+			}
+		}
+		
+		deoglShaderCompiled &shaderProbe = pipeline.GetGlShader();
+		shaderProbe.SetParameterDMatrix4x3( spdprMatrixNormal, matrixNormal );
+		shaderProbe.SetParameterDMatrix4x3( spdprMatrixMV, matrixC );
+		shaderProbe.SetParameterDMatrix4x4( spdprMatrixMVP, matrixCP );
+		shaderProbe.SetParameterDMatrix4x4( spdprMatrixP, matrixP );
+		shaderProbe.SetParameterInt( spdprGICascade, cascade.GetIndex() );
+		shaderProbe.SetParameterInt( spdprGIDebugProbe, probeIndex );
+		shaderProbe.SetParameterInt( spdprGIRaysPerProbe, rayCache.GetRaysPerProbe() );
+		shaderProbe.SetParameterInt( spdprGIProbesPerLine, rayCache.GetProbesPerLine() );
+		shaderProbe.SetParameterDVector3( spdprProbePosition, probePosition );
+		shaderProbe.SetParameterPoint2( spdprUpdateDataRayOffset, updateDataRayOffset );
+		shaderProbe.SetParameterInt( spdprRayDataValid, rayDataValid ? 1 : 0 );
+		
+		pUBORenderLight->Activate();
+		pSSBODebugRayLight->Activate();
+		renderThread.GetGI().GetUBORayDirection().Activate();
+		
+		tsmgr.EnableArrayTexture( 0, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 2, renderThread.GetGI().GetTraceRays().GetTextureLight(), GetSamplerClampNearest() );
+		tsmgr.DisableStagesAbove( 2 );
+		
+		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, rayCache.GetRaysPerProbe() ) );
 	}
 	
 	// update

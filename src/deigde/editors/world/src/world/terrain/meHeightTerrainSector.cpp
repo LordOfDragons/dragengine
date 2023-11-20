@@ -1462,7 +1462,9 @@ void meHeightTerrainSector::SetActiveNavSpace( meHeightTerrainNavSpace *navspace
 		navspace->SetActive( true );
 	}
 	
-	pHeightTerrain->GetWorld().NotifyHTActiveNavSpaceChanged();
+	if( pHeightTerrain ){
+		pHeightTerrain->GetWorld().NotifyHTActiveNavSpaceChanged();
+	}
 }
 
 void meHeightTerrainSector::SetSelectedNavPoints( const decIntList &points ){
@@ -1474,7 +1476,9 @@ void meHeightTerrainSector::SetSelectedNavPoints( const decIntList &points ){
 	
 	pUpdateDDSelNavPointsShapes();
 	
-	pHeightTerrain->GetWorld().NotifyHTNavSpaceSelectedPointsChanged();
+	if( pHeightTerrain ){
+		pHeightTerrain->GetWorld().NotifyHTNavSpaceSelectedPointsChanged();
+	}
 }
 
 
@@ -1721,6 +1725,10 @@ void meHeightTerrainSector::pRepositionDebugDrawers(){
 	
 	for( i=0; i<count; i++ ){
 		( ( deDebugDrawer* )pDDEdges.GetAt( i ) )->SetPosition( position );
+	}
+	
+	if( pDDSelNavPoints ){
+		pDDSelNavPoints->SetPosition( position );
 	}
 }
 
@@ -2014,18 +2022,19 @@ void meHeightTerrainSector::pUpdateDDSelNavPointsShapes(){
 	
 	if( pHeightImage && pHeightTerrain ){
 		const sGrayscale32 * const heights = pHeightImage->GetDataGrayscale32();
+		const float sectorSize = pHeightTerrain->GetSectorSize();
 		const int sectorResolution = pHeightTerrain->GetSectorResolution();
 		const float heightScale = pHeightTerrain->GetHeightScaling();
-		const float radius = 0.25f / ( float )sectorResolution;
+		const float radius = 0.25f; // / ( float )sectorResolution;
 		const int count = pSelectedNavPoints.GetCount();
 		const float invPointLast = 1.0f / ( float )( sectorResolution - 1 );
 		
 		for( i=0; i<count; i++ ){
 			const int navpoint = pSelectedNavPoints.GetAt( i );
 			const decVector center(
-				( float )( navpoint % sectorResolution ) * invPointLast - 0.5f,
+				sectorSize * ( ( float )( navpoint % sectorResolution ) * invPointLast - 0.5f ),
 				heightScale * heights[ navpoint ].value,
-				0.5f - ( float )( navpoint / sectorResolution ) * invPointLast );
+				sectorSize * ( 0.5f - ( float )( navpoint / sectorResolution ) * invPointLast ) );
 			shapes.Add( new decShapeSphere( radius, center ) );
 		}
 	}

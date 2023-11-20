@@ -29,18 +29,19 @@ pin Dragengine.Utils
  * \brief Console command shows available languages and changing active language.
  */
 class LanguageConsoleCommand extends ConsoleCommand
-	/** \brief Translation manager. */
-	private var TranslationManager pTranslationManager
+	var TranslationManager pTranslationManager
+	var bool pChangeEngineTranslations
 	
 	
 	
 	/** \brief Create console command. */
-	public func new(TranslationManager translationManager)
+	func new(TranslationManager translationManager)
 		if translationManager == null
 			throw EInvalidParam.new()
 		end
 		
 		pTranslationManager = translationManager
+		pChangeEngineTranslations = true
 		
 		setName("language")
 		setDescription("Shows languages and set active language.")
@@ -53,16 +54,34 @@ class LanguageConsoleCommand extends ConsoleCommand
 	
 	
 	/** \brief Translation manager. */
-	public func TranslationManager getTranslationManager()
+	func TranslationManager getTranslationManager()
 		return pTranslationManager
 	end
 	
 	/** \brief Set translation manager. */
-	public func void setTranslationManager(TranslationManager translationManager)
+	func void setTranslationManager(TranslationManager translationManager)
 		if translationManager == null
 			throw EInvalidParam.new()
 		end
 		pTranslationManager = translationManager
+	end
+	
+	/**
+	 * \brief Change also engine translations.
+	 * \version 1.20
+	 * 
+	 * Enabled by default.
+	 */
+	func bool getChangeEngineTranslations()
+		return pChangeEngineTranslations
+	end
+	
+	/**
+	 * \brief Set to change also engine translations.
+	 * \version 1.20
+	 */
+	func void setChangeEngineTranslations(bool change)
+		pChangeEngineTranslations = change
 	end
 	
 	
@@ -72,7 +91,7 @@ class LanguageConsoleCommand extends ConsoleCommand
 	 * \param console Console to send output to.
 	 * \param params List of parameters. Has to match command syntax.
 	 */
-	public func void execute(Console console, Array params)
+	func void execute(Console console, Array params)
 		if params.getCount() == 0
 			console.addMessage(getSyntax())
 			return
@@ -104,7 +123,7 @@ class LanguageConsoleCommand extends ConsoleCommand
 				
 				if languagePack == null
 					languagePack = pTranslationManager.getNamed(\
-					UnicodeString.newFromUTF8(params.getAt(1).toString()))
+						UnicodeString.newFromUTF8(params.getAt(1).toString()))
 				end
 				
 				if languagePack == null
@@ -112,6 +131,8 @@ class LanguageConsoleCommand extends ConsoleCommand
 					
 				else
 					pTranslationManager.setActive(languagePack)
+					EngineTranslations.get().setActiveWithIdIfPresent(languagePack.getIdentifier())
+					
 					console.addMessage("Activated language: {} ({})".format(Array.newWith(\
 						languagePack.getIdentifier(), languagePack.getName())))
 				end

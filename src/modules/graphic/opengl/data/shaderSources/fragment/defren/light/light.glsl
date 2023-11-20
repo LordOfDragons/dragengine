@@ -926,13 +926,13 @@ void main( void ){
 			#endif
 			
 		}else{
-			shadow = clamp( dotval * shadowThresholdInv + 1.0, 0.0, 1.0 );
+			shadow = clamp( dotval * shadowThresholdInv + 1, 0, 1 );
 		#else
 			// force back facing fragments into shadow. not only does this avoid the need to
 			// sample the shadow maps but it also avoids light leaking problems. this does
 			// not affect ambient shadows
-			if( dotval > 0.0 ){
-				shadow = 1.0;
+			if( dotval > 0 ){
+				shadow = 1;
 		#endif
 			#ifdef TEXTURE_SHADOW1_SOLID
 				#ifdef SMA1_CUBE
@@ -976,7 +976,7 @@ void main( void ){
 				#endif
 			#endif
 			}else{
-				shadow = 0.0;
+				shadow = 0;
 			}
 			
 			#ifdef AMBIENT_LIGHTING
@@ -1036,6 +1036,10 @@ void main( void ){
 				}
 				#endif
 			}
+		#endif
+		
+		#if GI_RAY
+		shadow = step( 0.75, shadow );
 		#endif
 		
 		vec3 shadowColor = vec3( shadow );

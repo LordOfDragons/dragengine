@@ -106,4 +106,12 @@ enum InputDeviceAxisType
 	 * this order: thumb-index, index-middle, middle-ring, ring-pinky.
 	 */
 	fingerSpread
+	
+	/**
+	 * \brief Battery level.
+	 * \version 1.20
+	 * 
+	 * Indicates the battery charge level in the range from 0 (discharged) to 1 (fully charged).
+	 */
+	batteryLevel
 end
