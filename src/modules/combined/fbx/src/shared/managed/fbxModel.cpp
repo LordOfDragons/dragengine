@@ -62,7 +62,8 @@ pWeightCount( 0 ),
 pWeightSize( 0 ),
 pWeightMatchThreshold( 0.001f ),
 pVertices( NULL ),
-pVertexCount( 0 )
+pVertexCount( 0 ),
+pCulling( true )
 {
 	decPointerList consGeometry;
 	scene.FindConnections( pGeometryID, consGeometry );
@@ -148,6 +149,12 @@ pVertexCount( 0 )
 				propVertices.GetValueAtAsFloat( j + 2 ) );
 		}
 		pVertexCount = count;
+	}
+	
+	// properties
+	const fbxNode * const nodeCulling = pNodeModel->FirstNodeNamedOrNull( "Culling" );
+	if( nodeCulling ){
+		pCulling = nodeCulling->GetPropertyAt( 0 )->CastString().GetValue() != "CullingOff";
 	}
 }
 

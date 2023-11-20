@@ -111,7 +111,7 @@ class UTF8Navigator
 	/**
 	 * \brief Set position in bytes clamped to valid range.
 	 * 
-	 * If position is not at valid first byte moves backwards until valid first first byte.
+	 * If position is not at valid first byte moves backward until valid first first byte.
 	 */
 	public func void setPosition(int position)
 		position = DEMath.clamp(position, 0, pLength)

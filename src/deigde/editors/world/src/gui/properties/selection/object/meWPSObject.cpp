@@ -476,6 +476,9 @@ public:
 		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyPositionXZ() );
 		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyPositionXYZ() );
 		helper.Separator( contextMenu );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectSnapToGrid() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectDropToGround() );
+		helper.Separator( contextMenu );
 		helper.MenuCommand( contextMenu, new cActionResetPosition( pPanel ), true );
 	}
 };

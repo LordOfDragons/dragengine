@@ -255,7 +255,7 @@ class GameWorld
 	
 	
 	/**
-	 * \brief Enable persistency (backwards compatibility).
+	 * \brief Enable persistency (backward compatibility).
 	 * \version 1.17
 	 * 
 	 * Since Drag[en]gine 1.17 GameWorld supports persistency to load and save game world

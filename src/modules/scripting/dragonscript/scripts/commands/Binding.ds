@@ -30,88 +30,73 @@ namespace Dragengine.Commands
  * For quicker access the device and button index are used.
  */
 class Binding
-	/** \brief Input device identifier*/
-	private var String pDeviceID
-	
-	/** \brief Axis or button identifier. */
-	private var String pSourceID
-	
-	/** \brief Bound command. */
-	private var Command pCommand
-	
-	/** \brief Inverse axis. */
-	private var bool pInverseAxis
-	
-	/** \brief System. */
-	private var InputEventSource pSystem
-	
-	/** \brief Device index or -1 if not set. */
-	private var int pDeviceIndex
-	
-	/** \brief Source index or -1 if not set. */
-	private var int pSourceIndex
-	
-	/** \brief Axis pressed simulation state. */
-	private var bool pSimulateAxisPressed
+	var String pDeviceID
+	var String pSourceID
+	var Command pCommand
+	var bool pInverseAxis
+	var InputEventSource pSystem
+	var int pDeviceIndex
+	var int pSourceIndex
+	var bool pSimulateAxisPressed
 	
 	
 	
 	/** \brief Create binding. */
-	public func new( String deviceID, String sourceID, Command command, bool inverseAxis )
+	func new(String deviceID, String sourceID, Command command, bool inverseAxis)
 		if deviceID == null or sourceID == null or command == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pDeviceID = deviceID
-		this.pSourceID = sourceID
-		this.pCommand = command
-		this.pInverseAxis = inverseAxis
-		this.pSystem = null
-		this.pDeviceIndex = -1
-		this.pSourceIndex = -1
-		this.pSimulateAxisPressed = false
+		pDeviceID = deviceID
+		pSourceID = sourceID
+		pCommand = command
+		pInverseAxis = inverseAxis
+		pSystem = null
+		pDeviceIndex = -1
+		pSourceIndex = -1
+		pSimulateAxisPressed = false
 	end
 	
 	/** \brief Create copy of binding. */
-	public func new( Binding binding )
-		this.pDeviceID = binding.pDeviceID
-		this.pSourceID = binding.pSourceID
-		this.pCommand = binding.pCommand
-		this.pInverseAxis = binding.pInverseAxis
-		this.pSystem = binding.pSystem
-		this.pDeviceIndex = binding.pDeviceIndex
-		this.pSourceIndex = binding.pSourceIndex
-		this.pSimulateAxisPressed = false
+	func new(Binding binding)
+		pDeviceID = binding.pDeviceID
+		pSourceID = binding.pSourceID
+		pCommand = binding.pCommand
+		pInverseAxis = binding.pInverseAxis
+		pSystem = binding.pSystem
+		pDeviceIndex = binding.pDeviceIndex
+		pSourceIndex = binding.pSourceIndex
+		pSimulateAxisPressed = false
 	end
 	
 	/** \brief Create copy of binding with different command. */
-	public func new( Binding binding, Command command ) this( binding )
+	func new(Binding binding, Command command) this(binding)
 		if command == null
 			throw EInvalidParam.new()
 		end
-		this.pCommand = command
+		pCommand = command
 	end
 	
 	
 	
 	/** \brief Input device identifier*/
-	public func String getDeviceID()
-		return this.pDeviceID
+	func String getDeviceID()
+		return pDeviceID
 	end
 	
 	/** \brief Axis or button identifier. */
-	public func String getSourceID()
-		return this.pSourceID
+	func String getSourceID()
+		return pSourceID
 	end
 	
 	/** \brief Bound command. */
-	public func Command getCommand()
-		return this.pCommand
+	func Command getCommand()
+		return pCommand
 	end
 	
 	/** \brief Inverse axis. */
-	public func bool getInverseAxis()
-		return this.pInverseAxis
+	func bool getInverseAxis()
+		return pInverseAxis
 	end
 	
 	
@@ -120,36 +105,36 @@ class Binding
 	 * \brief System or null if not set.
 	 * \version 1.6
 	 */
-	public func InputEventSource getSystem()
-		return this.pSystem
+	func InputEventSource getSystem()
+		return pSystem
 	end
 	
 	/**
 	 * \brief Set system or null if not set.
 	 * \version 1.6
 	 */
-	public func void setSystem( InputEventSource system )
-		this.pSystem = system
+	func void setSystem(InputEventSource system)
+		pSystem = system
 	end
 	
 	/** \brief Device index or -1 if not set. */
-	public func int getDeviceIndex()
-		return this.pDeviceIndex
+	func int getDeviceIndex()
+		return pDeviceIndex
 	end
 	
 	/** \brief Set device index or -1 if not set. */
-	public func void setDeviceIndex( int index )
-		this.pDeviceIndex = index
+	func void setDeviceIndex(int index)
+		pDeviceIndex = index
 	end
 	
 	/** \brief Source index or -1 if not set. */
-	public func int getSourceIndex()
-		return this.pSourceIndex
+	func int getSourceIndex()
+		return pSourceIndex
 	end
 	
 	/** \brief Set source index or -1 if not set. */
-	public func void setSourceIndex( int index )
-		this.pSourceIndex = index
+	func void setSourceIndex(int index)
+		pSourceIndex = index
 	end
 	
 	
@@ -158,17 +143,17 @@ class Binding
 	 * \brief Device or null if not set.
 	 * \version 1.6
 	 */
-	public func InputDevice getInputDevice()
-		if this.pDeviceIndex == -1
+	func InputDevice getInputDevice()
+		if pDeviceIndex == -1
 			return null
 		end
 		
-		select this.pSystem
+		select pSystem
 		case InputEventSource.input
-			return InputSystem.getDeviceAt( this.pDeviceIndex )
+			return InputSystem.getDeviceAt(pDeviceIndex)
 			
 		case InputEventSource.vr
-			return VRSystem.getDeviceAt( this.pDeviceIndex )
+			return VRSystem.getDeviceAt(pDeviceIndex)
 		end
 		
 		return null
@@ -178,11 +163,11 @@ class Binding
 	 * \brief Device axis or null if not set.
 	 * \version 1.6
 	 */
-	public func InputDeviceAxis getInputDeviceAxis()
-		if this.pSourceIndex != -1
-			var InputDevice device = this.getInputDevice()
+	func InputDeviceAxis getInputDeviceAxis()
+		if pSourceIndex != -1
+			var InputDevice device = getInputDevice()
 			if device != null
-				return device.getAxisAt( this.pSourceIndex )
+				return device.getAxisAt(pSourceIndex)
 			end
 		end
 		return null
@@ -192,11 +177,11 @@ class Binding
 	 * \brief Device button or null if not set.
 	 * \version 1.6
 	 */
-	public func InputDeviceButton getInputDeviceButton()
-		if this.pSourceIndex != -1
-			var InputDevice device = this.getInputDevice()
+	func InputDeviceButton getInputDeviceButton()
+		if pSourceIndex != -1
+			var InputDevice device = getInputDevice()
 			if device != null
-				return device.getButtonAt( this.pSourceIndex )
+				return device.getButtonAt(pSourceIndex)
 			end
 		end
 		return null
@@ -206,11 +191,11 @@ class Binding
 	 * \brief Device feedback or null if not set.
 	 * \version 1.6
 	 */
-	public func InputDeviceFeedback getInputDeviceFeedback()
-		if this.pSourceIndex != -1
-			var InputDevice device = this.getInputDevice()
+	func InputDeviceFeedback getInputDeviceFeedback()
+		if pSourceIndex != -1
+			var InputDevice device = getInputDevice()
 			if device != null
-				return device.getFeedbackAt( this.pSourceIndex )
+				return device.getFeedbackAt(pSourceIndex)
 			end
 		end
 		return null
@@ -219,24 +204,24 @@ class Binding
 	
 	
 	/** \brief Axis pressed simulation state. */
-	public func bool getSimulateAxisPressed()
-		return this.pSimulateAxisPressed
+	func bool getSimulateAxisPressed()
+		return pSimulateAxisPressed
 	end
 	
 	/** \brief Set axis pressed simulation state. */
-	public func void setSimulateAxisPressed( bool pressed )
-		this.pSimulateAxisPressed = pressed
+	func void setSimulateAxisPressed(bool pressed)
+		pSimulateAxisPressed = pressed
 	end
 	
 	
 	
 	/** \brief Bindings are equal. */
-	public func bool equals( Object other )
+	func bool equals(Object other)
 		if other castable Binding
 			var Binding binding = other cast Binding
-			return this.pDeviceID.equals( binding.pDeviceID ) \
-				and this.pSourceID.equals( binding.pSourceID ) \
-				and this.pInverseAxis == binding.pInverseAxis
+			return pDeviceID.equals(binding.pDeviceID) \
+				and pSourceID.equals(binding.pSourceID) \
+				and pInverseAxis == binding.pInverseAxis
 			
 		else
 			return false

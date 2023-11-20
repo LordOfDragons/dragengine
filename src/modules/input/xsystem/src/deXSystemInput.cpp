@@ -29,7 +29,6 @@
 #include "dexsiDeviceAxis.h"
 #include "dexsiDeviceButton.h"
 #include "dexsiDeviceFeedback.h"
-#include "dexsiDeviceManager.h"
 #include "dexsiDeviceCoreMouse.h"
 #include "dexsiDeviceCoreKeyboard.h"
 
@@ -88,14 +87,8 @@ pLastMouseY( 0 ),
 
 pIsListening( false ),
 
-pOldAccelNom( 0 ),
-pOldAccelDenom( 0 ),
-pOldThreshold( 0 ),
-
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
-
-pDevices( NULL ),
 
 pKeyStates( NULL ){
 }
@@ -144,9 +137,9 @@ bool deXSystemInput::Init(){
 			pKeyStates[ i ] = false;
 		}
 		
-		pDevices = new dexsiDeviceManager( *this );
+		pDevices.TakeOver( new dexsiDeviceManager( *this ) );
 		pDevices->UpdateDeviceList();
-		//pDevices->LogDevices();
+		pDevices->LogDevices();
 		
 	}catch( const deException & ){
 		CleanUp();
@@ -157,10 +150,8 @@ bool deXSystemInput::Init(){
 }
 
 void deXSystemInput::CleanUp(){
-	if( pDevices ){
-		delete pDevices;
-		pDevices = NULL;
-	}
+	pDevices = nullptr;
+	
 	if( pKeyStates ){
 		delete [] pKeyStates;
 		pKeyStates = NULL;
@@ -315,12 +306,7 @@ deInputEvent::eKeyLocation location ){
 
 void deXSystemInput::ProcessEvents(){
 	pQueryMousePosition( true );
-	
-	const int deviceCount = pDevices->GetCount();
-	int i;
-	for( i=0; i<deviceCount; i++ ){
-		pDevices->GetAt( i )->Update();
-	}
+	pDevices->Update();
 }
 
 void deXSystemInput::ClearEvents(){
@@ -552,6 +538,15 @@ const timeval& eventTime ){
 	event.SetX( x );
 	event.SetY( y );
 	event.SetValue( ( float )( x + y ) );
+	event.SetTime( eventTime );
+	queue.AddEvent( event );
+}
+
+void deXSystemInput::AddDeviceAttachedDetached( const timeval &eventTime ){
+	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
+	deInputEvent event;
+	
+	event.SetType( deInputEvent::eeDevicesAttachedDetached );
 	event.SetTime( eventTime );
 	queue.AddEvent( event );
 }

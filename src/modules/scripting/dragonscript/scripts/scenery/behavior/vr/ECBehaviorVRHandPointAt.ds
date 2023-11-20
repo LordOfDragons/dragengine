@@ -42,7 +42,7 @@ pin Dragengine.Utils
  * the point at detection to point 45 degrees upwards. For easier usage rotating the point at
  * detection direction downwards by 45 degrees helps.
  * 
- * By default point-at is disabled for backwards compatibility.
+ * By default point-at is disabled for backward compatibility.
  * 
  * Requires these behaviors to be present:
  * - ECBehaviorVRHand

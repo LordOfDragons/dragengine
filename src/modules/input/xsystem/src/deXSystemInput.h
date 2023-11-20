@@ -26,21 +26,21 @@
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 
 #include "dexsiXInclude.h"
+#include "dexsiDeviceManager.h"
 
 class deOSUnix;
-class dexsiDeviceManager;
 
 
 
 /**
- * \brief input module device identifier prefix.
+ * input module device identifier prefix.
  */
 #define XINP_DEVID_PREFIX "XSys_"
 
 
 
 /**
- * \brief X-System input module.
+ * X-System input module.
  */
 class deXSystemInput : public deBaseInputModule{
 private:
@@ -62,14 +62,10 @@ private:
 	
 	bool pIsListening;
 	
-	int pOldAccelNom;
-	int pOldAccelDenom;
-	int pOldThreshold;
-	
 	bool pSystemAutoRepeatEnabled;
 	bool pAutoRepeatEnabled;
 	
-	dexsiDeviceManager *pDevices;
+	dexsiDeviceManager::Ref pDevices;
 	
 	bool *pKeyStates;
 	
@@ -78,10 +74,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create module. */
+	/** Create module. */
 	deXSystemInput( deLoadableModule &loadableModule );
 	
-	/** \brief Clean up module. */
+	/** Clean up module. */
 	virtual ~deXSystemInput();
 	/*@}*/
 	
@@ -89,19 +85,22 @@ public:
 	
 	/** \name Module Management */
 	/*@{*/
-	/** \brief OS. */
+	/** OS. */
 	inline deOSUnix *GetOSUnix() const{ return pOSUnix; }
+	
+	/** Device manager. */
+	inline const dexsiDeviceManager::Ref &GetDevices() const{ return pDevices; }
 	
 	
 	
 	/**
-	 * \brief Init the module.
+	 * Init the module.
 	 * \returns \em true on success.
 	 * \note To access the os object of the engine use the GetOS function.
 	 */
 	virtual bool Init();
 	
-	/** \brief Clean up module. */
+	/** Clean up module. */
 	virtual void CleanUp();
 	/*@}*/
 	
@@ -109,38 +108,38 @@ public:
 	
 	/** \name Devices */
 	/*@{*/
-	/** \brief Number of input devices. */
+	/** Number of input devices. */
 	virtual int GetDeviceCount();
 	
-	/** \brief Information for input device at index. */
+	/** Information for input device at index. */
 	virtual deInputDevice *GetDeviceAt( int index );
 	
-	/** \brief Index of device with identifier or -1 if absent. */
+	/** Index of device with identifier or -1 if absent. */
 	virtual int IndexOfDeviceWithID( const char *id );
 	
-	/** \brief Index of button with identifier on device at index or -1 if absent. */
+	/** Index of button with identifier on device at index or -1 if absent. */
 	virtual int IndexOfButtonWithID( int device, const char *id );
 	
-	/** \brief Index of axis with identifier on device at index or -1 if absent. */
+	/** Index of axis with identifier on device at index or -1 if absent. */
 	virtual int IndexOfAxisWithID( int device, const char *id );
 	
-	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
+	/** Index of feedback with identifier on device at index or -1 if absent. */
 	virtual int IndexOfFeedbackWithID( int device, const char *id );
 	
-	/** \brief Button at index on device at index is pressed down. */
+	/** Button at index on device at index is pressed down. */
 	virtual bool GetButtonPressed( int device, int button );
 	
-	/** \brief Value of axis at index on device at index. */
+	/** Value of axis at index on device at index. */
 	virtual float GetAxisValue( int device, int axis );
 	
-	/** \brief Value of feedback at index on device at index. */
+	/** Value of feedback at index on device at index. */
 	virtual float GetFeedbackValue( int device, int feedback );
 	
-	/** \brief Set value of feedback at index on device at index. */
+	/** Set value of feedback at index on device at index. */
 	virtual void SetFeedbackValue( int device, int feedback, float value );
 	
 	/**
-	 * \brief Index of button best matching key code or -1 if not found.
+	 * Index of button best matching key code or -1 if not found.
 	 * 
 	 * If more than one button matches the key code the input module decides which
 	 * button is the more likely choice. Once decided the input module is required
@@ -153,7 +152,7 @@ public:
 	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode );
 	
 	/**
-	 * \brief Index of button best matching character or -1 if not found.
+	 * Index of button best matching character or -1 if not found.
 	 * 
 	 * If more than one button matches the character the input module decides which
 	 * button is the more likely choice. Once decided the input module is required
@@ -172,7 +171,7 @@ public:
 	virtual int ButtonMatchingKeyChar( int device, int character );
 	
 	/**
-	 * \brief Index of button best matching key code or -1 if not found.
+	 * Index of button best matching key code or -1 if not found.
 	 * 
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
@@ -181,7 +180,7 @@ public:
 		deInputEvent::eKeyLocation location );
 	
 	/**
-	 * \brief Index of button best matching character or -1 if not found.
+	 * Index of button best matching character or -1 if not found.
 	 * 
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
@@ -195,7 +194,7 @@ public:
 	/** \name Events */
 	/*@{*/
 	/**
-	 * \brief Check state of input devices.
+	 * Check state of input devices.
 	 * 
 	 * This function is called before any other frame related tasks are carried out.
 	 * Record changes in devices states have to be recored into a game event
@@ -205,32 +204,35 @@ public:
 	 */
 	virtual void ProcessEvents();
 	
-	/** \brief Clear event queues in case any are used. */
+	/** Clear event queues in case any are used. */
 	virtual void ClearEvents();
 	
-	/** \brief Capture input devices changed. */
+	/** Capture input devices changed. */
 	virtual void CaptureInputDevicesChanged();
 	
-	/** \brief Application activated or deactivated. */
+	/** Application activated or deactivated. */
 	virtual void AppActivationChanged();
 	
-	/** \brief An event processed by the application event loop. */
+	/** An event processed by the application event loop. */
 	virtual void EventLoop( XEvent &event );
 	
 	
 	
-	/** \brief Add axis changed event. */
+	/** Add axis changed event. */
 	void AddAxisChanged( int device, int axis, float value, const timeval &eventTime );
 	
-	/** \brief Add button pressed. */
+	/** Add button pressed. */
 	void AddButtonPressed( int device, int button, const timeval &eventTime );
 	
-	/** \brief Add button released. */
+	/** Add button released. */
 	void AddButtonReleased( int device, int button, const timeval &eventTime );
 	
-	/** \brief Add mouse wheel changed event. */
+	/** Add mouse wheel changed event. */
 	void AddMouseWheelChanged( int device, int axis, int x, int y, int state,
 		const timeval &eventTime );
+	
+	/** Add device attached/detached event. */
+	void AddDeviceAttachedDetached( const timeval &eventTime );
 	/*@}*/
 	
 	

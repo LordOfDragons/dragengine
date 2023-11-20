@@ -44,15 +44,15 @@ pin Dragengine.Gui.Layouts
 class WindowVirtualKeyboard extends Window
 	/** \brief Virtual key type listener. */
 	class VirtualKeyType extends DefaultMouseListener
-		private var WindowVirtualKeyboard pWindow
-		private var Widget pWidget
-		private var int pKeyCode
-		private var int pKeyChar
-		private var int pShiftedKeyChar
-		private var bool pButtonPressed
-		private var bool pShifted
+		var WindowVirtualKeyboard pWindow
+		var Widget pWidget
+		var int pKeyCode
+		var int pKeyChar
+		var int pShiftedKeyChar
+		var bool pButtonPressed
+		var bool pShifted
 		
-		public func new(WindowVirtualKeyboard window, Widget widget, int keyCode,\
+		func new(WindowVirtualKeyboard window, Widget widget, int keyCode,\
 		int keyChar, int shiftedKeyChar)
 			pWindow = window
 			pWidget = widget
@@ -61,7 +61,7 @@ class WindowVirtualKeyboard extends Window
 			pShiftedKeyChar = shiftedKeyChar
 		end
 		
-		public func void onButtonPress(MouseEvent event)
+		func void onButtonPress(MouseEvent event)
 			if event.getButton() != InputEventMouseButton.left or pButtonPressed
 				return
 			end
@@ -76,7 +76,7 @@ class WindowVirtualKeyboard extends Window
 			end
 		end
 		
-		public func void onButtonRelease(MouseEvent event)
+		func void onButtonRelease(MouseEvent event)
 			if event.getButton() != InputEventMouseButton.left or not pButtonPressed
 				return
 			end
@@ -90,17 +90,17 @@ class WindowVirtualKeyboard extends Window
 	
 	/** \brief Rename key upon shift toggle listener. */
 	class RenameShiftToggle extends DefaultToggleModelListener
-		private var TextModel pModelText
-		private var String pText
-		private var String pTextShifted
+		var TextModel pModelText
+		var String pText
+		var String pTextShifted
 		
-		public func new(TextModel modelText, String text, String textShifted)
+		func new(TextModel modelText, String text, String textShifted)
 			pModelText = modelText
 			pText = text
 			pTextShifted = textShifted
 		end
 		
-		public func void toggledChanged(ToggleModel model)
+		func void toggledChanged(ToggleModel model)
 			pModelText.setText(model.getToggled() if pTextShifted else pText)
 		end
 	end
@@ -110,23 +110,23 @@ class WindowVirtualKeyboard extends Window
 	 * \versoin 1.15
 	 */
 	class HideVirtualKeyboard extends DefaultMouseListener
-		private var WindowVirtualKeyboard pWindow
-		private var Widget pWidget
-		private var bool pButtonPressed
+		var WindowVirtualKeyboard pWindow
+		var Widget pWidget
+		var bool pButtonPressed
 		
-		public func new(WindowVirtualKeyboard window, Widget widget)
+		func new(WindowVirtualKeyboard window, Widget widget)
 			pWindow = window
 			pWidget = widget
 		end
 		
-		public func void onButtonPress(MouseEvent event)
+		func void onButtonPress(MouseEvent event)
 			if event.getButton() == InputEventMouseButton.left
 				pWidget.captureMouse()
 				pButtonPressed = true
 			end
 		end
 		
-		public func void onButtonRelease(MouseEvent event)
+		func void onButtonRelease(MouseEvent event)
 			if event.getButton() == InputEventMouseButton.left and pButtonPressed
 				pButtonPressed = false
 				pWidget.releaseMouse()
@@ -137,18 +137,18 @@ class WindowVirtualKeyboard extends Window
 	
 	
 	
-	private var Widget pInputWidget
-	private var Panel pKeyboardLayoutPanel
+	var Widget pInputWidget
+	var Panel pKeyboardLayoutPanel
 	
-	private var Panel pKeyboardLayoutDefaultPanel
-	private var Panel pKeyboardLayoutNumericPanel
+	var Panel pKeyboardLayoutDefaultPanel
+	var Panel pKeyboardLayoutNumericPanel
 	
-	private var DefaultToggleModel pModelShift
+	var DefaultToggleModel pModelShift
 	
 	
 	
 	/** \brief Create window. */
-	public func new()
+	func new()
 		pModelShift = DefaultToggleModel.new()
 		
 		runWhileBlockingLayout(block
@@ -173,7 +173,7 @@ class WindowVirtualKeyboard extends Window
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		pInputWidget = null
 		pKeyboardLayoutPanel = null
 		pKeyboardLayoutDefaultPanel = null
@@ -185,22 +185,22 @@ class WindowVirtualKeyboard extends Window
 	
 	
 	/** \brief Input widget or null. */
-	public func Widget getInputWidget()
+	func Widget getInputWidget()
 		return pInputWidget
 	end
 	
 	/** \brief Active keyboard layout panel or null. */
-	public func Panel getKeyboardLayoutPanel()
+	func Panel getKeyboardLayoutPanel()
 		return pKeyboardLayoutPanel
 	end
 	
 	/** \brief Default keyboard layout panel. */
-	public func Panel getKeyboardLayoutDefault()
+	func Panel getKeyboardLayoutDefault()
 		return pKeyboardLayoutDefaultPanel
 	end
 	
 	/** \brief Numeric keyboard layout panel. */
-	public func Panel getKeyboardLayoutNumeric()
+	func Panel getKeyboardLayoutNumeric()
 		return pKeyboardLayoutNumericPanel
 	end
 	
@@ -225,7 +225,7 @@ class WindowVirtualKeyboard extends Window
 	end
 	
 	/** \brief Shift model. */
-	public func ToggleModel getModelShift()
+	func ToggleModel getModelShift()
 		return pModelShift
 	end
 	
@@ -239,7 +239,7 @@ class WindowVirtualKeyboard extends Window
 	 * 
 	 * If no suitable keyboard layout exists noting is shown.
 	 */
-	public func void popup(Widget inputWidget)
+	func void popup(Widget inputWidget)
 		if inputWidget == null
 			throw ENullPointer.new("inputWidget")
 		end
@@ -267,7 +267,7 @@ class WindowVirtualKeyboard extends Window
 	 * 
 	 * Hides window.
 	 */
-	public func void popdown()
+	func void popdown()
 		setVisible(false)
 		setKeyboardLayoutPanel(null)
 		pInputWidget = null
@@ -276,7 +276,7 @@ class WindowVirtualKeyboard extends Window
 	
 	
 	/** \brief Send key pressed event to input widget if present. */
-	public func void sendKeyPressed(int keyCode, int keyChar)
+	func void sendKeyPressed(int keyCode, int keyChar)
 		if pInputWidget == null
 			return
 		end
@@ -289,7 +289,7 @@ class WindowVirtualKeyboard extends Window
 	end
 	
 	/** \brief Send key released event to input widget if present. */
-	public func void sendKeyReleased(int keyCode, int keyChar)
+	func void sendKeyReleased(int keyCode, int keyChar)
 		if pInputWidget == null
 			return
 		end
@@ -309,7 +309,7 @@ class WindowVirtualKeyboard extends Window
 	 * the first focusable widget. This avoids popup windows stealing focus from
 	 * the underlaying window.
 	 */
-	public func void grabFocus()
+	func void grabFocus()
 	end
 	
 	
@@ -321,12 +321,17 @@ class WindowVirtualKeyboard extends Window
 		var Desktop desktop = getDesktop()
 		var Point popupSize = getSize()
 		
-		var RectArea visibleAreay = RectArea.new(Point.new(),\
-			desktop.getContainerSize() - Point.new(1, 1)).grow(-popupSize)
+		var RectArea visibleArea = desktop.getMouseArea()
+		
+		if visibleArea == null
+			visibleArea = RectArea.new(Point.new(), desktop.getContainerSize() - Point.new(1, 1))
+		end
+		
+		visibleArea = visibleArea.grow(-popupSize)
 		
 		var Point position = widget.getDesktopPosition()
 		var Point desired = position + Point.new((widgetSize.getX() - popupSize.getX()) / 2, widgetSize.getY())
-		var Point clamped = visibleAreay.clamp(desired)
+		var Point clamped = visibleArea.clamp(desired)
 		
 		if clamped.getY() == desired.getY()
 			// position at bottom is visible so use it
@@ -335,11 +340,20 @@ class WindowVirtualKeyboard extends Window
 		
 		// clamped position clips at bottom. move popup to top of mouse pointer
 		desired = position - Point.new(0, popupSize.getY())
-		return visibleAreay.clamp(desired)
+		clamped = visibleArea.clamp(desired)
+		
+		if clamped.getY() == desired.getY()
+			// position at top is visible so use it
+			return clamped
+		end
+		
+		// clamped position clips also at the top. stick to bottom
+		desired = position + Point.new((widgetSize.getX() - popupSize.getX()) / 2, widgetSize.getY())
+		return visibleArea.clamp(desired)
 	end
 	
 	/** \brief Do frame update. */
-	public func void onFrameUpdate(float elapsed)
+	func void onFrameUpdate(float elapsed)
 		if pInputWidget != null
 			setPosition(calculatePopupPosition(pInputWidget))
 		end

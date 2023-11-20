@@ -123,11 +123,11 @@ void fbxAnimModule::pLoadAnimation( deAnimation &animation, fbxScene &scene ){
 	refLoadAnimation.TakeOver( new fbxAnimation( scene ) );
 	fbxAnimation &loadAnimation = ( fbxAnimation& )( deObject& )refLoadAnimation;
 	
-	fbxNode &nodePose = *scene.FirstNodeNamed( "Pose" );
+	fbxNode * const nodePose = scene.FirstNodeNamedOrNull( "Pose" );
 	deObjectReference refLoadRig;
 	refLoadRig.TakeOver( new fbxRig( scene, nodePose ) );
 	fbxRig &loadRig = ( fbxRig& )( deObject& )refLoadRig;
-	//loadRig.DebugPrintStructure( *this, "LoadModel ", true );
+	// loadRig.DebugPrintStructure( *this, "LoadAnimation ", true );
 	loadAnimation.MatchRig( loadRig );
 	
 	//loadAnimation.DebugPrintStructure( *this, "", true );

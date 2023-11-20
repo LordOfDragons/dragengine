@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Include="post_build.ps1" />
     <None Include="..\..\..\..\src\modules\input\w32input\SConscript" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceButton.cpp">
@@ -41,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceAxis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceWinRTController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -70,6 +74,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceAxis.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceWinRTController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

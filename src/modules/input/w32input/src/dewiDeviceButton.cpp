@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include "dewiDeviceButton.h"
+#include "dewiDeviceWinRTController.h"
 #include "deWindowsInput.h"
 
 #include <dragengine/deEngine.h>
@@ -31,6 +32,10 @@
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>
+
+#include <winrt/Windows.System.Power.h>
+
+namespace wrsp = winrt::Windows::System::Power;
 
 
 
@@ -47,7 +52,9 @@ pWICode( 0 ),
 pWIChar( -1 ),
 pKeyCode( deInputEvent::ekcUndefined ),
 pMatchPriority( 10 ),
-pKeyLocation( deInputEvent::eklNone )
+pKeyLocation( deInputEvent::eklNone ),
+pWinRTReadingIndex( -1 ),
+pIsBatteryCharging( false )
 {
 }
 
@@ -69,6 +76,10 @@ void dewiDeviceButton::SetName( const char *name ){
  
 void dewiDeviceButton::SetPressed( bool pressed ){
 	pPressed = pressed;
+}
+
+void dewiDeviceButton::SetType( deInputDeviceButton::eButtonTypes type ){
+	pType = type;
 }
 
 
@@ -131,6 +142,13 @@ void dewiDeviceButton::SetKeyLocation( deInputEvent::eKeyLocation location ){
 	pKeyLocation = location;
 }
 
+void dewiDeviceButton::SetWinRTReadingIndex( int index ){
+	pWinRTReadingIndex = index;
+}
+
+void dewiDeviceButton::SetIsBatteryCharging( bool isBatteryCharging ){
+	pIsBatteryCharging = isBatteryCharging;
+}
 
 
 void dewiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
@@ -138,10 +156,35 @@ void dewiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 	
 	info.SetID( pID );
 	info.SetName( pName );
+	info.SetType( pType );
 	
 	info.SetDisplayImage( pDisplayImage );
 	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
 		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
 	}
 	info.SetDisplayText( pDisplayText );
+}
+
+void dewiDeviceButton::WinRTReading( dewiDeviceWinRTController &device ){
+	bool pressed = false;
+
+	if( pWinRTReadingIndex != -1 ){
+		pressed = device.GetReadingButton( pWinRTReadingIndex );
+
+	}else if( pIsBatteryCharging ){
+		pressed = device.GetBatteryReport().Status() == wrsp::BatteryStatus::Charging;
+	}
+
+	if( pressed ){
+		if( ! pPressed ){
+			pPressed = true;
+			pModule.AddButtonPressed( device.GetIndex(), pWinRTReadingIndex, device.GetReadingTime() );
+		}
+
+	}else{
+		if( pPressed ){
+			pPressed = false;
+			pModule.AddButtonReleased( device.GetIndex(), pWinRTReadingIndex, device.GetReadingTime() );
+		}
+	}
 }

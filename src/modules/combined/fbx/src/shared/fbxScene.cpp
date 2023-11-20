@@ -90,17 +90,31 @@ pConnectionMap( NULL )
 	
 	reader.SkipUShort(); // [0x1A, 0x00] (unknown but all observed files show these bytes)
 	
-	pVersion = reader.ReadUInt(); // 7300 for version 7.3 for example.
+	// written against version 7300. version 7500 introduces binary breaking changes.
+	// from blender addon:
+	// 
+	// FBX 7500 (aka FBX2016) introduces incompatible changes at binary level:
+	// - The NULL block marking end of nested stuff switches from 13 bytes long to 25 bytes long.
+	// - The FBX element metadata (end_offset, prop_count and prop_length) switch from uint32 to uint64.
+	pVersion = reader.ReadUInt();
 	
 	deObjectReference node;
 	while( true ){
-		const int checkEndOffset = reader.ReadUInt();
+		int checkEndOffset;
+		
+		if( pVersion < 7500 ){
+			checkEndOffset = reader.ReadUInt();
+			
+		}else{
+			checkEndOffset = ( int )reader.ReadULong();
+		}
+		
 		if( checkEndOffset == 0 ){
 			reader.MovePosition( 9 );
 			break;
 		}
 		
-		node.TakeOver( new fbxNode( reader, checkEndOffset ) );
+		node.TakeOver( new fbxNode( *this, reader, checkEndOffset ) );
 		pNode->AddNode( ( fbxNode* )( deObject* )node );
 	}
 	
@@ -471,6 +485,12 @@ void fbxScene::Save(decBaseFileWriter &writer ){
 
 void fbxScene::DebugPrintStructure( deBaseModule &module, bool verbose ) const{
 	module.LogInfoFormat( "FBX Scene (version %d.%d):", pVersion / 1000, pVersion % 1000 );
+	module.LogInfoFormat( "Axes: up=%d front=%d coord=%d", pUpAxis, pFrontAxis, pCoordAxis );
+	module.LogInfoFormat( "UnitScaleFactor: %g", pUnitScaleFactor );
+	module.LogInfoFormat( "Transformation: [%g,%g,%g,%g] [%g,%g,%g,%g] [%g,%g,%g,%g]",
+		pTransformation.a11, pTransformation.a12, pTransformation.a13, pTransformation.a14,
+		pTransformation.a21, pTransformation.a22, pTransformation.a23, pTransformation.a24,
+		pTransformation.a31, pTransformation.a32, pTransformation.a33, pTransformation.a34);
 	pNode->DebugPrintStructure( module, "", verbose );
 }
 

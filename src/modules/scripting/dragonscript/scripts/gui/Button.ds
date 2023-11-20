@@ -36,23 +36,21 @@ pin Dragengine.Scenery
  * and image designer has to be a subclass of DefaultButtonWidgetDesigner.
  */
 class Button extends Container
-	private var bool pPressed
-	private var Array pActionListeners
-	private var bool pHasGrab
+	var bool pPressed
+	var Array pActionListeners
+	var bool pHasGrab
 	
-	private var String pText
-	private var Image pImage
-	private var Image pHoverImage
+	var String pText
+	var Image pImage
+	var Image pHoverImage
 	
-	private var Label pWidgetText
-	private var DisplayImage pWidgetImage
+	var Label pWidgetText
+	var DisplayImage pWidgetImage
 	
 	
 	
 	/** \brief Create button. */
-	public func new()
-		pPressed = false
-		pHasGrab = false
+	func new()
 		pText = ""
 		pActionListeners = Array.new()
 		
@@ -67,23 +65,23 @@ class Button extends Container
 	end
 	
 	/** \brief Create text button. */
-	public func new(String text) this()
+	func new(String text) this()
 		setText(text)
 	end
 	
 	/** \brief Create text and image button. */
-	public func new(String text, Image image) this()
+	func new(String text, Image image) this()
 		setText(text)
 		setImage(image)
 	end
 	
 	/** \brief Create text button. */
-	public func new(String text, ActionListener action) this(text)
+	func new(String text, ActionListener action) this(text)
 		addActionListener(action)
 	end
 	
 	/** \brief Create text and image button. */
-	public func new(String text, Image image, ActionListener action) this(text, image)
+	func new(String text, Image image, ActionListener action) this(text, image)
 		addActionListener(action)
 	end
 	
@@ -91,7 +89,7 @@ class Button extends Container
 	 * Disposes of the widget. This cleans all references and prepars the widget
 	 * for beeing freed. If the widget is already disposed nothing happens.
 	 */
-	public func void dispose()
+	func void dispose()
 		// it is possible the dispose is triggered due to an action listener call.
 		// if Array.removeAll() is called in this case an exception is thrown due to
 		// modifying the array while iterating over it. dropping the array is enough
@@ -104,12 +102,12 @@ class Button extends Container
 	
 	
 	/** \brief Text of the button. */
-	public func String getText()
+	func String getText()
 		return pText
 	end
 	
 	/** \brief Set text of the button. */
-	public func void setText(String text)
+	func void setText(String text)
 		if text.equals(pText)
 			return
 		end
@@ -120,12 +118,12 @@ class Button extends Container
 	end
 	
 	/** Image of the button. */
-	public func Image getImage()
+	func Image getImage()
 		return pImage
 	end
 	
 	/** Set image of the button. */
-	public func void setImage(Image image)
+	func void setImage(Image image)
 		if image == pImage
 			return
 		end
@@ -136,12 +134,12 @@ class Button extends Container
 	end
 	
 	/** \brief Hover image or \em null to use regular image. */
-	public func Image getHoverImage()
+	func Image getHoverImage()
 		return pHoverImage
 	end
 	
 	/** \brief Set hover image or \em null to use regular image. */
-	public func void setHoverImage(Image image)
+	func void setHoverImage(Image image)
 		if image == pHoverImage
 			return
 		end
@@ -154,12 +152,12 @@ class Button extends Container
 	
 	
 	/** Button is pressed. */
-	public func bool getPressed()
+	func bool getPressed()
 		return pPressed
 	end
 	
 	/** Set if button is pressed. */
-	public func void setPressed(bool pressed)
+	func void setPressed(bool pressed)
 		if pressed == pPressed
 			return
 		end
@@ -177,7 +175,7 @@ class Button extends Container
 	
 	
 	/** Add action listener. */
-	public func void addActionListener(ActionListener listener)
+	func void addActionListener(ActionListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
@@ -185,14 +183,14 @@ class Button extends Container
 	end
 	
 	/** Remove action listener. */
-	public func void removeActionListener(ActionListener listener)
+	func void removeActionListener(ActionListener listener)
 		pActionListeners.remove(listener)
 	end
 	
 	
 	
 	/** Fire button press action. */
-	public func void fireAction(int modifiers)
+	func void fireAction(int modifiers)
 		if pActionListeners == null
 			return // disposed
 		end
@@ -206,7 +204,7 @@ class Button extends Container
 	
 	
 	/** \brief Set if widget is enabled. */
-	public func void setEnabled(bool enabled)
+	func void setEnabled(bool enabled)
 		super.setEnabled(enabled)
 		
 		if not enabled
@@ -218,7 +216,7 @@ class Button extends Container
 	
 	
 	/** Key on the keyboard has been pressed. */
-	public func void onKeyPress(KeyEvent event)
+	func void onKeyPress(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.enter
 			sendEventToListeners(event, false)
@@ -234,7 +232,7 @@ class Button extends Container
 	end
 	
 	/** Key on the keyboard has been released. */
-	public func void onKeyRelease(KeyEvent event)
+	func void onKeyRelease(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.space
 			if getPressed()
@@ -252,7 +250,7 @@ class Button extends Container
 	end
 	
 	/** Mouse button has been pressed. */
-	public func void onButtonPress(MouseEvent event)
+	func void onButtonPress(MouseEvent event)
 		if event.getButton() == InputEventMouseButton.left
 			if getCanFocus()
 				grabFocus()
@@ -270,7 +268,7 @@ class Button extends Container
 	end
 	
 	/** Mouse button has been released. */
-	public func void onButtonRelease(MouseEvent event)
+	func void onButtonRelease(MouseEvent event)
 		if event.getButton() == InputEventMouseButton.left
 			pHasGrab = false
 			releaseMouse()
@@ -290,19 +288,19 @@ class Button extends Container
 	end
 	
 	/** \brief Widget received focus. */
-	public func void onFocusReceived(FocusEvent event)
+	func void onFocusReceived(FocusEvent event)
 		super.onFocusReceived(event)
 		updateWidgetImage()
 	end
 	
 	/** \brief Widget lost focus. */
-	public func void onFocusLost(FocusEvent event)
+	func void onFocusLost(FocusEvent event)
 		super.onFocusLost(event)
 		updateWidgetImage()
 	end
 	
 	/** Mouse has moved. */
-	public func void onMouseMove(MouseEvent event)
+	func void onMouseMove(MouseEvent event)
 		if pHasGrab
 			setPressed(isPointInside(event.getPosition()))
 			sendEventToListeners(event, false)
@@ -317,7 +315,7 @@ class Button extends Container
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onMouseEnter(MouseEvent event)
+	func void onMouseEnter(MouseEvent event)
 		runWhileBlockingLayout(block
 			super.onMouseEnter(event)
 			updateWidgetImage()
@@ -330,7 +328,7 @@ class Button extends Container
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onMouseLeave(MouseEvent event)
+	func void onMouseLeave(MouseEvent event)
 		runWhileBlockingLayout(block
 			super.onMouseLeave(event)
 			updateWidgetImage()
@@ -339,7 +337,7 @@ class Button extends Container
 	end
 	
 	/** \brief Designer selector changed. */
-	public func void onDesignerSelectorChanged()
+	func void onDesignerSelectorChanged()
 		if pWidgetImage != null
 			pWidgetImage.setDesignerSelector("Image." + getDesignerSelector())
 		end
@@ -376,7 +374,7 @@ class Button extends Container
 	 * \brief Create button content widgets.
 	 * \details Call if the layout of the widgets changes. Removes the old widgets first.
 	 */
-	public func void createContentWidgets()
+	func void createContentWidgets()
 		var bool enabled = getEnabled()
 		
 		removeAllWidgets()
@@ -395,7 +393,7 @@ class Button extends Container
 	end
 	
 	/** \brief Update image to display depending on current button state. */
-	public func void updateWidgetImage()
+	func void updateWidgetImage()
 		if pWidgetImage == null
 			return
 		end

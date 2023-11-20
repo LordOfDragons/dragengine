@@ -31,222 +31,191 @@ pin Dragengine.Utils
  * \brief Window decoration created using a canvas creators.
  */
 class CanvasCreatorDecoration extends DefaultDecoration
-	/** \brief Canvas creator for active window. */
-	private var CanvasCreator pCreatorActive
-	
-	/** \brief Canvas creator for inactive window. */
-	private var CanvasCreator pCreatorInactive
-	
-	/** \brief Decoration border size. */
-	private var BorderSize pDecorationSize
-	
-	/** \brief Image for close button in normal state. */
-	private var Image pImageButtonCloseNormal
-	
-	/** \brief Image for close button in hover state. */
-	private var Image pImageButtonCloseHover
-	
-	/** \brief Image for close button in pressed state. */
-	private var Image pImageButtonClosePressed
-	
-	/** \brief Image for maximize button in normal state. */
-	private var Image pImageButtonMaximizeNormal
-	
-	/** \brief Image for maximize button in hover state. */
-	private var Image pImageButtonMaximizeHover
-	
-	/** \brief Image for maximize button in pressed state. */
-	private var Image pImageButtonMaximizePressed
-	
-	/** \brief Image for minimize button in normal state. */
-	private var Image pImageButtonMinimizeNormal
-	
-	/** \brief Image for minimize button in hover state. */
-	private var Image pImageButtonMinimizeHover
-	
-	/** \brief Image for minimize button in pressed state. */
-	private var Image pImageButtonMinimizePressed
-	
-	/** \brief Gap between buttons. */
-	private var int pButtonGap
-	
-	/** \brief Canvas button close or \em null if absent. */
-	private var CanvasImage pCanvasButtonClose
-	
-	/** \brief Canvas button maximize or \em null if absent. */
-	private var CanvasImage pCanvasButtonMaximize
-	
-	/** \brief Canvas button minimize or \em null if absent. */
-	private var CanvasImage pCanvasButtonMinimize
+	var CanvasCreator pCreatorActive
+	var CanvasCreator pCreatorInactive
+	var BorderSize pDecorationSize
+	var Image pImageButtonCloseNormal
+	var Image pImageButtonCloseHover
+	var Image pImageButtonClosePressed
+	var Image pImageButtonMaximizeNormal
+	var Image pImageButtonMaximizeHover
+	var Image pImageButtonMaximizePressed
+	var Image pImageButtonMinimizeNormal
+	var Image pImageButtonMinimizeHover
+	var Image pImageButtonMinimizePressed
+	var int pButtonGap
+	var CanvasImage pCanvasButtonClose
+	var CanvasImage pCanvasButtonMaximize
+	var CanvasImage pCanvasButtonMinimize
 	
 	
 	
 	/** \brief Create decoration. */
-	public func new()
-		this.pDecorationSize = BorderSize.new( 0 )
-		this.pButtonGap = 2
+	func new()
+		pDecorationSize = BorderSize.new(0)
+		pButtonGap = 2
 	end
 	
 	
 	
 	/** \brief Canvas creator for active window. */
-	public func CanvasCreator getCreatorActive()
-		return this.pCreatorActive
+	func CanvasCreator getCreatorActive()
+		return pCreatorActive
 	end
 	
 	/** \brief Set canvas creator for active window. */
-	public func void setCreatorActive( CanvasCreator creator )
-		this.pCreatorActive = creator
+	func void setCreatorActive(CanvasCreator creator)
+		pCreatorActive = creator
 	end
 	
 	/** \brief Canvas creator for inactive window. */
-	public func CanvasCreator getCreatorInactive()
-		return this.pCreatorInactive
+	func CanvasCreator getCreatorInactive()
+		return pCreatorInactive
 	end
 	
 	/** \brief Set canvas creator for inactive window. */
-	public func void setCreatorInactive( CanvasCreator creator )
-		this.pCreatorInactive = creator
+	func void setCreatorInactive(CanvasCreator creator)
+		pCreatorInactive = creator
 	end
 	
 	/** \brief Decoration border size. */
-	public func BorderSize getDecorationSize()
-		return this.pDecorationSize
+	func BorderSize getDecorationSize()
+		return pDecorationSize
 	end
 	
 	/** \brief Set decoration border size. */
-	public func void setDecorationSize( BorderSize size )
-		this.pDecorationSize = BorderSize.new( \
-			DEMath.max( size.getLeft(), 0 ), DEMath.max( size.getTop(), 0 ), \
-			DEMath.max( size.getRight(), 0 ), DEMath.max( size.getBottom(), 0 ) )
+	func void setDecorationSize(BorderSize size)
+		pDecorationSize = BorderSize.new(\
+			DEMath.max(size.getLeft(), 0), DEMath.max(size.getTop(), 0), \
+			DEMath.max(size.getRight(), 0), DEMath.max(size.getBottom(), 0))
 	end
 	
 	
 	
 	/** \brief Image for close button in normal state. */
-	public func Image getImageButtonCloseNormal()
-		return this.pImageButtonCloseNormal
+	func Image getImageButtonCloseNormal()
+		return pImageButtonCloseNormal
 	end
 	
 	/** \brief Set image for close button in normal state. */
-	public func void setImageButtonCloseNormal( Image image )
-		this.pImageButtonCloseNormal = image
+	func void setImageButtonCloseNormal(Image image)
+		pImageButtonCloseNormal = image
 	end
 	
 	/** \brief Image for close button in hover state. */
-	public func Image getImageButtonCloseHover()
-		return this.pImageButtonCloseHover
+	func Image getImageButtonCloseHover()
+		return pImageButtonCloseHover
 	end
 	
 	/** \brief Set image for close button in hover state. */
-	public func void setImageButtonCloseHover( Image image )
-		this.pImageButtonCloseHover = image
+	func void setImageButtonCloseHover(Image image)
+		pImageButtonCloseHover = image
 	end
 	
 	/** \brief Image for close button in pressed state. */
-	public func Image getImageButtonClosePressed()
-		return this.pImageButtonClosePressed
+	func Image getImageButtonClosePressed()
+		return pImageButtonClosePressed
 	end
 	
 	/** \brief Set image for close button in pressed state. */
-	public func void setImageButtonClosePressed( Image image )
-		this.pImageButtonClosePressed = image
+	func void setImageButtonClosePressed(Image image)
+		pImageButtonClosePressed = image
 	end
 	
 	
 	
 	/** \brief Image for maximize button in normal state. */
-	public func Image getImageButtonMaximizeNormal()
-		return this.pImageButtonMaximizeNormal
+	func Image getImageButtonMaximizeNormal()
+		return pImageButtonMaximizeNormal
 	end
 	
 	/** \brief Set image for maximize button in normal state. */
-	public func void setImageButtonMaximizeNormal( Image image )
-		this.pImageButtonMaximizeNormal = image
+	func void setImageButtonMaximizeNormal(Image image)
+		pImageButtonMaximizeNormal = image
 	end
 	
 	/** \brief Image for maximize button in hover state. */
-	public func Image getImageButtonMaximizeHover()
-		return this.pImageButtonMaximizeHover
+	func Image getImageButtonMaximizeHover()
+		return pImageButtonMaximizeHover
 	end
 	
 	/** \brief Set image for maximize button in hover state. */
-	public func void setImageButtonMaximizeHover( Image image )
-		this.pImageButtonMaximizeHover = image
+	func void setImageButtonMaximizeHover(Image image)
+		pImageButtonMaximizeHover = image
 	end
 	
 	/** \brief Image for maximize button in pressed state. */
-	public func Image getImageButtonMaximizePressed()
-		return this.pImageButtonMaximizePressed
+	func Image getImageButtonMaximizePressed()
+		return pImageButtonMaximizePressed
 	end
 	
 	/** \brief Set image for maximize button in pressed state. */
-	public func void setImageButtonMaximizePressed( Image image )
-		this.pImageButtonMaximizePressed = image
+	func void setImageButtonMaximizePressed(Image image)
+		pImageButtonMaximizePressed = image
 	end
 	
 	
 	
 	/** \brief Image for minimize button in normal state. */
-	public func Image getImageButtonMinimizeNormal()
-		return this.pImageButtonMinimizeNormal
+	func Image getImageButtonMinimizeNormal()
+		return pImageButtonMinimizeNormal
 	end
 	
 	/** \brief Set image for minimize button in normal state. */
-	public func void setImageButtonMinimizeNormal( Image image )
-		this.pImageButtonMinimizeNormal = image
+	func void setImageButtonMinimizeNormal(Image image)
+		pImageButtonMinimizeNormal = image
 	end
 	
 	/** \brief Image for minimize button in hover state. */
-	public func Image getImageButtonMinimizeHover()
-		return this.pImageButtonMinimizeHover
+	func Image getImageButtonMinimizeHover()
+		return pImageButtonMinimizeHover
 	end
 	
 	/** \brief Set image for minimize button in hover state. */
-	public func void setImageButtonMinimizeHover( Image image )
-		this.pImageButtonMinimizeHover = image
+	func void setImageButtonMinimizeHover(Image image)
+		pImageButtonMinimizeHover = image
 	end
 	
 	/** \brief Image for minimize button in pressed state. */
-	public func Image getImageButtonMinimizePressed()
-		return this.pImageButtonMinimizePressed
+	func Image getImageButtonMinimizePressed()
+		return pImageButtonMinimizePressed
 	end
 	
 	/** \brief Set image for minimize button in pressed state. */
-	public func void setImageButtonMinimizePressed( Image image )
-		this.pImageButtonMinimizePressed = image
+	func void setImageButtonMinimizePressed(Image image)
+		pImageButtonMinimizePressed = image
 	end
 	
 	
 	
 	/** \brief Border size. */
-	public func BorderSize getBorderSize()
-		return this.pDecorationSize
+	func BorderSize getBorderSize()
+		return pDecorationSize
 	end
 	
 	/** \brief Test which part of the decoration is hit if any. */
-	public func Decoration.Area areaHitBy( Point position )
-		var Window window = this.getWindow()
+	func Decoration.Area areaHitBy(Point position)
+		var Window window = getWindow()
 		if window == null
 			return Decoration.Area.nothing
 		end
 		
 		// test if we are inside the window in which case nothing is hit
-		if window.isPointInside( position - window.getPosition() )
+		if window.isPointInside(position - window.getPosition())
 			return Decoration.Area.nothing
 		end
 		
 		// determine the boundary of the window and the decoration and quickly
 		// return nothing if we are outside somewhere.
-		var int decoLeft = this.pDecorationSize.getLeft()
-		var int decoRight = this.pDecorationSize.getRight()
-		var int decoTop = this.pDecorationSize.getTop()
-		var int decoBottom = this.pDecorationSize.getBottom()
+		var int decoLeft = pDecorationSize.getLeft()
+		var int decoRight = pDecorationSize.getRight()
+		var int decoTop = pDecorationSize.getTop()
+		var int decoBottom = pDecorationSize.getBottom()
 		
 		var int lx = position.getX() - window.getX() + decoLeft
 		var int ly = position.getY() - window.getY() + decoTop
-		var int lcx = window.getWidth() + this.pDecorationSize.getWidth()
-		var int lcy = window.getHeight() + this.pDecorationSize.getHeight()
+		var int lcx = window.getWidth() + pDecorationSize.getWidth()
+		var int lcy = window.getHeight() + pDecorationSize.getHeight()
 		
 		if lx < 0 or ly < 0 or lx > lcx or ly > lcy
 			return Decoration.Area.nothing
@@ -255,29 +224,29 @@ class CanvasCreatorDecoration extends DefaultDecoration
 		// check if we are in the title bar area
 		if lx >= decoLeft and lx <= lcx - decoRight and ly < decoTop
 			// check if we are in a button
-			var Point localPosition = Point.new( lx, ly )
+			var Point localPosition = Point.new(lx, ly)
 			var Point buttonPosition
 			var Point buttonSize
 			
-			if this.pCanvasButtonClose != null
-				buttonPosition = this.pCanvasButtonClose.getPosition()
-				buttonSize = this.pCanvasButtonClose.getSize()
+			if pCanvasButtonClose != null
+				buttonPosition = pCanvasButtonClose.getPosition()
+				buttonSize = pCanvasButtonClose.getSize()
 				if localPosition >= buttonPosition and localPosition <= buttonPosition + buttonSize
 					return Decoration.Area.close
 				end
 			end
 			
-			if this.pCanvasButtonMaximize != null
-				buttonPosition = this.pCanvasButtonMaximize.getPosition()
-				buttonSize = this.pCanvasButtonMaximize.getSize()
+			if pCanvasButtonMaximize != null
+				buttonPosition = pCanvasButtonMaximize.getPosition()
+				buttonSize = pCanvasButtonMaximize.getSize()
 				if localPosition >= buttonPosition and localPosition <= buttonPosition + buttonSize
 					return Decoration.Area.maximize
 				end
 			end
 			
-			if this.pCanvasButtonMinimize != null
-				buttonPosition = this.pCanvasButtonMinimize.getPosition()
-				buttonSize = this.pCanvasButtonMinimize.getSize()
+			if pCanvasButtonMinimize != null
+				buttonPosition = pCanvasButtonMinimize.getPosition()
+				buttonSize = pCanvasButtonMinimize.getSize()
 				if localPosition >= buttonPosition and localPosition <= buttonPosition + buttonSize
 					return Decoration.Area.minimize
 				end
@@ -321,165 +290,167 @@ class CanvasCreatorDecoration extends DefaultDecoration
 	
 	
 	/** \brief Update canvas. */
-	public func void updateCanvas()
-		var Window window = this.getWindow()
+	func void updateCanvas()
+		var Window window = getWindow()
 		if window == null
 			return
 		end
 		
-		var CanvasView decoCanvas = this.getCanvasView()
+		var CanvasView decoCanvas = getCanvasView()
 		decoCanvas.removeAllCanvas()
 		
-		this.createBorderCanvas( decoCanvas, window )
-		this.createButtonCanvas( decoCanvas, window ) // has to come before title since it uses it
-		this.createTitleCanvas( decoCanvas, window )
+		createBorderCanvas(decoCanvas, window)
+		createButtonCanvas(decoCanvas, window) // has to come before title since it uses it
+		createTitleCanvas(decoCanvas, window)
 		
-		this.updateCanvasButtons()
+		updateCanvasButtons()
 	end
 	
 	
 	
 	/** \brief One or more button states changed. */
-	public func void onButtonStateChanged()
-		this.updateCanvasButtons()
+	func void onButtonStateChanged()
+		updateCanvasButtons()
 	end
 	
 	
 	
 	/** \brief Create border canvas. */
-	protected func void createBorderCanvas( CanvasView decoCanvas, Window window )
-		var Point size = window.getSize() + this.pDecorationSize.getSize()
+	protected func void createBorderCanvas(CanvasView decoCanvas, Window window)
+		var Point size = window.getSize() + pDecorationSize.getSize()
 		var Canvas canvasDecoration
 		
 		if window.getActivated()
-			if this.pCreatorActive != null
-				canvasDecoration = this.pCreatorActive.createCanvas( size )
+			if pCreatorActive != null
+				canvasDecoration = pCreatorActive.createCanvas(size)
 			end
 			
 		else
-			if this.pCreatorInactive != null
-				canvasDecoration = this.pCreatorInactive.createCanvas( size )
+			if pCreatorInactive != null
+				canvasDecoration = pCreatorInactive.createCanvas(size)
 				
-			elif this.pCreatorActive != null
-				canvasDecoration = this.pCreatorActive.createCanvas( size )
+			elif pCreatorActive != null
+				canvasDecoration = pCreatorActive.createCanvas(size)
 			end
 		end
 		
 		if canvasDecoration != null
-			decoCanvas.addCanvas( canvasDecoration )
+			decoCanvas.addCanvas(canvasDecoration)
 		end
 	end
 	
 	/** \brief Create title canvas. */
-	protected func void createTitleCanvas( CanvasView decoCanvas, Window window )
+	protected func void createTitleCanvas(CanvasView decoCanvas, Window window)
 		var String title = window.getTitle()
 		if title.empty()
 			return
 		end
 		
-		var Font titleFont = this.getTitleFont()
+		var Font titleFont = getTitleFont()
 		if titleFont == null
 			return
 		end
 		
+		title = window.translate(title)
+		
 		// available width depends on button canvas width
-		var int width = window.getWidth() + this.pDecorationSize.getWidth()
-		var int titleWidth = width - this.pDecorationSize.getWidth()
+		var int width = window.getWidth() + pDecorationSize.getWidth()
+		var int titleWidth = width - pDecorationSize.getWidth()
 			// ^-- we have no title offset relative to decoration width. using decosize temporarily
 		
-		if this.pCanvasButtonClose != null
-			titleWidth -= this.pCanvasButtonClose.getSize().getX() + this.pButtonGap
+		if pCanvasButtonClose != null
+			titleWidth -= pCanvasButtonClose.getSize().getX() + pButtonGap
 		end
-		if this.pCanvasButtonMaximize != null
-			titleWidth -= this.pCanvasButtonMaximize.getSize().getX() + this.pButtonGap
+		if pCanvasButtonMaximize != null
+			titleWidth -= pCanvasButtonMaximize.getSize().getX() + pButtonGap
 		end
-		if this.pCanvasButtonMinimize != null
-			titleWidth -= this.pCanvasButtonMinimize.getSize().getX() + this.pButtonGap
+		if pCanvasButtonMinimize != null
+			titleWidth -= pCanvasButtonMinimize.getSize().getX() + pButtonGap
 		end
 		
 		// create title
-		var Color titleColor = this.getTitleColor()
+		var Color titleColor = getTitleColor()
 		
-		var Point textSize = titleFont.getTextSize( title )
-		var int textPosX = DEMath.max( ( titleWidth - textSize.getX() ) / 2, 0 )
-		var int textPosY = DEMath.max( ( this.pDecorationSize.getTop() - textSize.getY() ) / 2, 0 )
+		var Point textSize = titleFont.getTextSize(title)
+		var int textPosX = DEMath.max((titleWidth - textSize.getX()) / 2, 0)
+		var int textPosY = DEMath.max((pDecorationSize.getTop() - textSize.getY()) / 2, 0)
 		
 		var CanvasText canvasText = CanvasText.new()
-		canvasText.setFont( titleFont )
-		canvasText.setColor( titleColor )
-		canvasText.setText( title )
-		canvasText.setPosition( Point.new( this.pDecorationSize.getLeft() + textPosX, textPosY ) )
-		canvasText.setSize( textSize )
-		canvasText.setOrder( 1.0 )
-		decoCanvas.addCanvas( canvasText )
+		canvasText.setFont(titleFont)
+		canvasText.setColor(titleColor)
+		canvasText.setText(title)
+		canvasText.setPosition(Point.new(pDecorationSize.getLeft() + textPosX, textPosY))
+		canvasText.setSize(textSize)
+		canvasText.setOrder(1.0)
+		decoCanvas.addCanvas(canvasText)
 	end
 	
 	/** \brief Create button canvas. */
-	protected func void createButtonCanvas( CanvasView decoCanvas, Window window )
-		var int width = window.getWidth() + this.pDecorationSize.getWidth()
-		var int top = this.pDecorationSize.getTop()
-		var int x = window.getWidth() + this.pDecorationSize.getLeft()
+	protected func void createButtonCanvas(CanvasView decoCanvas, Window window)
+		var int width = window.getWidth() + pDecorationSize.getWidth()
+		var int top = pDecorationSize.getTop()
+		var int x = window.getWidth() + pDecorationSize.getLeft()
 		var Point imageSize
 		var int y
 		
 		// close button
-		this.pCanvasButtonClose = null
+		pCanvasButtonClose = null
 		
-		if window.getCanClose() and this.pImageButtonCloseNormal != null
-			imageSize = this.pImageButtonCloseNormal.getSize()
+		if window.getCanClose() and pImageButtonCloseNormal != null
+			imageSize = pImageButtonCloseNormal.getSize()
 			x -= imageSize.getX()
 			
-			this.pCanvasButtonClose = CanvasImage.new()
-			this.pCanvasButtonClose.setImage( this.pImageButtonCloseNormal )
-			this.pCanvasButtonClose.setPosition( Point.new( \
-				x, DEMath.max( ( top - imageSize.getY() ) / 2, 0 ) ) )
-			this.pCanvasButtonClose.setSize( imageSize )
-			this.pCanvasButtonClose.setOrder( 2.0 )
-			decoCanvas.addCanvas( this.pCanvasButtonClose )
+			pCanvasButtonClose = CanvasImage.new()
+			pCanvasButtonClose.setImage(pImageButtonCloseNormal)
+			pCanvasButtonClose.setPosition(Point.new(\
+				x, DEMath.max((top - imageSize.getY()) / 2, 0)))
+			pCanvasButtonClose.setSize(imageSize)
+			pCanvasButtonClose.setOrder(2.0)
+			decoCanvas.addCanvas(pCanvasButtonClose)
 			
-			x -= this.pButtonGap
+			x -= pButtonGap
 		end
 		
 		// maximize button
-		this.pCanvasButtonMaximize = null
+		pCanvasButtonMaximize = null
 		
-		if window.getCanMaximize() and this.pImageButtonMaximizeNormal != null
-			imageSize = this.pImageButtonMaximizeNormal.getSize()
+		if window.getCanMaximize() and pImageButtonMaximizeNormal != null
+			imageSize = pImageButtonMaximizeNormal.getSize()
 			x -= imageSize.getX()
 			
-			this.pCanvasButtonMaximize = CanvasImage.new()
-			this.pCanvasButtonMaximize.setImage( this.pImageButtonMaximizeNormal )
-			this.pCanvasButtonMaximize.setPosition( Point.new( \
-				x, DEMath.max( ( top - imageSize.getY() ) / 2, 0 ) ) )
-			this.pCanvasButtonMaximize.setSize( imageSize )
-			this.pCanvasButtonMaximize.setOrder( 3.0 )
-			decoCanvas.addCanvas( this.pCanvasButtonMaximize )
+			pCanvasButtonMaximize = CanvasImage.new()
+			pCanvasButtonMaximize.setImage(pImageButtonMaximizeNormal)
+			pCanvasButtonMaximize.setPosition(Point.new(\
+				x, DEMath.max((top - imageSize.getY()) / 2, 0)))
+			pCanvasButtonMaximize.setSize(imageSize)
+			pCanvasButtonMaximize.setOrder(3.0)
+			decoCanvas.addCanvas(pCanvasButtonMaximize)
 			
-			x -= this.pButtonGap
+			x -= pButtonGap
 		end
 		
 		// minimize button
-		this.pCanvasButtonMinimize = null
+		pCanvasButtonMinimize = null
 		
-		if window.getCanMinimize() and this.pImageButtonMinimizeNormal != null
-			imageSize = this.pImageButtonMinimizeNormal.getSize()
+		if window.getCanMinimize() and pImageButtonMinimizeNormal != null
+			imageSize = pImageButtonMinimizeNormal.getSize()
 			x -= imageSize.getX()
 			
-			this.pCanvasButtonMinimize = CanvasImage.new()
-			this.pCanvasButtonMinimize.setImage( this.pImageButtonMinimizeNormal )
-			this.pCanvasButtonMinimize.setPosition( Point.new( \
-				x, DEMath.max( ( top - imageSize.getY() ) / 2, 0 ) ) )
-			this.pCanvasButtonMinimize.setSize( imageSize )
-			this.pCanvasButtonMinimize.setOrder( 4.0 )
-			decoCanvas.addCanvas( this.pCanvasButtonMinimize )
+			pCanvasButtonMinimize = CanvasImage.new()
+			pCanvasButtonMinimize.setImage(pImageButtonMinimizeNormal)
+			pCanvasButtonMinimize.setPosition(Point.new(\
+				x, DEMath.max((top - imageSize.getY()) / 2, 0)))
+			pCanvasButtonMinimize.setSize(imageSize)
+			pCanvasButtonMinimize.setOrder(4.0)
+			decoCanvas.addCanvas(pCanvasButtonMinimize)
 			
-			x -= this.pButtonGap
+			x -= pButtonGap
 		end
 	end
 	
 	/** \brief Update canvas buttons. */
 	protected func void updateCanvasButtons()
-		var Window window = this.getWindow()
+		var Window window = getWindow()
 		if window == null
 			return
 		end
@@ -487,55 +458,55 @@ class CanvasCreatorDecoration extends DefaultDecoration
 		var Image image
 		
 		// close button
-		if this.pCanvasButtonClose != null
-			if this.getButtonClosePressed()
-				image = this.pImageButtonClosePressed
+		if pCanvasButtonClose != null
+			if getButtonClosePressed()
+				image = pImageButtonClosePressed
 				
-			elif this.getButtonCloseHover()
-				image = this.pImageButtonCloseHover
+			elif getButtonCloseHover()
+				image = pImageButtonCloseHover
 			end
 			
 			if image == null
-				image = this.pImageButtonCloseNormal
+				image = pImageButtonCloseNormal
 			end
 			
-			this.pCanvasButtonClose.setImage( image )
+			pCanvasButtonClose.setImage(image)
 		end
 		
 		// maximize button
-		if this.pCanvasButtonMaximize != null
+		if pCanvasButtonMaximize != null
 			image = null
 			
-			if this.getButtonMaximizePressed()
-				image = this.pImageButtonMaximizePressed
+			if getButtonMaximizePressed()
+				image = pImageButtonMaximizePressed
 				
-			elif this.getButtonMaximizeHover()
-				image = this.pImageButtonMaximizeHover
+			elif getButtonMaximizeHover()
+				image = pImageButtonMaximizeHover
 			end
 			
 			if image == null
-				image = this.pImageButtonMaximizeNormal
+				image = pImageButtonMaximizeNormal
 			end
 			
-			this.pCanvasButtonMaximize.setImage( image )
+			pCanvasButtonMaximize.setImage(image)
 		end
 		
 		// minimize button
-		if this.pCanvasButtonMinimize != null
+		if pCanvasButtonMinimize != null
 			image = null
 			
-			if this.getButtonMinimizePressed()
-				image = this.pImageButtonMinimizePressed
+			if getButtonMinimizePressed()
+				image = pImageButtonMinimizePressed
 				
-			elif this.getButtonMinimizeHover()
-				image = this.pImageButtonMinimizeHover
+			elif getButtonMinimizeHover()
+				image = pImageButtonMinimizeHover
 			end
 			
 			if image == null
-				image = this.pImageButtonMinimizeNormal
+				image = pImageButtonMinimizeNormal
 			end
 			
-			this.pCanvasButtonMinimize.setImage( image )
+			pCanvasButtonMinimize.setImage(image)
 		end
 	end
 end

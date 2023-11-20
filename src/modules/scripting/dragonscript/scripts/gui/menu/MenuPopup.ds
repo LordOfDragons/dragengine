@@ -32,16 +32,16 @@ pin Dragengine.Utils
  * \version 1.11
  */
 class MenuPopup extends WindowPopup
-	private var MenuItemSubMenu pParentMenuItem
-	private var MenuBarItem pParentMenuBarItem
-	private var MenuItemSubMenu pOpenSubMenu
-	private var MenuPopupAutoCloseSubMenu pAutoCloseSubMenu
-	private var bool pCloseButtonReleaseOutside
+	var MenuItemSubMenu pParentMenuItem
+	var MenuBarItem pParentMenuBarItem
+	var MenuItemSubMenu pOpenSubMenu
+	var MenuPopupAutoCloseSubMenu pAutoCloseSubMenu
+	var bool pCloseButtonReleaseOutside
 	
 	
 	
 	/** \brief Create popup menu. */
-	public func new()
+	func new()
 		setDesignerSelector("MenuPopup")
 	end
 	
@@ -51,12 +51,12 @@ class MenuPopup extends WindowPopup
 	 * Block receives MenuPopup as argument. Block call is wrapped inside runWhileBlockingLayout()
 	 * for efficiency. doLayout() will be called after leaving the block.
 	 */
-	public func new(Block blockAddContent) this()
+	func new(Block blockAddContent) this()
 		blockAddContent.run(this)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		setOpenSubMenu(null)
 		pParentMenuItem = null
 		pParentMenuBarItem = null
@@ -66,7 +66,7 @@ class MenuPopup extends WindowPopup
 	
 	
 	/** \brief Add widget. */
-	public func void addWidget(Widget widget)
+	func void addWidget(Widget widget)
 		super.addWidget(widget)
 		
 		if getVisible()
@@ -75,7 +75,7 @@ class MenuPopup extends WindowPopup
 	end
 	
 	/** \brief Add widget. */
-	public func void addWidget(Widget widget, Object settings)
+	func void addWidget(Widget widget, Object settings)
 		super.addWidget(widget, settings)
 		
 		if getVisible()
@@ -86,13 +86,13 @@ class MenuPopup extends WindowPopup
 	
 	
 	/** \brief Fit to content. Modified to update show icon count before fitting. */
-	public func void fitToContent()
+	func void fitToContent()
 		updateShowIconCount()
 		super.fitToContent()
 	end
 	
 	/** \brief Capture mouse. */
-	public func void captureMouse()
+	func void captureMouse()
 		// capture mouse only if this is the top level popup menu
 		if pParentMenuItem == null
 			super.captureMouse()
@@ -100,7 +100,7 @@ class MenuPopup extends WindowPopup
 	end
 	
 	/** \brief Release mouse capture. */
-	public func void releaseMouse()
+	func void releaseMouse()
 		// capture mouse only if this is the top level popup menu
 		if pParentMenuItem == null
 			super.releaseMouse()
@@ -140,27 +140,27 @@ class MenuPopup extends WindowPopup
 	
 	
 	/** \brief Parent menu item or null. */
-	public func MenuItemSubMenu getParentMenuItem()
+	func MenuItemSubMenu getParentMenuItem()
 		return pParentMenuItem
 	end
 	
 	/** \brief Set parent menu item or null. */
-	public func void setParentMenuItem(MenuItemSubMenu menuItem)
+	func void setParentMenuItem(MenuItemSubMenu menuItem)
 		pParentMenuItem = menuItem
 	end
 	
 	/** \brief Parent menu bar item or null. */
-	public func MenuBarItem getParentMenuBarItem()
+	func MenuBarItem getParentMenuBarItem()
 		return pParentMenuBarItem
 	end
 	
 	/** \brief Set parent menu bar item or null. */
-	public func void setParentMenuBarItem(MenuBarItem menuBarItem)
+	func void setParentMenuBarItem(MenuBarItem menuBarItem)
 		pParentMenuBarItem = menuBarItem
 	end
 	
 	/** \brief Open sub menu item or null. */
-	public func MenuItemSubMenu getOpenSubMenu()
+	func MenuItemSubMenu getOpenSubMenu()
 		return pOpenSubMenu
 	end
 	
@@ -169,7 +169,7 @@ class MenuPopup extends WindowPopup
 	 * 
 	 * If null hides sub menu. If not null shows submenu.
 	 */
-	public func void setOpenSubMenu(MenuItemSubMenu subMenu)
+	func void setOpenSubMenu(MenuItemSubMenu subMenu)
 		if subMenu == pOpenSubMenu
 			return
 		end
@@ -197,7 +197,7 @@ class MenuPopup extends WindowPopup
 	
 	
 	/** \brief Lowest level open sub menu or null. */
-	public func MenuPopup getLowestOpenSubMenu()
+	func MenuPopup getLowestOpenSubMenu()
 		if pOpenSubMenu == null
 			return null
 		end
@@ -217,7 +217,7 @@ class MenuPopup extends WindowPopup
 	end
 	
 	/** \brief Set hover widget in parent menus to open sub menu. */
-	public func void parentMenusSetHoverOpenSubMenu()
+	func void parentMenusSetHoverOpenSubMenu()
 		if pOpenSubMenu != null
 			setHoverWidget(pOpenSubMenu, MouseEvent.new(pOpenSubMenu,\
 				MouseEvent.idMouseMoved, 0, 0, Point.new(), -1))
@@ -232,7 +232,7 @@ class MenuPopup extends WindowPopup
 	end
 	
 	/** \brief Clear hover widget on open sub menus. */
-	public func void openSubMenusClearHover()
+	func void openSubMenusClearHover()
 		if pOpenSubMenu != null
 			var MenuPopup menu = pOpenSubMenu.getSubMenu()
 			if menu != null
@@ -245,7 +245,7 @@ class MenuPopup extends WindowPopup
 	
 	
 	/** \brief Popup inside. */
-	public func void popupInside(Point position, RectArea boundary)
+	func void popupInside(Point position, RectArea boundary)
 		pCloseButtonReleaseOutside = false
 		super.popupInside(position, boundary)
 	end
@@ -255,7 +255,7 @@ class MenuPopup extends WindowPopup
 	 * 
 	 * Release mouse and hide window. If close on popdown is true close() is called too.
 	 */
-	public func void popdown()
+	func void popdown()
 		if not getVisible()
 			// prevent MenuBar.setOpenSubMenu(null) to cause a stack overflow.
 			// required since MenuBar.setOpenSubMenu() calls popdown()
@@ -275,7 +275,7 @@ class MenuPopup extends WindowPopup
 	end
 	
 	/** \brief Send event to the widget. */
-	public func void sendEvent(Event event)
+	func void sendEvent(Event event)
 		if event.getSource() != this
 			return // child widget did not handle event
 		end
@@ -328,8 +328,8 @@ class MenuPopup extends WindowPopup
 					event.getPosition(), event.getSystem(), event.getDevice()))
 				
 			else
-				window.sendEvent(MouseEvent.new(window, ident, \
-					event.getButton(), event.getModifiers(), \
+				window.sendEvent(MouseEvent.new(window, ident,\
+					event.getButton(), event.getModifiers(),\
 					localPosition, event.getSystem(), event.getDevice()))
 			end
 			return true
@@ -383,52 +383,34 @@ class MenuPopup extends WindowPopup
 	
 	/**
 	 * \brief Convenience method to add menu item to context menu.
-	 * \version 1.16
+	 * \version 1.20
 	 * 
-	 * Same as addItemCommand(MenuPopup,TranslationManager,String,String,Image,bool,ActionListener)
-	 * but uses BaseGameApp.getApp().getTranslationManager() as translation manager if
-	 * BaseGameApp.getApp() is not null.
+	 * Creates instance of MenuItemCommand with text, icon and action. Sets the enabled
+	 * state and adds it to the menu.
 	 */
-	public func MenuItemCommand addItemCommand(MenuPopup menu, String labelId,\
-	String label, Image icon, bool enabled, ActionListener action)
-		var TranslationManager translationManager
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			translationManager = app.getTranslationManager()
-		end
-		return addItemCommand(menu, translationManager, labelId, label, icon, enabled, action)
+	func MenuItemCommand addItemCommand(MenuPopup menu, String label, Image icon,\
+	bool enabled, ActionListener action)
+		var MenuItemCommand command = MenuItemCommand.new(icon, translate(label), action)
+		command.setEnabled(enabled)
+		addWidget(command)
+		return command
 	end
 	
 	/**
-	 * \brief Convenience method to add menu item to context menu.
+	 * \deprecated Use addItemCommand(MenuPopup,String,Image,bool,ActionListener).
 	 * \version 1.16
-	 * 
-	 * Creates instance of MenuItemCommand with potentially translated text, icon and action,
-	 * sets the enabled state and adds it to the menu.
-	 * 
-	 * \param menu Menu to add item to.
-	 * \param translationManager Translation manager to use or null.
-	 * \param labelId Translation entry identifier to use if translationManager is not null.
-	 * \param label Label to use if translationManager is null or translation is not found.
-	 * \param icon Icon to use or null.
-	 * \param enable Enable menu item.
-	 * \param action Action to use.
-	 * \returns created menu item.
 	 */
-	public func MenuItemCommand addItemCommand(MenuPopup menu,\
-	TranslationManager translationManager, String labelId, String label, Image icon,\
-	bool enabled, ActionListener action)
-		if translationManager != null and not labelId.empty()
-			var UnicodeString translated = translationManager.translate(labelId, null)
-			if translated != null
-				label = translated.toUTF8()
-			end
-		end
-		
-		var MenuItemCommand command = MenuItemCommand.new(icon, label, action)
-		command.setEnabled(enabled)
-		addWidget(command)
-		
-		return command
+	func MenuItemCommand addItemCommand(MenuPopup menu, String labelId, String label,\
+	Image icon, bool enabled, ActionListener action)
+		return addItemCommand(menu, labelId.empty() if label else "@" + labelId, icon, enabled, action)
+	end
+	
+	/**
+	 * \deprecated Use addItemCommand(MenuPopup,labelId,label,icon,enabled,action).
+	 * \version 1.16
+	 */
+	func MenuItemCommand addItemCommand(MenuPopup menu, TranslationManager translationManager,\
+	String labelId, String label, Image icon, bool enabled, ActionListener action)
+		return addItemCommand(menu, labelId, label, icon, enabled, action)
 	end
 end

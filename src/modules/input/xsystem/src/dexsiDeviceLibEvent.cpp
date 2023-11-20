@@ -78,12 +78,21 @@ pEvdevMapKeys( NULL )
 	// retrieve device parameters
 	SetName( libevdev_get_name( pEvdevDevice ) );
 	
-	const int bustype = libevdev_get_id_bustype( pEvdevDevice );
-	const int vendor = libevdev_get_id_vendor( pEvdevDevice );
-	const int product = libevdev_get_id_product( pEvdevDevice );
-	const int version = libevdev_get_id_version( pEvdevDevice );
-	string.Format( "%s%d%04x%04x%04x%04x", XINP_DEVID_PREFIX, esLibevdev,
-		bustype, vendor, product, version );
+	const char * const unique = libevdev_get_uniq( pEvdevDevice );
+	if( unique ){
+		string.Format( "%s%d%s", XINP_DEVID_PREFIX, esLibevdev,
+			dexsiDeviceManager::NormalizeID( unique ).GetString() );
+		
+	}else{
+		const int bustype = libevdev_get_id_bustype( pEvdevDevice );
+		const int vendor = libevdev_get_id_vendor( pEvdevDevice );
+		const int product = libevdev_get_id_product( pEvdevDevice );
+		const int version = libevdev_get_id_version( pEvdevDevice );
+		
+		string.Format( "%s%d%04x%04x%04x%04x", XINP_DEVID_PREFIX, esLibevdev,
+			bustype, vendor, product, version );
+	}
+	
 	SetID( string );
 	
 	// try to identify what kind of device this is
@@ -175,6 +184,8 @@ pEvdevMapKeys( NULL )
 	}
 	
 	if( hasAbsoluteAxes ){
+		int nextGeneric = 0;
+		
 		for( i=0; i<ABS_MAX; i++ ){
 			if( ! libevdev_has_event_code( pEvdevDevice, EV_ABS, i ) ){
 				continue;
@@ -185,20 +196,84 @@ pEvdevMapKeys( NULL )
 			dexsiDeviceAxis &axis = ( dexsiDeviceAxis& )( deObject& )refObject;
 			axis.SetIndex( indexAxis );
 			axis.SetName( libevdev_event_code_get_name( EV_ABS, i ) );
-			string.Format( "aa%d", i );
-			axis.SetID( string );
 			axis.SetEvdevCode( i );
 			axis.SetAbsolute( true );
-			axis.SetType( deInputDeviceAxis::eatStick );
 			
 			axis.SetMinimum( libevdev_get_abs_minimum( pEvdevDevice, i ) );
 			axis.SetMaximum( libevdev_get_abs_maximum( pEvdevDevice, i ) );
 			axis.SetFuzz( libevdev_get_abs_fuzz( pEvdevDevice, i ) );
 			axis.SetFlat( libevdev_get_abs_flat( pEvdevDevice, i ) );
 			
-			string.Format( "%d", indexAxis + 1 );
-			axis.SetDisplayText( string );
-			axis.SetDisplayImages( "stick" ); // "stickX" or "stickY" if orientation is known
+			if( axis.GetName().EqualsInsensitive( "abs_x" ) ){
+				axis.SetType( deInputDeviceAxis::eatStick );
+				axis.SetDisplayImages( "stickX" );
+				axis.SetID( "sx0" );
+				axis.SetDisplayText( "1" );
+				
+			}else if( axis.GetName().EqualsInsensitive( "abs_y" ) ){
+				axis.SetType( deInputDeviceAxis::eatStick );
+				axis.SetDisplayImages( "stickY" );
+				axis.SetID( "sy0" );
+				axis.SetDisplayText( "1" );
+				
+			}else if( axis.GetName().EqualsInsensitive( "abs_z" ) ){
+				axis.SetType( deInputDeviceAxis::eatTrigger );
+				axis.SetDisplayImages( "trigger" );
+				axis.SetID( "tr0" );
+				axis.SetDisplayText( "1" );
+				
+			}else if( axis.GetName().EqualsInsensitive( "abs_rx" ) ){
+				axis.SetType( deInputDeviceAxis::eatStick );
+				axis.SetDisplayImages( "stickX" );
+				axis.SetID( "sx1" );
+				axis.SetDisplayText( "2" );
+				
+			}else if( axis.GetName().EqualsInsensitive( "abs_ry" ) ){
+				axis.SetType( deInputDeviceAxis::eatStick );
+				axis.SetDisplayImages( "stickY" );
+				axis.SetID( "sy1" );
+				axis.SetDisplayText( "2" );
+				
+			}else if( axis.GetName().EqualsInsensitive( "abs_rz" ) ){
+				axis.SetType( deInputDeviceAxis::eatTrigger );
+				axis.SetDisplayImages( "trigger" );
+				axis.SetID( "tr1" );
+				axis.SetDisplayText( "2" );
+				
+			}else if( axis.GetName().EqualsInsensitive( "abs_hat0x" ) ){
+				axis.SetType( deInputDeviceAxis::eatHat );
+				axis.SetDisplayImages( "stickX" );
+				axis.SetID( "hx0" );
+				axis.SetDisplayText( "1" );
+				
+			}else if( axis.GetName().EqualsInsensitive( "abs_hat0y" ) ){
+				axis.SetType( deInputDeviceAxis::eatHat );
+				axis.SetDisplayImages( "stickY" );
+				axis.SetID( "hy0" );
+				axis.SetDisplayText( "1" );
+				
+			}else if( axis.GetName().EqualsInsensitive( "abs_hat1x" ) ){
+				axis.SetType( deInputDeviceAxis::eatHat );
+				axis.SetDisplayImages( "stickX" );
+				axis.SetID( "hx1" );
+				axis.SetDisplayText( "2" );
+				
+			}else if( axis.GetName().EqualsInsensitive( "abs_hat1y" ) ){
+				axis.SetType( deInputDeviceAxis::eatHat );
+				axis.SetDisplayImages( "stickY" );
+				axis.SetID( "hy1" );
+				axis.SetDisplayText( "2" );
+				
+			}else{
+				axis.SetType( deInputDeviceAxis::eatGeneric );
+				axis.SetDisplayImages( "stick" );
+				
+				string.Format( "aa%d", nextGeneric++ );
+				axis.SetID( string );
+				
+				string.Format( "%d", nextGeneric );
+				axis.SetDisplayText( string );
+			}
 			
 			pEvdevMapAbsAxis[ i ] = indexAxis++;
 		}
@@ -221,6 +296,9 @@ pEvdevMapKeys( NULL )
 		
 		int indexButton = 0;
 		
+		int nextGeneric = 0;
+		int nextTrigger = 0;
+		
 		for( i=BTN_MISC; i<KEY_MAX; i++ ){
 			if( ! libevdev_has_event_code( pEvdevDevice, EV_KEY, i ) ){
 				continue;
@@ -230,13 +308,88 @@ pEvdevMapKeys( NULL )
 			AddButton( ( dexsiDeviceButton* )( deObject* )refObject );
 			dexsiDeviceButton &button = ( dexsiDeviceButton& )( deObject& )refObject;
 			button.SetName( libevdev_event_code_get_name( EV_KEY, i ) );
-			string.Format( "b%d", i );
-			button.SetID( string );
 			button.SetEvdevCode( i );
 			
-			string.Format( "%d", indexButton + 1 );
-			button.SetDisplayText( string );
-			button.SetDisplayImages( "button" );
+			// other seen names (but not assigned especially):
+			// BTN_MODE
+			// BTN_TRIGGER_HAPPY*
+			
+			if( button.GetName().EqualsInsensitive( "btn_south" ) ){
+				button.SetType( deInputDeviceButton::ebtAction );
+				button.SetDisplayImages( "button" );
+				button.SetID( "baa" );
+				button.SetDisplayText( "A" );
+				
+			}else if( button.GetName().EqualsInsensitive( "btn_east" ) ){
+				button.SetType( deInputDeviceButton::ebtAction );
+				button.SetDisplayImages( "button" );
+				button.SetID( "bab" );
+				button.SetDisplayText( "B" );
+				
+			}else if( button.GetName().EqualsInsensitive( "btn_west" ) ){
+				button.SetType( deInputDeviceButton::ebtAction );
+				button.SetDisplayImages( "button" );
+				button.SetID( "bax" );
+				button.SetDisplayText( "X" );
+				
+			}else if( button.GetName().EqualsInsensitive( "btn_north" ) ){
+				button.SetType( deInputDeviceButton::ebtAction );
+				button.SetDisplayImages( "button" );
+				button.SetID( "bay" );
+				button.SetDisplayText( "Y" );
+				
+			}else if( button.GetName().EqualsInsensitive( "btn_tl" ) ){
+				button.SetType( deInputDeviceButton::ebtShoulderLeft );
+				button.SetDisplayImages( "button" );
+				button.SetID( "basl" );
+				button.SetDisplayText( "SL" );
+				
+			}else if( button.GetName().EqualsInsensitive( "btn_tr" ) ){
+				button.SetType( deInputDeviceButton::ebtShoulderRight );
+				button.SetDisplayImages( "button" );
+				button.SetID( "basr" );
+				button.SetDisplayText( "SR" );
+				
+			}else if( button.GetName().EqualsInsensitive( "btn_select" ) ){
+				button.SetType( deInputDeviceButton::ebtSelect );
+				button.SetDisplayImages( "button" );
+				button.SetID( "basel" );
+				button.SetDisplayText( "Select" );
+				
+			}else if( button.GetName().EqualsInsensitive( "btn_start" ) ){
+				button.SetType( deInputDeviceButton::ebtHome );
+				button.SetDisplayImages( "button" );
+				button.SetID( "basta" );
+				button.SetDisplayText( "Start" );
+				
+			}else if( button.GetName().EqualsInsensitive( "btn_thumbl" ) ){
+				button.SetType( deInputDeviceButton::ebtStick );
+				button.SetDisplayImages( "button" );
+				button.SetID( "bas0" );
+				button.SetDisplayText( "StkL" );
+				
+			}else if( button.GetName().EqualsInsensitive( "btn_thumbr" ) ){
+				button.SetType( deInputDeviceButton::ebtStick );
+				button.SetDisplayImages( "button" );
+				button.SetID( "bas1" );
+				button.SetDisplayText( "StkR" );
+				
+			}else if( button.GetName().BeginsWithInsensitive( "btn_trigger_" ) ){
+				button.SetType( deInputDeviceButton::ebtTrigger );
+				button.SetDisplayImages( "button" );
+				string.Format( "bt%d", nextTrigger++ );
+				button.SetID( string );
+				string.Format( "T%d", nextTrigger );
+				button.SetDisplayText( string );
+				
+			}else{
+				button.SetType( deInputDeviceButton::ebtGeneric );
+				button.SetDisplayImages( "button" );
+				string.Format( "bg%d", nextGeneric++ );
+				button.SetID( string );
+				string.Format( "%d", nextGeneric );
+				button.SetDisplayText( string );
+			}
 			
 			pEvdevMapKeys[ i - BTN_MISC ] = indexButton++;
 		}

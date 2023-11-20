@@ -49,43 +49,44 @@ pin Dragengine.Scenery
  * without the need to alter the instance itself.
  */
 class Desktop extends Container
-	private var Widget pFocusWidget
-	private var Widget pFocusInProgress
+	var Widget pFocusWidget
+	var Widget pFocusInProgress
 	
-	private var Widget pHoverWidget
-	private var Window pTrackDecoration
-	private var Decoration.Area pTrackDecorationAreaHover
+	var Widget pHoverWidget
+	var Window pTrackDecoration
+	var Decoration.Area pTrackDecorationAreaHover
 	
-	private var Widget pCaptureWidget
+	var Widget pCaptureWidget
 	
-	private var Point pMouseLocation
-	private var MousePointerFactory pActiveMousePointer
-	private var MousePointer pMousePointerInstance
-	private var RectArea pMouseArea
-	private var bool pMouseHidden
-	private var Array pMousePointerListeners
+	var Point pMouseLocation
+	var MousePointerFactory pActiveMousePointer
+	var MousePointer pMousePointerInstance
+	var RectArea pMouseArea
+	var bool pMouseHidden
+	var Array pMousePointerListeners
 	
-	private var Window pDragWindow
-	private var Point pDragOffset
-	private var Decoration.Area pDragArea
+	var Window pDragWindow
+	var Point pDragOffset
+	var Decoration.Area pDragArea
 	
-	private var BorderSize pNoWindowBorder
+	var BorderSize pNoWindowBorder
 	
-	private var ToolTipManager pToolTipManager
-	private var WindowVirtualKeyboard pWindowVirtualKeyboard
+	var ToolTipManager pToolTipManager
+	var WindowVirtualKeyboard pWindowVirtualKeyboard
+	var GamepadController pGamepadController
 	
 	
 	
 	/** \brief Create desktop widget. */
-	public func new(int width, int height) this(0, 0, width, height)
+	func new(int width, int height) this(0, 0, width, height)
 	end
 	
 	/** \brief Create desktop widget. */
-	public func new(Point size) this(0, 0, size.getX(), size.getY())
+	func new(Point size) this(0, 0, size.getX(), size.getY())
 	end
 	
 	/** \brief Create desktop widget. */
-	public func new(int x, int y, int width, int height) super(x, y, width, height)
+	func new(int x, int y, int width, int height) super(x, y, width, height)
 		pMousePointerListeners = Array.new()
 		pDragOffset = Point.new()
 		pNoWindowBorder = BorderSize.new()
@@ -103,9 +104,10 @@ class Desktop extends Container
 	
 	
 	/** \brief Disposes of widget. */
-	public func void dispose()
+	func void dispose()
 		setWindowVirtualKeyboard(null)
 		setToolTipManager(null)
+		setGamepadController(null)
 		
 		pMousePointerListeners = null
 		pFocusWidget = null
@@ -122,7 +124,7 @@ class Desktop extends Container
 	
 	
 	/** \brief Active window or \em null. */
-	public func Window getActiveWindow()
+	func Window getActiveWindow()
 		var Widget focusWidget = getFocusWidget()
 		if focusWidget != null
 			return focusWidget.getWindow()
@@ -133,7 +135,7 @@ class Desktop extends Container
 	end
 	
 	/** \brief Focused widget or \em null. */
-	public func Widget getFocusWidget()
+	func Widget getFocusWidget()
 		if pFocusWidget != null
 			if pFocusWidget.getParent() == null /* removed or disposed while active */ \
 			or not pFocusWidget.getCanFocus() \
@@ -149,7 +151,7 @@ class Desktop extends Container
 	
 	
 	/** \brief Widget the mouse hovers above or \em null. */
-	public func Widget getHoverWidget()
+	func Widget getHoverWidget()
 		if pHoverWidget != null
 			if pHoverWidget.getParent() == null /* removed or disposed while active */ \
 			or not pHoverWidget.getVisible()
@@ -200,7 +202,7 @@ class Desktop extends Container
 	 * \brief Update hover widget.
 	 * \details Call if the hover widget is removed from the desktop.
 	 */
-	public func void updateHoverWidget()
+	func void updateHoverWidget()
 		var Widget hoverWidget
 		
 		if pDragWindow != null
@@ -258,7 +260,7 @@ class Desktop extends Container
 	 * \brief Widget accepting input at position.
 	 * \version 1.17
 	 */
-	public func Widget widgetAcceptingInputAt(Point position)
+	func Widget widgetAcceptingInputAt(Point position)
 		if pDragWindow != null
 			
 		else
@@ -347,14 +349,14 @@ class Desktop extends Container
 	
 	
 	/** Retrieves the widget having captured the mouse. */
-	public func Widget getMouseCaptureWidget()
+	func Widget getMouseCaptureWidget()
 		return pCaptureWidget
 	end
 	
 	
 	
 	/** \brief Location of mouse pointer. */
-	public func Point getMouseLocation()
+	func Point getMouseLocation()
 		return pMouseLocation
 	end
 	
@@ -363,7 +365,7 @@ class Desktop extends Container
 	 * 
 	 * Location is clamped to the mouse movement area.
 	 */
-	public func void setMouseLocation(Point location)
+	func void setMouseLocation(Point location)
 		if pMouseArea != null
 			location = pMouseArea.clamp(location)
 		end
@@ -388,7 +390,7 @@ class Desktop extends Container
 	 * Use this method if you move the moue pointer directly as otherwise the appropriate
 	 * messages are not send.
 	 */
-	public func void warpMousePointer(Point location)
+	func void warpMousePointer(Point location)
 		if InputSystem.getCaptureInputDevices()
 			onMouseMove(MouseEvent.new(this, MouseEvent.idMouseMoved, 0, 0, location - pMouseLocation, -1))
 			
@@ -403,7 +405,7 @@ class Desktop extends Container
 	 * Use this method if you move the moue pointer directly as otherwise the appropriate
 	 * messages are not send.
 	 */
-	public func void warpMouseIn(Widget widget, Point location)
+	func void warpMouseIn(Widget widget, Point location)
 		warpMousePointer(widget.getDesktopPosition() + location)
 	end
 	
@@ -413,7 +415,7 @@ class Desktop extends Container
 	 * Use this method if you move the moue pointer directly as otherwise the appropriate
 	 * messages are not send.
 	 */
-	public func void warpCenterMouse()
+	func void warpCenterMouse()
 		warpMousePointer(getSize() / 2)
 	end
 	
@@ -423,12 +425,12 @@ class Desktop extends Container
 	 * Use this method if you move the moue pointer directly as otherwise the appropriate
 	 * messages are not send.
 	 */
-	public func void warpCenterMouseIn(Widget widget)
+	func void warpCenterMouseIn(Widget widget)
 		warpMouseIn(widget, widget.getSize() / 2)
 	end
 	
 	/** \brief Active mouse pointer factory or \em null. */
-	public func MousePointerFactory getActiveMousePointer()
+	func MousePointerFactory getActiveMousePointer()
 		return pActiveMousePointer
 	end
 	
@@ -437,7 +439,7 @@ class Desktop extends Container
 	 * 
 	 * If factory changes a new mouse pointer instance is created if not null.
 	 */
-	public func void setActiveMousePointer(MousePointerFactory mousePointer)
+	func void setActiveMousePointer(MousePointerFactory mousePointer)
 		if mousePointer == pActiveMousePointer
 			return
 		end
@@ -464,17 +466,17 @@ class Desktop extends Container
 	end
 	
 	/** \brief Mouse pointer instance or null. */
-	public func MousePointer getMousePointerInstance()
+	func MousePointer getMousePointerInstance()
 		return pMousePointerInstance
 	end
 	
 	/** \brief Movement area of mouse pointer or \em null if not set. */
-	public func RectArea getMouseArea()
+	func RectArea getMouseArea()
 		return pMouseArea
 	end
 	
 	/** \brief Set movement area of the mouse pointer or \em null to clear. */
-	public func void setMouseArea(RectArea area)
+	func void setMouseArea(RectArea area)
 		if area != null
 			area = area.orientate()
 		end
@@ -482,12 +484,12 @@ class Desktop extends Container
 	end
 	
 	/** \brief Mouse pointer is hidden. */
-	public func bool getIsMouseHidden()
+	func bool getIsMouseHidden()
 		return pMouseHidden
 	end
 	
 	/** \brief Set if mouse pointer is hidden. */
-	public func void setIsMouseHidden(bool hidden)
+	func void setIsMouseHidden(bool hidden)
 		if hidden == pMouseHidden
 			return
 		end
@@ -514,7 +516,7 @@ class Desktop extends Container
 	 * \brief Add mouse pointer listener.
 	 * \version 1.7
 	 */
-	public func void addMousePointerListener(MousePointerListener listener)
+	func void addMousePointerListener(MousePointerListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
 		end
@@ -525,19 +527,19 @@ class Desktop extends Container
 	 * \brief Remove mouse pointer listener.
 	 * \version 1.7
 	 */
-	public func void removeMousePointerListener(MousePointerListener listener)
+	func void removeMousePointerListener(MousePointerListener listener)
 		pMousePointerListeners.remove(listener)
 	end
 	
 	
 	
 	/** \brief Area along the borders no window can occupy. */
-	public func BorderSize getNoWindowBorder()
+	func BorderSize getNoWindowBorder()
 		return pNoWindowBorder
 	end
 	
 	/** \brief Set area along the borders no window can occupy. */
-	public func void setNoWindowBorder(BorderSize size)
+	func void setNoWindowBorder(BorderSize size)
 		if size == null
 			throw EInvalidParam.new()
 		end
@@ -550,19 +552,19 @@ class Desktop extends Container
 	end
 	
 	/** \brief Top left position excluding no window border. */
-	public func Point getNoBorderPosition()
+	func Point getNoBorderPosition()
 		return Point.new(pNoWindowBorder.getLeft(), pNoWindowBorder.getTop())
 	end
 	
 	/** \brief Maximum size excluding no window border. */
-	public func Point getNoBorderSize()
+	func Point getNoBorderSize()
 		return getSize() - pNoWindowBorder.getSize()
 	end
 	
 	
 	
 	/** \brief Add window to desktop. */
-	public func void addWidget(Widget widget)
+	func void addWidget(Widget widget)
 		addWidget(widget, null)
 	end
 	
@@ -570,12 +572,12 @@ class Desktop extends Container
 	 * \brief Add window to desktop.
 	 * \details To add windows use this function rather than addWidget.
 	 */
-	public func void addWindow(Window window)
+	func void addWindow(Window window)
 		addWidget(window, null)
 	end
 	
 	/** \brief Add window to desktop. */
-	public func void addWidget(Widget widget, Object settings)
+	func void addWidget(Widget widget, Object settings)
 		if not widget castable Window
 			throw EInvalidParam.new()
 		end
@@ -598,12 +600,12 @@ class Desktop extends Container
 	 * \brief Add window to desktop.
 	 * \details To add windows use this function rather than addWidget.
 	 */
-	public func void addWindow(Window window, Object settings)
+	func void addWindow(Window window, Object settings)
 		addWidget(window, settings)
 	end
 	
 	/** \brief Remove window from desktop. */
-	public func void removeWidget(Widget widget)
+	func void removeWidget(Widget widget)
 		var Window window = widget cast Window
 		
 		if window == pTrackDecoration
@@ -623,7 +625,7 @@ class Desktop extends Container
 	end
 	
 	/** \brief Remove all windows from desktop. */
-	public func void removeAllWidgets()
+	func void removeAllWidgets()
 		clearFocusWidget()
 		clearHoverWidget()
 		super.removeAllWidgets()
@@ -632,13 +634,13 @@ class Desktop extends Container
 	
 	
 	/** Notifies that the current focus widget can no longer hold the focus. */
-	public func void giveUpFocus()
+	func void giveUpFocus()
 		clearFocusWidget()
 		focusActiveWidgetOfFirstUsableWindow()
 	end
 	
 	/** Clears the focus widget. */
-	public func void clearFocusWidget()
+	func void clearFocusWidget()
 		var Widget focusWidget = getFocusWidget()
 		if focusWidget == null
 			return
@@ -654,7 +656,7 @@ class Desktop extends Container
 	end
 	
 	/** \brief Focus the active widget of the top window supporting it if possible. */
-	public func void focusActiveWidgetOfFirstUsableWindow()
+	func void focusActiveWidgetOfFirstUsableWindow()
 		var int count = getWidgetCount()
 		if count == 0
 			return
@@ -681,7 +683,7 @@ class Desktop extends Container
 	
 	
 	/** Request to focus the specified widget. */
-	public func void requestGrabFocus(Widget widget)
+	func void requestGrabFocus(Widget widget)
 		super.requestGrabFocus(widget)
 		
 		// get the windows of the current and new focus widget if existing
@@ -723,7 +725,7 @@ class Desktop extends Container
 	/**
 	 * \brief Container allows child widgets to grab the focus.
 	 */
-	public func bool allowsChildGrabFocus()
+	func bool allowsChildGrabFocus()
 		if not getEnabled() or not getVisible()
 			return false
 		end
@@ -739,7 +741,7 @@ class Desktop extends Container
 	/**
 	 * \brief Request to capture the mouse for the specified widget.
 	 */
-	public func bool requestCaptureMouse(Widget widget)
+	func bool requestCaptureMouse(Widget widget)
 		if widget == null //or pCaptureWidget != null
 			return false
 		end
@@ -754,7 +756,7 @@ class Desktop extends Container
 	 * \brief Request to release mouse capture.
 	 * \returns \em true if the widget is the capture widget otherwise \em false.
 	 */
-	public func bool requestReleaseMouse(Widget widget)
+	func bool requestReleaseMouse(Widget widget)
 		if widget != pCaptureWidget
 			return false
 		end
@@ -771,7 +773,7 @@ class Desktop extends Container
 	 * \brief Tool tip manager or null.
 	 * \version 1.7
 	 */
-	public func ToolTipManager getToolTipManager()
+	func ToolTipManager getToolTipManager()
 		return pToolTipManager
 	end
 	
@@ -779,7 +781,7 @@ class Desktop extends Container
 	 * \brief Set tool tip manager or null.
 	 * \version 1.7
 	 */
-	public func void setToolTipManager(ToolTipManager tooltipManager)
+	func void setToolTipManager(ToolTipManager tooltipManager)
 		if tooltipManager == pToolTipManager
 			return
 		end
@@ -798,7 +800,7 @@ class Desktop extends Container
 	 * \brief Virtual keyboard window or null.
 	 * \version 1.7
 	 */
-	public func WindowVirtualKeyboard getWindowVirtualKeyboard()
+	func WindowVirtualKeyboard getWindowVirtualKeyboard()
 		return pWindowVirtualKeyboard
 	end
 	
@@ -806,7 +808,7 @@ class Desktop extends Container
 	 * \brief Set virtual keyboard window or null.
 	 * \version 1.7
 	 */
-	public func void setWindowVirtualKeyboard(WindowVirtualKeyboard window)
+	func void setWindowVirtualKeyboard(WindowVirtualKeyboard window)
 		if window == pWindowVirtualKeyboard
 			return
 		end
@@ -826,8 +828,35 @@ class Desktop extends Container
 	
 	
 	
+	/**
+	 * \brief Gamepad controller or null.
+	 * \version 1.20
+	 */
+	func GamepadController getGamepadController()
+		return pGamepadController
+	end
+	
+	/**
+	 * \brief Set gamepad controller or null.
+	 * \version 1.20
+	 */
+	func void setGamepadController(GamepadController controller)
+		if controller == pGamepadController
+			return
+		end
+		
+		if pGamepadController != null
+			pGamepadController.dispose()
+			pGamepadController = null
+		end
+		
+		pGamepadController = controller
+	end
+	
+	
+	
 	/** Sends an Event to the focus widget or drop it. */
-	public func void processEvent(Event event)
+	func void processEvent(Event event)
 		var int ident = event.getIdentifier()
 		var Widget eventWidget //, focusWidget
 		var Event eventToSend
@@ -890,6 +919,10 @@ class Desktop extends Container
 		else
 			sendEvent(event)
 		end
+		
+		if pGamepadController != null
+			pGamepadController.processEvent(event)
+		end
 	end
 	
 	
@@ -899,12 +932,12 @@ class Desktop extends Container
 	 * desktop. The default implementation forwards the request to the
 	 * parent with the Desktop or a subclass thereof intercepting.
 	 */
-	public func Desktop getDesktop()
+	func Desktop getDesktop()
 		return this
 	end
 	
 	/** \brief Widget position in desktop coordinates. */
-	public func Point getDesktopPosition()
+	func Point getDesktopPosition()
 		return Point.new()
 	end
 	
@@ -917,7 +950,7 @@ class Desktop extends Container
 	 * wasting time. On the other hand check for condition changes altering
 	 * stored widgets
 	 */
-	public func void layoutParent()
+	func void layoutParent()
 		// check if capture widget is no more existing
 		if pCaptureWidget != null
 			if not pCaptureWidget.hasParent(this)
@@ -935,7 +968,7 @@ class Desktop extends Container
 	 * \brief Raise windows with getAlwaysOnTop() set.
 	 * \versoin 1.15.
 	 */
-	public func void raiseWindowsAlwaysOnTop()
+	func void raiseWindowsAlwaysOnTop()
 		var Array list = Array.new()
 		forEachWidget(block Window each
 			if each.getAlwaysOnTop()
@@ -950,7 +983,7 @@ class Desktop extends Container
 	
 	
 	/** Notification that a mouse button has been pressed. */
-	public func void onButtonPress(MouseEvent event)
+	func void onButtonPress(MouseEvent event)
 		if event.getSource() != this
 			return // message from child bubbling up
 		end
@@ -1210,7 +1243,7 @@ class Desktop extends Container
 	end
 	
 	/** Notification that a mouse button has been released. */
-	public func void onButtonRelease(MouseEvent event)
+	func void onButtonRelease(MouseEvent event)
 		// if some lazy bum send his message up to the parent ignore it.
 		if event.getSource() != this
 			return
@@ -1318,7 +1351,7 @@ class Desktop extends Container
 	end
 	
 	/** Notification that the mouse has moved. */
-	public func void onMouseMove(MouseEvent event)
+	func void onMouseMove(MouseEvent event)
 		// if some lazy bum send his message up to the parent ignore it.
 		if event.getSource() != this
 			return
@@ -1489,7 +1522,7 @@ class Desktop extends Container
 	 * 
 	 * Sends event to listeners.
 	 */
-	public func void onResize(WidgetEvent event)
+	func void onResize(WidgetEvent event)
 		super.onResize(event)
 		
 		updateMaximizedWindowSizes()
@@ -1503,7 +1536,7 @@ class Desktop extends Container
 	 * \brief Mouse pointer moved.
 	 * \version 1.7
 	 */
-	public func void onMousePointerMoved(MousePointerEvent event)
+	func void onMousePointerMoved(MousePointerEvent event)
 		sendEventToListeners(event, false)
 	end
 	
@@ -1511,7 +1544,7 @@ class Desktop extends Container
 	 * \brief Mouse pointer has been hidden.
 	 * \version 1.7
 	 */
-	public func void onMousePointerHidden(MousePointerEvent event)
+	func void onMousePointerHidden(MousePointerEvent event)
 		sendEventToListeners(event, false)
 	end
 	
@@ -1519,7 +1552,7 @@ class Desktop extends Container
 	 * \brief Mouse pointer has been shown.
 	 * \version 1.7
 	 */
-	public func void onMousePointerShown(MousePointerEvent event)
+	func void onMousePointerShown(MousePointerEvent event)
 		sendEventToListeners(event, false)
 	end
 	
@@ -1527,7 +1560,7 @@ class Desktop extends Container
 	 * \brief Mouse pointer changed.
 	 * \version 1.7
 	 */
-	public func void onMousePointerChanged(MousePointerEvent event)
+	func void onMousePointerChanged(MousePointerEvent event)
 		sendEventToListeners(event, false)
 	end
 	
@@ -1538,7 +1571,7 @@ class Desktop extends Container
 	 * 
 	 * If there are no listeners the event is send to the parent if \em sendToParent is \em true.
 	 */
-	public func void sendEventToListeners(Event event, bool sendToParent)
+	func void sendEventToListeners(Event event, bool sendToParent)
 		var int identifier = event.getIdentifier()
 		
 		if MousePointerEvent.isMousePointerEvent(identifier)
@@ -1580,7 +1613,7 @@ class Desktop extends Container
 	
 	 
 	/** Determines if a widget is enabled checking the parents too. */
-	public func bool isWidgetDeepEnabled(Widget widget)
+	func bool isWidgetDeepEnabled(Widget widget)
 		if not widget.getEnabled()
 			return false
 		end
@@ -1601,7 +1634,7 @@ class Desktop extends Container
 	
 	
 	/** \brief Update the size of all maximized windows to match desktop size. */
-	public func void updateMaximizedWindowSizes()
+	func void updateMaximizedWindowSizes()
 		var Point size = getSize()
 		forEachWidget(block Window each
 			if each.getWindowState() == Window.WindowState.maximized
@@ -1615,7 +1648,7 @@ class Desktop extends Container
 	end
 	
 	/** \brief Window state changed. */
-	public func void windowStateChanged(Window window)
+	func void windowStateChanged(Window window)
 		select window.getWindowState()
 		case Window.WindowState.normal
 			// TODO
@@ -1635,7 +1668,7 @@ class Desktop extends Container
 	 * 
 	 * Calls update() on tool tip manager if not null.
 	 */
-	public func void hoverWidgetChanged()
+	func void hoverWidgetChanged()
 		if pToolTipManager != null
 			pToolTipManager.update()
 		end

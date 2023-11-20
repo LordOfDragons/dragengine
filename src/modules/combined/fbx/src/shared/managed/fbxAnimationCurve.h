@@ -49,7 +49,6 @@ private:
 	fbxNode &pNodeCurve;
 	fbxProperty *pPropertyTime;
 	fbxProperty *pPropertyValue;
-	int pKeyCount;
 	decVector pDefaultValue;
 	
 	

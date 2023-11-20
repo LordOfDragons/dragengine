@@ -30,7 +30,7 @@ pin Dragengine.LoadSave
  * \version 1.5
  * 
  * Compatible persistency behaviors allow BehaviorElement to persist behavior instances in a
- * backwards and future expansion compatible way. Such behaviors needs to provide a unique
+ * backward and future expansion compatible way. Such behaviors needs to provide a unique
  * behavior identifier saved together with the behavior instance data. While loading the
  * behavior data is matched by using this behavior identifier.
  * 

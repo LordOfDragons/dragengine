@@ -23,86 +23,111 @@
 #define _DEXSIDEVICEMANAGER_H_
 
 #include "dexsiXInclude.h"
+#include "dexsiDeviceCoreMouse.h"
+#include "dexsiDeviceCoreKeyboard.h"
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/utils/decTimer.h>
 
 class deXSystemInput;
 class dexsiDevice;
-class dexsiDeviceCoreMouse;
-class dexsiDeviceCoreKeyboard;
 
 
 
 /**
- * \brief X-System input devices.
+ * X-System input devices.
  */
-class dexsiDeviceManager{
+class dexsiDeviceManager : public deObject{
+public:
+	typedef deTObjectReference<dexsiDeviceManager> Ref;
+	
+	
+	
 private:
 	deXSystemInput &pModule;
 	
 	decObjectOrderedSet pDevices;
 	
-	dexsiDeviceCoreMouse *pX11CoreMouse;
-	dexsiDeviceCoreKeyboard *pX11CoreKeyboard;
+	dexsiDeviceCoreMouse::Ref pX11CoreMouse;
+	dexsiDeviceCoreKeyboard::Ref pX11CoreKeyboard;
 	
-	dexsiDevice *pPrimaryMouse;
-	dexsiDevice *pPrimaryKeyboard;
+	dexsiDevice::Ref pPrimaryMouse;
+	dexsiDevice::Ref pPrimaryKeyboard;
+	
+	int pInotifyFd;
+	int pInotifyWatchEvdev;
+	const ssize_t pInotifyBufferLen;
+	uint8_t *pInotifyBuffer;
+	
+	decStringList pDelayProbeDevices;
+	float pTimeoutDelayProbeDevices;
+	decTimer pTimerDelayProbeDevices;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create device list. */
+	/** Create device list. */
 	dexsiDeviceManager( deXSystemInput &module );
 	
-	/** \brief Clean up device list. */
-	~dexsiDeviceManager();
+protected:
+	/** Clean up device list. */
+	virtual ~dexsiDeviceManager();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Module Management */
 	/*@{*/
-	/** \brief Update list of available devices. */
+	/** Update list of available devices. */
 	void UpdateDeviceList();
 	
 	
 	
-	/** \brief Number of devices. */
+	/** Number of devices. */
 	int GetCount() const;
 	
-	/** \brief Device at index. */
+	/** Device at index. */
 	dexsiDevice *GetAt( int index ) const;
 	
-	/** \brief Device with identifier or \em NULL if absent. */
+	/** Device with identifier or \em NULL if absent. */
 	dexsiDevice *GetWithID( const char *id );
 	
-	/** \brief Index of device with identifier or -1 if absent. */
+	/** Index of device with identifier or -1 if absent. */
 	int IndexOfWithID( const char *id );
 	
 	
 	
-	/** \brief Core mouse device. */
-	inline dexsiDeviceCoreMouse *GetX11CoreMouse() const{ return pX11CoreMouse; }
+	/** Core mouse device. */
+	inline const dexsiDeviceCoreMouse::Ref &GetX11CoreMouse() const{ return pX11CoreMouse; }
 	
-	/** \brief Core keyboard device. */
-	inline dexsiDeviceCoreKeyboard *GetX11CoreKeyboard() const{ return pX11CoreKeyboard; }
+	/** Core keyboard device. */
+	inline const dexsiDeviceCoreKeyboard::Ref &GetX11CoreKeyboard() const{ return pX11CoreKeyboard; }
 	
-	/** \brief Primary mouse device. */
-	inline dexsiDevice *GetPrimaryMouse() const{ return pPrimaryMouse; }
+	/** Primary mouse device. */
+	inline const dexsiDevice::Ref &GetPrimaryMouse() const{ return pPrimaryMouse; }
 	
-	/** \brief Primary keyboard device. */
-	inline dexsiDevice *GetPrimaryKeyboard() const{ return pPrimaryKeyboard; }
+	/** Primary keyboard device. */
+	inline const dexsiDevice::Ref &GetPrimaryKeyboard() const{ return pPrimaryKeyboard; }
 	
 	
 	
-	/** \brief Log list of input devices. */
+	/** Update. */
+	void Update();
+	
+	/** Log list of input devices. */
 	void LogDevices();
 	
+	/** Log device. */
+	void LogDevice( const dexsiDevice &device );
 	
 	
-	/** \brief Normalize identifier. */
+	
+	/** Normalize identifier. */
 	static decString NormalizeID( const char *id );
 	/*@}*/
 	
@@ -117,6 +142,16 @@ private:
 	void pCreateEvdevDevices();
 	
 	void pFindPrimaryDevices();
+	
+	void pStartWatchEvdev();
+	void pStopWatchEvdev();
+	void pUpdateWatchEvdev();
+	void pEvdevAppeared( const decString &path );
+	bool pEvdevDisappeared( const decString &path );
+	
+	void pUpdateDelayProbeDevices();
+	bool pProbeDevice( const decString &path );
+	void pUpdateDeviceIndices();
 };
 
 #endif

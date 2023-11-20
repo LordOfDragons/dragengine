@@ -77,6 +77,7 @@ pin Dragengine.Utils
  * - "interactPrompt{(id)}.verb": ECPUnicodeString
  * - "interactPrompt{(id)}.description": ECPUnicodeString
  * - "interactPrompt{(id)}.command": ECPString
+ * - "interactPrompt{(id)}.alternativeCommands": ECPStringList
  * - "interactPrompt{(id)}.enabled": ECPBoolean
  * - "interactPrompt{(id)}.bones": ECPStringList
  * - "interactPrompt{(id)}.maximumDistance": ECPFloat
@@ -90,8 +91,11 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		var Video pVideo
 		var String pStyle
 		var UnicodeString pVerb
+		var String pVerbTranslate
 		var UnicodeString pDescription
+		var String pDescriptionTranslate
 		var String pCommand
+		var Array pAlternativeCommands
 		var bool pEnabled
 		var Array pBones
 		var float pMaximumDistance
@@ -102,6 +106,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		/** \brief Create behavior instance. */
 		func new(ECBehaviorInteractPrompt ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
+			pAlternativeCommands = Array.new()
 		end
 		
 		
@@ -115,33 +120,15 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 			pVideo = pECBehavior.getVideo().getVideo(stub, eclass)
 			pStyle = pECBehavior.getStyle().getValue(stub)
 			pCommand = pECBehavior.getCommand().getValue(stub)
+			pAlternativeCommands = pECBehavior.getAlternativeCommands().getList(stub, codec)
 			pEnabled = pECBehavior.getEnabled().getValue(stub)
 			pBones = pECBehavior.getBones().getList(stub, codec)
 			pMaximumDistance = pECBehavior.getMaximumDistance().getValue(stub)
 			pSettings = pECBehavior.getSettings().getValue(stub)
-			
-			var TranslationManager tm = pECBehavior.getTranslationManager()
-			if tm != null
-				var String translate = pECBehavior.getVerbTranslate().getValue(stub)
-				if translate.empty()
-					pVerb = pECBehavior.getVerb().getValue(stub)
-					
-				else
-					pVerb = tm.translate(translate)
-				end
-				
-				translate = pECBehavior.getDescriptionTranslate().getValue(stub)
-				if translate.empty()
-					pDescription = pECBehavior.getDescription().getValue(stub)
-					
-				else
-					pDescription = tm.translate(translate)
-				end
-				
-			else
-				pVerb = pECBehavior.getVerb().getValue(stub)
-				pDescription = pECBehavior.getDescription().getValue(stub)
-			end
+			pVerbTranslate = pECBehavior.getVerbTranslate().getValueOrNull(stub)
+			pVerb = pECBehavior.getVerb().getValue(stub)
+			pDescriptionTranslate = pECBehavior.getDescriptionTranslate().getValueOrNull(stub)
+			pDescription = pECBehavior.getDescription().getValue(stub)
 		end
 		
 		
@@ -186,6 +173,10 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		
 		/** \brief Verb. */
 		func UnicodeString getVerb()
+			var TranslationManager tm = pECBehavior.getTranslationManager()
+			if tm != null and pVerbTranslate != null
+				return tm.translate(pVerbTranslate)
+			end
 			return pVerb
 		end
 		
@@ -195,10 +186,15 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 				throw ENullPointer.new("verb")
 			end
 			pVerb = verb
+			pVerbTranslate = null
 		end
 		
 		/** \brief Description. */
 		func UnicodeString getDescription()
+			var TranslationManager tm = pECBehavior.getTranslationManager()
+			if tm != null and pDescriptionTranslate != null
+				return tm.translate(pDescriptionTranslate)
+			end
 			return pDescription
 		end
 		
@@ -208,6 +204,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 				throw ENullPointer.new("description")
 			end
 			pDescription = description
+			pDescriptionTranslate = null
 		end
 		
 		/** \brief Command. */
@@ -221,6 +218,14 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 				throw ENullPointer.new("command")
 			end
 			pCommand = command
+		end
+		
+		/**
+		 * \brief Alternative commands as Array of String.
+		 * \version 1.20
+		 */
+		func Array getAlternativeCommands()
+			return pAlternativeCommands
 		end
 		
 		/** \brief Prompt is enabled. */
@@ -311,6 +316,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	var ECPUnicodeString pDescription
 	var ECPString pDescriptionTranslate
 	var ECPString pCommand
+	var ECPStringList pAlternativeCommands
 	var ECPBoolean pEnabled
 	var ECPStringList pBones
 	var ECPFloat pMaximumDistance
@@ -347,6 +353,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		eclass.addProperty(pDescription = ECPUnicodeString.new(prefix + "description", ""))
 		eclass.addProperty(pDescriptionTranslate = ECPString.new(prefix + "descriptionTranslate", ""))
 		eclass.addProperty(pCommand = ECPString.new(prefix + "command", ""))
+		eclass.addProperty(pAlternativeCommands = ECPStringList.new(prefix + "alternativeCommands"))
 		eclass.addProperty(pEnabled = ECPBoolean.new(prefix + "enabled", true))
 		eclass.addProperty(pBones = ECPStringList.new(prefix + "bones"))
 		eclass.addProperty(pMaximumDistance = ECPFloat.new(prefix + "maximumDistance", 1000, 0))
@@ -401,6 +408,14 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	/** \brief Command. */
 	func ECPString getCommand()
 		return pCommand
+	end
+	
+	/**
+	 * \brief Alternative commands.
+	 * \version 1.20
+	 */
+	func ECPStringList getAlternativeCommands()
+		return pAlternativeCommands
 	end
 	
 	/** \brief Prompt is enabled. */

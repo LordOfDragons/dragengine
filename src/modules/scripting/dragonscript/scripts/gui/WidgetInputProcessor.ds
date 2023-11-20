@@ -31,14 +31,13 @@ pin Dragengine.Utils
  * \brief Forward input event to widget.
  */
 class WidgetInputProcessor extends DefaultInputProcessor
-	/** \brief Widget to send input event to. */
-	private var Widget pWidget
+	var Widget pWidget
 	
 	
 	
 	/** \brief Create input processor. */
-	public func new( Widget widget )
-		this.setWidget( widget )
+	func new(Widget widget)
+		setWidget(widget)
 	end
 	
 	
@@ -47,74 +46,66 @@ class WidgetInputProcessor extends DefaultInputProcessor
 	 * \brief Widget to send input event to.
 	 * \version 1.5
 	 */
-	public func Widget getWidget()
-		return this.pWidget
+	func Widget getWidget()
+		return pWidget
 	end
 	
 	/**
 	 * \brief Set widget to send input event to.
 	 * \version 1.5
 	 */
-	public func void setWidget( Widget widget )
+	func void setWidget(Widget widget)
 		if widget == null
 			throw EInvalidParam.new()
 		end
-		this.pWidget = widget
+		pWidget = widget
 	end
 	
 	
 	
 	/** \brief Process input event. */
-	public func void inputEvent( InputEvent event )
+	func void inputEvent(InputEvent event)
 		select event.getType()
 		case InputEventType.keyPress
-			this.pWidget.processEvent( KeyEvent.new( this.pWidget, \
-				KeyEvent.idKeyPressed, event.getKeyCode(), event.getState(), event.getKeyChar(), \
-				event.getSource(), event.getDevice(), event.getCode() ) )
+			pWidget.processEvent(KeyEvent.new(pWidget, KeyEvent.idKeyPressed,\
+				event.getKeyCode(), event.getState(), event.getKeyChar(),\
+				event.getSource(), event.getDevice(), event.getCode()))
 			
 		case InputEventType.keyRelease
-			this.pWidget.processEvent( KeyEvent.new( this.pWidget, \
-				KeyEvent.idKeyReleased, event.getKeyCode(), event.getState(), event.getKeyChar(), \
-				event.getSource(), event.getDevice(), event.getCode() ) )
+			pWidget.processEvent(KeyEvent.new(pWidget, KeyEvent.idKeyReleased,\
+				event.getKeyCode(), event.getState(), event.getKeyChar(),\
+				event.getSource(), event.getDevice(), event.getCode()))
 			
 		case InputEventType.mousePress
-			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
-				MouseEvent.idMousePressed, event.getCode(), event.getState(), \
-				event.getSource(), event.getDevice() ) )
+			pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMousePressed,\
+				event.getCode(), event.getState(), event.getSource(), event.getDevice()))
 			
 		case InputEventType.mouseRelease
-			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
-				MouseEvent.idMouseReleased, event.getCode(), event.getState(), \
-				event.getSource(), event.getDevice() ) )
+			pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMouseReleased,\
+				event.getCode(), event.getState(), event.getSource(), event.getDevice()))
 			
 		case InputEventType.mouseMove
-			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
-				MouseEvent.idMouseMoved, event.getCode(), event.getState(), \
-				Point.new( event.getX(), event.getY() ), event.getSource(), event.getDevice() ) )
+			pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMouseMoved,\
+				event.getCode(), event.getState(), Point.new(event.getX(), event.getY()),\
+				event.getSource(), event.getDevice()))
 			
 		case InputEventType.mouseWheel
-			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
-				MouseEvent.idMouseWheeled, event.getCode(), event.getState(), \
-				Point.new( event.getX(), event.getY() ), event.getSource(), event.getDevice() ) )
+			pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMouseWheeled,\
+				event.getCode(), event.getState(), Point.new(event.getX(), event.getY()),\
+				event.getSource(), event.getDevice()))
 			
 		case InputEventType.axisMove
-			this.pWidget.processEvent( GamepadEvent.new( this.pWidget, \
-				GamepadEvent.idGamepadAxisMoved, event.getSource(), event.getDevice(), \
-				event.getCode(), event.getState(), event.getValue() ) )
+			pWidget.processEvent(GamepadEvent.new(pWidget, GamepadEvent.idGamepadAxisMoved,\
+				event.getSource(), event.getDevice(), event.getCode(),\
+				event.getState(), event.getValue()))
 			
 		case InputEventType.buttonPress
-			this.pWidget.processEvent( GamepadEvent.new( this.pWidget, \
-				GamepadEvent.idGamepadButtonPressed, event.getSource(), event.getDevice(), \
-				event.getCode(), event.getState() ) )
+			pWidget.processEvent(GamepadEvent.new(pWidget, GamepadEvent.idGamepadButtonPressed,\
+				event.getSource(), event.getDevice(), event.getCode(), event.getState()))
 			
 		case InputEventType.buttonRelease
-			this.pWidget.processEvent( GamepadEvent.new( this.pWidget, \
-				GamepadEvent.idGamepadButtonReleased, event.getSource(), event.getDevice(), \
-				event.getCode(), event.getState() ) )
-			
-		//case InputEventType.deviceAttachedDetached
-		//case InputEventType.deviceParamsChanged
-			//not used
+			pWidget.processEvent(GamepadEvent.new(pWidget, GamepadEvent.idGamepadButtonReleased,\
+				event.getSource(), event.getDevice(), event.getCode(), event.getState()))
 		end
 	end
 end

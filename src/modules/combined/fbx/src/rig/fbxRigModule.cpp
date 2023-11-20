@@ -111,14 +111,19 @@ void fbxRigModule::SaveRig(decBaseFileWriter &writer, const deRig &rig){
 //////////////////////
 
 void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
-	fbxNode &nodePose = *scene.FirstNodeNamed( "Pose" );
+	fbxNode * const nodePose = scene.FirstNodeNamed( "Pose" );
 	const fbxRig::Ref loadRig( fbxRig::Ref::New( new fbxRig( scene, nodePose ) ) );
-		decVector r(loadRig->GetMatrix().GetEulerAngles() * RAD2DEG);
-		LogInfoFormat("rigmat (%f,%f,%f)", r.x, r.y, r.z);
+	/*
+	decVector r(loadRig->GetMatrix().GetEulerAngles() * RAD2DEG);
+	LogInfoFormat("rigmat (%f,%f,%f)", r.x, r.y, r.z);
+	if( loadRig->GetBoneCount() > 0 ){
 		r = loadRig->GetBoneAt(0)->GetOrientation().GetEulerAngles() * RAD2DEG;
 		LogInfoFormat("bonemat (%f,%f,%f)", r.x, r.y, r.z);
-		r = scene.GetTransformation().GetEulerAngles();
-		LogInfoFormat("scenetrans (%f,%f,%f)", r.x, r.y, r.z);
+	}
+	r = scene.GetTransformation().GetEulerAngles();
+	LogInfoFormat("scenetrans (%f,%f,%f)", r.x, r.y, r.z);
+	*/
+	// scene.DebugPrintStructure( *this, true );
 	
 	const int boneCount = loadRig->GetBoneCount();
 	deRigBone *rigBone = nullptr;

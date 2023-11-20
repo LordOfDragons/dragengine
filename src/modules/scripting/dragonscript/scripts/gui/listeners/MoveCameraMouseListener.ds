@@ -33,7 +33,7 @@ pin Dragengine.Utils
  * \version 1.7
  * 
  * Set mouse button and modifiers required to trigger the listener. Once triggered moving
- * up and down is translated to moving camera forward and backwards relative to current
+ * up and down is translated to moving camera forward and backward relative to current
  * camera matrix view direction.
  * 
  * This listener actually moves the pivot of the camera director.

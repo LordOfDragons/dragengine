@@ -667,7 +667,7 @@ void deClassHeightTerrain::nfGetNavSpaceCount::RunFunction( dsRunTime *rt, dsVal
 // public func void addNavSpace( int sector )
 deClassHeightTerrain::nfAddNavSpace::nfAddNavSpace( const sInitData &init ) :
 dsFunction(init.clsHT, "addNavSpace", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInt ); // sector
 }
 void deClassHeightTerrain::nfAddNavSpace::RunFunction( dsRunTime *rt, dsValue *myself ){

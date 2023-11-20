@@ -41,6 +41,7 @@ class InteractPromptEntry
 	var UnicodeString pDescription
 	var String pStyle
 	var Command pCommand
+	var Array pAlternativeCommands
 	var Object pSettings
 	
 	
@@ -50,6 +51,7 @@ class InteractPromptEntry
 		pVerb = UnicodeString.new()
 		pDescription = UnicodeString.new()
 		pStyle = ""
+		pAlternativeCommands = Array.new()
 	end
 	
 	/** \brief Create copy of interact prompt entry. */
@@ -60,6 +62,7 @@ class InteractPromptEntry
 		pDescription = copy.pDescription
 		pStyle = copy.pStyle
 		pCommand = copy.pCommand
+		pAlternativeCommands = Array.new(copy.pAlternativeCommands)
 		pSettings = copy.pSettings
 	end
 	
@@ -135,6 +138,14 @@ class InteractPromptEntry
 	end
 	
 	/**
+	 * \brief Alternative commands as Array of Command.
+	 * \version 1.20
+	 */
+	func Array getAlternativeCommands()
+		return pAlternativeCommands
+	end
+	
+	/**
 	 * \brief Optional settings or null if not used.
 	 * \version 1.19
 	 */
@@ -167,6 +178,7 @@ class InteractPromptEntry
 		return pImage == ipe.pImage\
 			and pVideo == ipe.pVideo\
 			and pCommand == ipe.pCommand\
+			and pAlternativeCommands.equals(ipe.pAlternativeCommands)\
 			and pVerb.equals(ipe.pVerb)\
 			and pDescription.equals(ipe.pDescription)\
 			and pStyle.equals(ipe.pStyle)\

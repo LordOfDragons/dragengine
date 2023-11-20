@@ -32,6 +32,11 @@ class meHeightTerrainNavSpaceType;
  * \brief Height terrain navigation space face.
  */
 class meHeightTerrainNavSpaceFace : public deObject{
+public:
+	typedef deTObjectReference<meHeightTerrainNavSpaceFace> Ref;
+	
+	
+	
 private:
 	meHeightTerrainNavSpaceType *pType;
 	decIntList pNavPoints;

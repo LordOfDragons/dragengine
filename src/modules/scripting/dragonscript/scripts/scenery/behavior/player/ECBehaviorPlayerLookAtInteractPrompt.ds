@@ -425,6 +425,13 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 				entry.setVerb(each.getVerb())
 				entry.setDescription(each.getDescription())
 				entry.setCommand(pECBehavior.getCommandManager().getNamed(each.getCommand()))
+				each.getAlternativeCommands().forEach(block String each2
+					var Command command = pECBehavior.getCommandManager().getNamed(each2)
+					if command != null
+						entry.getAlternativeCommands().add(command)
+					end
+				end)
+				entry.setSettings(each.getSettings())
 				return entry
 			end))
 		end

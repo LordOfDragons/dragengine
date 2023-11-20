@@ -39,8 +39,8 @@
 
 fbxAnimationCurve::fbxAnimationCurve( fbxNode &nodeCurve ) :
 pNodeCurve( nodeCurve ),
-pPropertyTime( NULL ),
-pPropertyValue( NULL ){
+pPropertyTime( nullptr ),
+pPropertyValue( nullptr ){
 	const fbxNode &nodeTime = *nodeCurve.FirstNodeNamed( "KeyTime" );
 	pPropertyTime = nodeTime.GetPropertyAt( 0 );
 	

@@ -31,22 +31,22 @@ pin Dragengine.Gui.Layouts
  * \version 1.11
  */
 class MenuBarItem extends Container
-	private var String pText
-	private var Image pIcon
+	var String pText
+	var Image pIcon
 	
-	private var Label pWidgetText
-	private var DisplayImage pWidgetIcon
+	var Label pWidgetText
+	var DisplayImage pWidgetIcon
 	
-	private var MenuPopup pSubMenu
+	var MenuPopup pSubMenu
 	
 	
 	
 	/** \brief Create menu item. */
-	public func new(String text) this(null, text)
+	func new(String text) this(null, text)
 	end
 	
 	/** \brief Create menu item. */
-	public func new(Image icon, String text)
+	func new(Image icon, String text)
 		pText = text
 		pIcon = icon
 		
@@ -72,17 +72,17 @@ class MenuBarItem extends Container
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(String text, MenuPopup subMenu) this(text)
+	func new(String text, MenuPopup subMenu) this(text)
 		setSubMenu(subMenu)
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(Image icon, String text, MenuPopup subMenu) this(icon, text)
+	func new(Image icon, String text, MenuPopup subMenu) this(icon, text)
 		setSubMenu(subMenu)
 	end
 	
 	/** \brief Dispose of menu item. */
-	public func void dispose()
+	func void dispose()
 		if pSubMenu != null
 			pSubMenu.safeDispose()
 			pSubMenu = null
@@ -97,12 +97,12 @@ class MenuBarItem extends Container
 	
 	
 	/** \brief Text. */
-	public func String getText()
+	func String getText()
 		return pText
 	end
 	
 	/** \brief Set text. */
-	public func void setText(String text)
+	func void setText(String text)
 		if text.equals(pText)
 			return
 		end
@@ -112,7 +112,7 @@ class MenuBarItem extends Container
 	end
 	
 	/** \brief Icon. */
-	public func Image getIcon()
+	func Image getIcon()
 		return pIcon
 	end
 	
@@ -121,7 +121,7 @@ class MenuBarItem extends Container
 	 * 
 	 * Has no effect if no icon has been set in the constructor.
 	 */
-	public func void setIcon(Image icon)
+	func void setIcon(Image icon)
 		if icon == pIcon
 			return
 		end
@@ -140,19 +140,19 @@ class MenuBarItem extends Container
 	 * 
 	 * Modified to return true if mouse pointer hovers over this widget or the menu is open.
 	 */
-	public func bool isMouseInside()
+	func bool isMouseInside()
 		return super.isMouseInside() or (pSubMenu != null and pSubMenu.getVisible())
 	end
 	
 	
 	
 	/** \brief Sub menu to show or null if not set. */
-	public func MenuPopup getSubMenu()
+	func MenuPopup getSubMenu()
 		return pSubMenu
 	end
 	
 	/** \brief Set sub menu to show or null if not set. */
-	public func void setSubMenu(MenuPopup menu)
+	func void setSubMenu(MenuPopup menu)
 		if menu == pSubMenu
 			return
 		end
@@ -171,7 +171,7 @@ class MenuBarItem extends Container
 	end
 	
 	/** \brief Show sub menu. */
-	public func void showSubMenu()
+	func void showSubMenu()
 		if pSubMenu == null or pSubMenu.getVisible()
 			return
 		end
@@ -196,7 +196,7 @@ class MenuBarItem extends Container
 	end
 	
 	/** \brief Hide sub menu if visible. */
-	public func void hideSubMenu()
+	func void hideSubMenu()
 		if pSubMenu != null and pSubMenu.getVisible()
 			pSubMenu.popdown()
 		end
@@ -208,7 +208,7 @@ class MenuBarItem extends Container
 	
 	
 	/** \brief Parent MenuBar or null. */
-	public func MenuBar getParentMenuBar()
+	func MenuBar getParentMenuBar()
 		var Container container = getParent()
 		while container != null
 			if container castable MenuBar
@@ -222,7 +222,7 @@ class MenuBarItem extends Container
 	
 	
 	/** \brief Mouse button pressed. */
-	public func void onButtonPress(MouseEvent event)
+	func void onButtonPress(MouseEvent event)
 		if event.getButton() != InputEventMouseButton.left
 			return
 		end
@@ -236,7 +236,7 @@ class MenuBarItem extends Container
 	
 	
 	/** \brief Designer selector changed. */
-	public func void onDesignerSelectorChanged()
+	func void onDesignerSelectorChanged()
 		if pWidgetIcon != null
 			pWidgetIcon.setDesignerSelector("Image." + getDesignerSelector())
 		end

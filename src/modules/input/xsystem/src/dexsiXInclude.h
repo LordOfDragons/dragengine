@@ -34,4 +34,6 @@
 #include <libevdev-1.0/libevdev/libevdev.h>
 #include <fcntl.h>
 
+#include <sys/inotify.h>
+
 #endif

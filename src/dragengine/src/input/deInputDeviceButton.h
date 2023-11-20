@@ -116,7 +116,13 @@ public:
 		 * 
 		 * Tap of a touch pad.
 		 */
-		ebtTouchPad
+		ebtTouchPad,
+		
+		/**
+		 * \brief Battery is charging.
+		 * \version 1.20
+		 */
+		ebtBatteryCharging
 	};
 	
 	

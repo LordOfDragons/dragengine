@@ -32,17 +32,28 @@ namespace Dragengine.Utils
  * the translation methods again to obtain the new text.
  */
 class TranslationManager
-	private var Dictionary pLanguagePacks
-	private var LanguagePack pActiveLanguagePack
-	private var LanguagePack pFallbackLanguagePack
-	private var UnicodeString pTextNoLanguagePack
+	var Dictionary pLanguagePacks
+	var LanguagePack pActiveLanguagePack
+	var LanguagePack pFallbackLanguagePack
+	var UnicodeString pTextNoLanguagePack
 	
 	
 	
 	/** \brief Create translation manager. */
-	public func new()
+	func new()
 		pLanguagePacks = Dictionary.new()
 		pTextNoLanguagePack = UnicodeString.newFromUTF8("Missing Language Pack")
+	end
+	
+	/**
+	 * \brief Create copy of translation manager.
+	 * \version 1.20
+	 */
+	func new(TranslationManager manager)
+		pLanguagePacks = Dictionary.new(manager.pLanguagePacks)
+		pActiveLanguagePack = manager.pActiveLanguagePack
+		pFallbackLanguagePack = manager.pFallbackLanguagePack
+		pTextNoLanguagePack = manager.pTextNoLanguagePack
 	end
 	
 	
@@ -53,14 +64,14 @@ class TranslationManager
 	 * 
 	 * Convenience method for BaseGameApp.getApp().getTranslationManager() .
 	 */
-	public static func TranslationManager get()
+	static func TranslationManager get()
 		return BaseGameApp.getApp().getTranslationManager()
 	end
 	
 	
 	
 	/** \brief Translation for entry name or missing text if absent. */
-	public func UnicodeString translate(String name)
+	func UnicodeString translate(String name)
 		var UnicodeString text = translate(name, null)
 		
 		if text != null
@@ -78,7 +89,7 @@ class TranslationManager
 	end
 	
 	/** \brief Translation for entry name or default value if absent. */
-	public func UnicodeString translate(String name, UnicodeString defaultValue)
+	func UnicodeString translate(String name, UnicodeString defaultValue)
 		if pActiveLanguagePack != null
 			var UnicodeString text = pActiveLanguagePack.translate(name, null)
 			if text != null
@@ -109,7 +120,7 @@ class TranslationManager
 	 * Choose the marker character to not be found at the start of any text
 	 * you can possibly encounter. A typical choice is '@'.
 	 */
-	public func UnicodeString translateIf(UnicodeString text, int marker)
+	func UnicodeString translateIf(UnicodeString text, int marker)
 		if text.getLength() > 0 and text.getCharacterAt(0) == marker
 			return translate(text.getRight(text.getLength() - 1).toUTF8())
 
@@ -131,7 +142,7 @@ class TranslationManager
 	 * Choose the marker character to not be found at the start of any text
 	 * you can possibly encounter. A typical choice is '@'.
 	 */
-	public func UnicodeString translateIf(UnicodeString text, int marker, UnicodeString defaultValue)
+	func UnicodeString translateIf(UnicodeString text, int marker, UnicodeString defaultValue)
 		if text.getLength() > 0 and text.getCharacterAt(0) == marker
 			return translate(text.getRight(text.getLength() - 1).toUTF8(), defaultValue)
 
@@ -143,19 +154,19 @@ class TranslationManager
 	
 	
 	/** \brief Missing language pack translation. */
-	public func UnicodeString getTextNoLanguagePack()
+	func UnicodeString getTextNoLanguagePack()
 		return pTextNoLanguagePack
 	end
 	
 	/** \brief Set missing language pack translation. */
-	public func void setTextNoLanguagePack(UnicodeString text)
+	func void setTextNoLanguagePack(UnicodeString text)
 		pTextNoLanguagePack = text
 	end
 	
 	
 	
 	/** \brief Number of language packs. */
-	public func int getCount()
+	func int getCount()
 		return pLanguagePacks.getCount()
 	end
 	
@@ -163,7 +174,7 @@ class TranslationManager
 	 * \brief Named language pack or \em null if absent.
 	 * \deprecated Use getWithId.
 	 */
-	public func LanguagePack getNamed(UnicodeString name)
+	func LanguagePack getNamed(UnicodeString name)
 		return pLanguagePacks.find(block String key, LanguagePack value
 			return value.getName().equals(name)
 		end) cast LanguagePack
@@ -173,12 +184,12 @@ class TranslationManager
 	 * \brief Language pack with identifier or \em null if absent.
 	 * \version 1.16
 	 */
-	public func LanguagePack getWithId(String identifier)
+	func LanguagePack getWithId(String identifier)
 		return pLanguagePacks.getAt(identifier, null) cast LanguagePack
 	end
 	
 	/** \brief Add language pack. */
-	public func void add(LanguagePack languagePack)
+	func void add(LanguagePack languagePack)
 		if getWithId(languagePack.getIdentifier()) != null
 			throw EInvalidParam.new()
 		end
@@ -186,7 +197,7 @@ class TranslationManager
 	end
 	
 	/** \brief Remove all language packs. */
-	public func void removeAll()
+	func void removeAll()
 		pLanguagePacks.removeAll()
 	end
 	
@@ -194,7 +205,7 @@ class TranslationManager
 	 * \brief Get array of language pack names as array of UnicodeString.
 	 * \deprecated Use getIdentifiers()
 	 */
-	public func Array getNames()
+	func Array getNames()
 		return pLanguagePacks.getValues().map(block LanguagePack each
 			return each.getName()
 		end)
@@ -204,24 +215,39 @@ class TranslationManager
 	 * \brief Get array of language pack identifier as array of String.
 	 * \version 1.16
 	 */
-	public func Array getIdentifiers()
+	func Array getIdentifiers()
 		return pLanguagePacks.getKeys()
 	end
 	
 	/** \brief Visit language packs with block with parameter LanguagePack. */
-	public func void forEach(Block ablock)
+	func void forEach(Block ablock)
 		pLanguagePacks.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Array with all languages sorted alphabetically by name.
+	 * \version 1.20
+	 */
+	func Array allSorted()
+		var Array languages = Array.new()
+		pLanguagePacks.forEachValue(block LanguagePack each
+			languages.add(each)
+		end)
+		languages.sort(block LanguagePack a, LanguagePack b
+			return a.getName().compare(b.getName())
+		end)
+		return languages
 	end
 	
 	
 	
 	/** \brief Active language pack. */
-	public func LanguagePack getActive()
+	func LanguagePack getActive()
 		return pActiveLanguagePack
 	end
 	
 	/** \brief Set active language pack. */
-	public func void setActive(LanguagePack languagePack)
+	func void setActive(LanguagePack languagePack)
 		pActiveLanguagePack = languagePack
 	end
 	
@@ -229,7 +255,7 @@ class TranslationManager
 	 * \brief Set active language pack by name.
 	 * \deprecated Use setActiveWithId.
 	 */
-	public func void setActiveNamed(UnicodeString name)
+	func void setActiveNamed(UnicodeString name)
 		var LanguagePack languagePack = getNamed(name)
 		if languagePack == null
 			throw EInvalidParam.new()
@@ -241,7 +267,7 @@ class TranslationManager
 	 * \brief Set active language pack by identifier.
 	 * \version 1.16
 	 */
-	public func void setActiveWithId(String identifier)
+	func void setActiveWithId(String identifier)
 		var LanguagePack languagePack = getWithId(identifier)
 		if languagePack == null
 			throw EInvalidParam.new()
@@ -253,7 +279,7 @@ class TranslationManager
 	 * \brief Set active language pack by name if present.
 	 * \deprecated Use setActiveWithIdIfPresent.
 	 */
-	public func void setActiveNamedIfPresent(UnicodeString name)
+	func void setActiveNamedIfPresent(UnicodeString name)
 		var LanguagePack languagePack = getNamed(name)
 		if languagePack != null
 			setActive(languagePack)
@@ -264,7 +290,7 @@ class TranslationManager
 	 * \brief Set active language pack by identifier if present.
 	 * \version 1.16
 	 */
-	public func void setActiveWithIdIfPresent(String identifier)
+	func void setActiveWithIdIfPresent(String identifier)
 		var LanguagePack languagePack = getWithId(identifier)
 		if languagePack != null
 			setActive(languagePack)
@@ -277,7 +303,7 @@ class TranslationManager
 	 * \brief Fallback language pack.
 	 * \version 1.16
 	 */
-	public func LanguagePack getFallback()
+	func LanguagePack getFallback()
 		return pFallbackLanguagePack
 	end
 	
@@ -285,7 +311,7 @@ class TranslationManager
 	 * \brief Set fallback language pack.
 	 * \version 1.16
 	 */
-	public func void setFallback(LanguagePack languagePack)
+	func void setFallback(LanguagePack languagePack)
 		pFallbackLanguagePack = languagePack
 	end
 	
@@ -293,7 +319,7 @@ class TranslationManager
 	 * \brief Set fallback language pack by identifier.
 	 * \version 1.16
 	 */
-	public func void setFallbackWithId(String identifier)
+	func void setFallbackWithId(String identifier)
 		var LanguagePack languagePack = getWithId(identifier)
 		if languagePack == null
 			throw EInvalidParam.new()
@@ -305,7 +331,7 @@ class TranslationManager
 	 * \brief Set fallback language pack by identifier if present.
 	 * \version 1.16
 	 */
-	public func void setFallbackWithIdIfPresent(String identifier)
+	func void setFallbackWithIdIfPresent(String identifier)
 		var LanguagePack languagePack = getWithId(identifier)
 		if languagePack != null
 			setFallback(languagePack)
@@ -323,7 +349,7 @@ class TranslationManager
 	 * \param directory Absolute path to directory to scan for files.
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void addFromDirectory(String directory, bool recursive)
+	func void addFromDirectory(String directory, bool recursive)
 		addFromDirectory(directory, "*.delangpack", recursive)
 	end
 	
@@ -337,7 +363,7 @@ class TranslationManager
 	 * \param pattern File pattern to match. Has to be of the form "*.extension"
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void addFromDirectory(String directory, String pattern, bool recursive)
+	func void addFromDirectory(String directory, String pattern, bool recursive)
 		FileSystem.searchFiles(directory, recursive, block String each, FileType type
 			if type == FileType.file and FileSystem.pathMatchesPattern(File.new(each).getName(), pattern)
 				add(LanguagePack.new(each))

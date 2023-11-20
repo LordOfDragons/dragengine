@@ -285,7 +285,7 @@ class DisplayVideo extends Widget
 	 * \brief Advance play position wrapping around.
 	 * 
 	 * Use this if you want to advance the play time in variable time steps independend of
-	 * the game frame time. Negative values advance the time backwards.
+	 * the game frame time. Negative values advance the time backward.
 	 */
 	func void advancePlayPosition(float seconds)
 		pVideoPlayer.setPlayPosition(DEMath.normalize(\
