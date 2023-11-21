@@ -422,6 +422,8 @@ class GameWorldLoader
 	 * 
 	 * Call this after loadGameWorld() returned successfully to cancel the loading.
 	 * Calls onLoadWorldFailed().
+	 * 
+	 * \note This method can be called multiple times.
 	 */
 	public func void cancelLoading()
 		cleanUp()
@@ -445,7 +447,10 @@ class GameWorldLoader
 		pCleanUpStubWorld = cleanUpStubWorld
 	end
 	
-	/** \brief Cleaning up. */
+	/**
+	 * \brief Cleaning up.
+	 * \note This method can be called multiple times.
+	 */
 	protected func void cleanUp()
 		stopFrameUpdater()
 		setWindowLoading(null)
@@ -527,7 +532,7 @@ class GameWorldLoader
 			var UniqueID firstID = UniqueID.new(1)
 			if nextObjectID > firstID
 				if pIDGenerator.toUniqueID() > firstID
-					gameWorld.getUniqueIDRemapper().add(firstID, nextObjectID, pIDGenerator.toUniqueID() - firstID)
+					gameWorld.getUniqueIDRemapper().add(firstID, nextObjectID, pIDGenerator.toUniqueID())
 				end
 				pIDGenerator.incrementBy(nextObjectID - firstID)
 			end
@@ -699,6 +704,8 @@ class GameWorldLoader
 	 * Subclasses of BaseGameApp should call
 	 * \code{.ds} BaseGameApp.getApp().cancelLoadGameWorld() \endcode
 	 * at the end of the implementation.
+	 * 
+	 * \note This method can be called multiple times.
 	 */
 	public func void onLoadWorldFailed()
 	end
