@@ -59,9 +59,14 @@ pByteCount( 0 )
 	
 	// store value
 	pBytes = new unsigned char[ requiredByteCount ];
-	while( value > 0 ){
-		pBytes[ pByteCount++ ] = ( unsigned char )( value & 0xff );
-		value >>= 8;
+	if( value > 0 ){
+		while( value > 0 ){
+			pBytes[ pByteCount++ ] = ( unsigned char )( value & 0xff );
+			value >>= 8;
+		}
+		
+	}else{
+		pByteCount = 1;
 	}
 }
 
