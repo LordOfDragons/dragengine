@@ -532,7 +532,7 @@ class GameWorldLoader
 			var UniqueID firstID = UniqueID.new(1)
 			if nextObjectID > firstID
 				if pIDGenerator.toUniqueID() > firstID
-					gameWorld.getUniqueIDRemapper().add(firstID, nextObjectID, pIDGenerator.toUniqueID() - firstID)
+					gameWorld.getUniqueIDRemapper().add(firstID, nextObjectID, pIDGenerator.toUniqueID())
 				end
 				pIDGenerator.incrementBy(nextObjectID - firstID)
 			end
