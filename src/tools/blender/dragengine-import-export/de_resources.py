@@ -477,8 +477,8 @@ class Mesh:
 		if baseMesh:
 			for vps in baseMesh.vertPosSets:
 				shapeKey = [x for x in self.mesh.shape_keys.key_blocks if x.name == vps.name]
-				if shapeKey:
-					self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), shapeKey))
+				if shapeKey and len(shapeKey) > 0:
+					self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), shapeKey[0]))
 				else:
 					self.vertPosSets.append(Mesh.VertexPositionSet(len(self.vertPosSets), None, vps.name))
 		else:
