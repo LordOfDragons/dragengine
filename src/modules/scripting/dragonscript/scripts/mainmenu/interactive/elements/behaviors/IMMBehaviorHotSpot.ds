@@ -271,6 +271,7 @@ class IMMBehaviorHotSpot extends DefaultECBehavior
 			pHotSpotActive = false
 			setRequiresThink(false)
 			pTargetHotSpotActive.reset()
+			pAnimated.setDeactivated()
 		end
 		
 		/** \brief Set activated now. */
