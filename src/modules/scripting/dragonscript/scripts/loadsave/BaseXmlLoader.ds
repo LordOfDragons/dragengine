@@ -34,33 +34,31 @@ pin Dragengine.XML
  * Stores also a name and a console so the error functions are more generic.
  */
 class BaseXmlLoader
-	/** \brief Console to print messages to. */
-	private var Console pConsole
-	
-	/** \brief Name of the loader object for error reporting. */
-	private var String pName
-	
+	var Console pConsole
+	var String pName
+	var String pLogFilename
 	
 	
 	/** Creates a new base file loader. */
-	public func new(Console console, String name)
+	func new(Console console, String name)
 		if name == null or console == null
 			throw EInvalidParam.new()
 		end
 		
 		pConsole = console
 		pName = name
+		pLogFilename = ""
 	end
 	
 	
 	
 	/** Retrieves the console. */
-	public func Console getConsole()
+	func Console getConsole()
 		return pConsole
 	end
 	
 	/** Retrieves the name. */
-	public func String getName()
+	func String getName()
 		return pName
 	end
 	
@@ -72,7 +70,7 @@ class BaseXmlLoader
 	 * Multi-line strings support br-tags to add line-breaks. Parsing stops if no more CDATA
 	 * are present or a non-br tag is encountered.
 	 */
-	public func String readMultilineString(EasyXMLElement root)
+	func String readMultilineString(EasyXMLElement root)
 		var int i, elementCount = root.getElementCount()
 		var bool skipLeadingWhitespaces = false
 		var EasyXMLElement element
@@ -112,7 +110,7 @@ class BaseXmlLoader
 	end
 	
 	/** Read vector2 tag. */
-	public func Vector2 readVector2(EasyXMLElement root)
+	func Vector2 readVector2(EasyXMLElement root)
 		var float x = 0.0
 		var float y = 0.0
 		
@@ -127,7 +125,7 @@ class BaseXmlLoader
 	end
 	
 	/** Read vector2 tag using the uv instead of xy notation. */
-	public func Vector2 readVector2UV(EasyXMLElement root)
+	func Vector2 readVector2UV(EasyXMLElement root)
 		var float x = 0.0
 		var float y = 0.0
 		
@@ -142,7 +140,7 @@ class BaseXmlLoader
 	end
 	
 	/** Read vector tag. */
-	public func Vector readVector(EasyXMLElement root)
+	func Vector readVector(EasyXMLElement root)
 		var float x = 0.0
 		var float y = 0.0
 		var float z = 0.0
@@ -161,7 +159,7 @@ class BaseXmlLoader
 	end
 	
 	/** Read double vector tag. */
-	public func DVector readDVector(EasyXMLElement root)
+	func DVector readDVector(EasyXMLElement root)
 		var float x = 0.0
 		var float y = 0.0
 		var float z = 0.0
@@ -180,7 +178,7 @@ class BaseXmlLoader
 	end
 	
 	/** \brief Read vector tag as quaternion. */
-	public func Quaternion readVectorAsQuaternion(EasyXMLElement root)
+	func Quaternion readVectorAsQuaternion(EasyXMLElement root)
 		var float x = 0.0
 		var float y = 0.0
 		var float z = 0.0
@@ -199,7 +197,7 @@ class BaseXmlLoader
 	end
 	
 	/** Read point tag. */
-	public func Point readPoint(EasyXMLElement root)
+	func Point readPoint(EasyXMLElement root)
 		var int x = 0
 		var int y = 0
 		
@@ -214,7 +212,7 @@ class BaseXmlLoader
 	end
 	
 	/** Read 3-component point tag. */
-	public func Point3 readPoint3(EasyXMLElement root)
+	func Point3 readPoint3(EasyXMLElement root)
 		var int x = 0
 		var int y = 0
 		var int z = 0
@@ -233,7 +231,7 @@ class BaseXmlLoader
 	end
 	
 	/** \brief Read rectangular area. */
-	public func RectArea readRectArea(EasyXMLElement root)
+	func RectArea readRectArea(EasyXMLElement root)
 		var int x1 = 0
 		var int y1 = 0
 		var int x2 = 0
@@ -256,7 +254,7 @@ class BaseXmlLoader
 	end
 	
 	/** \brief Read floating point rectangular area. */
-	public func FloatRectArea readFloatRectArea(EasyXMLElement root)
+	func FloatRectArea readFloatRectArea(EasyXMLElement root)
 		var float x1 = 0.0
 		var float y1 = 0.0
 		var float x2 = 0.0
@@ -279,7 +277,7 @@ class BaseXmlLoader
 	end
 	
 	/** \brief Read border size area. */
-	public func BorderSize readBorderSize(EasyXMLElement root)
+	func BorderSize readBorderSize(EasyXMLElement root)
 		if root.hasAttributeNamed("all")
 			var int value = root.getAttributeIntNamed("all")
 			return BorderSize.new(value, value, value, value)
@@ -320,7 +318,7 @@ class BaseXmlLoader
 	 * If a component is not specified the default value is used which is 0
 	 * for red, green and blue and 1 for alpha.
 	 */
-	public func Color readColor(EasyXMLElement root)
+	func Color readColor(EasyXMLElement root)
 		return readColor(root, Color.black)
 	end
 	
@@ -337,7 +335,7 @@ class BaseXmlLoader
 	 * If a component is not specified the default value is used which is 0
 	 * for red, green and blue and 1 for alpha.
 	 */
-	public func Color readColor(EasyXMLElement root, Color defaultColor)
+	func Color readColor(EasyXMLElement root, Color defaultColor)
 		var int e, elementCount = root.getElementCount()
 		var EasyXMLElement element
 		var String tagName
@@ -389,7 +387,7 @@ class BaseXmlLoader
 	end
 	
 	/** \brief Read color matrix. */
-	public func ColorMatrix readColorMatrix(EasyXMLElement root)
+	func ColorMatrix readColorMatrix(EasyXMLElement root)
 		var int i, elementCount = root.getElementCount()
 		var ColorMatrix colorMatrix = ColorMatrix.new()
 		var EasyXMLElement element
@@ -481,7 +479,7 @@ class BaseXmlLoader
 	
 	
 	/** Read curve tag. */
-	public func CurveBezier readCurveBezier(EasyXMLElement root)
+	func CurveBezier readCurveBezier(EasyXMLElement root)
 		var int i, count = root.getElementCount()
 		var CurveBezier curve = CurveBezier.new()
 		var EasyXMLElement element
@@ -515,7 +513,7 @@ class BaseXmlLoader
 	end
 	
 	/** Read curve point tag. */
-	public func void readCurveBezierPoint(EasyXMLElement root, CurveBezier curve)
+	func void readCurveBezierPoint(EasyXMLElement root, CurveBezier curve)
 		var int i, count = root.getElementCount()
 		var EasyXMLElement element
 		var Vector2 coordinates
@@ -567,7 +565,7 @@ class BaseXmlLoader
 	 * given as the height of the font in pixels. Both tags are required. If one or both
 	 * are missing a null font object is returned.
 	 */
-	public func Font readFont(EasyXMLElement root)
+	func Font readFont(EasyXMLElement root)
 		var int size = root.getAttributeIntNamed("size")
 		var String filename = root.getFirstCData()
 		return Font.new(filename, size)
@@ -581,7 +579,7 @@ class BaseXmlLoader
 	 * given as the height of the font in pixels. Both tags are required. If one or both
 	 * are missing a null font object is returned.
 	 */
-	public func Font readFont(EasyXMLElement root, String basePath)
+	func Font readFont(EasyXMLElement root, String basePath)
 		var int size = root.getAttributeIntNamed("size")
 		var String filename = File.absolutePath(root.getFirstCData(), basePath).getPath()
 		return Font.new(filename, size)
@@ -595,7 +593,7 @@ class BaseXmlLoader
 	 * from 0 to 9, a to f or A to F. No prefix is used. If more than two
 	 * characters are specified only the first two are used.
 	 */
-	public func int readCDataHex(EasyXMLElement tag)
+	func int readCDataHex(EasyXMLElement tag)
 		var String cdata = tag.getFirstCData()
 		
 		if cdata == null
@@ -617,7 +615,7 @@ class BaseXmlLoader
 	end
 	
 	/** Converts a hex value to an integer value. */
-	public func int hexToInt(byte hex)
+	func int hexToInt(byte hex)
 		if hex >= '0' and hex <= '9'
 			return (hex - '0') cast int
 			
@@ -670,7 +668,7 @@ class BaseXmlLoader
 	 * \brief Write vector tag.
 	 * \version 1.6
 	 */
-	public func void writeVector(EasyXMLElement root, String name, Vector vector)
+	func void writeVector(EasyXMLElement root, String name, Vector vector)
 		var EasyXMLElement tag = root.addTag(name)
 		tag.setAttribute("x", vector.getX())
 		tag.setAttribute("y", vector.getY())
@@ -682,7 +680,7 @@ class BaseXmlLoader
 	 * \version 1.6
 	 * \note This will loose prevision due to converting to float.
 	 */
-	public func void writeDVector(EasyXMLElement root, String name, DVector vector)
+	func void writeDVector(EasyXMLElement root, String name, DVector vector)
 		var EasyXMLElement tag = root.addTag(name)
 		tag.setAttribute("x", vector.getX())
 		tag.setAttribute("y", vector.getY())
@@ -693,7 +691,7 @@ class BaseXmlLoader
 	 * \brief Write vector2 tag.
 	 * \version 1.6
 	 */
-	public func void writeVector2(EasyXMLElement root, String name, Vector2 vector)
+	func void writeVector2(EasyXMLElement root, String name, Vector2 vector)
 		var EasyXMLElement tag = root.addTag(name)
 		tag.setAttribute("x", vector.getX())
 		tag.setAttribute("y", vector.getY())
@@ -703,7 +701,7 @@ class BaseXmlLoader
 	 * \brief Write 3-component color tag using rgb attributes.
 	 * \version 1.6
 	 */
-	public func void writeColor3(EasyXMLElement root, String name, Color color)
+	func void writeColor3(EasyXMLElement root, String name, Color color)
 		var EasyXMLElement tag = root.addTag(name)
 		tag.setAttribute("r", color.getRed())
 		tag.setAttribute("g", color.getGreen())
@@ -714,7 +712,7 @@ class BaseXmlLoader
 	 * \brief Write 4-component color tag using rgba attributes.
 	 * \version 1.6
 	 */
-	public func void writeColor4(EasyXMLElement root, String name, Color color)
+	func void writeColor4(EasyXMLElement root, String name, Color color)
 		var EasyXMLElement tag = root.addTag(name)
 		tag.setAttribute("r", color.getRed())
 		tag.setAttribute("g", color.getGreen())
@@ -726,7 +724,7 @@ class BaseXmlLoader
 	 * \brief Write point tag.
 	 * \version 1.6
 	 */
-	public func void writePoint(EasyXMLElement root, String name, Point point)
+	func void writePoint(EasyXMLElement root, String name, Point point)
 		var EasyXMLElement tag = root.addTag(name)
 		tag.setAttribute("x", point.getX())
 		tag.setAttribute("y", point.getY())
@@ -736,7 +734,7 @@ class BaseXmlLoader
 	 * \brief Write point3 tag.
 	 * \version 1.6
 	 */
-	public func void writePoint3(EasyXMLElement root, String name, Point3 point)
+	func void writePoint3(EasyXMLElement root, String name, Point3 point)
 		var EasyXMLElement tag = root.addTag(name)
 		tag.setAttribute("x", point.getX())
 		tag.setAttribute("y", point.getY())
@@ -747,7 +745,7 @@ class BaseXmlLoader
 	 * \brief Write bezier curve tag.
 	 * \version 1.9
 	 */
-	public func void writeCurveBezier(EasyXMLElement root, String name, CurveBezier curve)
+	func void writeCurveBezier(EasyXMLElement root, String name, CurveBezier curve)
 		var EasyXMLElement tag = root.addTag(name)
 		
 		tag.addDataTag("interpolation", curve.getInterpolationMode().name())
@@ -762,7 +760,7 @@ class BaseXmlLoader
 	 * \brief Write bezier curve point tag.
 	 * \version 1.9
 	 */
-	public func void writeCurveBezierPoint(EasyXMLElement root, String name, CurveBezier curve, int point)
+	func void writeCurveBezierPoint(EasyXMLElement root, String name, CurveBezier curve, int point)
 		var EasyXMLElement tag = root.addTag(name)
 		writeVector2(tag, "coordinates", curve.getPointAt(point))
 		writeVector2(tag, "handle1", curve.getHandle1At(point))
@@ -772,139 +770,141 @@ class BaseXmlLoader
 	
 	
 	/** Outputs an error message on the application console. */
-	public func void printOnConsole(String message)
-		pConsole.addMessage(pName + ": " + message)
+	func void printOnConsole(String message)
+		pConsole.addMessage(pLogFilename + pName + ": " + message)
 	end
 	
 	/** Log filename on the application console. */
-	public func void logLoadingFromFile(String filename)
+	func void logLoadingFromFile(String filename)
 		//printOnConsole("Loading from file " + filename)
+		pLogFilename = filename + ": "
 	end
 	
 	/** \brief Log filename on the application console. */
-	public func void logSavingFromFile(String filename)
+	func void logSavingFromFile(String filename)
 		//printOnConsole("Saving to file " + filename)
+		pLogFilename = filename + ": "
 	end
 	
 	/** Log parsing failed with error log. */
-	public func void logParsingFailed(String errorLog)
+	func void logParsingFailed(String errorLog)
 		printOnConsole("Parsing failed: " + errorLog)
 	end
 	
 	/** \brief Log loading file failed with error log. */
-	public func void logLoadingFailed(String filename)
+	func void logLoadingFailed(String filename)
 		printOnConsole("Failed loading from file " + filename)
 	end
 	
 	/** \brief Log saving to file failed with error log. */
-	public func void logSavingFailed(String filename)
+	func void logSavingFailed(String filename)
 		printOnConsole("Failed saving to file " + filename)
 	end
 	
 	/** Outputs error message missing tag on the application console. */
-	public func void logMissingTag(String tagName)
+	func void logMissingTag(String tagName)
 		printOnConsole("Missing tag " + tagName + ".")
 	end
 	
 	/** Outputs an error message on the application console. */
-	public func void printOnConsole(EasyXMLElement tag, String errorMessage)
-		pConsole.addMessage(pName + " (" + tag.getLine() + \
+	func void printOnConsole(EasyXMLElement tag, String errorMessage)
+		pConsole.addMessage(pLogFilename + pName + " (" + tag.getLine() + \
 			"," + tag.getPosition() + "): " + errorMessage)
 	end
 	
 	/** \brief Print message on console. */
-	public func void printOnConsole(String filename, String message)
-		pConsole.addMessage(pName + " (" + filename + "): " + message)
+	func void printOnConsole(String filename, String message)
+		pConsole.addMessage(pLogFilename + pName + " (" + filename + "): " + message)
 	end
 	
 	/** \brief Print message on console. */
-	public func void printOnConsole(String filename, EasyXMLElement tag, String message)
-		pConsole.addMessage(pName + " (" + filename + ":" + tag.getLine() + \
+	func void printOnConsole(String filename, EasyXMLElement tag, String message)
+		pConsole.addMessage(pLogFilename + pName + " (" + filename + ":" + tag.getLine() + \
 			"," + tag.getPosition() + "): " + message)
 	end
 	
 	/** Outputs an deprecated message on the application console. */
-	public func void logDeprecatedTag(EasyXMLElement tag)
+	func void logDeprecatedTag(EasyXMLElement tag)
 		printOnConsole(tag, "The tag " + tag.getTagName() + " is deprecated.")
 	end
 	
 	/** Outputs an deprecated message on the application console. */
-	public func void logDeprecated(EasyXMLElement tag, String whatIsDeprecated)
+	func void logDeprecated(EasyXMLElement tag, String whatIsDeprecated)
 		printOnConsole(tag, "The use of " + whatIsDeprecated + " is deprecated.")
 	end
 	
 	/** Outputs an deprecated message on the application console. */
-	public func void logDeprecated(EasyXMLElement tag, String whatIsDeprecated, String useWhatInstead)
+	func void logDeprecated(EasyXMLElement tag, String whatIsDeprecated, String useWhatInstead)
 		printOnConsole(tag, "The use of " + whatIsDeprecated + " is deprecated. Use " + useWhatInstead + " instead")
 	end
 	
 	/** Outputs error message missing attribute on the application console. */
-	public func void logMissingAttribute(EasyXMLElement tag, String attrName)
+	func void logMissingAttribute(EasyXMLElement tag, String attrName)
 		printOnConsole(tag, "Missing attribute " + attrName + ".")
 	end
 	
 	/** Outputs error message about incompatible attributes. */
-	public func void logIncompatibleAttributes(EasyXMLElement tag, String attributeNames)
+	func void logIncompatibleAttributes(EasyXMLElement tag, String attributeNames)
 		printOnConsole(tag, "Attributes " + attributeNames + " can not be specified at the same time.")
 	end
 	
 	/** Outputs error message invalid attribute value on the application console. */
-	public func void logInvalidAttributeValue(EasyXMLElement tag, String attribute, String value)
+	func void logInvalidAttributeValue(EasyXMLElement tag, String attribute, String value)
 		printOnConsole(tag, "Invalid value " + value + " for attribute " + attribute + ".")
 	end
 	
 	/** \brief Log attribute not allowed. */
-	public func void logInvalidAttribute(String filename, EasyXMLElement tag, String attribute)
+	func void logInvalidAttribute(String filename, EasyXMLElement tag, String attribute)
 		printOnConsole(filename, tag, "Invalid attribute " + attribute + ".")
 	end
 	
 	/** Outputs error message invalid value on the application console. */
-	public func void logInvalidValue(EasyXMLElement tag, String value)
+	func void logInvalidValue(EasyXMLElement tag, String value)
 		printOnConsole(tag, "Invalid value " + value + ".")
 	end
 	
 	/** Outputs error message invalid value on the application console. */
-	public func void logInvalidValue(String filename, EasyXMLElement tag, String value)
+	func void logInvalidValue(String filename, EasyXMLElement tag, String value)
 		printOnConsole(filename, tag, "Invalid value " + value + ".")
 	end
 	
 	/** \brief Output error message duplicate object on the application console. */
-	public func void logDuplicateObject(EasyXMLElement tag, String object, String identifier)
+	func void logDuplicateObject(EasyXMLElement tag, String object, String identifier)
 		printOnConsole(tag, object + " '" + identifier + "' exists already.")
 	end
 	
 	/** \brief Output error message value exists already on the application console. */
-	public func void logObjectExists(EasyXMLElement tag, String object, String value)
+	func void logObjectExists(EasyXMLElement tag, String object, String value)
 		printOnConsole(tag, object + " '" + value + "' exists.")
 	end
 	
 	/** Outputs error message invalid empty string on the application console. */
-	public func void logInvalidEmptyString(EasyXMLElement tag)
+	func void logInvalidEmptyString(EasyXMLElement tag)
 		printOnConsole(tag, "Invalid empty string.")
 	end
 	
 	/** Outputs error message invalid axis on the application console. */
-	public func void logUnknownTag(EasyXMLElement tag)
+	func void logUnknownTag(EasyXMLElement tag)
 		printOnConsole(tag, "Unknown tag " + tag.getTagName() + ".")
 	end
 	
 	/** Outputs error message invalid axis on the application console. */
-	public func void logUnknownTag( String filename, EasyXMLElement tag)
+	func void logUnknownTag( String filename, EasyXMLElement tag)
 		printOnConsole(filename, tag, "Unknown tag " + tag.getTagName() + ".")
 	end
 	
 	/** Outputs error message missing attribute on the application console. */
-	public func void logMissingCData(EasyXMLElement tag)
+	func void logMissingCData(EasyXMLElement tag)
 		printOnConsole(tag, "Missing character data in tag " + tag.getTagName() + ".")
 	end
 	
 	/** Outputs error message about a failure to load another file or resource. */
-	public func void logLoadFileFailed(EasyXMLElement tag, String filename)
+	func void logLoadFileFailed(EasyXMLElement tag, String filename)
 		printOnConsole(tag, "Failed to load '" + filename + "' in tag " + tag.getTagName() + ".")
 	end
 	
 	/** Outputs error message about a feature not being supported. */
-	public func void logNotSupported(EasyXMLElement tag, String whatIsNotSupported)
+	func void logNotSupported(EasyXMLElement tag, String whatIsNotSupported)
 		printOnConsole(tag, whatIsNotSupported + " is not supported.")
 	end
 end
