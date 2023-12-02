@@ -323,6 +323,14 @@ void deoxrDPHtcViveTracker::CreateActions( deoxrActionSet &actionSet ){
 	pAddRoleAction( actionSet, "chest", "Chest" );
 	pAddRoleAction( actionSet, "camera", "Camera" );
 	pAddRoleAction( actionSet, "keyboard", "Keyboard" );
+	
+	if( instance.ExtensionVersion( deoxrInstance::extHTCXViveTrackerInteraction ) >= 3 ){
+		// new since revision 3
+		pAddRoleAction( actionSet, "left_wrist", "Left Wrist" );
+		pAddRoleAction( actionSet, "right_wrist", "Right Wrist" );
+		pAddRoleAction( actionSet, "left_ankle", "Left Ankle" );
+		pAddRoleAction( actionSet, "right_ankle", "Right Ankle" );
+	}
 #endif
 }
 
@@ -344,6 +352,10 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	//   - chest
 	//   - camera
 	//   - keyboard
+	//   - left_wrist
+	//   - right_wrist
+	//   - left_ankle
+	//   - right_ankle
 	// 
 	// Supported component paths:
 	// - /input/system/click (may not be available for application use)
@@ -593,6 +605,18 @@ decString deoxrDPHtcViveTracker::pNameForTracker( const Tracker &tracker ) const
 		
 	}else if( tracker.pathRole.GetName().EndsWith( "keyboard" ) ){
 		return "Tracker Keyboard";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_wrist" ) ){
+		return "Left Wrist";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_wrist" ) ){
+		return "Right Wrist";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_ankle" ) ){
+		return "Left Ankle";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_ankle" ) ){
+		return "Right Ankle";
 		
 	}else if( tracker.path.IsNotEmpty() ){
 		decString name;
