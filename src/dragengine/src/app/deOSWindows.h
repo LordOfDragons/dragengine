@@ -43,6 +43,10 @@ private:
 	int pScreenWidth;
 	int pScreenHeight;
 	HWND pCurWindow;
+	int pResolutionCount;
+	decPoint* pResolutions;
+	int pRefreshRate;
+	int pScaleFactor;
 	
 	decString pPathEngine;
 	decString pPathEngineBase;
@@ -294,6 +298,9 @@ public:
 private:
 	void pCleanUp();
 	decString pGetUserLanguage() const;
+	void pFindResolutions();
+	void pFindScaleFactor();
+	void pFindRefreshRate();
 };
 
 #endif

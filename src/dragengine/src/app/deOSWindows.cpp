@@ -51,6 +51,7 @@
 
 #include <shlobj.h>
 #include <knownfolders.h>
+#include <ShellScalingApi.h>
 
 #include "deOSWindows.h"
 #include "../deEngine.h"
@@ -70,8 +71,12 @@
 ////////////////////////////
 
 deOSWindows::deOSWindows() :
-pInstApp( NULL ),
-pCurWindow( NULL )
+pInstApp( nullptr ),
+pCurWindow( nullptr ),
+pResolutionCount( 0 ),
+pResolutions( nullptr ),
+pRefreshRate( 60 ),
+pScaleFactor( 100 )
 {
 	// this is unfortunately returning too small values
 	//pScreenWidth = GetSystemMetrics( SM_CXFULLSCREEN );
@@ -82,9 +87,14 @@ pCurWindow( NULL )
 	pScreenWidth = rect.right - rect.left;
 	pScreenHeight = rect.bottom - rect.top;
 	
+	pFindResolutions();
+	pFindRefreshRate();
+	pFindScaleFactor();
+
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	TCHAR value[ 256 ];
+	const int valueSize = 256;
+	TCHAR value[valueSize] = {};
 #else
 	const char *value;
 #endif
@@ -103,7 +113,7 @@ pCurWindow( NULL )
 	pPathEngine = pPathEngineBase + "\\Data";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_ENGINE_PATH", &value[ 0 ], sizeof( value ) ) ){
+	if( GetEnvironmentVariable( L"DE_ENGINE_PATH", &value[ 0 ], valueSize ) > 0 ){
 		pPathEngine = WideToUtf8( value );
 	}
 #else
@@ -119,7 +129,7 @@ pCurWindow( NULL )
 	pPathShare = pPathEngineBase + "\\Share";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_SHARE_PATH", &value[ 0 ], sizeof( value ) ) ){
+	if( GetEnvironmentVariable( L"DE_SHARE_PATH", &value[ 0 ], valueSize ) > 0 ){
 		pPathShare = WideToUtf8( value );
 	}
 #else
@@ -134,7 +144,7 @@ pCurWindow( NULL )
 	pPathSystemConfig = pPathEngineBase + "\\Config";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], sizeof( value ) ) ){
+	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], valueSize ) > 0 ){
 		pPathSystemConfig = WideToUtf8( value );
 	}
 #else
@@ -149,7 +159,7 @@ pCurWindow( NULL )
 	pPathUserConfig = "@RoamingAppData\\Dragengine\\Config";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], sizeof( value ) ) ){
+	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], valueSize ) > 0 ){
 		pPathUserConfig = WideToUtf8( value );
 	}
 #else
@@ -164,7 +174,7 @@ pCurWindow( NULL )
 	pPathUserCache = "@LocalAppData\\Dragengine\\Cache";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_CACHE_PATH", &value[ 0 ], sizeof( value ) ) ){
+	if( GetEnvironmentVariable( L"DE_CACHE_PATH", &value[ 0 ], valueSize ) > 0 ){
 		pPathUserCache = WideToUtf8( value );
 	}
 #else
@@ -179,7 +189,7 @@ pCurWindow( NULL )
 	pPathUserCapture = "@LocalAppData\\Dragengine\\Capture";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_CAPTURE_PATH", &value[ 0 ], sizeof( value ) ) ){
+	if( GetEnvironmentVariable( L"DE_CAPTURE_PATH", &value[ 0 ], valueSize ) > 0 ){
 		pPathUserCapture = WideToUtf8( value );
 	}
 #else
@@ -307,31 +317,25 @@ int deOSWindows::GetDisplayCount(){
 }
 
 decPoint deOSWindows::GetDisplayCurrentResolution( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
 	return decPoint( pScreenWidth, pScreenHeight );
 }
 
 int deOSWindows::GetDisplayCurrentRefreshRate( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	return 30;
+	DEASSERT_TRUE( display == 0 )
+	return pRefreshRate;
 }
 
 int deOSWindows::GetDisplayResolutionCount( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	return 1;
+	DEASSERT_TRUE( display == 0 )
+	return pResolutionCount;
 }
 
 decPoint deOSWindows::GetDisplayResolution( int display, int resolution ){
-	if( display != 0 || resolution != 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	return decPoint( pScreenWidth, pScreenHeight );
+	DEASSERT_TRUE( display == 0 )
+	DEASSERT_TRUE( resolution >= 0 )
+	DEASSERT_TRUE( resolution < pResolutionCount )
+	return pResolutions[ resolution ];
 }
 
 
@@ -584,6 +588,9 @@ void deOSWindows::SetRegistryValue( const char *key, const char *entry, const ch
 //////////////////////
 
 void deOSWindows::pCleanUp(){
+	if( pResolutions ){
+		delete [] pResolutions;
+	}
 }
 
 decString deOSWindows::pGetUserLanguage() const{
@@ -603,6 +610,77 @@ decString deOSWindows::pGetUserLanguage() const{
 	const decString language( WideToUtf8( buffer ) );
 	delete [] buffer;
 	return language;
+}
+
+void deOSWindows::pFindResolutions(){
+	int count = 0;
+	DEVMODE mode = {};
+	mode.dmSize = sizeof( mode );
+	mode.dmDriverExtra = 0;
+
+	while( EnumDisplaySettingsW( NULL, count, &mode ) ){
+		count++;
+	}
+
+	if( count == 0 ){
+		pResolutions = new decPoint[ 1 ];
+		pResolutions[ 0 ].x = pScreenWidth;
+		pResolutions[ 0 ].y = pScreenHeight;
+		pResolutionCount = 1;
+		return;
+	}
+
+	pResolutions = new decPoint[ count ];
+	int i, j;
+
+	for( i=0; i<count; i++ ){
+		DEASSERT_TRUE( EnumDisplaySettingsW( NULL, i, &mode ) );
+
+		const decPoint resolution( ( int )mode.dmPelsWidth, ( int )mode.dmPelsHeight );
+		
+		for( j=0; j<pResolutionCount; j++ ){
+			if( pResolutions[ j ] == resolution ){
+				break;
+			}
+		}
+
+		if( j < pResolutionCount ){
+			continue;
+		}
+
+		pResolutions[ pResolutionCount++ ] = resolution;
+	}
+
+	for( i=1; i<pResolutionCount; i++ ){
+		const decPoint &a = pResolutions[ i - 1 ];
+		const decPoint &b = pResolutions[ i ];
+		if( b.x > a.x || ( b.x == a.x && b.y > a.y ) ){
+			const decPoint t( a );
+			pResolutions[ i - 1 ] = b;
+			pResolutions[ i ] = t;
+			if( i > 1 ){
+				i -= 2;
+			}
+		}
+	}
+}
+
+void deOSWindows::pFindScaleFactor(){
+	const POINT ptZero = { 0, 0 };
+	const HMONITOR monitor = MonitorFromPoint( ptZero, MONITOR_DEFAULTTOPRIMARY );
+	DEVICE_SCALE_FACTOR dsf;
+	if( GetScaleFactorForMonitor( monitor, &dsf ) == S_OK && dsf != 0 ){
+		pScaleFactor = ( int )dsf;
+	}
+}
+
+void deOSWindows::pFindRefreshRate(){
+	DEVMODE mode = {};
+	mode.dmSize = sizeof( mode );
+	mode.dmDriverExtra = 0;
+	if( EnumDisplaySettingsW( NULL, ENUM_CURRENT_SETTINGS, &mode ) && mode.dmDisplayFrequency > 1 ){
+		pRefreshRate = ( int )mode.dmDisplayFrequency;
+	}
 }
 
 #endif
