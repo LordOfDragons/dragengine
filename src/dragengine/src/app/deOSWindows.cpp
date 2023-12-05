@@ -681,6 +681,8 @@ void deOSWindows::pFindRefreshRate(){
 	if( EnumDisplaySettingsW( NULL, ENUM_CURRENT_SETTINGS, &mode ) && mode.dmDisplayFrequency > 1 ){
 		pRefreshRate = ( int )mode.dmDisplayFrequency;
 	}
+
+	// NOTE fullscreen: https://stackoverflow.com/questions/2382464/win32-full-screen-and-hiding-taskbar
 }
 
 #endif

@@ -721,9 +721,11 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPVRRenderScale( *this ) );
 	pParameters.AddParameter( new deoglPVRForceFrameRate( *this ) );
 	
-#ifdef WITH_DEBUG
+#if defined WITH_DEBUG || defined WITH_DEBUG_CONTEXT
 	pParameters.AddParameter( new deoglPDebugContext( *this ) );
 	pParameters.AddParameter( new deoglPDebugNoMessages( *this ) );
+#endif
+#ifdef WITH_DEBUG
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );
