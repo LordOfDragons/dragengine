@@ -58,7 +58,8 @@ vec3 subSurfaceScattering( in vec3 position, in float tapRadius, in vec3 scatter
 	vec3 sumWeight = vec3( 1 );
 	
 	vec2 factor1 = vec2( 1, 0.5 ) / vec2( tapCount );
-	float c1 = float( tcint.x ^ tcint.y ) * 30 + float( tcint.x ) * float( tcint.y ) * 10;
+	//float c1 = float( tcint.x ^ tcint.y ) * 30 + float( tcint.x ) * float( tcint.y ) * 10;
+	float c1 = dot( vec2( tcint % ivec2( 23 ) ), vec2( 21, 19 ) ) * 3; // see ao_local.glsl
 	int i;
 	
 	for( i=0; i<tapCount; i++ ){

@@ -56,7 +56,22 @@ float occlusion( in vec2 tc, in float level, in vec3 position, in vec3 normal ){
 float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radius, in int tapCount ){
 	vec2 factor1 = vec2( 1, 0.5 ) / vec2( tapCount );
 	ivec2 tcint = ivec2( tc / pScreenSpacePixelSize );
-	float c1 = float( tcint.x ^ tcint.y ) * 20 + float( tcint.x ) * float( tcint.y ) * 10;
+	
+	// this version is from the internet somewhere. for some reason it tends to create
+	// a strange large scale circular banding originating from corners which is bad
+	//float c1 = float( tcint.x ^ tcint.y ) * 20 + float( tcint.x ) * float( tcint.y ) * 10;
+	
+	// I picked up the idea from the broken version above but used instead a
+	// modulus on the texture coordinates to get repeating coordinates to swirl
+	// around. the main problem with this approach is a clearly visible pattern.
+	// this version here I found by experimenting around with values in renderdoc.
+	// the combination of these prime numbers produces a result that hides the
+	// visible pattern quite well. it looks quite good compared to using a random
+	// texture and has the advantage of not requiring texture sampling
+	float c1 = dot( vec2( tcint % ivec2( 23 ) ), vec2( 21, 19 ) ) * 3;
+	
+	// these are random functions from the internet. the result is though inferior
+	//float c1 = fract(sin(dot(tc, vec2(12.9898, 78.233))) * 43758.5453);
 	
 	float occaccum = 0;
 	float v1, v2;

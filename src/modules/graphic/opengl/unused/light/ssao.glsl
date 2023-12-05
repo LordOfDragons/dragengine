@@ -45,7 +45,8 @@ float occlusion( in vec2 tc, in int layer, in float level, in vec3 position, in 
 
 
 float screenSpaceAO( in ivec3 fragCoord, in vec2 texCoord, in vec3 position, in vec3 normal, in float radius, in int tapCount ){
-	float c1 = float( fragCoord.x ^ fragCoord.y ) * 20 + float( fragCoord.x ) * float( fragCoord.y ) * 10;
+	//float c1 = float( fragCoord.x ^ fragCoord.y ) * 20 + float( fragCoord.x ) * float( fragCoord.y ) * 10;
+	float c1 = dot( vec2( fragCoord % ivec2( 23 ) ), vec2( 21, 19 ) ) * 3;
 	vec2 factor1 = vec2( 1, 0.5 ) / vec2( tapCount );
 	
 	float occaccum = 0;

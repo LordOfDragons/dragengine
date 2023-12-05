@@ -163,31 +163,34 @@ int deOSConsole::GetDisplayCount(){
 }
 
 decPoint deOSConsole::GetDisplayCurrentResolution( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return decPoint( pScreenWidth, pScreenHeight );
 }
 
 int deOSConsole::GetDisplayCurrentRefreshRate( int display ){
-	if( display != 0){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return 30;
 }
 
 int deOSConsole::GetDisplayResolutionCount( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return 1;
 }
 
 decPoint deOSConsole::GetDisplayResolution( int display, int resolution ){
-	if( display != 0 || resolution != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	DEASSERT_TRUE( resolution == 0 )
+	
 	return decPoint( pScreenWidth, pScreenHeight );
+}
+
+int deOSConsole::GetDisplayCurrentScaleFactor( int display ){
+	DEASSERT_TRUE( display == 0 )
+	
+	return 100;
 }
 
 
