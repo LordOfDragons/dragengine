@@ -107,6 +107,17 @@ public:
 	 * \version 1.16
 	 */
 	virtual decString GetUserLocaleTerritory();
+	
+	/**
+	 * \brief Current global scaling factor for display.
+	 * \version 1.20.
+	 * \param display Index of display to get scaling factor for.
+	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
+	 *                         GetDisplayCount().
+	 * 
+	 * Value of 100 represents scaling of 100%. Value step size is 25.
+	 */
+	virtual int GetDisplayCurrentScaleFactor( int display );
 	/*@}*/
 	
 	

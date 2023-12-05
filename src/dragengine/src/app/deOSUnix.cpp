@@ -30,6 +30,7 @@
 #include <sys/time.h>
 #include <X11/Xproto.h>
 #include <X11/extensions/Xrandr.h>
+#include <X11/Xresource.h>
 
 #include "deOSUnix.h"
 #include "../deEngine.h"
@@ -264,7 +265,8 @@ pHostingRenderWindow( 0 ),
 pDisplayInformation( NULL ),
 pDisplayCount( 0 ),
 pDisplayResolutions( NULL ),
-pDisplayResolutionCount( 0 )
+pDisplayResolutionCount( 0 ),
+pScaleFactor( 100 )
 {
 	try{
 		// set error handler
@@ -284,6 +286,7 @@ pDisplayResolutionCount( 0 )
 		
 		pScreen = XDefaultScreen( pDisplay );
 		pGetDisplayInformation();
+		pScaleFactor = pGetGlobalScaling();
 		
 		// init locale
 		setlocale( LC_ALL, "" );
@@ -367,34 +370,40 @@ int deOSUnix::GetDisplayCount(){
 }
 
 decPoint deOSUnix::GetDisplayCurrentResolution( int display ){
-	if( display < 0 || display >= pDisplayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	
 	return pDisplayInformation[ display ].currentResolution;
 }
 
 int deOSUnix::GetDisplayCurrentRefreshRate( int display ){
-	if( display < 0 || display >= pDisplayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	
 	return pDisplayInformation[ display ].currentRefreshRate;
 }
 
 int deOSUnix::GetDisplayResolutionCount( int display ){
-	if( display < 0 || display >= pDisplayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	
 	return pDisplayInformation[ display ].resolutionCount;
 }
 
 decPoint deOSUnix::GetDisplayResolution( int display, int resolution ){
-	if( display < 0 || display >= pDisplayCount ){
-		DETHROW( deeInvalidParam );
-	}
-	if( resolution < 0 || resolution >= pDisplayInformation[ display ].resolutionCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	DEASSERT_TRUE( resolution >= 0 )
+	DEASSERT_TRUE( resolution < pDisplayInformation[ display ].resolutionCount )
+	
 	return pDisplayInformation[ display ].resolutions[ resolution ];
+}
+
+int deOSUnix::GetDisplayCurrentScaleFactor( int display ){
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	
+	return pScaleFactor;
 }
 
 
@@ -560,11 +569,6 @@ decString deOSUnix::GetUserLocaleTerritory(){
 void deOSUnix::pCleanUp(){
 	// close display
 	if( pDisplay ){
-		// ok. this is now one of the most strange bugs i've ever come accross.
-		// if opengl module is activated then using the line below will result
-		// in a segfault. if left out all works fine. the only explanation would
-		// be that ogl closes the display itself without asking. if somebody knows
-		// a hack to make this work properly he's welcome to step forward.
 		XCloseDisplay( pDisplay );
 		pDisplay = NULL;
 	}
@@ -624,7 +628,7 @@ void deOSUnix::pGetDisplayInformation(){
 		return; // should never happen
 	}
 	
-	// determine the total number of screen resolutions of all screens
+	// determine the total count of screen resolutions of all screens
 	int totalResolutionCount = 0;
 	int resolutionCount;
 	int i, j;
@@ -673,7 +677,7 @@ void deOSUnix::pGetDisplayInformation(){
 			XRRFreeScreenConfigInfo( screenInfo );
 			
 		}else{
-			di.currentRefreshRate = 30; // XRandR not supported on display. XLib has no way to get refresh rate
+			di.currentRefreshRate = 60; // XRandR not supported on display. XLib has no way to get refresh rate
 		}
 		
 		di.resolutionCount = resolutionCount;
@@ -681,6 +685,33 @@ void deOSUnix::pGetDisplayInformation(){
 	}
 	
 	pDisplayCount = screenCount;
+}
+
+int deOSUnix::pGetGlobalScaling() const{
+	const char * const resourceString = XResourceManagerString( pDisplay );
+	if( ! resourceString ){
+		return 100;
+	}
+	
+	// printf( "Entire DB: %s\n", resourceString );
+	
+	XrmInitialize(); // initialize db before calling Xrm* functions
+	
+	const XrmDatabase db = XrmGetStringDatabase( resourceString );
+	
+	XrmValue value;
+	char *type = nullptr;
+	
+	if( XrmGetResource( db, "Xft.dpi", "String", &type, &value ) != True ){
+		return 100;
+	}
+	if( ! value.addr ){
+		return 100;
+	}
+	
+	const double scale = 100.0 * atof( value.addr ) / 96.0;
+	// printf( "Scale: %g %d\n", scale, decMath::max( ( int )( scale / 25.0 + 0.5 ) * 25, 100 ) );
+	return decMath::max( ( int )( scale / 25.0 + 0.5 ) * 25, 100 );
 }
 
 #endif

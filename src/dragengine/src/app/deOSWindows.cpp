@@ -318,16 +318,19 @@ int deOSWindows::GetDisplayCount(){
 
 decPoint deOSWindows::GetDisplayCurrentResolution( int display ){
 	DEASSERT_TRUE( display == 0 )
+	
 	return decPoint( pScreenWidth, pScreenHeight );
 }
 
 int deOSWindows::GetDisplayCurrentRefreshRate( int display ){
 	DEASSERT_TRUE( display == 0 )
+	
 	return pRefreshRate;
 }
 
 int deOSWindows::GetDisplayResolutionCount( int display ){
 	DEASSERT_TRUE( display == 0 )
+	
 	return pResolutionCount;
 }
 
@@ -335,7 +338,14 @@ decPoint deOSWindows::GetDisplayResolution( int display, int resolution ){
 	DEASSERT_TRUE( display == 0 )
 	DEASSERT_TRUE( resolution >= 0 )
 	DEASSERT_TRUE( resolution < pResolutionCount )
+	
 	return pResolutions[ resolution ];
+}
+
+int deOSAndroid::GetDisplayCurrentScaleFactor( int display ){
+	DEASSERT_TRUE( display == 0 )
+	
+	return pScaleFactor;
 }
 
 
