@@ -61,24 +61,24 @@ fixed class Color
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create color. */
-	public func new(float red, float green, float blue)
+	public func new(float redValue, float greenValue, float blueValue)
 	end
 	
 	/** \brief Create color. */
-	public func new(float red, float green, float blue, float alpha)
+	public func new(float redValue, float greenValue, float blueValue, float alphaValue)
 	end
 	
 	/** \brief Create color from another color with alpha replaced. */
-	public func new(Color color, float alpha)
+	public func new(Color color, float alphaValue)
 	end
 	
 	/** \brief Create color from rgb values in the range from 0 to 1. */
-	public static func Color newRGB(int red, int green, int blue)
+	public static func Color newRGB(int redValue, int greenValue, int blueValue)
 		return null
 	end
 	
 	/** \brief Create color from rgb values in the range from 0 to 1. */
-	public static func Color newRGBA(int red, int green, int blue, int alpha)
+	public static func Color newRGBA(int redValue, int greenValue, int blueValue, int alphaValue)
 		return null
 	end
 	
@@ -116,7 +116,7 @@ fixed class Color
 	 * \param yellow Yellow in the range from 0 to 1. Value is clamped.
 	 * \param black Black in the range from 0 to 1. Value is clamped.
 	 */
-	public static func Color newCMYK(float cyan, float magenta, float yellow, float black)
+	public static func Color newCMYK(float cyanValue, float magentaValue, float yellowValue, float blackValue)
 		return null
 	end
 	/*@}*/
