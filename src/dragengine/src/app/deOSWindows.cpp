@@ -342,7 +342,7 @@ decPoint deOSWindows::GetDisplayResolution( int display, int resolution ){
 	return pResolutions[ resolution ];
 }
 
-int deOSAndroid::GetDisplayCurrentScaleFactor( int display ){
+int deOSWindows::GetDisplayCurrentScaleFactor( int display ){
 	DEASSERT_TRUE( display == 0 )
 	
 	return pScaleFactor;
