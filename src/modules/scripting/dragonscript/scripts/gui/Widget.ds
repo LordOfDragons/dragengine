@@ -944,7 +944,7 @@ class Widget
 	
 	/** \brief Widget position in parent widget coordinates. */
 	func Point getRelativePosition(Container parent)
-		if parent == this
+		if this == parent
 			return Point.new()
 			
 		elif pParent == null or pParent == parent

@@ -151,10 +151,10 @@ class ScrollPanelLayout implements Layout
 		if this.pContent == widget
 			this.pContent = null
 			
-		elif this.pHorizontalScrollBar == widget
+		elif widget == this.pHorizontalScrollBar
 			this.pHorizontalScrollBar = null
 			
-		elif this.pVerticalScrollBar == widget
+		elif widget == this.pVerticalScrollBar
 			this.pVerticalScrollBar = null
 			
 		else

@@ -84,7 +84,7 @@ class ForwardKeyPressListener extends DefaultKeyListener
 	
 	/** \brief Keyboard key has been pressed. */
 	public func void onKeyPress( KeyEvent event )
-		if event.getKeyCode() == this.pKey and this.pWidget != event.getSource()
+		if event.getKeyCode() == this.pKey and event.getSource() != this.pWidget
 			this.pWidget.sendEvent( event )
 		end
 	end

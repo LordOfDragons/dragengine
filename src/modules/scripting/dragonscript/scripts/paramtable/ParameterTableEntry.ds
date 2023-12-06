@@ -87,7 +87,7 @@ class ParameterTableEntry
 	public func int getValue( int defaultValue )
 		if this.pValue != null
 			if this.pValue castable Persistable
-				return false
+				return 0
 				
 			elif this.pValue castable String
 				return ( this.pValue cast String ).toInt()
@@ -105,7 +105,7 @@ class ParameterTableEntry
 	public func float getValue( float defaultValue )
 		if this.pValue != null
 			if this.pValue castable Persistable
-				return false
+				return 0.0
 				
 			elif this.pValue castable String
 				return ( this.pValue cast String ).toFloat()
