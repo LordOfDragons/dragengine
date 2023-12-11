@@ -380,6 +380,33 @@ public:
 	}
 };
 
+class cActionGroupMissingWords : public igdeAction{
+	ceWPTopic &pPanel;
+	
+public:
+	cActionGroupMissingWords( ceWPTopic &panel ) : igdeAction( "Missing Words...",
+		nullptr, "Show missing words" ), pPanel( panel ){}
+	
+	virtual void OnAction(){
+		ceConversationFile * const group = pPanel.GetFile();
+		if( ! group ){
+			return;
+		}
+		
+		decStringSet missingWords;
+		const ceConversationTopicList &list = group->GetTopicList();
+		int i, count = list.GetCount();
+		for( i=0; i<count; i++ ){
+			list.GetAt( i )->FindMissingWords( missingWords );
+		}
+		pPanel.GetWindowProperties().GetWindowMain().ShowFoundMissingWordsDialog( missingWords );
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetFile() );
+	}
+};
+
 class cActionFileMenu : public igdeActionContextMenu{
 	ceWPTopic &pPanel;
 	
@@ -394,6 +421,9 @@ public:
 		helper.MenuCommand( contextMenu, new cActionGroupAdd( pPanel ), true );
 		helper.MenuCommand( contextMenu, new cActionGroupRemove( pPanel ), true );
 		helper.MenuCommand( contextMenu, new cActionGroupRename( pPanel ), true );
+		
+		helper.MenuSeparator( contextMenu );
+		helper.MenuCommand( contextMenu, new cActionGroupMissingWords( pPanel ), true );
 		
 		helper.MenuSeparator( contextMenu );
 		helper.MenuCommand( contextMenu, new cActionGroupCopy( pPanel ), true );
@@ -530,105 +560,12 @@ public:
 		}
 		
 		decStringSet missingWords;
-		FindMissingWords( *pPanel.GetConversation(), topic->GetActionList(), missingWords );
-		
-		const int count = missingWords.GetCount();
-		if( count == 0 ){
-			igdeCommonDialogs::Information( &pPanel, "Missing Words", "No missing words found in topic" );
-			return;
-		}
-		
-		decStringList list;
-		int i;
-		missingWords.SortAscending();
-		for( i=0; i<count; i++ ){
-			list.Add( missingWords.GetAt( i ) );
-		}
-		decString result( list.Join( "\n" ) );
-		igdeCommonDialogs::GetMultilineString( &pPanel.GetWindowProperties().GetWindowMain(),
-			"Missing Words", "Missing words found in topic", result );
+		topic->FindMissingWords( missingWords );
+		pPanel.GetWindowProperties().GetWindowMain().ShowFoundMissingWordsDialog( missingWords );
 	}
 	
 	virtual void Update(){
 		SetEnabled( pPanel.GetTopic() );
-	}
-	
-	void FindMissingWords( const ceConversation &conversation,
-	const ceConversationActionList &actions, decStringSet &missingWords ) const{
-		const ceConversationActorList &actorList = conversation.GetActorList();
-		const int count = actions.GetCount();
-		int i, j;
-		
-		for( i=0; i<count; i++ ){
-			const ceConversationAction &action = *actions.GetAt( i );
-			
-			switch( action.GetType() ){
-			case ceConversationAction::eatActorSpeak:{
-				const ceCAActorSpeak &speak = ( ceCAActorSpeak& )action;
-				if( ! speak.GetUseSpeechAnimation() ){
-					continue;
-				}
-				
-				const ceStripList &words = speak.GetWordList();
-				const decString &actorID = speak.GetActor();
-				const int wordCount = words.GetCount();
-				if( wordCount == 0 ){
-					continue;
-				}
-				
-				const ceConversationActor * const conversationActor = actorList.GetWithIDOrAliasID( actorID );
-				if( ! conversationActor || ! conversationActor->GetSpeechAnimation() ){
-					continue;
-				}
-				
-				const ceSpeechAnimation &speechAnimation = *conversationActor->GetSpeechAnimation();
-				const ceSAWordList &saWordList = speechAnimation.GetWordList();
-				
-				for( j=0; j<wordCount; j++ ){
-					const decString &word = words.GetAt( j )->GetID();
-					if( ! word.IsEmpty() && ! saWordList.HasNamed( word ) ){
-						missingWords.Add( word );
-					}
-				}
-				
-				} break;
-				
-			case ceConversationAction::eatIfElse:{
-				const ceCAIfElse &ifelse = ( ceCAIfElse& )action;
-				const ceCAIfElseCaseList &cases = ifelse.GetCases();
-				const int caseCount = cases.GetCount();
-				
-				for( j=0; j<caseCount; j++ ){
-					FindMissingWords( conversation, cases.GetAt( j )->GetActions(), missingWords );
-				}
-				
-				FindMissingWords( conversation, ifelse.GetElseActions(), missingWords );
-				
-				} break;
-				
-			case ceConversationAction::eatPlayerChoice:{
-				const ceCAPlayerChoice &playerChoice = ( ceCAPlayerChoice& )action;
-				const ceCAPlayerChoiceOptionList &options = playerChoice.GetOptions();
-				const int optionCount = options.GetCount();
-				
-				FindMissingWords( conversation, playerChoice.GetActions(), missingWords );
-				
-				for( j=0; j<optionCount; j++ ){
-					FindMissingWords( conversation, options.GetAt( j )->GetActions(), missingWords );
-				}
-				
-				} break;
-				
-			case ceConversationAction::eatWait:{
-				const ceCAWait &wait = ( ceCAWait& )action;
-				FindMissingWords( conversation, wait.GetActions(), missingWords );
-				
-				} break;
-				
-			default:
-				break;
-			}
-		}
 	}
 };
 

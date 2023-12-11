@@ -25,10 +25,21 @@
 
 #include "ceConversationTopic.h"
 #include "../ceConversation.h"
+#include "../actor/ceConversationActor.h"
+#include "../actor/speechAnimation/ceSAWordList.h"
+#include "../actor/speechAnimation/ceSpeechAnimation.h"
 #include "../action/ceConversationAction.h"
+#include "../action/ceCAActorSpeak.h"
+#include "../action/ceCAIfElse.h"
+#include "../action/ceCAIfElseCase.h"
+#include "../action/ceCAPlayerChoice.h"
+#include "../action/ceCAPlayerChoiceOption.h"
+#include "../action/ceCAWait.h"
 #include "../file/ceConversationFile.h"
+#include "../../conversation/strip/ceStrip.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/string/decStringSet.h>
 
 
 
@@ -119,6 +130,91 @@ void ceConversationTopic::SetActive( ceConversationAction *action, ceConversatio
 		pFile->GetConversation()->NotifyActiveChanged( pFile, this );
 	}
 }
+
+void ceConversationTopic::FindMissingWords( decStringSet &missingWords ) const{
+	FindMissingWords( pActions, missingWords );
+}
+
+void ceConversationTopic::FindMissingWords( const ceConversationActionList &actions,
+decStringSet &missingWords ) const{
+	if( ! pFile || ! pFile->GetConversation() ){
+		return;
+	}
+	
+	const ceConversation &conversation = *pFile->GetConversation();
+	const ceConversationActorList &actorList = conversation.GetActorList();
+	const int count = actions.GetCount();
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		const ceConversationAction &action = *actions.GetAt( i );
+		
+		switch( action.GetType() ){
+		case ceConversationAction::eatActorSpeak:{
+			const ceCAActorSpeak &speak = ( ceCAActorSpeak& )action;
+			if( ! speak.GetUseSpeechAnimation() ){
+				continue;
+			}
+			
+			const ceStripList &words = speak.GetWordList();
+			const decString &actorID = speak.GetActor();
+			const int wordCount = words.GetCount();
+			if( wordCount == 0 ){
+				continue;
+			}
+			
+			const ceConversationActor * const conversationActor = actorList.GetWithIDOrAliasID( actorID );
+			if( ! conversationActor || ! conversationActor->GetSpeechAnimation() ){
+				continue;
+			}
+			
+			const ceSpeechAnimation &speechAnimation = *conversationActor->GetSpeechAnimation();
+			const ceSAWordList &saWordList = speechAnimation.GetWordList();
+			
+			for( j=0; j<wordCount; j++ ){
+				const decString &word = words.GetAt( j )->GetID();
+				if( ! word.IsEmpty() && ! saWordList.HasNamed( word ) ){
+					missingWords.Add( word );
+				}
+			}
+			} break;
+			
+		case ceConversationAction::eatIfElse:{
+			const ceCAIfElse &ifelse = ( ceCAIfElse& )action;
+			const ceCAIfElseCaseList &cases = ifelse.GetCases();
+			const int caseCount = cases.GetCount();
+			
+			for( j=0; j<caseCount; j++ ){
+				FindMissingWords( cases.GetAt( j )->GetActions(), missingWords );
+			}
+			
+			FindMissingWords( ifelse.GetElseActions(), missingWords );
+			} break;
+			
+		case ceConversationAction::eatPlayerChoice:{
+			const ceCAPlayerChoice &playerChoice = ( ceCAPlayerChoice& )action;
+			const ceCAPlayerChoiceOptionList &options = playerChoice.GetOptions();
+			const int optionCount = options.GetCount();
+			
+			FindMissingWords( playerChoice.GetActions(), missingWords );
+			
+			for( j=0; j<optionCount; j++ ){
+				FindMissingWords( options.GetAt( j )->GetActions(), missingWords );
+			}
+			} break;
+			
+		case ceConversationAction::eatWait:{
+			const ceCAWait &wait = ( ceCAWait& )action;
+			FindMissingWords( wait.GetActions(), missingWords );
+			} break;
+			
+		default:
+			break;
+		}
+	}
+}
+
+
 
 void ceConversationTopic::NotifyConditionChanged( ceConversationAction *action,
 ceConversationCondition *condition ){

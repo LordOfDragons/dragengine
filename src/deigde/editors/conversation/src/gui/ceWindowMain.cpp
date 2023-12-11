@@ -34,6 +34,8 @@
 #include "../loadsave/ceLoadSaveSystem.h"
 #include "../conversation/ceConversation.h"
 #include "../conversation/actor/ceConversationActor.h"
+#include "../conversation/file/ceConversationFile.h"
+#include "../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/clipboard/igdeClipboardDataReference.h>
 #include <deigde/engine/igdeEngineController.h>
@@ -241,6 +243,23 @@ void ceWindowMain::SaveConversation( const char *filename ){
 	}
 	
 	GetRecentFiles().AddFile( filename );
+}
+
+void ceWindowMain::ShowFoundMissingWordsDialog( decStringSet &missingWords ){
+	const int count = missingWords.GetCount();
+	if( count == 0 ){
+		igdeCommonDialogs::Information( this, "Missing Words", "No missing words found" );
+		return;
+	}
+	
+	decStringList list;
+	int i;
+	missingWords.SortAscending();
+	for( i=0; i<count; i++ ){
+		list.Add( missingWords.GetAt( i ) );
+	}
+	decString result( list.Join( "\n" ) );
+	igdeCommonDialogs::GetMultilineString( this, "Missing Words", "Found missing words", result );
 }
 
 
@@ -741,6 +760,29 @@ public:
 	}
 };
 
+class cActionViewMissingWords : public cActionBase{
+public:
+	cActionViewMissingWords( ceWindowMain &window ) : cActionBase( window, "Missing Words...",
+		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSearch ), "Show missing words" ){}
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ) override{
+		decStringSet missingWords;
+		const ceConversationFileList &groups = conversation->GetFileList();
+		const int groupCount = groups.GetCount();
+		int i, j;
+		
+		for( i=0; i<groupCount; i++ ){
+			const ceConversationTopicList &topics = groups.GetAt( i )->GetTopicList();
+			const int topicCount = topics.GetCount();
+			for( j=0; j<topicCount; j++ ){
+				topics.GetAt( j )->FindMissingWords( missingWords );
+			}
+		}
+		pWindow.ShowFoundMissingWordsDialog( missingWords );
+		return nullptr;
+	}
+};
+
 }
 
 
@@ -807,6 +849,7 @@ void ceWindowMain::pCreateActions(){
 	pActionViewShowRuleOfThirdsAid.TakeOver( new cActionViewShowRuleOfThirdsAid( *this ) );
 	pActionViewAttachLangPack.TakeOver( new cActionViewAttachLangPack( *this ) );
 	pActionViewDetachLangPack.TakeOver( new cActionViewDetachLangPack( *this ) );
+	pActionViewMissingWords.TakeOver( new cActionViewMissingWords( *this ) );
 	
 	
 	// register for updating
@@ -831,6 +874,7 @@ void ceWindowMain::pCreateActions(){
 	AddUpdateAction( pActionViewShowRuleOfThirdsAid );
 	AddUpdateAction( pActionViewAttachLangPack );
 	AddUpdateAction( pActionViewDetachLangPack );
+	AddUpdateAction( pActionViewMissingWords );
 }
 
 void ceWindowMain::pCreateToolBarFile(){
@@ -917,6 +961,9 @@ void ceWindowMain::pCreateMenuView(igdeMenuCascade& menu)
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCheck( menu, pActionViewShowRuleOfThirdsAid );
+	
+	helper.MenuSeparator( menu );
+	helper.MenuCommand( menu, pActionViewMissingWords );
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, pActionViewAttachLangPack );
