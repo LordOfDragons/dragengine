@@ -47,7 +47,8 @@ pLight( NULL ),
 pCulled( false ),
 pCameraInside( false ),
 pCameraInsideOccQueryBox( true ),
-pOcclusionQuery( nullptr ){
+pOcclusionQuery( nullptr ),
+pOccQueryValid( false ){
 }
 
 deoglCollideListLight::~deoglCollideListLight(){
@@ -64,6 +65,7 @@ deoglCollideListLight::~deoglCollideListLight(){
 void deoglCollideListLight::Clear(){
 	SetLight( nullptr );
 	pCulled = false;
+	pOccQueryValid = false;
 }
 
 void deoglCollideListLight::SetLight( deoglRLight *light ){
@@ -79,10 +81,11 @@ void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
 	
 	if( pCulled ){ // happens if affecting GI but not camera
 		pCameraInside = false;
+		pCameraInsideOccQueryBox = false;
 		return;
 	}
 	
-	const float safetyMargin = 0.01f; // 1cm should be enough to be safe
+	const float safetyMargin = plan.GetCameraImageDistance() + 0.01f;
 	const decDVector &cameraPosition = plan.GetCameraPosition();
 	const decDVector &minExtend = pLight->GetMinimumExtend();
 	const decDVector &maxExtend = pLight->GetMaximumExtend();
@@ -187,7 +190,7 @@ bool deoglCollideListLight::IsHiddenByOccQuery() const{
 	DEASSERT_NOTNULL( pLight )
 	
 // 	if( ! pCameraInside && pOcclusionQuery ){
-	if( ! pCameraInsideOccQueryBox && pOcclusionQuery ){
+	if( ! pCameraInsideOccQueryBox && pOcclusionQuery && pOccQueryValid ){
 		// check if the query result exists already
 		//if( pOcclusionQuery->HasResult() ){
 			// retrieve the result. later on we are going to store this value
@@ -198,4 +201,8 @@ bool deoglCollideListLight::IsHiddenByOccQuery() const{
 		//}
 	}
 	return false;
+}
+
+void deoglCollideListLight::SetOcclusionQueryValid( bool valid ){
+	pOccQueryValid = valid;
 }

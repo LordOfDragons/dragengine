@@ -44,6 +44,7 @@ private:
 	bool pCameraInsideOccQueryBox;
 	
 	deoglOcclusionQuery *pOcclusionQuery;
+	bool pOccQueryValid;
 	
 	
 	
@@ -104,6 +105,9 @@ public:
 	 * Deals with various special cases preventing the caller to know or care about them.
 	 */
 	bool IsHiddenByOccQuery() const;
+	
+	/** Set if occlusion query is valid. */
+	void SetOcclusionQueryValid( bool valid );
 	/*@}*/
 };
 
