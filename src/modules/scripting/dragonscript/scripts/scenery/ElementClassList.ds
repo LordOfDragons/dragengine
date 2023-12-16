@@ -65,6 +65,14 @@ class ElementClassList
 		return pClasses.has(name)
 	end
 	
+	/**
+	 * \brief Element class is present.
+	 * \version 1.21
+	 */
+	public func bool has(ElementClass eclass)
+		return pClasses.has(eclass.getClassname())
+	end
+	
 	/** \brief Add class. */
 	public func void add(ElementClass eclass)
 		if pClasses.has(eclass.getClassname())
@@ -102,6 +110,30 @@ class ElementClassList
 		pClasses.forEachValue(block ElementClass each
 			each.dispose()
 		end)
+		pClasses.removeAll()
+	end
+	
+	/**
+	 * \brief Remove class without calling ElementClass.dispose().
+	 * \version 1.21
+	 */
+	public func void removeNoDispose(ElementClass eclass)
+		pClasses.remove(eclass.getClassname())
+	end
+	
+	/**
+	 * \brief Remove named class if present without calling ElementClass.dispose().
+	 * \version 1.21
+	 */
+	public func void removeNamedNoDispose(String name)
+		pClasses.removeIfExisting(name)
+	end
+	
+	/**
+	 * \brief Remove all classes without calling ElementClass.dispose().
+	 * \version 1.21
+	 */
+	public func void removeAllNoDispose()
 		pClasses.removeAll()
 	end
 	
