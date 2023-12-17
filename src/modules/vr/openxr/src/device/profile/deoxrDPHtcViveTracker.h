@@ -118,6 +118,7 @@ private:
 	void pSaveTrackerDatabase();
 	
 	void pAddDevice( Tracker &tracker );
+	void pTrySuggestBindings( int restrictCount );
 };
 
 #endif
