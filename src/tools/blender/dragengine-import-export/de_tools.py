@@ -297,6 +297,8 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		row = col.row(align=True)
 		row.operator(operator="dragengine.export_occmesh", text="OccMesh")
 		row.operator(operator="dragengine.export_navspace", text="NavMesh")
+		row = col.row(align=True)
+		row.operator(operator="dragengine.export_animation", text="Animation")
 		
 	def drawArmatureTools(self, context):
 		layout = self.layout

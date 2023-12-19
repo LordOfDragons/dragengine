@@ -216,6 +216,8 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
             for f in self.armature.armature.dragengine_bonefilters:
                 self.armature.ignoreBones.append(re.compile("^%s$" % f.name))
             self.armature.initAddBones()
+        if self.mesh:
+            self.mesh.initAddVertPosSets()
     
     def checkInitState(self, context):
         if not self.armature and not self.mesh:
@@ -465,7 +467,15 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
     def writeVertexPositionSets(self, f):
         if self.debugLevel > 0:
             print("saving vertex position sets...")
-        f.write(struct.pack("<H", 0))
+        if self.mesh:
+            f.write(struct.pack("<H", len(self.mesh.vertPosSets)))
+            for vps in self.mesh.vertPosSets:
+                f.write(struct.pack("<B", len(vps.name)))
+                f.write(bytes(vps.name, 'UTF-8'))
+                if self.debugLevel > 1:
+                    print("- vertexPositionSet", vps.name)
+        else:
+            f.write(struct.pack("<H", 0))
         return True
 
     # fix flipping for example when constraint bones cause negated quaterions
@@ -521,7 +531,41 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
                 if firstIndex < len(moveBone.keyframes) - 1:
                     keyframes.append(moveBone.keyframes[-1])
                 moveBone.keyframes = keyframes
-    
+
+    # tests if a sequence of keyframes is linear
+    def areKeyframesLinearVps(self, keyframes, firstIndex, lastIndex):
+        kf1 = keyframes[firstIndex]
+        kf2 = keyframes[lastIndex]
+
+        # calculate differences
+        mulTime = 1.0 / (kf2.time - kf1.time)
+        diffWeight = kf2.weight - kf1.weight
+
+        # test all keyframes in between against this differences
+        for index in range(firstIndex + 1, lastIndex):
+            kf = keyframes[index]
+            factor = (kf.time - kf1.time) * mulTime
+            expectedWeight = kf1.weight + diffWeight * factor
+
+            if abs(kf.weight - expectedWeight) > self.armature.thresholdWeight:
+                return False
+
+        return True
+
+    # optimize the keyframes by dropping keyframes inside linear changes
+    def optimizeKeyframesVps(self, moveVpSets):
+        for moveVps in moveVpSets:
+            if len(moveVps.keyframes) > 0:
+                keyframes = [moveVps.keyframes[0]]
+                firstIndex = 0
+                for index in range(2, len(moveVps.keyframes)):
+                    if not self.areKeyframesLinearVps(moveVps.keyframes, firstIndex, index):
+                        firstIndex = index -1
+                        keyframes.append(moveVps.keyframes[firstIndex])
+                if firstIndex < len(moveVps.keyframes) - 1:
+                    keyframes.append(moveVps.keyframes[-1])
+                moveVps.keyframes = keyframes
+
     # write moves
     def writeMoves(self, f, retainContent):
         if self.debugLevel > 0:
@@ -560,6 +604,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
             moveBones = []
             moveVpSets = []
             agroups = move.action.groups
+            skafcurves = None
             
             # determine the time scaling
             self.timeScale = self.transformTime * move.action.dragengine_timescaling
@@ -588,7 +633,27 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
                     lastFrame = max(lastFrame, moveBone.times[-1])
                 moveBones.append(moveBone)
 
-            # no vertex position sets for the time being
+            # vertex position sets
+            shapeKeyAction = None
+            shapeKeys = None
+            if self.mesh and len(self.mesh.vertPosSets) > 0:
+                shapeKeys = self.mesh.mesh.shape_keys
+                skaname = move.name + ".shapeKey"
+                if skaname in bpy.data.actions:
+                    shapeKeyAction = bpy.data.actions[skaname]
+                    skafcurves = shapeKeyAction.fcurves
+
+            if shapeKeyAction:
+                for vps in self.mesh.vertPosSets:
+                    if not vps.shapeKey:
+                        continue
+                    moveVps = Armature.MoveVps(vps)
+                    moveVps.times.append(1)
+                    moveVps.findFCurve(skafcurves)
+                    moveVps.used = True
+                    if moveVps.fcurve:
+                        self.buildTimeList(moveVps.fcurve, moveBone.times)
+                    moveVpSets.append(moveVps)
 
             # determine the frames to export. this can be altered by properties
             if move.automaticRange:
@@ -607,6 +672,10 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
             
             # switch action
             self.armature.object.animation_data.action = move.action
+            if shapeKeyAction:
+                if not shapeKeys.animation_data:
+                    shapeKeys.animation_data_create()
+                shapeKeys.animation_data.action = shapeKeyAction
             
             # blender fails to properly update bone states after changing the action. to fix this bug
             # the scene frame is first set to 1 after the initial frame to save. this way the frame
@@ -643,16 +712,14 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
                             
                             moveBone.keyframes.append(Armature.Keyframe(time - move.firstFrame, pos, rot, scale))
 
-                '''
                 for moveVps in moveVpSets:
                     if moveVps.used:
                         requiresKeyframe = True
 
                         if requiresKeyframe:  #time in moveVps.times:
                             keyframes = moveVps.keyframes
-                            weight = 0.0
+                            weight = moveVps.vps.shapeKey.value
                             moveVps.keyframes.append(Armature.KeyframeVps(time - move.firstFrame, weight))
-                '''
 
             # fix flipping for example when constraint bones cause negated quaterions
             #self.fixQuaternionFlipping(moveBones)
@@ -661,6 +728,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
             # optimize the keyframes by dropping keyframes inside linear changes
             #for DUMMY in moveBone.keyframes: print(DUMMY)
             self.optimizeKeyframes(moveBones)
+            self.optimizeKeyframesVps(moveVpSets)
             self.timer.log("- optimize keyframe list", peek=True)
             
             if self.debugLevel > 0:
@@ -750,7 +818,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
                     hasVarWeight = False
 
                     for keyframe in moveVps.keyframes:
-                        if keyframe.weight > self.armature.thresholdPosition:
+                        if keyframe.weight > self.armature.thresholdWeight:
                             hasVarWeight = True
 
                     hasFewKeyframes = True  #(len(moveBone.keyframes) / playtime < 0.25)

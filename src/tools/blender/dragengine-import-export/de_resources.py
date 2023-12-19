@@ -87,6 +87,13 @@ class Armature:
 			self.times = []
 			self.keyframes = []
 			self.hasWeight = False
+			self.datapath = "key_blocks[\"{}\"].value".format(vps.name)
+			self.fcurve = None
+		
+		def findFCurve(self, fcurves):
+			found = [x for x in fcurves if x.data_path == self.datapath]
+			if found:
+				self.fcurve = found[0]
 	
 	class Move:
 		def __init__(self, action):
@@ -151,6 +158,7 @@ class Armature:
 		self.thresholdPosition = object.data.dragengine_thresholdpos
 		self.thresholdRotation = object.data.dragengine_thresholdrot
 		self.thresholdScale = object.data.dragengine_thresholdscale
+		self.thresholdWeight = 0.05
 		self.shortFormat = object.data.dragengine_shortformat
 	
 	# add bones
