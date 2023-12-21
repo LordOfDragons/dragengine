@@ -68,6 +68,7 @@
 #include <dragengine/resources/model/deModelVertex.h>
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelWeight.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/rig/deRigConstraint.h>
@@ -2581,7 +2582,8 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 	
 	if( count > 0 ){
 		const decDMatrix &posMatrix = GetMatrix();
-		deRig * const rig = component ? component->GetRig() : NULL;
+		const deRig * const rig = component ? component->GetRig() : nullptr;
+		const deModel * const model = component ? component->GetModel() : nullptr;
 		int i, j;
 		
 		// adjust all attachments
@@ -2597,7 +2599,7 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				break;
 				
 			case deColliderAttachment::eatRig:{
-				if( ! rig ){
+				if( ! rig || ! model ){
 					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 					break;
 				}
@@ -2624,8 +2626,10 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				if( isAttComponent || visitor.IsComponent() ){
 					deComponent * const attachedComponent = isAttCollider
 						? visitor.CastToComponent().GetComponent() : ( deComponent* )&attachedResource;
+					const deModel * const attachedModel = attachedComponent
+						? attachedComponent->GetModel() : nullptr;
 					
-					if( ! attachedComponent ){
+					if( ! attachedComponent || ! attachedModel ){
 						bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 						break;
 					}
@@ -2637,6 +2641,7 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 					}
 					
 					const int boneCount = attachedComponent->GetBoneCount();
+					const int vpsCount = attachedComponent->GetVertexPositionSetCount();
 					if( boneCount == 0 ){
 						bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify ); // fall back to static
 						break;
@@ -2648,6 +2653,13 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 							bpAttachment.SetBoneMappingAt( j, rig->IndexOfBoneNamed(
 								attachedRig->GetBoneAt( j ).GetName() ) );
 						}
+						
+						bpAttachment.SetVpsMappingCount( vpsCount );
+						for( j=0; j<vpsCount; j++ ){
+							bpAttachment.SetVpsMappingAt( j, model->IndexOfVertexPositionSetNamed(
+								attachedModel->GetVertexPositionSetAt( j )->GetName() ) );
+						}
+						
 						bpAttachment.SetDirtyMappings( false );
 					}
 					
@@ -2682,6 +2694,14 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 							// child bones require only bone local copy
 							attachedCompBone.SetPosition( compBone.GetPosition() );
 							attachedCompBone.SetRotation( compBone.GetRotation() );
+						}
+					}
+					
+					for( j=0; j<vpsCount; j++ ){
+						const int vpsIndex = bpAttachment.GetVpsMappingAt( j );
+						if( vpsIndex != -1 ){
+							attachedComponent->SetVertexPositionSetWeightAt( j,
+								component->GetVertexPositionSetWeightAt( vpsIndex ) );
 						}
 					}
 					
