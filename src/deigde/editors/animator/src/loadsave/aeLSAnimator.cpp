@@ -924,7 +924,7 @@ const aeRuleStateManipulator &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	if( rule.GetEnableVertexPositionSet() ){
+	if( ! rule.GetEnableVertexPositionSet() ){
 		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
