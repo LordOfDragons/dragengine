@@ -241,12 +241,16 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
             vpsCount = struct.unpack("<H", f.read(2))[0]
         self.importVpSets = []
 
+        class ImportedVps:
+            def __init__(self):
+                self.name = ""
+
         for i in range(vpsCount):
-            vps = {}
+            vps = ImportedVps()
             nameLen = struct.unpack("<B", f.read(1))[0]
-            vps["name"] = f.read(nameLen).decode("UTF-8")
+            vps.name = f.read(nameLen).decode("UTF-8")
             if self.debugLevel > 1:
-                print("- vertex position set", vps["name"])
+                print("- vertex position set", vps.name)
             self.importVpSets.append(vps)
 
         return True
@@ -518,7 +522,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
                         if not moveVps.keyframes:
                             continue
                         
-                        vpsName = moveVps.vps["name"]
+                        vpsName = moveVps.vps.name
                         print("- vps '{}'".format(vpsName))
                         
                         # create fcurves using build
