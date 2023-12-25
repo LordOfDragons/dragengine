@@ -97,12 +97,12 @@ pin Dragengine.Utils
  * Using this controller you can blend betwen such animations (typically a group rule with
  * selector link).
  * 
- * For the height, pan, distance, azimuth and elevation controller a reference matrix can be
- * set. This indicates the coordinate system to use in the actor to calculate these values.
- * By default this is the identity matrix locating the coordinate system at the feet of the
- * actor pointing in the same direction as the actor. For using azimuth and elevation you
- * usually have to set the reference matrix near the shoulders to get meaningful values.
- * If a reference bone is set the reference matrix is relative to this bone.
+ * For the azimuth and elevation controller a reference matrix can be set. This indicates the
+ * coordinate system to use in the actor to calculate these values. By default this is the
+ * identity matrix locating the coordinate system at the feet of the actor pointing in the
+ * same direction as the actor. For using azimuth and elevation you usually have to set the
+ * reference matrix near the shoulders to get meaningful values. If a reference bone is set
+ * the reference matrix is relative to this bone.
  * 
  * Behavior can be added multiple times allowing to handle multiple IK targets per actor.
  * 
@@ -173,7 +173,11 @@ class ECBehaviorActorIK extends DefaultECBehavior
 		var String pReferenceBone
 		var int pIndexReferenceBone
 		
-		var bool pUseReference
+		var Vector pLimitIKRotationMin, pLimitIKRotationMax
+		var Vector pLimRotMin, pLimRotMax
+		var Matrix pLimRotCenter, pLimRotCenterInv
+		
+		var bool pUseAngles, pUseLimits
 		
 		var ElementResolver pElementResolver
 		
@@ -560,6 +564,64 @@ class ECBehaviorActorIK extends DefaultECBehavior
 		
 		
 		
+		/**
+		 * \brief Minimum limit orientation or null.
+		 * \version 1.21
+		 */
+		func Vector getLimitIKRotationMinimum()
+			return pLimitIKRotationMin
+		end
+		
+		/**
+		 * \brief Maximum limit orientation or null.
+		 * \version 1.21
+		 */
+		func Vector getLimitIKRotationMaximum()
+			return pLimitIKRotationMax
+		end
+		
+		/**
+		 * \brief Set limit orientation or null.
+		 * \version 1.21
+		 */
+		func void setLimitIKRotation(Vector minimum, Vector maximum)
+			pLimitIKRotationMin = minimum
+			pLimitIKRotationMax = maximum
+			
+			if minimum != null and minimum != null
+				var Vector center = (pLimitIKRotationMin + pLimitIKRotationMax) / 2
+				pLimRotMin = pLimitIKRotationMin - center
+				pLimRotMax = pLimitIKRotationMax - center
+				pLimRotCenter = Matrix.newRotation(center)
+				pLimRotCenterInv = pLimRotCenter.getInverse()
+				
+			else
+				pLimRotMin = null
+				pLimRotMax = null
+				pLimRotCenter = null
+				pLimRotCenterInv = null
+			end
+			
+			updateUseReference()
+		end
+		
+		/**
+		 * \brief Clear limit orientation.
+		 * \verrsion 1.21
+		 */
+		func void clearLimitIKRotation()
+			pLimitIKRotationMin = null
+			pLimitIKRotationMax = null
+			pLimRotCenter = null
+			pLimRotCenterInv = null
+			pLimRotMin = null
+			pLimRotMax = null
+			
+			updateUseReference()
+		end
+		
+		
+		
 		/** \brief Find controllers. */
 		func void findControllers()
 			pControllerIKPosition = null
@@ -592,39 +654,48 @@ class ECBehaviorActorIK extends DefaultECBehavior
 				pControllerIKElevation = pActorAnimated.getControllerNamed(pNameControllerIKElevation)
 			end
 			
-			pUseReference = pControllerIKHeight != null or pControllerIKPan != null\
-				or pControllerIKDistance != null or pControllerIKAzimuth != null\
-				or pControllerIKElevation != null
+			updateUseReference()
 		end
 		
 		/** \brief Update controllers. */
 		func void updateControllers(float elapsed)
-			var Matrix matrix = (calculateTargetMatrix() * pComponent.getInverseMatrix()).toMatrix()
+			var Matrix matrix = calculateTargetMatrixLocal()
 			
 			var Vector position = matrix.getPosition()
 			if pControllerIKPosition != null
 				pControllerIKPosition.setVector(position)
 			end
-			if pControllerIKRotation != null
-				pControllerIKRotation.setRotation(matrix.getEulerAngles())
+			if pControllerIKHeight != null
+				pControllerIKHeight.setValue(position.getY())
+			end
+			if pControllerIKDistance != null
+				pControllerIKDistance.setValue(position.getZ())
 			end
 			
-			if pUseReference
-				matrix = matrix * calculateInverseReferenceMatrix()
-				position = matrix.getPosition()
+			if pUseAngles
+				position = (matrix * calculateInverseReferenceMatrix()).getPosition()
 				
-				if pControllerIKHeight != null
-					pControllerIKHeight.setValue(position.getY())
-				end
-				if pControllerIKDistance != null
-					pControllerIKDistance.setValue(position.getZ())
-				end
 				if pControllerIKAzimuth != null
 					pControllerIKAzimuth.setValue(DEMath.atan2(-position.getX(), position.getZ()))
 				end
 				if pControllerIKElevation != null
 					pControllerIKElevation.setValue(DEMath.atan2(position.getY(), position.getZ()))
 				end
+			end
+			
+			if pControllerIKRotation != null
+				var Vector rotation
+				
+				if pUseLimits
+					rotation = (matrix * pLimRotCenterInv).getEulerAngles()
+					rotation = rotation.clamped(pLimRotMin, pLimRotMax)
+					rotation = (Matrix.newRotation(rotation) * pLimRotCenter).getEulerAngles()
+					
+				else
+					rotation = matrix.getEulerAngles()
+				end
+				
+				pControllerIKRotation.setRotation(rotation)
 			end
 		end
 		
@@ -646,6 +717,14 @@ class ECBehaviorActorIK extends DefaultECBehavior
 			end
 			
 			return matrix
+		end
+		
+		/**
+		 * \brief Calculate target matrix in component space.
+		 * \version 1.21
+		 */
+		func Matrix calculateTargetMatrixLocal()
+			return (calculateTargetMatrix() * pComponent.getInverseMatrix()).toMatrix()
 		end
 		
 		/** \brief Calculate inverse reference matrix in component space. */
@@ -674,6 +753,16 @@ class ECBehaviorActorIK extends DefaultECBehavior
 				pElementResolver.resolve(getElement().getGameWorld())
 				pElementResolver = null
 			end
+		end
+		
+		
+		
+		/** \brief Update use reference. */
+		private func void updateUseReference()
+			pUseLimits = pControllerIKRotation != null and pLimitIKRotationMin != null\
+				and pLimitIKRotationMax != null
+			
+			pUseAngles = pControllerIKAzimuth != null or pControllerIKElevation != null or pUseLimits
 		end
 		
 		
