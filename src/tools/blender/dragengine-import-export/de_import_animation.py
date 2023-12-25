@@ -438,7 +438,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
                 action = bpy.data.actions.new("imported " + moveName)
                 action.dragengine_export = False
                 action.dragengine_exportname = "" # moveName
-                action.use_fake_user=True
+                action.use_fake_user = True
                 
                 if not self.armature.object.animation_data:
                     self.armature.object.animation_data_create()
@@ -507,6 +507,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
                 if self.mesh:
                     # create shape key action
                     action = bpy.data.actions.new("imported " + moveName + ".shapeKey")
+                    action.use_fake_user = True
                     
                     shapeKeys = self.mesh.mesh.shape_keys
                     if not shapeKeys.animation_data:
