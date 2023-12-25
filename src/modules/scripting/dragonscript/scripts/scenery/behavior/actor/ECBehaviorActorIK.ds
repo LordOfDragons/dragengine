@@ -58,7 +58,51 @@ pin Dragengine.Utils
  * is the same value as "position.getY()" but assigned as single "value". This controller
  * allows to fine tune animators to different target heights above ground. To get the best
  * results you usually have to use an animation for reaching at objects in upright and
- * crouched position. Using this controller you can blend between such animations.
+ * crouched position. Using this controller you can blend between such animations
+ * (typically a group rule with selector link).
+ * 
+ * The Pan Controller is used to set the horizontal panning of the target. This is the
+ * same value as "position.getX()" but assigned as a single "value". This controller allows
+ * to fine tune animators to different horizontal distances along a wall. To get the best
+ * results you usually have to use an animation for reaching at objects at the far left
+ * and right position on the wall. Using this controller you can blend betwen such animations
+ * (typically a group rule with selector link).
+ * 
+ * The Distance Controller is used to set the distance of the target. This is the same value
+ * as "position.getZ()" but assigned as a single "value". This controller allows to fine tune
+ * animators to different distances in front of the actor. To get the best results you usually
+ * have to use an animation for reaching at objects at far and close distance in front of the
+ * actor. Using this controller you can blend betwen such animations (typically a group rule
+ * with selector link).
+ * 
+ * The Azimuth Controller is used to set the location of the target relative to the actor
+ * expressed as angle. This is the same value as "DEMath.atan2(-position.getX(), position.getZ())"
+ * but assigned as a single "value". The value has a range from -180 to 180 with positive values
+ * located on the left side of the actor. This controller allows to fine tune animators to
+ * different locations around the actor. It is possible to simulate this angle in an animator
+ * by using a properly shaped link curve on the pan or distance controller. Using the azimuth
+ * controller though is simpler and leaves the link curve shape open for fine control. To get
+ * the best results you usually have to use an animation for reaching at objects at the front,
+ * left and right side of the actor and optionally at the back side. Using this controller you
+ * can blend betwen such animations (typically a group rule with selector link).
+ * 
+ * The Elevation Controller is used to set the location of the target relative to the actor
+ * expressed as angle. This is the same value as "DEMath.atan2(position.getY(), position.getZ())"
+ * but assigned as a single "value". The value has a range from -90 to 90 with positive values
+ * located upwards. This controller allows to fine tune animators to different locations around
+ * the actor. It is possible to simulate this angle in an animator by using a properly shaped
+ * link curve on the pan or distance controller. Using the elevation controller though is
+ * simpler and leaves the link curve shape open for fine control. To get the best results you
+ * usually have to use an animation for reaching at objects at the up, level and down position.
+ * Using this controller you can blend betwen such animations (typically a group rule with
+ * selector link).
+ * 
+ * For the height, pan, distance, azimuth and elevation controller a reference matrix can be
+ * set. This indicates the coordinate system to use in the actor to calculate these values.
+ * By default this is the identity matrix locating the coordinate system at the feet of the
+ * actor pointing in the same direction as the actor. For using azimuth and elevation you
+ * usually have to set the reference matrix near the shoulders to get meaningful values.
+ * If a reference bone is set the reference matrix is relative to this bone.
  * 
  * Behavior can be added multiple times allowing to handle multiple IK targets per actor.
  * 
@@ -68,70 +112,91 @@ pin Dragengine.Utils
  * - actorIK{(id)}.controllerIKPosition : ECBString. Name of IK Position Controller
  * - actorIK{(id)}.controllerIKRotation : ECBString. Name of IK Rotation Controller
  * - actorIK{(id)}.controllerIKHeight : ECBString. Name of IK Height Controller
+ * - actorIK{(id)}.controllerIKPan: ECBString. Name of IK Pan Controller
+ * - actorIK{(id)}.controllerIKDistance: ECBString. Name of IK Distance Controller
+ * - actorIK{(id)}.controllerIKAzimuth: ECBString. Name of IK Azimuth Controller
+ * - actorIK{(id)}.controllerIKElevation: ECBString. Name of IK Elevation Controller
  */
 class ECBehaviorActorIK extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Update controllers listener. */
 		private class UpdateControllers extends ECBehaviorActorAnimated.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void updateControllers( ECBehaviorActorAnimated.Instance instance, float elapsed )
-				if this.pInstance.getEnabled()
-					this.pInstance.updateControllers( elapsed )
+			func void updateControllers(ECBehaviorActorAnimated.Instance instance, float elapsed)
+				if pInstance.getEnabled()
+					pInstance.updateControllers(elapsed)
 				end
 			end
 			
-			public func void animatorChanged( ECBehaviorActorAnimated.Instance instance )
-				if this.pInstance.getEnabled()
-					this.pInstance.findControllers()
+			func void animatorChanged(ECBehaviorActorAnimated.Instance instance)
+				if pInstance.getEnabled()
+					pInstance.findControllers()
 				end
 			end
 		end
 		
 		
-		private var ECBehaviorActorIK pECBehavior
-		private var ECBehaviorActorAnimated.Instance pActorAnimated
+		var ECBehaviorActorIK pECBehavior
+		var ECBehaviorActorAnimated.Instance pActorAnimated
+		var Component pComponent
 		
-		private var String pNameControllerIKPosition
-		private var String pNameControllerIKRotation
-		private var String pNameControllerIKHeight
+		var String pNameControllerIKPosition
+		var String pNameControllerIKRotation
+		var String pNameControllerIKHeight
+		var String pNameControllerIKPan
+		var String pNameControllerIKDistance
+		var String pNameControllerIKAzimuth
+		var String pNameControllerIKElevation
 		
-		private var AnimatorController pControllerIKPosition
-		private var AnimatorController pControllerIKRotation
-		private var AnimatorController pControllerIKHeight
+		var AnimatorController pControllerIKPosition
+		var AnimatorController pControllerIKRotation
+		var AnimatorController pControllerIKHeight
+		var AnimatorController pControllerIKPan
+		var AnimatorController pControllerIKDistance
+		var AnimatorController pControllerIKAzimuth
+		var AnimatorController pControllerIKElevation
 		
-		private var bool pEnabled
+		var bool pEnabled
 		
-		private var Element pTargetElement
-		private var DMatrix pTargetMatrix
-		private var String pTargetBone
-		private var ECBehaviorComponent.Instance pTargetComponent
+		var Element pTargetElement
+		var DMatrix pTargetMatrix
+		var String pTargetBone
+		var ECBehaviorComponent.Instance pTargetComponent
 		
-		private var ElementResolver pElementResolver
+		var Matrix pReferenceMatrix, pInverseReferenceMatrix
+		var String pReferenceBone
+		var int pIndexReferenceBone
+		
+		var bool pUseReference
+		
+		var ElementResolver pElementResolver
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new( ECBehaviorActorIK ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorActorIK ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 			
-			this.pEnabled = false
-			this.pTargetMatrix = DMatrix.new()
+			pEnabled = false
+			pTargetMatrix = DMatrix.new()
+			pReferenceMatrix = Matrix.new()
+			pInverseReferenceMatrix = Matrix.new()
 			
-			this.pActorAnimated = ecbehavior.getActorAnimated().instance( element )
+			pActorAnimated = ecbehavior.getActorAnimated().instance(element)
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
-			this.pActorAnimated = null
-			this.pTargetElement = null
-			this.pTargetComponent = null
-			this.pElementResolver = null
+		func void dispose()
+			pActorAnimated = null
+			pTargetElement = null
+			pTargetComponent = null
+			pElementResolver = null
 			
 			super.dispose()
 		end
@@ -139,242 +204,456 @@ class ECBehaviorActorIK extends DefaultECBehavior
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init( StubElement stub )
-			this.pNameControllerIKPosition = this.pECBehavior.getControllerIKPosition().getValue( stub )
-			this.pNameControllerIKRotation = this.pECBehavior.getControllerIKRotation().getValue( stub )
-			this.pNameControllerIKHeight = this.pECBehavior.getControllerIKHeight().getValue( stub )
+		func void init(StubElement stub)
+			pNameControllerIKPosition = pECBehavior.getControllerIKPosition().getValue(stub)
+			pNameControllerIKRotation = pECBehavior.getControllerIKRotation().getValue(stub)
+			pNameControllerIKHeight = pECBehavior.getControllerIKHeight().getValue(stub)
+			pNameControllerIKPan = pECBehavior.getControllerIKPan().getValue(stub)
+			pNameControllerIKDistance = pECBehavior.getControllerIKDistance().getValue(stub)
+			pNameControllerIKAzimuth = pECBehavior.getControllerIKAzimuth().getValue(stub)
+			pNameControllerIKElevation = pECBehavior.getControllerIKElevation().getValue(stub)
 			
-			this.pActorAnimated.addListener( UpdateControllers.new( this ) )
+			pComponent = pActorAnimated.getComponent().getComponent()
+			
+			pActorAnimated.addListener(UpdateControllers.new(this))
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorActorIK getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorActorIK getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Actor animated behavior. */
-		public func ECBehaviorActorAnimated.Instance getActorAnimated()
-			return this.pActorAnimated
+		func ECBehaviorActorAnimated.Instance getActorAnimated()
+			return pActorAnimated
 		end
 		
 		
 		
 		/** \brief Name of IK Position Controller. */
-		public func String getNameControllerIKPosition()
-			return this.pNameControllerIKPosition
+		func String getNameControllerIKPosition()
+			return pNameControllerIKPosition
 		end
 		
-		/** \brief Set name of IK Position Controller. */
-		public func void setNameControllerIKPosition( String name )
-			if name == null
-				throw ENullPointer.new()
-			end
-			this.pNameControllerIKPosition = name
+		/** \brief Set name of IK Position Controller or null. */
+		func void setNameControllerIKPosition(String name)
+			pNameControllerIKPosition = name
 		end
 		
 		/** \brief Name of IK Rotation Controller. */
-		public func String getNameControllerIKRotation()
-			return this.pNameControllerIKRotation
+		func String getNameControllerIKRotation()
+			return pNameControllerIKRotation
 		end
 		
-		/** \brief Set name of IK Rotation Controller. */
-		public func void setNameControllerIKRotation( String name )
-			if name == null
-				throw ENullPointer.new()
-			end
-			this.pNameControllerIKRotation = name
+		/** \brief Set name of IK Rotation Controller or null. */
+		func void setNameControllerIKRotation(String name)
+			pNameControllerIKRotation = name
 		end
 		
 		/** \brief Name of IK Height Controller. */
-		public func String getNameControllerIKHeight()
-			return this.pNameControllerIKHeight
+		func String getNameControllerIKHeight()
+			return pNameControllerIKHeight
 		end
 		
-		/** \brief Set name of IK Height Controller. */
-		public func void setNameControllerIKHeight( String name )
-			if name == null
-				throw ENullPointer.new()
-			end
-			this.pNameControllerIKHeight = name
+		/** \brief Set name of IK Height Controller or null. */
+		func void setNameControllerIKHeight(String name)
+			pNameControllerIKHeight = name
+		end
+		
+		/**
+		 * \brief Name of IK Pan Controller.
+		 * \version 1.21
+		 */
+		func String getNameControllerIKPan()
+			return pNameControllerIKPan
+		end
+		
+		/**
+		 * \brief Set name of IK Pan Controller or null.
+		 * \version 1.21
+		 */
+		func void setNameControllerIKPan(String name)
+			pNameControllerIKPan = name
+		end
+		
+		/**
+		 * \brief Name of IK Distance Controller.
+		 * \version 1.21
+		 */
+		func String getNameControllerIKDistance()
+			return pNameControllerIKDistance
+		end
+		
+		/**
+		 * \brief Set name of IK Distance Controller or null.
+		 * \version 1.21
+		 */
+		func void setNameControllerIKDistance(String name)
+			pNameControllerIKDistance = name
+		end
+		
+		/**
+		 * \brief Name of IK Azimuth Controller.
+		 * \version 1.21
+		 */
+		func String getNameControllerIKAzimuth()
+			return pNameControllerIKAzimuth
+		end
+		
+		/**
+		 * \brief Set name of IK Azimuth Controller or null.
+		 * \version 1.21
+		 */
+		func void setNameControllerIKAzimuth(String name)
+			pNameControllerIKAzimuth = name
+		end
+		
+		/**
+		 * \brief Name of IK Elevation Controller.
+		 * \version 1.21
+		 */
+		func String getNameControllerIKElevation()
+			return pNameControllerIKElevation
+		end
+		
+		/**
+		 * \brief Set name of IK Elevation Controller or null.
+		 * \version 1.21
+		 */
+		func void setNameControllerIKElevation(String name)
+			pNameControllerIKElevation = name
 		end
 		
 		
 		
 		/** \brief IK Position Controller or null if not found. */
-		public func AnimatorController getControllerIKPosition()
-			return this.pControllerIKPosition
+		func AnimatorController getControllerIKPosition()
+			return pControllerIKPosition
 		end
 		
 		/** \brief IK Rotation Controller or null if not found. */
-		public func AnimatorController getControllerIKRotation()
-			return this.pControllerIKRotation
+		func AnimatorController getControllerIKRotation()
+			return pControllerIKRotation
 		end
 		
 		/** \brief IK Height Controller or null if not found. */
-		public func AnimatorController getControllerIKHeight()
-			return this.pControllerIKHeight
+		func AnimatorController getControllerIKHeight()
+			return pControllerIKHeight
+		end
+		
+		/**
+		 * \brief IK Pan Controller or null if not found.
+		 * \version 1.21
+		 */
+		func AnimatorController getControllerIKPan()
+			return pControllerIKPan
+		end
+		
+		/**
+		 * \brief IK Distance Controller or null if not found.
+		 * \version 1.21
+		 */
+		func AnimatorController getControllerIKDistance()
+			return pControllerIKDistance
+		end
+		
+		/**
+		 * \brief IK Azimuth Controller or null if not found.
+		 * \version 1.21
+		 */
+		func AnimatorController getControllerIKAzimuth()
+			return pControllerIKAzimuth
+		end
+		
+		/**
+		 * \brief IK Elevation Controller or null if not found.
+		 * \version 1.21
+		 */
+		func AnimatorController getControllerIKElevation()
+			return pControllerIKElevation
 		end
 		
 		
 		
 		/** \brief IK handling is enabled. */
-		public func bool getEnabled()
-			return this.pEnabled
+		func bool getEnabled()
+			return pEnabled
 		end
 		
 		/** \brief Set if IK handling is enabled. */
-		public func void setEnabled( bool enabled )
-			if enabled == this.pEnabled
+		func void setEnabled(bool enabled)
+			if enabled == pEnabled
 				return
 			end
 			
-			this.pEnabled = enabled
+			pEnabled = enabled
 			
-			this.findControllers()
+			findControllers()
 		end
 		
 		/** \brief Disable behavior and clear target. */
-		public func void disable()
-			this.setEnabled( false )
-			this.clearTarget()
+		func void disable()
+			setEnabled(false)
+			clearTarget()
+		end
+		
+		
+		
+		/**
+		 * \brief Reference matrix.
+		 * \version 1.21
+		 */
+		func Matrix getReferenceMatrix()
+			return pReferenceMatrix
+		end
+		
+		/**
+		 * \brief Set reference matrix.
+		 * \version 1.21
+		 */
+		func void setReferenceMatrix(Matrix matrix)
+			if matrix == null
+				throw ENullPointer.new()
+			end
+			
+			pReferenceMatrix = matrix
+			pInverseReferenceMatrix = matrix.getInverse()
+		end
+		
+		/**
+		 * \brief Set reference matrix from position.
+		 * \version 1.21
+		 */
+		func void setReferenceMatrix(Vector position)
+			pReferenceMatrix = Matrix.newTranslation(position)
+			pInverseReferenceMatrix = Matrix.newTranslation(-position)
+		end
+		
+		/**
+		 * \brief Reference bone or null.
+		 * \version 1.21
+		 */
+		func String getReferenceBone()
+			return pReferenceBone
+		end
+		
+		/**
+		 * \brief Set reference bone or null.
+		 * \version 1.21
+		 */
+		func void setReferenceBone(String bone)
+			pReferenceBone = bone
+			
+			if bone != null and pComponent != null
+				pIndexReferenceBone = pComponent.indexOfBoneNamed(bone)
+				
+			else
+				pIndexReferenceBone = -1
+			end
+		end
+		
+		/**
+		 * \brief Clear reference.
+		 * \version 1.21
+		 * 
+		 * Sets reference matrix to identity matrix and reference bone to null.
+		 */
+		func void clearReference()
+			pReferenceMatrix = Matrix.new()
+			pInverseReferenceMatrix = Matrix.new()
+			pReferenceBone = null
 		end
 		
 		
 		
 		/** \brief Target element or null. */
-		public func Element getTargetElement()
-			return this.pTargetElement
+		func Element getTargetElement()
+			return pTargetElement
 		end
 		
 		/** \brief Target matrix. */
-		public func DMatrix getTargetMatrix()
-			return this.pTargetMatrix
+		func DMatrix getTargetMatrix()
+			return pTargetMatrix
 		end
 		
 		/** \brief Set target matrix. */
-		public func void setTargetMatrix( DMatrix matrix )
+		func void setTargetMatrix(DMatrix matrix)
 			if matrix == null
 				throw ENullPointer.new()
 			end
-			this.pTargetMatrix = matrix
+			pTargetMatrix = matrix
 		end
 		
 		/** \brief Set target matrix from position. */
-		public func void setTargetMatrix( Vector position )
-			this.pTargetMatrix = DMatrix.newTranslation( DVector.new( position ) )
+		func void setTargetMatrix(Vector position)
+			pTargetMatrix = DMatrix.newTranslation(DVector.new(position))
 		end
 		
 		/** \brief Target bone or null. */
-		public func String getTargetBone()
-			return this.pTargetBone
+		func String getTargetBone()
+			return pTargetBone
 		end
 		
 		/** \brief Set target bone or null. */
-		public func void setTargetBone( String bone )
-			this.pTargetBone = bone
+		func void setTargetBone(String bone)
+			pTargetBone = bone
 		end
 		
 		/** \brief Target component behavior or null. */
-		public func ECBehaviorComponent.Instance getTargetComponent()
-			return this.pTargetComponent
+		func ECBehaviorComponent.Instance getTargetComponent()
+			return pTargetComponent
 		end
 		
 		/** \brief Clear target. */
-		public func void clearTarget()
-			this.pTargetElement = null
-			this.pTargetMatrix = DMatrix.new()
-			this.pTargetBone = null
-			this.pTargetComponent = null
+		func void clearTarget()
+			pTargetElement = null
+			pTargetMatrix = DMatrix.new()
+			pTargetBone = null
+			pTargetComponent = null
 		end
 		
 		/** \brief Set target to static world position. */
-		public func void setTarget( DMatrix matrix )
-			this.pTargetElement = null
-			this.pTargetMatrix = matrix
-			this.pTargetBone = null
-			this.pTargetComponent = null
+		func void setTarget(DMatrix matrix)
+			pTargetElement = null
+			pTargetMatrix = matrix
+			pTargetBone = null
+			pTargetComponent = null
 		end
 		
 		/** \brief Set target to track element position. */
-		public func void setTarget( Element element )
-			this.setTarget( element, null, DMatrix.new() )
+		func void setTarget(Element element)
+			setTarget(element, null, DMatrix.new())
 		end
 		
 		/** \brief Set target to track position relative to element. */
-		public func void setTarget( Element element, Vector position )
-			this.setTarget( element, null, position )
+		func void setTarget(Element element, Vector position)
+			setTarget(element, null, position)
 		end
 		
 		/** \brief Set target to track coordinate system relative to element. */
-		public func void setTarget( Element element, DMatrix matrix )
-			this.setTarget( element, null, matrix )
+		func void setTarget(Element element, DMatrix matrix)
+			setTarget(element, null, matrix)
 		end
 		
 		/** \brief Set target to track position relative to element bone. */
-		public func void setTarget( Element element, String bone )
-			this.setTarget( element, bone, DMatrix.new() )
+		func void setTarget(Element element, String bone)
+			setTarget(element, bone, DMatrix.new())
 		end
 		
 		/** \brief Set target to track position relative to element bone. */
-		public func void setTarget( Element element, String bone, Vector position )
-			this.setTarget( element, bone, DMatrix.newTranslation( DVector.new( position ) ) )
+		func void setTarget(Element element, String bone, Vector position)
+			setTarget(element, bone, DMatrix.newTranslation(DVector.new(position)))
 		end
 		
 		/** \brief Set target to track coordinate system relative to element bone. */
-		public func void setTarget( Element element, String bone, DMatrix matrix )
-			this.pTargetElement = element
-			this.pTargetMatrix = matrix
-			this.pTargetBone = bone
-			this.pTargetComponent = null
+		func void setTarget(Element element, String bone, DMatrix matrix)
+			pTargetElement = element
+			pTargetMatrix = matrix
+			pTargetBone = bone
+			pTargetComponent = null
 			if element castable BehaviorElement
-				this.pTargetComponent = ECBehaviorComponent.getInstanceIn( element cast BehaviorElement )
+				pTargetComponent = ECBehaviorComponent.getInstanceIn(element cast BehaviorElement)
 			end
 		end
 		
 		
 		
 		/** \brief Find controllers. */
-		public func void findControllers()
-			this.pControllerIKPosition = this.pActorAnimated.getControllerNamed( this.pNameControllerIKPosition )
-			this.pControllerIKRotation = this.pActorAnimated.getControllerNamed( this.pNameControllerIKRotation )
-			this.pControllerIKHeight = this.pActorAnimated.getControllerNamed( this.pNameControllerIKHeight )
+		func void findControllers()
+			pControllerIKPosition = null
+			pControllerIKRotation = null
+			pControllerIKHeight = null
+			pControllerIKPan = null
+			pControllerIKDistance = null
+			pControllerIKAzimuth = null
+			pControllerIKElevation = null
+			
+			if pNameControllerIKPosition != null
+				pControllerIKPosition = pActorAnimated.getControllerNamed(pNameControllerIKPosition)
+			end
+			if pNameControllerIKRotation != null
+				pControllerIKRotation = pActorAnimated.getControllerNamed(pNameControllerIKRotation)
+			end
+			if pNameControllerIKHeight != null
+				pControllerIKHeight = pActorAnimated.getControllerNamed(pNameControllerIKHeight)
+			end
+			if pNameControllerIKPan != null
+				pControllerIKPan = pActorAnimated.getControllerNamed(pNameControllerIKPan)
+			end
+			if pNameControllerIKDistance != null
+				pControllerIKDistance = pActorAnimated.getControllerNamed(pNameControllerIKDistance)
+			end
+			if pNameControllerIKAzimuth != null
+				pControllerIKAzimuth = pActorAnimated.getControllerNamed(pNameControllerIKAzimuth)
+			end
+			if pNameControllerIKElevation != null
+				pControllerIKElevation = pActorAnimated.getControllerNamed(pNameControllerIKElevation)
+			end
+			
+			pUseReference = pControllerIKHeight != null or pControllerIKPan != null\
+				or pControllerIKDistance != null or pControllerIKAzimuth != null\
+				or pControllerIKElevation != null
 		end
 		
 		/** \brief Update controllers. */
-		public func void updateControllers( float elapsed )
-			var DMatrix matrix = this.calculateTargetMatrix() \
-				* this.pActorAnimated.getComponent().getComponent().getInverseMatrix()
+		func void updateControllers(float elapsed)
+			var Matrix matrix = (calculateTargetMatrix() * pComponent.getInverseMatrix()).toMatrix()
 			
-			var Vector position = matrix.getPosition().toVector()
-			if this.pControllerIKPosition != null
-				this.pControllerIKPosition.setVector( position )
+			var Vector position = matrix.getPosition()
+			if pControllerIKPosition != null
+				pControllerIKPosition.setVector(position)
 			end
-			if this.pControllerIKHeight != null
-				this.pControllerIKHeight.setValue( position.getY() )
+			if pControllerIKRotation != null
+				pControllerIKRotation.setRotation(matrix.getEulerAngles())
 			end
 			
-			if this.pControllerIKRotation != null
-				this.pControllerIKRotation.setRotation( matrix.getEulerAngles().toVector() )
+			if pUseReference
+				matrix = matrix * calculateInverseReferenceMatrix()
+				position = matrix.getPosition()
+				
+				if pControllerIKHeight != null
+					pControllerIKHeight.setValue(position.getY())
+				end
+				if pControllerIKDistance != null
+					pControllerIKDistance.setValue(position.getZ())
+				end
+				if pControllerIKAzimuth != null
+					pControllerIKAzimuth.setValue(DEMath.atan2(-position.getX(), position.getZ()))
+				end
+				if pControllerIKElevation != null
+					pControllerIKElevation.setValue(DEMath.atan2(position.getY(), position.getZ()))
+				end
 			end
 		end
 		
 		/** \brief Calculate target matrix in world space. */
-		public func DMatrix calculateTargetMatrix()
-			var DMatrix matrix = this.pTargetMatrix
+		func DMatrix calculateTargetMatrix()
+			var DMatrix matrix = pTargetMatrix
 			
-			if this.pTargetElement != null
-				if this.pTargetComponent != null
-					var Component component = this.pTargetComponent.getComponent()
-					if this.pTargetBone != null
-						matrix = matrix * component.getBoneMatrix( this.pTargetBone ).toDMatrix()
+			if pTargetElement != null
+				if pTargetComponent != null
+					var Component component = pTargetComponent.getComponent()
+					if pTargetBone != null
+						matrix = matrix * component.getBoneMatrix(pTargetBone).toDMatrix()
 					end
 					matrix = matrix * component.getMatrix()
 					
 				else
-					matrix = matrix * this.pTargetElement.getElementMatrix()
+					matrix = matrix * pTargetElement.getElementMatrix()
 				end
+			end
+			
+			return matrix
+		end
+		
+		/** \brief Calculate inverse reference matrix in component space. */
+		func Matrix calculateInverseReferenceMatrix()
+			var Matrix matrix = pInverseReferenceMatrix
+			
+			if pIndexReferenceBone != -1 and pComponent != null
+				matrix = matrix * pComponent.boneGetInverseMatrix(pIndexReferenceBone)
 			end
 			
 			return matrix
@@ -383,146 +662,194 @@ class ECBehaviorActorIK extends DefaultECBehavior
 		
 		
 		/** \brief Element resolver used during loading or \em null if not set. */
-		public func ElementResolver getElementResolver()
-			return this.pElementResolver
+		func ElementResolver getElementResolver()
+			return pElementResolver
 		end
 		
 		
 		
 		/** \brief Frame update started. */
-		public func void enterFrame()
-			if this.pElementResolver != null
-				this.pElementResolver.resolve( this.getElement().getGameWorld() )
-				this.pElementResolver = null
+		func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
 			end
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
+				var PersistencyFlags flags = PersistencyFlags.new(3, reader)
 				
-				this.pEnabled = flags.getAt( 0 )
-				this.pTargetMatrix = DMatrix.readFromFile( reader )
-				if flags.getAt( 1 )
-					this.pTargetBone = reader.readString8()
+				pEnabled = flags.getAt(0)
+				pTargetMatrix = DMatrix.readFromFile(reader)
+				if flags.getAt(1)
+					pTargetBone = reader.readString8()
 				end
 				
-				if flags.getAt( 2 )
-					this.pElementResolver = ElementResolver.new()
-					this.pElementResolver.add( reader, block Element element
-						this.pTargetElement = element
+				if flags.getAt(2)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.add(reader, block Element element
+						pTargetElement = element
 						if element castable BehaviorElement
-							this.pTargetComponent = ECBehaviorComponent.getInstanceIn( element cast BehaviorElement )
+							pTargetComponent = ECBehaviorComponent.getInstanceIn(element cast BehaviorElement)
 						end
-					end )
-					this.setRequiresEnterFrame( true )
+					end)
+					setRequiresEnterFrame(true)
 				end
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0)
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 3 )
-			flags.setAt( 0, this.pEnabled )
-			flags.setAt( 1, this.pTargetBone != null )
-			flags.setAt( 2, this.pTargetElement != null )
-			flags.writeToFile( writer )
+			var PersistencyFlags flags = PersistencyFlags.new(3)
+			flags.setAt(0, pEnabled)
+			flags.setAt(1, pTargetBone != null)
+			flags.setAt(2, pTargetElement != null)
+			flags.writeToFile(writer)
 			
-			this.pTargetMatrix.writeToFile( writer )
-			if this.pTargetBone != null
-				writer.writeString8( this.pTargetBone )
+			pTargetMatrix.writeToFile(writer)
+			if pTargetBone != null
+				writer.writeString8(pTargetBone)
 			end
 			
-			if this.pTargetElement != null
-				ElementResolver.writeToFile( writer, this.pTargetElement )
+			if pTargetElement != null
+				ElementResolver.writeToFile(writer, pTargetElement)
 			end
 		end
 	end
 	
 	
 	
-	private var ECBehaviorActorAnimated pActorAnimated
-	private var ECPString pControllerIKPosition
-	private var ECPString pControllerIKRotation
-	private var ECPString pControllerIKHeight
+	var ECBehaviorActorAnimated pActorAnimated
+	var ECPString pControllerIKPosition
+	var ECPString pControllerIKRotation
+	var ECPString pControllerIKHeight
+	var ECPString pControllerIKPan
+	var ECPString pControllerIKDistance
+	var ECPString pControllerIKAzimuth
+	var ECPString pControllerIKElevation
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorActorAnimated actorAnimated ) \
-	this( eclass, actorAnimated, "" )
+	func new(BehaviorElementClass eclass, ECBehaviorActorAnimated actorAnimated)\
+	this(eclass, actorAnimated, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorActorAnimated actorAnimated, String id ) \
-	this( eclass, actorAnimated, id, id.empty() if "actorIK" else "actorIK(" + id + ")" )
+	func new(BehaviorElementClass eclass, ECBehaviorActorAnimated actorAnimated, String id)\
+	this(eclass, actorAnimated, id, id.empty() if "actorIK" else "actorIK(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorActorAnimated actorAnimated, \
-	String id, String subId ) this( eclass, actorAnimated, id, subId, subId + "." )
+	func new(BehaviorElementClass eclass, ECBehaviorActorAnimated actorAnimated, \
+	String id, String subId) this(eclass, actorAnimated, id, subId, subId + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorActorAnimated actorAnimated, \
-	String id, String subId, String prefix ) super( eclass, id )
+	func new(BehaviorElementClass eclass, ECBehaviorActorAnimated actorAnimated, \
+	String id, String subId, String prefix) super(eclass, id)
 		if actorAnimated == null
-			throw ENullPointer.new( "actorAnimated" )
+			throw ENullPointer.new("actorAnimated")
 		end
 		
-		this.pActorAnimated = actorAnimated
+		pActorAnimated = actorAnimated
 		
-		this.pControllerIKPosition = ECPString.new( prefix + "controllerIKPosition", "ik.position" )
-		eclass.addProperty( this.pControllerIKPosition )
+		pControllerIKPosition = ECPString.new(prefix + "controllerIKPosition", "ik.position")
+		eclass.addProperty(pControllerIKPosition)
 		
-		this.pControllerIKRotation = ECPString.new( prefix + "controllerIKRotation", "ik.rotation" )
-		eclass.addProperty( this.pControllerIKRotation )
+		pControllerIKRotation = ECPString.new(prefix + "controllerIKRotation", "ik.rotation")
+		eclass.addProperty(pControllerIKRotation)
 		
-		this.pControllerIKHeight = ECPString.new( prefix + "controllerIKHeight", "ik.height" )
-		eclass.addProperty( this.pControllerIKHeight )
+		pControllerIKHeight = ECPString.new(prefix + "controllerIKHeight", "ik.height")
+		eclass.addProperty(pControllerIKHeight)
 		
-		eclass.addBehavior( this )
+		pControllerIKPan = ECPString.new(prefix + "controllerIKPan", "ik.pan")
+		eclass.addProperty(pControllerIKPan)
+		
+		pControllerIKDistance = ECPString.new(prefix + "controllerIKDistance", "ik.distance")
+		eclass.addProperty(pControllerIKDistance)
+		
+		pControllerIKAzimuth = ECPString.new(prefix + "controllerIKAzimuth", "ik.azimuth")
+		eclass.addProperty(pControllerIKAzimuth)
+		
+		pControllerIKElevation = ECPString.new(prefix + "controllerIKElevation", "ik.elevation")
+		eclass.addProperty(pControllerIKElevation)
+		
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pActorAnimated = null
+	func void dispose()
+		pActorAnimated = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Actor animated behavior. */
-	public func ECBehaviorActorAnimated getActorAnimated()
-		return this.pActorAnimated
+	func ECBehaviorActorAnimated getActorAnimated()
+		return pActorAnimated
 	end
 	
 	/** \brief IK Position Controller name. */
-	public func ECPString getControllerIKPosition()
-		return this.pControllerIKPosition
+	func ECPString getControllerIKPosition()
+		return pControllerIKPosition
 	end
 	
 	/** \brief IK Rotation Controller name. */
-	public func ECPString getControllerIKRotation()
-		return this.pControllerIKRotation
+	func ECPString getControllerIKRotation()
+		return pControllerIKRotation
 	end
 	
 	/** \brief IK Height Controller name. */
-	public func ECPString getControllerIKHeight()
-		return this.pControllerIKHeight
+	func ECPString getControllerIKHeight()
+		return pControllerIKHeight
+	end
+	
+	/**
+	 * \brief IK Pan Controller name.
+	 * \version 1.21
+	 */
+	func ECPString getControllerIKPan()
+		return pControllerIKPan
+	end
+	
+	/**
+	 * \brief IK Distance Controller name.
+	 * \version 1.21
+	 */
+	func ECPString getControllerIKDistance()
+		return pControllerIKDistance
+	end
+	
+	/**
+	 * \brief IK Azimuth Controller name.
+	 * \version 1.21
+	 */
+	func ECPString getControllerIKAzimuth()
+		return pControllerIKAzimuth
+	end
+	
+	/**
+	 * \brief IK Elevation Controller name.
+	 * \version 1.21
+	 */
+	func ECPString getControllerIKElevation()
+		return pControllerIKElevation
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -533,10 +860,10 @@ class ECBehaviorActorIK extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorActorIK getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorActorIK each
+	static func ECBehaviorActorIK getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorActorIK each
 			return true
-		end ) cast ECBehaviorActorIK
+		end) cast ECBehaviorActorIK
 	end
 	
 	/**
@@ -545,10 +872,10 @@ class ECBehaviorActorIK extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorActorIK with specific identifier.
 	 */
-	static public func ECBehaviorActorIK getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorActorIK each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorActorIK
+	static func ECBehaviorActorIK getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorActorIK each
+			return each.getID().equals(id)
+		end) cast ECBehaviorActorIK
 	end
 	
 	/**
@@ -557,10 +884,10 @@ class ECBehaviorActorIK extends DefaultECBehavior
 	 * Returns list contains ECBehaviorActorIK behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorActorIK each
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorActorIK each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -572,10 +899,10 @@ class ECBehaviorActorIK extends DefaultECBehavior
 	 * of type ECBehaviorActorIK.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -584,10 +911,10 @@ class ECBehaviorActorIK extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorActorIK.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -596,16 +923,16 @@ class ECBehaviorActorIK extends DefaultECBehavior
 	 * Returns list contains ECBehaviorActorIK.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end
