@@ -681,7 +681,12 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
             # the scene frame is first set to 1 after the initial frame to save. this way the frame
             # has to change for the first written frame forcing an update in all cases
             bpy.context.scene.frame_set(move.firstFrame + 1)
-            
+
+            # depending on the constraints set we need to update more than one the first time
+            # or inverse kinematics rules could cause troubles in tricky setups
+            for i in range(3):
+                bpy.context.scene.frame_set(move.firstFrame)
+
             # fetch keyframe values
             for time in range(move.firstFrame, move.lastFrame + 1):
                 bpy.context.scene.frame_set(time)
