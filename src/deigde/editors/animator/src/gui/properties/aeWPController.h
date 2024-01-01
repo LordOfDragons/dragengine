@@ -60,6 +60,8 @@ private:
 	igdeComboBoxReference pCBLocoAttr;
 	igdeTextFieldReference pEditLocoLeg;
 	igdeComboBoxReference pCBVectorSimulation;
+	igdeTextFieldReference pEditDefaultValue;
+	igdeEditVectorReference pEditDefaultVector;
 	
 	
 	

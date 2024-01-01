@@ -54,7 +54,8 @@ pClamp( true ),
 pFrozen( false ),
 pLocoAttr( aeAnimatorLocomotion::eaNone ),
 pLocoLeg( 0 ),
-pVectorSimulation( evsNone ){
+pVectorSimulation( evsNone ),
+pDefaultValue( 0.0f ){
 }
 
 aeController::aeController( const aeController &copy ) :
@@ -68,7 +69,9 @@ pClamp( copy.pClamp ),
 pFrozen( copy.pFrozen ),
 pLocoAttr( copy.pLocoAttr ),
 pLocoLeg( copy.pLocoLeg ),
-pVectorSimulation( copy.pVectorSimulation ){
+pVectorSimulation( copy.pVectorSimulation ),
+pDefaultValue( copy.pDefaultValue ),
+pDefaultVector( copy.pDefaultVector ){
 }
 
 aeController::~aeController(){
@@ -118,8 +121,6 @@ void aeController::SetEngineControllerIndex( int index ){
 
 
 void aeController::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
-	
 	pName = name;
 	
 	if( pAnimator ){
@@ -298,6 +299,30 @@ void aeController::SetVectorSimulation( eVectorSimulation simulation ){
 	pVectorSimulation = simulation;
 	
 	pCreateGizmos();
+	
+	if( pAnimator ){
+		pAnimator->NotifyControllerChanged( this );
+	}
+}
+
+void aeController::SetDefaultValue( float value ){
+	if( fabsf( value - pDefaultValue ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pDefaultValue = value;
+	
+	if( pAnimator ){
+		pAnimator->NotifyControllerChanged( this );
+	}
+}
+
+void aeController::SetDefaultVector( const decVector &vector ){
+	if( vector.IsEqualTo( pDefaultVector ) ){
+		return;
+	}
+	
+	pDefaultVector = vector;
 	
 	if( pAnimator ){
 		pAnimator->NotifyControllerChanged( this );
@@ -517,6 +542,10 @@ void aeController::ResetValue(){
 			SetVector( locomotion.GetLegAt( pLocoLeg )->GetIKOrientation() );
 		}
 		break;
+		
+	default:
+		SetCurrentValue( pDefaultValue );
+		SetVector( pDefaultVector );
 	}
 }
 

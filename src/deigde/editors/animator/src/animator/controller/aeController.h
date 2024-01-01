@@ -64,6 +64,8 @@ private:
 	int pLocoAttr;
 	int pLocoLeg;
 	eVectorSimulation pVectorSimulation;
+	float pDefaultValue;
+	decVector pDefaultVector;
 	
 	aeGizmoControllerIKPosition::Ref pGizmoIKPosition;
 	
@@ -151,6 +153,14 @@ public:
 	
 	/** Set vector simulation. */
 	void SetVectorSimulation( eVectorSimulation simulation );
+	
+	/** Default value. */
+	inline float GetDefaultValue() const{ return pDefaultValue; }
+	void SetDefaultValue( float value );
+	
+	/** Default vector. */
+	inline const decVector &GetDefaultVector() const{ return pDefaultVector; }
+	void SetDefaultVector( const decVector &vector );
 	
 	inline const aeGizmoControllerIKPosition::Ref &GetGizmoIKPosition() const{ return pGizmoIKPosition; }
 	/*@}*/

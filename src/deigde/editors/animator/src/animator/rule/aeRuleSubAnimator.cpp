@@ -168,6 +168,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				engController = new deAnimatorController;
 				engController->SetName( controller.GetName() );
 				engController->SetValueRange( controller.GetMinimumValue(), controller.GetMaximumValue() );
+				engController->SetCurrentValue( controller.GetCurrentValue() );
 				engController->SetFrozen( controller.GetFrozen() );
 				engController->SetClamp( controller.GetClamp() );
 				engController->SetVector( controller.GetVector() );

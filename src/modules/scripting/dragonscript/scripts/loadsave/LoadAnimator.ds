@@ -37,23 +37,23 @@ pin Dragengine.XML
  */
 class LoadAnimator extends BaseXmlLoader
 	/** \brief Dictionary of cached animators (Dictionary: String -> Animator). */
-	private var Dictionary pAnimators
+	var Dictionary pAnimators
 	
 	
 	
 	/** \brief Create loader. */
-	public func new(Console console) this(console, "LoadAnimator")
+	func new(Console console) this(console, "LoadAnimator")
 	end
 	
 	/** \brief Create new loader. */
-	public func new(Console console, String name) super(console, name)
+	func new(Console console, String name) super(console, name)
 		pAnimators = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Load animator from file. */
-	public func Animator loadFromFile(String filename)
+	func Animator loadFromFile(String filename)
 		var Animator animator = pAnimators.getAt(filename, null) cast Animator
 		if animator != null
 			return animator
@@ -76,7 +76,7 @@ class LoadAnimator extends BaseXmlLoader
 	 * 
 	 * Creates a new animator definition each time the function is called.
 	 */
-	public func AnimatorDefinition loadDefinitionFromFile(String filename)
+	func AnimatorDefinition loadDefinitionFromFile(String filename)
 		return loadAndParseRootTag(filename, "animator", block EasyXMLElement root
 			var AnimatorDefinition definition = AnimatorDefinition.new(filename)
 			pParseAnimatorDefinition(root, definition, File.new(filename).getParent().getPath())
@@ -156,6 +156,9 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("limits")
 				controller.setMinimum(element.getAttributeFloatNamed("min"))
 				controller.setMaximum(element.getAttributeFloatNamed("max"))
+				
+			elif tagName.equals("value")
+				controller.setValue(element.getFirstCDataFloat())
 				
 			elif tagName.equals("vector")
 				controller.setVector(readVector(element))
