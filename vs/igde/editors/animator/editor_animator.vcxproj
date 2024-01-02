@@ -130,6 +130,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetFromMove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMaximumValue.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMinimumValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultVector.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerToggleClamp.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerToggleFrozen.cpp" />
@@ -414,6 +416,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetFromMove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMaximumValue.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMinimumValue.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultValue.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultVector.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerToggleClamp.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerToggleFrozen.h" />
