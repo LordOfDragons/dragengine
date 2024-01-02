@@ -654,6 +654,14 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
                     if moveVps.fcurve:
                         self.buildTimeList(moveVps.fcurve, moveBone.times)
                     moveVpSets.append(moveVps)
+            elif shapeKeys:
+                for vps in self.mesh.vertPosSets:
+                    if not vps.shapeKey:
+                        continue
+                    moveVps = Armature.MoveVps(vps)
+                    moveVps.times.append(1)
+                    moveVps.used = True
+                    moveVpSets.append(moveVps)
 
             # determine the frames to export. this can be altered by properties
             if move.automaticRange:
@@ -723,7 +731,10 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 
                         if requiresKeyframe:  #time in moveVps.times:
                             keyframes = moveVps.keyframes
-                            weight = moveVps.vps.shapeKey.value
+                            if moveVps.vps:
+                                weight = moveVps.vps.shapeKey.value
+                            else:
+                                weight = 0
                             moveVps.keyframes.append(Armature.KeyframeVps(time - move.firstFrame, weight))
 
             # fix flipping for example when constraint bones cause negated quaterions
@@ -853,8 +864,8 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
                                     f.write(struct.pack("<f", keyframe.weight))
 
                             if self.debugLevel > 1:
-                                print("- vertexPositionSet", moveVps.vps.name, "keyframe",
-                                    float(keyframe.time) * self.timeScale, "weight", keyframe.weight)
+                                print("- vertexPositionSet", moveVps.vps.name if moveVps.vps else "-",
+                                    "keyframe", float(keyframe.time) * self.timeScale, "weight", keyframe.weight)
 
                 else:
                     f.write(struct.pack("<B", 0x4))
