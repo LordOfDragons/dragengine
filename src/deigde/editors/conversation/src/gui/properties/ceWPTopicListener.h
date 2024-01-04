@@ -140,6 +140,11 @@ public:
 	
 	/** \brief Coordinate system changed. */
 	virtual void CoordSystemChanged( ceConversation *conversation, ceCoordSystem *coordSystem );
+	
+	
+	
+	/** Language pack changed. */
+	virtual void LanguagePackChanged( ceConversation *conversation );
 	/*@}*/
 };
 

@@ -440,6 +440,9 @@ ceWPAActorSpeak::ceWPAActorSpeak( ceWPTopic &parentPanel ) : ceWPAction( parentP
 	helper.Button( formLine, pBtnTextBoxTextTranslate, actionTbtt, true );
 	actionTbtt->SetWidget( pBtnTextBoxTextTranslate );
 	
+	helper.EditString( *this, "", "Language pack translation entry", pEditShowTranslation, nullptr );
+	pEditShowTranslation->SetEditable( false );
+	
 	helper.EditString( *this, "Text Style:", "Name of style to use for the text box text",
 		pEditTextBoxTextStyle, new cTextTextBoxStyle( *this ) );
 	helper.EditString( *this, "Movement:", "Name of the actor movement to use or empty to not change",
@@ -496,9 +499,28 @@ void ceWPAActorSpeak::UpdateAction(){
 		pEditMinSpeechTime->SetFloat( action->GetMinSpeechTime() );
 		pChkUseSpeechAnimation->SetChecked( action->GetUseSpeechAnimation() );
 		
+		ceConversation * const conversation = GetParentPanel().GetConversation();
+		ceLangPackEntry::Ref entry;
+		
+		if( conversation && action ){
+			const ceLangPack * const langpack = conversation->GetLanguagePack();
+			if( langpack ){
+				entry = langpack->GetEntryNamed( action->GetTextBoxTextTranslate() );
+			}
+		}
+		
+		if( entry ){
+			pEditShowTranslation->SetText( entry->GetText().ToUTF8().GetString() );
+			
+		}else{
+			pEditShowTranslation->ClearText();
+		}
+		
+		
 	}else{
 		pCBActorID->ClearText();
 		pEditTextBoxText->ClearText();
+		pEditShowTranslation->ClearText();
 		pEditTextBoxTextTranslate->ClearText();
 		pEditTextBoxTextStyle->ClearText();
 		pEditMovement->ClearText();

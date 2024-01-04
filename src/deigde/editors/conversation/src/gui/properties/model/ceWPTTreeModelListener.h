@@ -133,6 +133,11 @@ public:
 	
 	/** \brief Actor changed. */
 	virtual void ActorChanged( ceConversation *conversation, ceConversationActor *actor );
+	
+	
+	
+	/** Language pack changed. */
+	virtual void LanguagePackChanged( ceConversation *conversation );
 	/*@}*/
 };
 

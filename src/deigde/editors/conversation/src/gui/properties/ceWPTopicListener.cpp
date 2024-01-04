@@ -264,3 +264,13 @@ void ceWPTopicListener::CoordSystemChanged( ceConversation *conversation, ceCoor
 	
 	pPanel.UpdateConvoCoordSysLists();
 }
+
+
+
+void ceWPTopicListener::LanguagePackChanged( ceConversation *conversation ){
+	if( conversation != pPanel.GetConversation() ){
+		return;
+	}
+	
+	pPanel.UpdateActive();
+}

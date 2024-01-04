@@ -234,3 +234,11 @@ void ceWPTTreeModelListener::ActorStructureChanged( ceConversation* ){
 
 void ceWPTTreeModelListener::ActorChanged( ceConversation*, ceConversationActor* ){
 }
+
+void ceWPTTreeModelListener::LanguagePackChanged( ceConversation *conversation ){
+	if( conversation != pModel.GetConversation() ){
+		return;
+	}
+	
+	pModel.UpdateActions();
+}

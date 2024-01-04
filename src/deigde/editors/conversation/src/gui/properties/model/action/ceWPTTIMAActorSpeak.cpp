@@ -28,6 +28,7 @@
 #include "../../../ceWindowMain.h"
 #include "../../../../conversation/ceConversation.h"
 #include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../langpack/ceLangPackEntry.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 
@@ -61,7 +62,19 @@ void ceWPTTIMAActorSpeak::Update(){
 	text.Format( "%s: ", action.GetActor().GetString() );
 	
 	if( ! action.GetTextBoxTextTranslate().IsEmpty() ){
-		tbtext.Format( "{%s}", action.GetTextBoxTextTranslate().GetString() );
+		const ceLangPack * const langpack = GetConversation().GetLanguagePack();
+		ceLangPackEntry::Ref entry;
+		
+		if( langpack ){
+			entry = langpack->GetEntryNamed( action.GetTextBoxTextTranslate() );
+		}
+		
+		if( entry ){
+			tbtext.Format( "%s", entry->GetText().ToUTF8().GetString() );
+			
+		}else{
+			tbtext.Format( "{%s}", action.GetTextBoxTextTranslate().GetString() );
+		}
 		
 	}else{
 		tbtext = action.GetTextBoxText().ToUTF8();
