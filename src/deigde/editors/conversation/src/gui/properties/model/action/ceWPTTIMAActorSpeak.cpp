@@ -57,7 +57,7 @@ ceWPTTIMAActorSpeak::~ceWPTTIMAActorSpeak(){
 
 void ceWPTTIMAActorSpeak::Update(){
 	const ceCAActorSpeak &action = *GetActionActorSpeak();
-	decString text, tbtext;
+	decString text, description, tbtext;
 	
 	text.Format( "%s: ", action.GetActor().GetString() );
 	
@@ -89,7 +89,10 @@ void ceWPTTIMAActorSpeak::Update(){
 		}else{
 			text += lineTBText;
 		}
+		
+		description = tbtext;
 	}
 	
 	SetText( text );
+	SetDescription( description );
 }
