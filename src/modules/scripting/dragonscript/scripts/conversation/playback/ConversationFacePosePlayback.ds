@@ -26,6 +26,7 @@ pin Dragengine.Gui
 pin Dragengine.Scenery
 pin Dragengine.Utils
 pin Dragengine.LoadSave
+pin Dragengine.SpeechAnimations
 
 
 /**
@@ -176,6 +177,7 @@ class ConversationFacePosePlayback
 	
 	var Animator pAnimator
 	var AnimatorInstance pAnimatorInstance
+	var AnimatorController pControllerSpeaking
 	var Array pPoses
 	var int pPosition
 	var float pElapsed
@@ -183,6 +185,8 @@ class ConversationFacePosePlayback
 	var Array pCurPose
 	var bool pRunning
 	var bool pRequiresApply
+	var String pControllerNameSpeaking
+	var SpeechAnimationPlayback pSpeechAnimationPlayback
 	
 	var float pBlinkIntervalMin
 	var float pBlinkIntervalMax
@@ -199,6 +203,7 @@ class ConversationFacePosePlayback
 		pElapsed = 0
 		pRunning = false
 		pRequiresApply = false
+		pControllerNameSpeaking = "speaking"
 		
 		pBlinkIntervalMin = 2
 		pBlinkIntervalMax = 6
@@ -217,6 +222,7 @@ class ConversationFacePosePlayback
 	func void setAnimator(Animator animator)
 		pAnimatorInstance.setAnimator(animator)
 		pAnimator = animator
+		pControllerSpeaking = pAnimatorInstance.getControllerNamed(pControllerNameSpeaking)
 	end
 	
 	/** \brief Animator instance. */
@@ -259,6 +265,52 @@ class ConversationFacePosePlayback
 	 */
 	func void setMaximumBlinkInterval(float interval)
 		pBlinkIntervalMax = DEMath.max(interval, 0.001)
+	end
+	
+	/**
+	 * \brief Name of controller to set if actor is speaking.
+	 * \version 1.21
+	 * 
+	 * Value of controller is set to 0 if no speech animation playback viseme is playing back
+	 * otherwise the value is set to 1.
+	 * 
+	 * Default controller name is "speaking".
+	 */
+	func String getControllerNameSpeaking()
+		return pControllerNameSpeaking
+	end
+	
+	/**
+	 * \brief Set name of controller to set if actor is speaking.
+	 * \version 1.21
+	 * 
+	 * Value of controller is set to 0 if no speech animation playback viseme is playing back
+	 * otherwise the value is set to 1.
+	 * 
+	 * Default controller name is "speaking".
+	 */
+	func void setControllerNameSpeaking(String name)
+		if name == null
+			throw ENullPointer.new()
+		end
+		pControllerNameSpeaking = name
+		pControllerSpeaking = pAnimatorInstance.getControllerNamed(name)
+	end
+	
+	/**
+	 * \brief Speech animation to use to update speaking controller or null.
+	 * \version 1.21
+	 */
+	func SpeechAnimationPlayback getSpeechAnimationPlayback()
+		return pSpeechAnimationPlayback
+	end
+	
+	/**
+	 * \brief Set speech animation to use to update speaking controller or null.
+	 * \version 1.21
+	 */
+	func void setSpeechAnimationPlayback(SpeechAnimationPlayback playback)
+		pSpeechAnimationPlayback = playback
 	end
 	
 	
@@ -396,6 +448,11 @@ class ConversationFacePosePlayback
 		
 		if controllerCount > 0
 			pAnimatorInstance.getControllerAt(controllerCount - 1).setValue(pBlinkElapsed)
+		end
+		
+		// speaking
+		if pControllerSpeaking != null and pSpeechAnimationPlayback != null
+			pControllerSpeaking.setValue(pSpeechAnimationPlayback.getSpeakBlend())
 		end
 		
 		pRequiresApply = true
