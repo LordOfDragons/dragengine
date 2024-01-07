@@ -30,12 +30,12 @@ pin Dragengine.LoadSave
  * 
  */
 class ConversationPlaybackLayer
-	private var ConversationActionIterator pActionIterator
-	private var ConversationAction pNextAction
-	private var ConversationCondition pLoopCondition
-	private var float pLoopEvalConditionInterval
-	private var bool pLooping
-	private var bool pTopicTopLevel
+	var ConversationActionIterator pActionIterator
+	var ConversationAction pNextAction
+	var ConversationCondition pLoopCondition
+	var float pLoopEvalConditionInterval
+	var bool pLooping
+	var bool pTopicTopLevel
 	
 	
 	
@@ -44,7 +44,7 @@ class ConversationPlaybackLayer
 	 * 
 	 * Sets the next action to the first iterator action and advances the iterator.
 	 */
-	public func new( ConversationActionIterator iterator ) this( iterator, true )
+	func new(ConversationActionIterator iterator) this(iterator, true)
 	end
 	
 	/**
@@ -55,145 +55,145 @@ class ConversationPlaybackLayer
 	 *                advances the iterator. If \em false the iterator is not advanced
 	 *                and the next action is set to \em null.
 	 */
-	public func new( ConversationActionIterator iterator, bool advance )
+	func new(ConversationActionIterator iterator, bool advance)
 		if iterator == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pActionIterator = iterator
-		this.pLoopEvalConditionInterval = 0.2
-		this.pLooping = false
-		this.pTopicTopLevel = false
+		pActionIterator = iterator
+		pLoopEvalConditionInterval = 0.2
+		pLooping = false
+		pTopicTopLevel = false
 		
 		if advance
-			this.pNextAction = iterator.getNext()
+			pNextAction = iterator.getNext()
 		end
 	end
 	
 	
 	
 	/** \brief Loop condition or \em null if always true. */
-	public func ConversationCondition getLoopCondition()
-		return this.pLoopCondition
+	func ConversationCondition getLoopCondition()
+		return pLoopCondition
 	end
 	
 	/** \brief Set loop condition or \em null if always true. */
-	public func void setLoopCondition( ConversationCondition condition )
-		this.pLoopCondition = condition
+	func void setLoopCondition(ConversationCondition condition)
+		pLoopCondition = condition
 	end
 	
 	/** \brief Interval to wait before testing the condition again to improve performance. */
-	public func float getLoopEvalConditionInterval()
-		return this.pLoopEvalConditionInterval
+	func float getLoopEvalConditionInterval()
+		return pLoopEvalConditionInterval
 	end
 	
 	/** \brief Set interval to wait before testing the condition again to improve performance. */
-	public func void setLoopEvalConditionInterval( float interval )
-		this.pLoopEvalConditionInterval = DEMath.max( interval, 0.0 )
+	func void setLoopEvalConditionInterval(float interval)
+		pLoopEvalConditionInterval = DEMath.max(interval, 0.0)
 	end
 	
 	/** \brief Actions are looping. */
-	public func bool getLooping()
-		return this.pLooping
+	func bool getLooping()
+		return pLooping
 	end
 	
 	/** \brief Set actions are looping. */
-	public func void setLooping( bool looping )
-		this.pLooping = looping
+	func void setLooping(bool looping)
+		pLooping = looping
 	end
 	
 	/** \brief Belongs to top level of a topic. */
-	public func bool getTopicTopLevel()
-		return this.pTopicTopLevel
+	func bool getTopicTopLevel()
+		return pTopicTopLevel
 	end
 	
 	/** \brief Set if layer belongs to top level of a topic. */
-	public func void setTopicTopLevel( bool topicTopLevel )
-		this.pTopicTopLevel = topicTopLevel
+	func void setTopicTopLevel(bool topicTopLevel)
+		pTopicTopLevel = topicTopLevel
 	end
 	
 	
 	
 	/** \brief Advance to the next action if possible. */
-	public func void advance()
-		this.pNextAction = this.pActionIterator.getNext()
+	func void advance()
+		pNextAction = pActionIterator.getNext()
 		
-		if this.pNextAction == null and this.pLooping
-			this.forwardFirst()
+		if pNextAction == null and pLooping
+			forwardFirst()
 		end
 	end
 	
 	/** \brief Next action or \em null if at the end of the current list. */
-	public func ConversationAction getNextAction()
-		return this.pNextAction
+	func ConversationAction getNextAction()
+		return pNextAction
 	end
 	
 	/** \brief Not at end of list. */
-	public func bool hasNextAction()
-		return this.pNextAction != null
+	func bool hasNextAction()
+		return pNextAction != null
 	end
 	
 	/** \brief Forward to first action. */
-	public func void forwardFirst()
-		this.pActionIterator.first()
-		this.pNextAction = this.pActionIterator.getNext()
+	func void forwardFirst()
+		pActionIterator.first()
+		pNextAction = pActionIterator.getNext()
 	end
 	
 	/** \brief Forward to last action. */
-	public func void forwardLast()
-		this.pActionIterator.last()
-		this.pNextAction = this.pActionIterator.getNext()
+	func void forwardLast()
+		pActionIterator.last()
+		pNextAction = pActionIterator.getNext()
 	end
 	
 	/** \brief Forward to end. */
-	public func void forwardEnd()
-		this.pActionIterator.onePastLast()
-		this.pNextAction = null
+	func void forwardEnd()
+		pActionIterator.onePastLast()
+		pNextAction = null
 	end
 	
 	/** \brief Cancel looping. */
-	public func void cancelLooping()
-		this.pLooping = false
-		this.pLoopCondition = null
-		this.pActionIterator.onePastLast()
-		this.pNextAction = null
+	func void cancelLooping()
+		pLooping = false
+		pLoopCondition = null
+		pActionIterator.onePastLast()
+		pNextAction = null
 	end
 	
 	
 	
 	/** \brief Read layer from file. */
-	public static func ConversationPlaybackLayer readFromFile( PersistencyEnvironment env, FileReader reader )
+	public static func ConversationPlaybackLayer readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( \
-				ConversationActionIterator.readFromFile( env, reader ) )
+			var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new(\
+				ConversationActionIterator.readFromFile(env, reader))
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-			layer.pLooping = flags.getAt( 0 )
-			layer.pTopicTopLevel = flags.getAt( 1 )
+			var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+			layer.pLooping = flags.getAt(0)
+			layer.pTopicTopLevel = flags.getAt(1)
 			
-			layer.pLoopCondition = env.readObjectOrNull( reader ) cast ConversationCondition
+			layer.pLoopCondition = env.readObjectOrNull(reader) cast ConversationCondition
 			layer.pLoopEvalConditionInterval = reader.readFloat()
 			
 			return layer
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Write layer to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		this.pActionIterator.writeToFile( env, writer )
+		pActionIterator.writeToFile(env, writer)
 		
-		var PersistencyFlags flags = PersistencyFlags.new( 2 )
-		flags.setAt( 0, this.pLooping )
-		flags.setAt( 1, this.pTopicTopLevel )
-		flags.writeToFile( writer )
+		var PersistencyFlags flags = PersistencyFlags.new(2)
+		flags.setAt(0, pLooping)
+		flags.setAt(1, pTopicTopLevel)
+		flags.writeToFile(writer)
 		
-		env.writeObjectOrNull( writer, this.pLoopCondition )
-		writer.writeFloat( this.pLoopEvalConditionInterval )
+		env.writeObjectOrNull(writer, pLoopCondition)
+		writer.writeFloat(pLoopEvalConditionInterval)
 	end
 end
