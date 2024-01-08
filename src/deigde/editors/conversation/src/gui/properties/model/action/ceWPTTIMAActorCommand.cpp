@@ -56,9 +56,10 @@ ceWPTTIMAActorCommand::~ceWPTTIMAActorCommand(){
 
 void ceWPTTIMAActorCommand::Update(){
 	const ceCAActorCommand &action = *GetActionActorCommand();
-	decString text;
+	decString text, description;
 	
 	text.Format( "%s => ", action.GetActor().GetString() );
+	description = text;
 	
 	if( ! action.GetCommand().IsEmpty() ){
 		const decString lineCommand( action.GetCommand().Split( '\n' ).GetAt( 0 ) );
@@ -69,7 +70,10 @@ void ceWPTTIMAActorCommand::Update(){
 		}else{
 			text += lineCommand;
 		}
+		
+		description += action.GetCommand();
 	}
 	
 	SetText( text );
+	SetDescription( description );
 }

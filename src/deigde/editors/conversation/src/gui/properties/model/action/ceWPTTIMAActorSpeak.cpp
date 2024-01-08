@@ -60,6 +60,7 @@ void ceWPTTIMAActorSpeak::Update(){
 	decString text, description, tbtext;
 	
 	text.Format( "%s: ", action.GetActor().GetString() );
+	description = text;
 	
 	if( ! action.GetTextBoxTextTranslate().IsEmpty() ){
 		const ceLangPack * const langpack = GetConversation().GetLanguagePack();
@@ -90,7 +91,7 @@ void ceWPTTIMAActorSpeak::Update(){
 			text += lineTBText;
 		}
 		
-		description = tbtext;
+		description += tbtext;
 	}
 	
 	SetText( text );
