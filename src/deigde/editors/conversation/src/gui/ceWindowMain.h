@@ -51,6 +51,42 @@ class igdeStepableTask;
  */
 class ceWindowMain : public igdeEditorWindow{
 private:
+	class cRecentFilesCTS : public igdeRecentFiles{
+		ceWindowMain &pWindowMain;
+		
+	public:
+		cRecentFilesCTS( ceWindowMain &windowMain );
+		void OpenFile( const char *filename ) override;
+		void FilesChanged() override;
+	};
+	
+	class cRecentFilesCTA : public igdeRecentFiles{
+		ceWindowMain &pWindowMain;
+		
+	public:
+		cRecentFilesCTA( ceWindowMain &windowMain );
+		void OpenFile( const char *filename ) override;
+		void FilesChanged() override;
+	};
+	
+	class cRecentFilesCTGS : public igdeRecentFiles{
+		ceWindowMain &pWindowMain;
+		
+	public:
+		cRecentFilesCTGS( ceWindowMain &windowMain );
+		void OpenFile( const char *filename ) override;
+		void FilesChanged() override;
+	};
+	
+	class cRecentFilesLangPack : public igdeRecentFiles{
+		ceWindowMain &pWindowMain;
+		
+	public:
+		cRecentFilesLangPack( ceWindowMain &windowMain );
+		void OpenFile( const char *filename ) override;
+		void FilesChanged() override;
+	};
+	
 	ceWindowMainListener *pListener;
 	
 	igdeIconReference pIconActionCameraShot;
@@ -123,6 +159,11 @@ private:
 	
 	ceConversation *pConversation;
 	
+	cRecentFilesCTS pRecentFilesCTS;
+	cRecentFilesCTA pRecentFilesCTA;
+	cRecentFilesCTGS pRecentFilesCTGS;
+	cRecentFilesLangPack pRecentFilesLangPack;
+	
 	
 	
 public:
@@ -175,6 +216,17 @@ public:
 	/** Show found missing words dialog. */
 	void ShowFoundMissingWordsDialog( decStringSet &missingWords );
 	
+	/** Recent files. */
+	inline cRecentFilesCTS &GetRecentFilesCTS(){ return pRecentFilesCTS; }
+	inline cRecentFilesCTA &GetRecentFilesCTA(){ return pRecentFilesCTA; }
+	inline cRecentFilesCTGS &GetRecentFilesCTGS(){ return pRecentFilesCTGS; }
+	inline cRecentFilesLangPack &GetRecentFilesLangPack(){ return pRecentFilesLangPack; }
+	
+	/** Open conversation test actor. */
+	void LoadCTA( const char *filename );
+	
+	/** Attach language pack. */
+	void AttachLangPack( const char *filename );
 	
 	
 	/** Icons. */
