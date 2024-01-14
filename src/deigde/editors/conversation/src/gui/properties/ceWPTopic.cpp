@@ -899,11 +899,11 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 	pConversation = conversation;
 	
 	if( conversation ){
-		conversation->AddListener( pListener );
-		conversation->AddReference();
-		
 		pModelTreeActions = new ceWPTTreeModel( pWindowProperties.GetWindowMain(), conversation );
 		pModelTreeActions->SetTreeList( pTreeActions );
+		
+		conversation->AddListener( pListener );
+		conversation->AddReference();
 		
 	}else{
 		pCBFile->ClearText();
