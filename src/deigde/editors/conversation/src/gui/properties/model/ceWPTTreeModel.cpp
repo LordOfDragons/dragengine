@@ -76,10 +76,12 @@ ceWPTTreeModel::PreventUpdateGuard::~PreventUpdateGuard(){
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTreeModel::ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation ) :
+ceWPTTreeModel::ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation,
+	ceConversationListener &forwardListener ) :
 pWindowMain( windowMain ),
 pConversation( NULL ),
 pListener( NULL ),
+pForwardListener( forwardListener ),
 pTreeList( NULL ),
 pPreventUpdate( false )
 {

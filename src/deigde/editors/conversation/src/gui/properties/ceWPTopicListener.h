@@ -29,7 +29,7 @@ class ceWPTopic;
 
 
 /**
- * \brief Topic panel listener.
+ * Topic panel listener.
  */
 class ceWPTopicListener : public ceConversationListener{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	ceWPTopicListener( ceWPTopic &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~ceWPTopicListener();
 	/*@}*/
 	
@@ -51,94 +51,94 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Conversation changed. */
+	/** Conversation changed. */
 	virtual void ConversationChanged( ceConversation *conversation );
 	
-	/** \brief Target count or order changed. */
+	/** Target count or order changed. */
 	virtual void TargetStructureChanged( ceConversation *conversation );
 	
-	/** \brief Target changed. */
+	/** Target changed. */
 	virtual void TargetChanged( ceConversation *conversation, ceTarget *target );
 	
 	
 	
-	/** \brief Camera shot count or order changed. */
+	/** Camera shot count or order changed. */
 	virtual void CameraShotStructureChanged( ceConversation *conversation );
 	
-	/** \brief Camera shot changed. */
+	/** Camera shot changed. */
 	virtual void CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot );
 	
 	
 	
-	/** \brief Gesture count or order changed. */
+	/** Gesture count or order changed. */
 	virtual void GestureStructureChanged( ceConversation *conversation );
 	
-	/** \brief Gesture changed. */
+	/** Gesture changed. */
 	virtual void GestureChanged( ceConversation *conversation, ceGesture *gesture );
 	
 	
 	
-	/** \brief Face pose count or order changed. */
+	/** Face pose count or order changed. */
 	virtual void FacePoseStructureChanged( ceConversation *conversation );
 	
-	/** \brief Face pose changed. */
+	/** Face pose changed. */
 	virtual void FacePoseChanged( ceConversation *conversation, ceFacePose *facePose );
 	
 	
 	
-	/** \brief File count or order changed. */
+	/** File count or order changed. */
 	virtual void FileStructureChanged( ceConversation *conversation );
 	
-	/** \brief File changed. */
+	/** File changed. */
 	virtual void FileChanged( ceConversation *conversation, ceConversationFile *file );
 	
-	/** \brief Active file changed. */
+	/** Active file changed. */
 	virtual void ActiveFileChanged( ceConversation *conversation );
 	
 	
 	
-	/** \brief Topic count or order changed. */
+	/** Topic count or order changed. */
 	virtual void TopicStructureChanged( ceConversation *conversation, ceConversationFile *file );
 	
-	/** \brief Topic changed. */
+	/** Topic changed. */
 	virtual void TopicChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic );
 	
-	/** \brief Active topic changed. */
+	/** Active topic changed. */
 	virtual void ActiveTopicChanged( ceConversation *conversation, ceConversationFile *file );
 	
 	
 	
-	/** \brief Action count or order changed. */
+	/** Action count or order changed. */
 	virtual void ActionStructureChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action );
 	
-	/** \brief Action changed. */
+	/** Action changed. */
 	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action );
 	
-	/** \brief Condition count or order changed. */
+	/** Condition count or order changed. */
 	virtual void ConditionStructureChanged( ceConversation *conversation,
 		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
 	
-	/** \brief Condition changed. */
+	/** Condition changed. */
 	virtual void ConditionChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition );
 	
 	
 	
-	/** \brief Actor count or order changed. */
+	/** Actor count or order changed. */
 	virtual void ActorStructureChanged( ceConversation *conversation );
 	
-	/** \brief Actor changed. */
+	/** Actor changed. */
 	virtual void ActorChanged( ceConversation *conversation, ceConversationActor *actor );
 	
 	
 	
-	/** \brief Coordinate system count or order changed. */
+	/** Coordinate system count or order changed. */
 	virtual void CoordSystemStructureChanged( ceConversation *conversation );
 	
-	/** \brief Coordinate system changed. */
+	/** Coordinate system changed. */
 	virtual void CoordSystemChanged( ceConversation *conversation, ceCoordSystem *coordSystem );
 	
 	
