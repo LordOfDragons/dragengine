@@ -35,7 +35,7 @@ pin Dragengine.Utils
  */
 class CConditionVariable extends ConversationCondition
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CConditionVariable"
 		
 		func new()
@@ -45,7 +45,7 @@ class CConditionVariable extends ConversationCondition
 			return CConditionVariable.new(env, reader)
 		end
 		
-		public static func void registerFactory(Persistency persistency)
+		static func void registerFactory(Persistency persistency)
 			persistency.addFactory(NAME, Factory.new())
 		end
 	end
@@ -53,7 +53,7 @@ class CConditionVariable extends ConversationCondition
 	
 	
 	/** \brief Compare operators. */
-	public enum Operator
+	enum Operator
 		/** \brief True if the variable value is equal to the test value. */
 		equal
 		
@@ -205,5 +205,6 @@ class CConditionVariable extends ConversationCondition
 		writer.writeByte(pOperator.order())
 		env.writeString8OrEmptyIfNull(writer, pVariable)
 		writer.writeInt(pTestValue)
+		env.writeString8OrEmptyIfNull(writer, pTestVariable)
 	end
 end

@@ -34,75 +34,75 @@ pin Dragengine.Utils
  */
 class CActionCoordSystemAdd extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionCoordSystemAdd"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionCoordSystemAdd.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionCoordSystemAdd.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var StringID pCoordSystemID
-	private var StringID pAliasID
+	var StringID pCoordSystemID
+	var StringID pAliasID
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
-			this.pCoordSystemID = env.readStringIDOrNullIfEmpty( reader )
-			this.pAliasID = env.readStringIDOrNullIfEmpty( reader )
+			pCoordSystemID = env.readStringIDOrNullIfEmpty(reader)
+			pAliasID = env.readStringIDOrNullIfEmpty(reader)
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Coordinate system ID or null if not set. */
-	public func StringID getCoordSystemID()
-		return this.pCoordSystemID
+	func StringID getCoordSystemID()
+		return pCoordSystemID
 	end
 	
 	/** \brief Set coordinate system ID or null if not set. */
-	public func void setCoordSystemID( StringID id )
-		this.pCoordSystemID = id
+	func void setCoordSystemID(StringID id)
+		pCoordSystemID = id
 	end
 	
 	/** \brief Optional alias ID to set for the actor or null if not set. */
-	public func StringID getAliasID()
-		return this.pAliasID
+	func StringID getAliasID()
+		return pAliasID
 	end
 	
 	/** \brief Set optional alias ID to set for the actor or null if not set. */
-	public func void setAliasID( StringID id )
-		this.pAliasID = id
+	func void setAliasID(StringID id)
+		pAliasID = id
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
-		var ConversationCoordSystem coordSystem = playback.getCoordSystemByID( this.pCoordSystemID )
+	func void execute(ConversationPlayback playback)
+		var ConversationCoordSystem coordSystem = playback.getCoordSystemByID(pCoordSystemID)
 		
 		if coordSystem == null
-			coordSystem = playback.createConversationCoordSystem( this.pCoordSystemID )
-			playback.addCoordSystem( coordSystem, this.pAliasID )
+			coordSystem = playback.createConversationCoordSystem(pCoordSystemID)
+			playback.addCoordSystem(coordSystem, pAliasID)
 		end
 		
 		playback.advanceToNextAction()
@@ -120,17 +120,17 @@ class CActionCoordSystemAdd extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte( 0 ) // version
+		writer.writeByte(0) // version
 		
-		env.writeStringIDOrEmptyIfNull( writer, this.pCoordSystemID )
-		env.writeStringIDOrEmptyIfNull( writer, this.pAliasID )
+		env.writeStringIDOrEmptyIfNull(writer, pCoordSystemID)
+		env.writeStringIDOrEmptyIfNull(writer, pAliasID)
 	end
 end

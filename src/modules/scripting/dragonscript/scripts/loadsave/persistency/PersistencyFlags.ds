@@ -39,7 +39,7 @@ pin Dragengine.Utils
  */
 class PersistencyFlags
 	/** \brief Array of flags as boolean. */
-	private var Array pFlags
+	var Array pFlags
 	
 	
 	
@@ -48,7 +48,7 @@ class PersistencyFlags
 	 * \details The default value of all flags is \em false.
 	 * \throws EInvalidParam \em flagCount is less than 1.
 	 */
-	public func new(int flagCount)
+	func new(int flagCount)
 		if flagCount < 1
 			throw EInvalidParam.new()
 		end
@@ -60,7 +60,7 @@ class PersistencyFlags
 	 * \throws EInvalidParam \em flagCount is less than 1.
 	 * \throws EInvalidParam \em reader is \em null.
 	 */
-	public func new(int flagCount, FileReader reader)
+	func new(int flagCount, FileReader reader)
 		if flagCount < 1 or reader == null
 			throw EInvalidParam.new()
 		end
@@ -82,7 +82,7 @@ class PersistencyFlags
 	
 	
 	/** \brief Number of flags. */
-	public func int getCount()
+	func int getCount()
 		return pFlags.getCount()
 	end
 	
@@ -90,7 +90,7 @@ class PersistencyFlags
 	 * \brief Flag is set.
 	 * \throws EInvalidParam \em flag is less than 0 or larger or equal than getFlagCount().
 	 */
-	public func bool getAt(int flag)
+	func bool getAt(int flag)
 		return pFlags.getAt(flag) cast bool
 	end
 	
@@ -98,12 +98,12 @@ class PersistencyFlags
 	 * \brief Set flag.
 	 * \throws EInvalidParam \em flag is less than 0 or larger or equal than getFlagCount().
 	 */
-	public func void setAt(int flag, bool value)
+	func void setAt(int flag, bool value)
 		pFlags.setAt(flag, value)
 	end
 	
 	/** \brief Write flags to file writer. */
-	public func void writeToFile(FileWriter writer)
+	func void writeToFile(FileWriter writer)
 		var int count = pFlags.getCount()
 		var int i, j, value, lastBit
 		
@@ -119,5 +119,10 @@ class PersistencyFlags
 			
 			writer.writeByte(value)
 		end
+	end
+	
+	/** \brief String representation of object. */
+	func String toString()
+		return pFlags.toString()
 	end
 end

@@ -32,80 +32,80 @@ pin Dragengine.Utils
  */
 class CConditionHasActor extends ConversationCondition
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CConditionHasActor"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CConditionHasActor.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CConditionHasActor.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var StringID pActorID
-	private var bool pNegate
+	var StringID pActorID
+	var bool pNegate
 	
 	
 	
 	/** \brief Create conversation condition. */
-	public func new()
-		this.pNegate = false
+	func new()
+		pNegate = false
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
+	func new(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			this.pActorID = env.readStringIDOrNullIfEmpty( reader )
-			this.pNegate = env.readBool( reader )
+			pActorID = env.readStringIDOrNullIfEmpty(reader)
+			pNegate = env.readBool(reader)
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief ID of the actor to check. */
-	public func StringID getActorID()
-		return this.pActorID
+	func StringID getActorID()
+		return pActorID
 	end
 	
 	/** \brief Set actor ID. */
-	public func void setActorID( StringID id )
+	func void setActorID(StringID id)
 		if id == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pActorID = id
+		pActorID = id
 	end
 	
 	/** \brief Result of the condition is negated. */
-	public func bool getNegate()
-		return this.pNegate
+	func bool getNegate()
+		return pNegate
 	end
 	
 	/** \brief Set if result of the condition is negated. */
-	public func void setNegate( bool negate )
-		this.pNegate = negate
+	func void setNegate(bool negate)
+		pNegate = negate
 	end
 	
 	
 	
 	/** \brief Condition is true. */
-	public func bool evaluate( ConversationPlayback playback )
-		if this.pNegate
-			return playback.getActorMatching( this.pActorID ) == null
+	func bool evaluate(ConversationPlayback playback)
+		if pNegate
+			return playback.getActorMatching(pActorID) == null
 			
 		else
-			return playback.getActorMatching( this.pActorID ) != null
+			return playback.getActorMatching(pActorID) != null
 		end
 	end
 	
@@ -121,15 +121,15 @@ class CConditionHasActor extends ConversationCondition
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		env.writeStringIDOrEmptyIfNull( writer, this.pActorID )
-		env.writeBool( writer, this.pNegate )
+		env.writeStringIDOrEmptyIfNull(writer, pActorID)
+		env.writeBool(writer, pNegate)
 	end
 end

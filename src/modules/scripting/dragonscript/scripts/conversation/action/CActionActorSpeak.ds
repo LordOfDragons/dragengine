@@ -35,42 +35,42 @@ pin Dragengine.Utils
  */
 class CActionActorSpeak extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionActorSpeak"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
 			return CActionActorSpeak.new(env, reader)
 		end
 		
-		public static func void registerFactory(Persistency persistency)
+		static func void registerFactory(Persistency persistency)
 			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var Sound pSound
-	private var StringID pActorID
-	private var UnicodeString pTextBoxText
-	private var String pTextBoxTextTranslate
-	private var StringID pTextBoxTextStyle
-	private var String pPathSound
-	private var Array pWords
-	private var Array pFacePoses
-	private var Array pGestures
-	private var Array pBodyLookAts
-	private var Array pHeadLookAts
-	private var Array pEyesLookAts
-	private var bool pUseSpeechAnimation
-	private var float pMinSpeechTime
+	var Sound pSound
+	var StringID pActorID
+	var UnicodeString pTextBoxText
+	var String pTextBoxTextTranslate
+	var StringID pTextBoxTextStyle
+	var String pPathSound
+	var Array pWords
+	var Array pFacePoses
+	var Array pGestures
+	var Array pBodyLookAts
+	var Array pHeadLookAts
+	var Array pEyesLookAts
+	var bool pUseSpeechAnimation
+	var float pMinSpeechTime
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
+	func new()
 		pWords = Array.new()
 		pFacePoses = Array.new()
 		pGestures = Array.new()
@@ -82,11 +82,11 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Read from file. */
-	public func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
 			readV0(env, reader)
-
+			
 		case 1
 			readV0(env, reader)
 			pTextBoxTextTranslate = env.readString16OrNullIfEmpty(reader)
@@ -152,7 +152,7 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	/** \brief Sound file loading it if not loaded already. */
-	public func Sound getSound()
+	func Sound getSound()
 		if pSound == null and pPathSound != null
 			pSound = Sound.new(pPathSound)
 		end
@@ -161,22 +161,22 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Actor ID or null if not set. */
-	public func StringID getActorID()
+	func StringID getActorID()
 		return pActorID
 	end
 	
 	/** \brief Set actor ID or null if not set. */
-	public func void setActorID(StringID id)
+	func void setActorID(StringID id)
 		pActorID = id
 	end
 	
 	/** \brief Text box text or null to not set the text. */
-	public func UnicodeString getTextBoxText()
+	func UnicodeString getTextBoxText()
 		return pTextBoxText
 	end
 	
 	/** \brief Set text box text or null to not set the text. */
-	public func void setTextBoxText(UnicodeString text)
+	func void setTextBoxText(UnicodeString text)
 		pTextBoxText = text
 	end
 	
@@ -184,7 +184,7 @@ class CActionActorSpeak extends ConversationAction
 	 * \brief Translated text box text or null to use regular text box text.
 	 * \version 1.16
 	 */
-	public func String getTextBoxTextTranslate()
+	func String getTextBoxTextTranslate()
 		return pTextBoxTextTranslate
 	end
 	
@@ -192,59 +192,59 @@ class CActionActorSpeak extends ConversationAction
 	 * \brief Set translated text box text or null to use regular text box text.
 	 * \version 1.16
 	 */
-	public func void setTextBoxTextTranslate(String name)
+	func void setTextBoxTextTranslate(String name)
 		pTextBoxTextTranslate = name
 	end
 	
 	/** \brief Text box text style id. */
-	public func StringID getTextBoxTextStyle()
+	func StringID getTextBoxTextStyle()
 		return pTextBoxTextStyle
 	end
 	
 	/** \brief Set text box text style. */
-	public func void setTextBoxTextStyle(StringID styleID)
+	func void setTextBoxTextStyle(StringID styleID)
 		pTextBoxTextStyle = styleID
 	end
 	
 	/** \brief Path to the sound file or null to not play sound. */
-	public func String getPathSound()
+	func String getPathSound()
 		return pPathSound
 	end
 	
 	/** \brief Set path to the sound file or null to not play sound. */
-	public func void setPathSound(String path)
+	func void setPathSound(String path)
 		pPathSound = path
 	end
 	
 	/** \brief Speech animation is used for this action. */
-	public func bool getUseSpeechAnimation()
+	func bool getUseSpeechAnimation()
 		return pUseSpeechAnimation
 	end
 	
 	/** \brief Set if speech animation is used for this action. */
-	public func void setUseSpeechAnimation(bool useSpeechAnimation)
+	func void setUseSpeechAnimation(bool useSpeechAnimation)
 		pUseSpeechAnimation = useSpeechAnimation
 	end
 	
 	/** \brief Minimum time the actor is speaking. */
-	public func float getMinSpeechTime()
+	func float getMinSpeechTime()
 		return pMinSpeechTime
 	end
 	
 	/** \brief Set minimum time the actor is speaking. */
-	public func void setMinSpeechTime(float minSpeechTime)
+	func void setMinSpeechTime(float minSpeechTime)
 		pMinSpeechTime = DEMath.max(minSpeechTime, 0.0)
 	end
 	
 	
 	
 	/** \brief Visits all words. */
-	public func void forEachWord(Block aBlock)
+	func void forEachWord(Block aBlock)
 		pWords.forEach(aBlock)
 	end
 	
 	/** \brief Add word. */
-	public func void addWord(ConversationStrip word)
+	func void addWord(ConversationStrip word)
 		if word == null
 			throw EInvalidParam.new()
 		end
@@ -254,12 +254,12 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	/** \brief Visits all face poses. */
-	public func void forEachFacePose(Block aBlock)
+	func void forEachFacePose(Block aBlock)
 		pFacePoses.forEach(aBlock)
 	end
 	
 	/** \brief Add face pose. */
-	public func void addFacePose(ConversationStrip facePose)
+	func void addFacePose(ConversationStrip facePose)
 		if facePose == null
 			throw EInvalidParam.new()
 		end
@@ -269,12 +269,12 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	/** \brief Visits all gestures. */
-	public func void forEachGesture(Block aBlock)
+	func void forEachGesture(Block aBlock)
 		pGestures.forEach(aBlock)
 	end
 	
 	/** \brief Adds a gesture. */
-	public func void addGesture(ConversationStrip gesture)
+	func void addGesture(ConversationStrip gesture)
 		if gesture == null
 			throw EInvalidParam.new()
 		end
@@ -284,12 +284,12 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	/** \brief Visits all body look-ats. */
-	public func void forEachBodyLookAt(Block aBlock)
+	func void forEachBodyLookAt(Block aBlock)
 		pBodyLookAts.forEach(aBlock)
 	end
 	
 	/** \brief Adds a body look-at. */
-	public func void addBodyLookAt(ConversationStrip lookAt)
+	func void addBodyLookAt(ConversationStrip lookAt)
 		if lookAt == null
 			throw EInvalidParam.new()
 		end
@@ -299,12 +299,12 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	/** \brief Visits all head look-ats. */
-	public func void forEachHeadLookAt(Block aBlock)
+	func void forEachHeadLookAt(Block aBlock)
 		pHeadLookAts.forEach(aBlock)
 	end
 	
 	/** \brief Adds a head look-at. */
-	public func void addHeadLookAt(ConversationStrip lookAt)
+	func void addHeadLookAt(ConversationStrip lookAt)
 		if lookAt == null
 			throw EInvalidParam.new()
 		end
@@ -314,12 +314,12 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	/** \brief Visits all eyes look-ats. */
-	public func void forEachEyesLookAt(Block aBlock)
+	func void forEachEyesLookAt(Block aBlock)
 		pEyesLookAts.forEach(aBlock)
 	end
 	
 	/** \brief Adds a eyes look-at. */
-	public func void addEyesLookAt(ConversationStrip lookAt)
+	func void addEyesLookAt(ConversationStrip lookAt)
 		if lookAt == null
 			throw EInvalidParam.new()
 		end
@@ -329,7 +329,7 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	/** \brief Play back a sound file as voice of a conversation actor. */
-	public func void playVoiceAudio(ConversationActor actor, Sound sound)
+	func void playVoiceAudio(ConversationActor actor, Sound sound)
 		var Speaker speaker = actor.getVoiceSpeaker()
 		
 		if speaker == null
@@ -345,7 +345,7 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Execute action. */
-	public func void execute(ConversationPlayback playback)
+	func void execute(ConversationPlayback playback)
 		var ConversationActor actor = playback.getActorMatching(pActorID)
 		if actor == null
 			playback.advanceToNextAction()
@@ -375,7 +375,7 @@ class CActionActorSpeak extends ConversationAction
 	 * \brief Execute voice sound.
 	 * \returns speech time or 0 if no sound is played.
 	 */
-	public func float executeVoiceSound(ConversationPlayback playback, ConversationActor actor)
+	func float executeVoiceSound(ConversationPlayback playback, ConversationActor actor)
 		var Sound sound
 		
 		try
@@ -397,7 +397,7 @@ class CActionActorSpeak extends ConversationAction
 	 * \brief Execute speech animation.
 	 * \returns speech time or 0 if no sound is played.
 	 */
-	public func float executeSpeechAnimation(ConversationPlayback playback, ConversationActor actor)
+	func float executeSpeechAnimation(ConversationPlayback playback, ConversationActor actor)
 		if pWords.getCount() == 0
 			return 0.0
 		end
@@ -527,7 +527,7 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Execute sub title. */
-	public func void executeSubTitle(ConversationPlayback playback, ConversationActor actor, float speechTime)
+	func void executeSubTitle(ConversationPlayback playback, ConversationActor actor, float speechTime)
 		var UnicodeString textBoxText = pTextBoxText
 		if pTextBoxTextTranslate != null
 			var TranslationManager tm = playback.getTranslationManager()
@@ -553,7 +553,7 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Execute gesture. */
-	public func void executeGesture(ConversationPlayback playback, ConversationActor actor)
+	func void executeGesture(ConversationPlayback playback, ConversationActor actor)
 		if pGestures.getCount() == 0
 			return
 		end
@@ -594,7 +594,7 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Execute face pose. */
-	public func void executeFacePose(ConversationPlayback playback, ConversationActor actor)
+	func void executeFacePose(ConversationPlayback playback, ConversationActor actor)
 		if pFacePoses.getCount() == 0
 			return
 		end
@@ -635,7 +635,7 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Execute head look-at. */
-	public func void executeHeadLookAt(ConversationPlayback playback, ConversationActor actor)
+	func void executeHeadLookAt(ConversationPlayback playback, ConversationActor actor)
 		if pHeadLookAts.getCount() == 0
 			return
 		end
@@ -669,7 +669,7 @@ class CActionActorSpeak extends ConversationAction
 	 * 
 	 * If no eyes look-ats are present uses head look-ats.
 	 */
-	public func void executeEyesLookAt(ConversationPlayback playback, ConversationActor actor)
+	func void executeEyesLookAt(ConversationPlayback playback, ConversationActor actor)
 		var Array lookAts = pEyesLookAts.getCount() > 0 if pEyesLookAts else pHeadLookAts
 		if lookAts.getCount() == 0
 			return
@@ -710,12 +710,12 @@ class CActionActorSpeak extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
 		super.writeObjectToFile(env, writer)
 		
 		writer.writeByte(1) // version

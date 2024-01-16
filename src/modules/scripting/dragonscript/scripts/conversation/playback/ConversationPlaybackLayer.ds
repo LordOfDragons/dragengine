@@ -165,8 +165,9 @@ class ConversationPlaybackLayer
 	public static func ConversationPlaybackLayer readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new(\
-				ConversationActionIterator.readFromFile(env, reader))
+			var ConversationActionIterator iterator = ConversationActionIterator.readFromFile(env, reader)
+			iterator.previous() // we have to go back by one since constructor calls advance()
+			var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new(iterator)
 			
 			var PersistencyFlags flags = PersistencyFlags.new(2, reader)
 			layer.pLooping = flags.getAt(0)

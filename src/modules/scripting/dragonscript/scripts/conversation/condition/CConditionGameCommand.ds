@@ -37,77 +37,77 @@ pin Dragengine.Utils
  */
 class CConditionGameCommand extends ConversationCondition
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CConditionGameCommand"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CConditionGameCommand.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CConditionGameCommand.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var String pCommand
-	private var bool pNegate
+	var String pCommand
+	var bool pNegate
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
-		this.pCommand = ""
-		this.pNegate = false
+	func new()
+		pCommand = ""
+		pNegate = false
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
+	func new(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			this.pCommand = reader.readString16()
-			this.pNegate = env.readBool( reader )
+			pCommand = reader.readString16()
+			pNegate = env.readBool(reader)
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Command to send. */
-	public func String getCommand()
-		return this.pCommand
+	func String getCommand()
+		return pCommand
 	end
 	
 	/** \brief Set command to send. */
-	public func void setCommand( String command )
-		this.pCommand = command
+	func void setCommand(String command)
+		pCommand = command
 	end
 	
 	/** \brief Result of the condition is negated. */
-	public func bool getNegate()
-		return this.pNegate
+	func bool getNegate()
+		return pNegate
 	end
 	
 	/** \brief Set result of the condition is negated. */
-	public func void setNegate( bool negate )
-		this.pNegate = negate
+	func void setNegate(bool negate)
+		pNegate = negate
 	end
 	
 	
 	
 	/** \brief Condition is true. */
-	public func bool evaluate( ConversationPlayback playback )
-		if this.pNegate
-			return not playback.conditionGameCommand( this.getCommand() )
+	func bool evaluate(ConversationPlayback playback)
+		if pNegate
+			return not playback.conditionGameCommand(getCommand())
 			
 		else
-			return playback.conditionGameCommand( this.getCommand() )
+			return playback.conditionGameCommand(getCommand())
 		end
 	end
 	
@@ -123,15 +123,15 @@ class CConditionGameCommand extends ConversationCondition
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeString16( this.pCommand )
-		env.writeBool( writer, this.pNegate )
+		writer.writeString16(pCommand)
+		env.writeBool(writer, pNegate)
 	end
 end

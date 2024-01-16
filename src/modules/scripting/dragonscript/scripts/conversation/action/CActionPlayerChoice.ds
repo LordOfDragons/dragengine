@@ -34,145 +34,145 @@ pin Dragengine.Utils
  */
 class CActionPlayerChoice extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionPlayerChoice"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionPlayerChoice.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionPlayerChoice.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var String pVariable
-	private var Array pOptions
-	private var Array pActions
+	var String pVariable
+	var Array pOptions
+	var Array pActions
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
-		this.pOptions = Array.new()
-		this.pActions = Array.new()
+	func new()
+		pOptions = Array.new()
+		pActions = Array.new()
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
-			this.pVariable = env.readString8OrNullIfEmpty( reader )
+			pVariable = env.readString8OrNullIfEmpty(reader)
 			
 			var int i, count = reader.readUShort()
-			this.pOptions = Array.new()
+			pOptions = Array.new()
 			for i = 0 to count
-				this.pOptions.add( CActionPlayerChoiceOption.readFromFile( env, reader ) )
+				pOptions.add(CActionPlayerChoiceOption.readFromFile(env, reader))
 			end
 			
 			count = reader.readUShort()
-			this.pActions = Array.new()
+			pActions = Array.new()
 			for i = 0 to count
-				this.pActions.add( env.readObject( reader ) )
+				pActions.add(env.readObject(reader))
 			end
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Name of variable to set with the selected option or null if not used. */
-	public func String getVariable()
-		return this.pVariable
+	func String getVariable()
+		return pVariable
 	end
 	
 	/** \brief Set name of variable to set with the selected option or null if not used. */
-	public func void setVariable( String variable )
-		this.pVariable = variable
+	func void setVariable(String variable)
+		pVariable = variable
 	end
 	
 	
 	
 	/** \brief Number of options. */
-	public func int getOptionCount()
-		return this.pOptions.getCount()
+	func int getOptionCount()
+		return pOptions.getCount()
 	end
 	
 	/** \brief Option at index. */
-	public func CActionPlayerChoiceOption getOptionAt( int index )
-		return this.pOptions.getAt( index ) cast CActionPlayerChoiceOption
+	func CActionPlayerChoiceOption getOptionAt(int index)
+		return pOptions.getAt(index) cast CActionPlayerChoiceOption
 	end
 	
 	/** \brief Visits all options. */
-	public func void forEachOption( Block aBlock )
-		this.pOptions.forEach( aBlock )
+	func void forEachOption(Block aBlock)
+		pOptions.forEach(aBlock)
 	end
 	
 	/** \brief Adds an option. */
-	public func void addOption( CActionPlayerChoiceOption option )
+	func void addOption(CActionPlayerChoiceOption option)
 		if option == null
 			throw EInvalidParam.new()
 		end
-		this.pOptions.add( option )
+		pOptions.add(option)
 	end
 	
 	
 	
 	/** \brief Visits all actions. */
-	public func void forEachAction( Block aBlock )
-		this.pActions.forEach( aBlock )
+	func void forEachAction(Block aBlock)
+		pActions.forEach(aBlock)
 	end
 	
 	/** \brief Adds an action. */
-	public func void addAction( ConversationAction action )
+	func void addAction(ConversationAction action)
 		if action == null
 			throw EInvalidParam.new()
 		end
-		this.pActions.add( action )
+		pActions.add(action)
 	end
 	
 	/** \brief Actions. */
-	public func Array getActions()
-		return this.pActions
+	func Array getActions()
+		return pActions
 	end
 	
 	/** \brief Iterator for actions. */
-	public func ConversationActionIterator getIteratorActions()
-		return ConversationActionIterator.new( this.pActions, 0 )
+	func ConversationActionIterator getIteratorActions()
+		return ConversationActionIterator.new(pActions, 0)
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
-		var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( this.getIteratorActions() )
-		layer.setLooping( true )
-		playback.pushLayer( layer )
+	func void execute(ConversationPlayback playback)
+		var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new(getIteratorActions())
+		layer.setLooping(true)
+		playback.pushLayer(layer)
 		
 		// start player choosing
 		var ConversationPlaybackPlayerChoice playerChoice = playback.getPlayerChoice()
 		
 		playerChoice.removeAllChoices()
 		
-		var int optionCount = this.pOptions.getCount()
+		var int optionCount = pOptions.getCount()
 		var bool hasOptions = false
 		var int i
 		
 		for i = 0 to optionCount
-			var CActionPlayerChoiceOption option = this.pOptions.getAt( i ) cast CActionPlayerChoiceOption
-			if option.getCondition() != null and not option.getCondition().evaluate( playback )
+			var CActionPlayerChoiceOption option = pOptions.getAt(i) cast CActionPlayerChoiceOption
+			if option.getCondition() != null and not option.getCondition().evaluate(playback)
 				continue
 			end
 			
-			playerChoice.addChoice( option.getText().toString(), ConversationPlayerChoice.new( \
-				playback, layer, option.getIteratorActions(), this.pVariable, i ) )
+			playerChoice.addChoice(option.getText().toString(), ConversationPlayerChoice.new(\
+				playback, layer, option.getIteratorActions(), pVariable, i))
 			hasOptions = true
 		end
 		
@@ -196,26 +196,26 @@ class CActionPlayerChoice extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte( 0 ) // version
+		writer.writeByte(0) // version
 		
-		env.writeString8OrEmptyIfNull( writer, this.pVariable )
+		env.writeString8OrEmptyIfNull(writer, pVariable)
 		
-		writer.writeUShort( this.pOptions.getCount() )
-		this.pOptions.forEach( block CActionPlayerChoiceOption each
-			each.writeToFile( env, writer )
-		end )
+		writer.writeUShort(pOptions.getCount())
+		pOptions.forEach(block CActionPlayerChoiceOption each
+			each.writeToFile(env, writer)
+		end)
 		
-		writer.writeUShort( this.pActions.getCount() )
-		this.pActions.forEach( block ConversationAction each
-			env.writeObject( writer, each )
-		end )
+		writer.writeUShort(pActions.getCount())
+		pActions.forEach(block ConversationAction each
+			env.writeObject(writer, each)
+		end)
 	end
 end
