@@ -113,6 +113,18 @@ class ParameterTable
 		return pParameters.getKeys()
 	end
 	
+	/**
+	 * \brief Find parameter.
+	 * \version 1.21
+	 * 
+	 * Block receives argument ParameterTableEntry and returns bool if matching entry is found.
+	 */
+	func ParameterTableEntry find(Block ablock)
+		return pParameters.find(block String key, ParameterTableEntry value
+			return ablock.run(value)
+		end) cast ParameterTableEntry
+	end
+	
 	
 	
 	/** \brief Read parameter table from file. */
