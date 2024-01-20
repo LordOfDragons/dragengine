@@ -181,11 +181,10 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			var float distance = (arguments.getAt(3) cast String).toFloat()
 			
 			if action.equals("goal")
-				return pInstance.getGoalDistance() <= distance
+				return pInstance.getDistanceToGoal() <= distance
 				
 			elif action.equals("direct")
-				return (instance.getElement().getPosition() - pInstance.getGoalPosition()) \
-					.getLength() <= distance
+				return (instance.getElement().getPosition() - pInstance.getGoalPosition()).getLength() <= distance
 				
 			else
 				throw EInvalidParam.new("closerThan: Unknown keyword '" + action + "'")
