@@ -76,6 +76,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetAliasIdentifier.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetCreator.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetDelgaPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetRunArguments.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetDescription.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetExcludePatterns.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetGameDescription.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetAliasIdentifier.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetCreator.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetDelgaPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetRunArguments.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetDescription.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetExcludePatterns.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetGameDescription.h" />

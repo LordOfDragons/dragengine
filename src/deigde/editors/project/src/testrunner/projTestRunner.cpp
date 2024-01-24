@@ -773,7 +773,7 @@ void projTestRunner::pSendLaunchParameters(){
 		fullScreen = false;
 	}
 	
-	decString runArguments; //( pProfile->GetRunArguments() );
+	decString runArguments;
 	projTRPParameterList parameters;
 	
 	if( pLauncherProfile ){
@@ -795,6 +795,13 @@ void projTestRunner::pSendLaunchParameters(){
 		
 	}else{
 		// TODO get this from engine controller somehow
+	}
+	
+	if( ! pProfile->GetRunArguments().IsEmpty() ){
+		if( ! runArguments.IsEmpty() ){
+			runArguments += " ";
+		}
+		runArguments += pProfile->GetRunArguments();
 	}
 	
 	// send parameters over the pipe

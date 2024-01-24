@@ -61,6 +61,8 @@ private:
 	
 	decString pDelgaPath;
 	
+	decString pRunArguments;
+	
 	
 	
 public:
@@ -199,6 +201,14 @@ public:
 	
 	/** \brief Set path to delga file to build. */
 	void SetDelgaPath( const char *path );
+	
+	
+	
+	/** \brief Arguments to use while test running. */
+	inline const decString &GetRunArguments() const{ return pRunArguments; }
+	
+	/** \brief Set arguments to use while test running. */
+	void SetRunArguments( const char *arguments );
 	
 	
 	
