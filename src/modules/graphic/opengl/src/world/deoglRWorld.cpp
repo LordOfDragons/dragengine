@@ -720,9 +720,7 @@ void deoglRWorld::RemoveRemovalMarkedParticleEmitterInstances(){
 ///////////////
 
 void deoglRWorld::AddComponent( deoglRComponent *component ){
-	if( ! component ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( component )
 	
 	if( component->GetParentWorld() ){
 		DEASSERT_TRUE( component->GetWorldMarkedRemove() )
@@ -749,7 +747,6 @@ void deoglRWorld::AddComponent( deoglRComponent *component ){
 	
 	component->SetParentWorld( this );
 	AddPrepareForRenderComponent( component );
-	GIStatesNotifyComponentEnteredWorld( component );
 }
 
 void deoglRWorld::RemoveComponent( deoglRComponent *component ){

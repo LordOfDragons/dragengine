@@ -85,6 +85,7 @@ private:
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
 	deoglWorldComputeElement::Ref pWorldComputeElement;
+	bool pHasEnteredWorld;
 	
 	
 	bool pVisible;
@@ -217,6 +218,9 @@ public:
 	
 	/** Set parent world. */
 	void SetParentWorld( deoglRWorld *parentWorld );
+	
+	/** Component has entered world. */
+	void HasEnteredWorld();
 	
 	/** Octree node or NULL if not inserted into the parent world octree. */
 	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }

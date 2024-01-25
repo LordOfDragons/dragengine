@@ -58,6 +58,7 @@ private:
 	decVector pSize;
 	deoglRWorld *pWorld;
 	decLayerMask pLayerMask;
+	int pGIImportance;
 	
 	decPoint3 pProbeCount;
 	decPoint3 pGridCoordClamp;
@@ -142,6 +143,9 @@ public:
 	
 	/** Set layer mask. Invalidates all if changed. */
 	void SetLayerMask( const decLayerMask &layerMask );
+	
+	/** GI importance. */
+	inline int GetGIImportance() const{ return pGIImportance; }
 	
 	/** Set size of GI state invalidating certain volumes and probes. */
 // 	void SetSize( const decVector &size );

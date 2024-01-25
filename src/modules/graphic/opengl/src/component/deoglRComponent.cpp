@@ -117,6 +117,7 @@ pRenderThread( renderThread ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
 pWorldComputeElement( deoglWorldComputeElement::Ref::New( new deoglRComponentWCElement( *this ) ) ),
+pHasEnteredWorld( false ),
 
 pVisible( true ),
 pMovementHint( deComponent::emhStationary ),
@@ -224,6 +225,7 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 		NotifySkiesUpdateStatic();
 	}
 	
+	pHasEnteredWorld = false;
 	InvalidateRenderEnvMap();
 	pSkinRendered.DropDelayedDeletionObjects();
 	
@@ -262,6 +264,10 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 	// no NotifySkiesUpdateStatic on entering worls since we start out dynamic
 	
 	pRequiresPrepareForRender();
+}
+
+void deoglRComponent::HasEnteredWorld(){
+	pHasEnteredWorld = true;
 }
 
 
@@ -337,7 +343,7 @@ void deoglRComponent::SetVisible( bool visible ){
 	
 	pVisible = visible;
 	
-	if( visible && pParentWorld ){
+	if( visible && pParentWorld && pHasEnteredWorld ){
 		pParentWorld->GIStatesNotifyComponentBecameVisible( this );
 	}
 	NotifyVisibilityChanged();
@@ -363,7 +369,7 @@ void deoglRComponent::SetGIImportance( int importance ){
 	
 	pGIImportance = importance;
 	
-	if( pParentWorld ){
+	if( pParentWorld && pHasEnteredWorld ){
 		pParentWorld->GIStatesNotifyComponentChangedGIImportance( this );
 	}
 	
@@ -388,7 +394,7 @@ void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
 		NotifySkiesUpdateStatic();
 	}
 	
-	if( pParentWorld ){
+	if( pParentWorld && pHasEnteredWorld ){
 		pParentWorld->GIStatesNotifyComponentChangedLayerMask( this );
 	}
 	
