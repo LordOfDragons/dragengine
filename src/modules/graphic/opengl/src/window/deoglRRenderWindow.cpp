@@ -583,7 +583,18 @@ void deoglRRenderWindow::SwapBuffers(){
 	// happens only with IGDE hence it has to do something with changing windows or with
 	// hosted windows in general
 		//XSync( pRenderThread.GetContext().GetDisplay(), False );
-	OGL_CHECK( pRenderThread, glXSwapBuffers( pRenderThread.GetContext().GetDisplay(), pWindow ) );
+	
+	if( pRenderThread.GetConfiguration().GetRenderDocMode() ){
+		// NOTE if RenderDoc is running glXSwapBuffers can throw invalid enum error while capturing
+		try{
+			OGL_CHECK( pRenderThread, glXSwapBuffers( pRenderThread.GetContext().GetDisplay(), pWindow ) );
+		}catch(...){
+			return;
+		}
+		
+	}else{
+		OGL_CHECK( pRenderThread, glXSwapBuffers( pRenderThread.GetContext().GetDisplay(), pWindow ) );
+	}
 		//XSync( pRenderThread.GetContext().GetDisplay(), False );
 #endif
 	

@@ -141,7 +141,9 @@ pGIUpdateSpeed( egiusMedium ),
 pVSyncMode( evsmAdaptive ),
 
 pVRRenderScale( 1.0f ),
-pVRForceFrameRate( 0 )
+pVRForceFrameRate( 0 ),
+
+pRenderDocMode( false )
 {
 	#ifdef OS_ANDROID
 	// android is too weak a platform right now to support advanced features out of the
@@ -207,6 +209,9 @@ pVRForceFrameRate( 0 )
 		pDebugNoMessages = true;
 	}
 	#endif
+	
+	const char * const envRenderDocMode = secure_getenv( "DE_OGL_RENDERDOC_MODE" );
+	pRenderDocMode = envRenderDocMode && strcmp( envRenderDocMode, "1" ) == 0;
 }
 
 deoglConfiguration::~deoglConfiguration(){
