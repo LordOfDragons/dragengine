@@ -140,8 +140,8 @@ pOccluded( false ),
 pDirtyPrepareSkinStateRenderables( true ),
 pDirtyRenderSkinStateRenderables( true ),
 
-pRenderEnvMap( NULL ),
-pRenderEnvMapFade( NULL ),
+pRenderEnvMap( nullptr ),
+pRenderEnvMapFade( nullptr ),
 pRenderEnvMapFadePerTime( 1.0f ),
 pRenderEnvMapFadeFactor( 1.0f ),
 pDirtyRenderEnvMap( true ),
@@ -309,7 +309,15 @@ void deoglRBillboard::SetLayerMask( const decLayerMask &layerMask ){
 }
 
 void deoglRBillboard::SetVisible( bool visible ){
+	if( visible == pVisible ){
+		return;
+	}
+	
 	pVisible = visible;
+	
+	if( visible ){
+		pRequiresPrepareForRender();
+	}
 }
 
 void deoglRBillboard::SetLocked( bool locked ){
@@ -814,10 +822,13 @@ void deoglRBillboard::UpdateRenderEnvMap(){
 	if( ! pDirtyRenderEnvMap ){
 		return;
 	}
+	pDirtyRenderEnvMap = false;
 	
-	if( ! pParentWorld ){
-		DETHROW( deeInvalidParam );
+	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
+		return;
 	}
+	
+	DEASSERT_NOTNULL( pParentWorld )
 	
 	// for the time being we simply pick the environment map that is closest to the billboard position.
 	// this can lead to wrong picks and harshly switching environment maps but this is enough for the
@@ -850,13 +861,11 @@ void deoglRBillboard::UpdateRenderEnvMap(){
 		SetRenderEnvMap( pParentWorld->GetSkyEnvironmentMap() );
 		
 	}else{
-		SetRenderEnvMap( NULL );
-		SetRenderEnvMapFade( NULL );
+		SetRenderEnvMap( nullptr );
+		SetRenderEnvMapFade( nullptr );
 		pRenderEnvMapFadeFactor = 1.0f;
 	}
 	//pOgl->LogInfoFormat( "update billboard %p render env map %p\n", pBillboard, pRenderEnvMap );
-	
-	pDirtyRenderEnvMap = false;
 }
 
 void deoglRBillboard::InvalidateRenderEnvMap(){
@@ -864,8 +873,8 @@ void deoglRBillboard::InvalidateRenderEnvMap(){
 		return;
 	}
 	
-	SetRenderEnvMap( NULL );
-	SetRenderEnvMapFade( NULL );
+	SetRenderEnvMap( nullptr );
+	SetRenderEnvMapFade( nullptr );
 	pDirtyRenderEnvMap = true;
 }
 

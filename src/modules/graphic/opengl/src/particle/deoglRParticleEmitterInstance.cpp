@@ -105,7 +105,7 @@ pIndexSize( 0 ),
 pIndexUsedCount( 0 ),
 pDirtyIBO( false ),
 
-pRenderEnvMap( NULL ),
+pRenderEnvMap( nullptr ),
 pDirtyRenderEnvMap( true ),
 
 pVBOShared( 0 ),
@@ -300,6 +300,11 @@ void deoglRParticleEmitterInstance::UpdateRenderEnvMap(){
 	if( ! pDirtyRenderEnvMap ){
 		return;
 	}
+	pDirtyRenderEnvMap = false;
+	
+	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
+		return;
+	}
 	
 	// for the time being we simply pick the environment map that is closest to the component position.
 	// this can lead to wrong picks and harshly switching environment maps but this is enough for the
@@ -332,11 +337,9 @@ void deoglRParticleEmitterInstance::UpdateRenderEnvMap(){
 		SetRenderEnvMap( pParentWorld->GetSkyEnvironmentMap() );
 		
 	}else{
-		SetRenderEnvMap( NULL );
+		SetRenderEnvMap( nullptr );
 	}
 	//pOgl->LogInfoFormat( "update particle emitter instance %p render env map %p\n", pInstance, pRenderEnvMap );
-	
-	pDirtyRenderEnvMap = false;
 }
 
 void deoglRParticleEmitterInstance::InvalidateRenderEnvMap(){
@@ -344,7 +347,7 @@ void deoglRParticleEmitterInstance::InvalidateRenderEnvMap(){
 		return;
 	}
 	
-	SetRenderEnvMap( NULL );
+	SetRenderEnvMap( nullptr );
 	pDirtyRenderEnvMap = true;
 }
 

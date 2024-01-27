@@ -418,7 +418,7 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 // value to make sure existing caches are invalidate
 #define SHADER_CACHE_REVISION 1
 
-int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
+deoglSkinShader::eReflectionTestMode deoglSkinShader::REFLECTION_TEST_MODE = deoglSkinShader::ertmSingleBlenderEnvMap;
 
 // MinGW bug workaround
 #if defined OS_W32 && defined __MINGW64__
@@ -1426,10 +1426,10 @@ deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap
 	const bool useEquiMap = pConfig.GetTextureEnvMapEqui();
 	deoglTexUnitConfig &unitEnvMap = units[ pTextureTargets[ ettEnvMap ] ];
 	
-	if( REFLECTION_TEST_MODE == 0 ){
+	if( REFLECTION_TEST_MODE == ertmOldVersion ){
 		// use provided env-map (see below)
 		
-	}else if( REFLECTION_TEST_MODE == 2 ){
+	}else if( REFLECTION_TEST_MODE == ertmSingleBlenderEnvMap ){
 		if( pRenderThread.GetConfiguration().GetEnvMapMethod() == deoglConfiguration::eemmSingle ){
 			if( useEquiMap ){
 				unitEnvMap.EnableTexture( pRenderThread.GetRenderers().GetReflection().GetEnvMapEqui(),
@@ -1794,7 +1794,7 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 			defines.SetDefines( "TEXTURE_ENVMAP_EQUI" );
 		}
 		
-		if( REFLECTION_TEST_MODE < 2 ){
+		if( REFLECTION_TEST_MODE != ertmSingleBlenderEnvMap ){
 			defines.SetDefines( "TEXTURE_ENVMAP_FADE" );
 		}
 	}
@@ -2262,7 +2262,7 @@ void deoglSkinShader::UpdateTextureTargets(){
 	}
 	if( pConfig.GetTextureEnvMap() ){
 		pTextureTargets[ ettEnvMap ] = textureUnitNumber++;
-		if( REFLECTION_TEST_MODE < 2 ){
+		if( REFLECTION_TEST_MODE != ertmSingleBlenderEnvMap ){
 			pTextureTargets[ ettEnvMapFade ] = textureUnitNumber++;
 		}
 	}

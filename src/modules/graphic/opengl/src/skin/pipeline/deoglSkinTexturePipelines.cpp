@@ -795,16 +795,20 @@ void deoglSkinTexturePipelines::pSetTexturesGeometry( deoglSkinShaderConfig &con
 	config.SetTextureAO( HASCHANTEX( ectAO ) );
 	config.SetTextureRimEmissivity( HASCHANTEX( ectRimEmissivity ) );
 	
-	if( deoglSkinShader::REFLECTION_TEST_MODE == 0 ){
+	switch( deoglSkinShader::REFLECTION_TEST_MODE ){
+	case deoglSkinShader::ertmOldVersion:
 		config.SetTextureEnvMap( pTexture.GetReflects() );
+		break;
 		
-	}else if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+	case deoglSkinShader::ertmOwnPassReflection:
 		// !pTexture.GetSolid() only until transparency works properly with the separate environment map pass
 		config.SetTextureEnvMap( HASCHANTEX( ectEnvironmentMap ) || ! pTexture.GetSolid() );
+		break;
 		
-	}else{
+	case deoglSkinShader::ertmSingleBlenderEnvMap:
 		//config.SetTextureEnvMap( isParticle && ! realTranspParticle );
 		config.SetTextureEnvMap( true );
+		break;
 	}
 	
 	config.SetTextureEnvMapEqui( ! HASCHANTEX( ectEnvironmentMap )

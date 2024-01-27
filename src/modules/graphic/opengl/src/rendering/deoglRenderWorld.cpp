@@ -398,7 +398,7 @@ DEBUG_RESET_TIMER
 	renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
 	DBG_EXIT("RenderDepthMinMaxMipMap")
 	
-	if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmOwnPassReflection ){
 		// NOTE actually this requires updated GI probes but this happens below during RenderLights().
 		//      this is though not that much of a trouble. it only causes environment maps to be
 		//      GI light one frame behind
@@ -447,7 +447,7 @@ DEBUG_RESET_TIMER
 		}
 	}
 	
-	if( deoglSkinShader::REFLECTION_TEST_MODE != 1 ){
+	if( deoglSkinShader::REFLECTION_TEST_MODE != deoglSkinShader::ertmOwnPassReflection ){
 		DBG_ENTER("RenderGIEnvMaps")
 		renderers.GetReflection().RenderGIEnvMaps( plan );
 		DBG_EXIT("RenderGIEnvMaps")
@@ -512,7 +512,7 @@ DEBUG_RESET_TIMER
 		// reflections
 		renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
 		
-		if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+		if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmOwnPassReflection ){
 			renderers.GetReflection().RenderReflections( plan );
 			if( debugMainPass ){
 				DebugTimer2Sample( plan, *pDebugInfo.infoReflection, true );
@@ -1067,7 +1067,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 	// the occlusion maps are trashed now. the best solution would be to use a set of occlusion
 	// maps for each masked plan avoiding the trashing of the main occlusion maps
 	
-	//if( deoglSkinShader::REFLECTION_TEST_MODE == 2 ){
+	//if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
 	//	ogl.GetRenderReflection().UpdateEnvMap( plan );
 	//}
 DBG_EXIT("RenderMaskedPass")

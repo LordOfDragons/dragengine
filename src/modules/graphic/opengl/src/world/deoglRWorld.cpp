@@ -301,8 +301,10 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 			pListPrepareForRenderComponents.Remove( entry );
 			
 			if( component.GetParentWorld() ){ // sanity check
-				component.PrepareForRender( plan, mask ); // can potentially re-add the component
-				pListPrepareRenderComponents.Add( &component );
+				if( component.GetVisible() ){ // skip if invisible
+					component.PrepareForRender( plan, mask ); // can potentially re-add the component
+					pListPrepareRenderComponents.Add( &component );
+				}
 			}
 			
 			if( entry == tailComponent ){
@@ -323,8 +325,10 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 			pListPrepareForRenderBillboards.Remove( entry );
 			
 			if( billboard.GetParentWorld() ){ // sanity check
-				billboard.PrepareForRender( plan, mask ); // can potentially re-add the billboard
-				pListPrepareRenderBillboards.Add( &billboard );
+				if( billboard.GetVisible() ){ // skip if invisible
+					billboard.PrepareForRender( plan, mask ); // can potentially re-add the billboard
+					pListPrepareRenderBillboards.Add( &billboard );
+				}
 			}
 			
 			if( entry == tailBillboard ){
@@ -345,8 +349,10 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 			pListPrepareForRenderLights.Remove( entry );
 			
 			if( light.GetParentWorld() ){ // sanity check
-				light.PrepareForRender( mask ); // can potentially re-add the light
-				pListPrepareRenderLights.Add( &light );
+				if( light.GetActive() ){ // skip if not active
+					light.PrepareForRender( mask ); // can potentially re-add the light
+					pListPrepareRenderLights.Add( &light );
+				}
 			}
 			
 			if( entry == tailLight ){
@@ -383,7 +389,10 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 	// prepare debug drawers
 	count = pDebugDrawers.GetCount();
 	for( i=0; i<count; i++ ){
-		( ( deoglRDebugDrawer* )pDebugDrawers.GetAt( i ) )->UpdateVBO();
+		deoglRDebugDrawer * const ddrawer = ( deoglRDebugDrawer* )pDebugDrawers.GetAt( i );
+		if( ddrawer->GetVisible() ){ // skip if invisible
+			ddrawer->UpdateVBO();
+		}
 	}
 		SPECIAL_TIMER_PRINT("DebugDrawers")
 	
