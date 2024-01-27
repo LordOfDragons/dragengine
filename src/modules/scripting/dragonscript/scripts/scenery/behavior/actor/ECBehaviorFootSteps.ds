@@ -69,36 +69,36 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * behaviors to know what sound or effects to produce.
 	 */
 	class Event
-		private var float pTime
-		private var WeightedRandomList pSounds
-		private var float pVolume
-		private var float pRange
-		private var float pRollOff
-		private var DVector pOffset
-		private var String pType
-		private var Sound pLastRandomSound
+		var float pTime
+		var WeightedRandomList pSounds
+		var float pVolume
+		var float pRange
+		var float pRollOff
+		var DVector pOffset
+		var String pType
+		var Sound pLastRandomSound
 		
 		
 		/** \brief Create foot step event. */
-		public func new(float time) this(time, WeightedRandomList.new())
+		func new(float time) this(time, WeightedRandomList.new())
 		end
 		
-		public func new(float time, WeightedRandomList sounds) this(time, sounds, 1, 10)
+		func new(float time, WeightedRandomList sounds) this(time, sounds, 1, 10)
 		end
 		
-		public func new(float time, WeightedRandomList sounds, float volume, float range) \
+		func new(float time, WeightedRandomList sounds, float volume, float range) \
 		this(time, sounds, volume, range, DVector.new(0, 0.05, 0))
 		end
 		
-		public func new(float time, WeightedRandomList sounds, float volume, float range, float rollOff) \
+		func new(float time, WeightedRandomList sounds, float volume, float range, float rollOff) \
 		this(time, sounds, volume, range, DVector.new(0, 0.05, 0), rollOff)
 		end
 		
-		public func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset) \
+		func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset) \
 		this(time, sounds, volume, range, offset, 0.5)
 		end
 		
-		public func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset, float rollOff)
+		func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset, float rollOff)
 			if sounds == null or offset == null
 				throw EInvalidParam.new()
 			end
@@ -112,42 +112,42 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			pLastRandomSound = null
 		end
 		
-		public func new(float time, String type) this(time)
+		func new(float time, String type) this(time)
 			pType = type
 		end
 		
-		public func new(float time, WeightedRandomList sounds, String type) this(time, sounds)
+		func new(float time, WeightedRandomList sounds, String type) this(time, sounds)
 			pType = type
 		end
 		
-		public func new(float time, WeightedRandomList sounds, float volume, float range, String type) \
+		func new(float time, WeightedRandomList sounds, float volume, float range, String type) \
 		this(time, sounds, volume, range)
 			pType = type
 		end
 		
-		public func new(float time, WeightedRandomList sounds, float volume, float range, \
+		func new(float time, WeightedRandomList sounds, float volume, float range, \
 		DVector offset, String type) this(time, sounds, volume, range, offset)
 			pType = type
 		end
 		
-		public func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset, \
+		func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset, \
 		float rollOff, String type) this(time, sounds, volume, range, offset, rollOff)
 			pType = type
 		end
 		
 		
 		/** \brief Activation time. */
-		public func float getTime()
+		func float getTime()
 			return pTime
 		end
 		
 		/** \brief List of sounds to pick one from to play this event. */
-		public func WeightedRandomList getSounds()
+		func WeightedRandomList getSounds()
 			return pSounds
 		end
 		
 		/** \brief Set list of sounds to pick one from to play this event. */
-		public func void setSounds(WeightedRandomList sounds)
+		func void setSounds(WeightedRandomList sounds)
 			if sounds == null
 				throw EInvalidParam.new()
 			end
@@ -156,7 +156,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/** \brief Volume to use for created speakers. */
-		public func float getVolume()
+		func float getVolume()
 			return pVolume
 		end
 		
@@ -165,12 +165,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Volume will be clamped to 0 if negative. Default is 1.
 		 */
-		public func void setVolume(float volume)
+		func void setVolume(float volume)
 			pVolume = DEMath.max(volume, 0.0)
 		end
 		
 		/** \brief Range to use for created speakers. */
-		public func float getRange()
+		func float getRange()
 			return pRange
 		end
 		
@@ -179,12 +179,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Range will be clamped to 0 if negative. Default is 10.
 		 */
-		public func void setRange(float range)
+		func void setRange(float range)
 			pRange = DEMath.max(range, 0.0)
 		end
 		
 		/** \brief Roll-off to use for created speakers. */
-		public func float getRollOff()
+		func float getRollOff()
 			return pRollOff
 		end
 		
@@ -193,12 +193,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Roll-off will be clamped to 0 if negative. Default is 1.
 		 */
-		public func void setRollOff(float rollOff)
+		func void setRollOff(float rollOff)
 			pRollOff = DEMath.max(rollOff, 0.0)
 		end
 		
 		/** \brief Offset relative to actor coordinate system to play foot step at. */
-		public func DVector getOffset()
+		func DVector getOffset()
 			return pOffset
 		end
 		
@@ -207,7 +207,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Default is 5cm above acter center on ground.
 		 */
-		public func void setOffset(DVector offset)
+		func void setOffset(DVector offset)
 			if offset == null
 				throw EInvalidParam.new()
 			end
@@ -216,7 +216,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief Random sound from the list of sounds to play or null if list is empty. */
-		public func Sound randomSound()
+		func Sound randomSound()
 			var int count = pSounds.getCount()
 			if count == 0
 				return null
@@ -242,12 +242,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/** \brief Optional type string (by default null). */
-		public func String getType()
+		func String getType()
 			return pType
 		end
 		
 		/** \brief Set optional type string or null if not needed. */
-		public func void setType(String type)
+		func void setType(String type)
 			pType = type
 		end
 	end
@@ -259,13 +259,13 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * Stores interval and events for a type of foot steps.
 	 */
 	class Configuration
-		private var String pID
-		private var Array pEvents
-		private var float pInterval
+		var String pID
+		var Array pEvents
+		var float pInterval
 		
 		
 		/** \brief Create foot steps configuration. */
-		public func new(String id)
+		func new(String id)
 			if id.empty()
 				throw EInvalidParam.new()
 			end
@@ -277,22 +277,22 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief ID. */
-		public func String getID()
+		func String getID()
 			return pID
 		end
 		
 		/** \brief Number of events. */
-		public func int getEventCount()
+		func int getEventCount()
 			return pEvents.getCount()
 		end
 		
 		/** \brief Event at index. */
-		public func Event getEventAt(int index)
+		func Event getEventAt(int index)
 			return pEvents.getAt(index) cast Event
 		end
 		
 		/** \brief Add event. */
-		public func void addEvent(Event event)
+		func void addEvent(Event event)
 			if event == null
 				throw EInvalidParam.new()
 			end
@@ -310,28 +310,28 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/** \brief Remove event. */
-		public func void removeEvent(Event event)
+		func void removeEvent(Event event)
 			pEvents.remove(event)
 		end
 		
 		/** \brief Remove all events. */
-		public func void removeAllEvents()
+		func void removeAllEvents()
 			pEvents.removeAll()
 		end
 		
 		/** \brief Visit events with block receiving argument Event. */
-		public func void forEachEvent(Block ablock)
+		func void forEachEvent(Block ablock)
 			pEvents.forEach(ablock)
 		end
 		
 		/** \brief Find event with block receiving argument Event returning true if found. */
-		public func Event findEvent(Block ablock)
+		func Event findEvent(Block ablock)
 			return pEvents.find(ablock) cast Event
 		end
 		
 		
 		/** \brief Interval in seconds before foot steps repeat. */
-		public func float getInterval()
+		func float getInterval()
 			return pInterval
 		end
 		
@@ -340,7 +340,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Clamped to 0.1 if smaller.
 		 */
-		public func void setInterval(float interval)
+		func void setInterval(float interval)
 			pInterval = DEMath.max(interval, 0.1)
 		end
 	end
@@ -359,34 +359,34 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Foot step triggered. */
-		public func void footStep(Instance instance, Configuration configuration, Event event)
+		func void footStep(Instance instance, Configuration configuration, Event event)
 		end
 		
 		/** \brief Configuration changed. */
-		public func void configurationChanged(Instance instance, Configuration configuration)
+		func void configurationChanged(Instance instance, Configuration configuration)
 		end
 	end
 	
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorFootSteps pECBehavior
-		private var Dictionary pConfigurations
-		private var Configuration pActiveConfiguration
-		private var LayerMask pLayerMask
-		private var float pElapsed
-		private var int pNextEvent
-		private var bool pAutoUpdate
-		private var Array pListeners
+		var ECBehaviorFootSteps pECBehavior
+		var Dictionary pConfigurations
+		var Configuration pActiveConfiguration
+		var LayerMask pLayerMask
+		var float pElapsed
+		var int pNextEvent
+		var bool pAutoUpdate
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorFootSteps ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorFootSteps ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pConfigurations = Dictionary.new()
 			pElapsed = 0
@@ -397,7 +397,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
+		func void dispose()
 			pListeners = null
 			super.dispose()
 		end
@@ -405,25 +405,25 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorFootSteps getECBehavior()
+		func ECBehaviorFootSteps getECBehavior()
 			return pECBehavior
 		end
 		
 		
 		
 		/** \brief Call update() automatically on postThink(). */
-		public func bool getAutoUpdate()
+		func bool getAutoUpdate()
 			return pAutoUpdate
 		end
 		
 		/** \brief Set if update() is automatically called on postThink(). */
-		public func void setAutoUpdate(bool autoUpdate)
+		func void setAutoUpdate(bool autoUpdate)
 			if autoUpdate == pAutoUpdate
 				return
 			end
@@ -432,12 +432,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/** \brief Layer mask to use for created speakers. */
-		public func LayerMask getLayerMask()
+		func LayerMask getLayerMask()
 			return pLayerMask
 		end
 		
 		/** \brief Set layer mask to use for created speakers. */
-		public func void setLayerMask(LayerMask layerMask)
+		func void setLayerMask(LayerMask layerMask)
 			if layerMask == null
 				throw EInvalidParam.new()
 			end
@@ -447,17 +447,17 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief Number of configurations. */
-		public func int getConfigurationCount()
+		func int getConfigurationCount()
 			return pConfigurations.getCount()
 		end
 		
 		/** \brief Configuration with ID or null if not found. */
-		public func Configuration getConfigurationAt(String id)
+		func Configuration getConfigurationAt(String id)
 			return pConfigurations.getAt(id, null) cast Configuration
 		end
 		
 		/** \brief Add configuration. */
-		public func void addConfiguration(Configuration configuration)
+		func void addConfiguration(Configuration configuration)
 			if pConfigurations.has(configuration.getID())
 				throw EInvalidParam.new()
 			end
@@ -465,22 +465,22 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/** \brief Remove configuration. */
-		public func void removeConfiguration(Configuration configuration)
+		func void removeConfiguration(Configuration configuration)
 			pConfigurations.remove(configuration.getID())
 		end
 		
 		/** \brief Remove all configurations. */
-		public func void removeAllConfigurations()
+		func void removeAllConfigurations()
 			pConfigurations.removeAll()
 		end
 		
 		/** \brief Visit configurations with block receiving argument Configuration. */
-		public func void forEachConfiguration(Block ablock)
+		func void forEachConfiguration(Block ablock)
 			pConfigurations.forEachValue(ablock)
 		end
 		
 		/** \brief Find configuration with block receiving argument Configuration returning true if found. */
-		public func Configuration findConfiguration(Block ablock)
+		func Configuration findConfiguration(Block ablock)
 			return pConfigurations.find(block String id, Configuration configuration
 				return ablock.run(configuration)
 			end) cast Configuration
@@ -489,7 +489,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief Active configuration or null if none is active. */
-		public func Configuration getActiveConfiguration()
+		func Configuration getActiveConfiguration()
 			return pActiveConfiguration
 		end
 		
@@ -501,7 +501,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * \returns true if configuration changed or false if it is the same.
 		 */
-		public func bool setActiveConfigurationWithID(String id, bool resetIfChanged)
+		func bool setActiveConfigurationWithID(String id, bool resetIfChanged)
 			if id != null
 				return setActiveConfiguration(getConfigurationAt(id), resetIfChanged)
 				
@@ -515,7 +515,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * \returns true if configuration changed or false if it is the same.
 		 */
-		public func bool setActiveConfiguration(Configuration configuration, bool resetIfChanged)
+		func bool setActiveConfiguration(Configuration configuration, bool resetIfChanged)
 			if configuration == pActiveConfiguration
 				return false
 			end
@@ -538,24 +538,24 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * \returns true if configuration changed or false if it is the same.
 		 */
-		public func bool clearActiveConfiguration()
+		func bool clearActiveConfiguration()
 			return setActiveConfiguration(null, true)
 		end
 		
 		
 		
 		/** \brief Elapsed time since start of interval. */
-		public func float getElapsed()
+		func float getElapsed()
 			return pElapsed
 		end
 		
 		/** \brief Set elapsed time since start of interval. */
-		public func void setElapsed(float elapsed)
+		func void setElapsed(float elapsed)
 			pElapsed = DEMath.max(elapsed, 0.0)
 		end
 		
 		/** \brief Index of next foot step event. */
-		public func int getNextEvent()
+		func int getNextEvent()
 			return pNextEvent
 		end
 		
@@ -576,7 +576,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief Reset to start of interval. */
-		public func void reset()
+		func void reset()
 			pElapsed = 0
 			pNextEvent = 0
 		end
@@ -587,7 +587,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * Advances elapsed playing foot steps if events are trigered. Same as update(float,bool)
 		 * called with true as parameter for relative.
 		 */
-		public func void update(float elapsed)
+		func void update(float elapsed)
 			update(elapsed, true)
 		end
 		
@@ -601,7 +601,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 *                 the time is considered to have elapsed past the interval and
 		 *                 wrapped around.
 		 */
-		public func void update(float elapsed, bool relative)
+		func void update(float elapsed, bool relative)
 			if pActiveConfiguration == null
 				return
 			end
@@ -681,7 +681,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -689,14 +689,14 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Post thinking after physics processing is finished. */
-		public func void postThink(float elapsed)
+		func void postThink(float elapsed)
 			if pAutoUpdate
 				update(elapsed)
 			end
@@ -705,7 +705,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var String id = reader.readString16()
@@ -722,7 +722,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			writer.writeString16(pActiveConfiguration != null if pActiveConfiguration.getID() else "")
@@ -733,15 +733,15 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	
 	
 	
-	private var bool pAutoUpdate
+	var bool pAutoUpdate
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass) this(eclass, "footSteps.")
+	func new(BehaviorElementClass eclass) this(eclass, "footSteps.")
 	end
 	
-	public func new(BehaviorElementClass eclass, String prefix) super(eclass)
+	func new(BehaviorElementClass eclass, String prefix) super(eclass)
 		if getBehaviorIn(eclass) != null
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
@@ -754,19 +754,19 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	
 	
 	/** \brief Call update() automatically on postThink(). */
-	public func bool getAutoUpdate()
+	func bool getAutoUpdate()
 		return pAutoUpdate
 	end
 	
 	/** \brief Set if update() is automatically called on postThink(). */
-	public func void setAutoUpdate(bool autoUpdate)
+	func void setAutoUpdate(bool autoUpdate)
 		pAutoUpdate = autoUpdate
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -778,7 +778,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorFootSteps.
 	 */
-	static public func ECBehaviorFootSteps getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorFootSteps getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorFootSteps each
 			return true
 		end) cast ECBehaviorFootSteps
@@ -790,7 +790,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorFootSteps.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -799,7 +799,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

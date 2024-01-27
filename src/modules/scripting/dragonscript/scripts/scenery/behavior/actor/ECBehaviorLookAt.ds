@@ -260,6 +260,8 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.enabledChanged(this)
 			end)
+			
+			setRequiresThink(enabled)
 		end
 		
 		

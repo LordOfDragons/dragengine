@@ -432,8 +432,6 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			
 			pLocomotion = ecbehavior.getLocomotion().instance(element)
 			pNavigator = ecbehavior.getNavigator().instance(element)
-			
-			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of behavior instance. */
@@ -523,6 +521,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pGoalPosition = goal
 			pPath = null
 			pNextPathPoint = 0
+			updateRequiresThinking()
 		end
 		
 		/** \brief Distance along path below which actor arrive at target is triggered. */
@@ -604,11 +603,15 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			
 			pLocomotion.getLocomotion().setAnalogMovingSpeed(0)
 			pPause = true
+			updateRequiresThinking()
 		end
 		
 		/** \brief Continue moving. */
 		func void continueMoving()
-			pPause = false
+			if pPause
+				pPause = false
+				updateRequiresThinking()
+			end
 		end
 		
 		
@@ -634,6 +637,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startMoving(this)
 			end)
+			
+			updateRequiresThinking()
 		end
 		
 		/** \brief Stop moving. */
@@ -653,6 +658,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pPath = null
 			pNextPathPoint = 0
 			pRemainingDistance = 0
+			updateRequiresThinking()
 		end
 		
 		
@@ -1181,6 +1187,16 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		
 		
+		/**
+		 * \brief Update requires thinking.
+		 * \version 1.21
+		 */
+		protected func void updateRequiresThinking()
+			setRequiresThink(pGoalPosition != null and not pPause and pPath != null)
+		end
+		
+		
+		
 		/** \brief Read behavior from file. */
 		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
@@ -1219,6 +1235,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			else
 				throw EInvalidParam.new("unsupported version")
 			end
+			
+			updateRequiresThinking()
 		end
 		
 		/**

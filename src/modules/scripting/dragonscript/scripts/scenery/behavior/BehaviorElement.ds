@@ -45,17 +45,18 @@ pin Dragengine.Utils
  * ECBehaviorInstance instances. These provide the actual behavior to the element.
  */
 class BehaviorElement extends Element
-	private var Array pInstances
-	private var Array pThinkingInstances
-	private var bool pRequiresEnterFrame
-	private var bool pRequiresThink
-	private var bool pRequiresAttachToParent
-	private var bool pIsChangingGameWorld
+	var Array pInstances
+	var Array pThinkingInstances
+	var bool pRequiresEnterFrame
+	var bool pRequiresThink
+	var bool pRequiresAttachToParent
+	var bool pIsChangingGameWorld
+	var bool pIsThinker
 	
 	
 	
 	/** \brief Create element. */
-	public func new(BehaviorElementClass eclass) super(eclass)
+	func new(BehaviorElementClass eclass) super(eclass)
 		pInstances = Array.new()
 		pRequiresEnterFrame = false
 		pRequiresThink = false
@@ -67,7 +68,7 @@ class BehaviorElement extends Element
 	end
 	
 	/** \brief Dispose of element. */
-	public func void dispose()
+	func void dispose()
 		if pInstances != null
 			pInstances.forEachReverse(block ECBehaviorInstance each
 				each.dispose()
@@ -83,7 +84,7 @@ class BehaviorElement extends Element
 	
 	
 	/** \brief Initialize element from stub. */
-	public func void init(StubElement stub)
+	func void init(StubElement stub)
 		super.init(stub)
 		
 		pInstances.forEach(block ECBehaviorInstance each
@@ -94,12 +95,12 @@ class BehaviorElement extends Element
 	
 	
 	/** \brief Number of behavior instances. */
-	public func int getInstanceCount()
+	func int getInstanceCount()
 		return pInstances.getCount()
 	end
 	
 	/** \brief Behavior instance at index. */
-	public func ECBehaviorInstance getInstanceAt(int index)
+	func ECBehaviorInstance getInstanceAt(int index)
 		return pInstances.getAt(index) cast ECBehaviorInstance
 	end
 	
@@ -109,7 +110,7 @@ class BehaviorElement extends Element
 	 * Block is required to have one parameter of type ECBehaviorInstance or subclass
 	 * thereof. Block is called only for instances castable to block parameter type.
 	 */
-	public func void forEachInstance(Block ablock)
+	func void forEachInstance(Block ablock)
 		pInstances.forEachCastable(ablock)
 	end
 	
@@ -119,7 +120,7 @@ class BehaviorElement extends Element
 	 * Block is required to have one parameter ECBehaviorInstance or subclass thereof.
 	 * Block is called only for instances castable to block parameter type.
 	 */
-	public func void forEachInstanceReverse(Block ablock)
+	func void forEachInstanceReverse(Block ablock)
 		pInstances.forEachReverseCastable(ablock)
 	end
 	
@@ -130,7 +131,7 @@ class BehaviorElement extends Element
 	 * returning true if the right instance is found otherwise false. Block is called
 	 * only for instances castable to block parameter type.
 	 */
-	public func ECBehaviorInstance findInstance(Block ablock)
+	func ECBehaviorInstance findInstance(Block ablock)
 		return pInstances.findCastable(ablock) cast ECBehaviorInstance
 	end
 	
@@ -142,14 +143,14 @@ class BehaviorElement extends Element
 	 * returning true for instances to collect. Block is called only for instances castable
 	 * to block parameter type.
 	 */
-	public func Array collectInstances(Block ablock)
+	func Array collectInstances(Block ablock)
 		return pInstances.collectCastable(ablock)
 	end
 	
 	
 	
 	/** \brief Sub-class requires enterFrame() to be called. */
-	public func bool getRequiresEnterFrame()
+	func bool getRequiresEnterFrame()
 		return pRequiresEnterFrame
 	end
 	
@@ -159,7 +160,7 @@ class BehaviorElement extends Element
 	end
 	
 	/** \brief Sub-class requires think() to be called. */
-	public func bool getRequiresThink()
+	func bool getRequiresThink()
 		return pRequiresThink
 	end
 	
@@ -169,7 +170,7 @@ class BehaviorElement extends Element
 	end
 	
 	/** \brief Attach to parent has not been processed yet. */
-	public func bool getRequiresAttachToParent()
+	func bool getRequiresAttachToParent()
 		return pRequiresAttachToParent
 	end
 	
@@ -180,7 +181,7 @@ class BehaviorElement extends Element
 	 * Use this method if you need to reattach the element to the parent defined in the
 	 * StubElement the next time it enters a game world.
 	 */
-	public func void setRequiresAttachToParent(bool requiresAttachToParent)
+	func void setRequiresAttachToParent(bool requiresAttachToParent)
 		pRequiresAttachToParent = requiresAttachToParent
 	end
 	
@@ -199,7 +200,7 @@ class BehaviorElement extends Element
 	 * Using this method helps to reduce the script processing load by not making the
 	 * element think() method called if no behavior requires it.
 	 */
-	public func void requiresThinkChanged()
+	func void requiresThinkChanged()
 		updateThinking()
 	end
 	
@@ -242,7 +243,7 @@ class BehaviorElement extends Element
 	 * By using isChangingGameWorld() the ECBehaviorTwoStateAnimated can figure out that
 	 * it should not call activate() but setActivated().
 	 */
-	public func bool isChangingGameWorld()
+	func bool isChangingGameWorld()
 		return pIsChangingGameWorld
 	end
 	
@@ -253,49 +254,49 @@ class BehaviorElement extends Element
 	 * Convenience method returning true if getGameWorld() returns not null and
 	 * isChangingGameWorld() returns false.
 	 */
-	public func bool isReallyInGameWorld()
+	func bool isReallyInGameWorld()
 		return not pIsChangingGameWorld and getGameWorld() != null
 	end
 	
 	
 	
 	/** \brief Position changed. */
-	public func void onSetPosition()
+	func void onSetPosition()
 		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
 		end)
 	end
 	
 	/** \brief Orientation changed. */
-	public func void onSetOrientation()
+	func void onSetOrientation()
 		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
 		end)
 	end
 	
 	/** \brief Scaling changed. */
-	public func void onSetScaling()
+	func void onSetScaling()
 		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
 		end)
 	end
 	
 	/** \brief Position and orientation changed. */
-	public func void onSetGeometry()
+	func void onSetGeometry()
 		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
 		end)
 	end
 	
 	/** \brief Visible state changed. */
-	public func void onSetVisible()
+	func void onSetVisible()
 		pInstances.forEach(block ECBehaviorInstance each
 			each.stateChanged()
 		end)
 	end
 	
 	/** \brief Touchable state changed. */
-	public func void onSetTouchable()
+	func void onSetTouchable()
 		pInstances.forEach(block ECBehaviorInstance each
 			each.stateChanged()
 		end)
@@ -304,7 +305,7 @@ class BehaviorElement extends Element
 	
 	
 	/** \brief Add element to game world. */
-	public func void addToGameWorld()
+	func void addToGameWorld()
 		super.addToGameWorld()
 		
 		try
@@ -333,7 +334,7 @@ class BehaviorElement extends Element
 	end
 	
 	/** \brief Remove element from game world if set. */
-	public func void removeFromGameWorld()
+	func void removeFromGameWorld()
 		try
 			pIsChangingGameWorld = true
 			
@@ -342,7 +343,10 @@ class BehaviorElement extends Element
 			end)
 			
 			var GameWorld gameWorld = getGameWorld()
-			gameWorld.removeThinker(this)
+			if pIsThinker
+				gameWorld.removeThinker(this)
+				pIsThinker = false
+			end
 			gameWorld.removeEnterFrameOnce(this)
 			
 			pIsChangingGameWorld = false
@@ -356,7 +360,7 @@ class BehaviorElement extends Element
 	end
 	
 	/** \brief Frame update started. */
-	public func void enterFrame()
+	func void enterFrame()
 		super.enterFrame()
 		
 		pInstances.forEach(block ECBehaviorInstance each
@@ -391,14 +395,14 @@ class BehaviorElement extends Element
 	 * this method is called. Calls ECBehaviorInstance.attachToParent() on each behavior
 	 * to do the actual attaching.
 	 */
-	public func void attachToParent(Element parent)
+	func void attachToParent(Element parent)
 		pInstances.forEach(block ECBehaviorInstance each
 			each.attachToParent(parent)
 		end)
 	end
 	
 	/** \brief Think about what the element is going to do in this frame. */
-	public func void think(float elapsed)
+	func void think(float elapsed)
 		if pThinkingInstances == null
 			return
 		end
@@ -409,7 +413,7 @@ class BehaviorElement extends Element
 	end
 	
 	/** \brief Post thinking after physics processing is finished. */
-	public func void postThink(float elapsed)
+	func void postThink(float elapsed)
 		if pThinkingInstances == null
 			return
 		end
@@ -434,11 +438,17 @@ class BehaviorElement extends Element
 		end)
 		
 		if pRequiresThink or pThinkingInstances.getCount() > 0
-			gameWorld.addThinker(this)
+			if not pIsThinker
+				gameWorld.addThinker(this)
+				pIsThinker = true
+			end
 			
 		else
 			pThinkingInstances = null
-			gameWorld.removeThinker(this)
+			if pIsThinker
+				gameWorld.removeThinker(this)
+				pIsThinker = false
+			end
 		end
 	end
 	
@@ -446,16 +456,19 @@ class BehaviorElement extends Element
 	protected func void stopThinking()
 		pThinkingInstances = null
 		
-		var GameWorld gameWorld = getGameWorld()
-		if gameWorld != null
-			gameWorld.removeThinker(this)
+		if pIsThinker
+			var GameWorld gameWorld = getGameWorld()
+			if gameWorld != null
+				gameWorld.removeThinker(this)
+			end
+			pIsThinker = false
 		end
 	end
 	
 	
 	
 	/** \brief Read element from file. */
-	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			pInstances.forEach(block ECBehaviorInstance each
@@ -516,7 +529,7 @@ class BehaviorElement extends Element
 	end
 	
 	/** \brief Write element to file. */
-	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 		var BehaviorElementClass eclass = getClass() cast BehaviorElementClass
 		var MemoryFile behaviorData = MemoryFile.new("behaviorData")
 		
@@ -534,7 +547,7 @@ class BehaviorElement extends Element
 	
 	
 	/** \brief Visit element. */
-	public func void visit(ElementVisitor visitor)
+	func void visit(ElementVisitor visitor)
 		visitor.visitBehaviorElement(this)
 	end
 end

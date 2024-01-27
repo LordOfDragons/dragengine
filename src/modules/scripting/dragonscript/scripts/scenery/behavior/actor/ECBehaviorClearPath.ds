@@ -201,6 +201,8 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			if not enabled
 				disarmTest()
 			end
+			
+			setRequiresThink(enabled)
 		end
 		
 		/** \brief Check interval in seconds. */
@@ -421,6 +423,8 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			else
 				throw EInvalidParam.new("unsupported version")
 			end
+			
+			setRequiresThink(pEnabled)
 		end
 		
 		/** \brief Write behavior to file. */

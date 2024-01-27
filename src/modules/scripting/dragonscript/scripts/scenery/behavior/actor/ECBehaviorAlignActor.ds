@@ -148,8 +148,6 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			pSucceeded = true
 			
 			pLocomotion = ecbehavior.getLocomotion().instance(element)
-			
-			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of behavior instance. */
@@ -429,6 +427,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			pIsAtTarget = false
 			pAlignFinished = false
 			pSucceeded = true
+			setRequiresThink(true)
 			
 			pListeners.forEach(block Listener each
 				each.startAligning(this)
@@ -521,6 +520,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			pAlignFinished = true
 			pSucceeded = false
 			clearTarget()
+			setRequiresThink(false)
 			
 			pListeners.forEach(block Listener each
 				each.finishedAligning(this)
@@ -613,6 +613,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			pAlignFinished = true
 			pSucceeded = true
 			clearTarget()
+			setRequiresThink(false)
 			
 			pListeners.forEach(block Listener each
 				each.finishedAligning(this)
@@ -701,6 +702,8 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			else
 				throw EInvalidParam.new("unsupported version")
 			end
+			
+			setRequiresThink(not pAlignFinished)
 		end
 		
 		/** \brief Write behavior to file. */
