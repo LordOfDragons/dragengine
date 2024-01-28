@@ -124,8 +124,6 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 			
 			pVRHandPointAt = ecbehavior.getVRHandPointAt().instance(element)
 			pParticleEmitter = ecbehavior.getParticleEmitter().instance(element)
-			
-			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of instance. */

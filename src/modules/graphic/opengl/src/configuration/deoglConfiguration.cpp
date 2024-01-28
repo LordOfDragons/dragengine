@@ -210,8 +210,10 @@ pRenderDocMode( false )
 	}
 	#endif
 	
+	#ifdef OS_UNIX
 	const char * const envRenderDocMode = secure_getenv( "DE_OGL_RENDERDOC_MODE" );
 	pRenderDocMode = envRenderDocMode && strcmp( envRenderDocMode, "1" ) == 0;
+	#endif
 }
 
 deoglConfiguration::~deoglConfiguration(){
