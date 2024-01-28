@@ -71,19 +71,19 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Enabled changed. */
-		public func void enabledChanged(Instance instance)
+		func void enabledChanged(Instance instance)
 		end
 		
 		/** \brief Pointing at element changed. */
-		public func void pointAtChanged(Instance instance)
+		func void pointAtChanged(Instance instance)
 		end
 		
 		/** \brief Detection parameters changed like range, origin or rotation. */
-		public func void testParametersChanged(Instance instance)
+		func void testParametersChanged(Instance instance)
 		end
 	end
 	
@@ -95,10 +95,10 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -106,7 +106,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -115,46 +115,44 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorVRHandPointAt pECBehavior
-		private var ECBehaviorVRHand.Instance pVRHand
+		var ECBehaviorVRHandPointAt pECBehavior
+		var ECBehaviorVRHand.Instance pVRHand
 		
-		private var bool pEnabled
-		private var ShapeList pShape
-		private var CollisionFilter pCollisionFilter
+		var bool pEnabled
+		var ShapeList pShape
+		var CollisionFilter pCollisionFilter
 		
-		private var ColliderCollisionTest pTest
-		private var Vector pOrigin
-		private var Vector pRotation
+		var ColliderCollisionTest pTest
+		var Vector pOrigin
+		var Vector pRotation
 		
-		private var float pRange
+		var float pRange
 		
-		private var DVector pPointAtOrigin
-		private var DVector pPointAtDirection
-		private var Element pPointAtElement
-		private var int pPointAtBone
-		private var String pPointAtBoneName
-		private var float pPointAtDistance
-		private var DVector pPointAtHitPoint
-		private var Collider pPointAtCollider
+		var DVector pPointAtOrigin
+		var DVector pPointAtDirection
+		var Element pPointAtElement
+		var int pPointAtBone
+		var String pPointAtBoneName
+		var float pPointAtDistance
+		var DVector pPointAtHitPoint
+		var Collider pPointAtCollider
 		
-		private var Array pListeners
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorVRHandPointAt ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorVRHandPointAt ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
 			pEnabled = false
 			pCollisionFilter = ecbehavior.getCollisionFilter().getCollisionFilter()
 			
 			pVRHand = ecbehavior.getVRHand().instance(element)
-			
-			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
+		func void dispose()
 			pTest = null
 			pVRHand = null
 			pPointAtElement = null
@@ -166,7 +164,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var Collider collider = pVRHand.getCollider()
 			if collider == null
 				throw EInvalidParam.new()
@@ -218,29 +216,31 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			
 			// create and add listeners
 			pECBehavior.createListeners(this)
+			
+			setRequiresThink(pEnabled)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorVRHandPointAt getECBehavior()
+		func ECBehaviorVRHandPointAt getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief VR Hand behavior instance. */
-		public func ECBehaviorVRHand.Instance getVRHand()
+		func ECBehaviorVRHand.Instance getVRHand()
 			return pVRHand
 		end
 		
 		
 		
 		/** \brief Enable point-at. */
-		public func bool getEnabled()
+		func bool getEnabled()
 			return pEnabled
 		end
 		
 		/** \brief Set if point-at is enabled. */
-		public func void setEnabled(bool enabled)
+		func void setEnabled(bool enabled)
 			if enabled == pEnabled
 				return
 			end
@@ -255,6 +255,8 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 				clearPointAtElement()
 			end
 			
+			setRequiresThink(enabled and pTest != null)
+			
 			pListeners.forEach(block Listener each
 				each.enabledChanged(this)
 			end)
@@ -268,7 +270,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		 * By default no test collider is set in which case ray-testing is used. Using shapes
 		 * like a sphere is useful to enlarge the hit area for example with 3rd person views.
 		 */
-		public func void setTestCollider(ShapeList shape)
+		func void setTestCollider(ShapeList shape)
 			if shape == null
 				throw ENullPointer.new("shape")
 			end
@@ -288,14 +290,14 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		 * By default no shape is set in which case ra-ytesting is used. Using shapes like a
 		 * sphere is useful to enlarge the hit area for example with 3rd person views.
 		 */
-		public func void setSphereTestCollider(float radius)
+		func void setSphereTestCollider(float radius)
 			var ShapeList shape = ShapeList.new()
 			shape.addSphere(Vector.new(), DEMath.max(radius, 0.0))
 			setTestCollider(shape)
 		end
 		
 		/** \brief Clear test collider reverting to ray-tracing. */
-		public func void clearTestCollider()
+		func void clearTestCollider()
 			pShape = null
 			
 			if pTest != null
@@ -304,7 +306,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		end
 		
 		/** \brief Set test collision filter. */
-		public func void setCollisionFilter(CollisionFilter filter)
+		func void setCollisionFilter(CollisionFilter filter)
 			pCollisionFilter = filter
 			
 			if pTest != null
@@ -315,12 +317,12 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		
 		/** \brief Test range. */
-		public func float getRange()
+		func float getRange()
 			return pRange
 		end
 		
 		/** \brief Set test range. */
-		public func void setRange(float range)
+		func void setRange(float range)
 			range = DEMath.max(range, 0.0)
 			if DEMath.fabs(range - pRange) < 0.001
 				return
@@ -331,12 +333,12 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		end
 		
 		/** \brief Test origin. */
-		public func Vector getOrigin()
+		func Vector getOrigin()
 			return pOrigin
 		end
 		
 		/** \brief Set test origin. */
-		public func void setOrigin(Vector origin)
+		func void setOrigin(Vector origin)
 			if origin.equals(pOrigin)
 				return
 			end
@@ -346,12 +348,12 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		end
 		
 		/** \brief Test direction rotation. */
-		public func Vector getRotation()
+		func Vector getRotation()
 			return pRotation
 		end
 		
 		/** \brief Set test direction rotation. */
-		public func void setRotation(Vector rotation)
+		func void setRotation(Vector rotation)
 			if rotation.equals(pRotation)
 				return
 			end
@@ -363,12 +365,12 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		
 		/** \brief Point-at element or null. */
-		public func Element getPointAtElement()
+		func Element getPointAtElement()
 			return pPointAtElement
 		end
 		
 		/** \brief Point-at element if of type BehaviorElement or null. */
-		public func BehaviorElement getPointAtBehaviorElement()
+		func BehaviorElement getPointAtBehaviorElement()
 			if pPointAtElement != null and pPointAtElement castable BehaviorElement
 				return pPointAtElement cast BehaviorElement
 			end
@@ -376,32 +378,32 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		end
 		
 		/** \brief Is looking at an element. */
-		public func bool hasVRHandPointAtElement()
+		func bool hasVRHandPointAtElement()
 			return pPointAtElement != null
 		end
 		
 		/** \brief Is not looking at an element. */
-		public func bool hasNotVRHandPointAtElement()
+		func bool hasNotVRHandPointAtElement()
 			return pPointAtElement == null
 		end
 		
 		/** \brief Point-at bone or -1. */
-		public func int getPointAtBone()
+		func int getPointAtBone()
 			return pPointAtBone
 		end
 		
 		/** \brief Point-at bone name or null. */
-		public func String getPointAtBoneName()
+		func String getPointAtBoneName()
 			return pPointAtBoneName
 		end
 		
 		/** \brief Distance in meters to point-at hit point. */
-		public func float getPointAtDistance()
+		func float getPointAtDistance()
 			return pPointAtDistance
 		end
 		
 		/** \brief Point-at hit point or \em null. */
-		public func DVector getPointAtHitPoint()
+		func DVector getPointAtHitPoint()
 			if pPointAtHitPoint == null and pPointAtElement != null
 				pPointAtHitPoint = pPointAtOrigin + pPointAtDirection.normalize() * pPointAtDistance
 			end
@@ -409,17 +411,17 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		end
 		
 		/** \brief Point-at collider or \em null. */
-		public func Collider getPointAtCollider()
+		func Collider getPointAtCollider()
 			return pPointAtCollider
 		end
 		
 		/** \brief Test origin used for last point-at test. */
-		public func DVector getPointAtOrigin()
+		func DVector getPointAtOrigin()
 			return pPointAtOrigin
 		end
 		
 		/** \brief Test direction used for last point-at test. */
-		public func DVector getPointAtDirection()
+		func DVector getPointAtDirection()
 			return pPointAtDirection
 		end
 		
@@ -431,7 +433,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		 * Works no matter if point-at testing is enabled or not. Allows to figure out where
 		 * the test origin and orientation would be if enabled.
 		 */
-		public func DMatrix calcTestMatrix()
+		func DMatrix calcTestMatrix()
 			var Matrix matrix = Matrix.newRT(pRotation, pOrigin)
 			
 			var String bone = pTest.getBone()
@@ -445,7 +447,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -453,14 +455,14 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Post thinking after physics processing is finished. */
-		public func void postThink(float elapsed)
+		func void postThink(float elapsed)
 			update(elapsed)
 		end
 		
@@ -523,12 +525,12 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		end
 		
 		/** \brief Clear point-at element. */
-		public func void clearPointAtElement()
+		func void clearPointAtElement()
 			setPointAtElement(null, -1, null, 0, null)
 		end
 		
 		/** \brief Set point-at element. */
-		public func void setPointAtElement(Element element, int bone, String boneName,\
+		func void setPointAtElement(Element element, int bone, String boneName,\
 		float distance, Collider collider)
 			if pPointAtElement == element and pPointAtBone == bone\
 			and Collider.equals(pPointAtCollider, collider)
@@ -569,7 +571,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile( PersistencyEnvironment env, FileReader reader )
 			select reader.readByte() // version
 			case 0
 				pRange = reader.readFloat()
@@ -580,10 +582,12 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			else
 				throw EInvalidParam.new("unsupported version")
 			end
+			
+			setRequiresThink(pEnabled and pTest != null)
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		func void writeToFile( PersistencyEnvironment env, FileWriter writer )
 			writer.writeByte( 0 ) // version
 			
 			writer.writeFloat(pRange)
@@ -594,29 +598,29 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorVRHand pVRHand
-	private var ECBehaviorCollider pIgnoreCollider
-	private var ECPFloat pRange
-	private var ECPVector pOrigin
-	private var ECPVector pRotation
-	private var ECPShapeList pShape
-	private var ECPString pTestBone
-	private var ECComposeCollisionFilter pCollisionFilter
-	private var Array pListenerFactories
+	var ECBehaviorVRHand pVRHand
+	var ECBehaviorCollider pIgnoreCollider
+	var ECPFloat pRange
+	var ECPVector pOrigin
+	var ECPVector pRotation
+	var ECPShapeList pShape
+	var ECPString pTestBone
+	var ECComposeCollisionFilter pCollisionFilter
+	var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand) this(eclass, vrHand, "")
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand) this(eclass, vrHand, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id) \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id) \
 	this(eclass, vrHand, id, id.empty() if "vrHandPointAt." else "vrHandPointAt(" + id + ").")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id, \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id, \
 	String prefix) super(eclass, id)
 		pVRHand = vrHand
 		pListenerFactories = Array.new()
@@ -649,7 +653,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pIgnoreCollider = null
 		pVRHand = null
 		pListenerFactories = null
@@ -659,32 +663,32 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	
 	
 	/** \brief VR Hand behavior or null. */
-	public func ECBehaviorVRHand getVRHand()
+	func ECBehaviorVRHand getVRHand()
 		return pVRHand
 	end
 	
 	/** \brief Collider to ignore during collision testing or null. */
-	public func ECBehaviorCollider getIgnoreCollider()
+	func ECBehaviorCollider getIgnoreCollider()
 		return pIgnoreCollider
 	end
 	
 	/** \brief Set collider to ignore during collision testing or null. */
-	public func void setIgnoreCollider(ECBehaviorCollider collider)
+	func void setIgnoreCollider(ECBehaviorCollider collider)
 		pIgnoreCollider = collider
 	end
 	
 	/** \brief Test range. */
-	public func ECPFloat getRange()
+	func ECPFloat getRange()
 		return pRange
 	end
 	
 	/** \brief Test origin. */
-	public func ECPVector getOrigin()
+	func ECPVector getOrigin()
 		return pOrigin
 	end
 	
 	/** \brief Test direction rotation. */
-	public func ECPVector getRotation()
+	func ECPVector getRotation()
 		return pRotation
 	end
 	
@@ -692,22 +696,22 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 * \brief Test shape.
 	 * \version 1.9
 	 */
-	public func ECPShapeList getShape()
+	func ECPShapeList getShape()
 		return pShape
 	end
 	
 	/** \brief Test bone. */
-	public func ECPString getTestBone()
+	func ECPString getTestBone()
 		return pTestBone
 	end
 	
 	/** \brief Collision filter for AI collider. */
-	public func ECComposeCollisionFilter getCollisionFilter()
+	func ECComposeCollisionFilter getCollisionFilter()
 		return pCollisionFilter
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -719,17 +723,17 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -738,7 +742,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -750,7 +754,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRHandPointAt.
 	 */
-	static public func ECBehaviorVRHandPointAt getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorVRHandPointAt getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorVRHandPointAt each
 			return true
 		end) cast ECBehaviorVRHandPointAt
@@ -762,7 +766,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRHandPointAt with specific identifier.
 	 */
-	static public func ECBehaviorVRHandPointAt getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorVRHandPointAt getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorVRHandPointAt each
 			return each.getID().equals(id)
 		end) cast ECBehaviorVRHandPointAt
@@ -774,7 +778,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 * Returns list contains ECBehaviorVRHandPointAt behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorVRHandPointAt each
 			return true
 		end)
@@ -788,7 +792,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorVRHandPointAt.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -800,7 +804,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorRenderableCamera.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -812,7 +816,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 * Returns list contains ECBehaviorRenderableCamera.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -821,7 +825,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end
