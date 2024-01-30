@@ -39,7 +39,7 @@ void main( void ){
 	float averageLuminance = exp( dot( avgLums, weightAvgLum ) );
 	vec4 lastParams = texelFetch( texLastParams, tcParameters, 0 );
 	
-	float lwhite = 1.0 / ( pToneMapWhiteIntensity * pToneMapWhiteIntensity );
+	float lwhite = 1; // 1 / ( pToneMapWhiteScale * pToneMapWhiteScale );
 	
 	float ckey = 0.18; //0.27; // average constant key: ( 0.18 + 0.36 ) / 2
 	
@@ -66,15 +66,13 @@ void main( void ){
 	// adjust the image key using the user chosen exposure
 	scaleLum *= pToneMapExposure;
 	
-	// if custom tone mapping is used apply white intensity
-	#ifdef WITH_TONEMAP_CURVE
-		scaleLum /= pToneMapWhiteIntensity;
-	#endif
+	// apply white intensity scaling
+	scaleLum *= pToneMapWhiteScale;
 	
 	// calculate the maximum white factor
 	//float lwhite = 1.0 / ( scaleLum * scaleLum ); // = 1.0 / ( ( key / averageLuminance ) ** 2 )
 	//gl_FragColor.b = 1.0 / ( ( 2.0 * scaleLum ) * ( 2.0 * scaleLum ) );
-	//     float lwhite = 1.0 / ( pToneMapWhiteIntensity * pToneMapWhiteIntensity );
+	//     float lwhite = 1.0 / ( pToneMapWhiteScale * pToneMapWhiteScale );
 	//float lwhite = 1.0 / ( pToneMapHighLuminance * pToneMapHighLuminance * scaleLum * scaleLum );
 	//float brightPassThreshold = ( 1.0 / scaleLum - 1.0 ) / ( scaleLum * lwhite - 1.0 );
 	

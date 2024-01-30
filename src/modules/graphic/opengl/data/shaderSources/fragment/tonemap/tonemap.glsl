@@ -11,9 +11,8 @@ uniform vec2 pTCBloomClamp;
 uniform mediump sampler2DArray texColor;
 uniform mediump sampler2D texToneMapParams;
 uniform mediump sampler2DArray texBloom;
-
 #ifdef WITH_TONEMAP_CURVE
-uniform mediump sampler1D texToneMapCurve;
+uniform mediump sampler2D texToneMapCurve;
 #endif
 
 in vec2 vTexCoord;
@@ -87,7 +86,7 @@ float uchimura(float x) {
 	
 	// modified parameters to flatten the excessive white curve.
 	// this avoids colors washing out at the top end
-	const float P = pToneMapWhiteIntensity;  // max display brightness [1..100]
+	const float P = 1;  // max display brightness [1..100]
 	const float a = 1;  // contrast [0..5]
 	const float m = 0.1;  // linear section start
 	const float l = 0.4; //0;  // linear section length [0..1]
@@ -126,9 +125,9 @@ void main( void ){
 	outColor.a = color.a;
 	
 	#ifdef WITH_TONEMAP_CURVE
-		outColor.r = texture( texToneMapCurve, color.r ).r;
-		outColor.g = texture( texToneMapCurve, color.g ).r;
-		outColor.b = texture( texToneMapCurve, color.b ).r;
+		outColor.r = texture( texToneMapCurve, vec2( color.r, 0 ) ).r;
+		outColor.g = texture( texToneMapCurve, vec2( color.g, 0 ) ).r;
+		outColor.b = texture( texToneMapCurve, vec2( color.b, 0 ) ).r;
 	#else
 		outColor.r = uchimura( color.r );
 		outColor.g = uchimura( color.g );

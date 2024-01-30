@@ -198,10 +198,10 @@ UBOLAYOUT uniform RenderParameters{
 	
 	// scene key parameters
 	// x: exposure
-	// y: white intensity
+	// y: white scale
 	vec2 pToneMapSceneKey;
 	#define pToneMapExposure (pToneMapSceneKey.x)
-	#define pToneMapWhiteIntensity (pToneMapSceneKey.y)
+	#define pToneMapWhiteScale (pToneMapSceneKey.y)
 	
 	// adaption parameters
 	// x: lowest luminance

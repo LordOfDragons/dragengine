@@ -47,7 +47,7 @@ pDistance( 0.0f )
 	
 	pEngCamera.TakeOver( engine->GetCameraManager()->CreateCamera() );
 	
-	pFov = pEngCamera->GetFov();
+	pFov = pEngCamera->GetFov() * RAD2DEG;
 	pFovRatio = pEngCamera->GetFovRatio();
 	pImageDistance = pEngCamera->GetImageDistance();
 	pViewDistance = pEngCamera->GetViewDistance();

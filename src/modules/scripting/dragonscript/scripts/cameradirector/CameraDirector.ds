@@ -63,31 +63,42 @@ class CameraDirector
 	
 	
 	
-	private var Camera pCamera
-	private var Microphone pMicrophone
+	var Camera pCamera
+	var Microphone pMicrophone
 	
-	private var float pFov
-	private var float pExposure
-	private var float pLowestIntensity
-	private var float pHighestIntensity
-	private var float pAdaptionTime
-	private var float pViewDistance
-	private var LayerMask pLayerMask
-	private var bool pEnableHDRR
-	private var bool pEnableGI
-	
+	var float pFov
+	var float pExposure
+	var float pLowestIntensity
+	var float pHighestIntensity
+	var float pAdaptionTime
+	var float pViewDistance
+	var LayerMask pLayerMask
+	var bool pEnableHDRR
+	var bool pEnableGI
+	var float pWhiteIntensity
+	var float pBloomIntensity
+	var float pBloomStrength
+	var float pBloomSize
+	var float pBloomBlend
+	var CurveBezier pToneMapCurve
 	
 	
 	/** \brief Create camera director. */
-	public func new()
-		this.pFov = fovFirstPerson
-		this.pExposure = 1
-		this.pLowestIntensity = 1
-		this.pHighestIntensity = 20
-		this.pAdaptionTime = 0.1
-		this.pViewDistance = 200
-		this.pEnableHDRR = true
-		this.pEnableGI = Engine.getDefaultEnableGI()
+	func new()
+		pFov = fovFirstPerson
+		pExposure = 1
+		pLowestIntensity = 1
+		pHighestIntensity = 20
+		pAdaptionTime = 0.1
+		pViewDistance = 200
+		pEnableHDRR = true
+		pEnableGI = Engine.getDefaultEnableGI()
+		pWhiteIntensity = 3
+		pBloomIntensity = 1.5
+		pBloomStrength = 1
+		pBloomSize = 0.25
+		pBloomBlend = 1
+		pToneMapCurve = CurveBezier.new()
 		
 		// set layer mask. theoretically a camera needs only the default layer bit.
 		// light sources use by default both default and envmap layer bit. this would
@@ -96,48 +107,48 @@ class CameraDirector
 		// optimization opportunities. it is quite unlikely you will find a scene elemnt
 		// this has the envmap layer bit set but not the default layer bit. it is thus
 		// safe to use both bits on cameras to allow graphic modules to apply all optimizations
-		this.pLayerMask = LayerMask.newWith( \
-			BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap )
+		pLayerMask = LayerMask.newWith(\
+			BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap)
 	end
 	
 	/** \brief Create camera director. */
-	public func new( Camera camera, Microphone microphone ) this()
-		this.setCamera( camera )
-		this.setMicrophone( microphone )
+	func new(Camera camera, Microphone microphone) this()
+		setCamera(camera)
+		setMicrophone(microphone)
 	end
 	
 	
 	
 	/** \brief Camera to modify. */
-	public func Camera getCamera()
-		return this.pCamera
+	func Camera getCamera()
+		return pCamera
 	end
 	
 	/** \brief Set camera to modify. */
-	public func void setCamera( Camera camera )
-		this.pCamera = camera
+	func void setCamera(Camera camera)
+		pCamera = camera
 	end
 	
 	/** \brief Microphone to modify. */
-	public func Microphone getMicrophone()
-		return this.pMicrophone
+	func Microphone getMicrophone()
+		return pMicrophone
 	end
 	
 	/** \brief Set microphone to modify. */
-	public func void setMicrophone( Microphone microphone )
-		this.pMicrophone = microphone
+	func void setMicrophone(Microphone microphone)
+		pMicrophone = microphone
 	end
 	
 	
 	
 	/** \brief Field of view. */
-	public func float getFov()
-		return this.pFov
+	func float getFov()
+		return pFov
 	end
 	
 	/** \brief Set field of view. */
-	public func void setFov( float fov )
-		this.pFov = fov
+	func void setFov(float fov)
+		pFov = fov
 	end
 	
 	
@@ -146,66 +157,66 @@ class CameraDirector
 	 * \brief Enable high definition range rendering (HDRR) if supported.
 	 * \version 1.5
 	 */
-	public func bool getEnableHDRR()
-		return this.pEnableHDRR
+	func bool getEnableHDRR()
+		return pEnableHDRR
 	end
 	
 	/**
 	 * \brief Set to enable high definition range rendering (HDRR) if supported.
 	 * \version 1.5
 	 */
-	public func void setEnableHDRR( bool enable )
-		this.pEnableHDRR = enable
+	func void setEnableHDRR(bool enable)
+		pEnableHDRR = enable
 	end
 	
 	/** \brief Exposure. */
-	public func float getExposure()
-		return this.pExposure
+	func float getExposure()
+		return pExposure
 	end
 	
 	/** \brief Set exposure. */
-	public func void setExposure( float exposure )
-		this.pExposure = exposure
+	func void setExposure(float exposure)
+		pExposure = exposure
 	end
 	
 	/** \brief Lowest intensity. */
-	public func float getLowestIntensity()
-		return this.pLowestIntensity
+	func float getLowestIntensity()
+		return pLowestIntensity
 	end
 	
 	/** \brief Set lowest intensity. */
-	public func void setLowestIntensity( float lowestIntensity )
-		this.pLowestIntensity = lowestIntensity
+	func void setLowestIntensity(float lowestIntensity)
+		pLowestIntensity = lowestIntensity
 	end
 	
 	/** \brief Highest intensity. */
-	public func float getHighestIntensity()
-		return this.pHighestIntensity
+	func float getHighestIntensity()
+		return pHighestIntensity
 	end
 	
 	/** \brief Set highest intensity. */
-	public func void setHighestIntensity( float highestIntensity )
-		this.pHighestIntensity = highestIntensity
+	func void setHighestIntensity(float highestIntensity)
+		pHighestIntensity = highestIntensity
 	end
 	
 	/** \brief Adaption time. */
-	public func float getAdaptionTime()
-		return this.pAdaptionTime
+	func float getAdaptionTime()
+		return pAdaptionTime
 	end
 	
 	/** \brief Set adaption time. */
-	public func void setAdaptionTime( float adaptionTime )
-		this.pAdaptionTime = adaptionTime
+	func void setAdaptionTime(float adaptionTime)
+		pAdaptionTime = adaptionTime
 	end
 	
 	/** \brief Camera view distance. */
-	public func float getViewDistance()
-		return this.pViewDistance
+	func float getViewDistance()
+		return pViewDistance
 	end
 	
 	/** \brief Set camera view distance. */
-	public func void setViewDistance( float distance )
-		this.pViewDistance = distance
+	func void setViewDistance(float distance)
+		pViewDistance = distance
 	end
 	
 	
@@ -214,55 +225,164 @@ class CameraDirector
 	 * \brief Enable global illumination (GI) if supported.
 	 * \version 1.5
 	 */
-	public func bool getEnableGI()
-		return this.pEnableGI
+	func bool getEnableGI()
+		return pEnableGI
 	end
 	
 	/**
 	 * \brief Set to enable global illumination (GI) if supported.
 	 * \version 1.5
 	 */
-	public func void setEnableGI( bool enable )
-		this.pEnableGI = enable
+	func void setEnableGI(bool enable)
+		pEnableGI = enable
+	end
+	
+	
+	
+	/**
+	 * \brief White intensity multiplier.
+	 * \version 1.21
+	 */
+	func float getWhiteIntensity()
+		return pWhiteIntensity
+	end
+	
+	/**
+	 * \brief Set white intensity multiplier.
+	 * \version 1.21
+	 */
+	func void setWhiteIntensity(float intensity)
+		pWhiteIntensity = DEMath.max(intensity, 0.0)
+	end
+	
+	/**
+	 * \brief Bloom intensity multiplier.
+	 * \version 1.21
+	 */
+	func float getBloomIntensity()
+		return pBloomIntensity
+	end
+	
+	/**
+	 * \brief Set bloom intensity multiplier.
+	 * \version 1.21
+	 */
+	func void setBloomIntensity(float intensity)
+		pBloomIntensity = DEMath.max(intensity, 0.0)
+	end
+	
+	/**
+	 * \brief Bloom strength as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	func float getBloomStrength()
+		return pBloomStrength
+	end
+	
+	/**
+	 * \brief Set bloom strength as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	func void setBloomStrength(float strength)
+		pBloomStrength = DEMath.max(strength, 0.0)
+	end
+	
+	/**
+	 * \brief Bloom blend as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	func float getBloomBlend()
+		return pBloomBlend
+	end
+	
+	/**
+	 * \brief Set bloom blend as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	func void setBloomBlend(float blend)
+		pBloomBlend = DEMath.clamp(blend, 0.0, 1.0)
+	end
+	
+	/**
+	 * \brief Bloom size as percentage of screen width.
+	 * \version 1.21
+	 */
+	func float getBloomSize()
+		return pBloomSize
+	end
+	
+	/**
+	 * \brief Bloom size as percentage of screen width.
+	 * \version 1.21
+	 */
+	func void setBloomSize(float size)
+		pBloomSize = DEMath.clamp(size, 0.0, 1.0)
+	end
+	
+	/**
+	 * \brief Custom tone mapping curve or empty curve to disable.
+	 * \version 1.21
+	 */
+	func CurveBezier getToneMapCurve()
+		return pToneMapCurve
+	end
+	
+	/**
+	 * \brief Set custom tone mapping curve or empty curve to disable.
+	 * \version 1.21
+	 * \note If enabled make sure to match the curve range to the white intensity.
+	 */
+	func void setToneMapCurve(CurveBezier curve)
+		if curve == null
+			throw ENullPointer.new("curve")
+		end
+		pToneMapCurve = curve
 	end
 	
 	
 	
 	/** \brief Layer mask. */
-	public func LayerMask getLayerMask()
-		return this.pLayerMask
+	func LayerMask getLayerMask()
+		return pLayerMask
 	end
 	
 	/** \brief Set layer mask. */
-	public func void setLayerMask( LayerMask layerMask )
-		this.pLayerMask = layerMask
+	func void setLayerMask(LayerMask layerMask)
+		pLayerMask = layerMask
 	end
 	
 	
 	
 	/** \brief Init camera parameters. */
-	public func void initCameraParameters()
-		this.pCamera.setFov( this.pFov )
-		this.pCamera.setFovRatio( 1.0 )
-		this.pCamera.setViewDistance( this.pViewDistance )
+	func void initCameraParameters()
+		pCamera.setFov(pFov)
+		pCamera.setFovRatio(1.0)
+		pCamera.setViewDistance(pViewDistance)
 		
-		this.pCamera.setEnableHDRR( this.pEnableHDRR )
-		this.pCamera.setExposure( this.pExposure )
-		this.pCamera.setLowestIntensity( this.pLowestIntensity )
-		this.pCamera.setHighestIntensity( this.pHighestIntensity )
-		this.pCamera.setAdaptionTime( this.pAdaptionTime )
+		pCamera.setEnableHDRR(pEnableHDRR)
+		pCamera.setExposure(pExposure)
+		pCamera.setLowestIntensity(pLowestIntensity)
+		pCamera.setHighestIntensity(pHighestIntensity)
+		pCamera.setAdaptionTime(pAdaptionTime)
 		
-		this.pCamera.setEnableGI( this.pEnableGI )
+		pCamera.setEnableGI(pEnableGI)
 		
-		this.pCamera.setLayerMask( this.pLayerMask )
+		pCamera.setWhiteIntensity(pWhiteIntensity)
+		pCamera.setBloomIntensity(pBloomIntensity)
+		pCamera.setBloomStrength(pBloomStrength)
+		pCamera.setBloomSize(pBloomSize)
+		pCamera.setBloomBlend(pBloomBlend)
+		pCamera.setToneMapCurve(pToneMapCurve)
+		
+		pCamera.setLayerMask(pLayerMask)
 	end
 	
 	/**
 	 * \brief Request graphic module to reset camera adapted intensity to optimal value.
 	 * \version 1.4
 	 */
-	public func void resetCameraAdaptedIntensity()
-		this.pCamera.resetAdaptedIntensity()
+	func void resetCameraAdaptedIntensity()
+		pCamera.resetAdaptedIntensity()
 	end
 	
 	/**
@@ -271,14 +391,14 @@ class CameraDirector
 	 * Useful for init camera parameters that do not change over time. Default implementation
 	 * calls initCameraParameters if camera is not null.
 	 */
-	public func void activate()
-		if this.pCamera != null
-			this.initCameraParameters()
+	func void activate()
+		if pCamera != null
+			initCameraParameters()
 		end
 	end
 	
 	/** \brief Director has been deactivated. */
-	public func void deactivate()
+	func void deactivate()
 	end
 	
 	/**
@@ -287,24 +407,24 @@ class CameraDirector
 	 * Default implementation calls updateCamera if camera is not null and updateMicrophone
 	 * if microphone is not null.
 	 */
-	public func void update( float elapsed )
-		if this.pCamera != null
-			this.updateCamera( elapsed )
+	func void update(float elapsed)
+		if pCamera != null
+			updateCamera(elapsed)
 		end
-		if this.pMicrophone != null
-			this.updateMicrophone( elapsed )
+		if pMicrophone != null
+			updateMicrophone(elapsed)
 		end
 	end
 	
 	/** \brief Update camera. */
-	public func void updateCamera( float elapsed )
-		this.pCamera.setPosition( DVector.new() )
-		this.pCamera.setOrientation( Quaternion.new() )
+	func void updateCamera(float elapsed)
+		pCamera.setPosition(DVector.new())
+		pCamera.setOrientation(Quaternion.new())
 	end
 	
 	/** \brief Update microphone. */
-	public func void updateMicrophone( float elapsed )
-		this.pMicrophone.setPosition( this.pCamera.getPosition() )
-		this.pMicrophone.setOrientation( this.pCamera.getOrientation() )
+	func void updateMicrophone(float elapsed)
+		pMicrophone.setPosition(pCamera.getPosition())
+		pMicrophone.setOrientation(pCamera.getOrientation())
 	end
 end

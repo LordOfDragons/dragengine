@@ -30,6 +30,7 @@
 #include "deClassCamera.h"
 #include "../deClassEngine.h"
 #include "../effects/deClassEffect.h"
+#include "../curve/deClassCurveBezier.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
@@ -383,6 +384,142 @@ void deClassCamera::nfSetEnableGI::RunFunction( dsRunTime *rt, dsValue *myself )
 
 
 
+// public func float getWhiteIntensity()
+deClassCamera::nfGetWhiteIntensity::nfGetWhiteIntensity( const sInitData &init ) :
+dsFunction( init.clsCamera, "getWhiteIntensity", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+}
+void deClassCamera::nfGetWhiteIntensity::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	rt->PushFloat( camera.GetWhiteIntensity() );
+}
+
+// public func void setWhiteIntensity( float intensity )
+deClassCamera::nfSetWhiteIntensity::nfSetWhiteIntensity( const sInitData &init ) :
+dsFunction( init.clsCamera, "setWhiteIntensity", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // intensity
+}
+void deClassCamera::nfSetWhiteIntensity::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	
+	camera.SetWhiteIntensity( rt->GetValue( 0 )->GetFloat() );
+}
+
+// public func float getBloomIntensity()
+deClassCamera::nfGetBloomIntensity::nfGetBloomIntensity( const sInitData &init ) :
+dsFunction( init.clsCamera, "getBloomIntensity", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+}
+void deClassCamera::nfGetBloomIntensity::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	rt->PushFloat( camera.GetBloomIntensity() );
+}
+
+// public func void setBloomIntensity( float intensity )
+deClassCamera::nfSetBloomIntensity::nfSetBloomIntensity( const sInitData &init ) :
+dsFunction( init.clsCamera, "setBloomIntensity", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // intensity
+}
+void deClassCamera::nfSetBloomIntensity::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	
+	camera.SetBloomIntensity( rt->GetValue( 0 )->GetFloat() );
+}
+
+// public func float getBloomStrength()
+deClassCamera::nfGetBloomStrength::nfGetBloomStrength( const sInitData &init ) :
+dsFunction( init.clsCamera, "getBloomStrength", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+}
+void deClassCamera::nfGetBloomStrength::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	rt->PushFloat( camera.GetBloomStrength() );
+}
+
+// public func void setBloomStrength( float strength )
+deClassCamera::nfSetBloomStrength::nfSetBloomStrength( const sInitData &init ) :
+dsFunction( init.clsCamera, "setBloomStrength", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // strength
+}
+void deClassCamera::nfSetBloomStrength::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	
+	camera.SetBloomStrength( rt->GetValue( 0 )->GetFloat() );
+}
+
+// public func float getBloomSize()
+deClassCamera::nfGetBloomSize::nfGetBloomSize( const sInitData &init ) :
+dsFunction( init.clsCamera, "getBloomSize", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+}
+void deClassCamera::nfGetBloomSize::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	rt->PushFloat( camera.GetBloomSize() );
+}
+
+// public func void setBloomSize( float size )
+deClassCamera::nfSetBloomSize::nfSetBloomSize( const sInitData &init ) :
+dsFunction( init.clsCamera, "setBloomSize", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // size
+}
+void deClassCamera::nfSetBloomSize::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	
+	camera.SetBloomSize( rt->GetValue( 0 )->GetFloat() );
+}
+
+// public func float getBloomBlend()
+deClassCamera::nfGetBloomBlend::nfGetBloomBlend( const sInitData &init ) :
+dsFunction( init.clsCamera, "getBloomBlend", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+}
+void deClassCamera::nfGetBloomBlend::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	rt->PushFloat( camera.GetBloomBlend() );
+}
+
+// public func void setBloomBlend( float blend )
+deClassCamera::nfSetBloomBlend::nfSetBloomBlend( const sInitData &init ) :
+dsFunction( init.clsCamera, "setBloomBlend", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // blend
+}
+void deClassCamera::nfSetBloomBlend::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	
+	camera.SetBloomBlend( rt->GetValue( 0 )->GetFloat() );
+}
+
+// public func CurveBezier getToneMapCurve()
+deClassCamera::nfGetToneMapCurve::nfGetToneMapCurve( const sInitData &init ) :
+dsFunction( init.clsCamera, "getToneMapCurve", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezier ){
+}
+void deClassCamera::nfGetToneMapCurve::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	const deScriptingDragonScript &ds = ( ( deClassCamera* )GetOwnerClass() )->GetDS();
+	ds.GetClassCurveBezier()->PushCurve( rt, camera.GetToneMapCurve() );
+}
+
+// public func void setToneMapCurve( CurveBezier curve )
+deClassCamera::nfSetToneMapCurve::nfSetToneMapCurve( const sInitData &init ) :
+dsFunction( init.clsCamera, "setToneMapCurve", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsCurveBezier ); // curve
+}
+void deClassCamera::nfSetToneMapCurve::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	const deScriptingDragonScript &ds = ( ( deClassCamera* )GetOwnerClass() )->GetDS();
+	
+	camera.SetToneMapCurve( ds.GetClassCurveBezier()->GetCurve( rt->GetValue( 0 )->GetRealObject() ) );
+}
+
+
+
 // public func Point project( Point viewportSize, DVector position )
 deClassCamera::nfProject::nfProject( const sInitData &init ) :
 dsFunction( init.clsCamera, "project", DSFT_FUNCTION,
@@ -686,6 +823,7 @@ void deClassCamera::CreateClassMembers( dsEngine *engine ){
 	init.clsLayerMask = pDS.GetClassLayerMask();
 	init.clsWorld = pDS.GetClassWorld();
 	init.clsDMatrix = pDS.GetClassDMatrix();
+	init.clsCurveBezier = pDS.GetClassCurveBezier();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -721,6 +859,19 @@ void deClassCamera::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetEnableGI( init ) );
 	AddFunction( new nfSetEnableGI( init ) );
+	
+	AddFunction( new nfGetWhiteIntensity( init ) );
+	AddFunction( new nfSetWhiteIntensity( init ) );
+	AddFunction( new nfGetBloomIntensity( init ) );
+	AddFunction( new nfSetBloomIntensity( init ) );
+	AddFunction( new nfGetBloomStrength( init ) );
+	AddFunction( new nfSetBloomStrength( init ) );
+	AddFunction( new nfGetBloomSize( init ) );
+	AddFunction( new nfSetBloomSize( init ) );
+	AddFunction( new nfGetBloomBlend( init ) );
+	AddFunction( new nfSetBloomBlend( init ) );
+	AddFunction( new nfGetToneMapCurve( init ) );
+	AddFunction( new nfSetToneMapCurve( init ) );
 	
 	AddFunction( new nfGetLayerMask( init ) );
 	AddFunction( new nfSetLayerMask( init ) );

@@ -89,6 +89,7 @@ private:
 		dsClass *clsLayerMask;
 		dsClass *clsWorld;
 		dsClass *clsDMatrix;
+		dsClass *clsCurveBezier;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -126,6 +127,19 @@ private:
 	
 	DEF_NATFUNC( nfGetEnableGI );
 	DEF_NATFUNC( nfSetEnableGI );
+	
+	DEF_NATFUNC( nfGetWhiteIntensity );
+	DEF_NATFUNC( nfSetWhiteIntensity );
+	DEF_NATFUNC( nfGetBloomIntensity );
+	DEF_NATFUNC( nfSetBloomIntensity );
+	DEF_NATFUNC( nfGetBloomStrength );
+	DEF_NATFUNC( nfSetBloomStrength );
+	DEF_NATFUNC( nfGetBloomSize );
+	DEF_NATFUNC( nfSetBloomSize );
+	DEF_NATFUNC( nfGetBloomBlend );
+	DEF_NATFUNC( nfSetBloomBlend );
+	DEF_NATFUNC( nfGetToneMapCurve );
+	DEF_NATFUNC( nfSetToneMapCurve );
 	
 	DEF_NATFUNC( nfProject );
 	DEF_NATFUNC( nfBackProject );

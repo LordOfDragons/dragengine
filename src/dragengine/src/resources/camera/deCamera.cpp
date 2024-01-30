@@ -57,8 +57,8 @@ pAdaptionTime( 0.1f ),
 
 pEnableGI( false ),
 
-pWhiteIntensity( 4.0f ), // 1.5f
-pBloomIntensity( 1.5f ), // 2.0f
+pWhiteIntensity( 3.0f ),
+pBloomIntensity( 1.5f ),
 pBloomStrength( 1.0f ),
 pBloomBlend( 1.0f ),
 pBloomSize( 0.25f ),
@@ -258,7 +258,7 @@ void deCamera::SetEnableGI( bool enable ){
 
 
 void deCamera::SetWhiteIntensity( float intensity ){
-	intensity = decMath::max( intensity, 0.1f );
+	intensity = decMath::max( intensity, 0.01f );
 	
 	if( fabs( intensity - pWhiteIntensity ) <= FLOAT_SAFE_EPSILON ){
 		return;

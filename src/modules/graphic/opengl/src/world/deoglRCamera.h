@@ -66,6 +66,9 @@ private:
 	float pBloomSize;
 	
 	decCurveBezier pToneMapCurve;
+	int pToneMapCurveResolution;
+	deoglTexture *pTextureToneMapCurve;
+	bool pDirtyToneMapCurve;
 	
 	deoglRenderPlan *pPlan;
 	
@@ -147,6 +150,12 @@ public:
 	
 	/** Reset elapsed tone mapping adaption time. */
 	void ResetElapsedToneMapAdaption();
+	
+	/** Tone mapping curve texture or nullptr. */
+	inline deoglTexture *GetTextureToneMapCurve() const{ return pTextureToneMapCurve; }
+	
+	/** Use custom tone map curve. */
+	bool UseCustomToneMapCurve() const;
 	
 	
 	
@@ -268,6 +277,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pPrepareToneMapCurveTexture();
 };
 
 #endif

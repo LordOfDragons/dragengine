@@ -288,6 +288,11 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineToneMap = pipelineManager.GetWith( pipconf );
 		
+		defines.SetDefines( "WITH_TONEMAP_CURVE" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineToneMapCustom = pipelineManager.GetWith( pipconf );
+		defines.RemoveDefines( "WITH_TONEMAP_CURVE" );
+		
 		// tone map stereo
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
@@ -295,6 +300,11 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		}
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineToneMapStereo = pipelineManager.GetWith( pipconf );
+		
+		defines.SetDefines( "WITH_TONEMAP_CURVE" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineToneMapCustomStereo = pipelineManager.GetWith( pipconf );
+		defines.RemoveDefines( "WITH_TONEMAP_CURVE" );
 		
 		
 		// ldr
@@ -872,7 +882,11 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	
 	defren.ActivateFBOTemporary2( false );
 	
-	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineToneMapStereo : *pPipelineToneMap;
+	const bool useCustom = oglCamera->UseCustomToneMapCurve();
+	
+	const deoglPipeline &pipeline = useCustom
+		? ( plan.GetRenderStereo() ? *pPipelineToneMapCustomStereo : *pPipelineToneMapCustom )
+		: ( plan.GetRenderStereo() ? *pPipelineToneMapStereo : *pPipelineToneMap );
 	pipeline.Activate();
 	shader = &pipeline.GetGlShader();
 	
@@ -884,6 +898,9 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 2, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+	if( useCustom ){
+		tsmgr.EnableTexture( 3, *oglCamera->GetTextureToneMapCurve(), GetSamplerClampLinear() );
+	}
 	
 	RenderFullScreenQuad( plan );
 }

@@ -57,12 +57,9 @@ class deBaseGraphicCamera;
  * The behavior of the white intensity parameter depends on the presence of custom tone
  * mapping. If custom tone mapping curve is not used the white intensity parameter alters
  * the tone mapping parameters used by the graphic module to reduce the washing out to white.
- * If custom tone mapping curve is used the pixel intensity after being scaled by exposure
- * controls is divided by the white intensity parameter. This has the effect of pixels with
- * a value of white intensity after exposure controls to end up as tone mapping curve input
- * parameter of value 1. For white intensity to work properly adjust our custom tone map
- * curve to include the white intensity scaling in the curve shape which typically shows
- * as a longer shoulder section. The default value is 4.
+ * If custom tone mapping curve is used the white intensity parameter indicates the upper
+ * bound of the input send through the curve. Pixel intensities above the white intensity
+ * are thus clamped to the white intensity. The default value is 3.
  * 
  * In games overbrighting is often used as a gameplay element to simulate very bright pixel
  * for example an energy beam or entering a room with glaring light while coming out of night
@@ -75,7 +72,7 @@ class deBaseGraphicCamera;
  * and bloom size parameter.
  * 
  * The bloom intensity is a multiplier applied to the current "maximum intensity" of the camera.
- * The default value is 4. To produce an overbright effect pixel requires an intensity 4 times
+ * The default value is 1.5. To produce an overbright effect pixel requires an intensity 1.5 times
  * as bright than the current camera maximum intensity.
  * 
  * The bloom strength is a multiplier applied to the overbright intensity beyond the bloom intensity
@@ -330,7 +327,7 @@ public:
 	/**
 	 * \brief Set custom tone mapping curve or empty curve to disable.
 	 * \version 1.21
-	 * \note If enabled make sure to set the matching white intensity as it defaults to 4.
+	 * \note If enabled make sure to match the curve range to the white intensity.
 	 */
 	void SetToneMapCurve( const decCurveBezier &curve );
 	/*@}*/
