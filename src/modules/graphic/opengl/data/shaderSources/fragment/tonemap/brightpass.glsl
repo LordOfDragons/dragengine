@@ -1,6 +1,9 @@
 precision highp float;
 precision highp int;
 
+#include "shared/ubo_defines.glsl"
+#include "shared/defren/ubo_render_parameters.glsl"
+
 uniform mediump sampler2DArray texColor;
 uniform mediump sampler2D texToneMapParams;
 
@@ -26,7 +29,7 @@ void main( void ){
 	vec3 color = textureLod( texColor, vec3( vTexCoord, vLayer ), 0 ).rgb;
 	
 	float luminance = max( dot( color, lumiFactors ), 0 );
-	float finalLum = max( luminance - params.w, 0 );
+	float finalLum = max( luminance - params.w, 0 ) * pToneMapBloomBlend;
 	outColor = color * vec3( finalLum / ( luminance + epsilon ) );
 	
 	/*

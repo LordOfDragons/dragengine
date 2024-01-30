@@ -64,6 +64,12 @@ pAdaptionTime( 1.0f ),
 
 pEnableGI( false ),
 
+pWhiteIntensity( 1.0f ), // 1.5f
+pBloomIntensity( 1.5f ), // 2.0f
+pBloomStrength( 1.0f ),
+pBloomBlend( 1.0f ),
+pBloomSize( 0.25f ),
+
 pPlan( NULL ),
 
 pInitTexture( true ),
@@ -180,6 +186,32 @@ void deoglRCamera::SetAdaptionTime( float adaptionTime ){
 void deoglRCamera::SetEnableGI( bool enable ){
 	pEnableGI = enable;
 	pPlan->SetUseGIState( enable );
+}
+
+
+
+void deoglRCamera::SetWhiteIntensity( float intensity ){
+	pWhiteIntensity = decMath::max( intensity, 1.0f );
+}
+
+void deoglRCamera::SetBloomIntensity( float intensity ){
+	pBloomIntensity = decMath::max( intensity, 0.0f );
+}
+
+void deoglRCamera::SetBloomStrength( float strength ){
+	pBloomStrength = decMath::max( strength, 0.0f );
+}
+
+void deoglRCamera::SetBloomBlend( float blend ){
+	pBloomBlend = decMath::clamp( blend, 0.0f, 1.0f );
+}
+
+void deoglRCamera::SetBloomSize( float size ){
+	pBloomSize = decMath::clamp( size, 0.0f, 1.0f );
+}
+
+void deoglRCamera::SetToneMapCurve( const decCurveBezier &curve ){
+	pToneMapCurve = curve;
 }
 
 

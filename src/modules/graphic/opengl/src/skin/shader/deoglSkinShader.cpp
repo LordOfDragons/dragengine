@@ -580,7 +580,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &render
 	
 	spb->GetParameterAt( erutToneMapSceneKey ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 	spb->GetParameterAt( erutToneMapAdaption ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-	spb->GetParameterAt( erutToneMapBloom ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutToneMapBloom ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec2
 	
 	spb->GetParameterAt( erutDebugDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 	

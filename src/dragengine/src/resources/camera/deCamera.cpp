@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "deCamera.h"
 #include "deCameraManager.h"
 #include "../effect/deEffect.h"
@@ -56,13 +57,19 @@ pAdaptionTime( 0.1f ),
 
 pEnableGI( false ),
 
-pEffects( NULL ),
+pWhiteIntensity( 1.0f ), // 1.5f
+pBloomIntensity( 1.5f ), // 2.0f
+pBloomStrength( 1.0f ),
+pBloomBlend( 1.0f ),
+pBloomSize( 0.25f ),
 
-pPeerGraphic( NULL ),
+pEffects( nullptr ),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL )
+pPeerGraphic( nullptr ),
+
+pParentWorld( nullptr ),
+pLLWorldPrev( nullptr ),
+pLLWorldNext( nullptr )
 {
 	pLayerMask.SetBit( 0 );
 	
@@ -250,6 +257,92 @@ void deCamera::SetEnableGI( bool enable ){
 
 
 
+void deCamera::SetWhiteIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.1f );
+	
+	if( fabs( intensity - pWhiteIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pWhiteIntensity = intensity;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+void deCamera::SetBloomIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.0f );
+	
+	if( fabs( intensity - pBloomIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomIntensity = intensity;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+void deCamera::SetBloomStrength( float strength ){
+	strength = decMath::max( strength, 0.0f );
+	
+	if( fabs( strength - pBloomStrength ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomStrength = strength;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+void deCamera::SetBloomBlend( float blend ){
+	blend = decMath::clamp( blend, 0.0f, 1.0f );
+	
+	if( fabs( blend - pBloomBlend ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomBlend = blend;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+void deCamera::SetBloomSize( float size ){
+	size = decMath::clamp( size, 0.0f, 1.0f );
+	
+	if( fabs( size - pBloomSize ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomSize = size;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+
+
+void deCamera::SetToneMapCurve( const decCurveBezier &curve ){
+	if( curve == pToneMapCurve ){
+		return;
+	}
+	
+	pToneMapCurve = curve;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+
+
 void deCamera::NotifyLayerMaskChanged(){
 	if( pPeerGraphic ){
 		pPeerGraphic->LayerMaskChanged();
@@ -354,7 +447,7 @@ void deCamera::SetLLWorldNext( deCamera *camera ){
 void deCamera::pCleanUp(){
 	if( pPeerGraphic ){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	if( pEffects ){

@@ -791,8 +791,10 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	
 	// tone mapping
 	const deoglRCamera * const oglCamera = plan.GetCamera();
-	const float toneMapLWhite = config.GetHDRRMaximumIntensity();
-	const float toneMapBloomStrength = 1.0f;
+	float toneMapWhiteIntensity = 2.0f;
+	float toneMapBloomIntensity = 4.0f;
+	float toneMapBloomStrength = 1.0f;
+	float toneMapBloomBlend = 1.0f;
 	float toneMapAdaptationTime = 0.0f;
 	float toneMapExposure = 1.0f;
 	float toneMapLowInt = 0.0f;
@@ -813,6 +815,12 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		toneMapExposure = oglCamera->GetExposure();
 		toneMapLowInt = oglCamera->GetLowestIntensity();
 		toneMapHighInt = oglCamera->GetHighestIntensity();
+		toneMapWhiteIntensity = oglCamera->GetWhiteIntensity();
+		toneMapBloomIntensity = oglCamera->GetBloomIntensity();
+		toneMapBloomStrength = oglCamera->GetBloomStrength();
+		toneMapBloomBlend = oglCamera->GetBloomBlend();
+		// oglCamera->GetBloomSize();
+		// oglCamera->GetToneMapCurve();
 	}
 	
 	// render all debug shapes with a z-offset to avoid z-fighting for shapes overlapping rendered
@@ -943,9 +951,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataInt( deoglSkinShader::erutGIHighestCascade, giHighestCascade );
 		
 		// tone mapping
-		spb.SetParameterDataVec2( deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapLWhite );
+		spb.SetParameterDataVec2( deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapWhiteIntensity );
 		spb.SetParameterDataVec3( deoglSkinShader::erutToneMapAdaption, toneMapLowInt, toneMapHighInt, toneMapAdaptationTime );
-		spb.SetParameterDataVec2( deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, 0.0f );
+		spb.SetParameterDataVec3( deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, toneMapBloomIntensity, toneMapBloomBlend );
 		
 		// debug depth transform
 		spb.SetParameterDataVec2( deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift );
