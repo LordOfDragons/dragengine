@@ -28,6 +28,7 @@
 #include "../igdeCheckBox.h"
 #include "../igdeTextField.h"
 #include "../igdeContainerReference.h"
+#include "../igdeCommonDialogs.h"
 #include "../composed/igdeEditVector.h"
 #include "../composed/igdeEditVectorListener.h"
 #include "../composed/igdeEditSliderText.h"
@@ -35,13 +36,22 @@
 #include "../curveedit/igdeViewCurveBezier.h"
 #include "../curveedit/igdeViewCurveBezierListener.h"
 #include "../event/igdeAction.h"
+#include "../event/igdeActionContextMenu.h"
+#include "../event/igdeActionContextMenuReference.h"
 #include "../event/igdeTextFieldListener.h"
+#include "../filedialog/igdeFilePattern.h"
+#include "../filedialog/igdeFilePatternList.h"
 #include "../layout/igdeContainerForm.h"
 #include "../layout/igdeContainerFlow.h"
+#include "../menu/igdeMenuCascade.h"
 #include "../../environment/igdeEnvironment.h"
+#include "../../loadsave/igdeLoadSaveCamera.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 
 
@@ -89,8 +99,8 @@ protected:
 	igdeWPCamera &pPanel;
 	
 public:
-	cBaseAction( igdeWPCamera &panel, const char *text, const char *description = "" ) :
-		igdeAction( text, description ), pPanel( panel ){ }
+	cBaseAction( igdeWPCamera &panel, const char *text, const char *description = "",
+		igdeIcon *icon = nullptr ) : igdeAction( text, icon, description ), pPanel( panel ){ }
 	
 	void OnAction() override{
 		if( pPanel.GetCamera() ){
@@ -405,12 +415,103 @@ public:
 	}
 };
 
+class cActionCameraSetDefaultParams : public cBaseAction{
+	const float pLowestIntensity, pHighestIntensity, pAdaptionTime;
+public:
+	cActionCameraSetDefaultParams( igdeWPCamera &panel, float lowestIntensity,
+		float highestIntensity, float adaptionTime, const char *text ) : cBaseAction( panel,
+		text, "Set default parameters" ), pLowestIntensity( lowestIntensity ),
+		pHighestIntensity( highestIntensity ), pAdaptionTime( adaptionTime ){ }
+	
+	void OnActionCamera( igdeCamera &camera ) override{
+		camera.SetDefaultParameters( pLowestIntensity, pHighestIntensity, pAdaptionTime );
+		pPanel.OnAction();
+	}
+};
+
+class cActionCameraLoad : public cBaseAction{
+public:
+	cActionCameraLoad( igdeWPCamera &panel ) : cBaseAction( panel, "Load...", "Load parameters from file",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ) ){ }
+	
+	void OnActionCamera( igdeCamera &camera ) override{
+		if( ! igdeCommonDialogs::GetFileOpen( &pPanel, "Open Camera",
+		*pPanel.GetEnvironment().GetFileSystemGame(), igdeWPCamera::patternCamera,
+		igdeWPCamera::lastCameraFile ) ){
+			return;
+		}
+		
+		igdeLoadSaveCamera lscamera( pPanel.GetEnvironment(), pPanel.GetLogger(), "IGDE" );
+		lscamera.Load( igdeWPCamera::lastCameraFile, camera, decBaseFileReader::Ref::New(
+			pPanel.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+			decPath::CreatePathUnix( igdeWPCamera::lastCameraFile ) ) ) );
+	}
+};
+
+class cActionCameraSave : public cBaseAction{
+public:
+	cActionCameraSave( igdeWPCamera &panel ) : cBaseAction( panel, "Save...", "Save parameters to file",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ) ){ }
+	
+	void OnActionCamera( igdeCamera &camera ) override{
+		if( ! igdeCommonDialogs::GetFileSave( &pPanel, "Save Camera",
+		*pPanel.GetEnvironment().GetFileSystemGame(), igdeWPCamera::patternCamera,
+		igdeWPCamera::lastCameraFile ) ){
+			return;
+		}
+		
+		igdeLoadSaveCamera lscamera( pPanel.GetEnvironment(), pPanel.GetLogger(), "IGDE" );
+		lscamera.Save( camera, decBaseFileWriter::Ref::New(
+			pPanel.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix( igdeWPCamera::lastCameraFile ) ) ) );
+	}
+};
+
+class cActionMenuCamera : public igdeActionContextMenu{
+	igdeWPCamera &pPanel;
+public:
+	cActionMenuCamera( igdeWPCamera &panel ) : igdeActionContextMenu(
+		"...", nullptr, "Camera menu" ), pPanel( panel ){ }
+	
+	void AddContextMenuEntries( igdeMenuCascade &contextMenu ) override{
+		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelperProperties();
+		helper.MenuCommand( contextMenu, new cActionCameraSetDefaultParams(
+			pPanel, 1.0f, 1.0f, 0.1f, "Set Default Indoor" ), true );
+		helper.MenuCommand( contextMenu, new cActionCameraSetDefaultParams(
+			pPanel, 20.0f, 20.0f, 0.1f, "Set Default Day" ), true );
+		helper.MenuCommand( contextMenu, new cActionCameraSetDefaultParams(
+			pPanel, 0.1f, 0.1f, 0.1f, "Set Default Night" ), true );
+		helper.MenuCommand( contextMenu, new cActionCameraSetDefaultParams(
+			pPanel, 1.0f, 20.0f, 0.1f, "Set Default Dynamic" ), true );
+		
+		helper.Separator( contextMenu );
+		helper.MenuCommand( contextMenu, new cActionCameraLoad( pPanel ), true );
+		helper.MenuCommand( contextMenu, new cActionCameraSave( pPanel ), true );
+	}
+	
+	void Update() override{
+		SetEnabled( pPanel.GetCamera() );
+	}
+};
+
 }
 
 
 
 // Class igdeWPCamera
 ///////////////////////
+
+decString igdeWPCamera::lastCameraFile( "Camera.decamera" );
+
+static igdeFilePatternList sCreateFilePatternList(){
+	igdeFilePatternList list;
+	list.AddFilePattern( new igdeFilePattern( "Drag[en]gine Camera", "*.decamera", ".decamera" ) );
+	return list;
+}
+
+const igdeFilePatternList igdeWPCamera::patternCamera( sCreateFilePatternList() );
+
+
 
 // Constructor, destructor
 ////////////////////////////
@@ -602,7 +703,15 @@ void igdeWPCamera::pCreateContent(){
 	helper.EditVector( form, "View:", "View direction of the camera", pEditViewDir, nullptr );
 	pEditViewDir->SetEditable( false );
 	
-	helper.CheckBox( form, pChkEnableHDRR, new cCheckEnableHDRR( *this ), true );
+	helper.FormLineStretchFirst( form, "", "", frameLine );
+	
+	helper.CheckBoxOnly( frameLine, pChkEnableHDRR, new cCheckEnableHDRR( *this ), true );
+	
+	igdeActionContextMenuReference actionMenuCamera;
+	actionMenuCamera.TakeOver( new cActionMenuCamera( *this ) );
+	helper.Button( frameLine, pBtnCamera, actionMenuCamera );
+	actionMenuCamera->SetWidget( pBtnCamera );
+	
 	helper.CheckBox( form, pChkEnableGI, new cCheckEnableGI( *this ), true );
 	
 	

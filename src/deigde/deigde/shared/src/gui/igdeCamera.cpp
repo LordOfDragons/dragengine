@@ -65,6 +65,7 @@ pDistance( 0.0f )
 	pBloomStrength = pEngCamera->GetBloomStrength();
 	pBloomBlend = pEngCamera->GetBloomBlend();
 	pBloomSize = pEngCamera->GetBloomSize();
+	pToneMapCurve = pEngCamera->GetToneMapCurve();
 	
 	SetName( "Camera" );
 }
@@ -357,6 +358,50 @@ decVector igdeCamera::GetDirectionFor( int width, int height, int x, int y ) con
 	
 	direction.Normalize();
 	return pViewMatrix.TransformNormal( direction ).ToVector();
+}
+
+void igdeCamera::SetDefaultParameters( float lowestIntensity, float highestIntensity, float adaptionTime ){
+	const deCamera::Ref camera( deCamera::Ref::New( pEngine->GetCameraManager()->CreateCamera() ) );
+	
+	pFov = camera->GetFov() * RAD2DEG;
+	pFovRatio = camera->GetFovRatio();
+	pImageDistance = camera->GetImageDistance();
+	pViewDistance = camera->GetViewDistance();
+	
+	pEnableHDRR = camera->GetEnableHDRR();
+	pExposure = camera->GetExposure();
+	pLowestIntensity = lowestIntensity;
+	pHighestIntensity = highestIntensity;
+	pAdaptionTime = adaptionTime;
+	
+	pEnableGI = camera->GetEnableGI();
+	
+	pWhiteIntensity = camera->GetWhiteIntensity();
+	pBloomIntensity = camera->GetBloomIntensity();
+	pBloomStrength = camera->GetBloomStrength();
+	pBloomBlend = camera->GetBloomBlend();
+	pBloomSize = camera->GetBloomSize();
+	pToneMapCurve = camera->GetToneMapCurve();
+	
+	pEngCamera->SetFov( pFov * DEG2RAD );
+	pEngCamera->SetFovRatio( pFovRatio );
+	pEngCamera->SetImageDistance( pImageDistance );
+	pEngCamera->SetViewDistance( pViewDistance );
+	pEngCamera->SetEnableHDRR( pEnableHDRR );
+	pEngCamera->SetExposure( pExposure );
+	pEngCamera->SetLowestIntensity( pLowestIntensity );
+	pEngCamera->SetHighestIntensity( pHighestIntensity );
+	pEngCamera->SetAdaptionTime( pAdaptionTime );
+	pEngCamera->SetEnableGI( pEnableGI );
+	pEngCamera->SetWhiteIntensity( pWhiteIntensity );
+	pEngCamera->SetBloomIntensity( pBloomIntensity );
+	pEngCamera->SetBloomStrength( pBloomStrength );
+	pEngCamera->SetBloomBlend( pBloomBlend );
+	pEngCamera->SetBloomSize( pBloomSize );
+	pEngCamera->SetToneMapCurve( pToneMapCurve );
+	
+	GeometryChanged();
+	AdaptionChanged();
 }
 
 

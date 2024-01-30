@@ -26,10 +26,12 @@
 
 #include "../igdeTextFieldReference.h"
 #include "../igdeCheckBoxReference.h"
+#include "../igdeButtonReference.h"
 #include "../composed/igdeEditVectorReference.h"
 #include "../composed/igdeEditSliderTextReference.h"
 #include "../event/igdeActionListener.h"
 #include "../event/igdeActionReference.h"
+#include "../filedialog/igdeFilePatternList.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../curveedit/igdeViewCurveBezierReference.h"
 
@@ -57,6 +59,7 @@ private:
 	igdeEditVectorReference pEditPosition;
 	igdeEditVectorReference pEditRotation;
 	igdeEditVectorReference pEditViewDir;
+	igdeButtonReference pBtnCamera;
 	igdeTextFieldReference pEditOrbitDistance;
 	igdeTextFieldReference pEditFov;
 	igdeTextFieldReference pEditFovRatio;
@@ -76,6 +79,12 @@ private:
 	igdeViewCurveBezierReference pEditToneMapCurve;
 	
 	igdeActionReference pAction;
+	
+	
+	
+public:
+	static decString lastCameraFile;
+	static const igdeFilePatternList patternCamera;
 	
 	
 	

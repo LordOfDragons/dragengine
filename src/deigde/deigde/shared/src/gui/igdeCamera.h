@@ -281,6 +281,14 @@ public:
 	 */
 	decVector GetDirectionFor( int width, int height, int x, int y ) const;
 	
+	/**
+	 * \brief Set default parameters.
+	 * \version 1.21
+	 */
+	void SetDefaultParameters( float lowestIntensity, float highestIntensity, float adaptionTime );
+	
+	
+	
 	/** \brief Reset camera. */
 	virtual void Reset();
 	
