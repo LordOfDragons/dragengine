@@ -61,10 +61,15 @@ void main( void ){
 // 	ckey = 1.03 - 3 / ( 3 + log( averageLuminance + 1 ) / log( 10 ) );
 	//float key = max( 0.0, 1.5 - 1.5 / ( averageLuminance * 0.1 + 1.0 ) ) + 0.1; // ogre
 	float maxLum = max( averageLuminance / ckey, 0.01 );
-	float scaleLum = pToneMapWhiteIntensity / maxLum;
+	float scaleLum = 1 / maxLum;
 	
 	// adjust the image key using the user chosen exposure
 	scaleLum *= pToneMapExposure;
+	
+	// if custom tone mapping is used apply white intensity
+	#ifdef WITH_TONEMAP_CURVE
+		scaleLum /= pToneMapWhiteIntensity;
+	#endif
 	
 	// calculate the maximum white factor
 	//float lwhite = 1.0 / ( scaleLum * scaleLum ); // = 1.0 / ( ( key / averageLuminance ) ** 2 )
