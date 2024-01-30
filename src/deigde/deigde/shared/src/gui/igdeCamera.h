@@ -24,6 +24,7 @@
 
 #include <dragengine/resources/camera/deCameraReference.h>
 #include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -62,6 +63,14 @@ private:
 	float pAdaptionTime;
 	
 	bool pEnableGI;
+	
+	float pWhiteIntensity;
+	float pBloomIntensity;
+	float pBloomStrength;
+	float pBloomBlend;
+	float pBloomSize;
+	
+	decCurveBezier pToneMapCurve;
 	
 	float pDistance;
 	
@@ -182,6 +191,83 @@ public:
 	
 	/** \brief Set to enable global illumination (GI) if supported. */
 	void SetEnableGI( bool enable );
+	
+	
+	
+	/**
+	 * \brief White intensity multiplier.
+	 * \version 1.21
+	 */
+	inline float GetWhiteIntensity() const{ return pWhiteIntensity; }
+	
+	/**
+	 * \brief Set white intensity multiplier.
+	 * \version 1.21
+	 */
+	void SetWhiteIntensity( float intensity );
+	
+	/**
+	 * \brief Bloom intensity multiplier.
+	 * \version 1.21
+	 */
+	inline float GetBloomIntensity() const{ return pBloomIntensity; }
+	
+	/**
+	 * \brief Set bloom intensity multiplier.
+	 * \version 1.21
+	 */
+	void SetBloomIntensity( float intensity );
+	
+	/**
+	 * \brief Bloom strength as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	inline float GetBloomStrength() const{ return pBloomStrength; }
+	
+	/**
+	 * \brief Set bloom strength as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	void SetBloomStrength( float strength );
+	
+	/**
+	 * \brief Bloom blend as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	inline float GetBloomBlend() const{ return pBloomBlend; }
+	
+	/**
+	 * \brief Set bloom blend as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	void SetBloomBlend( float blend );
+	
+	/**
+	 * \brief Bloom size as percentage of screen width.
+	 * \version 1.21
+	 */
+	inline float GetBloomSize() const{ return pBloomSize; }
+	
+	/**
+	 * \brief Bloom size as percentage of screen width.
+	 * \version 1.21
+	 */
+	void SetBloomSize( float size );
+	
+	
+	
+	/**
+	 * \brief Custom tone mapping curve or empty curve to disable.
+	 * \version 1.21
+	 */
+	inline const decCurveBezier &GetToneMapCurve() const{ return pToneMapCurve; }
+	
+	/**
+	 * \brief Set custom tone mapping curve or empty curve to disable.
+	 * \version 1.21
+	 * \note If enabled make sure to set the matching white intensity as it defaults to 4.
+	 */
+	void SetToneMapCurve( const decCurveBezier &curve );
 	
 	
 	

@@ -41,37 +41,30 @@
 
 igdeCamera::igdeCamera( deEngine *engine ) :
 pEngine( engine ),
-
-pFov( 90.0f ),
-pFovRatio( 1.0f ),
-pImageDistance( 0.01f ),
-pViewDistance( 500.0f ),
-
-pEnableHDRR( true ),
-pExposure( 1.0f ),
-pLowestIntensity( 1.0f ),
-pHighestIntensity( 20.0f ),
-pAdaptionTime( 1.0f ),
-
-pEnableGI( false ),
-
 pDistance( 0.0f )
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( engine )
 	
 	pEngCamera.TakeOver( engine->GetCameraManager()->CreateCamera() );
-	pEngCamera->SetFov( pFov * DEG2RAD );
-	pEngCamera->SetFovRatio( pFovRatio );
-	pEngCamera->SetImageDistance( pImageDistance );
-	pEngCamera->SetViewDistance( pViewDistance );
-	pEngCamera->SetEnableHDRR( pEnableHDRR );
-	pEngCamera->SetExposure( pExposure );
-	pEngCamera->SetLowestIntensity( pLowestIntensity );
-	pEngCamera->SetHighestIntensity( pHighestIntensity );
-	pEngCamera->SetAdaptionTime( pAdaptionTime );
-	pEngCamera->SetEnableGI( pEnableGI );
+	
+	pFov = pEngCamera->GetFov();
+	pFovRatio = pEngCamera->GetFovRatio();
+	pImageDistance = pEngCamera->GetImageDistance();
+	pViewDistance = pEngCamera->GetViewDistance();
+
+	pEnableHDRR = pEngCamera->GetEnableHDRR();
+	pExposure = pEngCamera->GetExposure();
+	pLowestIntensity = pEngCamera->GetLowestIntensity();
+	pHighestIntensity = pEngCamera->GetHighestIntensity();
+	pAdaptionTime = pEngCamera->GetAdaptionTime();
+
+	pEnableGI = pEngCamera->GetEnableGI();
+
+	pWhiteIntensity = pEngCamera->GetWhiteIntensity();
+	pBloomIntensity = pEngCamera->GetBloomIntensity();
+	pBloomStrength = pEngCamera->GetBloomStrength();
+	pBloomBlend = pEngCamera->GetBloomBlend();
+	pBloomSize = pEngCamera->GetBloomSize();
 	
 	SetName( "Camera" );
 }
@@ -249,6 +242,86 @@ void igdeCamera::SetEnableGI( bool enable ){
 	
 	pEnableGI = enable;
 	pEngCamera->SetEnableGI( enable );
+	
+	AdaptionChanged();
+}
+
+
+
+void igdeCamera::SetWhiteIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.1f );
+	
+	if( fabs( intensity - pWhiteIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pWhiteIntensity = intensity;
+	pEngCamera->SetWhiteIntensity( intensity );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.0f );
+	
+	if( fabs( intensity - pBloomIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomIntensity = intensity;
+	pEngCamera->SetBloomIntensity( intensity );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomStrength( float strength ){
+	strength = decMath::max( strength, 0.0f );
+	
+	if( fabs( strength - pBloomStrength ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomStrength = strength;
+	pEngCamera->SetBloomStrength( strength );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomBlend( float blend ){
+	blend = decMath::clamp( blend, 0.0f, 1.0f );
+	
+	if( fabs( blend - pBloomBlend ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomBlend = blend;
+	pEngCamera->SetBloomBlend( blend );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomSize( float size ){
+	size = decMath::clamp( size, 0.0f, 1.0f );
+	
+	if( fabs( size - pBloomSize ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomSize = size;
+	pEngCamera->SetBloomSize( size );
+	
+	AdaptionChanged();
+}
+
+
+
+void igdeCamera::SetToneMapCurve( const decCurveBezier &curve ){
+	if( curve == pToneMapCurve ){
+		return;
+	}
+	
+	pToneMapCurve = curve;
+	pEngCamera->SetToneMapCurve( curve );
 	
 	AdaptionChanged();
 }

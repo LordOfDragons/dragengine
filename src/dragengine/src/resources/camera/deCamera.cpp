@@ -57,7 +57,7 @@ pAdaptionTime( 0.1f ),
 
 pEnableGI( false ),
 
-pWhiteIntensity( 1.0f ), // 1.5f
+pWhiteIntensity( 4.0f ), // 1.5f
 pBloomIntensity( 1.5f ), // 2.0f
 pBloomStrength( 1.0f ),
 pBloomBlend( 1.0f ),
