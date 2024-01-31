@@ -435,6 +435,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOVisitor.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSubObject.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadAnimator.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveCamera.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveHTNavSpace.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveNavSpace.cpp" />
@@ -868,6 +869,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOVisitor.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSubObject.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadAnimator.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveCamera.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadParticleEmitter.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveHTNavSpace.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveNavSpace.h" />
