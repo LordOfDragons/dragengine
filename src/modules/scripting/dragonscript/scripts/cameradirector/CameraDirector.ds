@@ -391,10 +391,10 @@ class CameraDirector
 	
 	
 	/**
-	 * \brief Copy settings from another camera director.
+	 * \brief Copy parameters from camera director.
 	 * \version 1.21
 	 */
-	func void copyFrom(CameraDirector director)
+	func void copyParameters(CameraDirector director)
 		setFov(director.pFov)
 		setFovRatio(director.pFovRatio)
 		setImageDistance(director.pImageDistance)
@@ -418,31 +418,67 @@ class CameraDirector
 		setLayerMask(director.pLayerMask)
 	end
 	
+	/**
+	 * \brief Copy parameters from camera.
+	 * \version 1.21
+	 */
+	func void copyParameters(Camera camera)
+		setFov(camera.getFov())
+		setFovRatio(camera.getFovRatio())
+		setImageDistance(camera.getImageDistance())
+		setViewDistance(camera.getViewDistance())
+		
+		setEnableHDRR(camera.getEnableHDRR())
+		setExposure(camera.getExposure())
+		setLowestIntensity(camera.getLowestIntensity())
+		setHighestIntensity(camera.getHighestIntensity())
+		setAdaptionTime(camera.getAdaptionTime())
+		
+		setEnableGI(camera.getEnableGI())
+		
+		setWhiteIntensity(camera.getWhiteIntensity())
+		setBloomIntensity(camera.getBloomIntensity())
+		setBloomStrength(camera.getBloomStrength())
+		setBloomSize(camera.getBloomSize())
+		setBloomBlend(camera.getBloomBlend())
+		setToneMapCurve(camera.getToneMapCurve())
+		
+		setLayerMask(camera.getLayerMask())
+	end
+	
 	
 	
 	/** \brief Init camera parameters. */
 	func void initCameraParameters()
-		pCamera.setFov(pFov)
-		pCamera.setFovRatio(pFovRatio)
-		pCamera.setImageDistance(pImageDistance)
-		pCamera.setViewDistance(pViewDistance)
+		applyParameters(pCamera)
+	end
+	
+	/**
+	 * \brief Apply parameters to camera.
+	 * \version 1.21
+	 */
+	func void applyParameters(Camera camera)
+		camera.setFov(pFov)
+		camera.setFovRatio(pFovRatio)
+		camera.setImageDistance(pImageDistance)
+		camera.setViewDistance(pViewDistance)
 		
-		pCamera.setEnableHDRR(pEnableHDRR)
-		pCamera.setExposure(pExposure)
-		pCamera.setLowestIntensity(pLowestIntensity)
-		pCamera.setHighestIntensity(pHighestIntensity)
-		pCamera.setAdaptionTime(pAdaptionTime)
+		camera.setEnableHDRR(pEnableHDRR)
+		camera.setExposure(pExposure)
+		camera.setLowestIntensity(pLowestIntensity)
+		camera.setHighestIntensity(pHighestIntensity)
+		camera.setAdaptionTime(pAdaptionTime)
 		
-		pCamera.setEnableGI(pEnableGI)
+		camera.setEnableGI(pEnableGI)
 		
-		pCamera.setWhiteIntensity(pWhiteIntensity)
-		pCamera.setBloomIntensity(pBloomIntensity)
-		pCamera.setBloomStrength(pBloomStrength)
-		pCamera.setBloomSize(pBloomSize)
-		pCamera.setBloomBlend(pBloomBlend)
-		pCamera.setToneMapCurve(pToneMapCurve)
+		camera.setWhiteIntensity(pWhiteIntensity)
+		camera.setBloomIntensity(pBloomIntensity)
+		camera.setBloomStrength(pBloomStrength)
+		camera.setBloomSize(pBloomSize)
+		camera.setBloomBlend(pBloomBlend)
+		camera.setToneMapCurve(pToneMapCurve)
 		
-		pCamera.setLayerMask(pLayerMask)
+		camera.setLayerMask(pLayerMask)
 	end
 	
 	/**
