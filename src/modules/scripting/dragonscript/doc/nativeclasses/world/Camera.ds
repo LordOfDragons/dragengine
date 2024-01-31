@@ -48,8 +48,10 @@ pin Dragengine.Gui
  * and bloom size parameter.
  * 
  * The bloom intensity is a multiplier applied to the current "maximum intensity" of the camera.
- * The default value is 1.5. To produce an overbright effect pixel requires an intensity 1.5 times
- * as bright than the current camera maximum intensity.
+ * The default value is 4. To produce an overbright effect pixel requires an intensity 4 times
+ * as bright than the current camera maximum intensity. Typically this value is somewhat larger
+ * than the white intensity. This ensures there is a leeway between washing out colors to white
+ * and overbrighting kicking in.
  * 
  * The bloom strength is a multiplier applied to the overbright intensity beyond the bloom intensity
  * threshold. For example if the threshold is 2 and the pixel intensity is 3 then the overbright

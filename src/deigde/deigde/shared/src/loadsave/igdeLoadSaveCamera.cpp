@@ -173,7 +173,7 @@ void igdeLoadSaveCamera::pWriteCamera( decXmlWriter &writer, const igdeCamera &c
 	writer.WriteDataTagFloat( "fov", camera.GetFov() );
 	writer.WriteDataTagFloat( "fovRatio", camera.GetFovRatio() );
 	writer.WriteDataTagFloat( "imageDistance", camera.GetImageDistance() );
-	writer.WriteDataTagFloat( "wiewDistance", camera.GetViewDistance() );
+	writer.WriteDataTagFloat( "viewDistance", camera.GetViewDistance() );
 	
 	writer.WriteDataTagBool( "enableHDRR", camera.GetEnableHDRR() );
 	writer.WriteDataTagFloat( "exposure", camera.GetExposure() );

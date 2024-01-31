@@ -67,10 +67,12 @@ class CameraDirector
 	var Microphone pMicrophone
 	
 	var float pFov
+	var float pFovRatio
 	var float pExposure
 	var float pLowestIntensity
 	var float pHighestIntensity
 	var float pAdaptionTime
+	var float pImageDistance
 	var float pViewDistance
 	var LayerMask pLayerMask
 	var bool pEnableHDRR
@@ -83,18 +85,21 @@ class CameraDirector
 	var CurveBezier pToneMapCurve
 	
 	
+	
 	/** \brief Create camera director. */
 	func new()
 		pFov = fovFirstPerson
+		pFovRatio = 1
 		pExposure = 1
 		pLowestIntensity = 1
 		pHighestIntensity = 20
 		pAdaptionTime = 0.1
+		pImageDistance = 0.01
 		pViewDistance = 200
 		pEnableHDRR = true
 		pEnableGI = Engine.getDefaultEnableGI()
 		pWhiteIntensity = 3
-		pBloomIntensity = 1.5
+		pBloomIntensity = 4
 		pBloomStrength = 1
 		pBloomSize = 0.25
 		pBloomBlend = 1
@@ -151,6 +156,22 @@ class CameraDirector
 		pFov = fov
 	end
 	
+	/**
+	 * \brief Field of view ratio (height / width).
+	 * \version 1.21
+	 */
+	func float getFovRatio()
+		return pFovRatio
+	end
+	
+	/**
+	 * \brief Set field of view ratio (height / width).
+	 * \version 1.21
+	 */
+	func void setFovRatio(float ratio)
+		pFovRatio = ratio
+	end
+	
 	
 	
 	/**
@@ -185,8 +206,8 @@ class CameraDirector
 	end
 	
 	/** \brief Set lowest intensity. */
-	func void setLowestIntensity(float lowestIntensity)
-		pLowestIntensity = lowestIntensity
+	func void setLowestIntensity(float intensity)
+		pLowestIntensity = intensity
 	end
 	
 	/** \brief Highest intensity. */
@@ -195,8 +216,8 @@ class CameraDirector
 	end
 	
 	/** \brief Set highest intensity. */
-	func void setHighestIntensity(float highestIntensity)
-		pHighestIntensity = highestIntensity
+	func void setHighestIntensity(float intensity)
+		pHighestIntensity = intensity
 	end
 	
 	/** \brief Adaption time. */
@@ -205,8 +226,8 @@ class CameraDirector
 	end
 	
 	/** \brief Set adaption time. */
-	func void setAdaptionTime(float adaptionTime)
-		pAdaptionTime = adaptionTime
+	func void setAdaptionTime(float time)
+		pAdaptionTime = time
 	end
 	
 	/** \brief Camera view distance. */
@@ -217,6 +238,22 @@ class CameraDirector
 	/** \brief Set camera view distance. */
 	func void setViewDistance(float distance)
 		pViewDistance = distance
+	end
+	
+	/**
+	 * \brief Camera image distance.
+	 * \version 1.21
+	 */
+	func float getImageDistance()
+		return pImageDistance
+	end
+	
+	/**
+	 * \brief Set camera image distance.
+	 * \version 1.21
+	 */
+	func void setImageDistance(float distance)
+		pImageDistance = distance
 	end
 	
 	
@@ -252,7 +289,7 @@ class CameraDirector
 	 * \version 1.21
 	 */
 	func void setWhiteIntensity(float intensity)
-		pWhiteIntensity = DEMath.max(intensity, 0.0)
+		pWhiteIntensity = intensity
 	end
 	
 	/**
@@ -268,7 +305,7 @@ class CameraDirector
 	 * \version 1.21
 	 */
 	func void setBloomIntensity(float intensity)
-		pBloomIntensity = DEMath.max(intensity, 0.0)
+		pBloomIntensity = intensity
 	end
 	
 	/**
@@ -284,7 +321,7 @@ class CameraDirector
 	 * \version 1.21
 	 */
 	func void setBloomStrength(float strength)
-		pBloomStrength = DEMath.max(strength, 0.0)
+		pBloomStrength = strength
 	end
 	
 	/**
@@ -300,7 +337,7 @@ class CameraDirector
 	 * \version 1.21
 	 */
 	func void setBloomBlend(float blend)
-		pBloomBlend = DEMath.clamp(blend, 0.0, 1.0)
+		pBloomBlend = blend
 	end
 	
 	/**
@@ -316,7 +353,7 @@ class CameraDirector
 	 * \version 1.21
 	 */
 	func void setBloomSize(float size)
-		pBloomSize = DEMath.clamp(size, 0.0, 1.0)
+		pBloomSize = size
 	end
 	
 	/**
@@ -353,10 +390,41 @@ class CameraDirector
 	
 	
 	
+	/**
+	 * \brief Copy settings from another camera director.
+	 * \version 1.21
+	 */
+	func void copyFrom(CameraDirector director)
+		setFov(director.pFov)
+		setFovRatio(director.pFovRatio)
+		setImageDistance(director.pImageDistance)
+		setViewDistance(director.pViewDistance)
+		
+		setEnableHDRR(director.pEnableHDRR)
+		setExposure(director.pExposure)
+		setLowestIntensity(director.pLowestIntensity)
+		setHighestIntensity(director.pHighestIntensity)
+		setAdaptionTime(director.pAdaptionTime)
+		
+		setEnableGI(director.pEnableGI)
+		
+		setWhiteIntensity(director.pWhiteIntensity)
+		setBloomIntensity(director.pBloomIntensity)
+		setBloomStrength(director.pBloomStrength)
+		setBloomSize(director.pBloomSize)
+		setBloomBlend(director.pBloomBlend)
+		setToneMapCurve(director.pToneMapCurve)
+		
+		setLayerMask(director.pLayerMask)
+	end
+	
+	
+	
 	/** \brief Init camera parameters. */
 	func void initCameraParameters()
 		pCamera.setFov(pFov)
-		pCamera.setFovRatio(1.0)
+		pCamera.setFovRatio(pFovRatio)
+		pCamera.setImageDistance(pImageDistance)
 		pCamera.setViewDistance(pViewDistance)
 		
 		pCamera.setEnableHDRR(pEnableHDRR)
