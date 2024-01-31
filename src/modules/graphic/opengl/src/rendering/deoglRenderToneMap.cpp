@@ -640,7 +640,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	int realWidth = defren.GetWidth();
 	int realHeight = defren.GetHeight();
 	deoglShaderCompiled *shader;
-	int lastWidth, lastHeight;
 	int curWidth, curHeight;
 	//bool modeTarget;
 	int i;
@@ -693,20 +692,27 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	// the required number of passes
 	int blurPassCount = 0;
 	
-	if( curWidth > curHeight ){
-		lastWidth = curWidth;
-		
-	}else{
-		lastWidth = curHeight;
-	}
-	
-	for( blurPassCount=0; lastWidth>=128; lastWidth>>=1, blurPassCount++ );
+	bloomWidth = curWidth > curHeight ? curWidth : curHeight;
+	for( blurPassCount=0; bloomWidth>=128; bloomWidth>>=1, blurPassCount++ );
 	
 	blurPassCount = 1;
 	//modeTarget = false;
 	
-	lastWidth = curWidth;
-	lastHeight = curHeight;
+	// NOTE applying gauss blur multiple time is not working
+	
+	// NOTE on 1920 screen a 25% blur requires 480 pixels
+	
+	// TODO for better blur down sample texture to the lowest level covering the desired
+	//      pixel range. most probably 480 - 20 (since blur is 20 pixels wide).
+	//      then blur at the appropriate mip-map level (linear blend to be smooth).
+	
+	// NOTE for something like depth-of-field requiring variable blurring the mip-map
+	//      level has to be chosen at shader time
+	
+	// const int requiredBlurSize = ( int )( oglCamera->GetBloomSize() * ( float )curWidth + 0.5f );
+	
+	bloomWidth = curWidth;
+	bloomHeight = curHeight;
 	
 	// apply a blur filter according to 'tonemapping' in the 'doc' directory
 	const float blurTCOffsets[ 5 ] = { 1.354203f, 3.343485f, 5.329522f, 7.304296f, 9.266765f };
@@ -718,8 +724,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )lastWidth, ( float )lastHeight );
-	shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )lastWidth - 0.5f ), pixelSizeV * ( ( float )lastHeight - 0.5f ) );
+	defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )bloomWidth, ( float )bloomHeight );
+	shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )bloomWidth - 0.5f ), pixelSizeV * ( ( float )bloomHeight - 0.5f ) );
 	
 	shader->SetParameterFloat( spbbWeights1, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ], blurWeights[ 3 ] );
 	shader->SetParameterFloat( spbbWeights2, blurWeights[ 4 ], blurWeights[ 5 ], 0.0f, 0.0f );
