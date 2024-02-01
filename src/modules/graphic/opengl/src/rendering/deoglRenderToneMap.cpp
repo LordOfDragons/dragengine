@@ -151,7 +151,8 @@ enum eSPBloomBlur{
 };
 
 enum eSPBloomAdd{
-	spbaPosToTC
+	spbaTCTransform,
+	spbaLevel
 };
 
 enum eSPToneMap{
@@ -292,11 +293,31 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pPipelineBloomBlurStereo = pipelineManager.GetWith( pipconf );
 		
 		
+		// bloom add
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM" );
+		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Add" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.EnableBlend( GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR );
+		//pipconf.SetBlendColor( decColor( 0.5f, 0.5f, 0.5f, 0.5f ) );
+		pipconf.SetBlendColor( decColor( 0.75f, 0.75f, 0.75f, 0.75f ) );
+		pPipelineBloomAdd = pipelineManager.GetWith( pipconf );
+		
+		// bloom add stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
+			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Add Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBloomAddStereo = pipelineManager.GetWith( pipconf );
+		
+		
 		// tone map
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping" );
 		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetEnableBlend( false );
 		pPipelineToneMap = pipelineManager.GetWith( pipconf );
 		
 		defines.SetDefines( "WITH_TONEMAP_CURVE" );
@@ -652,7 +673,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	const int realHeight = defren.GetHeight();
 	deoglShaderCompiled *shader;
 	int curWidth, curHeight;
-	const bool withSmoothing = true;
 	
 	// convert color to bright values. to allow for proper bluring the output image is reduced
 	// to the largest power of two size fitting inside
@@ -678,13 +698,43 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	
 	// determine the number of blur passes. tries to finds the level where the required pixel
 	// size (blendSize * mipMapWidth) is at most 21 (pixel size of gauss kernel)
-	const int smoothLevelDrop = withSmoothing ? 0 : 0;
+	const int brightWidth = curWidth;
+	const int brightHeight = curHeight;
+	const float bloomSize = oglCamera.GetBloomSize();
+	
+	const int realMipMapCount = defren.GetTextureTemporary1()->GetRealMipMapLevelCount();
+	int i;
+	
+	/*
+	const int blurStep = 31; // 21 + 2 (2 because of downsample)
+	float blurLevelScale = 1.0f;
+	int blurSize = 0, topMipMapLevel = 0;
+	
+	for( i=0; i<realMipMapCount; i++ ){
+		const int requiredBlurSize = ( int )( bloomSize * ( float )curWidth );
+		
+		blurSize += blurStep;
+		curWidth /= 2;
+		
+		if( blurSize >= requiredBlurSize ){
+			blurLevelScale = ( float )requiredBlurSize / ( float )blurStep;
+			topMipMapLevel = i;
+			break;
+		}
+	}
+	*/
+	
 	const float level = decMath::max( log2f( ( float )referenceSize )
-		- log2f( 21.0f / decMath::max( oglCamera.GetBloomSize(), 0.01f ) )
-			- ( float )smoothLevelDrop, 0.0f );
+		- log2f( 21.0f / decMath::max( bloomSize, 0.01f ) ), 0.0f );
+	
+	const int topMipMapLevel = ( int )ceil( level );
+	
+	const int buildMipMapLevelCount = decMath::min( topMipMapLevel + 1, realMipMapCount );
 	
 	
 	// create mipmap levels
+	{
+	const deoglDebugTraceGroup debugTrace2( renderThread, "DownSample" );
 	pipeline = plan.GetRenderStereo() ? pPipelineBloomDownSampleStereo : pPipelineBloomDownSample;
 	pipeline->Activate();
 	
@@ -692,16 +742,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampNearestMipMap() );
 	
-	const int topMipMapLevel = ( int )ceil( level );
-	const int buildMipMapLevelCount = decMath::min( topMipMapLevel + 1,
-		defren.GetTextureTemporary1()->GetRealMipMapLevelCount() );
-	int i;
-	
-	const int brightWidth = curWidth;
-	const int brightHeight = curHeight;
-	
-	bloomWidth = curWidth;
-	bloomHeight = curHeight;
+	bloomWidth = brightWidth;
+	bloomHeight = brightHeight;
 	
 	for( i=1; i<buildMipMapLevelCount; i++ ){
 		bloomWidth >>= 1;
@@ -709,10 +751,12 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		
 		defren.ActivateFBOTemporary1Level( i );
 		OGL_CHECK( renderThread, glViewport( 0, 0, bloomWidth, bloomHeight ) );
+		OGL_CHECK( renderThread, glScissor( 0, 0, bloomWidth, bloomHeight ) );
 		
 		shader->SetParameterInt( spmdsLevel, i - 1 );
 		
 		RenderFullScreenQuad( plan );
+	}
 	}
 	
 	
@@ -729,82 +773,34 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	bloomWidth = brightWidth / ( 1 << topMipMapLevel );
 	bloomHeight = brightHeight / ( 1 << topMipMapLevel );
 	
-	pipeline = plan.GetRenderStereo() ? pPipelineBloomBlurStereo : pPipelineBloomBlur;
-	pipeline->Activate();
-	shader = &pipeline->GetGlShader();
-	
-	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, bloomWidth, bloomHeight ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, bloomWidth, bloomHeight ) );
-	
-	shader->SetParameterFloat( spbbWeights1, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ], blurWeights[ 3 ] );
-	shader->SetParameterFloat( spbbWeights2, blurWeights[ 4 ], blurWeights[ 5 ], 0.0f, 0.0f );
+	const float levelDiffScale = powf( 2.0f, level - ceil( level ) );
 	
 	
-	// blur in x direction
-	float tcScaleLevel = powf( 2.0f, level );
-	defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )brightWidth, ( float )brightHeight );
-	shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )brightWidth - 0.5f - tcScaleLevel ),
-		pixelSizeV * ( ( float )brightHeight - 0.5f - tcScaleLevel ) );
-	
-	defren.ActivateFBOTemporary2( false );
-	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinearMipMap() );
-	
-	shader->SetParameterFloat( spbbOffsets1, blurTCOffsets[ 0 ] * pixelSizeU * tcScaleLevel, 0.0f,
-		-blurTCOffsets[ 0 ] * pixelSizeU * tcScaleLevel, 0.0f );
-	shader->SetParameterFloat( spbbOffsets2, blurTCOffsets[ 1 ] * pixelSizeU * tcScaleLevel, 0.0f,
-		-blurTCOffsets[ 1 ] * pixelSizeU * tcScaleLevel, 0.0f );
-	shader->SetParameterFloat( spbbOffsets3, blurTCOffsets[ 2 ] * pixelSizeU * tcScaleLevel, 0.0f,
-		-blurTCOffsets[ 2 ] * pixelSizeU * tcScaleLevel, 0.0f );
-	shader->SetParameterFloat( spbbOffsets4, blurTCOffsets[ 3 ] * pixelSizeU * tcScaleLevel, 0.0f,
-		-blurTCOffsets[ 3 ] * pixelSizeU * tcScaleLevel, 0.0f );
-	shader->SetParameterFloat( spbbOffsets5, blurTCOffsets[ 4 ] * pixelSizeU * tcScaleLevel, 0.0f,
-		-blurTCOffsets[ 4 ] * pixelSizeU * tcScaleLevel, 0.0f );
-	shader->SetParameterFloat( spbbLevel, level );
-	shader->SetParameterFloat( spbbScaleColor, 1.0 );
-	
-	RenderFullScreenQuad( plan );
-	
-	
-	// blur in y direction
-	defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )bloomWidth, ( float )bloomHeight );
-	shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )bloomWidth - 0.5f ),
-		pixelSizeV * ( ( float )bloomHeight - 0.5f ) );
-	
-	defren.ActivateFBOTemporary1( false );
-	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
-	
-	tcScaleLevel = powf( 2.0f, level - ceil( level ) );
-	shader->SetParameterFloat( spbbOffsets1, 0.0f, blurTCOffsets[ 0 ] * pixelSizeV * tcScaleLevel,
-		0.0f, -blurTCOffsets[ 0 ] * pixelSizeV * tcScaleLevel );
-	shader->SetParameterFloat( spbbOffsets2, 0.0f, blurTCOffsets[ 1 ] * pixelSizeV * tcScaleLevel,
-		0.0f, -blurTCOffsets[ 1 ] * pixelSizeV * tcScaleLevel );
-	shader->SetParameterFloat( spbbOffsets3, 0.0f, blurTCOffsets[ 2 ] * pixelSizeV * tcScaleLevel,
-		0.0f, -blurTCOffsets[ 2 ] * pixelSizeV * tcScaleLevel );
-	shader->SetParameterFloat( spbbOffsets4, 0.0f, blurTCOffsets[ 3 ] * pixelSizeV * tcScaleLevel,
-		0.0f, -blurTCOffsets[ 3 ] * pixelSizeV * tcScaleLevel );
-	shader->SetParameterFloat( spbbOffsets5, 0.0f, blurTCOffsets[ 4 ] * pixelSizeV * tcScaleLevel,
-		0.0f, -blurTCOffsets[ 4 ] * pixelSizeV * tcScaleLevel );
-	shader->SetParameterFloat( spbbLevel, 0.0f );
-	shader->SetParameterFloat( spbbScaleColor, 1.0 );
-	
-	RenderFullScreenQuad( plan );
-	
-	
-	if( withSmoothing ){
-		// smoothen in x direction
-		OGL_CHECK( renderThread, glViewport( 0, 0, brightWidth, brightHeight ) );
-		OGL_CHECK( renderThread, glScissor( 0, 0, brightWidth, brightHeight ) );
+	for( i=topMipMapLevel; i>=0; i-- ){
+		const deoglDebugTraceGroup debugTrace2( renderThread, "Blur Pass" );
+		pipeline = plan.GetRenderStereo() ? pPipelineBloomBlurStereo : pPipelineBloomBlur;
+		pipeline->Activate();
+		shader = &pipeline->GetGlShader();
 		
-		defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )bloomWidth, ( float )bloomHeight );
-		shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )bloomWidth - 0.5f ),
-			pixelSizeV * ( ( float )bloomHeight - 0.5f ) );
+		shader->SetParameterFloat( spbbWeights1, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ], blurWeights[ 3 ] );
+		shader->SetParameterFloat( spbbWeights2, blurWeights[ 4 ], blurWeights[ 5 ], 0.0f, 0.0f );
+		
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+		
+		OGL_CHECK( renderThread, glViewport( 0, 0, bloomWidth, bloomHeight ) );
+		OGL_CHECK( renderThread, glScissor( 0, 0, bloomWidth, bloomHeight ) );
+		
+		// blur in x direction
+		//const float curLevel = ( float )i;
+		const float curLevel = i == topMipMapLevel ? level : ( float )i;
+		float tcScaleLevel = powf( 2.0f, curLevel ); // * blurLevelScale;
+		defren.SetShaderParamFSQuad( *shader, spbbTCTransform, brightWidth, brightHeight );
+		shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )brightWidth - 0.5f - tcScaleLevel ),
+			pixelSizeV * ( ( float )brightHeight - 0.5f - tcScaleLevel ) );
 		
 		defren.ActivateFBOTemporary2( false );
-		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinearMipMap() );
 		
-		tcScaleLevel = 1.0f / powf( 2.0f, level );
 		shader->SetParameterFloat( spbbOffsets1, blurTCOffsets[ 0 ] * pixelSizeU * tcScaleLevel, 0.0f,
 			-blurTCOffsets[ 0 ] * pixelSizeU * tcScaleLevel, 0.0f );
 		shader->SetParameterFloat( spbbOffsets2, blurTCOffsets[ 1 ] * pixelSizeU * tcScaleLevel, 0.0f,
@@ -815,37 +811,64 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 			-blurTCOffsets[ 3 ] * pixelSizeU * tcScaleLevel, 0.0f );
 		shader->SetParameterFloat( spbbOffsets5, blurTCOffsets[ 4 ] * pixelSizeU * tcScaleLevel, 0.0f,
 			-blurTCOffsets[ 4 ] * pixelSizeU * tcScaleLevel, 0.0f );
-		shader->SetParameterFloat( spbbLevel, level );
-		shader->SetParameterFloat( spbbScaleColor, 1.0 );
+		shader->SetParameterFloat( spbbLevel, curLevel );
+		shader->SetParameterFloat( spbbScaleColor, 1.0f );
 		
 		RenderFullScreenQuad( plan );
 		
 		
-		// smoothen in y direction
-		defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )brightWidth, ( float )brightHeight );
-		shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )brightWidth - 0.5f ),
-			pixelSizeV * ( ( float )brightHeight - 0.5f ) );
+		// blur in y direction
+		defren.SetShaderParamFSQuad( *shader, spbbTCTransform, bloomWidth, bloomHeight );
+		shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )bloomWidth - 0.5f ),
+			pixelSizeV * ( ( float )bloomHeight - 0.5f ) );
 		
-		defren.ActivateFBOTemporary1( false );
+		defren.ActivateFBOTemporary1Level( i );
 		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 		
-		shader->SetParameterFloat( spbbOffsets1, 0.0f, blurTCOffsets[ 0 ] * pixelSizeV,
-			0.0f, -blurTCOffsets[ 0 ] * pixelSizeV );
-		shader->SetParameterFloat( spbbOffsets2, 0.0f, blurTCOffsets[ 1 ] * pixelSizeV,
-			0.0f, -blurTCOffsets[ 1 ] * pixelSizeV );
-		shader->SetParameterFloat( spbbOffsets3, 0.0f, blurTCOffsets[ 2 ] * pixelSizeV,
-			0.0f, -blurTCOffsets[ 2 ] * pixelSizeV );
-		shader->SetParameterFloat( spbbOffsets4, 0.0f, blurTCOffsets[ 3 ] * pixelSizeV,
-			0.0f, -blurTCOffsets[ 3 ] * pixelSizeV );
-		shader->SetParameterFloat( spbbOffsets5, 0.0f, blurTCOffsets[ 4 ] * pixelSizeV,
-			0.0f, -blurTCOffsets[ 4 ] * pixelSizeV );
+		//tcScaleLevel = blurLevelScale;
+		tcScaleLevel = i == topMipMapLevel ? levelDiffScale : 1.0f;
+		shader->SetParameterFloat( spbbOffsets1, 0.0f, blurTCOffsets[ 0 ] * pixelSizeV * tcScaleLevel,
+			0.0f, -blurTCOffsets[ 0 ] * pixelSizeV * tcScaleLevel );
+		shader->SetParameterFloat( spbbOffsets2, 0.0f, blurTCOffsets[ 1 ] * pixelSizeV * tcScaleLevel,
+			0.0f, -blurTCOffsets[ 1 ] * pixelSizeV * tcScaleLevel );
+		shader->SetParameterFloat( spbbOffsets3, 0.0f, blurTCOffsets[ 2 ] * pixelSizeV * tcScaleLevel,
+			0.0f, -blurTCOffsets[ 2 ] * pixelSizeV * tcScaleLevel );
+		shader->SetParameterFloat( spbbOffsets4, 0.0f, blurTCOffsets[ 3 ] * pixelSizeV * tcScaleLevel,
+			0.0f, -blurTCOffsets[ 3 ] * pixelSizeV * tcScaleLevel );
+		shader->SetParameterFloat( spbbOffsets5, 0.0f, blurTCOffsets[ 4 ] * pixelSizeV * tcScaleLevel,
+			0.0f, -blurTCOffsets[ 4 ] * pixelSizeV * tcScaleLevel );
 		shader->SetParameterFloat( spbbLevel, 0.0f );
 		shader->SetParameterFloat( spbbScaleColor, 1.0 );
 		
 		RenderFullScreenQuad( plan );
 		
-		bloomWidth = brightWidth;
-		bloomHeight = brightHeight;
+		
+		// add to previous level
+		const int nextBloomWidth = bloomWidth * 2;
+		const int nextBloomHeight = bloomHeight * 2;
+		
+		if( i > 0 ){
+			pipeline = plan.GetRenderStereo() ? pPipelineBloomAddStereo : pPipelineBloomAdd;
+			pipeline->Activate();
+			shader = &pipeline->GetGlShader();
+			
+			renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+			
+			OGL_CHECK( renderThread, glViewport( 0, 0, nextBloomWidth, nextBloomHeight ) );
+			OGL_CHECK( renderThread, glScissor( 0, 0, nextBloomWidth, nextBloomHeight ) );
+			
+			const int shift = 1 << i;
+			defren.SetShaderParamFSQuad( *shader, spbbTCTransform, brightWidth - shift, brightHeight - shift );
+			shader->SetParameterFloat( spbaLevel, ( float )i );
+			
+			defren.ActivateFBOTemporary1Level( i - 1 );
+			tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinearMipMapNearest() );
+			
+			RenderFullScreenQuad( plan );
+			
+			bloomWidth = nextBloomWidth;
+			bloomHeight = nextBloomHeight;
+		}
 	}
 DEBUG_PRINT_TIMER( "ToneMap: Blooming" );
 }

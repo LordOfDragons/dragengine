@@ -53,6 +53,8 @@ private:
 	const deoglPipeline *pPipelineBloomDownSampleStereo;
 	const deoglPipeline *pPipelineBloomBlur;
 	const deoglPipeline *pPipelineBloomBlurStereo;
+	const deoglPipeline *pPipelineBloomAdd;
+	const deoglPipeline *pPipelineBloomAddStereo;
 	const deoglPipeline *pPipelineToneMap;
 	const deoglPipeline *pPipelineToneMapStereo;
 	const deoglPipeline *pPipelineToneMapCustom;
