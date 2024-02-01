@@ -350,6 +350,10 @@ public:
 	cSliderBloomSize( igdeWPCamera &panel ) : igdeEditSliderTextListener(), pPanel( panel ){ }
 	
 	void OnSliderTextValueChanging( igdeEditSliderText *sliderText ) override{
+		OnSliderTextValueChanged( sliderText );
+	}
+	
+	void OnSliderTextValueChanged( igdeEditSliderText *sliderText ) override{
 		igdeCamera * const camera = pPanel.GetCamera();
 		if( ! camera ){
 			return;

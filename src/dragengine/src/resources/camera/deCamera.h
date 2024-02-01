@@ -59,7 +59,7 @@ class deBaseGraphicCamera;
  * the tone mapping parameters used by the graphic module to reduce the washing out to white.
  * If custom tone mapping curve is used the white intensity parameter indicates the upper
  * bound of the input send through the curve. Pixel intensities above the white intensity
- * are thus clamped to the white intensity. The default value is 3.
+ * are thus clamped to the white intensity. The default value is 2.
  * 
  * In games overbrighting is often used as a gameplay element to simulate very bright pixel
  * for example an energy beam or entering a room with glaring light while coming out of night
@@ -72,10 +72,8 @@ class deBaseGraphicCamera;
  * and bloom size parameter.
  * 
  * The bloom intensity is a multiplier applied to the current "maximum intensity" of the camera.
- * The default value is 4. To produce an overbright effect pixel requires an intensity 4 times
- * as bright than the current camera maximum intensity. Typically this value is somewhat larger
- * than the white intensity. This ensures there is a leeway between washing out colors to white
- * and overbrighting kicking in.
+ * The default value is 1. To produce an overbright effect pixel requires an intensity 1 times
+ * as bright than the current camera maximum intensity.
  * 
  * The bloom strength is a multiplier applied to the overbright intensity beyond the bloom intensity
  * threshold. For example if the threshold is 2 and the pixel intensity is 3 then the overbright

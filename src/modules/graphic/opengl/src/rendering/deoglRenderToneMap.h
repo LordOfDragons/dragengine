@@ -49,10 +49,10 @@ private:
 	const deoglPipeline *pPipelineParametersStereo;
 	const deoglPipeline *pPipelineBrightPass;
 	const deoglPipeline *pPipelineBrightPassStereo;
-	// const deoglPipeline *pPipelineBloomReduce;
+	const deoglPipeline *pPipelineBloomDownSample;
+	const deoglPipeline *pPipelineBloomDownSampleStereo;
 	const deoglPipeline *pPipelineBloomBlur;
 	const deoglPipeline *pPipelineBloomBlurStereo;
-	// const deoglPipeline *pPipelineBloomAdd;
 	const deoglPipeline *pPipelineToneMap;
 	const deoglPipeline *pPipelineToneMapStereo;
 	const deoglPipeline *pPipelineToneMapCustom;

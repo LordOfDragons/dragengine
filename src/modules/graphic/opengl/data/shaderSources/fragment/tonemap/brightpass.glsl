@@ -29,7 +29,7 @@ void main( void ){
 	vec3 color = textureLod( texColor, vec3( vTexCoord, vLayer ), 0 ).rgb;
 	
 	float luminance = max( dot( color, lumiFactors ), 0 );
-	float finalLum = max( luminance - params.w, 0 ) * pToneMapBloomBlend;
+	float finalLum = max( luminance - params.w, 0 ) * pToneMapBloomStrength;
 	outColor = color * vec3( finalLum / ( luminance + epsilon ) );
 	
 	/*

@@ -1253,12 +1253,12 @@ void deoglDeferredRendering::pCreateTextures(){
 	
 	// create temporary textures
 	pTextureTemporary1 = new deoglArrayTexture( pRenderThread );
-	//pTextureTemporary1->SetMipMapped( true );
+	pTextureTemporary1->SetMipMapped( true );
 	pTextureTemporary1->SetFBOFormat( 3, true );
 	pTextureTemporary1->SetDebugObjectLabel( "DefRen.Temporary1" );
 	
 	pTextureTemporary2 = new deoglArrayTexture( pRenderThread );
-	//pTextureTemporary2->SetMipMapped( true );
+	pTextureTemporary2->SetMipMapped( true );
 	pTextureTemporary2->SetFBOFormat( 3, true );
 	pTextureTemporary2->SetDebugObjectLabel( "DefRen.Temporary2" );
 	
@@ -1386,7 +1386,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 			pTextureReflectivity, pTextureColor, NULL, NULL, NULL, pTextureDepth2 );
 	}
 	
-	char debugName[ 31 ];
+	decString debugName;
 	
 	// fbos for the mip map levels
 	int fboMipMapCount = pTextureDepth1->GetRealMipMapLevelCount();
@@ -1411,7 +1411,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 				pFBOMipMapDepth1[ i ]->Verify();
-				snprintf( debugName, sizeof( debugName ), "DefRen.Depth1.MipMap%d", i );
+				debugName.Format( "DefRen.Depth1.MipMap%d", i + 1 );
 				pFBOMipMapDepth1[ i ]->SetDebugObjectLabel( debugName );
 				
 			}catch( const deException & ){
@@ -1429,7 +1429,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 				pFBOMipMapDepth2[ i ]->Verify();
-				snprintf( debugName, sizeof( debugName ), "DefRen.Depth2.MipMap%d", i );
+				debugName.Format( "DefRen.Depth2.MipMap%d", i + 1 );
 				pFBOMipMapDepth2[ i ]->SetDebugObjectLabel( debugName );
 				
 			}catch( const deException & ){
@@ -1442,7 +1442,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 	}
 	
 	// fbos for the mip map levels
-	fboMipMapCount = 0; //pTextureTemporary1->GetRealMipMapLevelCount() - 1;
+	fboMipMapCount = pTextureTemporary1->GetRealMipMapLevelCount();
 	
 	if( fboMipMapCount > 0 ){
 		int i;
@@ -1464,7 +1464,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 				pFBOMipMapTemporary1[ i ]->Verify();
-				snprintf( debugName, sizeof( debugName ), "DefRen.Temporary1.MipMap%d", i );
+				debugName.Format( "DefRen.Temporary1.MipMap%d", i + 1 );
 				pFBOMipMapTemporary1[ i ]->SetDebugObjectLabel( debugName );
 				
 			}catch( const deException & ){
@@ -1482,7 +1482,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 				pFBOMipMapTemporary2[ i ]->Verify();
-				snprintf( debugName, sizeof( debugName ), "DefRen.Temporary2.MipMap%d", i );
+				debugName.Format( "DefRen.Temporary2.MipMap%d", i + 1 );
 				pFBOMipMapTemporary2[ i ]->SetDebugObjectLabel( debugName );
 				
 			}catch( const deException & ){
@@ -1506,7 +1506,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffersNone ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 		pFBOCopyDepth[ i ]->Verify();
-		snprintf( debugName, sizeof( debugName ), "DefRen.CopyDepth.Layer%d", i );
+		debugName.Format( "DefRen.CopyDepth.Layer%d", i );
 		pFBOCopyDepth[ i ]->SetDebugObjectLabel( debugName );
 	}
 	
