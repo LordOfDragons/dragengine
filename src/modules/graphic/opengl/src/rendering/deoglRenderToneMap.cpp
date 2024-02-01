@@ -723,7 +723,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	
 	// apply a blur filter according to 'tonemapping' in the 'doc' directory
 	const float blurTCOffsets[ 5 ] = { 1.354203f, 3.343485f, 5.329522f, 7.304296f, 9.266765f };
-	const float blurWeights[ 6 ] = { 2.050781e-1f, 1.171875e-1f, 4.394531e-2f, 9.765625e-3f, 9.765625e-4f };
+	//const float blurWeights[ 6 ] = { 2.050781e-1f, 1.171875e-1f, 4.394531e-2f, 9.765625e-3f, 9.765625e-4f };
+	const float blurWeights[ 6 ] = { 3.549092e-1f, 2.373966e-1f, 6.387397e-2f, 1.676156e-2f, 3.835649e-3f, 6.776054e-4f };
 	
 	bloomWidth = brightWidth / ( 1 << topMipMapLevel );
 	bloomHeight = brightHeight / ( 1 << topMipMapLevel );
@@ -761,7 +762,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	shader->SetParameterFloat( spbbOffsets5, blurTCOffsets[ 4 ] * pixelSizeU * tcScaleLevel, 0.0f,
 		-blurTCOffsets[ 4 ] * pixelSizeU * tcScaleLevel, 0.0f );
 	shader->SetParameterFloat( spbbLevel, level );
-	shader->SetParameterFloat( spbbScaleColor, 1.0f );
+	shader->SetParameterFloat( spbbScaleColor, 1.0 );
 	
 	RenderFullScreenQuad( plan );
 	
@@ -786,7 +787,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	shader->SetParameterFloat( spbbOffsets5, 0.0f, blurTCOffsets[ 4 ] * pixelSizeV * tcScaleLevel,
 		0.0f, -blurTCOffsets[ 4 ] * pixelSizeV * tcScaleLevel );
 	shader->SetParameterFloat( spbbLevel, 0.0f );
-	shader->SetParameterFloat( spbbScaleColor, 1.0f );
+	shader->SetParameterFloat( spbbScaleColor, 1.0 );
 	
 	RenderFullScreenQuad( plan );
 	
@@ -815,7 +816,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		shader->SetParameterFloat( spbbOffsets5, blurTCOffsets[ 4 ] * pixelSizeU * tcScaleLevel, 0.0f,
 			-blurTCOffsets[ 4 ] * pixelSizeU * tcScaleLevel, 0.0f );
 		shader->SetParameterFloat( spbbLevel, level );
-		shader->SetParameterFloat( spbbScaleColor, 1.0f );
+		shader->SetParameterFloat( spbbScaleColor, 1.0 );
 		
 		RenderFullScreenQuad( plan );
 		
@@ -839,7 +840,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		shader->SetParameterFloat( spbbOffsets5, 0.0f, blurTCOffsets[ 4 ] * pixelSizeV,
 			0.0f, -blurTCOffsets[ 4 ] * pixelSizeV );
 		shader->SetParameterFloat( spbbLevel, 0.0f );
-		shader->SetParameterFloat( spbbScaleColor, 4.0f );
+		shader->SetParameterFloat( spbbScaleColor, 1.0 );
 		
 		RenderFullScreenQuad( plan );
 		

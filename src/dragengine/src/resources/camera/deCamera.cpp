@@ -59,7 +59,7 @@ pEnableGI( false ),
 
 pWhiteIntensity( 2.0f ),
 pBloomIntensity( 1.0f ),
-pBloomStrength( 0.5f ),
+pBloomStrength( 0.25f ),
 pBloomBlend( 1.0f ),
 pBloomSize( 0.25f ),
 

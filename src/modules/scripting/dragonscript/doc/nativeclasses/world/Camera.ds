@@ -52,9 +52,9 @@ pin Dragengine.Gui
  * as bright than the current camera maximum intensity.
  * 
  * The bloom strength is a multiplier applied to the overbright intensity beyond the bloom intensity
- * threshold. For example if the threshold is 2 and the pixel intensity is 3 then the overbright
+ * threshold. For example if the threshold is 1 and the pixel intensity is 2 then the overbright
  * intensity is 1 and is multiplied with the strength factor. This allows to modify the amount of
- * intensity required to result in a strong glare.
+ * intensity required to result in a strong glare. The default value is 0.25
  * 
  * The bloom blend is a multiplier applied to the overbright calculated for a pixel.
  * This is typically used to blend between using bloom (1) and not using bloom (0).
