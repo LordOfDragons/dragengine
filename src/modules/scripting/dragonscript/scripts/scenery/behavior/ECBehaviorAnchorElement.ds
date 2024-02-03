@@ -69,7 +69,7 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 			return this.pECBehavior
 		end
 		
-		/** \brief Anchor name or empty string to not anchor. */
+		/** \brief Anchor name or null to not anchor. */
 		public func StringID getAnchorID()
 			return this.pAnchorID
 		end
