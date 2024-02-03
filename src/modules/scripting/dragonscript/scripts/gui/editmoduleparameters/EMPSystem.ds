@@ -55,12 +55,12 @@ class EMPSystem extends Panel
 	end
 	
 	/** \brief Text field supporting ParameterValueEditor. */
-	public class PVETextField extends TextField implements ParameterValueEditor2
-		private var SysParamWrapper pWrapper
-		private var ModuleParameter pParameter
+	class PVETextField extends TextField implements ParameterValueEditor2
+		var SysParamWrapper pWrapper
+		var ModuleParameter pParameter
 		
 		/** \brief Create text field. */
-		public func new(SysParamWrapper wrapper, ModuleParameter parameter)
+		func new(SysParamWrapper wrapper, ModuleParameter parameter)
 			pWrapper = wrapper
 			pParameter = parameter
 			setDesignerSelector("TextField.EMPSystem.Value")
@@ -68,7 +68,7 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Reset parameter changes. */
-		public func void resetChanges()
+		func void resetChanges()
 			getModel().setText(pWrapper.getParameterValue(pParameter.getName()))
 		end
 		
@@ -76,12 +76,12 @@ class EMPSystem extends Panel
 		 * \brief Reset parameter to default value.
 		 * \version 1.7
 		 */
-		public func void resetDefault()
+		func void resetDefault()
 			getModel().setText(pParameter.getDefaultValue())
 		end
 		
 		/** \brief Apply parameter changes. */
-		public func void applyChanges()
+		func void applyChanges()
 			var String oldValue = pWrapper.getParameterValue(pParameter.getName())
 			var String newValue = getModel().getText()
 			if not newValue.equals(oldValue)
@@ -91,13 +91,13 @@ class EMPSystem extends Panel
 	end
 	
 	/** \brief CheckBox supporting ParameterValueEditor. */
-	public class PVECheckBox extends Panel implements ParameterValueEditor2
-		private var SysParamWrapper pWrapper
-		private var ModuleParameter pParameter
-		private var CheckBox pCheckBox
+	class PVECheckBox extends Panel implements ParameterValueEditor2
+		var SysParamWrapper pWrapper
+		var ModuleParameter pParameter
+		var CheckBox pCheckBox
 		
 		/** \brief Create text field. */
-		public func new(SysParamWrapper wrapper, ModuleParameter parameter)
+		func new(SysParamWrapper wrapper, ModuleParameter parameter)
 			pWrapper = wrapper
 			pParameter = parameter
 			pCheckBox = CheckBox.new()
@@ -108,13 +108,13 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Dispose of widget. */
-		public func void dispose()
+		func void dispose()
 			pCheckBox = null
 			super.dispose()
 		end
 		
 		/** \brief Reset parameter changes. */
-		public func void resetChanges()
+		func void resetChanges()
 			pCheckBox.setToggled(pWrapper.getParameterValue(pParameter.getName()).equals("1"))
 		end
 		
@@ -122,12 +122,12 @@ class EMPSystem extends Panel
 		 * \brief Reset parameter to default value.
 		 * \version 1.7
 		 */
-		public func void resetDefault()
+		func void resetDefault()
 			pCheckBox.setToggled(pParameter.getDefaultValue().equals("1"))
 		end
 		
 		/** \brief Apply parameter changes. */
-		public func void applyChanges()
+		func void applyChanges()
 			var bool oldValue = pWrapper.getParameterValue(pParameter.getName()).equals("1")
 			var bool newValue = pCheckBox.getToggled()
 			if newValue != oldValue
@@ -137,123 +137,123 @@ class EMPSystem extends Panel
 	end
 	
 	/** \brief Cycle value supporting ParameterValueEditor. */
-	public class PVECycleValue extends Panel implements ParameterValueEditor2
+	class PVECycleValue extends Panel implements ParameterValueEditor2
 		/** \brief Select previous value. */
-		public class SelectPrevValue implements ActionListener
-			private var PVECycleValue pCycleValue
+		class SelectPrevValue implements ActionListener
+			var PVECycleValue pCycleValue
 			
 			/** \brief Create action listener. */
-			public func new(PVECycleValue cycleValue)
+			func new(PVECycleValue cycleValue)
 				pCycleValue = cycleValue
 			end
 			
 			/** \brief Action triggered. */
-			public func void onAction(ActionEvent event)
+			func void onAction(ActionEvent event)
 				pCycleValue.selectPrevValue()
 			end
 		end
 		
 		/** \brief Select next value. */
-		public class SelectNextValue implements ActionListener
-			private var PVECycleValue pCycleValue
+		class SelectNextValue implements ActionListener
+			var PVECycleValue pCycleValue
 			
 			/** \brief Create action listener. */
-			public func new(PVECycleValue cycleValue)
+			func new(PVECycleValue cycleValue)
 				pCycleValue = cycleValue
 			end
 			
 			/** \brief Action triggered. */
-			public func void onAction(ActionEvent event)
+			func void onAction(ActionEvent event)
 				pCycleValue.selectNextValue()
 			end
 		end
 		
 		/** \brief Pick value from list action. */
 		class SelectFromList extends ClickedActionListener
-			private var PVECycleValue pCycleValue
+			var PVECycleValue pCycleValue
 			
 			/** \brief Create listener. */
-			public func new(PVECycleValue cycleValue)
+			func new(PVECycleValue cycleValue)
 				pCycleValue = cycleValue
 			end
 			
 			/** \brief User clicked on label. */
-			public func void onAction()
+			func void onAction()
 				pCycleValue.selectFromList()
 			end
 		end
 		
 		/** \brief Design parent on mouse enter, move and leave. */
 		class ForwardMouseEnterMoveLeave extends DefaultMouseListener
-			private var Widget pWidget
+			var Widget pWidget
 			
 			/** \brief Create listener. */
-			public func new(Widget widget)
+			func new(Widget widget)
 				pWidget = widget
 			end
 			
-			public func void onMouseEnter(MouseEvent event)
+			func void onMouseEnter(MouseEvent event)
 				pWidget.sendEvent(event)
 			end
 			
-			public func void onMouseMove(MouseEvent event)
+			func void onMouseMove(MouseEvent event)
 				pWidget.sendEvent(event)
 			end
 			
-			public func void onMouseLeave(MouseEvent event)
+			func void onMouseLeave(MouseEvent event)
 				pWidget.sendEvent(event)
 			end
 		end
 		
 		/** \brief Selection entry with list model support. */
 		class SelectionEntry
-			private var String pValue
-			private var String pDisplayName
-			private var String pDescription
+			var String pValue
+			var String pDisplayName
+			var String pDescription
 			
 			/** \brief Create selection entry. */
-			public func new(String value, String displayName, String description)
+			func new(String value, String displayName, String description)
 				pValue = value
 				pDisplayName = displayName
 				pDescription = description
 			end
 			
 			/** \brief Value of entry. */
-			public func String getValue()
+			func String getValue()
 				return pValue
 			end
 			
 			/** \brief Display name of entry. */
-			public func String getDisplayName()
+			func String getDisplayName()
 				return pDisplayName
 			end
 			
 			/** \brief Description of entry. */
-			public func String getDescription()
+			func String getDescription()
 				return pDescription
 			end
 			
 			/** \brief String represntation. */
-			public func String toString()
+			func String toString()
 				return pDisplayName
 			end
 			
 			/** \brief Entry equals another entry. */
-			public func bool equals(Object other)
+			func bool equals(Object other)
 				return other castable SelectionEntry and pValue.equals((other cast SelectionEntry).pValue)
 			end
 		end
 		
-		private var EMPSystem pEMPSystem
-		private var ModuleParameter pParameter
-		private var DefaultTextModel pModelSelectedValue
-		private var DefaultListModel pModelValues
-		private var Button pButtonPrev
-		private var Button pButtonNext
-		private var Label pLabelValue
+		var EMPSystem pEMPSystem
+		var ModuleParameter pParameter
+		var DefaultTextModel pModelSelectedValue
+		var DefaultListModel pModelValues
+		var Button pButtonPrev
+		var Button pButtonNext
+		var Label pLabelValue
 		
 		/** \brief Create widget. */
-		public func new(EMPSystem empSystem, ModuleParameter parameter)
+		func new(EMPSystem empSystem, ModuleParameter parameter)
 			pEMPSystem = empSystem
 			pParameter = parameter
 			
@@ -315,7 +315,7 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Dispose of widget. */
-		public func void dispose()
+		func void dispose()
 			pModelSelectedValue = null
 			pModelValues = null
 			pButtonPrev = null
@@ -325,22 +325,22 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Previous value button. */
-		public func Button getButtonPrev()
+		func Button getButtonPrev()
 			return pButtonPrev
 		end
 		
 		/** \brief Next value button. */
-		public func Button getButtonNext()
+		func Button getButtonNext()
 			return pButtonNext
 		end
 		
 		/** \brief Selected value label. */
-		public func Label getLabelValue()
+		func Label getLabelValue()
 			return pLabelValue
 		end
 		
 		/** \brief Select previous value. */
-		public func void selectPrevValue()
+		func void selectPrevValue()
 			if pModelValues.getSelected() == 0
 				return
 			end
@@ -351,7 +351,7 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Select next value. */
-		public func void selectNextValue()
+		func void selectNextValue()
 			if pModelValues.getSelected() == pModelValues.getCount() - 1
 				return
 			end
@@ -362,7 +362,7 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Select value from list. */
-		public func void selectFromList()
+		func void selectFromList()
 			WindowDialog.chooseList(pEMPSystem.getWindow(),\
 				"@UI.Settings.ModuleParameters.SelectParameterValue",\
 				"@UI.Settings.ModuleParameters.SelectValue", null, pModelValues, \
@@ -379,7 +379,7 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Reset parameter changes. */
-		public func void resetChanges()
+		func void resetChanges()
 			setValue(pEMPSystem.getWrapper().getParameterValue(pParameter.getName()))
 		end
 		
@@ -387,7 +387,7 @@ class EMPSystem extends Panel
 		 * \brief Reset parameter to default value.
 		 * \version 1.7
 		 */
-		public func void resetDefault()
+		func void resetDefault()
 			setValue(pParameter.getDefaultValue())
 		end
 		
@@ -417,7 +417,7 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Apply parameter changes. */
-		public func void applyChanges()
+		func void applyChanges()
 			var String oldValue = pEMPSystem.getWrapper().getParameterValue(pParameter.getName())
 			var String newValue = (pModelValues.getAt(\
 				pModelValues.getSelected()) cast SelectionEntry).getValue()
@@ -428,35 +428,35 @@ class EMPSystem extends Panel
 	end
 	
 	/** \brief Mouse listener display parameter info on clicking. */
-	public class ClickShowInfo extends DefaultMouseListener
-		private var ModuleParameter pParameter
-		private var EMPSystem pEMPSystem
+	class ClickShowInfo extends DefaultMouseListener
+		var ModuleParameter pParameter
+		var EMPSystem pEMPSystem
 		
 		/** \brief Create listener. */
-		public func new(ModuleParameter parameter, EMPSystem empSystem)
+		func new(ModuleParameter parameter, EMPSystem empSystem)
 			pParameter = parameter
 			pEMPSystem = empSystem
 		end
 		
 		/** \brief Mouse button has been pressed. */
-		public func void onButtonPress(MouseEvent event)
+		func void onButtonPress(MouseEvent event)
 			pEMPSystem.showParameterInfo(pParameter)
 		end
 	end
 	
 	/** \brief Display parameter info on obtaining focus. */
-	public class FocusShowInfo extends DefaultFocusListener
-		private var ModuleParameter pParameter
-		private var EMPSystem pEMPSystem
+	class FocusShowInfo extends DefaultFocusListener
+		var ModuleParameter pParameter
+		var EMPSystem pEMPSystem
 		
 		/** \brief Create listener. */
-		public func new(ModuleParameter parameter, EMPSystem empSystem)
+		func new(ModuleParameter parameter, EMPSystem empSystem)
 			pParameter = parameter
 			pEMPSystem = empSystem
 		end
 		
 		/** \brief Widget received focus. */
-		public func void onFocusReceived(FocusEvent event)
+		func void onFocusReceived(FocusEvent event)
 			pEMPSystem.showParameterInfo(pParameter)
 		end
 	end
@@ -465,38 +465,38 @@ class EMPSystem extends Panel
 	 * \brief Reset parameter action.
 	 * \version 1.7
 	 */
-	public class ResetParameter implements ActionListener
-		private var ParameterValueEditor2 pEditor
+	class ResetParameter implements ActionListener
+		var ParameterValueEditor2 pEditor
 		
 		/** \brief Create listener. */
-		public func new(ParameterValueEditor2 editor)
+		func new(ParameterValueEditor2 editor)
 			pEditor = editor
 		end
 		
 		/** \brief Action triggered. */
-		public func void onAction(ActionEvent event)
+		func void onAction(ActionEvent event)
 			pEditor.resetDefault()
 		end
 	end
 	
 	
 	
-	private var SysParamWrapper pWrapper
-	private var Panel pPanelParameters
-	private var Array pEditorWidgets
-	private var DefaultTextModel pModelInfo
+	var SysParamWrapper pWrapper
+	var Panel pPanelParameters
+	var Array pEditorWidgets
+	var DefaultTextModel pModelInfo
 	
 	
 	
 	/** \brief Create edit module parameters panel. */
-	public func new(SysParamWrapper wrapper)
+	func new(SysParamWrapper wrapper)
 		pWrapper = wrapper
 		pEditorWidgets = Array.new()
 		createContent()
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		pPanelParameters = null
 		pEditorWidgets = null
 		pModelInfo = null
@@ -506,14 +506,14 @@ class EMPSystem extends Panel
 	
 	
 	/** \brief System parameter wrapper. */
-	public func SysParamWrapper getWrapper()
+	func SysParamWrapper getWrapper()
 		return pWrapper
 	end
 	
 	
 	
 	/** \brief Rebuild parameters list. */
-	public func void rebuildParametersList(bool withAdvanced)
+	func void rebuildParametersList(bool withAdvanced)
 		pPanelParameters.runWhileBlockingLayout(block
 			var int i, count = pWrapper.getParameterCount()
 			var Array parameters = Array.new()
@@ -558,7 +558,7 @@ class EMPSystem extends Panel
 	end
 	
 	/** \brief Reset parameter changes. */
-	public func void resetChanges()
+	func void resetChanges()
 		pPanelParameters.runWhileBlockingLayout(block
 			pEditorWidgets.forEachCastable(block ParameterValueEditor each
 				each.resetChanges()
@@ -567,7 +567,7 @@ class EMPSystem extends Panel
 	end
 	
 	/** \brief Apply parameter changes. */
-	public func void applyChanges()
+	func void applyChanges()
 		pPanelParameters.runWhileBlockingLayout(block
 			pEditorWidgets.forEachCastable(block ParameterValueEditor each
 				each.applyChanges()
@@ -576,7 +576,7 @@ class EMPSystem extends Panel
 	end
 	
 	/** \brief Show module parameter information. */
-	public func void showParameterInfo(ModuleParameter parameter)
+	func void showParameterInfo(ModuleParameter parameter)
 		var String text = parameter.getDescription()
 		
 		if parameter.getType() == ModuleParameterType.selection
@@ -595,7 +595,7 @@ class EMPSystem extends Panel
 	 * \brief Reset parameter value.
 	 * \version 1.7
 	 */
-	public func void resetParameter(ModuleParameter parameter)
+	func void resetParameter(ModuleParameter parameter)
 		var String text = parameter.getDescription()
 		
 		if parameter.getType() == ModuleParameterType.selection
@@ -624,7 +624,8 @@ class EMPSystem extends Panel
 			addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden, \
 				ScrollPanel.Policy.visible), BorderLayout.Area.content)
 			
-			pModelInfo = DefaultTextModel.new()
+			pModelInfo = DefaultTextModel.new(EngineTranslations.get().translate(\
+				"UI.Settings.ModuleParameters.DefaultInfoText").toUTF8())
 			
 			var TextArea textArea = TextArea.new(pModelInfo)
 			textArea.setReadOnly(true)
