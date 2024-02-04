@@ -95,6 +95,10 @@ void ceConfigurationXML::pWriteConfig( decXmlWriter &writer, const ceConfigurati
 	writer.WriteOpeningTag( "conversationEditor", false, true );
 	
 	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
+	config.GetWindowMain().GetRecentFilesCTS().WriteToXml( writer, "recentFilesCTS" );
+	config.GetWindowMain().GetRecentFilesCTA().WriteToXml( writer, "recentFilesCTA" );
+	config.GetWindowMain().GetRecentFilesCTGS().WriteToXml( writer, "recentFilesCTGS" );
+	config.GetWindowMain().GetRecentFilesLangPack().WriteToXml( writer, "recentFilesLangPack" );
 	
 	writer.WriteClosingTag( "conversationEditor", true );
 }
@@ -113,6 +117,18 @@ void ceConfigurationXML::pReadConfig( const decXmlElementTag &root, ceConfigurat
 		
 		if( tag->GetName() == "recentFiles" ){
 			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );
+			
+		}else if( tag->GetName() == "recentFilesCTS" ){
+			config.GetWindowMain().GetRecentFilesCTS().ReadFromXml( *tag );
+			
+		}else if( tag->GetName() == "recentFilesCTA" ){
+			config.GetWindowMain().GetRecentFilesCTA().ReadFromXml( *tag );
+			
+		}else if( tag->GetName() == "recentFilesCTGS" ){
+			config.GetWindowMain().GetRecentFilesCTGS().ReadFromXml( *tag );
+			
+		}else if( tag->GetName() == "recentFilesLangPack" ){
+			config.GetWindowMain().GetRecentFilesLangPack().ReadFromXml( *tag );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );

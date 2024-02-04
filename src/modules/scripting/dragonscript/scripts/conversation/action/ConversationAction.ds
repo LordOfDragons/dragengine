@@ -31,80 +31,80 @@ pin Dragengine.Scenery
  */
 abstract class ConversationAction implements Persistable
 	/** \brief Wait for actor. */
-	private var bool pWaitForActor
+	var bool pWaitForActor
 	
 	/** \brief ID of actor to wait for or null to wait for all actors. */
-	private var String pWaitForActorID
+	var String pWaitForActorID
 	
 	/** \brief Delay before processing the action. */
-	private var float pDelay
+	var float pDelay
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
-		this.pWaitForActor = true
-		this.pDelay = 0
+	func new()
+		pWaitForActor = true
+		pDelay = 0
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
+	func new(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			this.pWaitForActor = env.readBool( reader )
-			this.pWaitForActorID = env.readString8OrNullIfEmpty( reader )
-			this.pDelay = reader.readFloat()
+			pWaitForActor = env.readBool(reader)
+			pWaitForActorID = env.readString8OrNullIfEmpty(reader)
+			pDelay = reader.readFloat()
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Wait for actor. */
-	public func bool getWaitForActor()
-		return this.pWaitForActor
+	func bool getWaitForActor()
+		return pWaitForActor
 	end
 	
 	/** \brief Set wait for actor. */
-	public func void setWaitForActor( bool wait )
-		this.pWaitForActor = wait
+	func void setWaitForActor(bool wait)
+		pWaitForActor = wait
 	end
 	
 	/** \brief ID of actor to wait for or null to wait for all actors. */
-	public func String getWaitForActorID()
-		return this.pWaitForActorID
+	func String getWaitForActorID()
+		return pWaitForActorID
 	end
 	
 	/** \brief Set ID of actor to wait for or null to wait for all actors. */
-	public func void setWaitForActorID( String id )
-		this.pWaitForActorID = id
+	func void setWaitForActorID(String id)
+		pWaitForActorID = id
 	end
 	
 	/** \brief Delay in seconds before processing this action. */
-	public func float getDelay()
-		return this.pDelay
+	func float getDelay()
+		return pDelay
 	end
 	
 	/** \brief Set delay in seconds before processing this action. */
-	public func void setDelay( float delay )
-		this.pDelay = delay
+	func void setDelay(float delay)
+		pDelay = delay
 	end
 	
 	
 	
 	/** \brief Execute the action. */
-	abstract public func void execute( ConversationPlayback playback )
+	abstract func void execute(ConversationPlayback playback)
 	
 	
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		env.writeBool( writer, this.pWaitForActor )
-		env.writeString8OrEmptyIfNull( writer, this.pWaitForActorID )
-		writer.writeFloat( this.pDelay )
+		env.writeBool(writer, pWaitForActor)
+		env.writeString8OrEmptyIfNull(writer, pWaitForActorID)
+		writer.writeFloat(pDelay)
 	end
 end

@@ -40,6 +40,7 @@
 #include "../undosys/profile/projUProfileSetGameDescription.h"
 #include "../undosys/profile/projUProfileSetWindowSize.h"
 #include "../undosys/profile/projUProfileSetDelgaPath.h"
+#include "../undosys/profile/projUProfileSetRunArguments.h"
 #include "../undosys/profile/projUProfileSetIcons.h"
 #include "../undosys/profile/projUProfileSetExcludePatterns.h"
 #include "../undosys/profile/projUProfileSetRequiredExtensions.h"
@@ -635,6 +636,20 @@ public:
 	}
 };
 
+
+
+class cTextRunArguments : public cBaseTextFieldListener{
+public:
+	cTextRunArguments( projPanelProfiles &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, projProject*, projProfile *profile ){
+		if( textField->GetText() == profile->GetRunArguments() ){
+			return nullptr;
+		}
+		return new projUProfileSetRunArguments( profile, textField->GetText() );
+	}
+};
+
 }
 
 
@@ -808,14 +823,25 @@ pListener( NULL )
 	helper.Button( frameLine, pActionRemoveRequiredExtension );
 	
 	
+	// row
+	subGroup.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX ) );
+	sidePanel->AddChild( subGroup );
+	
 	// delga parameters
-	helper.GroupBox( sidePanel, groupBox, "DELGA Parameters:" );
+	helper.GroupBox( subGroup, groupBox, "DELGA Parameters:" );
 	
 	description = "VFS directory where to place the build DELGA file.";
 	helper.FormLineStretchFirst( groupBox, "DELGA File:", description, frameLine );
 	helper.EditString( frameLine, description, pEditDelgaPath, new cTextDelgaPath( *this ) );
 	pActionDelgaPath.TakeOver( new cActionDelgaPath( *this ) );
 	helper.Button( frameLine, pActionDelgaPath );
+	
+	
+	// test running
+	helper.GroupBox( subGroup, groupBox, "Test Run:" );
+	
+	helper.EditString( groupBox, "Arguments:", "Arguments to use while test running",
+		pEditRunArguments, new cTextRunArguments( *this ) );
 }
 
 projPanelProfiles::~projPanelProfiles(){
@@ -915,6 +941,7 @@ void projPanelProfiles::UpdateProfile(){
 	pEditGameDescription->SetEnabled( enable );
 	pEditWindowSize->SetEnabled( enable );
 	pEditDelgaPath->SetEnabled( enable );
+	pEditRunArguments->SetEnabled( enable );
 	
 	if( profile ){
 		pEditName->SetText( profile->GetName() );
@@ -931,6 +958,7 @@ void projPanelProfiles::UpdateProfile(){
 		pEditWebsite->SetText( profile->GetWebsite() );
 		pEditWindowSize->SetPoint( profile->GetWindowSize() );
 		pEditDelgaPath->SetText( profile->GetDelgaPath() );
+		pEditRunArguments->SetText( profile->GetRunArguments() );
 		
 	}else{
 		pEditName->ClearText();
@@ -947,6 +975,7 @@ void projPanelProfiles::UpdateProfile(){
 		pEditWebsite->ClearText();
 		pEditWindowSize->SetPoint( decPoint() );
 		pEditDelgaPath->ClearText();
+		pEditRunArguments->ClearText();
 	}
 	
 	UpdateIcons();

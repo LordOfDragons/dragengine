@@ -86,7 +86,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
-	   deoglRPVisitorFindContent( deoglRenderPlan &plan );
+	deoglRPVisitorFindContent( deoglRenderPlan &plan );
 	/*@}*/
 	
 	/** \name Management */

@@ -44,7 +44,7 @@ pin Dragengine.Utils
  * panel can be styled using "Panel.PlayerChoiceEntries"
  */
 class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoice
-	private var Panel pPanelEntries
+	var Panel pPanelEntries
 	
 	
 	
@@ -53,41 +53,41 @@ class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoic
 	 * 
 	 * Panel is initially hidden.
 	 */
-	public func new()
-		this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0 ) )
-		this.setDesignerSelector( "Panel.PlayerChoice" )
-		this.setVisible( false )
+	func new()
+		setLayout(CentrizedBoxLayout.new(LayoutAxis.y, 0))
+		setDesignerSelector("Panel.PlayerChoice")
+		setVisible(false)
 		
-		this.pPanelEntries = Panel.new()
-		this.pPanelEntries.setLayout( FlowLayout.new( LayoutAxis.y, 2 ) )
-		this.pPanelEntries.setDesignerSelector( "Panel.PlayerChoiceEntries" )
-		this.addWidget( this.pPanelEntries )
+		pPanelEntries = Panel.new()
+		pPanelEntries.setLayout(FlowLayout.new(LayoutAxis.y, 2))
+		pPanelEntries.setDesignerSelector("Panel.PlayerChoiceEntries")
+		addWidget(pPanelEntries)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		this.pPanelEntries = null
+	func void dispose()
+		pPanelEntries = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Remove all choices. */
-	public func void removeAllChoices()
-		this.pPanelEntries.removeAllWidgets()
+	func void removeAllChoices()
+		pPanelEntries.removeAllWidgets()
 	end
 	
 	/** \brief Add choice. */
-	public func void addChoice( String text, ActionListener action )
-		this.addChoice( text, null, action )
+	func void addChoice(String text, ActionListener action)
+		addChoice(text, null, action)
 	end
 	
 	/** \brief Add choice. */
-	public func void addChoice( String text, Image image, ActionListener action )
+	func void addChoice(String text, Image image, ActionListener action)
 		if action == null
 			throw EInvalidParam.new()
 		end
-		this.pPanelEntries.addWidget( this.createOptionWidget( text, image, action ) )
+		pPanelEntries.addWidget(createOptionWidget(text, image, action))
 	end
 	
 	
@@ -99,11 +99,11 @@ class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoic
 	 * choosing animation. The default implementation shows the panel. If there
 	 * are no options an exception is thrown.
 	 */
-	public func void startChoosing()
-		if this.getWidgetCount() == 0
+	func void startChoosing()
+		if getWidgetCount() == 0
 			throw EInvalidParam.new()
 		end
-		this.setVisible( true )
+		setVisible(true)
 	end
 	
 	/**
@@ -112,8 +112,8 @@ class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoic
 	 * This hides the choices. Overwrite to if you want to do an end choosing
 	 * animation. The default implementation hides the panel.
 	 */
-	public func void endChoosing()
-		this.setVisible( false )
+	func void endChoosing()
+		setVisible(false)
 	end
 	
 	
@@ -124,9 +124,9 @@ class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoic
 	 * 
 	 * Default implementation creates instance of PanelPlayerChoiceEntry.
 	 */
-	protected func Widget createOptionWidget( String text, Image image, ActionListener action )
-		var PanelPlayerChoiceEntry entry = PanelPlayerChoiceEntry.new( text, image, action )
-		entry.getLabel().setMaximalWidth( this.getParent().getContainerWidth() )
+	protected func Widget createOptionWidget(String text, Image image, ActionListener action)
+		var PanelPlayerChoiceEntry entry = PanelPlayerChoiceEntry.new(text, image, action)
+		entry.getLabel().setMaximalWidth(getParent().getContainerWidth())
 		return entry
 	end
 end

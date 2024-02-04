@@ -72,4 +72,5 @@ void ceWPTTIMAComment::Update(){
 	}
 	
 	SetText( text );
+	SetDescription( action.GetComment() );
 }

@@ -117,6 +117,7 @@ pRenderThread( renderThread ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
 pWorldComputeElement( deoglWorldComputeElement::Ref::New( new deoglRComponentWCElement( *this ) ) ),
+pHasEnteredWorld( false ),
 
 pVisible( true ),
 pMovementHint( deComponent::emhStationary ),
@@ -224,6 +225,7 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 		NotifySkiesUpdateStatic();
 	}
 	
+	pHasEnteredWorld = false;
 	InvalidateRenderEnvMap();
 	pSkinRendered.DropDelayedDeletionObjects();
 	
@@ -262,6 +264,10 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 	// no NotifySkiesUpdateStatic on entering worls since we start out dynamic
 	
 	pRequiresPrepareForRender();
+}
+
+void deoglRComponent::HasEnteredWorld(){
+	pHasEnteredWorld = true;
 }
 
 
@@ -337,10 +343,14 @@ void deoglRComponent::SetVisible( bool visible ){
 	
 	pVisible = visible;
 	
-	if( visible && pParentWorld ){
+	if( visible && pParentWorld && pHasEnteredWorld ){
 		pParentWorld->GIStatesNotifyComponentBecameVisible( this );
 	}
 	NotifyVisibilityChanged();
+	
+	if( visible ){
+		pRequiresPrepareForRender();
+	}
 }
 
 void deoglRComponent::SetMovementHint( deComponent::eMovementHints hint ){
@@ -363,7 +373,7 @@ void deoglRComponent::SetGIImportance( int importance ){
 	
 	pGIImportance = importance;
 	
-	if( pParentWorld ){
+	if( pParentWorld && pHasEnteredWorld ){
 		pParentWorld->GIStatesNotifyComponentChangedGIImportance( this );
 	}
 	
@@ -388,7 +398,7 @@ void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
 		NotifySkiesUpdateStatic();
 	}
 	
-	if( pParentWorld ){
+	if( pParentWorld && pHasEnteredWorld ){
 		pParentWorld->GIStatesNotifyComponentChangedLayerMask( this );
 	}
 	
@@ -1182,8 +1192,8 @@ void deoglRComponent::InvalidateRenderEnvMap(){
 		return;
 	}
 	
-	SetRenderEnvMap( NULL );
-	SetRenderEnvMapFade( NULL );
+	SetRenderEnvMap( nullptr );
+	SetRenderEnvMapFade( nullptr );
 	pDirtyRenderEnvMap = true;
 	
 	pRequiresPrepareForRender();
@@ -1256,12 +1266,12 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRender
 	
 	pPrepareDecals( plan, mask ); PFRT_SAMPLE(Decals)
 	
-	PFRT_FINAL("mv=%dys lv=%dys rem=%dys ssr=%dys s=%dys pb=%dys tt=%dys tpb=%dys omv=%dys dom=%dys omri=%dys lrtc=%dys d=%dys",
+	PFRT_FINAL("mv=%dys lv=%dys rem=%dys ssr=%dys s=%dys pb=%dys tt=%dys tpb=%dys omv=%dys dom=%dys omri=%dys lrtc=%dys d=%dys ssc=%dys",
 		(int)(timeModelVBOs*1e6f), (int)(timeLODVBOs*1e6f), (int)(timeRenderEnvMap*1e6f),
 		(int)(timeSkinStateRenderables*1e6f), (int)(timeSolidity*1e6f), (int)(timeParamBlocks*1e6f),
 		(int)(timeTextureTUCs*1e6f), (int)(timeTextureParamBlocks*1e6f), (int)(timeOccMeshVBO*1e6f),
 		(int)(timeDynOccMesh*1e6f), (int)(timeOccMeshRTSInstances*1e6f),
-		(int)(timeLODRenderTaskConfigs*1e6f), (int)(timeDecals*1e6f))
+		(int)(timeLODRenderTaskConfigs*1e6f), (int)(timeDecals*1e6f), (int)(timeSkinStateConstructed*1e6f))
 // 	if(pModel) printf("RComponent.PrepareForRender %s %dys\n", pModel->GetFilename().GetString(), (int)(timer.GetElapsedTime()*1e6f));
 }
 
@@ -2087,26 +2097,28 @@ void deoglRComponent::pPrepareModelVBOs(){
 	}
 	pDirtyModelVBOs = false;
 	
-	if( pModel ){
-		const int count = pModel->GetLODCount();
-		int i;
+	if( ! pModel ){
+		return;
+	}
+	
+	const int count = pModel->GetLODCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglModelLOD &modelLOD = pModel->GetLODAt( i );
 		
-		for( i=0; i<count; i++ ){
-			deoglModelLOD &modelLOD = pModel->GetLODAt( i );
+		modelLOD.PrepareVBOBlock();
+		modelLOD.PrepareVBOBlockVertPosSet();
+		
+		switch( pRenderThread.GetChoices().GetGPUTransformVertices() ){
+		case deoglRTChoices::egputvAccurate:
 			
-			modelLOD.PrepareVBOBlock();
-			modelLOD.PrepareVBOBlockVertPosSet();
+		case deoglRTChoices::egputvApproximate:
+			modelLOD.PrepareVBOBlockWithWeight();
+			break;
 			
-			switch( pRenderThread.GetChoices().GetGPUTransformVertices() ){
-			case deoglRTChoices::egputvAccurate:
-				
-			case deoglRTChoices::egputvApproximate:
-				modelLOD.PrepareVBOBlockWithWeight();
-				break;
-				
-			default:
-				break;
-			}
+		default:
+			break;
 		}
 	}
 }
@@ -2151,9 +2163,11 @@ void deoglRComponent::pPrepareRenderEnvMap(){
 	}
 	pDirtyRenderEnvMap = false;
 	
-	if( ! pParentWorld ){
-		DETHROW( deeInvalidParam );
+	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
+		return;
 	}
+	
+	DEASSERT_NOTNULL( pParentWorld )
 	
 	// for the time being we simply pick the environment map that is closest to the component position.
 	// this can lead to wrong picks and harshly switching environment maps but this is enough for the
@@ -2186,8 +2200,8 @@ void deoglRComponent::pPrepareRenderEnvMap(){
 		SetRenderEnvMap( pParentWorld->GetSkyEnvironmentMap() );
 		
 	}else{
-		SetRenderEnvMap( NULL );
-		SetRenderEnvMapFade( NULL );
+		SetRenderEnvMap( nullptr );
+		SetRenderEnvMapFade( nullptr );
 		pRenderEnvMapFadeFactor = 1.0f;
 	}
 	//pOgl->LogInfoFormat( "update component %p render env map %p\n", pComponent, pRenderEnvMap );

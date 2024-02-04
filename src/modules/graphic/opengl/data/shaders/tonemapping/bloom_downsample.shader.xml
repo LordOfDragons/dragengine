@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>ToneMap Bloom Down-Sample</name>
+	
+	<texture name='texColor' target='0'/>
+	
+	<parameter name='pLevel'/>
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/passthrough.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/tonemap/bloom_downsample.glsl</sourceCode>
+</shader>

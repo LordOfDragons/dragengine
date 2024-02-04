@@ -28,6 +28,7 @@
 #include "../../../ceWindowMain.h"
 #include "../../../../conversation/ceConversation.h"
 #include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../langpack/ceLangPackEntry.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 
@@ -56,12 +57,25 @@ ceWPTTIMAActorSpeak::~ceWPTTIMAActorSpeak(){
 
 void ceWPTTIMAActorSpeak::Update(){
 	const ceCAActorSpeak &action = *GetActionActorSpeak();
-	decString text, tbtext;
+	decString text, description, tbtext;
 	
 	text.Format( "%s: ", action.GetActor().GetString() );
+	description = text;
 	
 	if( ! action.GetTextBoxTextTranslate().IsEmpty() ){
-		tbtext.Format( "{%s}", action.GetTextBoxTextTranslate().GetString() );
+		const ceLangPack * const langpack = GetConversation().GetLanguagePack();
+		ceLangPackEntry::Ref entry;
+		
+		if( langpack ){
+			entry = langpack->GetEntryNamed( action.GetTextBoxTextTranslate() );
+		}
+		
+		if( entry ){
+			tbtext.Format( "%s", entry->GetText().ToUTF8().GetString() );
+			
+		}else{
+			tbtext.Format( "{%s}", action.GetTextBoxTextTranslate().GetString() );
+		}
 		
 	}else{
 		tbtext = action.GetTextBoxText().ToUTF8();
@@ -76,7 +90,10 @@ void ceWPTTIMAActorSpeak::Update(){
 		}else{
 			text += lineTBText;
 		}
+		
+		description += tbtext;
 	}
 	
 	SetText( text );
+	SetDescription( description );
 }

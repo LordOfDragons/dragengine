@@ -1045,7 +1045,7 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 
 
 void deoglRenderReflection::RenderReflections( deoglRenderPlan &plan ){
-	if( deoglSkinShader::REFLECTION_TEST_MODE != 1 ){
+	if( deoglSkinShader::REFLECTION_TEST_MODE != deoglSkinShader::ertmOwnPassReflection ){
 		return;
 	}
 	

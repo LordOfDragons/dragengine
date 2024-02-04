@@ -72,7 +72,7 @@ class ceWPTTreeItem;
 
 
 /**
- * \brief Topic property window.
+ * Topic property window.
  */
 class ceWPTopic : public igdeContainerFlow{
 private:
@@ -125,11 +125,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	ceWPTopic( ceWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~ceWPTopic();
 	/*@}*/
 	
@@ -138,89 +138,88 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Conversation. */
+	/** Conversation. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** \brief Set conversation. */
+	/** Set conversation. */
 	void SetConversation( ceConversation *conversation );
 	
-	/** \brief Action tree model. */
+	/** Action tree model. */
 	inline ceWPTTreeModel *GetActionTreeModel() const{ return pModelTreeActions; }
 	
-	/** \brief Active action tree item model. */
+	/** Active action tree item model. */
 	ceWPTTreeItemModel *GetActionTreeItem();
 	
-	/** \brief Active file. */
+	/** Active file. */
 	ceConversationFile *GetFile() const;
 	
-	/** \brief Update list of files. */
+	/** Update list of files. */
 	void UpdateFileList();
 	
-	/** \brief Select active file. */
+	/** Select active file. */
 	void SelectActiveFile();
 	
-	/** \brief Update active file. */
+	/** Update active file. */
 	void UpdateFile();
 	
-	/** \brief Active topic. */
+	/** Active topic. */
 	ceConversationTopic *GetTopic() const;
 	
-	/** \brief Update list of topics. */
+	/** Update list of topics. */
 	void UpdateTopicList();
 	
-	/** \brief Select active topic. */
+	/** Select active topic. */
 	void SelectActiveTopic();
 	
-	/** \brief Update active topic. */
+	/** Update active topic. */
 	void UpdateTopic();
 	
-	/** \brief Active action from tree. */
+	/** Active action from tree. */
 	ceConversationAction *GetTreeAction() const;
 	
-	/** \brief Active condition from tree. */
+	/** Active condition from tree. */
 	ceConversationCondition *GetTreeCondition() const;
 	
-	/** \brief Set topic active element from tree selection. */
+	/** Set topic active element from tree selection. */
 	void SyncTopicActive();
 	
-	/** \brief Selected active panel. */
+	/** Selected active panel. */
 	void SelectActivePanel();
 	
-	/** \brief Update active. */
+	/** Update active. */
 	void UpdateActive();
 	
 	
-	
-	/** \brief Update gesture lists. */
+	/** Update gesture lists. */
 	void UpdateGestureLists();
 	
-	/** \brief Update face pose lists. */
+	/** Update face pose lists. */
 	void UpdateFacePoseLists();
 	
-	/** \brief Update camera shot lists. */
+	/** Update camera shot lists. */
 	void UpdateCameraShotLists();
 	
-	/** \brief Update actor lists. */
+	/** Update actor lists. */
 	void UpdateActorLists();
 	
-	/** \brief Update target lists. */
+	/** Update target lists. */
 	void UpdateTargetLists();
 	
-	/** \brief Update conversation coordinate system lists. */
+	/** Update conversation coordinate system lists. */
 	void UpdateConvoCoordSysLists();
 	
-	/** \brief Conversation path changed. */
+	/** Conversation path changed. */
 	void OnConversationPathChanged();
 	
 	
 	
-	/** \brief Locate action from active topic in tree and make it visible. */
+	/** Locate action from active topic in tree and make it visible. */
 	void LocateAction( ceConversationAction *action );
 	
-	/** \brief Start playing starting with action selected in tree. */
+	/** Start playing starting with action selected in tree. */
 	void PlayActionFromHere();
 	/*@}*/
 };

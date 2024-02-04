@@ -57,4 +57,9 @@ igdeNativeFoxTreeItem::~igdeNativeFoxTreeItem(){
 // Management
 ///////////////
 
+FXString igdeNativeFoxTreeItem::getTipText() const{
+	return pOwner->GetDescription().IsEmpty()
+		? pOwner->GetText().GetString() : pOwner->GetDescription().GetString();
+}
+
 #endif

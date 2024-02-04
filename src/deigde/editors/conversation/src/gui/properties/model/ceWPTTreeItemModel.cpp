@@ -70,6 +70,18 @@ void ceWPTTreeItemModel::SetText( const char *text ){
 	}
 }
 
+void ceWPTTreeItemModel::SetDescription( const char *description ){
+	pDescription = description;
+	
+	if( pTreeItem && pTreeItem->GetDescription() != description ){
+		pTreeItem->SetDescription( description );
+		
+		if( pTree && pTree->GetTreeList() ){
+			pTree->GetTreeList()->ItemChanged( pTreeItem );
+		}
+	}
+}
+
 void ceWPTTreeItemModel::SetIcon( igdeIcon *icon ){
 	pIcon = icon;
 	
@@ -235,6 +247,7 @@ void ceWPTTreeItemModel::SetTreeItem( ceWPTTreeItem *treeItem ){
 	
 	if( treeItem ){
 		treeItem->SetText( pText );
+		treeItem->SetDescription( pDescription );
 		treeItem->SetIcon( pIcon );
 		treeItem->SetExpanded( pExpanded );
 		

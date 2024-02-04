@@ -38,30 +38,30 @@ pin Dragengine.Utils
 class ComboBox extends Container implements ListModelListener
 	/** \deprecated Editor focus lost listener. */
 	class EditorFocusLost extends DefaultFocusListener
-		private var ComboBox pComboBox
+		var ComboBox pComboBox
 		
-		public func new(ComboBox comboBox)
+		func new(ComboBox comboBox)
 			pComboBox = comboBox
 		end
 		
-		public func void onFocusReceived(FocusEvent event)
+		func void onFocusReceived(FocusEvent event)
 			pComboBox.onFocusReceived(event)
 		end
 		
-		public func void onFocusLost(FocusEvent event)
+		func void onFocusLost(FocusEvent event)
 			pComboBox.onFocusLost(event)
 		end
 	end
 	
 	/** \brief Editor value changed listener. */
 	class EditorValueChanged extends DefaultActionListener
-		private var ComboBox pComboBox
+		var ComboBox pComboBox
 		
-		public func new(ComboBox comboBox)
+		func new(ComboBox comboBox)
 			pComboBox = comboBox
 		end
 		
-		public func void onAction(ActionEvent event)
+		func void onAction(ActionEvent event)
 			pComboBox.setSelectedFromEditorValue()
 			pComboBox.updateSelectedWidget()
 		end
@@ -69,21 +69,21 @@ class ComboBox extends Container implements ListModelListener
 	
 	/** \brief Roll up mouse listener. */
 	class RollUpMouseListener extends DefaultMouseListener
-		private var ComboBox pComboBox
-		private var bool pPressed
+		var ComboBox pComboBox
+		var bool pPressed
 		
-		public func new(ComboBox comboBox)
+		func new(ComboBox comboBox)
 			pComboBox = comboBox
 			pPressed = false
 		end
 		
-		public func void onButtonPress(MouseEvent event)
+		func void onButtonPress(MouseEvent event)
 			if event.getButton() == InputEventMouseButton.left
 				pPressed = true
 			end
 		end
 		
-		public func void onButtonRelease(MouseEvent event)
+		func void onButtonRelease(MouseEvent event)
 			if event.getButton() == InputEventMouseButton.left and pPressed
 				pComboBox.rollUp()
 			end
@@ -92,13 +92,13 @@ class ComboBox extends Container implements ListModelListener
 	
 	/** \deprecated Popup widget listener. */
 	class PopupWidgetListener extends DefaultWidgetListener
-		private var ComboBox pComboBox
+		var ComboBox pComboBox
 		
-		public func new(ComboBox comboBox)
+		func new(ComboBox comboBox)
 			pComboBox = comboBox
 		end
 		
-		public func void onWidgetHidden(WidgetEvent event)
+		func void onWidgetHidden(WidgetEvent event)
 			pComboBox.rollUp()
 		end
 	end
@@ -108,15 +108,15 @@ class ComboBox extends Container implements ListModelListener
 	 * \version 1.17
 	 */
 	class ComboPopup extends WindowPopup
-		private var ComboBox pComboBox
-		private var ListBox pListBox
+		var ComboBox pComboBox
+		var ListBox pListBox
 		
-		public func new(ComboBox comboBox)
+		func new(ComboBox comboBox)
 			pComboBox = comboBox
 			setCloseOnPopDown(false)
 		end
 		
-		public func void dispose()
+		func void dispose()
 			if pListBox != null
 				// disposing of pListBox removes listeners but only if model has been created
 				// by pListBox. hence we need to remove combox from listener here but only if
@@ -134,11 +134,11 @@ class ComboBox extends Container implements ListModelListener
 			pComboBox = null
 		end
 		
-		public func void setListBox(ListBox listBox)
+		func void setListBox(ListBox listBox)
 			pListBox = listBox
 		end
 		
-		public func bool requiresPopdown(MouseEvent event)
+		func bool requiresPopdown(MouseEvent event)
 			if not super.requiresPopdown(event)
 				return false
 			end
@@ -161,13 +161,13 @@ class ComboBox extends Container implements ListModelListener
 			return dropDownButton.isPointInside(comboBoxPosition - dropDownButton.getPosition())
 		end
 		
-		public func void popdown()
+		func void popdown()
 			super.popdown()
 			pComboBox.rollUp()
 			pComboBox.onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
 		end
 		
-		public func void sendEvent(Event event)
+		func void sendEvent(Event event)
 			if event.getSource() != this
 				return
 			end
@@ -223,33 +223,34 @@ class ComboBox extends Container implements ListModelListener
 	
 	
 	
-	private var ComboPopup pDropDown
-	private var ListBox pListBox
-	private var Widget pWidgetButtonDropDown
-	private var Container pWidgetButtonDropDownContainer
-	private var Panel pPanelSelectedElement
-	private var Widget pSelectedElement
-	private var Panel pSpacer
-	private var ComboBoxEditor pEditor
-	private var EditorFocusLost pEditorFocusLost
-	private var EditorValueChanged pEditorValueChanged
-	private var Point pDefaultElementSize
-	private var bool pSelFromEditorOnDropDown
-	private var bool pDropDownRequiresSelFromEditor
-// 	private var bool pFirstDropDown
+	var ComboPopup pDropDown
+	var ListBox pListBox
+	var Widget pWidgetButtonDropDown
+	var Container pWidgetButtonDropDownContainer
+	var Panel pPanelSelectedElement
+	var Widget pSelectedElement
+	var Panel pSpacer
+	var ComboBoxEditor pEditor
+	var EditorFocusLost pEditorFocusLost
+	var EditorValueChanged pEditorValueChanged
+	var Point pDefaultElementSize
+	var bool pSelFromEditorOnDropDown
+	var bool pDropDownRequiresSelFromEditor
+	var String pSelectedElementDesignerSelector
+// 	var bool pFirstDropDown
 	
 	
 	
 	/** \brief Create combo box widget. */
-	public func new() this(DefaultListModel.new(), DefaultListElementRenderer.new())
+	func new() this(DefaultListModel.new(), DefaultListElementRenderer.new())
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new(ListModel model) this(model, DefaultListElementRenderer.new())
+	func new(ListModel model) this(model, DefaultListElementRenderer.new())
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new(ListModel model, ListElementRenderer renderer)
+	func new(ListModel model, ListElementRenderer renderer)
 		setCanFocus(true) // this is not working correctly. needs fixing
 		
 		pSelFromEditorOnDropDown = true
@@ -264,9 +265,10 @@ class ComboBox extends Container implements ListModelListener
 		pListBox.setNumberDisplayLines(8)
 		pListBox.setBorder(BevelBorder.new())
 		pListBox.addMouseListener(RollUpMouseListener.new(this))
-		pListBox.setDesignerSelector(pListBox.getDesignerSelector() + ".ComboBox")
+		pListBox.setDesignerSelector("ListBox.ComboBox")
 		
 		pDropDown = ComboPopup.new(this)
+		pDropDown.setDesignerSelector("WindowPopup.ComboBox")
 		pDropDown.addWidget(ScrollPanel.new(pListBox))
 		pDropDown.setListBox(pListBox)
 		
@@ -275,29 +277,29 @@ class ComboBox extends Container implements ListModelListener
 		pSpacer.setProtectMinimumSize(true)
 		pDropDown.addWidget(pSpacer, BorderLayout.Area.bottom)
 		
-		setDesignerSelector("ComboBox")
 		setLayout(BorderLayout.new())
 		
 		pPanelSelectedElement = Panel.new(StackLayout.new())
 		addWidget(pPanelSelectedElement, BorderLayout.Area.content)
 		
+		setDesignerSelector("ComboBox")
 		updateSelectedWidget()
 		
 		model.addListener(this)
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new(ListModel model, ComboBoxEditor editor) this(model, DefaultListElementRenderer.new())
+	func new(ListModel model, ComboBoxEditor editor) this(model, DefaultListElementRenderer.new())
 		setEditor(editor)
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new(ListModel model, ListElementRenderer renderer, ComboBoxEditor editor) this(model, renderer)
+	func new(ListModel model, ListElementRenderer renderer, ComboBoxEditor editor) this(model, renderer)
 		setEditor(editor)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		if pEditor != null
 			if pEditorFocusLost != null
 				pEditor.getWidget().removeFocusListener(pEditorFocusLost)
@@ -329,12 +331,12 @@ class ComboBox extends Container implements ListModelListener
 	
 	
 	/** \brief List model. */
-	public func ListModel getModel()
+	func ListModel getModel()
 		return pListBox.getModel()
 	end
 	
 	/** \brief Set list model. */
-	public func void setModel(ListModel model)
+	func void setModel(ListModel model)
 		if model == null
 			throw ENullPointer.new("model")
 		end
@@ -345,12 +347,12 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief List element renderer. */
-	public func ListElementRenderer getElementRenderer()
+	func ListElementRenderer getElementRenderer()
 		return pListBox.getElementRenderer()
 	end
 	
 	/** \brief Set list element renderer. */
-	public func void setElementRenderer(ListElementRenderer renderer)
+	func void setElementRenderer(ListElementRenderer renderer)
 		if renderer == pListBox.getElementRenderer()
 			return
 		end
@@ -358,6 +360,7 @@ class ComboBox extends Container implements ListModelListener
 		if pSelectedElement != null
 			pSelectedElement.safeDispose()
 			pSelectedElement = null
+			pSelectedElementDesignerSelector = null
 		end
 		
 		pListBox.setElementRenderer(renderer)
@@ -366,22 +369,22 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Number of lines to display in the drop down list box. */
-	public func int getNumberDisplayLines()
+	func int getNumberDisplayLines()
 		return pListBox.getNumberDisplayLines()
 	end
 	
 	/** \brief Set number of lines to display in the drop down list box. */
-	public func void setNumberDisplayLines(int lines)
+	func void setNumberDisplayLines(int lines)
 		pListBox.setNumberDisplayLines(lines)
 	end
 	
 	/** \brief Combo box editor if editable or \em null if not editable. */
-	public func ComboBoxEditor getEditor()
+	func ComboBoxEditor getEditor()
 		return pEditor
 	end
 	
 	/** \brief Set combo box editor if editable or \em null if not editable. */
-	public func void setEditor(ComboBoxEditor editor)
+	func void setEditor(ComboBoxEditor editor)
 		if editor == pEditor
 			return
 		end
@@ -415,24 +418,24 @@ class ComboBox extends Container implements ListModelListener
 	
 	
 	/** \brief Index of the selected item or -1 if none is selected. */
-	public func int getSelectedElement()
+	func int getSelectedElement()
 		return pListBox.getSelectedElement()
 	end
 	
 	/** \brief Set index of the selected item or -1 if none is selected. */
-	public func void setSelectedElement(int index)
+	func void setSelectedElement(int index)
 		pListBox.setSelectedElement(index)
 	end
 	
 	
 	
 	/** \brief Drop down list visible. */
-	public func bool droppedDown()
+	func bool droppedDown()
 		return pDropDown.getVisible()
 	end
 	
 	/** \brief Drop down the list box if not already dropped down. */
-	public func void dropDown()
+	func void dropDown()
 		if pDropDown.getVisible()
 			return
 		end
@@ -472,7 +475,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Roll up the list box if dropped down. */
-	public func void rollUp()
+	func void rollUp()
 		if not pDropDown.getVisible()
 			return
 		end
@@ -481,7 +484,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Toggle between dropped down and rolled up state. */
-	public func void toggleDropDown()
+	func void toggleDropDown()
 		if pDropDown.getVisible()
 			rollUp()
 			
@@ -491,7 +494,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Start editing if an editor is set. */
-	public func void startEditing()
+	func void startEditing()
 		if pEditor == null
 			return
 		end
@@ -513,7 +516,7 @@ class ComboBox extends Container implements ListModelListener
 	 * 
 	 * Default value is true.
 	 */
-	public func bool getSelectFromEditorOnDropDown()
+	func bool getSelectFromEditorOnDropDown()
 		return pSelFromEditorOnDropDown
 	end
 	
@@ -526,7 +529,7 @@ class ComboBox extends Container implements ListModelListener
 	 * 
 	 * Default value is true.
 	 */
-	public func void setSelectFromEditorOnDropDown(bool selectedFromEditorOnDropDown)
+	func void setSelectFromEditorOnDropDown(bool selectedFromEditorOnDropDown)
 		pSelFromEditorOnDropDown = selectedFromEditorOnDropDown
 		pDropDownRequiresSelFromEditor = true
 	end
@@ -554,7 +557,7 @@ class ComboBox extends Container implements ListModelListener
 	 * 
 	 * If an editor is set grabs focus of edit widget instead.
 	 */
-	public func void grabFocus()
+	func void grabFocus()
 		if pEditor != null
 			if pEditor.getWidget().getVisible()
 				pEditor.getWidget().grabFocus()
@@ -574,7 +577,7 @@ class ComboBox extends Container implements ListModelListener
 	 * \brief Drop down button widget or \em null if not set.
 	 * \details For use by button designers.
 	 */
-	public func Widget getButtonDropDownWidget()
+	func Widget getButtonDropDownWidget()
 		return pWidgetButtonDropDown
 	end
 	
@@ -582,7 +585,7 @@ class ComboBox extends Container implements ListModelListener
 	 * \brief Set drop down button widget or \em null if not set.
 	 * \details For use by button designers.
 	 */
-	public func void setDropDownButtonWidget(Widget widget)
+	func void setDropDownButtonWidget(Widget widget)
 		if widget == pWidgetButtonDropDown
 			return
 		end
@@ -608,13 +611,13 @@ class ComboBox extends Container implements ListModelListener
 	
 	
 	/** \brief Size changed. */
-	public func void onResize(WidgetEvent event)
+	func void onResize(WidgetEvent event)
 		super.onResize(event)
 		pSpacer.setMinimumSize(Point.new(getWidth(), 0))
 	end
 	
 	/** \brief Mouse button pressed. */
-	public func void onButtonPress(MouseEvent event)
+	func void onButtonPress(MouseEvent event)
 		var Widget source = event.getSource() cast Widget
 		
 		if source == this
@@ -649,7 +652,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** Mouse wheeled. */
-	public func void onMouseWheel(MouseEvent event)
+	func void onMouseWheel(MouseEvent event)
 		var int y = event.getPosition().getY()
 		if y == 0
 			return
@@ -674,7 +677,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Key pressed. */
-	public func void onKeyPress(KeyEvent event)
+	func void onKeyPress(KeyEvent event)
 		super.onKeyPress(event)
 		
 		select event.getKeyCode()
@@ -701,7 +704,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Widget received focus. */
-	public func void onFocusReceived(FocusEvent event)
+	func void onFocusReceived(FocusEvent event)
 		super.onFocusReceived(event)
 		
 // 		pFirstDropDown = true
@@ -710,7 +713,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Widget lost focus. */
-	public func void onFocusLost(FocusEvent event)
+	func void onFocusLost(FocusEvent event)
 		super.onFocusLost(event)
 		
 		updateSelectedWidget()
@@ -723,7 +726,7 @@ class ComboBox extends Container implements ListModelListener
 	 * 
 	 * Capture mouse to popup window if visible. Required if editor widget captures mouse.
 	 */
-	public func bool requestReleaseMouse(Widget widget)
+	func bool requestReleaseMouse(Widget widget)
 		if not super.requestReleaseMouse(widget)
 			return false
 		end
@@ -740,7 +743,7 @@ class ComboBox extends Container implements ListModelListener
 	 * \details Called if setGuiTheme is used or parent changed.
 	 * \warning You have to super-call this method since it is used a bit differently than the other callback methods.
 	 */
-	public func void onGuiThemeChanged()
+	func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
 		pDropDown.setGuiTheme(getGuiTheme())
 		
@@ -750,19 +753,39 @@ class ComboBox extends Container implements ListModelListener
 		end
 	end
 	
+	/**
+	 * \brief Designer selector changed.
+	 */
+	func void onDesignerSelectorChanged()
+		super.onDesignerSelectorChanged()
+		
+		if pSelectedElement != null
+			pSelectedElement.safeDispose()
+			pSelectedElement = null
+			pSelectedElementDesignerSelector = null
+		end
+		
+		var String selector = getDesignerSelector()
+		pListBox.setDesignerSelector("ListBox." + selector)
+		
+		updateSelectedWidget()
+		
+		pDropDown.setDesignerSelector("WindowPopup." + selector)
+	end
+	
 	
 	
 	/** \brief Elements have been added. */
-	public func void elementsAdded(ListModel listModel, int fromIndex, int toIndex)
+	func void elementsAdded(ListModel listModel, int fromIndex, int toIndex)
 		setSelectedFromEditorValue()
 	end
 	
 	/** \brief Elements have been removed. */
-	public func void elementsRemoved(ListModel listModel, int fromIndex, int toIndex)
+	func void elementsRemoved(ListModel listModel, int fromIndex, int toIndex)
 	end
 	
 	/** \brief Content of the model changed. */
-	public func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
+	func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
 		var int selection = listModel.getSelected()
 		if selection >= fromIndex and selection <= toIndex
 			selectionChanged(listModel)
@@ -773,7 +796,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Selection in the list box changed. */
-	public func void selectionChanged(ListModel listModel)
+	func void selectionChanged(ListModel listModel)
 		setEditorValueFromSelection()
 		updateSelectedWidget()
 		
@@ -785,7 +808,7 @@ class ComboBox extends Container implements ListModelListener
 	
 	
 	/** \brief Update selected widget. */
-	public func void updateSelectedWidget()
+	func void updateSelectedWidget()
 		var Object selection
 		
 		var int selectionIndex = pListBox.getSelectedElement()
@@ -797,6 +820,7 @@ class ComboBox extends Container implements ListModelListener
 		
 		runWhileBlockingLayout(block
 			if pSelectedElement == null
+				pSelectedElementDesignerSelector = null
 				pSelectedElement = renderer.createRenderer(pListBox)
 				pSelectedElement.setMinimumSize(getDefaultElementSize())
 				pSelectedElement.setProtectMinimumSize(true)
@@ -804,16 +828,18 @@ class ComboBox extends Container implements ListModelListener
 			end
 			
 			if pEditor != null
-				renderer.updateRenderer(pListBox, pSelectedElement, \
+				renderer.updateRenderer(pListBox, pSelectedElement,\
 					pEditor.getEditorValue(), false, getHasFocus())
 				
 			else
-				renderer.updateRenderer(pListBox, pSelectedElement, \
-					selection, false, getHasFocus())
+				renderer.updateRenderer(pListBox, pSelectedElement, selection, false, getHasFocus())
 			end
 			
 			if pSelectedElement != null
-				pSelectedElement.setDesignerSelector(pSelectedElement.getDesignerSelector() + ".ComboBoxSelected")
+				if pSelectedElementDesignerSelector == null
+					pSelectedElementDesignerSelector = pSelectedElement.getDesignerSelector()
+				end
+				pSelectedElement.setDesignerSelector(pSelectedElementDesignerSelector + ".ComboBoxSelected")
 			end
 			
 			updateSelectedVisibility()
@@ -822,7 +848,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Set editor value from selection if anything is selected. */
-	public func void setEditorValueFromSelection()
+	func void setEditorValueFromSelection()
 		if pEditor == null
 			return
 		end
@@ -834,7 +860,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Set selection from editor value. */
-	public func void setSelectedFromEditorValue()
+	func void setSelectedFromEditorValue()
 		if pEditor == null
 			return
 		end
@@ -848,7 +874,7 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Update visibility of editor and selected element renderer. */
-	public func void updateSelectedVisibility()
+	func void updateSelectedVisibility()
 		if pEditor == null
 			if pSelectedElement != null
 				pSelectedElement.setVisible(true)
@@ -881,12 +907,12 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Get default element size. */
-	public func Point getDefaultElementSize()
+	func Point getDefaultElementSize()
 		return pDefaultElementSize
 	end
 	
 	/** \brief Update default element size. */
-	public func void updateDefaultElementSize()
+	func void updateDefaultElementSize()
 		pDefaultElementSize = Point.new(1, 1)
 		if getGuiTheme() != null
 			pDefaultElementSize = pDefaultElementSize.largest(Point.new(\
@@ -901,7 +927,7 @@ class ComboBox extends Container implements ListModelListener
 	 * \brief Selected element widget or null.
 	 * \version 1.7
 	 */
-	public func Widget getWidgetSelectedElement()
+	func Widget getWidgetSelectedElement()
 		return pSelectedElement
 	end
 	
@@ -909,7 +935,7 @@ class ComboBox extends Container implements ListModelListener
 	 * \brief Arrow down pressed.
 	 * \version 1.17
 	 */
-	public func void onArrowDown()
+	func void onArrowDown()
 		var int selection = pListBox.getSelectedElement()
 		var int count = pListBox.getModel().getCount()
 		var int newSelection = selection
@@ -932,7 +958,7 @@ class ComboBox extends Container implements ListModelListener
 	 * \brief Arrow up pressed.
 	 * \version 1.17
 	 */
-	public func void onArrowUp()
+	func void onArrowUp()
 		var int selection = pListBox.getSelectedElement()
 		var int count = pListBox.getModel().getCount()
 		var int newSelection = selection
@@ -955,7 +981,7 @@ class ComboBox extends Container implements ListModelListener
 	 * \brief Page up pressed.
 	 * \version 1.17
 	 */
-	public func void onPageUp()
+	func void onPageUp()
 		var int selection = pListBox.getSelectedElement()
 		var int count = pListBox.getModel().getCount()
 		var int newSelection = selection
@@ -986,7 +1012,7 @@ class ComboBox extends Container implements ListModelListener
 	 * \brief Page down pressed.
 	 * \version 1.17
 	 */
-	public func void onPageDown()
+	func void onPageDown()
 		var int selection = pListBox.getSelectedElement()
 		var int count = pListBox.getModel().getCount()
 		var int newSelection = selection

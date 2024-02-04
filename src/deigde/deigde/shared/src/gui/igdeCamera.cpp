@@ -41,37 +41,31 @@
 
 igdeCamera::igdeCamera( deEngine *engine ) :
 pEngine( engine ),
-
-pFov( 90.0f ),
-pFovRatio( 1.0f ),
-pImageDistance( 0.01f ),
-pViewDistance( 500.0f ),
-
-pEnableHDRR( true ),
-pExposure( 1.0f ),
-pLowestIntensity( 1.0f ),
-pHighestIntensity( 20.0f ),
-pAdaptionTime( 1.0f ),
-
-pEnableGI( false ),
-
 pDistance( 0.0f )
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( engine )
 	
 	pEngCamera.TakeOver( engine->GetCameraManager()->CreateCamera() );
-	pEngCamera->SetFov( pFov * DEG2RAD );
-	pEngCamera->SetFovRatio( pFovRatio );
-	pEngCamera->SetImageDistance( pImageDistance );
-	pEngCamera->SetViewDistance( pViewDistance );
-	pEngCamera->SetEnableHDRR( pEnableHDRR );
-	pEngCamera->SetExposure( pExposure );
-	pEngCamera->SetLowestIntensity( pLowestIntensity );
-	pEngCamera->SetHighestIntensity( pHighestIntensity );
-	pEngCamera->SetAdaptionTime( pAdaptionTime );
-	pEngCamera->SetEnableGI( pEnableGI );
+	
+	pFov = pEngCamera->GetFov() * RAD2DEG;
+	pFovRatio = pEngCamera->GetFovRatio();
+	pImageDistance = pEngCamera->GetImageDistance();
+	pViewDistance = pEngCamera->GetViewDistance();
+
+	pEnableHDRR = pEngCamera->GetEnableHDRR();
+	pExposure = pEngCamera->GetExposure();
+	pLowestIntensity = pEngCamera->GetLowestIntensity();
+	pHighestIntensity = pEngCamera->GetHighestIntensity();
+	pAdaptionTime = pEngCamera->GetAdaptionTime();
+
+	pEnableGI = pEngCamera->GetEnableGI();
+
+	pWhiteIntensity = pEngCamera->GetWhiteIntensity();
+	pBloomIntensity = pEngCamera->GetBloomIntensity();
+	pBloomStrength = pEngCamera->GetBloomStrength();
+	pBloomBlend = pEngCamera->GetBloomBlend();
+	pBloomSize = pEngCamera->GetBloomSize();
+	pToneMapCurve = pEngCamera->GetToneMapCurve();
 	
 	SetName( "Camera" );
 }
@@ -255,6 +249,86 @@ void igdeCamera::SetEnableGI( bool enable ){
 
 
 
+void igdeCamera::SetWhiteIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.1f );
+	
+	if( fabs( intensity - pWhiteIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pWhiteIntensity = intensity;
+	pEngCamera->SetWhiteIntensity( intensity );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.0f );
+	
+	if( fabs( intensity - pBloomIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomIntensity = intensity;
+	pEngCamera->SetBloomIntensity( intensity );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomStrength( float strength ){
+	strength = decMath::max( strength, 0.0f );
+	
+	if( fabs( strength - pBloomStrength ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomStrength = strength;
+	pEngCamera->SetBloomStrength( strength );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomBlend( float blend ){
+	blend = decMath::clamp( blend, 0.0f, 1.0f );
+	
+	if( fabs( blend - pBloomBlend ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomBlend = blend;
+	pEngCamera->SetBloomBlend( blend );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomSize( float size ){
+	size = decMath::clamp( size, 0.0f, 1.0f );
+	
+	if( fabs( size - pBloomSize ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomSize = size;
+	pEngCamera->SetBloomSize( size );
+	
+	AdaptionChanged();
+}
+
+
+
+void igdeCamera::SetToneMapCurve( const decCurveBezier &curve ){
+	if( curve == pToneMapCurve ){
+		return;
+	}
+	
+	pToneMapCurve = curve;
+	pEngCamera->SetToneMapCurve( curve );
+	
+	AdaptionChanged();
+}
+
+
+
 void igdeCamera::SetDistance( float distance ){
 	distance = decMath::max( distance, 0.01f );
 	if( fabs( distance - pDistance ) <= FLOAT_SAFE_EPSILON ){
@@ -284,6 +358,50 @@ decVector igdeCamera::GetDirectionFor( int width, int height, int x, int y ) con
 	
 	direction.Normalize();
 	return pViewMatrix.TransformNormal( direction ).ToVector();
+}
+
+void igdeCamera::SetDefaultParameters( float lowestIntensity, float highestIntensity, float adaptionTime ){
+	const deCamera::Ref camera( deCamera::Ref::New( pEngine->GetCameraManager()->CreateCamera() ) );
+	
+	pFov = camera->GetFov() * RAD2DEG;
+	pFovRatio = camera->GetFovRatio();
+	pImageDistance = camera->GetImageDistance();
+	pViewDistance = camera->GetViewDistance();
+	
+	pEnableHDRR = camera->GetEnableHDRR();
+	pExposure = camera->GetExposure();
+	pLowestIntensity = lowestIntensity;
+	pHighestIntensity = highestIntensity;
+	pAdaptionTime = adaptionTime;
+	
+	pEnableGI = camera->GetEnableGI();
+	
+	pWhiteIntensity = camera->GetWhiteIntensity();
+	pBloomIntensity = camera->GetBloomIntensity();
+	pBloomStrength = camera->GetBloomStrength();
+	pBloomBlend = camera->GetBloomBlend();
+	pBloomSize = camera->GetBloomSize();
+	pToneMapCurve = camera->GetToneMapCurve();
+	
+	pEngCamera->SetFov( pFov * DEG2RAD );
+	pEngCamera->SetFovRatio( pFovRatio );
+	pEngCamera->SetImageDistance( pImageDistance );
+	pEngCamera->SetViewDistance( pViewDistance );
+	pEngCamera->SetEnableHDRR( pEnableHDRR );
+	pEngCamera->SetExposure( pExposure );
+	pEngCamera->SetLowestIntensity( pLowestIntensity );
+	pEngCamera->SetHighestIntensity( pHighestIntensity );
+	pEngCamera->SetAdaptionTime( pAdaptionTime );
+	pEngCamera->SetEnableGI( pEnableGI );
+	pEngCamera->SetWhiteIntensity( pWhiteIntensity );
+	pEngCamera->SetBloomIntensity( pBloomIntensity );
+	pEngCamera->SetBloomStrength( pBloomStrength );
+	pEngCamera->SetBloomBlend( pBloomBlend );
+	pEngCamera->SetBloomSize( pBloomSize );
+	pEngCamera->SetToneMapCurve( pToneMapCurve );
+	
+	GeometryChanged();
+	AdaptionChanged();
 }
 
 

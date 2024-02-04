@@ -175,6 +175,24 @@ jobs:
             dragengine-live-${{ github.event.inputs.version }}.zip,
             install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
             install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh
+    
+  upgrade_stable:
+    needs: [upload]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          lfs: true
+        
+      - uses: devmasx/merge-branch@v1.4.0
+        with:
+          type: now
+          target_branch: stable
+          github_token: ${{ github.token }}
 
   distribute:
     needs: [upload]

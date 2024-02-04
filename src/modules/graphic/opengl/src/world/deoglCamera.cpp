@@ -148,6 +148,12 @@ void deoglCamera::SyncToRender(){
 		pRCamera->SetLowestIntensity( pCamera.GetLowestIntensity() );
 		pRCamera->SetHighestIntensity( pCamera.GetHighestIntensity() );
 		pRCamera->SetAdaptionTime( pCamera.GetAdaptionTime() );
+		pRCamera->SetWhiteIntensity( pCamera.GetWhiteIntensity() );
+		pRCamera->SetBloomIntensity( pCamera.GetBloomIntensity() );
+		pRCamera->SetBloomStrength( pCamera.GetBloomStrength() );
+		pRCamera->SetBloomBlend( pCamera.GetBloomBlend() );
+		pRCamera->SetBloomSize( pCamera.GetBloomSize() );
+		pRCamera->SetToneMapCurve( pCamera.GetToneMapCurve() );
 		pDirtyAdaptionParams = false;
 // 			pOgl.LogInfoFormat( "Camera.Sync adaption params: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}

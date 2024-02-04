@@ -30,11 +30,11 @@ pin Dragengine.LoadSave
  */
 abstract class ConversationCondition implements Persistable
 	/** \brief Create conversation condition. */
-	public func new()
+	func new()
 	end
 	
 	
 	
 	/** \brief Evaluate condition. */
-	abstract public func bool evaluate( ConversationPlayback playback )
+	abstract func bool evaluate(ConversationPlayback playback)
 end

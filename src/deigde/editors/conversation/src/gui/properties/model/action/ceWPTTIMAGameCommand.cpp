@@ -73,4 +73,5 @@ void ceWPTTIMAGameCommand::Update(){
 	}
 	
 	SetText( text );
+	SetDescription( action.GetCommand() );
 }

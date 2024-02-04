@@ -1,0 +1,205 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2024, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.CameraDirectors
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.XML
+
+
+/**
+ * \brief Load/save camera parameters.
+ * \version 1.21
+ */
+class LoadCamera extends BaseXmlLoader
+	var Dictionary pCameras
+	
+	
+	
+	/** \brief Create camera loader. */
+	func new(Console console) this(console, "LoadCamera")
+	end
+	
+	/** \brief Create camera loader. */
+	func new(Console console, String name) super(console, name)
+		pCameras = Dictionary.new()
+	end
+	
+	
+	
+	/**
+	 * \brief Load camera from file into new camera director.
+	 */
+	func CameraDirector loadFromFile(String filename)
+		var CameraDirector director = CameraDirector.new()
+		loadFromFile(filename, director)
+		return director
+	end
+	
+	/**
+	 * \brief Load camera from file into camera director.
+	 */
+	func void loadFromFile(String filename, CameraDirector director)
+		var CameraDirector cached = pCameras.getAt(filename, null) cast CameraDirector
+		if cached != null
+			director.copyParameters(cached)
+			return
+		end
+		
+		cached = CameraDirector.new()
+		logLoadingFromFile(filename)
+		loadAndParseRootTag(filename, "camera", block EasyXMLElement root
+			readCamera(root, cached)
+		end)
+		pCameras.setAt(filename, cached)
+		
+		director.copyParameters(cached)
+	end
+	
+	/**
+	 * \brief Load camera from file into camera.
+	 */
+	func void loadFromFile(String filename, Camera camera)
+		loadFromFile(filename).applyParameters(camera)
+	end
+	
+	/**
+	 * \brief Save camera from camera director to file.
+	 */
+	func void saveToFile(String filename, CameraDirector director)
+		if director == null
+			throw ENullPointer.new("director")
+		end
+		
+		logSavingFromFile(filename)
+		
+		var EasyXML document = EasyXML.new()
+		var EasyXMLElement root = document.getRootElement()
+		
+		root.setTagName("camera")
+		
+		writeCamera(root, director)
+		
+		document.writeToFile(FileWriter.new(filename), false)
+		
+		var CameraDirector cached = CameraDirector.new()
+		cached.copyParameters(director)
+		pCameras.setAt(filename, cached)
+	end
+	
+	/**
+	 * \brief Save camera from camera to file.
+	 */
+	func void saveToFile(String filename, Camera camera)
+		if camera == null
+			throw ENullPointer.new("camera")
+		end
+		
+		var CameraDirector director = CameraDirector.new()
+		director.copyParameters(camera)
+		saveToFile(filename, director)
+	end
+	
+	
+	
+	/** \brief Read camera tag. */
+	protected func void readCamera(EasyXMLElement root, CameraDirector director)
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("fov")
+				director.setFov(element.getFirstCDataFloat())
+				
+			elif tagName.equals("fovRatio")
+				director.setFovRatio(element.getFirstCDataFloat())
+				
+			elif tagName.equals("imageDistance")
+				director.setImageDistance(element.getFirstCDataFloat())
+				
+			elif tagName.equals("viewDistance")
+				director.setViewDistance(element.getFirstCDataFloat())
+				
+			elif tagName.equals("enableHDRR")
+				director.setEnableHDRR(element.getFirstCDataBool())
+				
+			elif tagName.equals("exposure")
+				director.setExposure(element.getFirstCDataFloat())
+				
+			elif tagName.equals("lowestIntensity")
+				director.setLowestIntensity(element.getFirstCDataFloat())
+				
+			elif tagName.equals("highestIntensity")
+				director.setHighestIntensity(element.getFirstCDataFloat())
+				
+			elif tagName.equals("adaptionTime")
+				director.setAdaptionTime(element.getFirstCDataFloat())
+				
+			elif tagName.equals("enableGI")
+				director.setEnableGI(element.getFirstCDataBool())
+				
+			elif tagName.equals("whiteIntensity")
+				director.setWhiteIntensity(element.getFirstCDataFloat())
+				
+			elif tagName.equals("bloomIntensity")
+				director.setBloomIntensity(element.getFirstCDataFloat())
+				
+			elif tagName.equals("bloomStrength")
+				director.setBloomStrength(element.getFirstCDataFloat())
+				
+			elif tagName.equals("bloomBlend")
+				director.setBloomBlend(element.getFirstCDataFloat())
+				
+			elif tagName.equals("bloomSize")
+				director.setBloomSize(element.getFirstCDataFloat())
+				
+			elif tagName.equals("toneMapCurve")
+				director.setToneMapCurve(readCurveBezier(element))
+			end
+		end)
+	end
+	
+	
+	
+	/** \brief Write camera tag. */
+	protected func void writeCamera(EasyXMLElement root, CameraDirector director)
+		root.addDataTag("fov", director.getFov())
+		root.addDataTag("fovRatio", director.getFovRatio())
+		root.addDataTag("imageDistance", director.getImageDistance())
+		root.addDataTag("viewDistance", director.getViewDistance())
+		root.addDataTag("enableHDRR", director.getEnableHDRR())
+		root.addDataTag("exposure", director.getExposure())
+		root.addDataTag("lowestIntensity", director.getLowestIntensity())
+		root.addDataTag("highestIntensity", director.getHighestIntensity())
+		root.addDataTag("adaptionTime", director.getAdaptionTime())
+		root.addDataTag("enableGI", director.getEnableGI())
+		root.addDataTag("whiteIntensity", director.getWhiteIntensity())
+		root.addDataTag("bloomIntensity", director.getBloomIntensity())
+		root.addDataTag("bloomStrength", director.getBloomStrength())
+		root.addDataTag("bloomBlend", director.getBloomBlend())
+		root.addDataTag("bloomSize", director.getBloomSize())
+		
+		var CurveBezier curve = director.getToneMapCurve()
+		if curve.getPointCount() > 0
+			writeCurveBezier(root, "toneMapCurve", director.getToneMapCurve())
+		end
+	end
+end

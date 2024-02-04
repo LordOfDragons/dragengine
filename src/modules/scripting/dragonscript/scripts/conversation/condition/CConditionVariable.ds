@@ -35,25 +35,25 @@ pin Dragengine.Utils
  */
 class CConditionVariable extends ConversationCondition
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CConditionVariable"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CConditionVariable.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CConditionVariable.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
 	/** \brief Compare operators. */
-	public enum Operator
+	enum Operator
 		/** \brief True if the variable value is equal to the test value. */
 		equal
 		
@@ -75,90 +75,90 @@ class CConditionVariable extends ConversationCondition
 	
 	
 	
-	private var Operator pOperator
-	private var String pVariable
-	private var int pTestValue
-	private var String pTestVariable
+	var Operator pOperator
+	var String pVariable
+	var int pTestValue
+	var String pTestVariable
 	
 	
 	
 	/** \brief Create conversation condition. */
-	public func new()
-		this.pOperator = Operator.equal
-		this.pTestValue = 0
+	func new()
+		pOperator = Operator.equal
+		pTestValue = 0
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
+	func new(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			this.pOperator = Operator.withOrder( reader.readByte() )
-			this.pVariable = env.readString8OrNullIfEmpty( reader )
-			this.pTestValue = reader.readInt()
-			this.pTestVariable = env.readString8OrNullIfEmpty( reader )
+			pOperator = Operator.withOrder(reader.readByte())
+			pVariable = env.readString8OrNullIfEmpty(reader)
+			pTestValue = reader.readInt()
+			pTestVariable = env.readString8OrNullIfEmpty(reader)
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Operator. */
-	public func Operator getOperator()
-		return this.pOperator
+	func Operator getOperator()
+		return pOperator
 	end
 	
 	/** \brief Set operator. */
-	public func void setOperator( Operator operator )
-		this.pOperator = operator
+	func void setOperator(Operator operator)
+		pOperator = operator
 	end
 	
 	/** \brief Name of variable. */
-	public func String getVariable()
-		return this.pVariable
+	func String getVariable()
+		return pVariable
 	end
 	
 	/** \brief Set name of variable. */
-	public func void setVariable( String variable )
-		this.pVariable = variable
+	func void setVariable(String variable)
+		pVariable = variable
 	end
 	
 	/** \brief Test value. */
-	public func int getTestValue()
-		return this.pTestValue
+	func int getTestValue()
+		return pTestValue
 	end
 	
 	/** \brief Set test value. */
-	public func void setTestValue( int value )
-		this.pTestValue = value
+	func void setTestValue(int value)
+		pTestValue = value
 	end
 	
 	/** \brief Test variable or null to use test value. */
-	public func String getTestVariable()
-		return this.pTestVariable
+	func String getTestVariable()
+		return pTestVariable
 	end
 	
 	/** \brief Set test variable or null to use test value. */
-	public func void setTestVariable( String variable )
-		this.pTestVariable = variable
+	func void setTestVariable(String variable)
+		pTestVariable = variable
 	end
 	
 	
 	
 	/** \brief Condition is true. */
-	public func bool evaluate( ConversationPlayback playback )
+	func bool evaluate(ConversationPlayback playback)
 		var int variableValue = 0
-		if this.pVariable != null
-			variableValue = playback.getVariable( this.pVariable, 0 )
+		if pVariable != null
+			variableValue = playback.getVariable(pVariable, 0)
 		end
 		
-		var int testValue = this.pTestValue
-		if this.pTestVariable != null
-			testValue = playback.getVariable( this.pTestVariable, testValue )
+		var int testValue = pTestValue
+		if pTestVariable != null
+			testValue = playback.getVariable(pTestVariable, testValue)
 		end
 		
-		select this.pOperator
+		select pOperator
 		case Operator.equal
 			return variableValue == testValue
 			
@@ -194,16 +194,17 @@ class CConditionVariable extends ConversationCondition
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeByte( this.pOperator.order() )
-		env.writeString8OrEmptyIfNull( writer, this.pVariable )
-		writer.writeInt( this.pTestValue )
+		writer.writeByte(pOperator.order())
+		env.writeString8OrEmptyIfNull(writer, pVariable)
+		writer.writeInt(pTestValue)
+		env.writeString8OrEmptyIfNull(writer, pTestVariable)
 	end
 end

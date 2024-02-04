@@ -46,7 +46,7 @@ public:
 	igdeNativeFoxTreeItem( igdeTreeItem &owner );
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxTreeItem();
+	~igdeNativeFoxTreeItem() override;
 	/*@}*/
 	
 	
@@ -55,6 +55,9 @@ public:
 	/*@{*/
 	/** \brief Owner. */
 	inline igdeTreeItem *GetOwner() const{ return pOwner; }
+	
+	/** \brief Tip text. */
+	FXString getTipText() const override;
 	/*@}*/
 };
 

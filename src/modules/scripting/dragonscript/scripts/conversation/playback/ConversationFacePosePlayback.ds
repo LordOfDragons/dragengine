@@ -26,6 +26,7 @@ pin Dragengine.Gui
 pin Dragengine.Scenery
 pin Dragengine.Utils
 pin Dragengine.LoadSave
+pin Dragengine.SpeechAnimations
 
 
 /**
@@ -34,15 +35,15 @@ pin Dragengine.LoadSave
 class ConversationFacePosePlayback
 	/** \brief Face pose controller. */
 	class FacePoseController
-		private var int pController
-		private var String pControllerName
-		private var float pInfluence
+		var int pController
+		var String pControllerName
+		var float pInfluence
 		
 		/**
 		 * \brief Create face pose controller.
 		 * \deprecated Use new(String,float)
 		 */
-		public func new(int controller, float influence)
+		func new(int controller, float influence)
 			pController = controller
 			pInfluence = influence
 		end
@@ -51,7 +52,7 @@ class ConversationFacePosePlayback
 		 * \brief Create face pose controller.
 		 * \version 1.16
 		 */
-		public func new(String controller, float influence)
+		func new(String controller, float influence)
 			pController = -1
 			pControllerName = controller
 			pInfluence = influence
@@ -61,7 +62,7 @@ class ConversationFacePosePlayback
 		 * \brief Controller.
 		 * \deprecated Use getControllerName().
 		 */
-		public func int getController()
+		func int getController()
 			return pController
 		end
 		
@@ -69,17 +70,17 @@ class ConversationFacePosePlayback
 		 * \brief Controller name.
 		 * \version 1.16
 		 */
-		public func String getControllerName()
+		func String getControllerName()
 			return pControllerName
 		end
 		
 		/** \brief Influence. */
-		public func float getInfluence()
+		func float getInfluence()
 			return pInfluence
 		end
 		
 		/** \brief Read from file. */
-		static public func FacePoseController readFromFile(FileReader reader)
+		static func FacePoseController readFromFile(FileReader reader)
 			select reader.readByte() // version
 			case 0 // deprecated
 				var int controller = reader.readUShort() - 1
@@ -97,7 +98,7 @@ class ConversationFacePosePlayback
 		end
 		
 		/** \brief Write to file. */
-		public func void writeToFile(FileWriter writer)
+		func void writeToFile(FileWriter writer)
 			if pControllerName != null
 				writer.writeByte(1) // version
 				writer.writeString8(pControllerName)
@@ -113,30 +114,27 @@ class ConversationFacePosePlayback
 	
 	/** \brief Face pose. */
 	class FacePose
-		/** \brief Array of FacePoseController. */
-		private var Array pControllers
-		
-		/** \brief Strip. */
-		private var ConversationStrip pStrip
+		var Array pControllers
+		var ConversationStrip pStrip
 		
 		/** \brief Create face pose. */
-		public func new(Array controllers, ConversationStrip strip)
+		func new(Array controllers, ConversationStrip strip)
 			pControllers = controllers
 			pStrip = strip
 		end
 		
 		/** \brief Array of FacePoseController. */
-		public func Array getControllers()
+		func Array getControllers()
 			return pControllers
 		end
 		
 		/** \brief Strip. */
-		public func ConversationStrip getStrip()
+		func ConversationStrip getStrip()
 			return pStrip
 		end
 		
 		/** \brief Read from file. */
-		static public func FacePose readFromFile(FileReader reader)
+		static func FacePose readFromFile(FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var Array controllers = readControllersFromFile(reader)
@@ -149,7 +147,7 @@ class ConversationFacePosePlayback
 		end
 		
 		/** \brief Read controllers from file. */
-		static public func Array readControllersFromFile(FileReader reader)
+		static func Array readControllersFromFile(FileReader reader)
 			var Array controllers = Array.new()
 			var int i, count = reader.readUShort()
 			for i = 0 to count
@@ -159,7 +157,7 @@ class ConversationFacePosePlayback
 		end
 		
 		/** \brief Write to file. */
-		public func void writeToFile(FileWriter writer)
+		func void writeToFile(FileWriter writer)
 			writer.writeByte(0) // version
 			
 			writeControllersToFile(writer, pControllers)
@@ -167,7 +165,7 @@ class ConversationFacePosePlayback
 		end
 		
 		/** \brief Write controllers to file. */
-		static public func void writeControllersToFile(FileWriter writer, Array controllers)
+		static func void writeControllersToFile(FileWriter writer, Array controllers)
 			writer.writeUShort(controllers.getCount())
 			controllers.forEach(block FacePoseController each
 				each.writeToFile(writer)
@@ -177,68 +175,151 @@ class ConversationFacePosePlayback
 	
 	
 	
-	private var Animator pAnimator
-	private var AnimatorInstance pAnimatorInstance
-	private var Array pPoses
-	private var int pPosition
-	private var float pElapsed
-	private var Array pLastPose
-	private var Array pCurPose
-	private var bool pRunning
-	private var bool pRequiresApply
+	var Animator pAnimator
+	var AnimatorInstance pAnimatorInstance
+	var AnimatorController pControllerSpeaking
+	var Array pPoses
+	var int pPosition
+	var float pElapsed
+	var Array pLastPose
+	var Array pCurPose
+	var bool pRunning
+	var bool pRequiresApply
+	var String pControllerNameSpeaking
+	var SpeechAnimationPlayback pSpeechAnimationPlayback
 	
-	private var float pBlinkIntervalMin
-	private var float pBlinkIntervalMax
-	private var float pBlinkNext
-	private var float pBlinkElapsed
+	var float pBlinkIntervalMin
+	var float pBlinkIntervalMax
+	var float pBlinkNext
+	var float pBlinkElapsed
 	
 	
 	
 	/** \brief Create face pose playback. */
-	public func new()
+	func new()
 		pAnimatorInstance = AnimatorInstance.new()
 		pPoses = Array.new()
 		pPosition = 0
-		pElapsed = 0.0
+		pElapsed = 0
 		pRunning = false
 		pRequiresApply = false
+		pControllerNameSpeaking = "speaking"
 		
-		pBlinkIntervalMin = 2.0
-		pBlinkIntervalMax = 6.0
-		pBlinkNext = 2.0 + 4.0 * DEMath.random()
-		pBlinkElapsed = 0.0
+		pBlinkIntervalMin = 2
+		pBlinkIntervalMax = 6
+		pBlinkNext = DEMath.random() * 4 + 2
+		pBlinkElapsed = 0
 	end
 	
 	
 	
 	/** \brief Animator. */
-	public func Animator getAnimator()
+	func Animator getAnimator()
 		return pAnimator
 	end
 	
 	/** \brief Set animator. */
-	public func void setAnimator(Animator animator)
+	func void setAnimator(Animator animator)
 		pAnimatorInstance.setAnimator(animator)
 		pAnimator = animator
+		pControllerSpeaking = pAnimatorInstance.getControllerNamed(pControllerNameSpeaking)
 	end
 	
 	/** \brief Animator instance. */
-	public func AnimatorInstance getAnimatorInstance()
+	func AnimatorInstance getAnimatorInstance()
 		return pAnimatorInstance
 	end
 	
 	/** \brief Elapsed time. */
-	public func float getElapsed()
+	func float getElapsed()
 		return pElapsed
+	end
+	
+	/**
+	 * \brief Minimum random eye blinking interval in seconds.
+	 * \version 1.21
+	 */
+	func float getMinimumBlinkInterval()
+		return pBlinkIntervalMin
+	end
+	
+	/**
+	 * \brief Set minimum random eye blinking interval in seconds.
+	 * \version 1.21
+	 */
+	func void setMinimumBlinkInterval(float interval)
+		pBlinkIntervalMin = DEMath.max(interval, 0.001)
+	end
+	
+	/**
+	 * \brief Maximum random eye blinking interval in seconds.
+	 * \version 1.21
+	 */
+	func float getMaximumBlinkInterval()
+		return pBlinkIntervalMax
+	end
+	
+	/**
+	 * \brief Set maximum random eye blinking interval in seconds.
+	 * \version 1.21
+	 */
+	func void setMaximumBlinkInterval(float interval)
+		pBlinkIntervalMax = DEMath.max(interval, 0.001)
+	end
+	
+	/**
+	 * \brief Name of controller to set if actor is speaking.
+	 * \version 1.21
+	 * 
+	 * Value of controller is set to 0 if no speech animation playback viseme is playing back
+	 * otherwise the value is set to 1.
+	 * 
+	 * Default controller name is "speaking".
+	 */
+	func String getControllerNameSpeaking()
+		return pControllerNameSpeaking
+	end
+	
+	/**
+	 * \brief Set name of controller to set if actor is speaking.
+	 * \version 1.21
+	 * 
+	 * Value of controller is set to 0 if no speech animation playback viseme is playing back
+	 * otherwise the value is set to 1.
+	 * 
+	 * Default controller name is "speaking".
+	 */
+	func void setControllerNameSpeaking(String name)
+		if name == null
+			throw ENullPointer.new()
+		end
+		pControllerNameSpeaking = name
+		pControllerSpeaking = pAnimatorInstance.getControllerNamed(name)
+	end
+	
+	/**
+	 * \brief Speech animation to use to update speaking controller or null.
+	 * \version 1.21
+	 */
+	func SpeechAnimationPlayback getSpeechAnimationPlayback()
+		return pSpeechAnimationPlayback
+	end
+	
+	/**
+	 * \brief Set speech animation to use to update speaking controller or null.
+	 * \version 1.21
+	 */
+	func void setSpeechAnimationPlayback(SpeechAnimationPlayback playback)
+		pSpeechAnimationPlayback = playback
 	end
 	
 	
 	
 	/** \brief Remove all face poses. */
-	public func void removeAllPoses()
+	func void removeAllPoses()
 		pPoses.removeAll()
 		pPosition = 0
-		pElapsed = 0.0
+		pElapsed = 0
 		pRunning = false
 	end
 	
@@ -247,10 +328,10 @@ class ConversationFacePosePlayback
 	 * \param controllers Array of FacePoseController.
 	 * \param strip Strip to play.
 	 */
-	public func void addPose(Array controllers, ConversationStrip strip)
+	func void addPose(Array controllers, ConversationStrip strip)
 		pPoses.add(FacePose.new(controllers, strip))
 		pPosition = 0
-		pElapsed = 0.0
+		pElapsed = 0
 		pRunning = true
 	end
 	
@@ -262,7 +343,7 @@ class ConversationFacePosePlayback
 	 * This updates the playback and updates animator instances if required. This does not
 	 * apply the animation yet to allow proper use of state capturing.
 	 */
- 	public func void update(float elapsed)
+ 	func void update(float elapsed)
 		var float blendFactor1 = 0
 		var float blendFactor2 = 1
 		
@@ -369,6 +450,11 @@ class ConversationFacePosePlayback
 			pAnimatorInstance.getControllerAt(controllerCount - 1).setValue(pBlinkElapsed)
 		end
 		
+		// speaking
+		if pControllerSpeaking != null and pSpeechAnimationPlayback != null
+			pControllerSpeaking.setValue(pSpeechAnimationPlayback.getSpeakBlend())
+		end
+		
 		pRequiresApply = true
 	end
 	
@@ -377,7 +463,7 @@ class ConversationFacePosePlayback
 	 * 
 	 * Called after update() to apply animation. Can do nothing if no change has been done.
 	 */
-	public func void applyAnimation()
+	func void applyAnimation()
 		if pRequiresApply
 			pAnimatorInstance.apply()
 		end
@@ -390,7 +476,7 @@ class ConversationFacePosePlayback
 	 * 
 	 * Animator and AnimatorInstance are not stored. They have to be set by the ConversationActor.
 	 */
-	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			var PersistencyFlags flags = PersistencyFlags.new(3, reader)
@@ -427,7 +513,7 @@ class ConversationFacePosePlayback
 	 * 
 	 * Animator and AnimatorInstance are not stored. They have to be set by the ConversationActor.
 	 */
-	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 		writer.writeByte(0) // version
 		
 		var PersistencyFlags flags = PersistencyFlags.new(3)

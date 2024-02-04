@@ -157,17 +157,28 @@ class ECBehaviorActorMoverUnstuck extends DefaultECBehavior
 		
 		/** \brief Set if unstucking is enabled. */
 		func void setEnabled(bool enabled)
+			if enabled == pEnabled
+				return
+			end
+			
 			pEnabled = enabled
+			
+			if enabled and pActorMover != null and pActorMover.hasGoal()
+				startTracking()
+				
+			else
+				stopTracking()
+			end
 		end
 		
 		
 		
 		/** \brief Start tracking. */
 		func void startTracking()
-			if not pEnabled or pActorMover.hasNoGoal()
+			if not pEnabled or pActorMover == null or pActorMover.hasNoGoal()
 				return
 			end
-				
+			
 			pLastPosition = getElement().getPosition()
 			pMovedDistance = 0
 			pExpectedDistance = 0

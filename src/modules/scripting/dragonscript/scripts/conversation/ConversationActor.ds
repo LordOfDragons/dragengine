@@ -160,6 +160,10 @@ class ConversationActor
 	/** \brief Set speech animation playback. */
 	public func void setSpeechAnimationPlayback(SpeechAnimationPlayback playback)
 		pSpeechAnimationPlayback = playback
+		
+		if pFacePosePlayback != null
+			pFacePosePlayback.setSpeechAnimationPlayback(playback)
+		end
 	end
 	
 	/** \brief Sub title text or null if not set. */
@@ -199,7 +203,15 @@ class ConversationActor
 	
 	/** \brief Set face pose playback or null if not used. */
 	public func void setFacePosePlayback(ConversationFacePosePlayback playback)
+		if pFacePosePlayback != null
+			pFacePosePlayback.setSpeechAnimationPlayback(null)
+		end
+		
 		pFacePosePlayback = playback
+		
+		if playback != null
+			playback.setSpeechAnimationPlayback(pSpeechAnimationPlayback)
+		end
 	end
 	
 	/** \brief Eyes look-at playback or null if not used. */

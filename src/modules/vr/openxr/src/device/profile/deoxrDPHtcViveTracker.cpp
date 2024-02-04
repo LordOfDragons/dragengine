@@ -323,6 +323,14 @@ void deoxrDPHtcViveTracker::CreateActions( deoxrActionSet &actionSet ){
 	pAddRoleAction( actionSet, "chest", "Chest" );
 	pAddRoleAction( actionSet, "camera", "Camera" );
 	pAddRoleAction( actionSet, "keyboard", "Keyboard" );
+	
+	if( instance.ExtensionVersion( deoxrInstance::extHTCXViveTrackerInteraction ) >= 3 ){
+		// new since revision 3
+		pAddRoleAction( actionSet, "left_wrist", "Left Wrist" );
+		pAddRoleAction( actionSet, "right_wrist", "Right Wrist" );
+		pAddRoleAction( actionSet, "left_ankle", "Left Ankle" );
+		pAddRoleAction( actionSet, "right_ankle", "Right Ankle" );
+	}
 #endif
 }
 
@@ -344,6 +352,10 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	//   - chest
 	//   - camera
 	//   - keyboard
+	//   - left_wrist
+	//   - right_wrist
+	//   - left_ankle
+	//   - right_ankle
 	// 
 	// Supported component paths:
 	// - /input/system/click (may not be available for application use)
@@ -413,46 +425,25 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	GetInstance().SuggestBindings( GetPath(), bindings, realBindingCount );
 	
 #else
-	const int count = pRoleActions.GetCount();
+	int count = pRoleActions.GetCount();
 	if( count == 0 ){
 		return;
 	}
 	
 	const deoxrInstance &instance = GetInstance();
-	const int bindingCount = 10 * count;
-	deoxrInstance::sSuggestBinding * const bindings = new deoxrInstance::sSuggestBinding[ bindingCount ];
-	deoxrInstance::sSuggestBinding *b = bindings;
-	
-	try{
-		int i;
-		for( i=0; i<count; i++ ){
-			const RoleAction &roleAction = *( ( RoleAction* )pRoleActions.GetAt( i ) );
-			const decString basePath( roleAction.path.GetName() );
-		
-			( b++ )->Set( roleAction.action, deoxrPath( instance, basePath + "/input/grip/pose" ) );
-		
-			pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
-		
-			pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
-			pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
-		
-			pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
-			pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
-		
-			pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
-			pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
-			pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
-		
-			pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
-		}
-	
-		GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
-		delete [] bindings;
+	if( instance.ExtensionVersion( deoxrInstance::extHTCXViveTrackerInteraction ) >= 3 ){
+		try{
+			pTrySuggestBindings( count );
+			return;
 
-	}catch( const deException & ){
-		delete [] bindings;
-		throw;
+		}catch( const deException & ){
+			instance.GetOxr().LogError( "Binding HTCXViveTrackerInteraction:V3 failed! "
+				"Broken VR Runtime Detected! Downgrading to HTCXViveTrackerInteraction:V1!" );
+			count = pRoleActions.GetCount() - 4;
+		}
 	}
+
+	pTrySuggestBindings( count );
 #endif
 	
 }
@@ -593,6 +584,18 @@ decString deoxrDPHtcViveTracker::pNameForTracker( const Tracker &tracker ) const
 		
 	}else if( tracker.pathRole.GetName().EndsWith( "keyboard" ) ){
 		return "Tracker Keyboard";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_wrist" ) ){
+		return "Left Wrist";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_wrist" ) ){
+		return "Right Wrist";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_ankle" ) ){
+		return "Left Ankle";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_ankle" ) ){
+		return "Right Ankle";
 		
 	}else if( tracker.path.IsNotEmpty() ){
 		decString name;
@@ -781,4 +784,47 @@ void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
 	pAddButtonTrackpad( tracker.device, trackpad, true, true );
 	
 	GetInstance().GetOxr().GetDevices().Add( tracker.device );
+}
+
+void deoxrDPHtcViveTracker::pTrySuggestBindings( int restrictCount ){
+	const int count = decMath::min( pRoleActions.GetCount(), restrictCount );
+	if( count == 0 ){
+		return;
+	}
+	
+	const deoxrInstance &instance = GetInstance();
+	const int bindingCount = 10 * count;
+	deoxrInstance::sSuggestBinding * const bindings = new deoxrInstance::sSuggestBinding[ bindingCount ];
+	deoxrInstance::sSuggestBinding *b = bindings;
+	
+	try{
+		int i;
+		for( i=0; i<count; i++ ){
+			const RoleAction &roleAction = *( ( RoleAction* )pRoleActions.GetAt( i ) );
+			const decString basePath( roleAction.path.GetName() );
+		
+			( b++ )->Set( roleAction.action, deoxrPath( instance, basePath + "/input/grip/pose" ) );
+		
+			pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
+		
+			pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
+			pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
+		
+			pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
+			pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
+		
+			pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
+			pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
+			pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
+		
+			pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		}
+	
+		GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+		delete [] bindings;
+
+	}catch( const deException & ){
+		delete [] bindings;
+		throw;
+	}
 }

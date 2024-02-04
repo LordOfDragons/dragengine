@@ -138,12 +138,14 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		
 		/** \brief Parameter value is \em null. */
 		func bool isParameterNull(String parameter)
-			return pParameterTable.getAt(parameter).isNull()
+			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
+			return entry == null or entry.isNull()
 		end
 		
 		/** \brief Parameter value is not \em null. */
 		func bool isParameterNotNull(String parameter)
-			return pParameterTable.getAt(parameter).isNotNull()
+			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
+			return entry != null and entry.isNotNull()
 		end
 		
 		

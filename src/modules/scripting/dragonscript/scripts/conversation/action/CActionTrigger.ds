@@ -34,18 +34,18 @@ pin Dragengine.Utils
  */
 class CActionTrigger extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionTrigger"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionTrigger.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionTrigger.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
@@ -80,61 +80,61 @@ class CActionTrigger extends ConversationAction
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
-		this.pAction = Action.fire
+	func new()
+		pAction = Action.fire
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
-			this.pName = env.readStringIDOrNullIfEmpty( reader )
-			this.pAction = Action.withOrder( reader.readByte() )
+			pName = env.readStringIDOrNullIfEmpty(reader)
+			pAction = Action.withOrder(reader.readByte())
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Name of the trigger to set. */
-	public func StringID getName()
-		return this.pName
+	func StringID getName()
+		return pName
 	end
 	
 	/** \brief Set name of the trigger to set. */
-	public func void setName( StringID name )
-		this.pName = name
+	func void setName(StringID name)
+		pName = name
 	end
 	
 	/** \brief Action. */
-	public func Action getAction()
-		return this.pAction
+	func Action getAction()
+		return pAction
 	end
 	
 	/** \brief Set action. */
-	public func void setAction( Action action )
-		this.pAction = action
+	func void setAction(Action action)
+		pAction = action
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
-		if this.pName == null
+	func void execute(ConversationPlayback playback)
+		if pName == null
 			playback.advanceToNextAction()
 			return
 		end
 		
 		var TSTriggerTarget target
 		// if run the first time get trigger target adding it if not existing yet
-// 		if this.pTriggerTarget == null
-			target = playback.getTriggerTable().getOrAddNamed( this.pName )
+// 		if pTriggerTarget == null
+			target = playback.getTriggerTable().getOrAddNamed(pName)
 // 		end
 		
 		// operate the trigger
-		select this.pAction
+		select pAction
 		case Action.fire
 			target.fire()
 			
@@ -164,17 +164,17 @@ class CActionTrigger extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte( 0 ) // version
+		writer.writeByte(0) // version
 		
-		env.writeStringIDOrEmptyIfNull( writer, this.pName )
-		writer.writeByte( this.pAction.order() )
+		env.writeStringIDOrEmptyIfNull(writer, pName)
+		writer.writeByte(pAction.order())
 	end
 end

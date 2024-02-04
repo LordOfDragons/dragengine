@@ -48,7 +48,14 @@ class deoglSkinShader : public deObject{
 public:
 	typedef deTObjectReference<deoglSkinShader> Ref;
 	
-	static int REFLECTION_TEST_MODE;
+	enum eReflectionTestMode{
+		ertmOldVersion,
+		ertmOwnPassReflection,
+		ertmSingleBlenderEnvMap
+	};
+	
+	/** ertmSingleBlenderEnvMap */
+	static eReflectionTestMode REFLECTION_TEST_MODE;
 	
 	/** Texture targets. */
 	enum eTextureTargets{

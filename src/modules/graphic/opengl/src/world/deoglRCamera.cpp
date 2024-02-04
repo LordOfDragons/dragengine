@@ -38,6 +38,7 @@
 #include "../vr/deoglVR.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/curve/decCurveBezierEvaluator.h>
 
 
 
@@ -52,7 +53,7 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 
-pTextureToneMapParams( NULL ),
+pTextureToneMapParams( nullptr ),
 pElapsedToneMapAdaption( 0.0f ),
 pForceToneMapAdaption( true ),
 
@@ -63,6 +64,16 @@ pHighestIntensity( 1.0f ),
 pAdaptionTime( 1.0f ),
 
 pEnableGI( false ),
+
+pWhiteIntensity( 1.0f ), // 1.5f
+pBloomIntensity( 1.5f ), // 2.0f
+pBloomStrength( 1.0f ),
+pBloomBlend( 1.0f ),
+pBloomSize( 0.25f ),
+
+pToneMapCurveResolution( 1024 ),
+pTextureToneMapCurve( nullptr ),
+pDirtyToneMapCurve( true ),
 
 pPlan( NULL ),
 
@@ -153,6 +164,10 @@ void deoglRCamera::ResetElapsedToneMapAdaption(){
 	pElapsedToneMapAdaption = 0.0f;
 }
 
+bool deoglRCamera::UseCustomToneMapCurve() const{
+	return pToneMapCurve.GetPointCount() > 0;
+}
+
 
 
 void deoglRCamera::SetEnableHDRR( bool enable ){
@@ -180,6 +195,43 @@ void deoglRCamera::SetAdaptionTime( float adaptionTime ){
 void deoglRCamera::SetEnableGI( bool enable ){
 	pEnableGI = enable;
 	pPlan->SetUseGIState( enable );
+}
+
+
+
+void deoglRCamera::SetWhiteIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.01f );
+	if( fabsf( intensity - pWhiteIntensity ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pWhiteIntensity = intensity;
+	pDirtyToneMapCurve = true;
+}
+
+void deoglRCamera::SetBloomIntensity( float intensity ){
+	pBloomIntensity = decMath::max( intensity, 0.0f );
+}
+
+void deoglRCamera::SetBloomStrength( float strength ){
+	pBloomStrength = decMath::max( strength, 0.0f );
+}
+
+void deoglRCamera::SetBloomBlend( float blend ){
+	pBloomBlend = decMath::clamp( blend, 0.0f, 1.0f );
+}
+
+void deoglRCamera::SetBloomSize( float size ){
+	pBloomSize = decMath::clamp( size, 0.0f, 1.0f );
+}
+
+void deoglRCamera::SetToneMapCurve( const decCurveBezier &curve ){
+	if( curve == pToneMapCurve ){
+		return;
+	}
+	
+	pToneMapCurve = curve;
+	pDirtyToneMapCurve = true;
 }
 
 
@@ -264,6 +316,10 @@ void deoglRCamera::PrepareForRender(){
 		pDirtyLastAverageLuminance = true;
 	}
 	
+	if( UseCustomToneMapCurve() ){
+		pPrepareToneMapCurveTexture();
+	}
+	
 	const int effectCount = pEffects.GetCount();
 	int i;
 	for( i=0; i<effectCount; i++ ){
@@ -278,13 +334,51 @@ void deoglRCamera::PrepareForRender(){
 
 void deoglRCamera::pCleanUp(){
 	EnableVR( false );
-	SetParentWorld( NULL );
+	SetParentWorld( nullptr );
 	
 	RemoveAllEffects();
 	
 	delete pPlan;
 	
+	if( pTextureToneMapCurve ){
+		delete pTextureToneMapCurve;
+	}
 	if( pTextureToneMapParams ){
 		delete pTextureToneMapParams;
 	}
+}
+
+void deoglRCamera::pPrepareToneMapCurveTexture(){
+	if( ! pDirtyToneMapCurve ){
+		return;
+	}
+	pDirtyToneMapCurve = false;
+	
+	if( ! pTextureToneMapCurve ){
+		pTextureToneMapCurve = new deoglTexture( pRenderThread );
+		pTextureToneMapCurve->SetSize( pToneMapCurveResolution, 1 );
+		pTextureToneMapCurve->SetMapingFormat( 1, true, false );
+	}
+	
+	const deoglPixelBuffer::Ref pbuf( deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, pToneMapCurveResolution, 1, 1 ) ) );
+	deoglPixelBuffer::sFloat1 * const pixels = pbuf->GetPointerFloat1();
+	
+	int i;
+	
+	if( pToneMapCurve.GetPointCount() > 0 ){
+		const float factor = pWhiteIntensity / ( float )( pToneMapCurveResolution - 1 );
+		decCurveBezierEvaluator evaluator( pToneMapCurve );
+		for( i=0; i<pToneMapCurveResolution; i++ ){
+			pixels[ i ].r = ( GLfloat )( evaluator.EvaluateAt( factor * ( float )i ) );
+		}
+		
+	}else{
+		const float factor = 1.0f / ( float )( pToneMapCurveResolution - 1 );
+		for( i=0; i<pToneMapCurveResolution; i++ ){
+			pixels[ i ].r = ( GLfloat )( factor * ( float )i );
+		}
+	}
+	
+	pTextureToneMapCurve->SetPixels( pbuf );
 }

@@ -33,41 +33,41 @@ pin Dragengine.Utils
  */
 class CActionStopTopic extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionStopTopic"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionStopTopic.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionStopTopic.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
 	/** \brief Create a new conversation action. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Execute the action. */
-	public func void execute( ConversationPlayback playback )
+	func void execute(ConversationPlayback playback)
 		while playback.getLayerCount() > 0 and not playback.getTopLayer().getTopicTopLevel()
 			playback.popLayer()
 		end
@@ -93,14 +93,14 @@ class CActionStopTopic extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte( 0 ) // version
+		writer.writeByte(0) // version
 	end
 end

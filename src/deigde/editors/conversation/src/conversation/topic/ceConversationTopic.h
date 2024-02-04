@@ -29,6 +29,7 @@
 #include "../action/ceConversationActionReference.h"
 #include "../condition/ceConversationConditionReference.h"
 
+class decStringSet;
 class ceConversationFile;
 class ceConversationCondition;
 
@@ -95,6 +96,10 @@ public:
 	
 	/** \brief Set active element. */
 	void SetActive( ceConversationAction *action, ceConversationCondition *condition );
+	
+	/** Find missing words. */
+	void FindMissingWords( decStringSet &missingWords ) const;
+	void FindMissingWords( const ceConversationActionList &actions, decStringSet &missingWords ) const;
 	
 	
 	

@@ -60,6 +60,10 @@ bool deoglGIInstance::cListenerLink::LayerMaskMatchesNot( const decLayerMask& la
 	return instance.GetInstances().GetGIState().GetLayerMask().MatchesNot( layerMask );
 }
 
+bool deoglGIInstance::cListenerLink::GIImportanceMatchesNot( int importance ) const{
+	return importance < instance.GetInstances().GetGIState().GetGIImportance();
+}
+
 void deoglGIInstance::cListenerLink::RemoveInstance() const{
 	if( instance.GetComponent() ){
 		instance.GetInstances().RemoveInstance( instance ); // does clear and removes listener
@@ -151,6 +155,9 @@ void deoglGIInstance::cComponentListener::VisibilityChanged( deoglRComponent &co
 }
 
 void deoglGIInstance::cComponentListener::GIImportanceChanged( deoglRComponent &component ){
+	if( pLink.GIImportanceMatchesNot( component.GetGIImportance() ) ){
+		pLink.RemoveInstance();
+	}
 }
 
 

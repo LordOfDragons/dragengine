@@ -562,15 +562,12 @@ abstract class ConversationPlayback implements Persistable
 				layer = pLayers.getAt(i) cast ConversationPlaybackLayer
 				
 				condition = layer.getLoopCondition()
-				if condition != null
-					// TODO use getLoopEvalConditionInterval() to improve performance
-					if not condition.evaluate(this)
-						layer.cancelLooping()
-						pLayers.resize(i + 1)
-						pActionTime = 0
-						pActionWaiting = true
-						break
-					end
+				if condition != null and not condition.evaluate(this)
+					layer.cancelLooping()
+					pLayers.resize(i + 1)
+					pActionTime = 0
+					pActionWaiting = true
+					break
 				end
 			end
 			

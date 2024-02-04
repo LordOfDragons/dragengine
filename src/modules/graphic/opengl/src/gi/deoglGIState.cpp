@@ -63,13 +63,14 @@ pRenderThread( renderThread ),
 
 pSize( size ),
 pWorld( NULL ),
+pGIImportance( deoglGIAreaTracker::GIImportanceFromGIQuality(
+	renderThread.GetConfiguration().GetGIQuality() ) ),
 
 pProbeCount( 32, 8, 32 ),
 pGridCoordClamp( pProbeCount - decPoint3( 1, 1, 1 ) ),
 pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
 pRealProbeCount( pStrideProbeCount * pProbeCount.y ),
-pAreaTracker( deoglGIAreaTracker::GIImportanceFromGIQuality(
-	renderThread.GetConfiguration().GetGIQuality() ) ),
+pAreaTracker( pGIImportance ),
 
 pIrradianceMapSize( 8 ),
 pDistanceMapSize( 16 ),
@@ -284,8 +285,9 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 	INIT_SPECIAL_TIMING
 	// monitor configuration changes
 	pRenderThread.GetGI().GetTraceRays().UpdateFromConfig();
-	pAreaTracker.SetGIImportance( deoglGIAreaTracker::GIImportanceFromGIQuality(
-		pRenderThread.GetConfiguration().GetGIQuality() ) );
+	pGIImportance = deoglGIAreaTracker::GIImportanceFromGIQuality(
+		pRenderThread.GetConfiguration().GetGIQuality() );
+	pAreaTracker.SetGIImportance( pGIImportance );
 	
 	// update position
 	deoglGICascade &cascade = GetActiveCascade();

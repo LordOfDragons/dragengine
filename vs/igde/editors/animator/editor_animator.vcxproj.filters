@@ -286,6 +286,12 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMinimumValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultVector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1132,6 +1138,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMinimumValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultVector.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetName.h">

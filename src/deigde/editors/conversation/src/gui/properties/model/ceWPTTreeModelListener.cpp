@@ -106,6 +106,8 @@ void ceWPTTreeModelListener::ActiveFileChanged( ceConversation *conversation ){
 	
 	pModel.UpdateActions();
 	pModel.SelectTopicActive();
+	
+	pModel.GetForwardListener().ActiveFileChanged( conversation );
 }
 
 
@@ -123,6 +125,8 @@ void ceWPTTreeModelListener::ActiveTopicChanged( ceConversation *conversation, c
 	
 	pModel.UpdateActions();
 	pModel.SelectTopicActive();
+	
+	pModel.GetForwardListener().ActiveTopicChanged( conversation, file );
 }
 
 
@@ -233,4 +237,12 @@ void ceWPTTreeModelListener::ActorStructureChanged( ceConversation* ){
 }
 
 void ceWPTTreeModelListener::ActorChanged( ceConversation*, ceConversationActor* ){
+}
+
+void ceWPTTreeModelListener::LanguagePackChanged( ceConversation *conversation ){
+	if( conversation != pModel.GetConversation() ){
+		return;
+	}
+	
+	pModel.UpdateActions();
 }

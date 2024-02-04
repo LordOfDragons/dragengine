@@ -59,8 +59,10 @@
 debpColliderAttachment::debpColliderAttachment( deColliderAttachment *attachment ) :
 pAttachment( attachment ),
 pTrackBone( -1 ),
-pBoneMappings( NULL ),
+pBoneMappings( nullptr ),
 pBoneMappingCount( 0 ),
+pVpsMappings( nullptr ),
+pVpsMappingCount( 0 ),
 pDirtyMappings( true ),
 pDirtyLocalMatrix( true ),
 pHasLocalMatrix( false ){
@@ -76,15 +78,13 @@ debpColliderAttachment::~debpColliderAttachment(){
 ///////////////
 
 void debpColliderAttachment::SetBoneMappingCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( count >= 0 )
 	
 	if( count == pBoneMappingCount ){
 		return;
 	}
 	
-	int i, *newArray = NULL;
+	int i, *newArray = nullptr;
 	if( count > 0 ){
 		newArray = new int[ count ];
 		for( i=0; i<count; i++ ){
@@ -99,28 +99,62 @@ void debpColliderAttachment::SetBoneMappingCount( int count ){
 	pBoneMappingCount = count;
 }
 
-void debpColliderAttachment::SetTrackBone( int boneIndex ){
-	if( boneIndex < -1 ){
-		DETHROW( deeInvalidParam );
+void debpColliderAttachment::SetVpsMappingCount( int count ){
+	DEASSERT_TRUE( count >= 0 )
+	
+	if( count == pVpsMappingCount ){
+		return;
 	}
+	
+	int i, *newArray = nullptr;
+	if( count > 0 ){
+		newArray = new int[ count ];
+		for( i=0; i<count; i++ ){
+			newArray[ i ] = -1;
+		}
+	}
+	
+	if( pVpsMappings ){
+		delete [] pVpsMappings;
+	}
+	pVpsMappings = newArray;
+	pVpsMappingCount = count;
+}
+
+void debpColliderAttachment::SetTrackBone( int boneIndex ){
+	DEASSERT_TRUE( boneIndex >= -1 )
+	
 	pTrackBone = boneIndex;
 }
 
 int debpColliderAttachment::GetBoneMappingAt( int index ) const{
-	if( index < 0 || index >= pBoneMappingCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pBoneMappingCount )
+	
 	return pBoneMappings[ index ];
 }
 
 void debpColliderAttachment::SetBoneMappingAt( int index, int boneIndex ){
-	if( index < 0 || index >= pBoneMappingCount ){
-		DETHROW( deeInvalidParam );
-	}
-	if( boneIndex < -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pBoneMappingCount )
+	DEASSERT_TRUE( boneIndex >= -1 )
+	
 	pBoneMappings[ index ] = boneIndex;
+}
+
+int debpColliderAttachment::GetVpsMappingAt( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pVpsMappingCount )
+	
+	return pVpsMappings[ index ];
+}
+
+void debpColliderAttachment::SetVpsMappingAt( int index, int boneIndex ){
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pVpsMappingCount )
+	DEASSERT_TRUE( boneIndex >= -1 )
+	
+	pVpsMappings[ index ] = boneIndex;
 }
 
 void debpColliderAttachment::SetDirtyMappings( bool dirtyMappings ){
@@ -339,6 +373,9 @@ bool changeNotify ){
 void debpColliderAttachment::pCleanUp(){
 	if( pBoneMappings ){
 		delete [] pBoneMappings;
+	}
+	if( pVpsMappings ){
+		delete [] pVpsMappings;
 	}
 }
 

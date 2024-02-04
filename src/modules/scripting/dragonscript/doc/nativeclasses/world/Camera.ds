@@ -12,6 +12,58 @@ pin Dragengine.Gui
 
 /**
  * \brief Camera.
+ *
+ * A world camera defines the camera parameters used for rendering a world. Cameras have
+ * various parameters useful to alter the way the world is rendered.
+ * 
+ * The lower and upper intensity parameter indicates the range of intensity the camera can
+ * automatically adapt to. The chosen intensity level for a camera is the "scene intensity"
+ * (or "average intensity"). This intensity is mapped to a reasonable middle gray value in
+ * the final image.
+ * 
+ * The exposure is used to increase or decrease the overall luminance of the rendered world.
+ * This alters the scene intensity mapping to the middle gray value. Use values lower than 1
+ * to make the image darker and values higher than 1 to brighten up the image. Reducing the
+ * exposure usually decreases also the contrast which can make images more pleasant.
+ *
+ * Using the "scene intensity" a "maximum intensity" is determined for the image. The maximum
+ * intensity maps to pure white in the final image. Using the white intensity parameter this
+ * intensity can be shifted to avoid bright parts of the image to wash out to white. This can
+ * happen when the camera is located inside a room while looking out into the sun light.
+ * The behavior of the white intensity parameter depends on the presence of custom tone
+ * mapping. If custom tone mapping curve is not used the white intensity parameter alters
+ * the tone mapping parameters used by the graphic module to reduce the washing out to white.
+ * If custom tone mapping curve is used the white intensity parameter indicates the upper
+ * bound of the input send through the curve. Pixel intensities above the white intensity
+ * are thus clamped to the white intensity. The default value is 2.
+ * 
+ * In games overbrighting is often used as a gameplay element to simulate very bright pixel
+ * for example an energy beam or entering a room with glaring light while coming out of night
+ * light conditions. Overbrighting can be done in two ways. For overbrighting affecting the
+ * entire screen like for example flashbangs using a post processing color matrix effect is
+ * the best choice. For overbrighting on a per pixel basis blooming is typically used. For
+ * this intensities of pixels are clamped against a "bloom intensity threshold". Intensites
+ * above this threshold are used to create halo light effects similar to oversatured rods
+ * in the eye. The effect is controlled by the bloom intensity, bloom strength, bloom blend
+ * and bloom size parameter.
+ * 
+ * The bloom intensity is a multiplier applied to the current "maximum intensity" of the camera.
+ * The default value is 1. To produce an overbright effect pixel requires an intensity 1 times
+ * as bright than the current camera maximum intensity.
+ * 
+ * The bloom strength is a multiplier applied to the overbright intensity beyond the bloom intensity
+ * threshold. For example if the threshold is 1 and the pixel intensity is 2 then the overbright
+ * intensity is 1 and is multiplied with the strength factor. This allows to modify the amount of
+ * intensity required to result in a strong glare. The default value is 0.25
+ * 
+ * The bloom blend is a multiplier applied to the overbright calculated for a pixel.
+ * This is typically used to blend between using bloom (1) and not using bloom (0).
+ * 
+ * Blooming usually spreads due to rods oversaturating which is a chemical process in the eye.
+ * The bloom size indicates the broadness of the blur as percentage of the screen width.
+ * 
+ * Optionally a custom tone mapping curve can be defined. The custom tone mapping curve is
+ * used if it has at least one curve point. The default custom tone mapping curve is empty.
  * 
  * This is a native class.
  */
@@ -19,7 +71,7 @@ class Camera
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create camera. */
-	public func new()
+	func new()
 	end
 	/*@}*/
 	
@@ -28,57 +80,57 @@ class Camera
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	public func DVector getPosition()
+	func DVector getPosition()
 		return null
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition( DVector position )
+	func void setPosition(DVector position)
 	end
 	
 	/** \brief Orientation. */
-	public func Quaternion getOrientation()
+	func Quaternion getOrientation()
 		return null
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Quaternion orientation )
+	func void setOrientation(Quaternion orientation)
 	end
 	
 	/** \brief Field of view in degrees. */
-	public func float getFov()
+	func float getFov()
 		return 0.0
 	end
 	
 	/** \brief Set field of view in degrees. */
-	public func void setFov( float fov )
+	func void setFov(float fov)
 	end
 	
 	/** \brief Field of view aspect ratio. */
-	public func float getFovRatio()
+	func float getFovRatio()
 		return 0.0
 	end
 	
 	/** \brief Set field of view aspect ratio. */
-	public func void setFovRatio( float fovRatio )
+	func void setFovRatio(float fovRatio)
 	end
 	
 	/** \brief Distance to image plane in meters. */
-	public func float getImageDistance()
+	func float getImageDistance()
 		return 0.0
 	end
 	
 	/** \brief Set distance to image plane in meters. */
-	public func void setImageDistance( float distance )
+	func void setImageDistance(float distance)
 	end
 	
 	/** \brief View distance in meters. */
-	public func float getViewDistance()
+	func float getViewDistance()
 		return 0.0
 	end
 	
 	/** \brief Set view distance in meters. */
-	public func void setViewDistance( float distance )
+	func void setViewDistance(float distance)
 	end
 	
 	
@@ -87,58 +139,58 @@ class Camera
 	 * \brief Enable high definition range rendering (HDRR) if supported.
 	 * \version 1.5
 	 */
-	public func bool getEnableHDRR()
-		return true
+	func bool getEnableHDRR()
+		return false
 	end
 	
 	/**
 	 * \brief Set to enable high definition range rendering (HDRR) if supported.
 	 * \version 1.5
 	 */
-	public func void setEnableHDRR( bool enable )
+	func void setEnableHDRR(bool enable)
 	end
 	
 	/** \brief Exposure. */
-	public func float getExposure()
+	func float getExposure()
 		return 0.0
 	end
 	
 	/** \brief Set expsoure. */
-	public func void setExposure( float exposure )
+	func void setExposure(float exposure)
 	end
 	
 	/** \brief Lowest adaption intensity. */
-	public func float getLowestIntensity()
+	func float getLowestIntensity()
 		return 0.0
 	end
 	
 	/** \brief Set lowest adaption intensity. */
-	public func void setLowestIntensity( float lowestIntensity )
+	func void setLowestIntensity(float lowestIntensity)
 	end
 	
 	/** \brief Highest adaption intensity. */
-	public func float getHighestIntensity()
+	func float getHighestIntensity()
 		return 0.0
 	end
 	
 	/** \brief Set highest adaption intensity. */
-	public func void setHighestIntensity( float highestIntensity )
+	func void setHighestIntensity(float highestIntensity)
 	end
 	
 	/** \brief Adaption time in seconds. */
-	public func float getAdaptionTime()
+	func float getAdaptionTime()
 		return 0.0
 	end
 	
 	/** \brief Set adaption time in seconds. */
-	public func void setAdaptionTime( float adaptionTime )
+	func void setAdaptionTime(float adaptionTime)
 	end
 	
 	/**
 	 * \brief Request graphic module to reset adapted intensity to optimal value.
 	 * \version 1.4
 	 */
-	public func void resetAdaptedIntensity()
+	func void resetAdaptedIntensity()
 	end
 	
 	
@@ -147,7 +199,7 @@ class Camera
 	 * \brief Enable global illumination (GI) if supported.
 	 * \version 1.5
 	 */
-	public func bool getEnableGI()
+	func bool getEnableGI()
 		return false
 	end
 	
@@ -155,37 +207,130 @@ class Camera
 	 * \brief Set to enable global illumination (GI) if supported.
 	 * \version 1.5
 	 */
-	public func void setEnableGI( bool enable )
+	func void setEnableGI(bool enable)
+	end
+	
+	
+	
+	/**
+	 * \brief White intensity multiplier.
+	 * \version 1.21
+	 */
+	func float getWhiteIntensity()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set white intensity multiplier.
+	 * \version 1.21
+	 */
+	func void setWhiteIntensity(float intensity)
+	end
+	
+	/**
+	 * \brief Bloom intensity multiplier.
+	 * \version 1.21
+	 */
+	func float getBloomIntensity()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set bloom intensity multiplier.
+	 * \version 1.21
+	 */
+	func void setBloomIntensity(float intensity)
+	end
+	
+	/**
+	 * \brief Bloom strength as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	func float getBloomStrength()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set bloom strength as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	func void setBloomStrength(float strength)
+	end
+	
+	/**
+	 * \brief Bloom blend as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	func float getBloomBlend()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set bloom blend as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	func void setBloomBlend(float blend)
+	end
+	
+	/**
+	 * \brief Bloom size as percentage of screen width.
+	 * \version 1.21
+	 */
+	func float getBloomSize()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Bloom size as percentage of screen width.
+	 * \version 1.21
+	 */
+	func void setBloomSize(float size)
+	end
+	
+	/**
+	 * \brief Custom tone mapping curve or empty curve to disable.
+	 * \version 1.21
+	 */
+	func CurveBezier getToneMapCurve()
+		return null
+	end
+	
+	/**
+	 * \brief Set custom tone mapping curve or empty curve to disable.
+	 * \version 1.21
+	 * \note If enabled make sure to match the curve range to the white intensity.
+	 */
+	func void setToneMapCurve(CurveBezier curve)
 	end
 	
 	
 	
 	/** \brief Layer mask for visibility masking. */
-	public func LayerMask getLayerMask()
+	func LayerMask getLayerMask()
 		return null
 	end
 	
 	/** \brief Set layer mask for visibility masking. */
-	public func void setLayerMask( LayerMask layerMask )
+	func void setLayerMask(LayerMask layerMask)
 	end
 	
 	/** \brief Project point from 3d world. */
-	public func Point project( Point viewportSize, DVector position )
+	func Point project(Point viewportSize, DVector position)
 		return null
 	end
 	
 	/** \brief Back project position into 3d world. */
-	public func Vector backProject( Point viewportSize, Point position )
+	func Vector backProject(Point viewportSize, Point position)
 		return null
 	end
 	
 	/** \brief Back project position into 3d world. */
-	public func Vector backProject( int width, int height, int x, int y )
+	func Vector backProject(int width, int height, int x, int y)
 		return null
 	end
 	
 	/** \brief Parent world or \em null if not added to a world. */
-	public func World getParentWorld()
+	func World getParentWorld()
 		return null
 	end
 	
@@ -193,7 +338,7 @@ class Camera
 	 * \brief World matrix of camera.
 	 * \version 1.7
 	 */
-	public func DMatrix getMatrix()
+	func DMatrix getMatrix()
 		return null
 	end
 	/*@}*/
@@ -203,7 +348,7 @@ class Camera
 	/** \name Effects */
 	/*@{*/
 	/** \brief Number of effects. */
-	public func int getEffectCount()
+	func int getEffectCount()
 		return 0
 	end
 	
@@ -211,20 +356,20 @@ class Camera
 	 * \brief Effect at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getEffectCount().
 	 */
-	public func Effect getEffectAt( int index )
+	func Effect getEffectAt(int index)
 		return null
 	end
 	
 	/** \brief Add effect. */
-	public func void addEffect( Effect effect )
+	func void addEffect(Effect effect)
 	end
 	
 	/** \brief Remove effect. */
-	public func void removeEffect( Effect effect )
+	func void removeEffect(Effect effect)
 	end
 	
 	/** \brief Remove all effects. */
-	public func void removeAllEffects()
+	func void removeAllEffects()
 	end
 	/*@}*/
 end

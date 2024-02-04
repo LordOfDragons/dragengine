@@ -252,7 +252,15 @@ void deoglRLight::UpdateSkin( float elapsed ){
 
 
 void deoglRLight::SetActive( bool active ){
+	if( active == pActive ){
+		return;
+	}
+	
 	pActive = active;
+	
+	if( active ){
+		pRequiresPrepareForRender();
+	}
 }
 
 void deoglRLight::SetLightType( deLight::eLightTypes type ){

@@ -146,6 +146,10 @@ void projProjectXml::pWriteProfile( decXmlWriter &writer, const projProfile &pro
 	
 	writer.WriteDataTagString( "delgaPath", profile.GetDelgaPath() );
 	
+	if( ! profile.GetRunArguments().IsEmpty() ){
+		writer.WriteDataTagString( "runArguments", profile.GetRunArguments() );
+	}
+	
 	writer.WriteClosingTag( "profile" );
 }
 
@@ -246,6 +250,9 @@ void projProjectXml::pReadProfile( const decXmlElementTag &root, projProject &pr
 				
 			}else if( tagName == "delgaPath" ){
 				profile->SetDelgaPath( GetCDataString( *tag ) );
+				
+			}else if( tagName == "runArguments" ){
+				profile->SetRunArguments( GetCDataString( *tag ) );
 				
 			}else{
 				LogWarnUnknownTag( root, *tag );

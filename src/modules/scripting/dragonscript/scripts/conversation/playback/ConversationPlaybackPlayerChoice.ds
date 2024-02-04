@@ -34,10 +34,10 @@ interface ConversationPlaybackPlayerChoice
 	func void removeAllChoices()
 	
 	/** \brief Add choice. */
-	func void addChoice( String text, ActionListener action )
+	func void addChoice(String text, ActionListener action)
 	
 	/** \brief Add choice. */
-	func void addChoice( String text, Image image, ActionListener action )
+	func void addChoice(String text, Image image, ActionListener action)
 	
 	/**
 	 * \brief Start player choosing.
