@@ -215,7 +215,11 @@ pRenderDocMode( false )
 	#endif
 	
 	#ifdef OS_UNIX
+	#ifdef OS_BEOS
+	const char * const envRenderDocMode = getenv( "DE_OGL_RENDERDOC_MODE" );
+	#else
 	const char * const envRenderDocMode = secure_getenv( "DE_OGL_RENDERDOC_MODE" );
+	#endif
 	pRenderDocMode = envRenderDocMode && strcmp( envRenderDocMode, "1" ) == 0;
 	#endif
 }
