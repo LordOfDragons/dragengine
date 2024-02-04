@@ -35,27 +35,27 @@ pin Dragengine.Gui.Events
  * Supports designing using designer selector "TextField.ComboBoxEditor".
  */
 class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
-	private var Array pEditorActionListeners
+	var Array pEditorActionListeners
 	
 	
 	
 	/** \brief Create default combo box editor. */
-	public func new() this(DefaultTextModel.new())
+	func new() this(DefaultTextModel.new())
 	end
 	
 	/** \brief Create default combo box editor. */
-	public func new(TextModel model) super(model)
+	func new(TextModel model) super(model)
 		pEditorActionListeners = Array.new()
 		setDesignerSelector(getDesignerSelector() + ".ComboBoxEditor")
 	end
 	
 	/** \brief Create default combo box editor. */
-	public func new(TextModel model, int displayCharCount) this(model)
+	func new(TextModel model, int displayCharCount) this(model)
 		setDisplayCharCount(displayCharCount)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		// it is possible the dispose is triggered due to an action listener call.
 		// if Array.removeAll() is called in this case an exception is thrown due to
 		// modifying the array while iterating over it. dropping the array is enough
@@ -66,7 +66,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	
 	
 	/** \brief Get widget to use for editing. */
-	public func Widget getWidget()
+	func Widget getWidget()
 		return this
 	end
 	
@@ -75,7 +75,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 * \details The returned object can be the one previously set by
 	 *          setEditorValue() if unchanged or a new object if changed.
 	 */
-	public func Object getEditorValue()
+	func Object getEditorValue()
 		return getModel().getText()
 	end
 	
@@ -83,7 +83,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 * \brief Set editor value to object or \em null to clear.
 	 * \details \em object is garanteed to not be modified by the editor.
 	 */
-	public func void setEditorValue(Object object)
+	func void setEditorValue(Object object)
 		if object == null
 			getModel().setText("")
 			
@@ -99,7 +99,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 * \details Action listener is called whenever the edited object changes.
 	 * \note This shadows TextWidget.addActionListener(). To use it use addTextActionListener().
 	 */
-	public func void addActionListener(ActionListener listener)
+	func void addActionListener(ActionListener listener)
 		pEditorActionListeners.add(listener)
 	end
 	
@@ -107,7 +107,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 * \brief Remove action listener.
 	 * \note This shadows TextWidget.removeActionListener(). To use it use removeTextActionListener().
 	 */
-	public func void removeActionListener(ActionListener listener)
+	func void removeActionListener(ActionListener listener)
 		pEditorActionListeners.remove(listener)
 	end
 	
@@ -116,7 +116,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 * \version 1.8
 	 * \note Forwards to shadowed TextWidget.addActionListener().
 	 */
-	public func void addTextActionListener(ActionListener listener)
+	func void addTextActionListener(ActionListener listener)
 		super.addActionListener(listener)
 	end
 	
@@ -125,7 +125,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 * \version 1.8
 	 * \note Forwards to shadowed TextWidget.removeActionListener().
 	 */
-	public func void removeTextActionListener(ActionListener listener)
+	func void removeTextActionListener(ActionListener listener)
 		super.removeActionListener(listener)
 	end
 	
@@ -135,7 +135,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 *          editor for directly manipulating the set value. There is no
 	 *          stop editing call since the widget is hidden in this case.
 	 */
-	public func void startEditing()
+	func void startEditing()
 		setCursorPosition(getModel().getText().getLength())
 		setSelectionAll()
 		grabFocus()
@@ -145,7 +145,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 * \brief Get parent ComboBox.
 	 * \version 1.17
 	 */
-	public func ComboBox getComboBox()
+	func ComboBox getComboBox()
 		var Container container = getParent()
 		while container != null
 			if container castable ComboBox
@@ -159,7 +159,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	
 	
 	/** \brief Text string has changed. */
-	public func void textChanged(TextModel textModel)
+	func void textChanged(TextModel textModel)
 		super.textChanged(textModel)
 		
 		var ActionEvent event = ActionEvent.new(this, ActionEvent.idAction, 0)
@@ -167,5 +167,33 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 		pEditorActionListeners.forEach(block ActionListener each
 			each.onAction(event)
 		end)
+	end
+	
+	
+	
+	/** \brief Key pressed. */
+	func void onKeyPress(KeyEvent event)
+		select event.getKeyCode()
+		case InputEventKey.arrowDown
+			var ComboBox comboBox = getComboBox()
+			if comboBox != null
+				comboBox.onArrowDown()
+			end
+			
+		case InputEventKey.arrowUp
+			var ComboBox comboBox = getComboBox()
+			if comboBox != null
+				comboBox.onArrowUp()
+			end
+			
+		case InputEventKey.escape
+			var ComboBox comboBox = getComboBox()
+			if comboBox != null
+				comboBox.rollUp()
+			end
+			
+		else
+			super.onKeyPress(event)
+		end
 	end
 end

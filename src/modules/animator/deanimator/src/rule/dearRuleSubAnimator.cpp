@@ -100,6 +100,7 @@ pEnableVPS( rule.GetEnableVertexPositionSet() ),
 pDirectUseStates(
 	  ( rule.GetBlendMode() == deAnimatorRule::ebmBlend )
 	&& ( rule.GetListBones().GetCount() == 0 )
+	&& ( rule.GetListVertexPositionSets().GetCount() == 0 )
 	&& rule.GetEnablePosition()
 	&& rule.GetEnableOrientation()
 	&& rule.GetEnableSize()

@@ -474,6 +474,13 @@ void aeLSAnimator::pSaveController( decXmlWriter &writer, const aeController &co
 		break;
 	}
 	
+	if( fabsf( controller.GetDefaultValue() ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "value", controller.GetDefaultValue() );
+	}
+	if( ! controller.GetDefaultVector().IsZero() ){
+		WriteVector( writer, "vector", controller.GetDefaultVector() );
+	}
+	
 	writer.WriteClosingTag( "controller" );
 }
 
@@ -692,7 +699,7 @@ const aeRuleAnimation &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	if( rule.GetEnableVertexPositionSet() ){
+	if( ! rule.GetEnableVertexPositionSet() ){
 		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
@@ -721,7 +728,7 @@ const aeRuleAnimationDifference &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	if( rule.GetEnableVertexPositionSet() ){
+	if( ! rule.GetEnableVertexPositionSet() ){
 		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
@@ -754,7 +761,7 @@ const aeRuleAnimationSelect &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	if( rule.GetEnableVertexPositionSet() ){
+	if( ! rule.GetEnableVertexPositionSet() ){
 		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
@@ -924,7 +931,7 @@ const aeRuleStateManipulator &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	if( rule.GetEnableVertexPositionSet() ){
+	if( ! rule.GetEnableVertexPositionSet() ){
 		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
@@ -955,7 +962,7 @@ const aeRuleStateSnapshot &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	if( rule.GetEnableVertexPositionSet() ){
+	if( ! rule.GetEnableVertexPositionSet() ){
 		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
@@ -1053,7 +1060,7 @@ const aeRuleForeignState &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	if( rule.GetEnableVertexPositionSet() ){
+	if( ! rule.GetEnableVertexPositionSet() ){
 		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
@@ -1138,7 +1145,7 @@ const aeRuleMirror &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	if( rule.GetEnableVertexPositionSet() ){
+	if( ! rule.GetEnableVertexPositionSet() ){
 		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
@@ -1160,7 +1167,7 @@ const aeRuleGroup &rule ){
 	if( rule.GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	if( rule.GetEnableVertexPositionSet() ){
+	if( ! rule.GetEnableVertexPositionSet() ){
 		writer.WriteDataTagBool( "enableVertexPositionSet", rule.GetEnableVertexPositionSet() );
 	}
 	
@@ -1865,6 +1872,15 @@ void aeLSAnimator::pLoadController( decXmlElementTag *root, aeAnimator &animator
 					logger.LogWarnFormat( LOGSOURCE, "controller(%i:%i): Unknown vector simulation %s, ignoring",
 						tag->GetLineNumber(), tag->GetPositionNumber(), cdata );
 				}
+				
+			}else if( strcmp( tag->GetName(), "value" ) == 0 ){
+				controller->SetDefaultValue( GetCDataFloat( *tag ) );
+				controller->SetCurrentValue( controller->GetDefaultValue() );
+				
+			}else if( strcmp( tag->GetName(), "vector" ) == 0 ){
+				ReadVector( *tag, vector );
+				controller->SetDefaultVector( vector );
+				controller->SetVector( controller->GetDefaultVector() );
 				
 			}else{
 				logger.LogWarnFormat( LOGSOURCE, "controller(%i:%i): Unknown Tag %s, ignoring",

@@ -40,42 +40,42 @@ pin Dragengine.LoadSave
  */
 class ParameterTableEntry
 	/** \brief Parameter name. */
-	private var String pName
+	var String pName
 	
 	/** \brief Value or \em null if not set. */
-	private var Object pValue
+	var Object pValue
 	
 	
 	
 	/** \brief Create parameter table entry. */
-	public func new( String name )
+	func new(String name)
 		if name.empty()
 			throw EInvalidParam.new()
 		end
 		
-		this.pName = name
+		pName = name
 	end
 	
 	
 	
 	/** \brief Name. */
-	public func String getName()
-		return this.pName
+	func String getName()
+		return pName
 	end
 	
 	
 	
 	/** \brief Boolean value or default value if parameter is not set. */
-	public func bool getValue( bool defaultValue )
-		if this.pValue != null
-			if this.pValue castable Persistable
+	func bool getValue(bool defaultValue)
+		if pValue != null
+			if pValue castable Persistable
 				return false
 				
-			elif this.pValue castable String
-				return this.pValue.equals( "1" ) or this.pValue.equals( "true" ) or this.pValue.equals( "yes" )
+			elif pValue castable String
+				return pValue.equals("1") or pValue.equals("true") or pValue.equals("yes")
 				
 			else
-				return this.pValue cast bool
+				return pValue cast bool
 			end
 			
 		else
@@ -84,16 +84,16 @@ class ParameterTableEntry
 	end
 	
 	/** \brief Integer value or default value if parameter is not set. */
-	public func int getValue( int defaultValue )
-		if this.pValue != null
-			if this.pValue castable Persistable
-				return false
+	func int getValue(int defaultValue)
+		if pValue != null
+			if pValue castable Persistable
+				return 0
 				
-			elif this.pValue castable String
-				return ( this.pValue cast String ).toInt()
+			elif pValue castable String
+				return (pValue cast String).toInt()
 				
 			else
-				return this.pValue cast int
+				return pValue cast int
 			end
 			
 		else
@@ -102,16 +102,16 @@ class ParameterTableEntry
 	end
 	
 	/** \brief FLoating point value or default value if parameter is not set. */
-	public func float getValue( float defaultValue )
-		if this.pValue != null
-			if this.pValue castable Persistable
-				return false
+	func float getValue(float defaultValue)
+		if pValue != null
+			if pValue castable Persistable
+				return 0.0
 				
-			elif this.pValue castable String
-				return ( this.pValue cast String ).toFloat()
+			elif pValue castable String
+				return (pValue cast String).toFloat()
 				
 			else
-				return this.pValue cast float
+				return pValue cast float
 			end
 			
 		else
@@ -120,9 +120,9 @@ class ParameterTableEntry
 	end
 	
 	/** \brief String value or default value if parameter is not set. */
-	public func String getValue( String defaultValue )
-		if this.pValue != null
-			return this.pValue.toString()
+	func String getValue(String defaultValue)
+		if pValue != null
+			return pValue.toString()
 			
 		else
 			return defaultValue
@@ -130,71 +130,81 @@ class ParameterTableEntry
 	end
 	
 	/** \brief Persistable value or default value if parameter is not set. */
-	public func Persistable getValue( Persistable defaultValue )
-		if this.pValue != null and this.pValue castable Persistable
-			return this.pValue cast Persistable
+	func Persistable getValue(Persistable defaultValue)
+		if pValue != null and pValue castable Persistable
+			return pValue cast Persistable
 			
 		else
 			return defaultValue
 		end
 	end
 	
+	/**
+	 * \brief Value.
+	 * \version 1.21
+	 * 
+	 * Can be of type bool, int, float, String, Persistable or null if not set.
+	 */
+	func Object getValue()
+		return pValue
+	end
+	
 	/** \brief Value is \em null. */
-	public func bool isNull()
-		return this.pValue == null
+	func bool isNull()
+		return pValue == null
 	end
 	
 	/** \brief Value is not \em null. */
-	public func bool isNotNull()
-		return this.pValue != null
+	func bool isNotNull()
+		return pValue != null
 	end
 	
 	
 	
 	/** \brief Set value or \em null if not set. */
-	public func void setValue( bool value )
-		this.pValue = value
+	func void setValue(bool value)
+		pValue = value
 	end
 	
 	/** \brief Set value or \em null if not set. */
-	public func void setValue( int value )
-		this.pValue = value
+	func void setValue(int value)
+		pValue = value
 	end
 	
 	/** \brief Set value or \em null if not set. */
-	public func void setValue( float value )
-		this.pValue = value
+	func void setValue(float value)
+		pValue = value
 	end
 	
 	/** \brief Set value or \em null if not set. */
-	public func void setValue( String value )
-		this.pValue = value
+	func void setValue(String value)
+		pValue = value
 	end
 	
 	/** \brief Set value or \em null if not set. */
-	public func void setValue( Persistable value )
-		this.pValue = value
+	func void setValue(Persistable value)
+		pValue = value
 	end
 	
 	/** \brief Clear value setting it to \em null. */
-	public func void clearValue()
-		this.pValue = null
+	func void clearValue()
+		pValue = null
 	end
 	
 	
 	
 	/** \brief Read parameter table entry from file. */
-	static public func ParameterTableEntry readFromFile( PersistencyEnvironment env, FileReader reader )
+	static func ParameterTableEntry readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			var ParameterTableEntry entry = ParameterTableEntry.new( reader.readString8() )
+			var ParameterTableEntry entry = ParameterTableEntry.new(reader.readString8())
 			
 			select reader.readByte()
 			case 0
 				// value is null
 				
 			case 1
-				entry.pValue = env.readBool( reader )
+				entry.pValue = env.readBool(reader)
 				
 			case 2
 				entry.pValue = reader.readInt()
@@ -206,7 +216,7 @@ class ParameterTableEntry
 				entry.pValue = reader.readString16()
 				
 			case 5
-				entry.pValue = env.readObject( reader )
+				entry.pValue = env.readObject(reader)
 				
 			else
 				throw EInvalidParam.new()
@@ -215,38 +225,38 @@ class ParameterTableEntry
 			return entry
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Write parameter table entry target to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeString8( this.pName )
+		writer.writeString8(pName)
 		
-		if this.pValue == null
-			writer.writeByte( 0 )
+		if pValue == null
+			writer.writeByte(0)
 			
-		elif this.pValue castable bool
-			writer.writeByte( 1 )
-			env.writeBool( writer, this.pValue cast bool )
+		elif pValue castable bool
+			writer.writeByte(1)
+			env.writeBool(writer, pValue cast bool)
 			
-		elif this.pValue castable int
-			writer.writeByte( 2 )
-			writer.writeInt( this.pValue cast int )
+		elif pValue castable int
+			writer.writeByte(2)
+			writer.writeInt(pValue cast int)
 			
-		elif this.pValue castable float
-			writer.writeByte( 3 )
-			writer.writeFloat( this.pValue cast float )
+		elif pValue castable float
+			writer.writeByte(3)
+			writer.writeFloat(pValue cast float)
 			
-		elif this.pValue castable String
-			writer.writeByte( 4 )
-			writer.writeString( this.pValue cast String )
+		elif pValue castable String
+			writer.writeByte(4)
+			writer.writeString(pValue cast String)
 			
 		else
-			writer.writeByte( 5 )
-			env.writeObject( writer, this.pValue cast Persistable )
+			writer.writeByte(5)
+			env.writeObject(writer, pValue cast Persistable)
 		end
 	end
 end

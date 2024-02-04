@@ -188,6 +188,8 @@ private:
 	float pVRRenderScale;
 	int pVRForceFrameRate;
 	
+	bool pRenderDocMode;
+	
 	
 	
 public:
@@ -536,6 +538,8 @@ public:
 	
 	inline int GetVRForceFrameRate() const{ return pVRForceFrameRate; }
 	void SetVRForceFrameRate( int framerate );
+	
+	inline bool GetRenderDocMode() const{ return pRenderDocMode; }
 };
 
 #endif

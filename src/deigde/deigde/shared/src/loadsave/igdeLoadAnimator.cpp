@@ -233,6 +233,14 @@ void igdeLoadAnimator::pReadController( const decXmlElementTag &root, deAnimator
 				
 			}else if( strcmp( tag->GetName(), "limits" ) == 0 ){
 				controller->SetValueRange( GetAttributeFloat( *tag, "min" ), GetAttributeFloat( *tag, "max" ) );
+				
+			}else if( strcmp( tag->GetName(), "value" ) == 0 ){
+				controller->SetCurrentValue( GetCDataFloat( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "vector" ) == 0 ){
+				decVector vector;
+				ReadVector( *tag, vector );
+				controller->SetVector( vector );
 			}
 		}
 		

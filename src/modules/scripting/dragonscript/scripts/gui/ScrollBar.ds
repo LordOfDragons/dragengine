@@ -208,7 +208,7 @@ class ScrollBar extends Container implements RangeModelListener
 			var int range = model.getMaximum() - model.getMinimum()
 			var int offset
 			
-			if pScrollBar.getOrientation() == ScrollBar.Orientation.horizontal
+			if pScrollBar.getOrientation() == Orientation.horizontal
 				offset = (event.getSource() cast Widget).getX() + event.getPosition().getX() - pOffset.getX()
 				
 			else

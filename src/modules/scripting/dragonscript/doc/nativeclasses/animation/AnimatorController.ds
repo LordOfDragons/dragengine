@@ -36,17 +36,17 @@ class AnimatorController
 	/** \name Management */
 	/*@{*/
 	/** \brief Owner animator or \em null if not owned by animator. */
-	public func Animator getAnimator()
+	func Animator getAnimator()
 		return null
 	end
 	
 	/** \brief Onwer animator instance or \em null if not owned by animator instance. */
-	public func AnimatorInstance getAnimatorInstance()
+	func AnimatorInstance getAnimatorInstance()
 		return null
 	end
 	
 	/** \brief Controller index. */
-	public func int getControllerIndex()
+	func int getControllerIndex()
 		return 0
 	end
 	/*@}*/
@@ -56,118 +56,118 @@ class AnimatorController
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Name. */
-	public func String getName()
+	func String getName()
 		return null
 	end
 	
 	/** \brief Set name. */
-	public func void setName( String name )
+	func void setName(String name)
 	end
 	
 	/** \brief Lower limit. */
-	public func float getLower()
+	func float getLower()
 		return 0.0
 	end
 	
 	/** \brief Upper limit. */
-	public func float getUpper()
+	func float getUpper()
 		return 0.0
 	end
 	
 	/** \brief Set value range. */
-	public func void setRange( float lower, float upper )
+	func void setRange(float lower, float upper)
 	end
 	
 	/** \brief Value. */
-	public func float getValue()
+	func float getValue()
 		return 0.0
 	end
 	
 	/** \brief Set value. */
-	public func void setValue( float value )
+	func void setValue(float value)
 	end
 	
 	/** \brief Value mapped from range (minimum..maximum) to range (0..1). */
-	public func float getRelativeValue()
+	func float getRelativeValue()
 		return 0.0
 	end
 	
 	/** \brief Set value from range (0..1) mapped to range (minimum..maximum). */
-	public func void setRelativeValue( float value )
+	func void setRelativeValue(float value)
 	end
 	
 	/** \brief Vector. */
-	public func Vector getVector()
+	func Vector getVector()
 		return null
 	end
 	
 	/** \brief Set vector. */
-	public func void setVector( Vector vector )
+	func void setVector(Vector vector)
 	end
 	
 	/** \brief Vector as rotation in degrees. */
-	public func Vector getRotation()
+	func Vector getRotation()
 		return null
 	end
 	
 	/** \brief Set vector from rotation in degrees. */
-	public func void setRotation( Vector rotation )
+	func void setRotation(Vector rotation)
 	end
 	
 	/** \brief Controller is frozen. */
-	public func bool getFrozen()
+	func bool getFrozen()
 		return false
 	end
 	
 	/** \brief Set if controller is frozen. */
-	public func void setFrozen( bool frozen )
+	func void setFrozen(bool frozen)
 	end
 	
 	/** \brief Controller value is clamped instead of wrapped around if outside range. */
-	public func bool getClamp()
+	func bool getClamp()
 		return false
 	end
 	
 	/** \brief Set if controller value is clamped instead of wrapped around if outside range. */
-	public func void setClamp( bool clamp )
+	func void setClamp(bool clamp)
 	end
 	
 	
 	
 	/** \brief Increment controller value. */
-	public func void increment( float amount )
+	func void increment(float amount)
 	end
 	
 	/** \brief Set controller value to lower value. */
-	public func void setToLower()
+	func void setToLower()
 	end
 	
 	/** \brief Set controller value to center value. */
-	public func void setToCenter()
+	func void setToCenter()
 	end
 	
 	/** \brief Set controller value to upper value. */
-	public func void setToUpper()
+	func void setToUpper()
 	end
 	
 	/** \brief Set controller value to maximum - currentValue. */
-	public func void reverse()
+	func void reverse()
 	end
 	
 	/** \brief Set controller value and vector from another controller. */
-	public func void setValueFrom( AnimatorController controller )
+	func void setValueFrom(AnimatorController controller)
 	end
 	
 	/** \brief Set entire controller configuration from another controller. */
-	public func void setAllFrom( AnimatorController controller )
+	func void setAllFrom(AnimatorController controller)
 	end
 	
 	/** \brief Controller value is at lower value. */
-	public func bool isAtLower()
+	func bool isAtLower()
 	end
 	
 	/** \brief Controller value is at upper value. */
-	public func bool isAtUpper()
+	func bool isAtUpper()
 	end
 	/*@}*/
 end

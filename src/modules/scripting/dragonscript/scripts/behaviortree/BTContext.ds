@@ -71,7 +71,7 @@ class BTContext
 		pActions = Dictionary.new()
 		pCurrentRule = behaviorTree.getRootRule()
 		pActionFirstRun = true
-		pRunAwayList = Array.new(50, null)
+		pRunAwayList = Array.new(100, null)
 		pLoggingName = "BehaviorTree"
 		pLogSteps = false
 		pLogRuleChanges = false

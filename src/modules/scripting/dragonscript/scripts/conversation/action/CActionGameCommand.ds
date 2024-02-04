@@ -39,60 +39,60 @@ pin Dragengine.Utils
  */
 class CActionGameCommand extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionGameCommand"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionGameCommand.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionGameCommand.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var String pCommand
+	var String pCommand
 	
 	
 	
 	/** \brief Create a new conversation action. */
-	public func new()
-		this.pCommand = ""
+	func new()
+		pCommand = ""
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
-			this.pCommand = reader.readString16()
+			pCommand = reader.readString16()
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Command to send. */
-	public func String getCommand()
-		return this.pCommand
+	func String getCommand()
+		return pCommand
 	end
 	
 	/** \brief Set command to send. */
-	public func void setCommand( String command )
-		this.pCommand = command
+	func void setCommand(String command)
+		pCommand = command
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
-		playback.gameCommand( this.getCommand() )
+	func void execute(ConversationPlayback playback)
+		playback.gameCommand(getCommand())
 		playback.advanceToNextAction()
 	end
 	
@@ -108,16 +108,16 @@ class CActionGameCommand extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte( 0 ) // version
+		writer.writeByte(0) // version
 		
-		writer.writeString16( this.pCommand )
+		writer.writeString16(pCommand)
 	end
 end

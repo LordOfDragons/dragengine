@@ -22,9 +22,10 @@
 #ifndef _DEOGLRCAMERA_H_
 #define _DEOGLRCAMERA_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/deObject.h>
+#include <dragengine/common/curve/decCurveBezier.h>
 
 class deoglREffect;
 class deoglRenderPlan;
@@ -57,6 +58,17 @@ private:
 	float pAdaptionTime;
 	
 	bool pEnableGI;
+	
+	float pWhiteIntensity;
+	float pBloomIntensity;
+	float pBloomStrength;
+	float pBloomBlend;
+	float pBloomSize;
+	
+	decCurveBezier pToneMapCurve;
+	int pToneMapCurveResolution;
+	deoglTexture *pTextureToneMapCurve;
+	bool pDirtyToneMapCurve;
 	
 	deoglRenderPlan *pPlan;
 	
@@ -139,6 +151,12 @@ public:
 	/** Reset elapsed tone mapping adaption time. */
 	void ResetElapsedToneMapAdaption();
 	
+	/** Tone mapping curve texture or nullptr. */
+	inline deoglTexture *GetTextureToneMapCurve() const{ return pTextureToneMapCurve; }
+	
+	/** Use custom tone map curve. */
+	bool UseCustomToneMapCurve() const;
+	
 	
 	
 	/** Enable HDRR. */
@@ -189,6 +207,32 @@ public:
 	
 	
 	
+	/** White intensity multiplier. */
+	inline float GetWhiteIntensity() const{ return pWhiteIntensity; }
+	void SetWhiteIntensity( float intensity );
+	
+	/** Bloom intensity multiplier. */
+	inline float GetBloomIntensity() const{ return pBloomIntensity; }
+	void SetBloomIntensity( float intensity );
+	
+	/** Bloom strength.*/
+	inline float GetBloomStrength() const{ return pBloomStrength; }
+	void SetBloomStrength( float strength );
+	
+	/** Bloom blend.*/
+	inline float GetBloomBlend() const{ return pBloomBlend; }
+	void SetBloomBlend( float blend );
+	
+	/** Bloom size as percentage of screen width. */
+	inline float GetBloomSize() const{ return pBloomSize; }
+	void SetBloomSize( float size );
+	
+	/** Custom tone mapping curve or empty curve to disable. */
+	inline const decCurveBezier &GetToneMapCurve() const{ return pToneMapCurve; }
+	void SetToneMapCurve( const decCurveBezier &curve );
+	
+	
+	
 	/**
 	 * Last average scene luminance.
 	 * 
@@ -233,6 +277,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pPrepareToneMapCurveTexture();
 };
 
 #endif

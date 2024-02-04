@@ -30,60 +30,57 @@ pin Dragengine.LoadSave
  * \brief Iterator for conversation actions.
  */
 class ConversationActionIterator
-	/** \brief Actions. */
-	private var Array pActions
-	
-	/** \brief Current position. */
-	private var int pPosition
+	var Array pActions
+	var int pPosition
 	
 	
 	
 	/** \brief Create conversation action iterator. */
-	public func new( Array actions, int position )
+	func new(Array actions, int position)
 		if actions == null or position < 0 or position > actions.getCount()
 			throw EInvalidParam.new()
 		end
 		
-		this.pActions = actions
-		this.pPosition = position
+		pActions = actions
+		pPosition = position
 	end
 	
 	
 	
 	/** \brief Actions. */
-	public func Array getActions()
-		return this.pActions
+	func Array getActions()
+		return pActions
 	end
 	
 	/** \brief Current position. */
-	public func int getPosition()
-		return this.pPosition
+	func int getPosition()
+		return pPosition
 	end
 	
 	
 	
 	/** \brief Next action is present. */
-	public func bool hasNext()
-		return this.pPosition < this.pActions.getCount()
+	func bool hasNext()
+		return pPosition < pActions.getCount()
 	end
 	
 	/** \brief Next action and advance position or \em null if absent. */
-	public func ConversationAction getNext()
-		if this.pPosition < this.pActions.getCount()
-			return this.pActions.getAt( this.pPosition++ ) cast ConversationAction
+	func ConversationAction getNext()
+		if pPosition < pActions.getCount()
+			return pActions.getAt(pPosition++) cast ConversationAction
 		end
 		return null
 	end
 	
 	/** \brief Set to first action. */
-	public func void first()
-		this.pPosition = 0
+	func void first()
+		pPosition = 0
 	end
 	
 	/** \brief Set to last action. */
-	public func void last()
-		if this.pActions.getCount() > 0
-			this.pPosition = this.pActions.getCount() - 1
+	func void last()
+		if pActions.getCount() > 0
+			pPosition = pActions.getCount() - 1
 		end
 	end
 	
@@ -91,38 +88,48 @@ class ConversationActionIterator
 	 * \brief Set to one past last action.
 	 * \details hasNext() returns false and getNext() returns null.
 	 */
-	public func void onePastLast()
-		this.pPosition = this.pActions.getCount()
+	func void onePastLast()
+		pPosition = pActions.getCount()
+	end
+	
+	/**
+	 * \brief Return to previous action if not at the start.
+	 * \version 1.21
+	 */
+	func void previous()
+		if pPosition > 0
+			pPosition--
+		end
 	end
 	
 	
 	
 	/** \brief Read layer from file. */
-	public static func ConversationActionIterator readFromFile( PersistencyEnvironment env, FileReader reader )
+	static func ConversationActionIterator readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			var Array actions = Array.new()
 			var int i, count = reader.readUShort()
 			for i = 0 to count
-				actions.add( env.readObject( reader ) )
+				actions.add(env.readObject(reader))
 			end
 			var int position = reader.readUShort()
 			
-			return ConversationActionIterator.new( actions, position )
+			return ConversationActionIterator.new(actions, position)
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Write layer to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeUShort( this.pActions.getCount() )
-		this.pActions.forEach( block ConversationAction each
-			env.writeObject( writer, each )
-		end )
-		writer.writeUShort( this.pPosition )
+		writer.writeUShort(pActions.getCount())
+		pActions.forEach(block ConversationAction each
+			env.writeObject(writer, each)
+		end)
+		writer.writeUShort(pPosition)
 	end
 end

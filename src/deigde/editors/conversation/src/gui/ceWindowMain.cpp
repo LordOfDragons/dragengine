@@ -34,6 +34,8 @@
 #include "../loadsave/ceLoadSaveSystem.h"
 #include "../conversation/ceConversation.h"
 #include "../conversation/actor/ceConversationActor.h"
+#include "../conversation/file/ceConversationFile.h"
+#include "../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/clipboard/igdeClipboardDataReference.h>
 #include <deigde/engine/igdeEngineController.h>
@@ -78,6 +80,78 @@
 
 
 
+// Recent files classes
+/////////////////////////
+
+ceWindowMain::cRecentFilesCTS::cRecentFilesCTS( ceWindowMain &windowMain ) :
+igdeRecentFiles( windowMain.GetEnvironment(), true, 10 ),
+pWindowMain( windowMain ){
+}
+
+void ceWindowMain::cRecentFilesCTS::OpenFile( const char *filename ){
+	ceConversation * const conversation = pWindowMain.GetConversation();
+	if( conversation ){
+		conversation->SetCTSPath( filename );
+		pWindowMain.GetLoadSaveSystem().LoadCTS( filename, *conversation );
+		pWindowMain.GetRecentFilesCTS().AddFile( filename );
+	}
+}
+
+void ceWindowMain::cRecentFilesCTS::FilesChanged(){
+	pWindowMain.GetConfiguration().SaveConfiguration();
+}
+
+
+ceWindowMain::cRecentFilesCTA::cRecentFilesCTA( ceWindowMain &windowMain ) :
+igdeRecentFiles( windowMain.GetEnvironment(), true, 10 ),
+pWindowMain( windowMain ){
+}
+
+void ceWindowMain::cRecentFilesCTA::OpenFile( const char *filename ){
+	ceConversation * const conversation = pWindowMain.GetConversation();
+	if( conversation ){
+		pWindowMain.LoadCTA( filename );
+	}
+}
+
+void ceWindowMain::cRecentFilesCTA::FilesChanged(){
+	pWindowMain.GetConfiguration().SaveConfiguration();
+}
+
+
+ceWindowMain::cRecentFilesCTGS::cRecentFilesCTGS( ceWindowMain &windowMain ) :
+igdeRecentFiles( windowMain.GetEnvironment(), true, 10 ),
+pWindowMain( windowMain ){
+}
+
+void ceWindowMain::cRecentFilesCTGS::OpenFile( const char *filename ){
+	ceConversation * const conversation = pWindowMain.GetConversation();
+	if( conversation ){
+		conversation->SetCTFIPath( filename );
+		pWindowMain.GetLoadSaveSystem().LoadCTGS( filename, *conversation );
+		pWindowMain.GetRecentFilesCTGS().AddFile( filename );
+	}
+}
+
+void ceWindowMain::cRecentFilesCTGS::FilesChanged(){
+	pWindowMain.GetConfiguration().SaveConfiguration();
+}
+
+
+ceWindowMain::cRecentFilesLangPack::cRecentFilesLangPack( ceWindowMain &windowMain ) :
+igdeRecentFiles( windowMain.GetEnvironment(), true, 10 ),
+pWindowMain( windowMain ){
+}
+
+void ceWindowMain::cRecentFilesLangPack::OpenFile( const char *filename ){
+	pWindowMain.AttachLangPack( filename );
+}
+
+void ceWindowMain::cRecentFilesLangPack::FilesChanged(){
+	pWindowMain.GetConfiguration().SaveConfiguration();
+}
+
+
 // Class ceWindowMain
 ///////////////////////
 
@@ -92,7 +166,11 @@ pLoadSaveSystem( NULL ),
 pViewConversation( NULL ),
 pWindowProperties( NULL ),
 pWindowDopeSheet( NULL ),
-pConversation( NULL )
+pConversation( NULL ),
+pRecentFilesCTS( *this ),
+pRecentFilesCTA( *this ),
+pRecentFilesCTGS( *this ),
+pRecentFilesLangPack( *this )
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -241,6 +319,74 @@ void ceWindowMain::SaveConversation( const char *filename ){
 	}
 	
 	GetRecentFiles().AddFile( filename );
+}
+
+void ceWindowMain::ShowFoundMissingWordsDialog( decStringSet &missingWords ){
+	const int count = missingWords.GetCount();
+	if( count == 0 ){
+		igdeCommonDialogs::Information( this, "Missing Words", "No missing words found" );
+		return;
+	}
+	
+	decStringList list;
+	int i;
+	missingWords.SortAscending();
+	for( i=0; i<count; i++ ){
+		list.Add( missingWords.GetAt( i ) );
+	}
+	decString result( list.Join( "\n" ) );
+	igdeCommonDialogs::GetMultilineString( this, "Missing Words", "Found missing words", result );
+}
+
+void ceWindowMain::LoadCTA( const char *filename ){
+	if( ! pConversation ){
+		return;
+	}
+	
+	pConversation->SetCTAPath( filename );
+	
+	ceConversationActor * const activeActor = pConversation->GetActiveActor();
+	if( activeActor ){
+		activeActor->Reset();
+		pLoadSaveSystem->LoadCTA( filename, *activeActor );
+		
+	}else{
+		const ceConversationActor::Ref actor( ceConversationActor::Ref::New(
+			new ceConversationActor( GetEnvironment() ) ) );
+		pLoadSaveSystem->LoadCTA( filename, actor );
+		pConversation->AddActor( actor );
+	}
+	
+	pRecentFilesCTA.AddFile( filename );
+}
+
+void ceWindowMain::AttachLangPack( const char *filename ){
+	if( ! pConversation ){
+		return;
+	}
+	
+	ceLangPack * const langpack = pConversation->GetLanguagePack();
+	if( langpack && langpack->GetChanged() ){
+		switch( igdeCommonDialogs::Question( this, igdeCommonDialogs::ebsYesNoCancel,
+		"Attach Language Pack", "Language pack changed. Save before attaching a new one?" ) ){
+		case igdeCommonDialogs::ebYes:
+			pLoadSaveSystem->SaveLangPack( *langpack );
+			break;
+			
+		case igdeCommonDialogs::ebNo:
+			break;
+			
+		case igdeCommonDialogs::ebCancel:
+		default:
+			break;
+		}
+	}
+	pConversation->SetLanguagePack( nullptr );
+	
+	pConversation->SetLangPackPath( filename );
+	pConversation->SetLanguagePack( pLoadSaveSystem->LoadLangPack( filename ) );
+	
+	pRecentFilesLangPack.AddFile( filename );
 }
 
 
@@ -529,6 +675,8 @@ public:
 		*pWindow.GetLoadSaveSystem().GetCTSFilePatterns(), filename ) ){
 			conversation->SetCTSPath( filename );
 			pWindow.GetLoadSaveSystem().LoadCTS( filename, *conversation );
+			pWindow.GetRecentFilesCTS().AddFile( filename );
+			pWindow.GetConfiguration().SaveConfiguration();
 		}
 		return NULL;
 	}
@@ -548,6 +696,8 @@ public:
 		*pWindow.GetLoadSaveSystem().GetCTSFilePatterns(), filename ) ){
 			conversation->SetCTSPath( filename );
 			pWindow.GetLoadSaveSystem().SaveCTS( filename, *conversation );
+			pWindow.GetRecentFilesCTS().AddFile( filename );
+			pWindow.GetConfiguration().SaveConfiguration();
 		}
 		return NULL;
 	}
@@ -562,26 +712,13 @@ public:
 	
 	virtual igdeUndo *OnAction( ceConversation *conversation ){
 		decString filename( conversation->GetCTAPath() );
-		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Conversation Actor Setup",
+		if( igdeCommonDialogs::GetFileOpen( &pWindow, "Open Conversation Actor Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetCTAFilePatterns(), filename ) ){
-			return NULL;
+			pWindow.LoadCTA( filename );
+			pWindow.GetRecentFilesCTA().AddFile( filename );
 		}
-		
-		conversation->SetCTAPath( filename );
-		
-		ceConversationActor * const activeActor = conversation->GetActiveActor();
-		if( activeActor ){
-			activeActor->Reset();
-			pWindow.GetLoadSaveSystem().LoadCTA( filename, *activeActor );
-			
-		}else{
-			const ceConversationActor::Ref actor( ceConversationActor::Ref::New(
-				new ceConversationActor( pWindow.GetEnvironment() ) ) );
-			pWindow.GetLoadSaveSystem().LoadCTA( filename, actor );
-			conversation->AddActor( actor );
-		}
-		return NULL;
+		return nullptr;
 	}
 };
 
@@ -604,6 +741,7 @@ public:
 		*pWindow.GetLoadSaveSystem().GetCTAFilePatterns(), filename ) ){
 			conversation->SetCTAPath( filename );
 			pWindow.GetLoadSaveSystem().SaveCTA( filename, *actor );
+			pWindow.GetRecentFilesCTA().AddFile( filename );
 		}
 		return NULL;
 	}
@@ -623,6 +761,8 @@ public:
 		*pWindow.GetLoadSaveSystem().GetCTGSFilePatterns(), filename ) ){
 			conversation->SetCTFIPath( filename );
 			pWindow.GetLoadSaveSystem().LoadCTGS( filename, *conversation );
+			pWindow.GetRecentFilesCTGS().AddFile( filename );
+			pWindow.GetConfiguration().SaveConfiguration();
 		}
 		return NULL;
 	}
@@ -642,6 +782,7 @@ public:
 		*pWindow.GetLoadSaveSystem().GetCTGSFilePatterns(), filename ) ){
 			conversation->SetCTFIPath( filename );
 			pWindow.GetLoadSaveSystem().SaveCTGS( filename, *conversation );
+			pWindow.GetRecentFilesCTGS().AddFile( filename );
 		}
 		return NULL;
 	}
@@ -669,7 +810,7 @@ public:
 class cActionViewAttachLangPack : public cActionBase{
 public:
 	cActionViewAttachLangPack( ceWindowMain &window ) : cActionBase( window,
-		"Attach language pack...",
+		"Attach Language Pack...",
 		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ),
 		"Load language pack attaching it to conversation" ){}
 	
@@ -678,26 +819,7 @@ public:
 		if( igdeCommonDialogs::GetFileOpen( &pWindow, "Open Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetLangPackFPList(), filename ) ){
-			ceLangPack * const langpack = conversation->GetLanguagePack();
-			if( langpack && langpack->GetChanged() ){
-				switch( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNoCancel,
-				"Attach Language Pack", "Language pack changed. Save before attaching a new one?" ) ){
-				case igdeCommonDialogs::ebYes:
-					pWindow.GetLoadSaveSystem().SaveLangPack( *langpack );
-					break;
-					
-				case igdeCommonDialogs::ebNo:
-					break;
-					
-				case igdeCommonDialogs::ebCancel:
-				default:
-					break;
-				}
-			}
-			conversation->SetLanguagePack( nullptr );
-			
-			conversation->SetLangPackPath( filename );
-			conversation->SetLanguagePack( pWindow.GetLoadSaveSystem().LoadLangPack( filename ) );
+			pWindow.AttachLangPack( filename );
 		}
 		return nullptr;
 	}
@@ -706,7 +828,7 @@ public:
 class cActionViewDetachLangPack : public cActionBase{
 public:
 	cActionViewDetachLangPack( ceWindowMain &window ) : cActionBase( window,
-		"Detach language pack...",
+		"Detach Language Pack...",
 		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ),
 		"Detach language pack from conversation" ){}
 	
@@ -738,6 +860,29 @@ public:
 	
 	virtual void Update( const ceConversation &conversation ) override{
 		SetEnabled( conversation.GetLanguagePack() != nullptr );
+	}
+};
+
+class cActionViewMissingWords : public cActionBase{
+public:
+	cActionViewMissingWords( ceWindowMain &window ) : cActionBase( window, "Missing Words...",
+		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSearch ), "Show missing words" ){}
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ) override{
+		decStringSet missingWords;
+		const ceConversationFileList &groups = conversation->GetFileList();
+		const int groupCount = groups.GetCount();
+		int i, j;
+		
+		for( i=0; i<groupCount; i++ ){
+			const ceConversationTopicList &topics = groups.GetAt( i )->GetTopicList();
+			const int topicCount = topics.GetCount();
+			for( j=0; j<topicCount; j++ ){
+				topics.GetAt( j )->FindMissingWords( missingWords );
+			}
+		}
+		pWindow.ShowFoundMissingWordsDialog( missingWords );
+		return nullptr;
 	}
 };
 
@@ -807,6 +952,7 @@ void ceWindowMain::pCreateActions(){
 	pActionViewShowRuleOfThirdsAid.TakeOver( new cActionViewShowRuleOfThirdsAid( *this ) );
 	pActionViewAttachLangPack.TakeOver( new cActionViewAttachLangPack( *this ) );
 	pActionViewDetachLangPack.TakeOver( new cActionViewDetachLangPack( *this ) );
+	pActionViewMissingWords.TakeOver( new cActionViewMissingWords( *this ) );
 	
 	
 	// register for updating
@@ -831,6 +977,7 @@ void ceWindowMain::pCreateActions(){
 	AddUpdateAction( pActionViewShowRuleOfThirdsAid );
 	AddUpdateAction( pActionViewAttachLangPack );
 	AddUpdateAction( pActionViewDetachLangPack );
+	AddUpdateAction( pActionViewMissingWords );
 }
 
 void ceWindowMain::pCreateToolBarFile(){
@@ -905,20 +1052,27 @@ void ceWindowMain::pCreateMenuView(igdeMenuCascade& menu)
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
 	helper.MenuCommand( menu, pActionViewCTSLoad );
+	helper.MenuRecentFiles( menu, pRecentFilesCTS, "Load Recent Conversation Test Setup" );
 	helper.MenuCommand( menu, pActionViewCTSSave );
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, pActionViewCTALoad );
+	helper.MenuRecentFiles( menu, pRecentFilesCTA, "Load Recent Conversation Actor Setup" );
 	helper.MenuCommand( menu, pActionViewCTASave );
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, pActionViewCTGSLoad );
+	helper.MenuRecentFiles( menu, pRecentFilesCTGS, "Load Recent Conversation Test Game State" );
 	helper.MenuCommand( menu, pActionViewCTGSSave );
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCheck( menu, pActionViewShowRuleOfThirdsAid );
 	
 	helper.MenuSeparator( menu );
+	helper.MenuCommand( menu, pActionViewMissingWords );
+	
+	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, pActionViewAttachLangPack );
+	helper.MenuRecentFiles( menu, pRecentFilesLangPack, "Recent Attach Language Pack" );
 	helper.MenuCommand( menu, pActionViewDetachLangPack );
 }

@@ -44,86 +44,114 @@ pin Dragengine.LoadSave
  */
 class ParameterTable
 	/** \brief Parameters. */
-	private var Dictionary pParameters
+	var Dictionary pParameters
 	
 	
 	
 	/** \brief Create parameter table. */
-	public func new()
-		this.pParameters = Dictionary.new()
+	func new()
+		pParameters = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Clear parameter table. */
-	public func void clear()
-		this.pParameters.removeAll()
+	func void clear()
+		pParameters.removeAll()
 	end
 	
 	
 	
 	/** \brief Parameter is present. */
-	public func bool has( String name )
-		return this.pParameters.has( name )
+	func bool has(String name)
+		return pParameters.has(name)
 	end
 	
 	/** \brief Get parameter adding it if absent. */
-	public func ParameterTableEntry getAt( String name )
-		var ParameterTableEntry parameter = this.pParameters.getAt( name, null ) cast ParameterTableEntry
+	func ParameterTableEntry getAt(String name)
+		var ParameterTableEntry parameter = pParameters.getAt(name, null) cast ParameterTableEntry
 		if parameter == null
-			parameter = ParameterTableEntry.new( name )
-			this.pParameters.setAt( name, parameter )
+			parameter = ParameterTableEntry.new(name)
+			pParameters.setAt(name, parameter)
 		end
 		return parameter
 	end
 	
 	/** \brief Get parameter or \em null if absent. */
-	public func ParameterTableEntry getAtOrNull( String name )
-		return this.pParameters.getAt( name, null ) cast ParameterTableEntry
+	func ParameterTableEntry getAtOrNull(String name)
+		return pParameters.getAt(name, null) cast ParameterTableEntry
 	end
 	
 	/** \brief Remove parameter. */
-	public func void remove( String name )
-		this.pParameters.remove( name )
+	func void remove(String name)
+		pParameters.remove(name)
 	end
 	
 	/** \brief Remove all parameters. */
-	public func void removeAll()
-		this.pParameters.removeAll()
+	func void removeAll()
+		pParameters.removeAll()
 	end
 	
 	/** \brief Visit parameters with block with ParameterTableEntry as parameter. */
-	public func void forEach( Block ablock )
-		this.pParameters.forEachValue( ablock )
+	func void forEach(Block ablock)
+		pParameters.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Count of parameters.
+	 * \version 1.21
+	 */
+	func int getCount()
+		return pParameters.getCount()
+	end
+	
+	/**
+	 * \brief List of all parameter names as Array of String.
+	 * \version 1.21
+	 */
+	func Array getNames()
+		return pParameters.getKeys()
+	end
+	
+	/**
+	 * \brief Find parameter.
+	 * \version 1.21
+	 * 
+	 * Block receives argument ParameterTableEntry and returns bool if matching entry is found.
+	 */
+	func ParameterTableEntry find(Block ablock)
+		return pParameters.find(block String key, ParameterTableEntry value
+			return ablock.run(value)
+		end) cast ParameterTableEntry
 	end
 	
 	
 	
 	/** \brief Read parameter table from file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			var int i, count = reader.readInt()
 			var ParameterTableEntry entry
 			
-			this.pParameters.removeAll()
+			pParameters.removeAll()
 			for i = 0 to count
-				entry = ParameterTableEntry.readFromFile( env, reader )
-				this.pParameters.setAt( entry.getName(), entry )
+				entry = ParameterTableEntry.readFromFile(env, reader)
+				pParameters.setAt(entry.getName(), entry)
 			end
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Write parameter table to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeInt( this.pParameters.getCount() )
-		this.pParameters.forEachValue( block ParameterTableEntry each
-			each.writeToFile( env, writer )
-		end )
+		writer.writeInt(pParameters.getCount())
+		pParameters.forEachValue(block ParameterTableEntry each
+			each.writeToFile(env, writer)
+		end)
 	end
 end

@@ -38,6 +38,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.Settings.ModuleParameters.Tooltip.Reset'>Auf Standardwert zurücksetzen</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectParameterValue'>Parameterwert auswählen</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectValue'>Wert auswählen.</translation>
+	<translation name='UI.Settings.ModuleParameters.DefaultInfoText'>&lt; Für Informationen Parameter-Name anklicken &lt;</translation>
 	<translation name='UI.Settings.Label.Language'>Sprache</translation>
 	<translation name='UI.Settings.ToolTip.Language'>Sprache wählen</translation>
 	<translation name='UI.Command.Quit.DisplayName'>Beenden</translation>

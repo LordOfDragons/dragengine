@@ -192,7 +192,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexturePipelines::
 	if( skinShader.GetUsedTextureTargetCount() > 0 ){
 		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
 		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
-			pSector.GetHeightTerrain().GetParentWorld()->GetSkyEnvironmentMap(), NULL, NULL );
+			pSector.GetHeightTerrain().GetParentWorld()->GetSkyEnvironmentMap(), nullptr, nullptr );
 		
 		target = skinShader.GetTextureTarget( deoglSkinShader::ettHeightMapMask );
 		if( target != -1 ){

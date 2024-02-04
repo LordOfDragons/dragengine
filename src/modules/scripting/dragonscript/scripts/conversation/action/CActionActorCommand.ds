@@ -41,75 +41,75 @@ pin Dragengine.Utils
  */
 class CActionActorCommand extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionActorCommand"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionActorCommand.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionActorCommand.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var StringID pActorID
-	private var String pCommand
+	var StringID pActorID
+	var String pCommand
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
-		this.pCommand = ""
+	func new()
+		pCommand = ""
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
-			this.pActorID = env.readStringIDOrNullIfEmpty( reader )
-			this.pCommand = reader.readString16()
+			pActorID = env.readStringIDOrNullIfEmpty(reader)
+			pCommand = reader.readString16()
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Actor ID or null if not set. */
-	public func StringID getActorID()
-		return this.pActorID
+	func StringID getActorID()
+		return pActorID
 	end
 	
 	/** \brief Set actor ID or null if not set. */
-	public func void setActorID( StringID id )
-		this.pActorID = id
+	func void setActorID(StringID id)
+		pActorID = id
 	end
 	
 	/** \brief Command to send. */
-	public func String getCommand()
-		return this.pCommand
+	func String getCommand()
+		return pCommand
 	end
 	
 	/** \brief Set command to send. */
-	public func void setCommand( String command )
-		this.pCommand = command
+	func void setCommand(String command)
+		pCommand = command
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
-		var ConversationActor actor = playback.getActorMatching( this.pActorID )
+	func void execute(ConversationPlayback playback)
+		var ConversationActor actor = playback.getActorMatching(pActorID)
 		
 		if actor != null
-			actor.command( this.getCommand() )
+			actor.command(getCommand())
 		end
 		
 		playback.advanceToNextAction()
@@ -127,17 +127,17 @@ class CActionActorCommand extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte( 0 ) // version
+		writer.writeByte(0) // version
 		
-		env.writeStringIDOrEmptyIfNull( writer, this.pActorID )
-		writer.writeString16( this.pCommand )
+		env.writeStringIDOrEmptyIfNull(writer, pActorID)
+		writer.writeString16(pCommand)
 	end
 end

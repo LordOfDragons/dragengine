@@ -30,58 +30,58 @@ pin Dragengine.Scenery
  * \brief ID duration in a conversation script.
  */
 class ConversationStrip
-	private var StringID pID
-	private var float pPause
-	private var float pDuration
+	var StringID pID
+	var float pPause
+	var float pDuration
 	
 	
 	
 	/** Create a new conversation ID duration. */
-	public func new( StringID id, float pause, float duration )
-		this.pID = id
-		this.pPause = DEMath.max( pause, 0.0 )
-		this.pDuration = DEMath.max( duration, 0.0 )
+	func new(StringID id, float pause, float duration)
+		pID = id
+		pPause = DEMath.max(pause, 0.0)
+		pDuration = DEMath.max(duration, 0.0)
 	end
 	
 	
 	
 	/** Retrieves the id to apply during the strip. */
-	public func StringID getID()
-		return this.pID
+	func StringID getID()
+		return pID
 	end
 	
 	/** Retrieves the pause in seconds before the strip starts. */
-	public func float getPause()
-		return this.pPause
+	func float getPause()
+		return pPause
 	end
 	
 	/** Retrieves the duration in seconds of the strip. */
-	public func float getDuration()
-		return this.pDuration
+	func float getDuration()
+		return pDuration
 	end
 	
 	
 	
 	/** Reads the strip from a file. */
-	static public func ConversationStrip readFromFile( FileReader reader )
+	static func ConversationStrip readFromFile(FileReader reader)
 		select reader.readByte() // version
 		case 0
-			var StringID id = StringID.new( reader.readString8() )
+			var StringID id = StringID.new(reader.readString8())
 			var float pause = reader.readFloat()
 			var float duration = reader.readFloat()
-			return ConversationStrip.new( id, pause, duration )
+			return ConversationStrip.new(id, pause, duration)
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** Save game state. */
-	public func void writeToFile( FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeToFile(FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeString8( this.pID.toString() )
-		writer.writeFloat( this.pPause )
-		writer.writeFloat( this.pDuration )
+		writer.writeString8(pID.toString())
+		writer.writeFloat(pPause)
+		writer.writeFloat(pDuration)
 	end
 end

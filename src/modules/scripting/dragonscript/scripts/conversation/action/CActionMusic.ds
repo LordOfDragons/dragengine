@@ -37,60 +37,60 @@ pin Dragengine.Utils
  */
 class CActionMusic extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionMusic"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionMusic.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionMusic.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var String pName
+	var String pName
 	
 	
 	
 	/** \brief Create a new conversation action. */
-	public func new()
-		this.pName = ""
+	func new()
+		pName = ""
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
-			this.pName = reader.readString16()
+			pName = reader.readString16()
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Name of music to change. */
-	public func String getName()
-		return this.pName
+	func String getName()
+		return pName
 	end
 	
 	/** \brief Set name of music to change. */
-	public func void setName( String name )
-		this.pName = name
+	func void setName(String name)
+		pName = name
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
-		playback.changeMusic( this.pName )
+	func void execute(ConversationPlayback playback)
+		playback.changeMusic(pName)
 		playback.advanceToNextAction()
 	end
 	
@@ -106,16 +106,16 @@ class CActionMusic extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte( 0 ) // version
+		writer.writeByte(0) // version
 		
-		writer.writeString16( this.pName )
+		writer.writeString16(pName)
 	end
 end

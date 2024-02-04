@@ -39,7 +39,7 @@ void main( void ){
 	float averageLuminance = exp( dot( avgLums, weightAvgLum ) );
 	vec4 lastParams = texelFetch( texLastParams, tcParameters, 0 );
 	
-	float lwhite = 1.0 / ( pToneMapMaxWhiteLum * pToneMapMaxWhiteLum );
+	float lwhite = 1; // 1 / ( pToneMapWhiteScale * pToneMapWhiteScale );
 	
 	float ckey = 0.18; //0.27; // average constant key: ( 0.18 + 0.36 ) / 2
 	
@@ -58,17 +58,21 @@ void main( void ){
 	
 	// calculate the image key
 //	float key = 1.03 - 2.0 / ( 2.0 + log( averageLuminance + 1.0 ) / log( 10.0 ) ); // paper
+// 	ckey = 1.03 - 3 / ( 3 + log( averageLuminance + 1 ) / log( 10 ) );
 	//float key = max( 0.0, 1.5 - 1.5 / ( averageLuminance * 0.1 + 1.0 ) ) + 0.1; // ogre
 	float maxLum = max( averageLuminance / ckey, 0.01 );
-	float scaleLum = pToneMapMaxWhiteLum / maxLum;
+	float scaleLum = 1 / maxLum;
 	
 	// adjust the image key using the user chosen exposure
 	scaleLum *= pToneMapExposure;
 	
+	// apply white intensity scaling
+	scaleLum *= pToneMapWhiteScale;
+	
 	// calculate the maximum white factor
 	//float lwhite = 1.0 / ( scaleLum * scaleLum ); // = 1.0 / ( ( key / averageLuminance ) ** 2 )
 	//gl_FragColor.b = 1.0 / ( ( 2.0 * scaleLum ) * ( 2.0 * scaleLum ) );
-	//     float lwhite = 1.0 / ( pToneMapMaxWhiteLum * pToneMapMaxWhiteLum );
+	//     float lwhite = 1.0 / ( pToneMapWhiteScale * pToneMapWhiteScale );
 	//float lwhite = 1.0 / ( pToneMapHighLuminance * pToneMapHighLuminance * scaleLum * scaleLum );
 	//float brightPassThreshold = ( 1.0 / scaleLum - 1.0 ) / ( scaleLum * lwhite - 1.0 );
 	
@@ -89,9 +93,7 @@ void main( void ){
 	// possible calculation for lwhite:
 	//   w = key * 10.0 * scaleLum
 	//   lwhite = 1.0 / ( w * w )
-	//float brightPassThreshold = 2.0 / scaleLum; //0.813 / scaleLum;
-	float brightPassThreshold = maxLum * 2.0; // * 1.2;
-	//float brightPassThreshold = 0.542 * pToneMapMaxWhiteLum / scaleLum; // an option here would be better?
+	float brightPassThreshold = maxLum * pToneMapBloomIntensity;
 	
 	// write parameters
 	outParams = vec4( averageLuminance, scaleLum, lwhite, brightPassThreshold );

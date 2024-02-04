@@ -398,7 +398,7 @@ DEBUG_RESET_TIMER
 	renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
 	DBG_EXIT("RenderDepthMinMaxMipMap")
 	
-	if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmOwnPassReflection ){
 		// NOTE actually this requires updated GI probes but this happens below during RenderLights().
 		//      this is though not that much of a trouble. it only causes environment maps to be
 		//      GI light one frame behind
@@ -447,7 +447,7 @@ DEBUG_RESET_TIMER
 		}
 	}
 	
-	if( deoglSkinShader::REFLECTION_TEST_MODE != 1 ){
+	if( deoglSkinShader::REFLECTION_TEST_MODE != deoglSkinShader::ertmOwnPassReflection ){
 		DBG_ENTER("RenderGIEnvMaps")
 		renderers.GetReflection().RenderGIEnvMaps( plan );
 		DBG_EXIT("RenderGIEnvMaps")
@@ -512,7 +512,7 @@ DEBUG_RESET_TIMER
 		// reflections
 		renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
 		
-		if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+		if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmOwnPassReflection ){
 			renderers.GetReflection().RenderReflections( plan );
 			if( debugMainPass ){
 				DebugTimer2Sample( plan, *pDebugInfo.infoReflection, true );
@@ -791,8 +791,10 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	
 	// tone mapping
 	const deoglRCamera * const oglCamera = plan.GetCamera();
-	const float toneMapLWhite = config.GetHDRRMaximumIntensity();
-	const float toneMapBloomStrength = 1.0f;
+	float toneMapWhiteScale = 2.0f;
+	float toneMapBloomIntensity = 1.0f;
+	float toneMapBloomStrength = 0.5f;
+	float toneMapBloomBlend = 1.0f;
 	float toneMapAdaptationTime = 0.0f;
 	float toneMapExposure = 1.0f;
 	float toneMapLowInt = 0.0f;
@@ -813,6 +815,11 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		toneMapExposure = oglCamera->GetExposure();
 		toneMapLowInt = oglCamera->GetLowestIntensity();
 		toneMapHighInt = oglCamera->GetHighestIntensity();
+		toneMapWhiteScale = ( oglCamera->UseCustomToneMapCurve() ? 1.0f : 3.0f ) / oglCamera->GetWhiteIntensity();
+		toneMapBloomIntensity = oglCamera->GetBloomIntensity();
+		toneMapBloomStrength = oglCamera->GetBloomStrength();
+		toneMapBloomBlend = oglCamera->GetBloomBlend();
+		// oglCamera->GetBloomSize();
 	}
 	
 	// render all debug shapes with a z-offset to avoid z-fighting for shapes overlapping rendered
@@ -943,9 +950,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataInt( deoglSkinShader::erutGIHighestCascade, giHighestCascade );
 		
 		// tone mapping
-		spb.SetParameterDataVec2( deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapLWhite );
+		spb.SetParameterDataVec2( deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapWhiteScale );
 		spb.SetParameterDataVec3( deoglSkinShader::erutToneMapAdaption, toneMapLowInt, toneMapHighInt, toneMapAdaptationTime );
-		spb.SetParameterDataVec2( deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, 0.0f );
+		spb.SetParameterDataVec3( deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, toneMapBloomIntensity, toneMapBloomBlend );
 		
 		// debug depth transform
 		spb.SetParameterDataVec2( deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift );
@@ -1067,7 +1074,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 	// the occlusion maps are trashed now. the best solution would be to use a set of occlusion
 	// maps for each masked plan avoiding the trashing of the main occlusion maps
 	
-	//if( deoglSkinShader::REFLECTION_TEST_MODE == 2 ){
+	//if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
 	//	ogl.GetRenderReflection().UpdateEnvMap( plan );
 	//}
 DBG_EXIT("RenderMaskedPass")

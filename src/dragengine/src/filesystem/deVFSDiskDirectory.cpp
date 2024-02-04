@@ -480,12 +480,15 @@ void deVFSDiskDirectory::SearchFiles( const decPath &directory, deContainerFileS
 	
 #elif defined OS_W32
 	HANDLE searchHandle = INVALID_HANDLE_VALUE;
-	wchar_t widePath[ MAX_PATH ];
+	wchar_t widePath[ MAX_PATH ], widePathSymlink[ MAX_PATH ];
 	WIN32_FIND_DATAW dirEntry;
+	BY_HANDLE_FILE_INFORMATION symlinkInfo;
 	DWORD lastError;
 	
 	searchPath.AddComponent( "*" );
 	deOSWindows::Utf8ToWide( searchPath.GetPathNative(), widePath, MAX_PATH );
+	
+	const size_t offsetWidePathSymlink = wcslen( widePath ) - 1;
 	
 	try{
 		searchHandle = FindFirstFileW( widePath, &dirEntry );
@@ -497,10 +500,29 @@ void deVFSDiskDirectory::SearchFiles( const decPath &directory, deContainerFileS
 			
 		}else{
 			while( true ){
+				if( ( dirEntry.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT ) == FILE_ATTRIBUTE_REPARSE_POINT ){
+					// consider invalid (a file) until proven otherwise
+					dirEntry.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+
+					wcscpy_s( widePathSymlink, MAX_PATH, widePath );
+					wcscpy_s( widePathSymlink + offsetWidePathSymlink,
+						MAX_PATH - offsetWidePathSymlink, dirEntry.cFileName );
+
+					const HANDLE sfh = CreateFileW( widePathSymlink, 0, 0,
+						nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr );
+
+					if( sfh != INVALID_HANDLE_VALUE ){
+						if( GetFileInformationByHandle( sfh, &symlinkInfo ) ){
+							dirEntry.dwFileAttributes = symlinkInfo.dwFileAttributes;
+						}
+						CloseHandle( sfh );
+					}
+				}
+
 				const decString entryName( deOSWindows::WideToUtf8( dirEntry.cFileName ) );
 				
 				if( entryName != "." && entryName != ".." ){
-					if( ( dirEntry.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY ){
+					if( ( dirEntry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY ){
 						searcher.Add( entryName, deVFSContainer::eftDirectory );
 						
 					}else{

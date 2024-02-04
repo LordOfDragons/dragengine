@@ -26,17 +26,21 @@
 
 #include "../igdeTextFieldReference.h"
 #include "../igdeCheckBoxReference.h"
+#include "../igdeButtonReference.h"
 #include "../composed/igdeEditVectorReference.h"
+#include "../composed/igdeEditSliderTextReference.h"
 #include "../event/igdeActionListener.h"
 #include "../event/igdeActionReference.h"
+#include "../filedialog/igdeFilePatternList.h"
 #include "../layout/igdeContainerFlow.h"
+#include "../curveedit/igdeViewCurveBezierReference.h"
 
 
 class igdeCamera;
 
 
 /**
- * \brief Window Properties Camera.
+ * Window Properties Camera.
  * 
  * Provides support for configurating a wrapper camera. This panel is supposed to be used
  * on a properties window typically inside a group box. An camera wrapper is useful for
@@ -55,6 +59,7 @@ private:
 	igdeEditVectorReference pEditPosition;
 	igdeEditVectorReference pEditRotation;
 	igdeEditVectorReference pEditViewDir;
+	igdeButtonReference pBtnCamera;
 	igdeTextFieldReference pEditOrbitDistance;
 	igdeTextFieldReference pEditFov;
 	igdeTextFieldReference pEditFovRatio;
@@ -66,24 +71,36 @@ private:
 	igdeTextFieldReference pEditAdaptTime;
 	igdeCheckBoxReference pChkEnableHDRR;
 	igdeCheckBoxReference pChkEnableGI;
+	igdeTextFieldReference pEditWhiteIntensity;
+	igdeTextFieldReference pEditBloomIntensity;
+	igdeTextFieldReference pEditBloomStrength;
+	igdeEditSliderTextReference pSldBloomSize;
+	igdeEditSliderTextReference pSldBloomBlend;
+	igdeViewCurveBezierReference pEditToneMapCurve;
 	
 	igdeActionReference pAction;
 	
 	
 	
 public:
+	static decString lastCameraFile;
+	static const igdeFilePatternList patternCamera;
+	
+	
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	igdeWPCamera( igdeEnvironment &environment );
 	
-	/** \brief Create panel. */
+	/** Create panel. */
 	igdeWPCamera( igdeEnvironment &environment, igdeAction *action );
 	
 	
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~igdeWPCamera();
 	/*@}*/
 	
@@ -92,38 +109,41 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Camera or NULL if not set. */
+	/** Camera or nullptr if not set. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
-	/** \brief Set camera or NULL if not set. */
+	/** Set camera or nullptr if not set. */
 	void SetCamera( igdeCamera *camera );
 	
-	/** \brief Update widget after camera changed outside. */
+	/** Update widget after camera changed outside. */
 	void UpdateCamera();
 	
-	/** \brief Update camera view direction only. */
+	/** Update camera view direction only. */
 	void UpdateViewDirection();
 	
+	/** Set tone mapping curve range from white intensity. */
+	void SetToneMapCurveRangeFromWhiteIntensity();
 	
 	
-	/** \brief Action or NULL. */
+	
+	/** Action or nullptr. */
 	inline igdeAction *GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** Set action or nullptr. */
 	void SetAction( igdeAction *action );
 	
 	/**
-	 * \brief Sky parameters changed.
+	 * Sky parameters changed.
 	 * 
 	 * Called if user changes any of the sky parameters. Default implementation calls
 	 * OnAction on set action camera if present.
 	 */
 	virtual void OnAction();
 	
-	/** \brief Action parameters changed. */
+	/** Action parameters changed. */
 	virtual void OnParameterChanged( igdeAction *action );
 	
-	/** \brief Action has been destroyed. */
+	/** Action has been destroyed. */
 	virtual void OnDestroyed( igdeAction *action );
 	/*@}*/
 	

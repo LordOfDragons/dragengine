@@ -117,7 +117,7 @@ pin Dragengine.Utils
  * \par Condition "flags.state"
  * 
  * Determines if flag is set. Use as parameter "flag" to select the flag to check.
- * Use optional parameter "flag.cleared" to check if the flag is cleared instead of set.
+ * Use optional parameter "flags.cleared" to check if the flag is cleared instead of set.
  * 
  * This is an example of an action that can only run if the flag "arrived at target" is set:
  * \code{.xml}
@@ -131,7 +131,7 @@ pin Dragengine.Utils
  * \code{.xml}
  * <action name='myAction' id='doing something'>
  *    <parameter name='flag'>arrived at target</parameter>
- *    <parameter name='flag.cleared'/>
+ *    <parameter name='flags.cleared'/>
  *    <condition>flags.state</condition>
  * </action>
  * \endcode

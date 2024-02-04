@@ -407,11 +407,16 @@ void deoalRTPTListen::ClosestToRay( float &closestBeamDistance, float &closestDi
 int &closestSegment, int &closestBounces, const deoalSoundRayList &soundRayList,
 const deoalSoundRay &soundRay, const decVector &targetPosition, float baseBeamRadius,
 deoalWorldOctree &octree, const decVector &targetPositionWorld ){
+	const int soundRayCount = soundRayList.GetRayCount();
 	const int segmentCount = soundRay.GetSegmentCount();
 	const int firstSegment = soundRay.GetFirstSegment();
 	int i;
 	
-	for( i=0; i<segmentCount; i++ ){
+	// firstSegment + segmentCount should be never larger than soundRayCount but for some
+	// strange reason it can happen once in a blue moon. avoid an exception this rare case
+	const int safeEndIndex = decMath::min( segmentCount, soundRayCount - firstSegment );
+	
+	for( i=0; i<safeEndIndex; i++ ){
 		const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt( firstSegment + i );
 		
 		const decVector rayTargetDirection( targetPosition - segment.GetPosition() );
@@ -574,8 +579,13 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 	sSphereReceiverImpinge lastImpinge;
 	
 	const float initialDistance = params.soundRayList.GetSegmentAt( firstSegment ).GetDistance();
+	const int soundRayCount = params.soundRayList.GetRayCount();
 	
-	for( i=0; i<segmentCount; i++ ){
+	// firstSegment + segmentCount should be never larger than soundRayCount but for some
+	// strange reason it can happen once in a blue moon. avoid an exception this rare case
+	const int safeEndIndex = decMath::min( segmentCount, soundRayCount - firstSegment );
+	
+	for( i=0; i<safeEndIndex; i++ ){
 		const deoalSoundRaySegment &segment = params.soundRayList.GetSegmentAt( firstSegment + i );
 		
 		// we could ignore closest points if they are outside the ray segment. this would

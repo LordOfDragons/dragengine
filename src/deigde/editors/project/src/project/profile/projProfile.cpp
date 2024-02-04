@@ -73,7 +73,9 @@ pIcons( profile.pIcons ),
 pExcludePatterns( profile.pExcludePatterns ),
 pRequiredExtensions( profile.pRequiredExtensions ),
 
-pDelgaPath( profile.pDelgaPath ){
+pDelgaPath( profile.pDelgaPath ),
+
+pRunArguments( profile.pRunArguments ){
 }
 
 projProfile::~projProfile(){
@@ -249,6 +251,17 @@ void projProfile::SetDelgaPath( const char *path ){
 	}
 	
 	pDelgaPath = path;
+	NotifyChanged();
+}
+
+
+
+void projProfile::SetRunArguments( const char *arguments ){
+	if( pRunArguments == arguments ){
+		return;
+	}
+	
+	pRunArguments = arguments;
 	NotifyChanged();
 }
 

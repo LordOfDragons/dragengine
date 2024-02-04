@@ -401,7 +401,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	SPECIAL_TIMER_PRINT("RenderOcclusionTests")
 	
 	// update the blended environment map to use for rendering
-	if( deoglSkinShader::REFLECTION_TEST_MODE == 2 ){
+	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
 		pRenderThread.GetRenderers().GetReflection().UpdateEnvMap( *this );
 	}
 	//PlanEnvMaps(); // doing this here kills the occlusion map causing all kinds of problems

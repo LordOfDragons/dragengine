@@ -43,6 +43,8 @@
 #include "../../undosys/controller/aeUControllerToggleClamp.h"
 #include "../../undosys/controller/aeUControllerToggleFrozen.h"
 #include "../../undosys/controller/aeUControllerPaste.h"
+#include "../../undosys/controller/aeUControllerSetDefaultValue.h"
+#include "../../undosys/controller/aeUControllerSetDefaultVector.h"
 
 #include <deigde/clipboard/igdeClipboardDataReference.h>
 #include <deigde/environment/igdeEnvironment.h>
@@ -429,6 +431,39 @@ public:
 	}
 };
 
+class cTextDefaultValue : public cBaseTextField{
+public:
+	cTextDefaultValue( aeWPController &panel ) : cBaseTextField( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeController *controller ){
+		const float value = textField->GetFloat();
+		return fabsf( controller->GetDefaultValue() - value ) > FLOAT_SAFE_EPSILON
+			? new aeUControllerSetDefaultValue( controller, value ) : nullptr;
+	}
+};
+
+class cEditDefaultVector : public igdeEditVectorListener{
+	aeWPController &pPanel;
+	
+public:
+	cEditDefaultVector( aeWPController &panel ) : pPanel( panel ){ }
+	
+	virtual void OnVectorChanged( igdeEditVector *editVector ){
+		aeAnimator * const animator = pPanel.GetAnimator();
+		aeController * const controller = pPanel.GetController();
+		if( ! animator || ! controller ){
+			return;
+		}
+		
+		const decVector &vector = editVector->GetVector();
+		if( ! controller->GetDefaultVector().IsEqualTo( vector ) ){
+			igdeUndoReference undo;
+			undo.TakeOver( new aeUControllerSetDefaultVector( controller, vector ) );
+			animator->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+
 }
 
 
@@ -479,6 +514,11 @@ pAnimator( nullptr )
 	
 	helper.CheckBox( groupBox, pChkClamp, new cActionClamp( *this ), true );
 	helper.CheckBox( groupBox, pChkFrozen, new cActionFrozen( *this ), true );
+	
+	helper.EditFloat( groupBox, "Default Value:", "Default controller value",
+		pEditDefaultValue, new cTextDefaultValue( *this ) );
+	helper.EditVector( groupBox, "Default Vector:", "Default vector value of controller",
+		pEditDefaultVector, new cEditDefaultVector( *this ) );
 	
 	
 	// locomotion testing
@@ -603,6 +643,9 @@ void aeWPController::UpdateController(){
 		pEditLocoLeg->SetInteger( controller->GetLocomotionLeg() );
 		pCBVectorSimulation->SetSelectionWithData( ( void* )( intptr_t )controller->GetVectorSimulation() );
 		
+		pEditDefaultValue->SetFloat( controller->GetDefaultValue() );
+		pEditDefaultVector->SetVector( controller->GetDefaultVector() );
+		
 	}else{
 		pEditName->ClearText();
 		pEditMin->ClearText();
@@ -614,6 +657,8 @@ void aeWPController::UpdateController(){
 		pCBLocoAttr->SetSelectionWithData( ( void* )( intptr_t )aeAnimatorLocomotion::eaNone );
 		pEditLocoLeg->ClearText();
 		pCBVectorSimulation->SetSelectionWithData( ( void* )( intptr_t )aeController::evsNone );
+		pEditDefaultValue->ClearText();
+		pEditDefaultVector->SetVector( decVector() );
 	}
 	
 	const bool enabled = controller;
@@ -629,6 +674,9 @@ void aeWPController::UpdateController(){
 	pEditMax->SetEnabled( enabled );
 	pSldValue->SetEnabled( enabled );
 	pEditVector->SetEnabled( enabled );
+	
+	pEditDefaultValue->SetEnabled( enabled );
+	pEditDefaultVector->SetEnabled( enabled );
 }
 
 void aeWPController::UpdateControllerValue(){

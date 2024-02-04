@@ -789,9 +789,13 @@ void deoglWorld::pSyncComponents(){
 		
 		deComponent *component = pWorld.GetRootComponent();
 		while( component ){
-			deoglRComponent * const oglRComponent = ( ( deoglComponent* )component->GetPeerGraphic() )->GetRComponent();
+			deoglComponent * const oglComponent = ( deoglComponent* )component->GetPeerGraphic();
+			deoglRComponent * const oglRComponent = oglComponent->GetRComponent();
 			if( oglRComponent->GetParentWorld() != pRWorld ){
 				pRWorld->AddComponent( oglRComponent );
+				oglComponent->SyncToRender(); // required for GIState to process event correctly
+				oglRComponent->HasEnteredWorld(); // prevents superfluous events to be send
+				pRWorld->GIStatesNotifyComponentEnteredWorld( oglRComponent );
 			}
 			component = component->GetLLWorldNext();
 		}

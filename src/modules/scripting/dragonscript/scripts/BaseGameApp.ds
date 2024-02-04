@@ -463,7 +463,7 @@ class BaseGameApp extends Game
 		
 		pConfiguration = ParameterTree.new()
 		pLoaders = Loaders.new(pConsole)
-		pTranslationManager = TranslationManager.new()
+		pTranslationManager = createTranslationManager()
 		EngineTranslations.get() // preload engine translations
 		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
 		
@@ -997,6 +997,16 @@ class BaseGameApp extends Game
 	 * implementation is empty. Super-calling is not required.
 	 */
 	protected func void registerPersistencyFactories()
+	end
+	
+	/**
+	 * \brief Create translation manager.
+	 * \version 1.21
+	 * 
+	 * Creates instance of TranslationManager.
+	 */
+	protected func TranslationManager createTranslationManager()
+		return TranslationManager.new()
 	end
 	
 	/**

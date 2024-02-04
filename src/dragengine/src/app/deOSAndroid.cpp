@@ -190,32 +190,34 @@ int deOSAndroid::GetDisplayCount(){
 }
 
 decPoint deOSAndroid::GetDisplayCurrentResolution( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return decPoint( pScreenWidth, pScreenHeight );
 }
 
 int deOSAndroid::GetDisplayCurrentRefreshRate( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
 	
 	return pScreenRefreshRate;
 }
 
 int deOSAndroid::GetDisplayResolutionCount( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return 1;
 }
 
 decPoint deOSAndroid::GetDisplayResolution( int display, int resolution ){
-	if( display != 0 || resolution != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	DEASSERT_TRUE( resolution == 0 )
+	
 	return decPoint( pScreenWidth, pScreenHeight );
+}
+
+int deOSAndroid::GetDisplayCurrentScaleFactor( int display ){
+	DEASSERT_TRUE( display == 0 )
+	
+	return 100;
 }
 
 

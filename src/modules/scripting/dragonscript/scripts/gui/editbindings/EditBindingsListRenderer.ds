@@ -215,8 +215,11 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 			if command.getTranslateDisplayName() != null
 				labelName.setText("@" + command.getTranslateDisplayName())
 				
-			else
+			elif command.getDisplayName() != null
 				labelName.setText(command.getDisplayName())
+				
+			else
+				labelName.setText(command.getName())
 			end
 			
 			bindingPanel.runWhileBlockingLayout(block

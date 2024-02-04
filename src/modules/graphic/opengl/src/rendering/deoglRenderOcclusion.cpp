@@ -859,6 +859,8 @@ const deoglRenderPlanMasked *mask, bool perspective ){
 	
 	for( i=0; i<lightCount; i++ ){
 		deoglCollideListLight &cllight = *clist.GetLightAt( i );
+		cllight.SetOcclusionQueryValid( false );
+		
 		if( cllight.GetCulled() || cllight.GetCameraInside() || cllight.GetCameraInsideOccQueryBox() ){
 			continue;
 		}
@@ -883,6 +885,7 @@ const deoglRenderPlanMasked *mask, bool perspective ){
 		}
 		
 		query.EndQuery();
+		cllight.SetOcclusionQueryValid( true );
 	}
 	pglBindVertexArray( 0 );
 	DEBUG_PRINT_TIMER( "RenderOcclusionQueries Render" );

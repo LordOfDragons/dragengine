@@ -42,6 +42,7 @@ private:
 	igdeTextFieldReference pEditTextBoxText;
 	igdeButtonReference pBtnTextBoxText;
 	igdeTextFieldReference pEditTextBoxTextTranslate;
+	igdeTextFieldReference pEditShowTranslation;
 	igdeButtonReference pBtnTextBoxTextTranslate;
 	igdeTextFieldReference pEditTextBoxTextStyle;
 	igdeTextFieldReference pEditMovement;

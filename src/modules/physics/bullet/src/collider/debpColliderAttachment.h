@@ -36,6 +36,8 @@ private:
 	int pTrackBone;
 	int *pBoneMappings;
 	int pBoneMappingCount;
+	int *pVpsMappings;
+	int pVpsMappingCount;
 	bool pDirtyMappings;
 	
 	decDMatrix pLocalMatrix;
@@ -73,6 +75,15 @@ public:
 	
 	/** Set bone mapping by index. */
 	void SetBoneMappingAt( int index, int boneIndex );
+	
+	/** Set the number of vertex position set mappings. */
+	void SetVpsMappingCount( int count );
+	
+	/** Vertex position set mapping by index. */
+	int GetVpsMappingAt( int index ) const;
+	
+	/** Set vertex position set mapping by index. */
+	void SetVpsMappingAt( int index, int boneIndex );
 	
 	/** Determine if mapping is dirty. */
 	inline bool GetDirtyMappings() const{ return pDirtyMappings; }

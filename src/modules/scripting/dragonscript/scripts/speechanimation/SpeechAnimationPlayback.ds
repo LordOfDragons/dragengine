@@ -32,38 +32,39 @@ pin Dragengine.LoadSave
  */
 class SpeechAnimationPlayback
 	class Phoneme
-		private var int pController
-		private var float pDuration
+		var int pController
+		var float pDuration
 		
-		public func new(int controller, float duration)
+		func new(int controller, float duration)
 			pController = controller
 			pDuration = duration
 		end
 		
-		public func int getController()
+		func int getController()
 			return pController
 		end
-		public func float getDuration()
+		func float getDuration()
 			return pDuration
 		end
 	end
 	
 	
 	
-	private var SpeechAnimation pSpeechAnimation
-	private var AnimatorInstance pAnimatorInstance
-	private var Array pPhonemes
-	private var float pDuration
-	private var int pPosition
-	private var float pElapsed
-	private var bool pSpeaking
-	private var Array pControllers
-	private var bool pRequiresApply
+	var SpeechAnimation pSpeechAnimation
+	var AnimatorInstance pAnimatorInstance
+	var Array pPhonemes
+	var float pDuration
+	var int pPosition
+	var float pElapsed
+	var bool pSpeaking
+	var Array pControllers
+	var bool pRequiresApply
+	var float pSpeakBlend
 	
 	
 	
 	/** Creates a new speech animation playback. */
-	public func new()
+	func new()
 		pAnimatorInstance = AnimatorInstance.new()
 		pPhonemes = Array.new()
 		pDuration = 0
@@ -77,17 +78,17 @@ class SpeechAnimationPlayback
 	
 	
 	/** Retrieves the animator instance. */
-	public func AnimatorInstance getAnimatorInstance()
+	func AnimatorInstance getAnimatorInstance()
 		return pAnimatorInstance
 	end
 	
 	/** Retrieves the speech animation or null if not assigned. */
-	public func SpeechAnimation getSpeechAnimation()
+	func SpeechAnimation getSpeechAnimation()
 		return pSpeechAnimation
 	end
 	
 	/** Sets the speech animation or null if not assigned. */
-	public func void setSpeechAnimation(SpeechAnimation speechAnimation)
+	func void setSpeechAnimation(SpeechAnimation speechAnimation)
 		pControllers.removeAll()
 		pAnimatorInstance.setAnimator(null)
 		pSpeechAnimation = speechAnimation
@@ -105,33 +106,46 @@ class SpeechAnimationPlayback
 	end
 	
 	/** Retrieves the duration of the speaking. */
-	public func float getDuration()
+	func float getDuration()
 		return pDuration
 	end
 	
 	/** Retrieves the elapsed time. */
-	public func float getElapsed()
+	func float getElapsed()
 		return pElapsed
 	end
 	
 	/** Determines if the playback is still running. */
-	public func bool getSpeaking()
+	func bool getSpeaking()
 		return pSpeaking
+	end
+	
+	/**
+	 * \brief Speak blending factor.
+	 * \version 1.21
+	 * 
+	 * If speaking this is 1 if a viseme is playing or 0 if not. Values in between represent
+	 * blending in and out of speaking. Can be used to avoid animators affecting speech
+	 * animation driven bones or vertex position sets while speaking.
+	 */
+	func float getSpeakBlend()
+		return pSpeakBlend
 	end
 	
 	
 	
 	/** Remove all phonemes. */
-	public func void removeAllPhonemes()
+	func void removeAllPhonemes()
 		pPhonemes.removeAll()
 		pDuration = 0
 		pPosition = -1
 		pElapsed = 0
 		pSpeaking = false
+		pSpeakBlend = 0
 	end
 	
 	/** Adds a speak phoneme. */
-	public func void addPhoneme(SpeechAnimationPhoneme phoneme, float duration)
+	func void addPhoneme(SpeechAnimationPhoneme phoneme, float duration)
 		if phoneme == null
 			pPhonemes.add(Phoneme.new(-1, duration))
 			
@@ -153,7 +167,7 @@ class SpeechAnimationPlayback
 	 * This updates the playback and updates animator instances if required. This does not
 	 * apply the animation yet to allow proper use of state capturing.
 	 */
-	public func void update(float elapsed)
+	func void update(float elapsed)
 		if not pSpeaking
 			return
 		end
@@ -231,19 +245,21 @@ class SpeechAnimationPlayback
 		
 		// update the controllers
 		if controller1 != -1 and controller2 != -1
-			pAnimatorInstance.setBlendFactor(1)
+			pSpeakBlend = 1
 			
 		elif controller1 != -1
-			pAnimatorInstance.setBlendFactor(blendFactor)
+			pSpeakBlend = blendFactor
 			blendFactor = 1
 			
 		elif controller2 != -1
-			pAnimatorInstance.setBlendFactor(1.0 - blendFactor)
+			pSpeakBlend = 1.0 - blendFactor
 			blendFactor = 1
 			
 		else
-			pAnimatorInstance.setBlendFactor(0)
+			pSpeakBlend = 0
 		end
+		
+		pAnimatorInstance.setBlendFactor(pSpeakBlend)
 		
 		pControllers.forEach(block int index, AnimatorController each
 			if index == controller1
@@ -265,7 +281,7 @@ class SpeechAnimationPlayback
 	 * 
 	 * Called after update() to apply animation. Can do nothing if no change has been done.
 	 */
-	public func void applyAnimation()
+	func void applyAnimation()
 		if not pRequiresApply
 			return
 		end
@@ -277,7 +293,7 @@ class SpeechAnimationPlayback
 	
 	
 	/** Reads the element from a file. */
-	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			var int controller
@@ -303,7 +319,7 @@ class SpeechAnimationPlayback
 	end
 	
 	/** Writes the element to a file. */
-	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 		writer.writeByte(0) // version
 		
 		env.writeBool(writer, pSpeaking)

@@ -98,7 +98,7 @@ private:
 	ceConversation &pConversation;
 	const eTypes pType;
 	
-	decString pText;
+	decString pText, pDescription;
 	igdeIconReference pIcon;
 	decObjectOrderedSet pChildren;
 	bool pExpanded;
@@ -145,6 +145,16 @@ public:
 	 * If tree item is assigned updates tree item text.
 	 */
 	void SetText( const char *text );
+	
+	/** \brief Tree item description. */
+	inline const decString &GetDescription() const{ return pDescription; }
+	
+	/**
+	 * \brief Set tree item description.
+	 * 
+	 * If tree item is assigned updates tree item description.
+	 */
+	void SetDescription( const char *description );
 	
 	/** \brief Tree item icon. */
 	inline igdeIcon *GetIcon() const{ return pIcon; }

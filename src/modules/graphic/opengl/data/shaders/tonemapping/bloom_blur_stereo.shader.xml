@@ -15,6 +15,8 @@
 	<parameter name='pWeights1'/>
 	<parameter name='pWeights2'/>
 	<parameter name='pClamp'/>
+	<parameter name='pLevel'/>
+	<parameter name='pScaleColor'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

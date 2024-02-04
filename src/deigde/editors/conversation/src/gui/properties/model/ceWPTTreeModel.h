@@ -33,13 +33,14 @@ class ceWPTTreeModelListener;
 class ceWPTTreeItem;
 class ceWPTTreeItemModel;
 class ceWindowMain;
+class ceConversationListener;
 
 class igdeTreeList;
 class igdeMenuCascade;
 
 
 /**
- * \brief Tree model.
+ * Tree model.
  * 
  * Tree model is responsible to update the visual state and content of assigned tree list.
  */
@@ -62,6 +63,7 @@ private:
 	ceWindowMain &pWindowMain;
 	ceConversation *pConversation;
 	ceWPTTreeModelListener *pListener;
+	ceConversationListener &pForwardListener;
 	
 	decObjectOrderedSet pChildren;
 	
@@ -71,72 +73,73 @@ private:
 	
 	
 public:
-	/** \brief Constructors and Destructors */
+	/** Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new tree model. */
-	ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation );
+	/** Create new tree model. */
+	ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation,
+		ceConversationListener &forwardListener );
 	
-	/** \brief Clean up tree model. */
+	/** Clean up tree model. */
 	~ceWPTTreeModel();
 	/*@}*/
 	
 	
 	
 public:
-	/** \brief Management */
+	/** Management */
 	/*@{*/
-	/** \brief Window main. */
+	/** Window main. */
 	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Game definition. */
+	/** Game definition. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	
 	
-	/** \brief Number of children. */
+	/** Number of children. */
 	int GetChildCount() const;
 	
-	/** \brief Child at index. */
+	/** Child at index. */
 	ceWPTTreeItemModel *GetChildAt( int index ) const;
 	
-	/** \brief Add child. */
+	/** Add child. */
 	void AddChild( ceWPTTreeItemModel *child );
 	
-	/** \brief Insert child at position. */
+	/** Insert child at position. */
 	void InsertChild( ceWPTTreeItemModel *child, int position );
 	
-	/** \brief Remove child. */
+	/** Remove child. */
 	void RemoveChild( ceWPTTreeItemModel *child );
 	
-	/** \brief Remove all children. */
+	/** Remove all children. */
 	void RemoveAllChildren();
 	
 	/**
-	 * \brief Move child before or after another child.
+	 * Move child before or after another child.
 	 */
 	void MoveChild( ceWPTTreeItemModel *child, int to );
 	
 	/**
-	 * \brief Move child before or after another child.
+	 * Move child before or after another child.
 	 */
 	void MoveChild( int from, int to );
 	
 	
 	
-	/** \brief Child with action or \em NULL. */
+	/** Child with action or \em NULL. */
 	ceWPTTIMAction *GetChildWith( ceConversationAction *action ) const;
 	
 	
 	
-	/** \brief Update actions. */
+	/** Update actions. */
 	void UpdateActions();
 	
 	
-	/** \brief Assigned tree list or \em NULL. */
+	/** Assigned tree list or \em NULL. */
 	inline igdeTreeList *GetTreeList() const{ return pTreeList; }
 	
 	/**
-	 * \brief Assign tree list or \em NULL.
+	 * Assign tree list or \em NULL.
 	 * 
 	 * If tree list is not \em NULL fully updates tree with stored data.
 	 */
@@ -144,26 +147,29 @@ public:
 	
 	
 	
-	/** \brief User requests context menu for selected item. */
+	/** User requests context menu for selected item. */
 	void OnContextMenu( igdeMenuCascade &contextMenu );
 	
-	/** \brief User requests context menu for selected child action. */
+	/** User requests context menu for selected child action. */
 	void ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action );
 	
-	/** \brief User requests context menu for topic specifi actions. */
+	/** User requests context menu for topic specifi actions. */
 	void ContextMenuTopic( igdeMenuCascade &contextMenu );
 	
-	/** \brief Deep find action. */
+	/** Deep find action. */
 	ceWPTTIMAction *DeepFindAction( ceConversationAction *action ) const;
 	
-	/** \brief Deep find condition. */
+	/** Deep find condition. */
 	ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition ) const;
 	
-	/** \brief Select topic active element. */
+	/** Select topic active element. */
 	void SelectTopicActive();
 	
-	/** \brief Prevent update. */
+	/** Prevent update. */
 	inline bool GetPreventUpdate() const{ return pPreventUpdate; }
+	
+	/** Forward listener. */
+	inline ceConversationListener &GetForwardListener(){ return pForwardListener; }
 	/*@}*/
 	
 	

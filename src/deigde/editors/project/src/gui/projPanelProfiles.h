@@ -93,6 +93,8 @@ private:
 	
 	igdeTextFieldReference pEditDelgaPath;
 	
+	igdeTextFieldReference pEditRunArguments;
+	
 	
 	
 public:

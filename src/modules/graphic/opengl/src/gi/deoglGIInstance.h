@@ -53,6 +53,7 @@ private:
 		
 		cListenerLink( deoglGIInstance &instance );
 		bool LayerMaskMatchesNot( const decLayerMask &layerMask ) const;
+		bool GIImportanceMatchesNot( int importance ) const;
 		void RemoveInstance() const;
 		void ChangeInstance( bool hard ) const;
 		void Moved() const;

@@ -198,10 +198,10 @@ UBOLAYOUT uniform RenderParameters{
 	
 	// scene key parameters
 	// x: exposure
-	// y: max white luminance
+	// y: white scale
 	vec2 pToneMapSceneKey;
 	#define pToneMapExposure (pToneMapSceneKey.x)
-	#define pToneMapMaxWhiteLum (pToneMapSceneKey.y)
+	#define pToneMapWhiteScale (pToneMapSceneKey.y)
 	
 	// adaption parameters
 	// x: lowest luminance
@@ -214,8 +214,12 @@ UBOLAYOUT uniform RenderParameters{
 	
 	// bloom parameters
 	// x: strength
-	vec2 pToneMapBloom;
+	// y: intensity threshold
+	// z: blend
+	vec3 pToneMapBloom;
 	#define pToneMapBloomStrength (pToneMapBloom.x)
+	#define pToneMapBloomIntensity (pToneMapBloom.y)
+	#define pToneMapBloomBlend (pToneMapBloom.z)
 	
 	
 	

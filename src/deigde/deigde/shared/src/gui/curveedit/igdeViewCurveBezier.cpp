@@ -381,7 +381,7 @@ void igdeViewCurveBezier::SetCurve( const decCurveBezier &curve, bool changing )
 
 void igdeViewCurveBezier::ClearCurve(){
 	SetCurve( decCurveBezier() );
-	FitViewToCurve();
+	ResetView();
 }
 
 void igdeViewCurveBezier::InvertCurveX(){
