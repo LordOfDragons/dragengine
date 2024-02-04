@@ -52,13 +52,12 @@ pDistance( 0.0f )
 	pImageDistance = pEngCamera->GetImageDistance();
 	pViewDistance = pEngCamera->GetViewDistance();
 
-	pEnableHDRR = pEngCamera->GetEnableHDRR();
+	pEnableGI = true;
+	pEnableHDRR = true;
 	pExposure = pEngCamera->GetExposure();
 	pLowestIntensity = pEngCamera->GetLowestIntensity();
 	pHighestIntensity = pEngCamera->GetHighestIntensity();
 	pAdaptionTime = pEngCamera->GetAdaptionTime();
-
-	pEnableGI = pEngCamera->GetEnableGI();
 
 	pWhiteIntensity = pEngCamera->GetWhiteIntensity();
 	pBloomIntensity = pEngCamera->GetBloomIntensity();
@@ -368,13 +367,12 @@ void igdeCamera::SetDefaultParameters( float lowestIntensity, float highestInten
 	pImageDistance = camera->GetImageDistance();
 	pViewDistance = camera->GetViewDistance();
 	
-	pEnableHDRR = camera->GetEnableHDRR();
+	pEnableGI = true;
+	pEnableHDRR = true;
 	pExposure = camera->GetExposure();
 	pLowestIntensity = lowestIntensity;
 	pHighestIntensity = highestIntensity;
 	pAdaptionTime = adaptionTime;
-	
-	pEnableGI = camera->GetEnableGI();
 	
 	pWhiteIntensity = camera->GetWhiteIntensity();
 	pBloomIntensity = camera->GetBloomIntensity();
