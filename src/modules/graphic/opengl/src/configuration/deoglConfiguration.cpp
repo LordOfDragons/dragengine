@@ -203,7 +203,11 @@ pRenderDocMode( false )
 	
 	// renderdoc
 	#if defined WITH_DEBUG && defined OS_UNIX
+	#ifdef OS_BEOS
+	const char * const envRenderDocDebug = getenv( "DE_OGL_RENDERDOC_DEBUG" );
+	#else
 	const char * const envRenderDocDebug = secure_getenv( "DE_OGL_RENDERDOC_DEBUG" );
+	#endif
 	if( envRenderDocDebug && strcmp( envRenderDocDebug, "1" ) == 0 ){
 		pDebugContext = true;
 		pDebugNoMessages = true;
