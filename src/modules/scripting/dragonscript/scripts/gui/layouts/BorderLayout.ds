@@ -125,9 +125,9 @@ class BorderLayout implements Layout
 	 * \brief Add widget to layout into area.
 	 * 
 	 * \param widget Widget to add to layout.
-	 * \param settings Area to place widget in. Has to be of type \ref Area.
+	 * \param settings Area to place widget in. Has to be of type \ref Area .
 	 * \throws EInvalidParam widget is \em null.
-	 * \throws EInvalidParam settings is not of type \ref Area.
+	 * \throws EInvalidParam settings is not of type \ref Area .
 	 * \throws EInvalidParam area is not empty.
 	 */
 	public func void addWidget(Widget widget, Object settings)

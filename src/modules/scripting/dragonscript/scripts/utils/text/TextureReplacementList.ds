@@ -31,7 +31,7 @@ pin Dragengine.Scenery
 /**
  * \brief List of texture replacements.
  * 
- * \see TextureReplacement for details.
+ * \see TextureReplacement
  */
 class TextureReplacementList
 	/** \brief Texture replacements. */

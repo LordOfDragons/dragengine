@@ -157,7 +157,7 @@ class CameraWrapper
 	
 	/**
 	 * \brief Camera matrix.
-	 * \see DMatrix.newCamera()
+	 * \see DMatrix#newCamera(DVector,DVector,DVector)
 	 */
 	public func DMatrix getMatrix()
 		var DMatrix matrix = DMatrix.newFromQuaternion( this.getOrientation() )
