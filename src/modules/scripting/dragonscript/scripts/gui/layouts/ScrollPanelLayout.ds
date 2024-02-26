@@ -110,7 +110,7 @@ class ScrollPanelLayout implements Layout
 	 * \brief Add widget to layout into area.
 	 * 
 	 * \param widget Widget to add to layout.
-	 * \param settings Area to place widget in. Has to be of type \ref Area.
+	 * \param settings Area to place widget in. Has to be of type \ref Area .
 	 * \throws EInvalidParam widget is \em null.
 	 */
 	public func void addWidget( Widget widget, Object settings )

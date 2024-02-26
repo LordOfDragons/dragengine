@@ -551,7 +551,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		/**
 		 * \brief Debug panel position.
 		 * \version 1.17
-		 * \see updateDebugPanelPosition()
+		 * \see #updateDebugPanelPosition()
 		 */
 		public func Vector getDebugPanelPosition()
 			return pDebugPanelPosition
@@ -560,7 +560,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		/**
 		 * \brief Set debug panel position.
 		 * \version 1.17
-		 * \see updateDebugPanelPosition()
+		 * \see #updateDebugPanelPosition()
 		 */
 		public func void setDebugPanelPosition(Vector position)
 			if position == null
@@ -572,7 +572,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		/**
 		 * \brief Debug panel orientation.
 		 * \version 1.17
-		 * \see updateDebugPanelPosition()
+		 * \see #updateDebugPanelPosition()
 		 */
 		public func Quaternion getDebugPanelOrientation()
 			return pDebugPanelOrientation
@@ -581,7 +581,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		/**
 		 * \brief Set debug panel orientation.
 		 * \version 1.17
-		 * \see updateDebugPanelPosition()
+		 * \see #updateDebugPanelPosition()
 		 */
 		public func void setDebugPanelOrientation(Quaternion orientation)
 			if orientation == null
