@@ -101,6 +101,8 @@ else:
 targets.append('include/webp/decode.h')
 targets.append('include/webp/encode.h')
 targets.append('include/webp/types.h')
+targets.append('include/webp/demux.h')
+targets.append('include/webp/mux_types.h')
 library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 	envLibrary.Action(libwebpBuild, 'Build libwebp'))
 
