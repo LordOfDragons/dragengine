@@ -229,6 +229,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extern libwebm", "extern\li
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "module video webm", "modules\video\webm\vid_webm.vcxproj", "{327559FF-9762-46C8-A6B2-6871779E3E77}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extern libwebpdemux", "extern\libwebpdemux\extern_libwebpdemux.vcxproj", "{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2618,6 +2620,36 @@ Global
 		{327559FF-9762-46C8-A6B2-6871779E3E77}.ReleaseDebug|x64.Build.0 = ReleaseDebug|x64
 		{327559FF-9762-46C8-A6B2-6871779E3E77}.ReleaseDebug|x86.ActiveCfg = ReleaseDebug|Win32
 		{327559FF-9762-46C8-A6B2-6871779E3E77}.ReleaseDebug|x86.Build.0 = ReleaseDebug|Win32
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|Any CPU.Build.0 = Debug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|ARM.ActiveCfg = Debug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|ARM.Build.0 = Debug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|ARM64.ActiveCfg = Debug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|ARM64.Build.0 = Debug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|x64.ActiveCfg = Debug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|x64.Build.0 = Debug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|x86.ActiveCfg = Debug|Win32
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Debug|x86.Build.0 = Debug|Win32
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|Any CPU.ActiveCfg = Release|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|Any CPU.Build.0 = Release|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|ARM.ActiveCfg = Release|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|ARM.Build.0 = Release|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|ARM64.ActiveCfg = Release|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|ARM64.Build.0 = Release|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|x64.ActiveCfg = Release|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|x64.Build.0 = Release|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|x86.ActiveCfg = Release|Win32
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.Release|x86.Build.0 = Release|Win32
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|Any CPU.ActiveCfg = ReleaseDebug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|Any CPU.Build.0 = ReleaseDebug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|ARM.ActiveCfg = ReleaseDebug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|ARM.Build.0 = ReleaseDebug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|ARM64.ActiveCfg = ReleaseDebug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|ARM64.Build.0 = ReleaseDebug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|x64.ActiveCfg = ReleaseDebug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|x64.Build.0 = ReleaseDebug|x64
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|x86.ActiveCfg = ReleaseDebug|Win32
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5}.ReleaseDebug|x86.Build.0 = ReleaseDebug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2723,6 +2755,7 @@ Global
 		{35637421-0748-4BA7-9187-29DE8CC3506E} = {24FEF707-72E9-4A55-B165-280B906B3882}
 		{4D75DD29-281B-4635-AD4A-A36E5A11F3FA} = {24FEF707-72E9-4A55-B165-280B906B3882}
 		{327559FF-9762-46C8-A6B2-6871779E3E77} = {D4CD32B7-2AF2-4422-9B29-695569D5E833}
+		{FAF5FC57-02D5-4C34-8A06-059E9588BEF5} = {F3705EE2-B3D1-4EBC-9ADB-4B542A6956E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5EE9E67-AA42-44F8-91C4-8D97F49D0A4F}
