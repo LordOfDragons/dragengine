@@ -39,6 +39,8 @@ public:
 	int height;
 	int depth;
 	bool hasAlpha;
+	bool isGrayscale;
+	
 	
 	
 public:

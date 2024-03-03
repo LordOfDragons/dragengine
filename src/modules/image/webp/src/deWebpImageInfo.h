@@ -41,6 +41,8 @@ private:
 	int pWidth;
 	int pHeight;
 	bool pHasAlpha;
+	bool pIsGrayscale;
+	
 	
 	
 public:
@@ -65,6 +67,9 @@ public:
 	
 	/** Has alpha. */
 	inline bool GetHasAlpha() const{ return pHasAlpha; }
+	
+	/** Use grayscale. */
+	inline bool GetIsGrayscale() const{ return pIsGrayscale; }
 	
 	/** Image width in pixels. */
 	virtual int GetWidth();

@@ -32,7 +32,8 @@ deWebp3DImageInfo::deWebp3DImageInfo( const decString &filename ) :
 pFilename( filename ),
 width( 0 ),
 height( 0 ),
-hasAlpha( false ){
+hasAlpha( false ),
+isGrayscale( false ){
 }
 
 deWebp3DImageInfo::~deWebp3DImageInfo(){
@@ -56,7 +57,12 @@ int deWebp3DImageInfo::GetDepth(){
 }
 
 int deWebp3DImageInfo::GetComponentCount(){
-	return hasAlpha ? 4 : 3;
+	if( hasAlpha ){
+		return isGrayscale ? 2 : 4;
+		
+	}else{
+		return isGrayscale ? 1 : 3;
+	}
 }
 
 int deWebp3DImageInfo::GetBitCount(){
