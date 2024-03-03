@@ -68,7 +68,7 @@ def libwebpBuild(target, source, env):
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
 	cmdline.append('--enable-silent-rules')
 	cmdline.append('--disable-libwebpmux')
-	cmdline.append('--disable-libwebpdemux')
+	cmdline.append('--enable-libwebpdemux')
 	cmdline.append('--disable-libwebpdecoder')
 	cmdline.append('--disable-libwebpextras')
 	cmdline.append('--disable-png')
