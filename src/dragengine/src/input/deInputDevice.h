@@ -220,7 +220,18 @@ public:
 	 * \version 1.12
 	 * 
 	 * See https://www.khronos.org/registry/OpenXR/specs/1.0/html/xrspec.html#XR_HTC_facial_tracking
-	 * for description and images of face expressions
+	 * and https://www.khronos.org/registry/OpenXR/specs/1.0/html/xrspec.html#XR_FB_face_tracking2
+	 * for description and images of face expressions. Expressions existing in one expression set
+	 * are emulated in the other if possible.
+	 * 
+	 * Some expressions are simplified expressions. These can have detail expressions which combined
+	 * match up with the simplified expression. Use only the simplified expression or the corresponding
+	 * detail expressions or you get the expression applied twice. You can also apply simplified
+	 * expressions last and make them overwrite detail expressions. In this case both systems can
+	 * work together if it is unclear which system is used.
+	 * 
+	 * Expressions up to and including efeTongueMorphDownLeft are present since version 1.12 .
+	 * All other expressions are present since version 1.21 .
 	 */
 	enum eFaceExpressions{
 		efeEyeLeftBlink,
@@ -246,7 +257,7 @@ public:
 		
 		efeCheekPuffRight,
 		efeCheekPuffLeft,
-		efeCheekSuck,
+		efeCheekSuck, //<! Simplified expression of efeCheekSuckRight and efeCheekSuckLeft
 		
 		efeMouthApeShape,
 		efeMouthUpperRight,
@@ -262,7 +273,7 @@ public:
 		efeMouthLowerOverturn,
 		efeMouthLowerInside,
 		efeMouthLowerOverlay,
-		efeMouthPout,
+		efeMouthPout, //<! Simplified expression of efeMouthPoutRight and efeMouthPoutLeft
 		efeMouthSmileRight,
 		efeMouthSmileLeft,
 		efeMouthSadRight,
@@ -278,7 +289,58 @@ public:
 		efeTongueMorphUpRight,
 		efeTongueMorphUpLeft,
 		efeTongueMorphDownRight,
-		efeTongueMorphDownLeft
+		efeTongueMorphDownLeft,
+		
+		efeEyeRightSquint,
+		efeEyeLeftSquint,
+		
+		efeBrowRightDown,
+		efeBrowLeftDown,
+		efeBrowInnerRightUp,
+		efeBrowInnerLeftUp,
+		efeBrowOuterRightUp,
+		efeBrowOuterLeftUp,
+		
+		efeLidUpperUpRight,
+		efeLidUpperUpLeft,
+		
+		efeNoseWrinkleRight,
+		efeNoseWrinkleLeft,
+		
+		efeCheekUpRight,
+		efeCheekUpLeft,
+		efeCheekSuckRight, //<! Detail expression of efeCheekSuck
+		efeCheekSuckLeft, //<! Detail expression of efeCheekSuck
+		
+		efeChinUpperUp,
+		efeChinLowerUp,
+		
+		efeMouthDimpleRight,
+		efeMouthDimpleLeft,
+		efeMouthPressRight,
+		efeMouthPressLeft,
+		efeMouthPoutRight, //<! Detail expression of efeCMouthPout
+		efeMouthPoutLeft, //<! Detail expression of efeCMouthPout
+		efeMouthStretchRight,
+		efeMouthStretchLeft,
+		efeMouthRight,
+		efeMouthLeft,
+		efeMouthUpperFunnelRight,
+		efeMouthUpperFunnelLeft,
+		efeMouthUpperSuckRight,
+		efeMouthUpperSuckLeft,
+		efeMouthLowerFunnelRight,
+		efeMouthLowerFunnelLeft,
+		efeMouthLowerSuckRight,
+		efeMouthLowerSuckLeft,
+		
+		efeTongueTipInterdental,
+		efeTongueTipAlveolar,
+		efeTongueDorsalPalateFront,
+		efeTongueDorsalPalateMid,
+		efeTongueDorsalVelarBack,
+		efeTongueRetreatBack,
+		efeTongueOut
 	};
 	
 	/**
