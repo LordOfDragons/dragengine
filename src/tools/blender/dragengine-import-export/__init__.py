@@ -77,6 +77,8 @@ if "bpy" in locals():
 		imp.reload(de_tool_transferuv)
 	if "de_tool_shapropfromtex" in locals():
 		imp.reload(de_tool_shapropfromtex)
+	if "de_tool_exportmerger" in locals():
+		imp.reload(de_tool_exportmerger)
 	if "de_tools" in locals():
 		imp.reload(de_tools)
 	
@@ -110,17 +112,6 @@ from .de_import_rig import OBJECT_OT_ImportRig
 from .de_porting import registerClass, unregisterRegisteredClasses
 
 import bpy
-import os
-import re
-import math
-import time
-import struct
-import mathutils
-
-from bpy_extras.io_utils import ExportHelper
-from bpy_extras.io_utils import ImportHelper
-from mathutils import Vector, Matrix
-
 
 
 class VIEW3D_MT_DragengineExport(bpy.types.Menu):
@@ -128,7 +119,7 @@ class VIEW3D_MT_DragengineExport(bpy.types.Menu):
 	
 	def draw(self, context):
 		layout = self.layout
-		settings = context.tool_settings
+		# settings = context.tool_settings
 		layout.operator_context = 'INVOKE_REGION_WIN'
 		layout.operator("dragengine.export_model", text=OBJECT_OT_ExportModel.bl_label)
 		layout.operator("dragengine.export_animation", text=OBJECT_OT_ExportAnimation.bl_label)
@@ -143,7 +134,7 @@ class VIEW3D_MT_DragengineImport(bpy.types.Menu):
 	
 	def draw(self, context):
 		layout = self.layout
-		settings = context.tool_settings
+		# settings = context.tool_settings
 		layout.operator_context = 'INVOKE_REGION_WIN'
 		layout.operator("dragengine.import_animation", text=OBJECT_OT_ImportAnimation.bl_label)
 		layout.operator("dragengine.import_rig", text=OBJECT_OT_ImportRig.bl_label)

@@ -23,16 +23,13 @@
 #
 
 import bpy
-import os
 import re
-import math
-import time
 import struct
 
 from bpy_extras.io_utils import ExportHelper
 from mathutils import Vector, Matrix
 
-from .de_math import transformPosition, convertMatrix, convertMatrixBone
+from .de_math import transformPosition, convertMatrixBone
 from .de_math import vector_by_matrix, matrixToEuler, writeTexel
 from .de_configuration import Configuration
 from .de_resources import Mesh, Armature
