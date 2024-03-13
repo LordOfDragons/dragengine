@@ -24,7 +24,7 @@
 
 import bpy
 
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 # Tool Transferr all shape keys
@@ -33,8 +33,8 @@ from .de_porting import registerClass
 class OBJECT_OT_ToolTransferAllShapeKeys(bpy.types.Operator):
     bl_idname = "dragengine.transferallshapekeys"
     bl_label = "Transfer all shape keys"
-    bl_options = {'INTERNAL'}
-    __doc__ = """Transfer all shape keys"""
+    bl_options = {'REGISTER', 'UNDO'}
+    __doc__ = """Transfer all shape keys from selected object to active object"""
 
     @classmethod
     def poll(cls, context):
@@ -70,3 +70,5 @@ class OBJECT_OT_ToolTransferAllShapeKeys(bpy.types.Operator):
 
 
 registerClass(OBJECT_OT_ToolTransferAllShapeKeys)
+appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_vertices,
+             OBJECT_OT_ToolTransferAllShapeKeys)

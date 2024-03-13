@@ -24,7 +24,7 @@
 
 import bpy, re
 
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -34,7 +34,7 @@ from .de_porting import registerClass
 class OBJECT_OT_ToolMirrorVertices(bpy.types.Operator):
 	bl_idname = "dragengine.mirror_vertices"
 	bl_label = "Mirror Vertices"
-	bl_options = {'INTERNAL'}
+	bl_options = {'REGISTER', 'UNDO'}
 	__doc__ = """Mirror vertices (location and weights)"""
 	
 	@classmethod
@@ -171,3 +171,4 @@ class OBJECT_OT_ToolMirrorVertices(bpy.types.Operator):
 
 if bpy.app.version >= (2, 80):
 	registerClass(OBJECT_OT_ToolMirrorVertices)
+	appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_vertices, OBJECT_OT_ToolMirrorVertices)
