@@ -3,18 +3,18 @@
 # Drag[en]gine Blender Scripts
 #
 # Copyright (C) 2024, Plüss Roland (roland@dragondreams.ch)
-# 
-# This program is free software; you can redistribute it and/or 
-# modify it under the terms of the GNU General Public License 
-# as published by the Free Software Foundation; either 
-# version 2 of the License, or (at your option) any later 
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later
 # version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -101,7 +101,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
             self.simple_merge(context, collection, merge_object)
 
         self.cleanup_collection(context, collection, merge_object)
-        
+
         if laycol:
             laycol.exclude = True
 
@@ -116,7 +116,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
 
     def make_instances_real(self, context, collection):
         """Make instances real.
-        
+
         make all instance type collections in the collection real.
         """
         bpy.ops.object.select_all(action='DESELECT')
@@ -132,7 +132,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
 
     def simple_merge(self, context, collection, merge_object):
         """Simple merge for export.
-        
+
         Makes all mesh type objects in the collection (except the
         merge object) unique and apply all modifiers. Then merge
         all these objects with the merge object.
@@ -144,7 +144,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
 
     def shapekey_merge(self, context, collection, merge_object, progress):
         """Shape key aware merge for export.
-        
+
         Similar to simple_merge but ensures shape keys are retained
         even through geometry changing modifiers like subdivion
         or decimation.
@@ -161,7 +161,8 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
                 meshes_no_skey.append(each)
 
         self.merge_noshapekey(context, merge_object, meshes_no_skey)
-        self.merge_withshapekey(context, merge_object, meshes_with_skey, progress)
+        self.merge_withshapekey(context, merge_object,
+                                meshes_with_skey, progress)
 
     def merge_noshapekey(self, context, merge_object, objects):
         """Shape key aware merge of objects without shape keys."""
@@ -280,5 +281,6 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
                 each.select_set(True)
         if len(context.selected_objects) != 0:
             bpy.ops.object.delete(use_global=False, confirm=False)
+
 
 registerClass(OBJECT_OT_ToolExportMerger)
