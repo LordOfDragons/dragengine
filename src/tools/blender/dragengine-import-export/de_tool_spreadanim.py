@@ -23,12 +23,10 @@
 #
 
 import bpy
-import math
 import re
 
-from mathutils import Vector
 
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 # Tool Spread Animation
@@ -39,9 +37,9 @@ bpy.types.Scene.dragengine_spreadanimtarget = bpy.props.StringProperty(
 
 class OBJECT_OT_DEToolSpreadAnimation(bpy.types.Operator):
 	bl_idname = "dragengine.spreadanim"
-	bl_label = "Drag[en]gine Spread Animation"
-	bl_options = {'INTERNAL'}
-	__doc__ = """Spread Animation. Copies animation data of selected bones to all actions matching target regular expression"""
+	bl_label = "Spread animation"
+	bl_options = {'REGISTER', 'UNDO'}
+	__doc__ = """Copy animation data of selected bones to all actions matching target regular expression"""
 	
 	@classmethod
 	def poll(cls, context):
@@ -113,4 +111,6 @@ class OBJECT_OT_DEToolSpreadAnimation(bpy.types.Operator):
 					tfcurve.update()
 		
 		return {'FINISHED'}
+
 registerClass(OBJECT_OT_DEToolSpreadAnimation)
+appendToMenu(bpy.types.VIEW3D_MT_pose, OBJECT_OT_DEToolSpreadAnimation)

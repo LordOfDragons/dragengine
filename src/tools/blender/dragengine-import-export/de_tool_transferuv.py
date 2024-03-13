@@ -23,10 +23,9 @@
 #
 
 import bpy
-import math
 
-from .de_math import ONE_PI, vecSub, vecLength
-from .de_porting import registerClass
+from .de_math import vecSub, vecLength
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -34,63 +33,66 @@ from .de_porting import registerClass
 ####################
 
 class OBJECT_OT_ToolTransferUV( bpy.types.Operator ):
-	bl_idname = "dragengine.transferuv"
-	bl_label = "Transfer UV"
-	bl_options = { 'REGISTER', 'UNDO' }
-	__doc__ = """Transfer texture coordinates from vertices of the active object to vertices of the selected objects"""
-	
-	
-	
-	@classmethod
-	def poll( cls, context ):
-		return context.active_object != None \
-			and context.active_object.type == 'MESH' \
-			and context.active_object.data.uv_layers.active \
-			and len( context.selected_objects ) > 1
-	
-	def execute( self, context ):
-		editmode = ( bpy.context.mode == 'EDIT_MESH' )
-		if editmode:
-			bpy.ops.object.mode_set( mode='OBJECT' )
-		
-		sourceMesh = context.active_object.data
-		sourceUVs = sourceMesh.uv_layers.active.data
-		targetMeshes = [ x.data for x in context.selected_objects if x.type == 'MESH' and not x.data == sourceMesh ]
-		
-		for targetMesh in targetMeshes:
-			targetUVs = targetMesh.uv_layers.active.data
-			
-			for targetFace in targetMesh.polygons:
-				if targetFace.select and not targetFace.hide:
-					targetFaceCenter = targetFace.center
-					
-					for corner in range( targetFace.loop_total ):
-						vertexPosition = targetMesh.vertices[ targetMesh.loops[ targetFace.loop_start + corner ].vertex_index ].co
-						
-						closestSourceVertex = None
-						closestSourceVertexDistance = 0.0
-						for sourceVertex in sourceMesh.vertices:
-							testDistance = vecLength( vecSub( vertexPosition, sourceVertex.co ) )
-							if not closestSourceVertex or testDistance < closestSourceVertexDistance:
-								closestSourceVertex = sourceVertex
-								closestSourceVertexDistance = testDistance
-						
-						if closestSourceVertex:
-							closestSourceFace = None
-							closestSourceFaceDistance = 0.0
-							for sourceFace in sourceMesh.polygons:
-								if closestSourceVertex.index in sourceFace.vertices:
-									testDistance = vecLength( vecSub( targetFaceCenter, sourceFace.center ) )
-									if not closestSourceFace or testDistance < closestSourceFaceDistance:
-										closestSourceFace = sourceFace
-										closestSourceFaceDistance = testDistance
-							
-							if closestSourceFace:
-								sourceUVIndex = closestSourceFace.loop_start + closestSourceFace.vertices[:].index( closestSourceVertex.index )
-								targetUVs[ targetFace.loop_start + corner ].uv = sourceUVs[ sourceUVIndex ].uv[:]
-		
-		if editmode:
-			bpy.ops.object.mode_set( mode='EDIT' )
-		
-		return { 'FINISHED' }
+    bl_idname = "dragengine.transferuv"
+    bl_label = "Transfer UV"
+    bl_options = { 'REGISTER', 'UNDO' }
+    __doc__ = """Transfer texture coordinates from vertices of the active object to vertices of the selected objects"""
+    
+    
+    
+    @classmethod
+    def poll( cls, context ):
+        return context.active_object != None \
+            and context.active_object.type == 'MESH' \
+            and context.active_object.data.uv_layers.active \
+            and len( context.selected_objects ) > 1
+    
+    def execute( self, context ):
+        editmode = ( bpy.context.mode == 'EDIT_MESH' )
+        if editmode:
+            bpy.ops.object.mode_set( mode='OBJECT' )
+        
+        sourceMesh = context.active_object.data
+        sourceUVs = sourceMesh.uv_layers.active.data
+        targetMeshes = [ x.data for x in context.selected_objects if x.type == 'MESH' and not x.data == sourceMesh ]
+        
+        for targetMesh in targetMeshes:
+            targetUVs = targetMesh.uv_layers.active.data
+            
+            for targetFace in targetMesh.polygons:
+                if targetFace.select and not targetFace.hide:
+                    targetFaceCenter = targetFace.center
+                    
+                    for corner in range( targetFace.loop_total ):
+                        vertexPosition = targetMesh.vertices[ targetMesh.loops[ targetFace.loop_start + corner ].vertex_index ].co
+                        
+                        closestSourceVertex = None
+                        closestSourceVertexDistance = 0.0
+                        for sourceVertex in sourceMesh.vertices:
+                            testDistance = vecLength( vecSub( vertexPosition, sourceVertex.co ) )
+                            if not closestSourceVertex or testDistance < closestSourceVertexDistance:
+                                closestSourceVertex = sourceVertex
+                                closestSourceVertexDistance = testDistance
+                        
+                        if closestSourceVertex:
+                            closestSourceFace = None
+                            closestSourceFaceDistance = 0.0
+                            for sourceFace in sourceMesh.polygons:
+                                if closestSourceVertex.index in sourceFace.vertices:
+                                    testDistance = vecLength( vecSub( targetFaceCenter, sourceFace.center ) )
+                                    if not closestSourceFace or testDistance < closestSourceFaceDistance:
+                                        closestSourceFace = sourceFace
+                                        closestSourceFaceDistance = testDistance
+                            
+                            if closestSourceFace:
+                                sourceUVIndex = closestSourceFace.loop_start + closestSourceFace.vertices[:].index( closestSourceVertex.index )
+                                targetUVs[ targetFace.loop_start + corner ].uv = sourceUVs[ sourceUVIndex ].uv[:]
+        
+        if editmode:
+            bpy.ops.object.mode_set( mode='EDIT' )
+        
+        return { 'FINISHED' }
+
 registerClass(OBJECT_OT_ToolTransferUV)
+appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_vertices,
+             OBJECT_OT_ToolTransferUV)

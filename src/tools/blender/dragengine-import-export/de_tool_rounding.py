@@ -24,7 +24,7 @@
 
 import bpy
 
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -32,31 +32,34 @@ from .de_porting import registerClass
 #################
 
 class OBJECT_OT_DEToolRounding( bpy.types.Operator ):
-	bl_idname = "dragengine.rounding"
-	bl_label = "Drag[en]gine Rounding"
-	bl_options = { 'REGISTER', 'UNDO' }
-	__doc__ = """Round coordinates"""
-	
-	digits: bpy.props.IntProperty( name="Digits", description="Digits to round to", soft_min=0, soft_max=5, default=5 )
-	
-	@classmethod
-	def poll( cls, context ):
-		return context.active_object != None \
-			and context.active_object.type == 'MESH'
-	
-	def execute( self, context ):
-		editmode = ( bpy.context.mode == 'EDIT_MESH' )
-		if editmode:
-			bpy.ops.object.mode_set( mode='OBJECT' )
-		
-		for vertex in context.active_object.data.vertices:
-			if vertex.select:
-				vertex.co.x = round( vertex.co.x, self.digits )
-				vertex.co.y = round( vertex.co.y, self.digits )
-				vertex.co.z = round( vertex.co.z, self.digits )
-		
-		if editmode:
-			bpy.ops.object.mode_set( mode='EDIT' )
-		
-		return { 'FINISHED' }
+    bl_idname = "dragengine.rounding"
+    bl_label = "Clamp position"
+    bl_options = { 'REGISTER', 'UNDO' }
+    __doc__ = """Clamp position using rounding"""
+    
+    digits: bpy.props.IntProperty( name="Digits", description="Digits to round to", soft_min=0, soft_max=5, default=5 )
+    
+    @classmethod
+    def poll( cls, context ):
+        return context.active_object != None \
+            and context.active_object.type == 'MESH'
+    
+    def execute( self, context ):
+        editmode = ( bpy.context.mode == 'EDIT_MESH' )
+        if editmode:
+            bpy.ops.object.mode_set( mode='OBJECT' )
+        
+        for vertex in context.active_object.data.vertices:
+            if vertex.select:
+                vertex.co.x = round( vertex.co.x, self.digits )
+                vertex.co.y = round( vertex.co.y, self.digits )
+                vertex.co.z = round( vertex.co.z, self.digits )
+        
+        if editmode:
+            bpy.ops.object.mode_set( mode='EDIT' )
+        
+        return { 'FINISHED' }
+        
 registerClass(OBJECT_OT_DEToolRounding)
+appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_vertices,
+             OBJECT_OT_DEToolRounding)

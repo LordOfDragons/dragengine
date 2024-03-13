@@ -44,7 +44,7 @@ from .de_tool_treebranchunwrap import OBJECT_OT_ToolTreeBranchUnwrap
 from .de_tool_fixactiongroups import OBJECT_OT_DEToolFixActionGroups
 from .de_tool_spreadanim import OBJECT_OT_DEToolSpreadAnimation
 from .de_tool_exportmerger import OBJECT_OT_ToolExportMerger
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -53,7 +53,7 @@ from .de_porting import registerClass
 
 class OBJECT_OT_DEToolSeamToSharp(bpy.types.Operator):
     bl_idname = "dragengine.seamtosharp"
-    bl_label = "Drag[en]gine Seam To Sharp"
+    bl_label = "Seam To Sharp"
     bl_options = { 'REGISTER', 'UNDO' }
     __doc__ = """Set sharp edges from seams"""
     
@@ -82,13 +82,16 @@ class OBJECT_OT_DEToolSeamToSharp(bpy.types.Operator):
             bpy.ops.object.mode_set(mode='EDIT')
         
         return { 'FINISHED' }
+
 registerClass(OBJECT_OT_DEToolSeamToSharp)
+appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_edges,
+             OBJECT_OT_DEToolSeamToSharp)
 
 class OBJECT_OT_DEToolSelectNgon(bpy.types.Operator):
     bl_idname = "dragengine.selectngon"
-    bl_label = "Drag[en]gine Select N-Gon"
+    bl_label = "Select N-Gon faces"
     bl_options = { 'REGISTER', 'UNDO' }
-    __doc__ = """Set N-Gon faces not supported by some exporters"""
+    __doc__ = """Select N-Gon faces not supported by some exporters"""
     
     @classmethod
     def poll(cls, context):
@@ -109,8 +112,10 @@ class OBJECT_OT_DEToolSelectNgon(bpy.types.Operator):
             bpy.ops.object.mode_set(mode='EDIT')
         
         return { 'FINISHED' }
-registerClass(OBJECT_OT_DEToolSelectNgon)
 
+registerClass(OBJECT_OT_DEToolSelectNgon)
+appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_faces,
+             OBJECT_OT_DEToolSelectNgon)
 
 
 # Custom Lists
@@ -304,7 +309,7 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
         col = layout.column(align=False)
         row = col.row(align=True)
         row.operator(operator="dragengine.exportmerger",
-                     text=OBJECT_OT_ToolExportMerger.bl_label)
+                     text=OBJECT_OT_ToolExportMerger.bl_label_button)
         
     def drawArmatureTools(self, context):
         layout = self.layout
@@ -353,11 +358,6 @@ class DOPESHEETACTION_PT_Dragengine(bpy.types.Header):
         row.operator(operator="dragengine.sortactionchannels", text="")
 registerClass(DOPESHEETACTION_PT_Dragengine)
 """
-
-def DOPESHEETACTION_MT_ChannelToolsMenuFunc(self, context):
-    self.layout.operator(operator="dragengine.sortactionchannels", text="Sort Channels Alphabetically")
-
-bpy.types.DOPESHEET_MT_channel.append(DOPESHEETACTION_MT_ChannelToolsMenuFunc)
 
 
 

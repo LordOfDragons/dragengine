@@ -31,36 +31,40 @@ import operator # to get function names for operators like @, +, -
 registeredClasses = []
 
 def make_annotations(cls):
-	"""Converts class fields to annotations if running with Blender 2.8"""
-	if bpy.app.version < (2, 80):
-		return cls
-	bl_props = {k: v for k, v in cls.__dict__.items() if isinstance(v, tuple)}
-	if bl_props:
-		if '__annotations__' not in cls.__dict__:
-			setattr(cls, '__annotations__', {})
-		annotations = cls.__dict__['__annotations__']
-		for k, v in bl_props.items():
-			annotations[k] = v
-			delattr(cls, k)
-	return cls
+    """Converts class fields to annotations if running with Blender 2.8"""
+    if bpy.app.version < (2, 80):
+        return cls
+    bl_props = {k: v for k, v in cls.__dict__.items() if isinstance(v, tuple)}
+    if bl_props:
+        if '__annotations__' not in cls.__dict__:
+            setattr(cls, '__annotations__', {})
+        annotations = cls.__dict__['__annotations__']
+        for k, v in bl_props.items():
+            annotations[k] = v
+            delattr(cls, k)
+    return cls
 
 def registerClass(cls):
-	global registeredClasses
-	make_annotations(cls)
-	bpy.utils.register_class(cls)
-	registeredClasses.append(cls)
+    global registeredClasses
+    make_annotations(cls)
+    bpy.utils.register_class(cls)
+    registeredClasses.append(cls)
 
 def unregisterRegisteredClasses():
-	global registeredClasses
-	for cls in reversed(registeredClasses):
-		bpy.utils.unregister_class(cls)
+    global registeredClasses
+    for cls in reversed(registeredClasses):
+        bpy.utils.unregister_class(cls)
 
+def appendToMenu(menu, cls):
+    def menu_func(self, context):
+        self.layout.operator(cls.bl_idname, text=cls.bl_label)
+    menu.append(menu_func)
 
 
 def matmul27(a, b):
-	return a * b
+    return a * b
 
 def matmul28(a, b):
-	return operator.matmul(a, b) # the same as writing a @ b
+    return operator.matmul(a, b) # the same as writing a @ b
 
 matmul = matmul28 if hasattr(bpy.app, "version") and bpy.app.version >= (2, 80) else matmul27

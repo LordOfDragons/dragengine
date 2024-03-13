@@ -23,7 +23,7 @@
 #
 
 import bpy
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 from .de_helpers import ProgressDisplay
 
 
@@ -33,8 +33,9 @@ from .de_helpers import ProgressDisplay
 class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
     bl_idname = "dragengine.exportmerger"
     bl_label = "Export merge"
-    bl_options = {'INTERNAL'}
-    __doc__ = """Merge collection objects for exporting"""
+    bl_label_button = "Export merge"
+    bl_options = {'REGISTER', 'UNDO'}
+    __doc__ = """Merge all objects in collection for exporting"""
 
     @classmethod
     def poll(cls, context):
@@ -100,6 +101,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
         else:
             self.simple_merge(context, collection, merge_object)
 
+        self.weld_vertices(context, merge_object)
         self.cleanup_collection(context, collection, merge_object)
 
         if laycol:
@@ -273,6 +275,42 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
             vl.objects.active = merge_object
             bpy.ops.object.join()
 
+    def weld_vertices(self, context, merge_object):
+        groups = [x for x in merge_object.vertex_groups
+            if x.name.startswith("deexport.weld")]
+        if len(groups) == 0:
+            return
+
+        vl = context.view_layer
+
+        bpy.ops.object.select_all(action='DESELECT')
+        merge_object.select_set(True)
+        vl.objects.active = merge_object
+
+        for each in groups:
+            index = each.index
+            params = each.name[14:].split(',')
+            distance = 0.001
+            if len(params) > 1:
+                distance = float(params[1])
+
+            has_sel = False
+            for p in merge_object.data.polygons:
+                p.select = False
+            for e in merge_object.data.edges:
+                e.select = False
+            for v in merge_object.data.vertices:
+                v.select = any(x for x in v.groups if x.group == index)
+                has_sel = has_sel | v.select
+
+            if not has_sel:
+                continue
+
+            bpy.ops.object.mode_set(mode='EDIT')
+            bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='VERT')
+            bpy.ops.mesh.remove_doubles(threshold=distance)
+            bpy.ops.object.mode_set(mode='OBJECT')
+
     def cleanup_collection(self, context, collection, merge_object):
         """Remove all objects in collection except merge object."""
         bpy.ops.object.select_all(action='DESELECT')
@@ -284,3 +322,4 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
 
 
 registerClass(OBJECT_OT_ToolExportMerger)
+appendToMenu(bpy.types.VIEW3D_MT_object_convert, OBJECT_OT_ToolExportMerger)

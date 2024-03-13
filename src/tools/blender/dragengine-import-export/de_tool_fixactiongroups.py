@@ -24,7 +24,7 @@
 
 import bpy, re
 
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -33,9 +33,9 @@ from .de_porting import registerClass
 
 class OBJECT_OT_DEToolFixActionGroups(bpy.types.Operator):
 	bl_idname = "dragengine.fixactiongroups"
-	bl_label = "Drag[en]gine Fix Action Groups"
+	bl_label = "Auto-group actions"
 	bl_options = { 'REGISTER', 'UNDO' }
-	__doc__ = """Fix action groups killed by blender ending up group-less"""
+	__doc__ = """Automatically group actions by bones."""
 	
 	@classmethod
 	def poll( cls, context ):
@@ -72,3 +72,4 @@ class OBJECT_OT_DEToolFixActionGroups(bpy.types.Operator):
 		return { 'FINISHED' }
 
 registerClass(OBJECT_OT_DEToolFixActionGroups)
+appendToMenu(bpy.types.DOPESHEET_MT_channel, OBJECT_OT_DEToolFixActionGroups)

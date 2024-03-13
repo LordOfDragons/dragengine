@@ -68,7 +68,7 @@ registerClass(OBJECT_OT_ToolCollapseVerticesSetTargets)
 class OBJECT_OT_ToolCollapseVerticesApply( bpy.types.Operator ):
 	bl_idname = "dragengine.collapsevertices_apply"
 	bl_label = "Collapse Vertices"
-	bl_options = { 'INTERNAL' }
+	bl_options = {'INTERNAL', 'UNDO'}
 	__doc__ = """Collapse vertices to the previously set targets"""
 	
 	@classmethod
