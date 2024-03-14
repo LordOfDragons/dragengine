@@ -1,0 +1,62 @@
+name: Build GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - ghdocs/**
+      - .github/workflows/build_ghpages.yml
+  workflow_dispatch:
+
+# set permissions of GITHUB_TOKEN to allow deployment to github pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# allow only one concurrent deployment. skips runs queued between run in-progress and latest queued.
+# do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install required packages
+        run: |
+          sudo apt -y update
+          sudo apt -y install doxygen
+          pip3 install --upgrade PyGithub
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Build API Docs
+        working-directory: ./ghdocs
+        run: python3 _build.py
+
+      - name: Build Pages
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./ghdocs
+          destination: ./_site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
