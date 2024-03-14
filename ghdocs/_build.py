@@ -174,8 +174,8 @@ def build_dragengine(releases: list[Release]) -> None:
 
     builders.append(DocAppBuilder(
         path_base=os.path.join(pathBaseSrc, "modules/scripting/dragonscript"),
-        path_artifact=os.path.join(pathApiDoc, "dragonscript_module"),
-        path_datafile=os.path.join(pathDataDir, "dragonscript_module.yml"),
+        path_artifact=os.path.join(pathApiDoc, "dragonscript"),
+        path_datafile=os.path.join(pathDataDir, "dragonscript.yml"),
         path_doxyfile="doxyfile_script",
         path_src=".",
         path_doc="doc/script/html"))

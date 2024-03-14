@@ -26,21 +26,6 @@ API documentation of  Drag[en]gine Game Engine.
 
 
 
-Test 1
-{: .highlight }
-
-Test 2
-{: .warning }
-
-Test 3
-{: .note }
-
-Test 4
-{: .important }
-
-
-
-
 This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
 
 You can find the source code for Minima at GitHub:
@@ -62,13 +47,6 @@ Test:
 
 Test 2:
 
-{% for each in site.data.apidoc.dragonscript_module %}
-[DragonScript Script Module: {{ each.version }}]({{ site.url }}{{ site.baseurl }}/artifacts/apidoc/dragonscript_module/{{ each.version }}/index.html){:target="_blank"}
+{% for each in site.data.apidoc.dragonscript %}
+[DragonScript Script Module: {{ each.version }}]({{ site.url }}{{ site.baseurl }}/artifacts/apidoc/dragonscript/{{ each.version }}/index.html){:target="_blank"}
 {% endfor %}
-
-Test 3:
-
-{% for each in site.data.apidoc.dragonscript_language %}
-[DragonScript Language: {{ each.version }}]({{ site.url }}{{ site.baseurl }}/artifacts/apidoc/dragonscript_language/{{ each.version }}/index.html){:target="_blank"}
-{% endfor %}
-
