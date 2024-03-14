@@ -24,7 +24,7 @@ Cross-Compiling is no more officially supported. Build on a Windows machine inst
 
 Install MinGW 64-Bit cross-compiler for your system or use a docker image with it.
 
-To build use the same commands as outlined in {% link building/linux.markdown %}
+To build use the same commands as outlined in the [linux build page]({{ site.baseurl }}{% link building/linux.markdown %}
 but append _tools=mingw64_ to the command line like this:
 
 ```bash
