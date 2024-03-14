@@ -14,12 +14,6 @@ remote_theme: just-the-docs/just-the-docs@v0.5.2
 plugins:
   - jekyll-remote-theme # add this line to the plugins list if you already have one
 
-nav_external_links:
-  - title: Home Page
-    url: https://dragondreams.ch/index.php/dragengine
-    hide_icon: false # set to true to hide the external link icon - defaults to false
-    opens_in_new_tab: true # set to true to open this link in a new tab - defaults to false
-
 keep_files:
   - artifacts
 

@@ -2,11 +2,16 @@
 layout: page
 title: Linux
 permalink: /building/linux/
-nav_order: 2
+nav_order: 3
 parent: Building
 ---
 
 # Building Linux
+
+You do __NOT__ have to build the game engine to play or create games.
+Building is only required for Linux distribution maintainers or those
+having a special use case.
+{: .important }
 
 To customize build either copy "custom.py.dist" to "custom.py" and edit or add the
 parameters in custom.py.dist as command line arguments. For example:

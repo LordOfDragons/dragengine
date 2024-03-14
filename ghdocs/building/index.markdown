@@ -6,6 +6,13 @@ nav_order: 3
 has_children: true
 ---
 
+# Building
+
+You do __NOT__ have to build the game engine to play or create games.
+Building is only required for Linux distribution maintainers or those
+having a special use case.
+{: .important }
+
 # GIT Branches
 
 The __master__ branch is the current development branch with the most recent work.

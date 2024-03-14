@@ -5,7 +5,7 @@ nav_order: 1
 ---
 ![dragengine_logo](https://dragondreams.ch/wp-content/uploads/2020/03/banner_medium.png)
 
-# Drag[en]gine Game Engine
+# Drag\[en\]gine Game Engine
 
 - [Website](https://dragondreams.ch/?page_id=152)
 - [IndieDB Engine Profile](https://www.indiedb.com/engines/dragengine)
@@ -18,12 +18,12 @@ Example projects can be found on Development Wiki or in this repository:
 
 ## Game developer information
 
-The Drag[en]gine is based on a non-blackbox principle. In particular this means
+The Drag\[en\]gine is based on a non-blackbox principle. In particular this means
 
-for developing games using the Drag[en]gine you do not need to compile the game engine nor do you have to link against it.
+for developing games using the Drag\[en\]gine you do not need to compile the game engine nor do you have to link against it.
 {: .important }
 
-If you just want to develop games using Drag[en]gine installing the pre-compiled release files is all you need.
+If you just want to develop games using Drag\[en\]gine installing the pre-compiled release files is all you need.
 
 The source code repository is interesting only for people interested in the
 inner workings and those wanting to create engine modules or editor modules.

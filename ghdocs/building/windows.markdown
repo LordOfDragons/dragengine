@@ -8,6 +8,11 @@ parent: Building
 
 # Building Windows
 
+You do __NOT__ have to build the game engine to play or create games.
+Building is only required for Linux distribution maintainers or those
+having a special use case.
+{: .important }
+
 Install Visual Studio Community Edition. Then open the solution file _vs/dragengine.sln_.
 You can then launch the build of the entire solution. NuGet pulls the necesdsary
 packages. External dependencies are contained inside the source and automatically
