@@ -1851,6 +1851,14 @@
 			<description>If not empty string name of bone in ECBehaviorComponent to attach camera to.</description>
 			<type>string</type>
 		</property>
+		<property name='pathParameters'>
+			<description>If not empty string path of file containing camera parameters (*.decamera). These parameters override the manual set parameters if present in the file.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Dra[en]gine Camera Parameters' pattern='*.decamera' default='.decamera'/>
+			</customPathPattern>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorTwoStateAnimated'>
