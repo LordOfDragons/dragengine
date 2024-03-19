@@ -338,11 +338,11 @@ class ImageBorderCanvasCreator extends DefaultCanvasCreator
 			content.setColorTransform( this.pColorMatrix )
 		end
 		
-		var BorderSize borderSize = this.borderSize()
-		var int left = borderSize.getLeft()
-		var int top = borderSize.getTop()
-		var int right = borderSize.getRight()
-		var int bottom = borderSize.getBottom()
+		var BorderSize bsize = this.borderSize()
+		var int left = bsize.getLeft()
+		var int top = bsize.getTop()
+		var int right = bsize.getRight()
+		var int bottom = bsize.getBottom()
 		var int innerWidth = width - left - right
 		var int innerHeight = height - top - bottom
 		var int innerRight = width - right
