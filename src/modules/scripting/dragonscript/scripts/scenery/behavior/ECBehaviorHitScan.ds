@@ -416,7 +416,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			var float fromX = -toX
 			var float toY = angleY * 0.5
 			var float fromY = -toY
-			var float rotationX, positionY, testAngle, radius
+			var float positionY, testAngle, radius
 			
 			this.pTests.forEach( block ColliderCollisionTest each
 				testAngle = DEMath.random( fromY, toY )
@@ -458,7 +458,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			end
 			
 			var int x, y, index = 0
-			var float rotationX, positionY, testAngle, radius
+			var float positionY, testAngle, radius
 			var float firstX = angleX * -0.5
 			var float factorX = angleX / DEMath.max( countX - 1, 1 )
 			var float firstY = angleY * -0.5

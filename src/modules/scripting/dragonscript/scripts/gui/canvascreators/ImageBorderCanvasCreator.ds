@@ -347,7 +347,6 @@ class ImageBorderCanvasCreator extends DefaultCanvasCreator
 		var int innerHeight = height - top - bottom
 		var int innerRight = width - right
 		var int innerBottom = height - bottom
-		var CanvasImage image
 		
 		if innerWidth < 0
 			var float factor = ( width cast float ) / ( left + right )

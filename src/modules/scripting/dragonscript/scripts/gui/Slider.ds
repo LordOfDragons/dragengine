@@ -540,12 +540,7 @@ class Slider extends Container implements RangeModelListener
 		
 		if event.getButton() == InputEventMouseButton.left
 			var Point position = event.getPosition()
-			var RectArea slideArea = getSlideArea()
 			var ActionListener action
-			
-			var float factor = ((pModel.getValue() - pModel.getMinimum()) cast float)\
-				/ DEMath.max(pModel.getMaximum() - pModel.getMinimum(), 1)
-			var int knob, testValue
 			
 			if pOrientation == Orientation.horizontal
 				if position.getX() < pWidgetKnob.getX() + pWidgetKnob.getWidth() / 2

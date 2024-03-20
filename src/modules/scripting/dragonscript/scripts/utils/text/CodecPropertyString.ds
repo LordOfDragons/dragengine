@@ -848,7 +848,6 @@ class CodecPropertyString
 		var String s = "", s2
 		var Vector2 v2
 		var Vector v
-		var float f
 		
 		for i = 0 to count
 			shapeType = list.getTypeAt(i)

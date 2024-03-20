@@ -118,9 +118,6 @@ class LoadWorld extends BaseXmlLoader
 	private func void pParseWorld(EasyXMLElement root, StubGameWorld stubWorld, \
 	String filename, bool ignorePersistable, bool enableNetworking)
 		var GameWorld world = stubWorld.getGameWorld()
-		var float sectorDim = 500.0
-		var int imageDim = 1024
-		
 		if world == null
 			throw EInvalidParam.new()
 		end
@@ -169,7 +166,6 @@ class LoadWorld extends BaseXmlLoader
 	private func void pParseObject(EasyXMLElement root, StubGameWorld stubWorld, \
 	bool ignorePersistable, bool enableNetworking)
 		var int i, count = root.getElementCount()
-		var bool hasClassname = false
 		var ElementClass elementClass
 		var EasyXMLElement element
 		var StubElement stubElement
@@ -251,7 +247,6 @@ class LoadWorld extends BaseXmlLoader
 	/** Parse object tag. */
 	private func void pParseObjectTexture(EasyXMLElement root, StubElement stubElement)
 		var StubElementTexture stubTexture = StubElementTexture.new(root.getAttributeNamed("name"))
-		var int texture
 		var Color color
 		
 		root.forEachTag(block EasyXMLElement element, String tagName

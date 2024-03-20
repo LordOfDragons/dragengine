@@ -228,7 +228,6 @@ class TextLayout
 		var int lineEnd = 0
 		var int nextPosition = 0
 		var int lastPosition
-		var int i, lineCount
 		var int x = 0, y = 0
 		var int character
 		var bool hasLines = false

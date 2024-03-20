@@ -172,7 +172,6 @@ class SpeechAnimationPlayback
 			return
 		end
 		
-		var int controllerCount = pAnimatorInstance.getControllerCount()
 		var int phonemeCount = pPhonemes.getCount()
 		var float wordGapDuration = 0.1
 		var float windUpDuration = 0.1
@@ -182,7 +181,6 @@ class SpeechAnimationPlayback
 		var int controller2 = -1
 		var Phoneme phoneme1, phoneme2
 		var float phonemeDuration
-		var int i
 		
 		// determine which phoneme to display and the blending
 		pElapsed += elapsed

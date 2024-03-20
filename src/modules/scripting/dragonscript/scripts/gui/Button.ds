@@ -375,8 +375,6 @@ class Button extends Container
 	 * \details Call if the layout of the widgets changes. Removes the old widgets first.
 	 */
 	func void createContentWidgets()
-		var bool enabled = getEnabled()
-		
 		removeAllWidgets()
 		pWidgetImage = null
 		pWidgetText = null

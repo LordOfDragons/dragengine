@@ -156,7 +156,6 @@ class LoadMousePointer extends BaseXmlLoader
 		var Object parameterValue
 		var String parameterName
 		var bool isShared = true
-		var String tagName
 		
 		for i = 0 to elementCount
 			element = root.getElementAt( i )

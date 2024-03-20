@@ -303,7 +303,6 @@ class MenuPopup extends WindowPopup
 		var int ident = event.getIdentifier()
 		var Point localPosition
 		var Window window
-		var Widget widget
 		
 		for i = count - 1 downto 0
 			window = desktop.getWidget(i) cast Window

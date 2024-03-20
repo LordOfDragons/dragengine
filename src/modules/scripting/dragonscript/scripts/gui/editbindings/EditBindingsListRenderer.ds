@@ -265,7 +265,6 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	protected func Widget createBindingWidget(EditBindingsListModel model, \
 	EditBindingsListModelEntry entry, bool selected, Binding binding, \
 	EditBindingsListModelEntry.InputSource inputSource)
-		var BindingManager bindingManager = model.getBindingManager()
 		var String designerSelector = getDesignerSelector()
 		var DisplayInputSource dpi
 		
@@ -317,7 +316,6 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	protected func Widget createBindingWidgetFallback(EditBindingsListModel model, \
 	EditBindingsListModelEntry entry, bool selected, Binding binding, \
 	EditBindingsListModelEntry.InputSource inputSource)
-		var BindingManager bindingManager = model.getBindingManager()
 		var String designerSelector = getDesignerSelector()
 		var String deviceID = "??"
 		var String sourceID = "??"

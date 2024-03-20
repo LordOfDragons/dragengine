@@ -336,9 +336,6 @@ class BaseXmlLoader
 	 * for red, green and blue and 1 for alpha.
 	 */
 	func Color readColor(EasyXMLElement root, Color defaultColor)
-		var int e, elementCount = root.getElementCount()
-		var EasyXMLElement element
-		var String tagName
 		var float red = defaultColor.getRed()
 		var float green = defaultColor.getGreen()
 		var float blue = defaultColor.getBlue()

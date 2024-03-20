@@ -203,8 +203,6 @@ class BorderLayout implements Layout
 	public func void doLayout(Container container)
 		var int borderLeft = container.getPadding().getLeft()
 		var int borderTop = container.getPadding().getTop()
-		var int borderRight = container.getPadding().getRight()
-		var int borderBottom = container.getPadding().getBottom()
 		var int width = container.getContainerWidth()
 		var int height = container.getContainerHeight()
 		var bool hasContent = pContentWidget != null and pContentWidget.getVisible()

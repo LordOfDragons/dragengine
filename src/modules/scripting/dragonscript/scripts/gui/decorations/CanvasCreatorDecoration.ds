@@ -387,11 +387,9 @@ class CanvasCreatorDecoration extends DefaultDecoration
 	
 	/** \brief Create button canvas. */
 	protected func void createButtonCanvas(CanvasView decoCanvas, Window window)
-		var int width = window.getWidth() + pDecorationSize.getWidth()
 		var int top = pDecorationSize.getTop()
 		var int x = window.getWidth() + pDecorationSize.getLeft()
 		var Point imageSize
-		var int y
 		
 		// close button
 		pCanvasButtonClose = null
