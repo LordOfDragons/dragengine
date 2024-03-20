@@ -635,9 +635,9 @@ class CodecPropertyString
 						
 						k = 1
 						while k < tokenValueCount
-							var float x = (tokenValueList.getAt(k++) cast String).toFloat()
-							var float y = (tokenValueList.getAt(k++) cast String).toFloat()
-							var float z = (tokenValueList.getAt(k++) cast String).toFloat()
+							x = (tokenValueList.getAt(k++) cast String).toFloat()
+							y = (tokenValueList.getAt(k++) cast String).toFloat()
+							z = (tokenValueList.getAt(k++) cast String).toFloat()
 							points.add(Vector.new(x, y, z))
 						end
 						

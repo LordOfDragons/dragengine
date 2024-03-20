@@ -207,9 +207,9 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pTest.setEnabled(pEnabled)
 			
 			if pShape != null
-				var ColliderVolume collider = ColliderVolume.new()
-				collider.setShape(pShape)
-				pTest.setCollider(collider)
+				var ColliderVolume collider2 = ColliderVolume.new()
+				collider2.setShape(pShape)
+				pTest.setCollider(collider2)
 			end
 			
 			collider.addCollisionTest(pTest)
