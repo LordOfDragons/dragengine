@@ -225,7 +225,8 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
             # to the work object. once done the work object can
             # be merged with the merge object and deleted
             skeys = each.data.shape_keys
-            for index in range(1, len(skeys.key_blocks)):
+            skeycount = len(skeys.key_blocks)
+            for index in range(1, skeycount):
                 name = skeys.key_blocks[index].name
                 shape_index = shape_index + 1
                 progress.update(
@@ -240,8 +241,11 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
                 bpy.ops.object.duplicate(linked=False)
                 tempobj = vl.objects.active
 
-                # set shape weight to 1
-                tempobj.data.shape_keys.key_blocks[name].value = 1
+                # set shape weight to 1 and all others to 0
+                skeys2 = tempobj.data.shape_keys.key_blocks
+                for index2 in range(1, skeycount):
+                    skeys2[index2].value = 0
+                skeys2[name].value = 1
 
                 # remove shape keys leaving behind mix shape
                 bpy.ops.object.shape_key_remove(all=True, apply_mix=True)
