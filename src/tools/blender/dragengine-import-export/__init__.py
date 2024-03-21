@@ -31,7 +31,7 @@ bl_info = {
 	"api": 36079,
 	"location": "File > Import-Export > Drag[en]gine",
 	"warning": "",
-	"url": "http://dragengine.rptd.ch",
+	"url": "https://dragondreams.ch/index.php/dragengine",
 	"support": "COMMUNITY",
 	"category": "Import-Export"
 	}

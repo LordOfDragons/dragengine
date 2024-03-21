@@ -11,6 +11,7 @@ pathShare = envAddon.subst(envAddon['path_igde_share'])
 
 files = []
 globFiles(envAddon, 'dragengine-import-export', '*.py', files)
+files.append('dragengine-import-export/blender_manifest.toml')
 
 archiveFiles = {f:envAddon.File(f) for f in files}
 def archiveZip(env, target, source):
