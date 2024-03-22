@@ -38,6 +38,8 @@ registerClass(TypeDETVertex)
 class OBJECT_OT_ToolCollapseVerticesSetTargets( bpy.types.Operator ):
 	bl_idname = "dragengine.collapsevertices_settargets"
 	bl_label = "Collapse Vertices Set Targets"
+	bl_label_button = "Set Targets"
+	bl_icon = 'PINNED'
 	bl_options = { 'INTERNAL' }
 	__doc__ = """Sets the targets for vertex collapsing"""
 	
@@ -68,6 +70,8 @@ registerClass(OBJECT_OT_ToolCollapseVerticesSetTargets)
 class OBJECT_OT_ToolCollapseVerticesApply( bpy.types.Operator ):
 	bl_idname = "dragengine.collapsevertices_apply"
 	bl_label = "Collapse Vertices"
+	bl_label_button = "Collapse to targets"
+	bl_icon = 'SNAP_ON'
 	bl_options = {'INTERNAL', 'UNDO'}
 	__doc__ = """Collapse vertices to the previously set targets"""
 	

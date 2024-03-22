@@ -34,6 +34,7 @@ from .de_porting import registerClass, appendToMenu
 class OBJECT_OT_DEToolRounding( bpy.types.Operator ):
     bl_idname = "dragengine.rounding"
     bl_label = "Clamp position"
+    bl_icon = 'SNAP_ON'
     bl_options = { 'REGISTER', 'UNDO' }
     __doc__ = """Clamp position using rounding"""
     

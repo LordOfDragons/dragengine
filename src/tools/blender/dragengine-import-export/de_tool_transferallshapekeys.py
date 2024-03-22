@@ -34,6 +34,7 @@ class OBJECT_OT_ToolTransferAllShapeKeys(bpy.types.Operator):
     bl_idname = "dragengine.transferallshapekeys"
     bl_label = "Transfer all shape keys"
     bl_options = {'REGISTER', 'UNDO'}
+    bl_icon = 'MOD_DATA_TRANSFER'
     __doc__ = """Transfer all shape keys from selected object to active object"""
 
     @classmethod

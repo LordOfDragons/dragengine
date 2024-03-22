@@ -34,6 +34,7 @@ from .de_porting import registerClass, appendToMenu
 class OBJECT_OT_DEToolMirrorAnimation( bpy.types.Operator ):
 	bl_idname = "dragengine.mirroranimation"
 	bl_label = "Mirror Animation"
+	bl_icon = 'MOD_MIRROR'
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Mirror animation"""
 	

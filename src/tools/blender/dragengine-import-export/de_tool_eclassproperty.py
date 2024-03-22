@@ -38,7 +38,8 @@ from .de_porting import registerClass, matmul, appendToMenu
 class OBJECT_OT_DEToolEClassProperty(bpy.types.Operator):
 	bl_idname = "dragengine.eclassproperty"
 	bl_label = "Element Class Property"
-	bl_label_button = "EClass Property"
+	bl_label_button = "Build Property"
+	bl_icon = 'TEXT'
 	bl_options = {'REGISTER', 'UNDO'}
 	__doc__ = """Build element class property value from selection storing it into Text object"""
 	

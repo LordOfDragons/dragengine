@@ -34,6 +34,8 @@ from .de_porting import registerClass, appendToMenu
 class OBJECT_OT_ToolRemoveEmptyVertexGroups(bpy.types.Operator):
     bl_idname = "dragengine.remove_empty_vertex_groups"
     bl_label = "Remove empty vertex groups"
+    bl_label_button = "Remove empty groups"
+    bl_icon = 'TRASH'
     bl_options = {'REGISTER', 'UNDO'}
     __doc__ = """Remove vertex groups not used by any vertices"""
     

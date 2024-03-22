@@ -34,8 +34,9 @@ from .de_porting import registerClass, appendToMenu
 class OBJECT_OT_DEToolFixActionGroups(bpy.types.Operator):
 	bl_idname = "dragengine.fixactiongroups"
 	bl_label = "Auto-group actions"
+	bl_icon = 'ACTION'
 	bl_options = { 'REGISTER', 'UNDO' }
-	__doc__ = """Automatically group actions by bones."""
+	__doc__ = """Automatically group actions by bones"""
 	
 	@classmethod
 	def poll( cls, context ):

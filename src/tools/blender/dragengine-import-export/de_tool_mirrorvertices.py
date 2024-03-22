@@ -34,6 +34,7 @@ from .de_porting import registerClass, appendToMenu
 class OBJECT_OT_ToolMirrorVertices(bpy.types.Operator):
 	bl_idname = "dragengine.mirror_vertices"
 	bl_label = "Mirror Vertices"
+	bl_icon = 'MOD_MIRROR'
 	bl_options = {'REGISTER', 'UNDO'}
 	__doc__ = """Mirror vertices (location and weights)"""
 	

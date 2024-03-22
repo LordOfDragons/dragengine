@@ -42,6 +42,8 @@ from .de_porting import registerClass, matmul
 class OBJECT_OT_ExportNavigationSpace( bpy.types.Operator, ExportHelper ):
 	bl_idname = "dragengine.export_navspace"
 	bl_label = "Navigation Space (.denavspace))"
+	bl_label_button = "Navigation Space"
+	bl_icon = 'ARROW_LEFTRIGHT'
 	__doc__ = """Export as Drag[en]gine Navigation Space"""
 	filename_ext = ".denavspace"
 	filter_glob: bpy.props.StringProperty( default="*.denavspace", options={ 'HIDDEN' } )

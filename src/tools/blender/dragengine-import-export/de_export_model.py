@@ -41,6 +41,8 @@ from .de_porting import registerClass, matmul
 class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 	bl_idname = "dragengine.export_model"
 	bl_label = "Model (.demodel)"
+	bl_label_button = "Model"
+	bl_icon = 'MESH_DATA'
 	__doc__ = """Export as Drag[en]gine Model Resource"""
 	filename_ext = ".demodel"
 	filter_glob: bpy.props.StringProperty(default="*.demodel", options={ 'HIDDEN' })

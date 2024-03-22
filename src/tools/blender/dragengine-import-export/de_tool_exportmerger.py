@@ -34,6 +34,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
     bl_idname = "dragengine.exportmerger"
     bl_label = "Export merge"
     bl_label_button = "Export merge"
+    bl_icon = 'EXPORT'
     bl_options = {'REGISTER', 'UNDO'}
     __doc__ = """Merge all objects in collection for exporting"""
 
@@ -167,7 +168,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
                                 meshes_with_skey, progress)
 
     def merge_noshapekey(self, context, merge_object, objects):
-        """Shape key aware merge of objects without shape keys."""
+        """Shape key aware merge of objects without shape keys"""
         if len(objects) == 0:
             return
 
@@ -188,7 +189,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
         bpy.ops.object.join()
 
     def merge_withshapekey(self, context, merge_object, objects, progress):
-        """Shape key aware merge of objects with shape keys."""
+        """Shape key aware merge of objects with shape keys"""
         if len(objects) == 0:
             return
 
@@ -316,7 +317,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
             bpy.ops.object.mode_set(mode='OBJECT')
 
     def cleanup_collection(self, context, collection, merge_object):
-        """Remove all objects in collection except merge object."""
+        """Remove all objects in collection except merge object"""
         bpy.ops.object.select_all(action='DESELECT')
         for each in collection.all_objects:
             if each != merge_object:

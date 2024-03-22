@@ -50,7 +50,8 @@ class OBJECT_OT_ToolCopyVerticesCopy(bpy.types.Operator):
     bl_label = "Shape key: Copy vertex position"
     bl_label_button = "Copy vertices"
     bl_options = {'REGISTER'}
-    __doc__ = """Copy position of vertices in active shape key."""
+    bl_icon = 'COPYDOWN'
+    __doc__ = """Copy position of selected vertices in active shape key"""
 
     @classmethod
     def poll(cls, context):
@@ -86,8 +87,9 @@ class OBJECT_OT_ToolCopyVerticesPaste(bpy.types.Operator):
     bl_idname = "dragengine.copyvertices_paste"
     bl_label = "Shape key: Paste vertex position"
     bl_label_button = "Paste Vertices"
+    bl_icon = 'PASTEDOWN'
     bl_options = {'REGISTER', 'UNDO'}
-    __doc__ = """Paste copied vertex positions into active shape key."""
+    __doc__ = """Paste copied vertex positions into active shape key"""
 
     mirror: bpy.props.BoolProperty(
         name="Mirror",

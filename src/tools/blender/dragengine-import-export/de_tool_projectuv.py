@@ -44,7 +44,8 @@ registerClass(TypeDETProjectUVTemplate)
 
 class OBJECT_OT_ToolProjectUV( bpy.types.Operator ):
 	bl_idname = "dragengine.projectuv"
-	bl_label = "ProjectUV"
+	bl_label = "Project UV"
+	bl_label_button = "Project"
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Project texture coordinates"""
 	

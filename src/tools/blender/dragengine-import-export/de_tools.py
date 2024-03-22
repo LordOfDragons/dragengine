@@ -26,16 +26,26 @@ import bpy
 
 from .de_tool_aogen import OBJECT_OT_ToolAOGeneration
 from .de_tool_channellayout import OBJECT_OT_DEToolSortActionChannels
-from .de_tool_collapsevertices import TypeDETVertex
-from .de_tool_copyvertex import TypeDETCVVertex
+
+from .de_tool_collapsevertices import TypeDETVertex, \
+    OBJECT_OT_ToolCollapseVerticesSetTargets, \
+    OBJECT_OT_ToolCollapseVerticesApply
+
+from .de_tool_copyvertex import TypeDETCVVertex, \
+    OBJECT_OT_ToolCopyVerticesCopy, \
+    OBJECT_OT_ToolCopyVerticesPaste
+
 from .de_tool_transferallshapekeys import OBJECT_OT_ToolTransferAllShapeKeys
 from .de_tool_mirrorvertices import OBJECT_OT_ToolMirrorVertices
-from .de_tool_removeemptyvertexgroups import OBJECT_OT_ToolRemoveEmptyVertexGroups
+
+from .de_tool_removeemptyvertexgroups import \
+    OBJECT_OT_ToolRemoveEmptyVertexGroups
+
 from .de_tool_eclassproperty import OBJECT_OT_DEToolEClassProperty
 from .de_tool_gbuffernormgen import OBJECT_OT_ToolGBufferNormGen
 from .de_tool_loderrorcalc import OBJECT_OT_DEToolLODInfo
 from .de_tool_mirroranim import OBJECT_OT_DEToolMirrorAnimation
-from .de_tool_projectuv import TypeDETProjectUVTemplate
+from .de_tool_projectuv import TypeDETProjectUVTemplate, OBJECT_OT_ToolProjectUV
 from .de_tool_rounding import OBJECT_OT_DEToolRounding
 from .de_tool_shapropfromtex import OBJECT_OT_ToolShapePropertyFromTexture
 from .de_tool_texturefill import OBJECT_OT_ToolTextureFill
@@ -44,8 +54,13 @@ from .de_tool_treebranchunwrap import OBJECT_OT_ToolTreeBranchUnwrap
 from .de_tool_fixactiongroups import OBJECT_OT_DEToolFixActionGroups
 from .de_tool_spreadanim import OBJECT_OT_DEToolSpreadAnimation
 from .de_tool_exportmerger import OBJECT_OT_ToolExportMerger
-from .de_porting import registerClass, appendToMenu
-
+from .de_porting import registerClass, appendToMenu, layOpRow, layPropRow, \
+    layLabRow
+from .de_export_model import OBJECT_OT_ExportModel
+from .de_export_rig import OBJECT_OT_ExportRig
+from .de_export_occmesh import OBJECT_OT_ExportOcclusionMesh
+from .de_export_navspace import OBJECT_OT_ExportNavigationSpace
+from .de_export_animation import OBJECT_OT_ExportAnimation
 
 
 # Simple tools where using an own file is overkill
@@ -54,6 +69,7 @@ from .de_porting import registerClass, appendToMenu
 class OBJECT_OT_DEToolSeamToSharp(bpy.types.Operator):
     bl_idname = "dragengine.seamtosharp"
     bl_label = "Seam To Sharp"
+    bl_icon = 'MOD_DATA_TRANSFER'
     bl_options = { 'REGISTER', 'UNDO' }
     __doc__ = """Set sharp edges from seams"""
     
@@ -90,6 +106,7 @@ appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_edges,
 class OBJECT_OT_DEToolSelectNgon(bpy.types.Operator):
     bl_idname = "dragengine.selectngon"
     bl_label = "Select N-Gon faces"
+    bl_icon = 'SELECT_SET'
     bl_options = { 'REGISTER', 'UNDO' }
     __doc__ = """Select N-Gon faces not supported by some exporters"""
     
@@ -182,163 +199,306 @@ class TypeDETOptions(bpy.types.PropertyGroup):
     projectUVTemplates: bpy.props.CollectionProperty(type=TypeDETProjectUVTemplate)
 registerClass(TypeDETOptions)
 
-class VIEW3D_PT_Dragengine(bpy.types.Panel):
+
+class VIEW3D_PT_DragengineMeshVertices(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
     bl_category = 'Drag[en]gine'
-    #bl_category = 'Drag[en]gine'
-    bl_label = "Drag[en]gine Tools"
-    
+    bl_label = "Collapse Vertices"
+    bl_options = {'DEFAULT_CLOSED'}
+
     @classmethod
     def poll(cls, context):
-        return context.active_object
-    
+        return context.active_object\
+            and context.active_object.type == 'MESH'
+
     def draw(self, context):
         layout = self.layout
-        #layout.prop(context.scene, "dragengine_scaling", expand = True)
-        #layout.menu("VIEW3D_MT_Export")
-        if context.active_object.type == 'MESH':
-            self.drawMeshTools(context)
-        if context.active_object.type == 'ARMATURE':
-            self.drawArmatureTools(context)
-        if len(context.selected_objects) > 0:
-            self.drawCommonTools(context)
-    
-    def drawMeshTools(self, context):
+        object = context.active_object
+
+        layout.row(align=True)
+        layout.label(text="Collapse")
+        col = layout.column(align=True)
+        layOpRow(col, OBJECT_OT_ToolCollapseVerticesSetTargets)
+        layOpRow(col, OBJECT_OT_ToolCollapseVerticesApply)
+
+
+class VIEW3D_PT_DragengineMeshShapeKeys(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Shape Keys"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'MESH'
+
+    def draw(self, context):
         object = context.active_object
         layout = self.layout
-        
-        # collapse vertices
-        layout.row(align=True).label(text="Collapse Vertices:")
+
+        layout.row(align=True)
+        layLabRow(layout, "Vertex Positions")
         col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator(operator="dragengine.collapsevertices_settargets", text="Targets")
-        row.operator(operator="dragengine.collapsevertices_apply", text="Apply")
-        
-        # copy vertices
-        layout.row(align=True).label(text="Copy Vertices (Shape Key):")
+        layOpRow(col, OBJECT_OT_ToolCopyVerticesCopy)
+
         col = layout.column(align=True)
-        
-        row = col.row(align=True)
-        row.operator(operator="dragengine.copyvertices_copy", text="Copy")
-        op = row.operator(operator="dragengine.copyvertices_paste", text="Paste")
-        op.mirror = False
-        
-        row = col.row(align=True)
-        op = row.operator(operator="dragengine.copyvertices_paste",
-                          text="Paste", icon="MOD_MIRROR")
+        layOpRow(col, OBJECT_OT_ToolCopyVerticesPaste)
+
+        op = layOpRow(col, OBJECT_OT_ToolCopyVerticesPaste,
+                      text="Paste Mirror", icon="MOD_MIRROR")
         op.mirror = True
         op.topology = False
-        op = row.operator(operator="dragengine.copyvertices_paste",
-                          text="Topology", icon="MOD_MIRROR")
+
+        op = layOpRow(col, OBJECT_OT_ToolCopyVerticesPaste,
+                      text="Paste Mirror Topology", icon="MOD_MIRROR")
         op.mirror = True
         op.topology = True
-        
-        row = col.row(align=True)
-        op = row.operator(operator="dragengine.transferallshapekeys",
-                          text="Transfer All")
-        
-        # unwrap
-        layout.row(align=True).label(text="Unwrap:")
+
+        layout.row(align=True)
+        layLabRow(layout, "Transfer")
         col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator(operator="dragengine.projectuv", text="Project")
-        row.operator(operator="dragengine.treebranchunwrap", text="Branch")
-        row = col.row(align=True)
-        row.operator(operator="dragengine.transferuv", text="Transfer UV")
-        
-        # editing
-        layout.row(align=True).label(text="Editing:")
+        layOpRow(col, OBJECT_OT_ToolTransferAllShapeKeys)
+
+
+class VIEW3D_PT_DragengineMeshUnwrap(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Unwrap"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'MESH'
+
+    def draw(self, context):
+        object = context.active_object
+        layout = self.layout
+
+        layout.row(align=True)
         col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator(operator="dragengine.rounding", text="Rounding")
-        row = col.row(align=True)
-        row.operator(operator="dragengine.seamtosharp", text="Seam to Sharp")
-        row = col.row(align=True)
-        row.operator(operator="dragengine.selectngon", text="Select N-Gon")
-        row = col.row(align=True)
-        row.operator(operator="dragengine.mirror_vertices", text="Mirror Vertices")
-        row = col.row(align=True)
-        row.operator(operator="dragengine.remove_empty_vertex_groups", text="Remove Empty VGroups")
-        
-        # generators
-        layout.row(align=True).label(text="Generators:")
+        layOpRow(col, OBJECT_OT_ToolProjectUV)
+        layOpRow(col, OBJECT_OT_ToolTreeBranchUnwrap)
+        layOpRow(col, OBJECT_OT_ToolTransferUV)
+
+
+class VIEW3D_PT_DragengineMeshEditing(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Editing"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'MESH'
+
+    def draw(self, context):
+        object = context.active_object
+        layout = self.layout
+
+        layout.row(align=True)
         col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator(operator="dragengine.gbuffernormgen", text="GBuffer NormGen")
-        
-        # lod testing
-        layout.row(align=True).label(text="LOD Testing:")
-        
+        layOpRow(col, OBJECT_OT_DEToolRounding)
+        layOpRow(col, OBJECT_OT_DEToolSeamToSharp)
+        layOpRow(col, OBJECT_OT_DEToolSelectNgon)
+        layOpRow(col, OBJECT_OT_ToolMirrorVertices)
+        layOpRow(col, OBJECT_OT_ToolRemoveEmptyVertexGroups)
+
+
+class VIEW3D_PT_DragengineMeshGenerators(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Generators"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'MESH'
+
+    def draw(self, context):
+        object = context.active_object
+        layout = self.layout
+
+        layout.row(align=True)
         col = layout.column(align=True)
-        row = col.row(align=True)
-        op = row.operator(operator="dragengine.lodinfo", text="Max Err")
+        layOpRow(col, OBJECT_OT_ToolGBufferNormGen)
+
+
+class VIEW3D_PT_DragengineMeshLodTesting(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "LOD Testing"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'MESH'
+
+    def draw(self, context):
+        object = context.active_object
+        layout = self.layout
+
+        layout.row(align=True)
+
+        col = layout.column(align=True)
+
+        op = layOpRow(col, OBJECT_OT_DEToolLODInfo, text="Calc Maximum Error")
         op.calcMaxError = True
-        op = row.operator(operator="dragengine.lodinfo", text="+ Avg Err")
-        op.calcMaxError = True
+
+        op = layOpRow(col, OBJECT_OT_DEToolLODInfo, text="Calc Average Error")
         op.calcAvgError = True
-        
-        col.row(align=True).prop(context.scene, "dragengine_lodmaxerror", expand=True)
-        col.row(align=True).prop(context.scene, "dragengine_lodavgerror", expand=True)
-        
+
         col = layout.column(align=True)
-        col.row(align=False).prop(context.scene, "dragengine_lodtestresultdistance", expand=True)
-        col.row(align=True).prop(context.scene, "dragengine_lodtestfov", expand=True)
-        col.row(align=True).prop(context.scene, "dragengine_lodtestscreensize", expand=True)
-        col.row(align=True).prop(context.scene, "dragengine_lodtestpixelerror", expand=True)
-        col.row(align=True).prop(context.scene, "dragengine_lodtesterror", expand=True)
-        
-        # physics shapes
-        layout.row(align=True).label(text="Physics Shapes:")
+        layLabRow(col, "Screen Parameters")
+        layPropRow(col, context.scene, "dragengine_lodtestfov")
+        layPropRow(col, context.scene, "dragengine_lodtestscreensize")
+        layPropRow(col, context.scene, "dragengine_lodtestpixelerror")
+        layPropRow(col, context.scene, "dragengine_lodtesterror")
+
         col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator(operator="dragengine.shapropfromtex", text="Shape Prop from Tex")
-        
-        # export
-        layout.row(align=True).label(text="Export:")
+        layLabRow(col, "Test Parameters")
+        layPropRow(col, context.scene, "dragengine_lodtestresultdistance")
+
         col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator(operator="dragengine.export_model", text="Model")
-        row.operator(operator="dragengine.export_rig", text="Rig")
-        row = col.row(align=True)
-        row.operator(operator="dragengine.export_occmesh", text="OccMesh")
-        row.operator(operator="dragengine.export_navspace", text="NavMesh")
-        row = col.row(align=True)
-        row.operator(operator="dragengine.export_animation", text="Animation")
+        layLabRow(col, "Results")
+        layPropRow(col, context.scene, "dragengine_lodmaxerror", readonly=True)
+        layPropRow(col, context.scene, "dragengine_lodavgerror", readonly=True)
+
+
+class VIEW3D_PT_DragengineMeshPhysicsShapes(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Physics Shapes"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'MESH'
+
+    def draw(self, context):
+        object = context.active_object
+        layout = self.layout
+
+        layout.row(align=True)
+        col = layout.column(align=True)
+        layOpRow(col, OBJECT_OT_ToolShapePropertyFromTexture)
+
+
+class VIEW3D_PT_DragengineMeshExport(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Export"
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'MESH'
+
+    def draw(self, context):
+        object = context.active_object
+        layout = self.layout
+
+        layout.row(align=True)
+        col = layout.column(align=True)
+        layOpRow(col, OBJECT_OT_ExportModel)
+        layOpRow(col, OBJECT_OT_ExportRig)
+        layOpRow(col, OBJECT_OT_ExportOcclusionMesh)
+        layOpRow(col, OBJECT_OT_ExportNavigationSpace)
+        layOpRow(col, OBJECT_OT_ExportAnimation)
 
         col = layout.column(align=False)
-        row = col.row(align=True)
-        row.operator(operator="dragengine.exportmerger",
-                     text=OBJECT_OT_ToolExportMerger.bl_label_button)
-        
-    def drawArmatureTools(self, context):
-        layout = self.layout
-        row = layout.row(align=True)
-        row.operator(operator="dragengine.mirroranimation", text="Mirror Animation")
-        row = layout.row(align=True)
-        row.operator(operator="dragengine.fixactiongroups", text="Fix Action Groups")
-        
-        # spread animation
-        col = layout.column(align=True)
-        col.row(align=True).operator(operator="dragengine.spreadanim", text="Spread Animation")
-        col.row(align=True).prop(context.scene, "dragengine_spreadanimtarget", expand=True)
-        
-        # export
-        layout.row(align=True).label(text="Export:")
-        col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator(operator="dragengine.export_rig", text="Rig")
-        row.operator(operator="dragengine.export_animation", text="Animation")
-    
-    def drawCommonTools(self, context):
-        layout = self.layout
-        layout.row(align=True).label(text="Element Class Properties:")
-        col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator(operator="dragengine.eclassproperty", text="Property Text")
+        layOpRow(col, OBJECT_OT_ToolExportMerger)
 
-registerClass(VIEW3D_PT_Dragengine)
 
+class VIEW3D_PT_DragengineAnimationAnimation(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Animation"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'ARMATURE'
+
+    def draw(self, context):
+        layout = self.layout
+        col = layout.column(align=True)
+        layOpRow(col, OBJECT_OT_DEToolMirrorAnimation)
+        layOpRow(col, OBJECT_OT_DEToolFixActionGroups)
+
+        col = layout.column(align=True)
+        layOpRow(col, OBJECT_OT_DEToolSpreadAnimation)
+        layPropRow(col, context.scene, "dragengine_spreadanimtarget")
+
+
+class VIEW3D_PT_DragengineAnimationExport(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Export"
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'ARMATURE'
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.row(align=True)
+        col = layout.column(align=True)
+        layOpRow(col, OBJECT_OT_ExportRig)
+        layOpRow(col, OBJECT_OT_ExportAnimation)
+
+
+class VIEW3D_PT_DragengineSharedECProperties(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Element Class"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and len(context.selected_objects) > 0
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.row(align=True)
+        col = layout.column(align=True)
+        layOpRow(col, OBJECT_OT_DEToolEClassProperty)
+
+
+registerClass(VIEW3D_PT_DragengineMeshVertices)
+registerClass(VIEW3D_PT_DragengineMeshShapeKeys)
+registerClass(VIEW3D_PT_DragengineMeshUnwrap)
+registerClass(VIEW3D_PT_DragengineMeshEditing)
+# registerClass(VIEW3D_PT_DragengineMeshGenerators)
+registerClass(VIEW3D_PT_DragengineMeshLodTesting)
+registerClass(VIEW3D_PT_DragengineMeshPhysicsShapes)
+registerClass(VIEW3D_PT_DragengineMeshExport)
+
+registerClass(VIEW3D_PT_DragengineAnimationAnimation)
+registerClass(VIEW3D_PT_DragengineAnimationExport)
+
+registerClass(VIEW3D_PT_DragengineSharedECProperties)
 
 
 """                
@@ -358,8 +518,6 @@ class DOPESHEETACTION_PT_Dragengine(bpy.types.Header):
         row.operator(operator="dragengine.sortactionchannels", text="")
 registerClass(DOPESHEETACTION_PT_Dragengine)
 """
-
-
 
 
 class IMAGEEDITOR_PT_Dragengine(bpy.types.Panel):
