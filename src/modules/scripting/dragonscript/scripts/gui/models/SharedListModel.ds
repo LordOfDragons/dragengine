@@ -94,7 +94,7 @@ class SharedListModel implements ListModel
 	end
 	
 	/** \brief Destroy shared list model. */
-	func void destructor()
+	func destructor()
 		if pModel != null
 			pModel.removeListener(pSharedModelListener)
 		end
