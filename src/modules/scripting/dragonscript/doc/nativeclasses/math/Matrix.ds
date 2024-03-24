@@ -102,6 +102,7 @@ fixed class Matrix
 	
 	/** \brief Create world matrix. */
 	public static func Matrix newWorld(Vector position, Vector view, Vector up)
+		return null
 	end
 	
 	/** \brief Create world matrix. */

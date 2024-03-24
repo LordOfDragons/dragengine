@@ -367,6 +367,7 @@ class Collider
 	 * \version 1.13
 	 */
 	public func bool hasConstraint(ColliderConstraint constraint)
+		return false
 	end
 	
 	/**
@@ -374,6 +375,7 @@ class Collider
 	 * \version 1.13
 	 */
 	public func int indexOfConstraint(ColliderConstraint constraint)
+		return 0
 	end
 	
 	/**
@@ -382,6 +384,7 @@ class Collider
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getConstraintCount().
 	 */
 	public func ColliderConstraint getConstraintAt(int index)
+		return null
 	end
 	
 	/**
