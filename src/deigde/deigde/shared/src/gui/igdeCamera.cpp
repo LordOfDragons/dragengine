@@ -41,6 +41,8 @@
 
 igdeCamera::igdeCamera( deEngine *engine ) :
 pEngine( engine ),
+pEnableHDRR( true ),
+pEnableGI( true ),
 pDistance( 0.0f )
 {
 	DEASSERT_NOTNULL( engine )
@@ -51,14 +53,14 @@ pDistance( 0.0f )
 	pFovRatio = pEngCamera->GetFovRatio();
 	pImageDistance = pEngCamera->GetImageDistance();
 	pViewDistance = pEngCamera->GetViewDistance();
-
-	pEnableGI = true;
-	pEnableHDRR = true;
+	
+	pEngCamera->SetEnableGI( pEnableGI );
+	pEngCamera->SetEnableHDRR( pEnableHDRR );
 	pExposure = pEngCamera->GetExposure();
 	pLowestIntensity = pEngCamera->GetLowestIntensity();
 	pHighestIntensity = pEngCamera->GetHighestIntensity();
 	pAdaptionTime = pEngCamera->GetAdaptionTime();
-
+	
 	pWhiteIntensity = pEngCamera->GetWhiteIntensity();
 	pBloomIntensity = pEngCamera->GetBloomIntensity();
 	pBloomStrength = pEngCamera->GetBloomStrength();
