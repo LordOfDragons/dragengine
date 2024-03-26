@@ -512,6 +512,8 @@ void deoglRenderThread::Run(){
 	DEBUG_SYNC_RT_PASS("out")
 	
 	// render loop
+	decTimer gpuDeadTimer;
+	
 	pLastFrameTime = 0.0f;
 	pTimerFrameUpdate.Reset();
 	pTimerVRFrameUpdate.Reset();
@@ -566,6 +568,7 @@ void deoglRenderThread::Run(){
 				
 				pLimitFrameRate( elapsedRender );
 				pThreadFailure = false;
+				gpuDeadTimer.Reset();
 				DEBUG_SYNC_RT_FAILURE
 				
 			}catch( const deException &exception ){
@@ -577,7 +580,22 @@ void deoglRenderThread::Run(){
 					pSemaphoreSyncVR.Signal();
 				}
 				
-				pThreadFailure = true;
+				// skip failures. gpu drivers get more and more complex and especially
+				// fence timeouts can sometimes happen, for example because a compositor
+				// consumed too much render time or the gpu driver hung up for some
+				// reason. by skipping the error we can hope for the gpu to recover
+				// during the next frame update and avoids brining down the entire
+				// application. to avoid endless hanging a counter is used to bail
+				// out in case the GPU does not recover anymore
+				// pThreadFailure = true;
+				const float gpuDeadTimerElapsed = gpuDeadTimer.PeekElapsedTime();
+				pLogger->LogErrorFormat( "GPU Dead Timer: %.1fs", gpuDeadTimerElapsed );
+				if( gpuDeadTimerElapsed < 3.0f ){
+					pThreadFailure = false;
+					
+				}else{
+					pThreadFailure = true;
+				}
 				DEBUG_SYNC_RT_FAILURE
 			}
 			
