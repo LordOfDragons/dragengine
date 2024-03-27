@@ -32,7 +32,7 @@ pin Dragengine.TriggerSystem
 /**
  * \brief Behavior element behavior adding moving on rail support.
  * 
- * Behavior element class requires the <em>ECBehaviorCollider</em> behavior since the collider
+ * Behavior element class requires the \em ECBehaviorCollider behavior since the collider
  * is manipulated to move the element.
  * 
  * This element behavior can be present only once in a BehaviorElement. Trying to add more
