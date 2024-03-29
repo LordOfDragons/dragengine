@@ -91,7 +91,7 @@ void deoglFence::Wait(){
 	
 	oglClearError();
 	
-	switch( pglClientWaitSync( pFence, 0, 1000000000 ) ){ // 1s timeout
+	switch( pglClientWaitSync( pFence, 0, 3000000000 ) ){ // 3s timeout
 	case GL_ALREADY_SIGNALED:
 	case GL_CONDITION_SATISFIED:
 		pFence = nullptr;

@@ -588,9 +588,11 @@ void deoglRenderThread::Run(){
 				// application. to avoid endless hanging a counter is used to bail
 				// out in case the GPU does not recover anymore
 				// pThreadFailure = true;
+				// 
+				// changed fence timeout to 3s and dead timer to 6s
 				const float gpuDeadTimerElapsed = gpuDeadTimer.PeekElapsedTime();
 				pLogger->LogErrorFormat( "GPU Dead Timer: %.1fs", gpuDeadTimerElapsed );
-				if( gpuDeadTimerElapsed < 3.0f ){
+				if( gpuDeadTimerElapsed < 6.0f ){
 					pThreadFailure = false;
 					
 				}else{
