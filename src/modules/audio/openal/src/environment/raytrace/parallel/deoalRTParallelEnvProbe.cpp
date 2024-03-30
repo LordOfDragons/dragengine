@@ -326,7 +326,10 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	
 	pTimer.Reset();
 	
-	pRunListenUsingTasks( sourceProbe, listenProbe, listener, world, rtWorldBVH, layerMask, position );
+	if( ! pRunListenUsingTasks( sourceProbe, listenProbe, listener, world, rtWorldBVH, layerMask, position ) ){
+		return; // cancelled
+	}
+	
 	#ifdef RTWOVRAYBLOCKED_DO_TIMING
 	const decPointerList wovTimingTasks( pTasksWaitListen );
 	#endif
@@ -706,7 +709,7 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 
 
 
-void deoalRTParallelEnvProbe::pRunListenUsingTasks( const deoalEnvProbe &sourceProbe,
+bool deoalRTParallelEnvProbe::pRunListenUsingTasks( const deoalEnvProbe &sourceProbe,
 const deoalEnvProbe *listenProbe, deoalEnvProbeListener &listener, deoalAWorld &world,
 deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &position ){
 	deMutexGuard lock( pMutex );
@@ -800,9 +803,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	// wait for finish task to finish
 	lock.Unlock();
 	pWaitForFinishTask( parallel, &task );
-	if( task.IsCancelled() ){
-		DETHROW( deeInvalidParam );
-	}
+	return ! task.IsCancelled();
 }
 
 
