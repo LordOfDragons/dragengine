@@ -432,14 +432,31 @@ bool decXmlParser::ParseReference( decXmlContainer *container ){
 				count = ParseName( count + 1, false );
 				if( GetTokenAt( count ) != ';' ) RaiseFatalError();
 				SetCleanString( count );
-				entRef = new decXmlEntityReference( pCleanString + 1 );
-				if( ! entRef ) DETHROW( deeOutOfMemory );
-				entRef->SetLineNumber( lineNumber );
-				entRef->SetPositionNumber( posNumber );
-				RemoveFromToken( count + 1 );
-				container->AddElement( entRef );
-				entRef->FreeReference();
-				entRef = NULL;
+				
+				if( strcmp( pCleanString, "&lt;" ) == 0 ){
+					pAddCharacterData( container, '<', lineNumber, posNumber );
+					
+				} else if( strcmp( pCleanString, "&gt;" ) == 0 ){
+					pAddCharacterData( container, '>', lineNumber, posNumber );
+					
+				} else if( strcmp( pCleanString, "&amp;" ) == 0 ){
+					pAddCharacterData( container, '&', lineNumber, posNumber );
+					
+				} else if( strcmp( pCleanString, "&quot;" ) == 0 ){
+					pAddCharacterData( container, '"', lineNumber, posNumber );
+					
+				} else if( strcmp( pCleanString, "&apos;" ) == 0 ){
+					pAddCharacterData( container, '\'', lineNumber, posNumber );
+					
+				} else {
+					entRef = new decXmlEntityReference( pCleanString + 1 );
+					entRef->SetLineNumber( lineNumber );
+					entRef->SetPositionNumber( posNumber );
+					RemoveFromToken( count + 1 );
+					container->AddElement( entRef );
+					entRef->FreeReference();
+					entRef = nullptr;
+				}
 			}
 		}else{
 			return false;
@@ -598,8 +615,30 @@ void decXmlParser::ParseAttValue( decXmlAttValue *value ){
 				}
 				count = pTokenLen;
 			}else{
+				safeguard = count;
 				count = ParseName( count + 1, false );
 				if( GetTokenAt( count ) != ';' ) RaiseFatalError();
+				
+				if( strncmp( pToken + safeguard, "&lt;", 4 ) == 0 ){
+					pToken[ safeguard ] = '<';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( pToken + safeguard, "&gt;", 4 ) == 0 ){
+					pToken[ safeguard ] = '>';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( pToken + safeguard, "&amp;", 5 ) == 0 ){
+					pToken[ safeguard ] = '&';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( pToken + safeguard, "&quot;", 6 ) == 0 ){
+					pToken[ safeguard ] = '"';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( pToken + safeguard, "&apos;", 6 ) == 0 ){
+					pToken[ safeguard ] = '\'';
+					count = pTokenLen = safeguard + 1;
+				}
 			}
 		}
 		count++;
