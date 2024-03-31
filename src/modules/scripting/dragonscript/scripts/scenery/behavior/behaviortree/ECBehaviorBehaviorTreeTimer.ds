@@ -127,7 +127,6 @@ pin Dragengine.Utils
  *    <condition>timer.finished</condition>
  * </action>
  * \endcode
- * \endcode
  */
 class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
 	/** \brief Behavior tree Timer. */
