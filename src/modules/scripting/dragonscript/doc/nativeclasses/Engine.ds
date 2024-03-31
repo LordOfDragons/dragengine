@@ -73,6 +73,14 @@ fixed class Engine
 		return null
 	end
 	
+	/**
+	 * \brief Application is active (has focus).
+	 * \version 1.22
+	 */
+	public static func bool getAppActive()
+		return false
+	end
+	
 	
 	
 	/**

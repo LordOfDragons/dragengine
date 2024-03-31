@@ -25,6 +25,7 @@
 #include "../deEngine.h"
 #include "../common/exceptions.h"
 #include "../systems/deInputSystem.h"
+#include "../systems/deScriptingSystem.h"
 
 
 
@@ -60,6 +61,7 @@ void deOS::SetAppActive( bool active ){
 	
 	if( pEngine ){
 		pEngine->GetInputSystem()->AppActivationChanged();
+		pEngine->GetScriptingSystem()->OnAppActivate();
 	}
 }
 

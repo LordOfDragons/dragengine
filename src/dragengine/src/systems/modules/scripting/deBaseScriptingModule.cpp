@@ -44,3 +44,7 @@ deBaseScriptingModule::~deBaseScriptingModule(){
 void deBaseScriptingModule::UserRequestQuit(){
 	GetGameEngine()->Quit();
 }
+
+bool deBaseScriptingModule::OnAppActivate(){
+	return true;
+}

@@ -84,6 +84,7 @@ private:
 	DEF_NATFUNC( nfCleanUp );
 	DEF_NATFUNC( nfOnFrameUpdate );
 	DEF_NATFUNC( nfOnResizeRenderWindow );
+	DEF_NATFUNC( nfOnAppActivate );
 	
 	DEF_NATFUNC( nfGetArgumentCount );
 	DEF_NATFUNC( nfGetArgumentAt );
