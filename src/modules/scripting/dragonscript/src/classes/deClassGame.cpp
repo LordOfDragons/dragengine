@@ -172,6 +172,7 @@ void deClassGame::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfCleanUp( init ) );
 	AddFunction( new nfOnFrameUpdate( init ) );
 	AddFunction( new nfOnResizeRenderWindow( init ) );
+	AddFunction( new nfOnAppActivate( init ) );
 	
 	AddFunction( new nfGetArgumentCount( init ) );
 	AddFunction( new nfGetArgumentAt( init ) );
