@@ -207,9 +207,9 @@ bool decUuid::operator!() const{
 decUuid::operator bool() const{
 	int i;
 	for( i=0; i<16; i++ ){
-		if( ! pValues[ i ] ){
-			return false;
+		if( pValues[ i ] ){
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
