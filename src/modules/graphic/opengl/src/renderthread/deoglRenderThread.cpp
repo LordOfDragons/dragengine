@@ -77,6 +77,7 @@
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 #include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 #ifdef ANDROID
 #include <dragengine/systems/deInputSystem.h>
@@ -530,7 +531,10 @@ void deoglRenderThread::Run(){
 			// main thread is messing with our state here. proceed to next barrier doing nothing
 			// except alter the estimated render time. this value is used by the main thread
 			// only outside the synchronization part so we can update it here
+			{
+			const deMutexGuard lock( pMutexShared );
 			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
+			}
 			
 			// wait for leaving synchronize
 			DEBUG_SYNC_RT_WAIT("out")
@@ -543,6 +547,7 @@ void deoglRenderThread::Run(){
 			// main thread did not synchronize in time. render another time using the old state
 			// then wait for synchronization again. we still have to update the estimated render
 			// time though
+			const deMutexGuard lock( pMutexShared );
 			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
 		}
 		
@@ -600,7 +605,10 @@ void deoglRenderThread::Run(){
 			}
 			
 			pLastFrameTime = pTimerFrameUpdate.GetElapsedTime();
+			{
+			const deMutexGuard lock( pMutexShared );
 			pTimeHistoryFrame.Add( pLastFrameTime );
+			}
 			
 			/*
 			pLogger->LogInfoFormat( "RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
@@ -705,9 +713,12 @@ void deoglRenderThread::Synchronize(){
 	
 	pMainThreadShowDebugInfoModule = pDebugInfoModule->GetVisible();
 	
+	{
+	const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryFrame
 	pFPSRate = 0;
 	if( pTimeHistoryFrame.HasMetrics() ){
 		pFPSRate = ( int )( 1.0f / pTimeHistoryFrame.GetAverage() );
+	}
 	}
 	
 	if( pAsyncRendering ){
@@ -780,8 +791,14 @@ bool deoglRenderThread::MainThreadWaitFinishRendering(){
 		if( pTimeHistoryMain.HasMetrics() ){
 			pAccumulatedMainTime += gameTime;
 			
+			float estimatedRenderTime;
+			{
+			const deMutexGuard lock( pMutexShared );
+			estimatedRenderTime = pEstimatedRenderTime;
+			}
+			
 			const float ratioTimes = pOgl.GetConfiguration().GetAsyncRenderSkipSyncTimeRatio();
-			const float remainingTime = pEstimatedRenderTime - pAccumulatedMainTime;
+			const float remainingTime = estimatedRenderTime - pAccumulatedMainTime;
 			const float estimatedGameTime = decMath::max( pTimeHistoryMain.GetAverage(), 0.001f ); // stay above 1ms
 			
 			/*
