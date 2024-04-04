@@ -23,14 +23,14 @@ class StartGame extends WindowGameWorld.Loader
 	 * \param window Game world window from BaseGameApp.
 	 * \param pathWorld Path to world file to load
 	 */
-	public func new(WindowGameWorld window, String pathWorld) super(window)
+	func new(WindowGameWorld window, String pathWorld) super(window)
 		setPathWorld(pathWorld)
 	end
 	
 	/**
 	 * \brief Loading world finished successfully.
 	 */
-	public func void onLoadWorldFinished()
+	func void onLoadWorldFinished()
 		var GameApp app = BaseGameApp.getApp() cast GameApp
 		var GameWorld gameWorld = getStubWorld().getGameWorld()
 		
@@ -128,7 +128,7 @@ class StartGame extends WindowGameWorld.Loader
 	 * This method is called if any exceptions are thrown during loading the game world
 	 * or if problems with element classes have been found.
 	 */
-	public func void onLoadWorldFailed()
+	func void onLoadWorldFailed()
 		// super-call this first
 		super.onLoadWorldFailed()
 		
