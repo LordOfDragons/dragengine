@@ -54,6 +54,7 @@ from .de_tool_treebranchunwrap import OBJECT_OT_ToolTreeBranchUnwrap
 from .de_tool_fixactiongroups import OBJECT_OT_DEToolFixActionGroups
 from .de_tool_spreadanim import OBJECT_OT_DEToolSpreadAnimation
 from .de_tool_exportmerger import OBJECT_OT_ToolExportMerger
+from .de_tool_homogenize import OBJECT_OT_ToolHomogenizeVertexGroups
 from .de_porting import registerClass, appendToMenu, layOpRow, layPropRow, \
     layLabRow
 from .de_export_model import OBJECT_OT_ExportModel
@@ -396,6 +397,26 @@ class VIEW3D_PT_DragengineMeshPhysicsShapes(bpy.types.Panel):
         layOpRow(col, OBJECT_OT_ToolShapePropertyFromTexture)
 
 
+class VIEW3D_PT_DragengineMeshHomogenize(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_category = 'Drag[en]gine'
+    bl_label = "Homogenize"
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object\
+            and context.active_object.type == 'MESH'
+
+    def draw(self, context):
+        object = context.active_object
+        layout = self.layout
+
+        layout.row(align=True)
+        col = layout.column(align=True)
+        layOpRow(col, OBJECT_OT_ToolHomogenizeVertexGroups)
+
+
 class VIEW3D_PT_DragengineMeshExport(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
@@ -493,6 +514,7 @@ registerClass(VIEW3D_PT_DragengineMeshEditing)
 # registerClass(VIEW3D_PT_DragengineMeshGenerators)
 registerClass(VIEW3D_PT_DragengineMeshLodTesting)
 registerClass(VIEW3D_PT_DragengineMeshPhysicsShapes)
+registerClass(VIEW3D_PT_DragengineMeshHomogenize)
 registerClass(VIEW3D_PT_DragengineMeshExport)
 
 registerClass(VIEW3D_PT_DragengineAnimationAnimation)

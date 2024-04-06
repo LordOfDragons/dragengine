@@ -271,6 +271,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
                 bpy.ops.object.delete(use_global=False, confirm=False)
 
                 # rename shape
+                print([x.name for x in woshapes])
                 woshapes[index].name = name
 
             # merge working mesh with merge object
@@ -282,7 +283,7 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
 
     def weld_vertices(self, context, merge_object):
         groups = [x for x in merge_object.vertex_groups
-            if x.name.startswith("deexport.weld")]
+                  if x.name.startswith("deexport.weld")]
         if len(groups) == 0:
             return
 
@@ -312,7 +313,9 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
                 continue
 
             bpy.ops.object.mode_set(mode='EDIT')
-            bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='VERT')
+            bpy.ops.mesh.select_mode(use_extend=False,
+                                     use_expand=False,
+                                     type='VERT')
             bpy.ops.mesh.remove_doubles(threshold=distance)
             bpy.ops.object.mode_set(mode='OBJECT')
 

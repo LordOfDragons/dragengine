@@ -67,6 +67,12 @@ def appendToMenu(menu, cls):
     menu.append(menu_func)
 
 
+def appendSubMenuToMenu(menu, cls):
+    def menu_func(self, context):
+        self.layout.menu(cls.bl_idname)
+    menu.append(menu_func)
+
+
 def layOpRow(layout, cls, text=None, icon=None):
     if not text:
         if hasattr(cls, "bl_label_button"):
