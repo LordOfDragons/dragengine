@@ -54,7 +54,8 @@ from .de_tool_treebranchunwrap import OBJECT_OT_ToolTreeBranchUnwrap
 from .de_tool_fixactiongroups import OBJECT_OT_DEToolFixActionGroups
 from .de_tool_spreadanim import OBJECT_OT_DEToolSpreadAnimation
 from .de_tool_exportmerger import OBJECT_OT_ToolExportMerger
-from .de_tool_homogenize import OBJECT_OT_ToolHomogenizeVertexGroups
+from .de_tool_homogenize import OBJECT_OT_ToolHomogenizeVertexGroups, \
+    OBJECT_OT_ToolHomogenizeMaterials, OBJECT_OT_ToolHomogenizeShapeKeys
 from .de_porting import registerClass, appendToMenu, layOpRow, layPropRow, \
     layLabRow
 from .de_export_model import OBJECT_OT_ExportModel
@@ -415,6 +416,8 @@ class VIEW3D_PT_DragengineMeshHomogenize(bpy.types.Panel):
         layout.row(align=True)
         col = layout.column(align=True)
         layOpRow(col, OBJECT_OT_ToolHomogenizeVertexGroups)
+        layOpRow(col, OBJECT_OT_ToolHomogenizeMaterials)
+        layOpRow(col, OBJECT_OT_ToolHomogenizeShapeKeys)
 
 
 class VIEW3D_PT_DragengineMeshExport(bpy.types.Panel):
