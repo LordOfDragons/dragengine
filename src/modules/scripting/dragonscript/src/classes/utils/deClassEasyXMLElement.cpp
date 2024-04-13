@@ -1183,6 +1183,29 @@ void deClassEasyXMLElement::nfForEachTag::RunFunction( dsRunTime *rt, dsValue *m
 	}
 }
 
+// public func bool hasTags()
+deClassEasyXMLElement::nfHasTags::nfHasTags( const sInitData &init ) :
+dsFunction( init.clsXmlElement, "hasTags", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassEasyXMLElement::nfHasTags::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decXmlElement &element = *( ( ( sXMLElNatDat* )p_GetNativeData( myself ) )->element );
+	
+	const decXmlContainer &container = *element.CastToContainer();
+	const int count = container.GetElementCount();
+	if( count > 0 ){
+		int i;
+		for( i=0; i<count; i++ ){
+			decXmlElement * const element2 = container.GetElementAt( i );
+			if( element2->CanCastToElementTag() ){
+				rt->PushBool( true );
+				return;
+			}
+		}
+	}
+	
+	rt->PushBool( false );
+}
+
 
 
 // public func int hashCode()
@@ -1306,6 +1329,7 @@ void deClassEasyXMLElement::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfAddComment( init ) );
 	
 	AddFunction( new nfForEachTag( init ) );
+	AddFunction( new nfHasTags( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

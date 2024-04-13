@@ -18,7 +18,7 @@ class EasyXMLElement
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create element. */
-	public func new(EasyXMLElementType type)
+	func new(EasyXMLElementType type)
 	end
 	/*@}*/
 	
@@ -27,51 +27,51 @@ class EasyXMLElement
 	/** \name Management */
 	/*@{*/
 	/** \brief Line number of tag. */
-	public func int getLine()
+	func int getLine()
 		return 0
 	end
 	
 	/** \brief Position on line of tag. */
-	public func int getPosition()
+	func int getPosition()
 		return 0
 	end
 	
 	/** \brief Type of element. */
-	public func EasyXMLElementType getType()
+	func EasyXMLElementType getType()
 		return null
 	end
 	
 	
 	
 	/** \brief Name of tag. */
-	public func String getTagName()
+	func String getTagName()
 		return null
 	end
 	
 	/** \brief Set name of tag. */
-	public func void setTagName(String name)
+	func void setTagName(String name)
 	end
 	
 	
 	
 	/** \brief Character data content. */
-	public func String getCDataContent()
+	func String getCDataContent()
 		return null
 	end
 	
 	/** \brief Set character data content. */
-	public func void setCDataContent(String content)
+	func void setCDataContent(String content)
 	end
 	
 	
 	
 	/** \brief Comment. */
-	public func String getComment()
+	func String getComment()
 		return null
 	end
 	
 	/** \brief Set comment. */
-	public func void setComment(String comment)
+	func void setComment(String comment)
 	end
 	/*@}*/
 	
@@ -80,7 +80,7 @@ class EasyXMLElement
 	/** \name Attributes */
 	/*@{*/
 	/** \brief Number of attributes. */
-	public func int getAttributeCount()
+	func int getAttributeCount()
 		return 0
 	end
 	
@@ -89,7 +89,7 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	public func String getAttributeNamed(String name)
+	func String getAttributeNamed(String name)
 		return null
 	end
 	
@@ -98,7 +98,7 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	public func int getAttributeIntNamed(String name)
+	func int getAttributeIntNamed(String name)
 		return 0
 	end
 	
@@ -107,7 +107,7 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	public func float getAttributeFloatNamed(String name)
+	func float getAttributeFloatNamed(String name)
 		return 0.0
 	end
 	
@@ -120,12 +120,12 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	public func bool getAttributeBoolNamed(String name)
+	func bool getAttributeBoolNamed(String name)
 		return false
 	end
 	
 	/** \brief Named attribute is present. */
-	public func bool hasAttributeNamed(String name)
+	func bool hasAttributeNamed(String name)
 		return false
 	end
 	
@@ -134,7 +134,7 @@ class EasyXMLElement
 	 * 
 	 * If attribute is present its value is changed. Otherwise a new attribute is added.
 	 */
-	public func void setAttribute(String name, String value)
+	func void setAttribute(String name, String value)
 	end
 	
 	/**
@@ -142,7 +142,7 @@ class EasyXMLElement
 	 * 
 	 * If attribute is present its value is changed. Otherwise a new attribute is added.
 	 */
-	public func void setAttribute(String name, int value)
+	func void setAttribute(String name, int value)
 	end
 	
 	/**
@@ -150,7 +150,7 @@ class EasyXMLElement
 	 * 
 	 * If attribute is present its value is changed. Otherwise a new attribute is added.
 	 */
-	public func void setAttribute(String name, float value)
+	func void setAttribute(String name, float value)
 	end
 	
 	/**
@@ -159,15 +159,15 @@ class EasyXMLElement
 	 * If attribute is present its value is changed. Otherwise a new attribute is added.
 	 * Value contains "true" or "false".
 	 */
-	public func void setAttribute(String name, bool value)
+	func void setAttribute(String name, bool value)
 	end
 	
 	/** \brief Remove named attribute if present. */
-	public func void removeAttributeNamed(String name)
+	func void removeAttributeNamed(String name)
 	end
 	
 	/** \brief Remove all attributes. */
-	public func void removeAllAttributes()
+	func void removeAllAttributes()
 	end
 	/*@}*/
 	
@@ -176,12 +176,12 @@ class EasyXMLElement
 	/** \name Child elements */
 	/*@{*/
 	/** \brief Number of child elements. */
-	public func int getElementCount()
+	func int getElementCount()
 		return 0
 	end
 	
 	/** \brief Child element is present. */
-	public func void hasElement(EasyXMLElement child)
+	func void hasElement(EasyXMLElement child)
 	end
 	
 	/**
@@ -189,7 +189,7 @@ class EasyXMLElement
 	 * 
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getElementCount().
 	 */
-	public func EasyXMLElement getElementAt(int index)
+	func EasyXMLElement getElementAt(int index)
 		return null
 	end
 	
@@ -200,36 +200,36 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Element is already a child of another parent.
 	 */
-	public func void addElement(EasyXMLElement child)
+	func void addElement(EasyXMLElement child)
 	end
 	
 	/** \brief Remove child element. */
-	public func void removeElement(EasyXMLElement child)
+	func void removeElement(EasyXMLElement child)
 	end
 	
 	/** \brief Remove all child elements. */
-	public func void removeAllElements()
+	func void removeAllElements()
 	end
 	
 	
 	
 	/** \brief Add element of type TAG with name. */
-	public func EasyXMLElement addTag(String name)
+	func EasyXMLElement addTag(String name)
 		return null
 	end
 	
 	/** \brief Add tag with name and string CData child element. */
-	public func EasyXMLElement addDataTag(String name, String value)
+	func EasyXMLElement addDataTag(String name, String value)
 		return null
 	end
 	
 	/** \brief Add tag with name and integer CData child element. */
-	public func EasyXMLElement addDataTag(String name, int value)
+	func EasyXMLElement addDataTag(String name, int value)
 		return null
 	end
 	
 	/** \brief Add tag with name and float CData child element. */
-	public func EasyXMLElement addDataTag(String name, float value)
+	func EasyXMLElement addDataTag(String name, float value)
 		return null
 	end
 	
@@ -238,7 +238,7 @@ class EasyXMLElement
 	 * 
 	 * CData contains "true" or "false" as text.
 	 */
-	public func EasyXMLElement addDataTag(String name, bool value)
+	func EasyXMLElement addDataTag(String name, bool value)
 		return null
 	end
 	
@@ -246,28 +246,28 @@ class EasyXMLElement
 	 * \brief Add CData child element.
 	 * \version 1.15
 	 */
-	public func EasyXMLElement addCData(String value)
+	func EasyXMLElement addCData(String value)
 		return null
 	end
 	
 	/** \brief Add comment element. */
-	public func void addComment(String comment)
+	func void addComment(String comment)
 	end
 	
 	
 	
 	/** \brief First child CData or empty string if absent. */
-	public func String getFirstCData()
+	func String getFirstCData()
 		return null
 	end
 	
 	/** \brief First child CData converted to integer or 0 if absent. */
-	public func int getFirstCDataInt()
+	func int getFirstCDataInt()
 		return 0
 	end
 	
 	/** \brief First child CData converted to string or 0.0 if absent. */
-	public func float getFirstCDataFloat()
+	func float getFirstCDataFloat()
 		return 0.0
 	end
 	
@@ -278,7 +278,7 @@ class EasyXMLElement
 	 * CData with text "false", "no" or "0" are converted to \em false.
 	 * All other CData text are converted to \em false.
 	 */
-	public func bool getFirstCDataBool()
+	func bool getFirstCDataBool()
 		return false
 	end
 	
@@ -298,7 +298,15 @@ class EasyXMLElement
 	 * end)
 	 * \endcode
 	 */
-	public func void forEachTag(Block ablock)
+	func void forEachTag(Block ablock)
+	end
+	
+	/**
+	 * \brief Elements has at least one child element of type tag.
+	 * \version 1.22
+	 */
+	func bool hasTags()
+		return false
 	end
 	/*@}*/
 end
