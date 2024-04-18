@@ -130,8 +130,7 @@ class Viewport extends Panel implements RangeModelListener
 		end
 		
 		if curWidget != null
-			removeWidget(curWidget)
-			curWidget.dispose()
+			curWidget.safeDispose()
 		end
 		
 		if content != null
