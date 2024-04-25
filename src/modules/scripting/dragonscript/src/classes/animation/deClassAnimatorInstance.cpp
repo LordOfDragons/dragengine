@@ -248,7 +248,7 @@ void deClassAnimatorInstance::nfSetBlendFactor::RunFunction( dsRunTime *rt, dsVa
 // public func bool getEnableRetargeting()
 deClassAnimatorInstance::nfGetEnableRetargeting::nfGetEnableRetargeting( const sInitData &init ) :
 dsFunction( init.clsAnimatorInstance, "getEnableRetargeting", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
 }
 void deClassAnimatorInstance::nfGetEnableRetargeting::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deAnimatorInstance &instance = *( ( ( sArINatDat* )p_GetNativeData( myself ) )->instance );
@@ -256,16 +256,39 @@ void deClassAnimatorInstance::nfGetEnableRetargeting::RunFunction( dsRunTime *rt
 	rt->PushBool( instance.GetEnableRetargeting() );
 }
 
-// public func void setEnableRetargeting( bool enableRetargeting )
+// public func void setEnableRetargeting(bool enableRetargeting)
 deClassAnimatorInstance::nfSetEnableRetargeting::nfSetEnableRetargeting( const sInitData &init ) :
 dsFunction( init.clsAnimatorInstance, "setEnableRetargeting", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // enableRetargeting
+	p_AddParameter( init.clsBool ); // enableRetargeting
 }
 void deClassAnimatorInstance::nfSetEnableRetargeting::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deAnimatorInstance &instance = *( ( ( sArINatDat* )p_GetNativeData( myself ) )->instance );
 	
 	instance.SetEnableRetargeting( rt->GetValue( 0 )->GetBool() );
+}
+
+// public func bool getProtectDynamicBones()
+deClassAnimatorInstance::nfGetProtectDynamicBones::nfGetProtectDynamicBones( const sInitData &init ) :
+dsFunction( init.clsAnimatorInstance, "getProtectDynamicBones", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassAnimatorInstance::nfGetProtectDynamicBones::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deAnimatorInstance &instance = *( ( ( sArINatDat* )p_GetNativeData( myself ) )->instance );
+	
+	rt->PushBool( instance.GetProtectDynamicBones() );
+}
+
+// public func void setProtectDynamicBones(bool protectDynamicBones)
+deClassAnimatorInstance::nfSetProtectDynamicBones::nfSetProtectDynamicBones( const sInitData &init ) :
+dsFunction( init.clsAnimatorInstance, "setProtectDynamicBones", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // protectDynamicBones
+}
+void deClassAnimatorInstance::nfSetProtectDynamicBones::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimatorInstance &instance = *( ( ( sArINatDat* )p_GetNativeData( myself ) )->instance );
+	
+	instance.SetProtectDynamicBones( rt->GetValue( 0 )->GetBool() );
 }
 
 
@@ -599,6 +622,8 @@ void deClassAnimatorInstance::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetBlendFactor( init ) );
 	AddFunction( new nfGetEnableRetargeting( init ) );
 	AddFunction( new nfSetEnableRetargeting( init ) );
+	AddFunction( new nfGetProtectDynamicBones( init ) );
+	AddFunction( new nfSetProtectDynamicBones( init ) );
 	
 	AddFunction( new nfGetControllerCount( init ) );
 	AddFunction( new nfGetControllerAt( init ) );

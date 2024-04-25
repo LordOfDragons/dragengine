@@ -104,6 +104,8 @@ private:
 	DEF_NATFUNC( nfSetBlendFactor );
 	DEF_NATFUNC( nfGetEnableRetargeting );
 	DEF_NATFUNC( nfSetEnableRetargeting );
+	DEF_NATFUNC( nfGetProtectDynamicBones );
+	DEF_NATFUNC( nfSetProtectDynamicBones );
 	
 	DEF_NATFUNC( nfGetControllerCount );
 	DEF_NATFUNC( nfGetControllerAt );
