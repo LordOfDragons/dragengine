@@ -548,7 +548,7 @@ void deClassCamera::nfProject::RunFunction( dsRunTime *rt, dsValue *myself ){
 		* ( double )camera.GetFovRatio() * 0.5 ) / projected.z;
 	
 	projected.x = projected.x * halfWidth + halfWidth;
-	projected.y = halfHeight - projected.y * halfWidth;
+	projected.y = halfHeight - projected.y * halfHeight;
 	
 	const decPoint point( ( int )projected.x, ( int )projected.y );
 	
