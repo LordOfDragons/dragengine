@@ -110,12 +110,14 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		
 		var CollisionFilter pCollisionFilter
 		var float pRange
+		var float pOffset
 		var Vector pOrigin
 		var Vector pDirection
 		var Quaternion pOrientation
 		var Matrix pViewMatrix
 		var String pBone
 		var Array pTests
+		var float pOffsetByRange
 		
 		
 		
@@ -148,12 +150,14 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
 			pCollisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
 			pRange = DEMath.max(pECBehavior.getRange().getValue(stub), 0.0)
+			pOffset = DEMath.max(pECBehavior.getOffset().getValue(stub), 0.0)
 			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
 			pDirection = pECBehavior.getDirection().getVector(stub, codec).normalize()
 			pOrientation = Quaternion.newFromEuler(pECBehavior.getOrientation().getVector(stub, codec))
 			pBone = pECBehavior.getBone().getValue(stub)
 			
 			pViewMatrix = Matrix.newFromQuaternion(pOrientation)
+			pOffsetByRange = pOffset / pRange
 		end
 		
 		
@@ -188,8 +192,30 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			end
 			
 			pRange = range
+			pOffsetByRange = pOffset / pRange
 			
 			resetTestDirections()
+		end
+		
+		/**
+		 * \brief Test origin offset.
+		 * \version 1.22
+		 */
+		func float getOffset()
+			return pOffset
+		end
+		
+		/** \brief Set test origin offset. */
+		func void setOffset(float offset)
+			offset = DEMath.max(offset, 0.0)
+			if DEMath.fabs(offset - pOffset) < 0.001
+				return
+			end
+			
+			pOffset = offset
+			pOffsetByRange = pOffset / pRange
+			
+			resetTestOrigins()
 		end
 		
 		/** \brief Test origin. */
@@ -205,9 +231,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			
 			pOrigin = origin
 			
-			pTests.forEach(block ColliderCollisionTest each
-				each.setOrigin(origin)
-			end)
+			resetTestOrigins()
 		end
 		
 		/** \brief Normalized test direction. */
@@ -225,6 +249,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			pDirection = direction
 			
 			resetTestDirections()
+			resetTestOrigins()
 		end
 		
 		/** \brief Test orientation. */
@@ -317,7 +342,8 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			var ColliderCollisionTest test
 			
 			if pTests.getCount() < count
-				var Vector testDirection = pViewMatrix * (pDirection * pRange)
+				var Vector testDirection = pViewMatrix.transformNormal(pDirection * pRange)
+				var Vector testOrigin = pOrigin + testDirection * pOffsetByRange
 				var Collider collider = pCollider.getCollider()
 				var Component component
 				if pComponent != null
@@ -325,8 +351,8 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				end
 				
 				while pTests.getCount() < count
-					test = ColliderCollisionTest.new(pCollisionFilter, component, \
-						pBone, pOrigin, testDirection)
+					test = ColliderCollisionTest.new(pCollisionFilter, component,\
+						pBone, testOrigin, testDirection)
 					collider.addCollisionTest(test)
 					pTests.add(test)
 				end
@@ -366,15 +392,19 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			var float radius = DEMath.sin(angle) * pRange
 			var float distance = DEMath.cos(angle) * pRange
 			var float factor = 360.0 / count
+			var ColliderCollisionTest cct
+			var Vector direction
 			var int i
 			
 			for i = 0 to count
 				angle = factor * i
-				(pTests.getAt(i) cast ColliderCollisionTest).setDirection(\
-					pViewMatrix * (Vector.new(\
-						DEMath.sin(angle) * radius, \
-						DEMath.cos(angle) * radius, \
-						distance)))
+				direction = pViewMatrix.transformNormal(Vector.new(\
+					DEMath.sin(angle) * radius,\
+					DEMath.cos(angle) * radius,\
+					distance))
+				cct = pTests.getAt(i) cast ColliderCollisionTest
+				cct.setDirection(direction)
+				cct.setOrigin(pOrigin + direction * pOffsetByRange)
 			end
 		end
 		
@@ -395,6 +425,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			end
 			
 			var float radius, rotation, distance, testAngle
+			var Vector direction
 			angle *= 0.5
 			
 			pTests.forEach(block ColliderCollisionTest each
@@ -402,10 +433,12 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				radius = DEMath.sin(testAngle) * pRange
 				distance = DEMath.cos(testAngle) * pRange
 				rotation = DEMath.random(0.0, 360.0)
-				each.setDirection(pViewMatrix * (Vector.new(\
-					DEMath.sin(rotation) * radius, \
-					DEMath.cos(rotation) * radius, \
-					distance)))
+				direction = pViewMatrix.transformNormal(Vector.new(\
+					DEMath.sin(rotation) * radius,\
+					DEMath.cos(rotation) * radius,\
+					distance))
+				each.setDirection(direction)
+				each.setOrigin(pOrigin + direction * pOffsetByRange)
 			end)
 		end
 		
@@ -432,6 +465,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			var float toY = angleY * 0.5
 			var float fromY = -toY
 			var float positionY, testAngle, radius
+			var Vector direction
 			
 			pTests.forEach(block ColliderCollisionTest each
 				testAngle = DEMath.random(fromY, toY)
@@ -439,10 +473,12 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				radius = DEMath.cos(testAngle) * pRange
 				
 				testAngle = DEMath.random(fromX, toX)
-				each.setDirection(pViewMatrix * (Vector.new(\
+				direction = pViewMatrix.transformNormal(Vector.new(\
 					DEMath.sin(testAngle) * radius, \
 					positionY, \
-					DEMath.cos(testAngle) * radius)))
+					DEMath.cos(testAngle) * radius))
+				each.setDirection(direction)
+				each.setOrigin(pOrigin + direction * pOffsetByRange)
 			end)
 		end
 		
@@ -472,25 +508,25 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				return
 			end
 			
+			var ColliderCollisionTest cct
 			var int x, y, index = 0
-			var float positionY, testAngle, radius
+			var float testAngleX, testAngleY
 			var float firstX = angleX * -0.5
 			var float factorX = angleX / DEMath.max(countX - 1, 1)
 			var float firstY = angleY * -0.5
 			var float factorY = angleY / DEMath.max(countY - 1, 1)
+			var Vector direction
 			
 			for y = 0 to countY
-				testAngle = firstY + factorY * y
-				positionY = DEMath.sin(testAngle) * pRange
-				radius = DEMath.cos(testAngle) * pRange
+				testAngleY = firstY + factorY * y
 				
 				for x = 0 to countX
-					testAngle = firstX + factorX * x
-					(pTests.getAt(index++) cast ColliderCollisionTest).setDirection(\
-						pViewMatrix * (Vector.new(\
-							DEMath.sin(testAngle) * radius, \
-							positionY, \
-							DEMath.cos(testAngle) * radius)))
+					testAngleX = firstX + factorX * x
+					direction = pViewMatrix.transformNormal(\
+						Matrix.newRotation(testAngleY, testAngleX, 0).getViewVector())
+					cct = pTests.getAt(index++) cast ColliderCollisionTest
+					cct.setDirection(direction * pRange)
+					cct.setOrigin(pOrigin + direction * pOffset)
 				end
 			end
 		end
@@ -514,9 +550,19 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		
 		/** \brief Set direction of all tests to viewMatrix * direction * range. */
 		func void resetTestDirections()
-			var Vector direction = pViewMatrix * (pDirection * pRange)
+			var Vector direction = pViewMatrix.transformNormal(pDirection * pRange)
 			pTests.forEach(block ColliderCollisionTest each
 				each.setDirection(direction)
+			end)
+		end
+		
+		/**
+		 * \brief Set origin of all tests to getOrigin().
+		 * \version 1.22
+		 */
+		func void resetTestOrigins()
+			pTests.forEach(block ColliderCollisionTest each
+				each.setOrigin(pOrigin)
 			end)
 		end
 		
@@ -527,8 +573,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * \param target Target position to test.
 		 */
 		func void aimAtTarget(int test, DVector target)
-			(pTests.getAt(test) cast ColliderCollisionTest).setDirection(\
-				(pCollider.getCollider().getInverseMatrix() * target).toVector())
+			var ColliderCollisionTest cct = pTests.getAt(test) cast ColliderCollisionTest
+			var Vector direction = (pCollider.getCollider().getInverseMatrix() * target).toVector()
+			cct.setDirection(direction)
+			cct.setOrigin(pOrigin + direction.normalize() * pOffset)
 		end
 		
 		/**
@@ -591,6 +639,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	var ECBehaviorComponent pComponent
 	var ECComposeCollisionFilter pCollisionFilter
 	var ECPFloat pRange
+	var ECPFloat pOffset
 	var ECPVector pOrigin
 	var ECPVector pDirection
 	var ECPVector pOrientation
@@ -635,6 +684,9 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		pRange = ECPFloat.new(prefix + "range", 20, 0)
 		eclass.addProperty(pRange)
 		
+		pOffset = ECPFloat.new(prefix + "offset", 0, 0)
+		eclass.addProperty(pOffset)
+		
 		pOrigin = ECPVector.new(prefix + "origin", Vector.new())
 		eclass.addProperty(pOrigin)
 		
@@ -677,6 +729,14 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	/** \brief Test range. */
 	func ECPFloat getRange()
 		return pRange
+	end
+	
+	/**
+	 * \brief Test origin offset.
+	 * \version 1.22
+	 */
+	func ECPFloat getOffset()
+		return pOffset
 	end
 	
 	/** \brief Test origin. */
