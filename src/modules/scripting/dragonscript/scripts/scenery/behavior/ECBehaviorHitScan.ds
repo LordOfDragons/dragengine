@@ -251,8 +251,9 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * Same as \ref Matrix#newFromQuaternion(Quaternion) called with \ref #getOrientation()
 		 * as parameter.
 		 * 
-		 * If you want to manually set the test direction of individual tests after starting
-		 * you have to transform the test direction by this matrix to get a valid direction.
+		 * This matrix is useful if you want to manually set the test direction of individual
+		 * tests after starting hit scanning. The Z-Axis of the matrix points into the direction
+		 * of the zero vector similar to \ref #resetTestDirections().
 		 */
 		func Matrix getViewMatrix()
 			return pViewMatrix
@@ -527,7 +528,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 */
 		func void aimAtTarget(int test, DVector target)
 			(pTests.getAt(test) cast ColliderCollisionTest).setDirection(\
-				pViewMatrix * (pCollider.getCollider().getInverseMatrix() * target).toVector())
+				(pCollider.getCollider().getInverseMatrix() * target).toVector())
 		end
 		
 		/**
