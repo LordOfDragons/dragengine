@@ -152,6 +152,9 @@ public:
 		/** \brief Sky. */
 		epptSky,
 		
+		/** \brief Camera. */
+		epptCamera,
+		
 		/** \brief Custom file pattern. */
 		epptCustom
 	};

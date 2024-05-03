@@ -163,6 +163,9 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetOpenFilePatternList( eFilePat
 	case efpltSpeechAnimation:
 		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSpeechAnimation );
 		
+	case efpltCamera:
+		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplCamera );
+		
 	default:
 		DETHROW( deeInvalidParam );
 	}
@@ -222,6 +225,9 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetSaveFilePatternList( eFilePat
 		
 	case efpltSpeechAnimation:
 		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSpeechAnimation );
+		
+	case efpltCamera:
+		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplCamera );
 		
 	default:
 		DETHROW( deeInvalidParam );

@@ -227,6 +227,10 @@ void gdeDefaultPropertyValue::SetValue( const decString &value, const gdePropert
 		pGDProperty->SetPathPatternType( igdeGDProperty::epptSky );
 		break;
 		
+	case gdeProperty::epptCamera:
+		pGDProperty->SetPathPatternType( igdeGDProperty::epptCamera );
+		break;
+		
 	case gdeProperty::epptCustom:
 		pGDProperty->SetPathPatternType( igdeGDProperty::epptCustom );
 		break;

@@ -156,7 +156,7 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	int i, j, k;
 	
 	// reset the file pattern lists
-	for( i=0; i<=efplSpeechAnimation; i++ ){
+	for( i=0; i<=efplCamera; i++ ){
 		pFPLOpen[ i ].RemoveAllFilePatterns();
 		pFPLSave[ i ].RemoveAllFilePatterns();
 	}
@@ -239,6 +239,11 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	pAddPattern( pFPLOpen[ efplSpeechAnimation ], "Speech Animation", "*.desanim", ".desanim" );
 	
 	pAddPattern( pFPLSave[ efplSpeechAnimation ], "Speech Animation", "*.desanim", ".desanim" );
+	
+	pAddPattern( pFPLOpen[ efplCamera ], "All formats", "*.decamera", ".decamera" );
+	pAddPattern( pFPLOpen[ efplCamera ], "Camera", "*.decamera", ".decamera" );
+	
+	pAddPattern( pFPLSave[ efplCamera ], "Camera", "*.decamera", ".decamera" );
 	
 	// game project file list
 	pAddPattern( pFPLOpen[ efplGameProject ], "All formats", "*.degp", "degp" );

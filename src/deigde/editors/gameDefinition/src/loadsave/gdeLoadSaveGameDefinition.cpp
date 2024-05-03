@@ -377,6 +377,9 @@ void gdeLoadSaveGameDefinition::pReadProperty( const decXmlElementTag &root, gde
 			}else if( type == "sky" ){
 				property.SetPathPatternType( gdeProperty::epptSky );
 				
+			}else if( type == "camera" ){
+				property.SetPathPatternType( gdeProperty::epptCamera );
+				
 			}else if( type == "custom" ){
 				property.SetPathPatternType( gdeProperty::epptCustom );
 				
@@ -3713,6 +3716,10 @@ const gdeProperty &property, const char *tagName ){
 			
 		case gdeProperty::epptSky:
 			writer.WriteDataTagString( "pathPatternType", "sky" );
+			break;
+			
+		case gdeProperty::epptCamera:
+			writer.WriteDataTagString( "pathPatternType", "camera" );
 			break;
 			
 		case gdeProperty::epptCustom:{
