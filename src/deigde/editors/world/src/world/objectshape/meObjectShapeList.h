@@ -38,7 +38,7 @@ private:
 	decObjectOrderedSet pObjectShapes;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	meObjectShapeList();
@@ -46,7 +46,7 @@ public:
 	~meObjectShapeList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of object shapes. */
 	int GetCount() const;

@@ -365,10 +365,13 @@ void igdeWOSOComponent::UpdateVisibility(){
 	if( pComponent ){
 		pComponent->SetVisible( visible );
 	}
+	if( pOutlineComponent ){
+		pOutlineComponent->SetVisible( visible );
+	}
 }
 
 void igdeWOSOComponent::UpdateLayerMasks(){
-	if( ! pComponent ){
+	if( ! pComponent && ! pOutlineComponent ){
 		return;
 	}
 	
@@ -380,7 +383,12 @@ void igdeWOSOComponent::UpdateLayerMasks(){
 		mask |= GetWrapper().GetAudioLayerMask();
 	}
 	
-	pComponent->SetLayerMask( LayerMaskFromInt( mask ) );
+	if( pComponent ){
+		pComponent->SetLayerMask( LayerMaskFromInt( mask ) );
+	}
+	if( pOutlineComponent ){
+		pOutlineComponent->SetLayerMask( LayerMaskFromInt( mask ) );
+	}
 }
 
 void igdeWOSOComponent::UpdateCollisionFilter(){
@@ -407,6 +415,15 @@ void igdeWOSOComponent::UpdateGeometry(){
 			
 		}else{
 			pComponent->SetScaling( GetWrapper().GetScaling() );
+		}
+	}
+	
+	if( pOutlineComponent ){
+		if( pGDComponent.GetDoNotScale() ){
+			pOutlineComponent->SetScaling( decVector( 1.0f, 1.0f, 1.0f ) );
+			
+		}else{
+			pOutlineComponent->SetScaling( GetWrapper().GetScaling() );
 		}
 	}
 	
@@ -1125,6 +1142,13 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	for( i=0; i<textureCount; i++ ){
 		pOutlineComponent->GetTextureAt( i ).SetSkin( outlineSkin );
 		pOutlineComponent->NotifyTextureChanged( i );
+	}
+	
+	if( pGDComponent.GetDoNotScale() ){
+		pOutlineComponent->SetScaling( decVector( 1.0f, 1.0f, 1.0f ) );
+		
+	}else{
+		pOutlineComponent->SetScaling( GetWrapper().GetScaling() );
 	}
 	
 	GetWrapper().GetWorld()->AddComponent( pOutlineComponent );

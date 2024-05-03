@@ -35,7 +35,7 @@ private:
 	meNavigationSpace *pActive;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	meNavigationSpaceSelection();
@@ -43,7 +43,7 @@ public:
 	~meNavigationSpaceSelection();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected navigation spacess. */
 	inline const meNavigationSpaceList &GetSelected() const{ return pSelection; }

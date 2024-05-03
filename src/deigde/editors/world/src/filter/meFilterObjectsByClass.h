@@ -57,7 +57,7 @@ private:
 	bool pRejectGhosts;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new filter. */
 	meFilterObjectsByClass();
@@ -65,7 +65,7 @@ public:
 	virtual ~meFilterObjectsByClass();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Determines if inclusive or exlusive matching has to be used. */
 	inline bool GetMatchInclusive() const{ return pMatchInclusive; }

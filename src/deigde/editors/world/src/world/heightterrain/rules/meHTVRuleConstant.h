@@ -55,7 +55,7 @@ private:
 	decVector pVector;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleConstant();
@@ -67,7 +67,7 @@ public:
 	virtual ~meHTVRuleConstant();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the vector to output. */
 	inline const decVector &GetVector() const{ return pVector; }

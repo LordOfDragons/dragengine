@@ -49,7 +49,7 @@ private:
 	meCLHitList pElements;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	meCLCollect( meWorld *world );
@@ -57,7 +57,7 @@ public:
 	virtual ~meCLCollect();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** \brief World. */
 	inline meWorld *GetWorld() const{ return pWorld; }
@@ -74,7 +74,7 @@ public:
 	inline const meCLHitList &GetCollectedElements() const{ return pElements; }
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/**
 	 * Determines the response for a given collision. If you specified ertCustom

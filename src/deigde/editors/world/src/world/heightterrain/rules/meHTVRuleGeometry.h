@@ -49,7 +49,7 @@ public:
 	};
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleGeometry();
@@ -61,7 +61,7 @@ public:
 	virtual ~meHTVRuleGeometry();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the value of a given output slot. */
 	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );

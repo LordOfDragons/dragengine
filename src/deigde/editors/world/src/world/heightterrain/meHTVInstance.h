@@ -44,7 +44,7 @@ private:
 	float pScaling;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new instance. */
 	meHTVInstance();
@@ -52,7 +52,7 @@ public:
 	~meHTVInstance();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the vegetation layer index. */
 	inline short GetVLayer() const{ return pVLayer; }

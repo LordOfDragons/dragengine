@@ -37,7 +37,7 @@ private:
 	deNavigationSpace *pNavSpace;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a builder using the given navigation space. */
 	meModelBuilderNavSpace( deNavigationSpace *navspace );
@@ -45,7 +45,7 @@ public:
 	virtual ~meModelBuilderNavSpace();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Build model into the provided model object. */
 	virtual void BuildModel( deModel *model );

@@ -40,7 +40,7 @@ private:
 	decColorMatrix pColorMatrix;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new color matrix template object. */
 	meWTColorMatrix( const char *name, const decColorMatrix &matrix );
@@ -48,7 +48,7 @@ public:
 	~meWTColorMatrix();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the name of the template. */
 	inline const char *GetName() const{ return ( const char * )pName; }

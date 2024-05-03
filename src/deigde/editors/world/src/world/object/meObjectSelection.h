@@ -35,7 +35,7 @@ private:
 	meObject *pActive;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	meObjectSelection();
@@ -43,7 +43,7 @@ public:
 	~meObjectSelection();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected objects. */
 	inline const meObjectList &GetSelected() const{ return pSelection; }

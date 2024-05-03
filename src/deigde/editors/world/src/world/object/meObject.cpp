@@ -171,39 +171,39 @@ pWOAsyncFinished( *this )
 	deEngine * const engine = environment->GetEngineController()->GetEngine();
 	
 	pEnvironment = environment;
-	pWorld = NULL;
+	pWorld = nullptr;
 	
-	pDebugDrawer = NULL;
-	pDDSObject = NULL;
-	pDDSLightAoE = NULL;
-	pDDSOcclusionMesh = NULL;
-	pDDSObjectShapes = NULL;
-	pDDSCoordSysArrows = NULL;
+	pDebugDrawer = nullptr;
+	pDDSObject = nullptr;
+	pDDSLightAoE = nullptr;
+	pDDSOcclusionMesh = nullptr;
+	pDDSObjectShapes = nullptr;
+	pDDSCoordSysArrows = nullptr;
 	
-	pWObject = NULL;
-	pEngComponentBroken = NULL;
-	pColDetCollider = NULL;
-	pCamera = NULL;
+	pWObject = nullptr;
+	pEngComponentBroken = nullptr;
+	pColDetCollider = nullptr;
+	pCamera = nullptr;
 	
 	pRange = 10.0f; //pGetRangeFor( 1.0f, 2.0f, 0.01f );
 	
-	pTextures = NULL;
+	pTextures = nullptr;
 	pTextureCount = 0;
 	pTextureSize = 0;
-	pActiveTexture = NULL;
+	pActiveTexture = nullptr;
 	
-	pDecals = NULL;
+	pDecals = nullptr;
 	pDecalCount = 0;
 	pDecalSize = 0;
 	
-	pClassDef = NULL;
+	pClassDef = nullptr;
 	pSelected = false;
 	pActive = false;
 	pVisible = true;
 	pShowMissingTextures = false;
 	pSize.Set( 0.5f, 0.5f, 0.5f );
 	pScaling.Set( 1.0f, 1.0f, 1.0f );
-	pAttachedTo = NULL;
+	pAttachedTo = nullptr;
 	
 	try{
 		pWObject = new igdeWObject( *environment );
@@ -470,7 +470,9 @@ void meObject::OnGameDefinitionChanged(){
 }
 
 void meObject::OnActiveCameraChanged(){
-	pWObject->SetCamera( pWorld && pWorld->GetActiveCamera() ? pWorld->GetActiveCamera()->GetEngineCamera() : NULL );
+	const meCamera * const camera = pWorld && pWorld->GetActiveCamera() ? pWorld->GetActiveCamera() : nullptr;
+	pWObject->SetCamera( camera ? camera->GetEngineCamera() : nullptr );
+	SetVisible( ! camera || camera != pCamera );
 }
 
 
@@ -665,14 +667,14 @@ void meObject::UpdateDDSObjectShapes(){
 				codec.DecodeShapeList( pProperties.GetAt( key ), shapeList );
 				
 				const int shapeCount = shapeList.GetCount();
-				decShape *shape = NULL;
+				decShape *shape = nullptr;
 				int j;
 				
 				try{
 					for( j=0; j<shapeCount; j++ ){
 						shape = shapeList.GetAt( j )->Copy();
 						pDDSObjectShapes->AddShape( shape );
-						shape = NULL;
+						shape = nullptr;
 					}
 					
 				}catch( const deException & ){
@@ -817,7 +819,7 @@ void meObject::IncrementIDGroupIDUsage(){
 	for( i=0; i<mapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pMapIDGroup.GetAt( i ) );
 		const decString name( map.GetPropertyPrefix() + map.GetProperty()->GetName() );
-		const decString *value = NULL;
+		const decString *value = nullptr;
 		
 		if( ! pProperties.GetAt( name, &value ) ){
 			continue;
@@ -1075,7 +1077,7 @@ void meObject::CheckLinks(){
 	if( ! pActive || ! pClassDef ){
 		for( i=0; i<pLinks.GetCount(); i++ ){
 			meObjectLink * const link = ( meObjectLink* )pLinks.GetAt( i );
-			meObject *object = NULL;
+			meObject *object = nullptr;
 			
 			if( link->GetAnchor() == this ){
 				object = link->GetTarget();
@@ -1126,7 +1128,7 @@ void meObject::CheckLinks(){
 					}
 					
 				}else{
-					link = NULL;
+					link = nullptr;
 					try{
 						// create the link in the proper direction
 						if( isAnchor ){
@@ -1485,7 +1487,7 @@ void meObject::GetModelTextureNameList( decStringList &list ) const{
 ///////////////
 
 void meObject::SetProperty( const char *key, const char *value ){
-	const decString *checkString = NULL;
+	const decString *checkString = nullptr;
 	if( pProperties.GetAt( key, &checkString ) && *checkString == value ){
 		return;
 	}
@@ -1503,6 +1505,7 @@ void meObject::SetProperty( const char *key, const char *value ){
 	
 	IncrementIDGroupIDUsage();
 	pUpdateProperties();
+	pUpdateCamera();
 	
 	if( pClassDef ){
 		if( pClassDef->HasNavSpaceLinkedProperty( key ) ){
@@ -1540,6 +1543,7 @@ void meObject::SetProperties( const decStringDictionary &properties ){
 	pUpdateProperties();
 	pUpdateDDSNavSpaces();
 	UpdateNavPathTest();
+	pUpdateCamera();
 	
 	if( pWorld ){
 		pWorld->SetChanged( true );
@@ -1931,7 +1935,7 @@ void meObject::pUpdateDDSNavSpaces(){
 			}
 			
 			// navigation space
-			igdeWDebugDrawerShape *ddshape = NULL;
+			igdeWDebugDrawerShape *ddshape = nullptr;
 			
 			if( count < ddShapes.GetCount() ){
 				ddshape = ddShapes.GetAt( count );
@@ -1972,7 +1976,7 @@ void meObject::pUpdateDDSNavSpaces(){
 		}
 		
 		void Blocker( const decShapeList &shapes ){
-			igdeWDebugDrawerShape *ddshape = NULL;
+			igdeWDebugDrawerShape *ddshape = nullptr;
 			
 			if( count < ddShapes.GetCount() ){
 				ddshape = ddShapes.GetAt( count );
@@ -2090,13 +2094,13 @@ void meObject::pUpdateShapes(){
 	
 	// update collider shape
 	if( pColDetCollider ){
-		decShapeBox *box = NULL;
+		decShapeBox *box = nullptr;
 		decShapeList shapeList;
 		
 		try{
 			box = new decShapeBox( halfExtends, position );
 			shapeList.Add( box );
-			box = NULL;
+			box = nullptr;
 			
 		}catch( const deException & ){
 			if( box ) delete box;
@@ -2148,7 +2152,7 @@ void meObject::pUpdateShapeLight(){
 					light.GetPosition(), light.GetOrientation() ) );
 				const float height = range * tanf( angleY * 0.5f );
 				const float width = range * tanf( angleX * 0.5f );
-				deDebugDrawerShapeFace *face = NULL;
+				deDebugDrawerShapeFace *face = nullptr;
 				
 				try{
 					face = new deDebugDrawerShapeFace;
@@ -2157,7 +2161,7 @@ void meObject::pUpdateShapeLight(){
 					face->AddVertex( matrix.Transform( width, height, range ) );
 					face->CalculateNormal();
 					shape.AddFace( face );
-					face = NULL;
+					face = nullptr;
 					
 					face = new deDebugDrawerShapeFace;
 					face->AddVertex( decVector() );
@@ -2165,7 +2169,7 @@ void meObject::pUpdateShapeLight(){
 					face->AddVertex( matrix.Transform( width, -height, range ) );
 					face->CalculateNormal();
 					shape.AddFace( face );
-					face = NULL;
+					face = nullptr;
 					
 					face = new deDebugDrawerShapeFace;
 					face->AddVertex( decVector() );
@@ -2173,7 +2177,7 @@ void meObject::pUpdateShapeLight(){
 					face->AddVertex( matrix.Transform( -width, -height, range ) );
 					face->CalculateNormal();
 					shape.AddFace( face );
-					face = NULL;
+					face = nullptr;
 					
 					face = new deDebugDrawerShapeFace;
 					face->AddVertex( decVector() );
@@ -2181,7 +2185,7 @@ void meObject::pUpdateShapeLight(){
 					face->AddVertex( matrix.Transform( -width, height, range ) );
 					face->CalculateNormal();
 					shape.AddFace( face );
-					face = NULL;
+					face = nullptr;
 					
 					face = new deDebugDrawerShapeFace;
 					face->AddVertex( matrix.Transform( width, height, range ) );
@@ -2248,7 +2252,7 @@ void meObject::pUpdateComponent(){
 			pWorld->GetEngineWorld()->RemoveComponent( pEngComponentBroken );
 		}
 		pEngComponentBroken->FreeReference();
-		pEngComponentBroken = NULL;
+		pEngComponentBroken = nullptr;
 	}
 }
 
@@ -2265,7 +2269,7 @@ void meObject::pUpdateProperties(){
 
 void meObject::pUpdateCamera(){
 	if( pClassDef && pClassDef->GetHasCamera() ){
-		if( ! pCamera ){
+		if( ! pCamera && pWorld ){
 			pCamera = new meCamera( GetEnvironment()->GetEngineController()->GetEngine() );
 			pCamera->SetEnableGI( pWorld->GetWindowMain().GetConfiguration().GetEnableGI() );
 			pCamera->SetHostObject( this );
@@ -2274,40 +2278,46 @@ void meObject::pUpdateCamera(){
 		
 	}else if( pCamera ){
 		delete pCamera;
-		pCamera = NULL;
+		pCamera = nullptr;
 	}
 	
-	if( pCamera ){
-		igdeGDCamera *gdCamera = pClassDef->GetCamera();
-		
-		pCamera->SetFov( gdCamera->GetFov() );
-		pCamera->SetFovRatio( gdCamera->GetFovRatio() );
-		pCamera->SetImageDistance( gdCamera->GetImageDistance() );
-		pCamera->SetViewDistance( gdCamera->GetViewDistance() );
-		
-		pRepositionCamera();
-		pCheckCameraProps();
+	if( ! pCamera ){
+		return;
 	}
+	
+	igdeGDCamera *gdCamera = pClassDef->GetCamera();
+	
+	pCamera->SetFov( gdCamera->GetFov() );
+	pCamera->SetFovRatio( gdCamera->GetFovRatio() );
+	pCamera->SetImageDistance( gdCamera->GetImageDistance() );
+	pCamera->SetViewDistance( gdCamera->GetViewDistance() );
+	
+	pRepositionCamera();
+	pCheckCameraProps();
 }
 
 void meObject::pCheckCameraProps(){
-	decString value;
-	
-	if( pCamera ){
-		igdeGDCamera *gdCamera = pClassDef->GetCamera();
-		
-		// name property
-		const decString &propname = gdCamera->GetPropName();
-		
-		if( pProperties.Has( propname ) ){
-			value.Format( "%s: %s", pClassDef->GetName().GetString(), pProperties.GetAt( propname ).GetString() );
-			
-		}else{
-			value.Format( "%s: <unnamed>", pClassDef->GetName().GetString() );
-		}
-		
-		pCamera->SetName( value );
+	if( ! pCamera ){
+		return;
 	}
+	
+	igdeGDCamera *gdCamera = pClassDef->GetCamera();
+	decString value, defaultValue;
+	
+	// name property
+	const decString &propname = gdCamera->GetPropName();
+	
+	if( pProperties.Has( propname ) ){
+		value.Format( "%s: %s", pClassDef->GetName().GetString(), pProperties.GetAt( propname ).GetString() );
+		
+	}else if( pClassDef->GetDefaultPropertyValue( propname, defaultValue ) ){
+		value.Format( "%s: %s", pClassDef->GetName().GetString(), defaultValue.GetString() );
+		
+	}else{
+		value.Format( "%s: <unnamed>", pClassDef->GetName().GetString() );
+	}
+	
+	pCamera->SetName( value );
 }
 
 void meObject::pRepositionCamera(){
@@ -2354,7 +2364,7 @@ void meObject::pCreateSnapPoints(){
 		return;
 	}
 	
-	meObjectSnapPoint *snapPoint = NULL;
+	meObjectSnapPoint *snapPoint = nullptr;
 	int i;
 	
 	try{
@@ -2363,7 +2373,7 @@ void meObject::pCreateSnapPoints(){
 			snapPoint->SetWorld( pWorld );
 			pSnapPoints.Add( snapPoint );
 			snapPoint->FreeReference();
-			snapPoint = NULL;
+			snapPoint = nullptr;
 		}
 		
 	}catch( const deException & ){

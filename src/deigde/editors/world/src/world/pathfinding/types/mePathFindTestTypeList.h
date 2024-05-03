@@ -36,7 +36,7 @@ private:
 	decObjectOrderedSet pTypes;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	mePathFindTestTypeList();
@@ -44,7 +44,7 @@ public:
 	~mePathFindTestTypeList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of types. */
 	int GetCount() const;

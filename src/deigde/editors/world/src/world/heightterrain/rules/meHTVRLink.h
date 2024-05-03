@@ -44,7 +44,7 @@ private:
 	int pDestSlot;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a link. */
 	meHTVRLink( meHTVRule *sourceRule, int sourceSlot, meHTVRule *destinationRule, int destinationSlot );
@@ -52,7 +52,7 @@ public:
 	virtual ~meHTVRLink();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the source rule. */
 	inline meHTVRule *GetSourceRule() const{ return pSrcRule; }

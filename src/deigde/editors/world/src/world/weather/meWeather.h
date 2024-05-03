@@ -42,7 +42,7 @@ private:
 	meWorld *pWorld;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new weather object. */
 	meWeather( meWorld *world );
@@ -50,7 +50,7 @@ public:
 	~meWeather();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the world. */
 	inline meWorld *GetWorld() const{ return pWorld; }

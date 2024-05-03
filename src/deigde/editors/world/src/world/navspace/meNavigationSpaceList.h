@@ -36,7 +36,7 @@ private:
 	decObjectOrderedSet pNavSpaces;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	meNavigationSpaceList();
@@ -44,7 +44,7 @@ public:
 	~meNavigationSpaceList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of navigation spaces. */
 	int GetCount() const;

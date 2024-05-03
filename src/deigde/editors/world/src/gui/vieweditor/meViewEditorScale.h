@@ -37,7 +37,7 @@ private:
 	igdeUndoReference pUndoScale;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
 	meViewEditorScale( meView3D &view );
@@ -45,11 +45,11 @@ public:
 	virtual ~meViewEditorScale();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/*@}*/
 	
-	/** @name Events */
+	/** \name Events */
 	/*@{*/
 	/** A key on the keyboard has been pressed. Return true if handled. */
 	virtual bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control );

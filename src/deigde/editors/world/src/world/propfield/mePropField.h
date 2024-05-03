@@ -55,7 +55,7 @@ private:
 	int pTypeSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	mePropField( deEngine *engine );
@@ -63,7 +63,7 @@ public:
 	~mePropField();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent world or NULL. */
 	inline meWorld *GetWorld() const{ return pWorld; }
@@ -82,7 +82,7 @@ public:
 	void SetWorldChanged();
 	/*@}*/
 	
-	/** @name Types */
+	/** \name Types */
 	/*@{*/
 	/** Retrieves the number of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }

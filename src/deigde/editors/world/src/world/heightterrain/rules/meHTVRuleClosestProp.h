@@ -61,7 +61,7 @@ private:
 	bool pDirty;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleClosestProp();
@@ -73,7 +73,7 @@ public:
 	virtual ~meHTVRuleClosestProp();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the class name of the prop to search for. */
 	inline const decString &GetPropClass() const{ return pPropClass; }

@@ -75,7 +75,7 @@ private:
 	int pVariation;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	meHTVEvaluationEnvironment();
@@ -83,7 +83,7 @@ public:
 	~meHTVEvaluationEnvironment();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the world. */
 	inline meWorld *GetWorld() const{ return pWorld; }
@@ -151,7 +151,7 @@ public:
 	void EvaluateRules();
 	/*@}*/
 	
-	/** @name Objects */
+	/** \name Objects */
 	/*@{*/
 	/** Retrieves the number of objects. */
 	inline int GetObjectCount() const{ return pObjectCount; }
