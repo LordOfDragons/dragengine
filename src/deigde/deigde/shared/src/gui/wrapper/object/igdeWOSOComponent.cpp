@@ -103,12 +103,12 @@ private:
 	decString pPathModel;
 	decString pPathSkin;
 	decString pPathRig;
-	deModelReference pAudioModel;
-	deOcclusionMeshReference pOcclusionMesh;
-	deAnimationReference pAnimation;
-	deModelReference pModel;
-	deSkinReference pSkin;
-	deRigReference pRig;
+	deModel::Ref pAudioModel;
+	deOcclusionMesh::Ref pOcclusionMesh;
+	deAnimation::Ref pAnimation;
+	deModel::Ref pModel;
+	deSkin::Ref pSkin;
+	deRig::Ref pRig;
 	decObjectDictionary pTextureSkins;
 	int pCounter;
 	bool pSuccess;
@@ -782,7 +782,10 @@ void igdeWOSOComponent::pUpdateComponent(){
 						engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) ) );
 					animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
 					loadAnimator.Load( pathAnimator, animator, reader );
-					animator->SetAnimation( animation );
+					if( animation ){
+						animator->SetAnimation( animation );
+					}
+					//GetLogger().LogInfoFormat( "DEIGDE", "Animator loaded: %s", pathAnimator.GetString() );
 					
 				}catch( const deException &e ){
 					animator = nullptr;
@@ -840,7 +843,6 @@ void igdeWOSOComponent::pUpdateComponent(){
 					rule->SetMoveName( move );
 					rule->GetTargetMoveTime().AddLink( 0 );
 					animator->AddRule( rule );
-			GetLogger().LogInfoFormat( "DEIGDE", "OOPS %p %p '%s' %d", &GetWrapper(), this, pGDComponent.GetPropertyName( igdeGDCComponent::epAnimation ).GetString(), moveIndex );
 					
 				}catch( const deException &e ){
 					animator = nullptr;
