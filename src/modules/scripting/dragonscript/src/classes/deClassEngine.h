@@ -101,6 +101,7 @@ private:
 	DEF_NATFUNC( nfLog );
 	DEF_NATFUNC( nfGetScriptModuleStats );
 	DEF_NATFUNC( nfGetAppActive );
+	DEF_NATFUNC( nfUpdateResourceLoading );
 	
 	DEF_NATFUNC( nfGetCompatibleVersion );
 	DEF_NATFUNC( nfGetCompatibleVersionMajor );

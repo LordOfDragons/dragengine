@@ -207,6 +207,17 @@ void deClassEngine::nfGetAppActive::RunFunction( dsRunTime *rt, dsValue* ){
 
 
 
+// public static func void updateResourceLoading()
+deClassEngine::nfUpdateResourceLoading::nfUpdateResourceLoading( const sInitData &init ) :
+dsFunction( init.clsEngine, "updateResourceLoading", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+}
+void deClassEngine::nfUpdateResourceLoading::RunFunction( dsRunTime*, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->GetDS().GetResourceLoader()->OnFrameUpdate();
+}
+
+
+
 // public static func String getCompatibleVersion()
 deClassEngine::nfGetCompatibleVersion::nfGetCompatibleVersion( const sInitData &init ) :
 dsFunction( init.clsEngine, "getCompatibleVersion", DSFT_FUNCTION,
@@ -445,6 +456,7 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfLog( init ) );
 	AddFunction( new nfGetScriptModuleStats( init ) );
 	AddFunction( new nfGetAppActive( init ) );
+	AddFunction( new nfUpdateResourceLoading( init ) );
 	
 	AddFunction( new nfGetCompatibleVersion( init ) );
 	AddFunction( new nfGetCompatibleVersionMajor( init ) );
