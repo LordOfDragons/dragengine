@@ -18,14 +18,14 @@ class FileWriter
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create file writer writing to virtual file system file. */
-	public func new(String filename)
+	func new(String filename)
 	end
 	
 	/**
 	 * \brief Create Z-Compressing file writer writing to virtual file system file.
 	 * \version 1.8
 	 */
-	public static func FileWriter newZCompressed(String filename)
+	static func FileWriter newZCompressed(String filename)
 		return null
 	end
 	/*@}*/
@@ -35,73 +35,102 @@ class FileWriter
 	/** \name Management */
 	/*@{*/
 	/** \brief File name. */
-	public func String getFilename()
+	func String getFilename()
 		return null
 	end
 	
 	
 	
 	/** \brief Stream version used by writeToFile of native classes. */
-	public func int getStreamVersion()
+	func int getStreamVersion()
 		return 0
 	end
 	
 	/** \brief Set stream version used by writeToFile of native classes. */
-	public func void setStreamVersion(int version)
+	func void setStreamVersion(int version)
 	end
 	
 	
 	
 	/** \brief Write one byte (1 byte). */
-	public func void writeChar(int value)
+	func void writeChar(int value)
 	end
 	
 	/** \brief Write one unsigned byte (1 byte). */
-	public func void writeByte(int value)
+	func void writeByte(int value)
 	end
 	
 	/** \brief Write one short (2 bytes). */
-	public func void writeShort(int value)
+	func void writeShort(int value)
 	end
 	
 	/** \brief Write one unsigned short (2 bytes). */
-	public func void writeUShort(int value)
+	func void writeUShort(int value)
 	end
 	
 	/** \brief Write one int (4 bytes). */
-	public func void writeInt(int value)
+	func void writeInt(int value)
 	end
 	
 	/** \brief Write one unsigned int (4 bytes). */
-	public func void writeUInt(int value)
+	func void writeUInt(int value)
+	end
+	
+	/**
+	 * \brief Write variable length unsigned integer (1-4 bytes) and advances file pointer.
+	 * \version 1.22
+	 * 
+	 * Variable length integers are written using 1 to 4 bytes. The highest 2 bits of the
+	 * first byte stores the total length (0=1 byte, 1=2 bytes, 2=3 bytes, 3=4 bytes).
+	 * The lower 6 bits are used as value. With each added byte the previous bits are
+	 * shifted up. The maximum storable value is thus 1073741823.
+	 * 
+	 * Variable length unsigned integers are typically used for values like versions
+	 * or revisions which start low and potentially grow large over time.
+	 */
+	func void writeVarUInt(int value)
 	end
 	
 	/** \brief Write one float (4 bytes). */
-	public func void writeFloat(float value)
+	func void writeFloat(float value)
 	end
 	
 	/** \brief Write a string prefixed by a 1-byte length field. */
-	public func void writeString8(String string)
+	func void writeString8(String string)
 	end
 	
-	/** \brief Write a string prefixed by a 2-byte2 length field. */
-	public func void writeString16(String string)
+	/** \brief Write a string prefixed by a 2-byte length field. */
+	func void writeString16(String string)
+	end
+	
+	/**
+	 * \brief Write a string prefixed by a 4-byte length field.
+	 * \version 1.22
+	 */
+	func void writeString32(String string)
+	end
+	
+	/**
+	 * \brief Write a string prefixed by a 1-4 byte length field.
+	 * \version 1.22
+	 */
+	func void writeVarString(String string)
 	end
 	
 	/** \brief Write string without length field. */
-	public func void writeString(String data)
+	func void writeString(String data)
 	end
 	
 	/** \brief Write data from file reader. */
-	public func void writeData(FileReader reader)
+	func void writeData(FileReader reader)
 	end
 	
 	/** \brief Write data from file reader. */
-	public func void writeData(FileReader reader, int size)
+	func void writeData(FileReader reader, int size)
 	end
 	
 	/** \brief Write TimeDate instance. */
-	public func void writeTimeDate(TimeDate timeDate)
+	func void writeTimeDate(TimeDate timeDate)
 	end
 	/*@}*/
 end

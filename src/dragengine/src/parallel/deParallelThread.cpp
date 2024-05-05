@@ -65,7 +65,7 @@ deParallelThread::~deParallelThread(){
 ///////////////
 
 bool deParallelThread::IsWaiting(){
-	deMutexGuard lock( pMutexWaiting );
+	const deMutexGuard lock( pMutexWaiting );
 	return pWaiting;
 }
 
@@ -74,21 +74,32 @@ void deParallelThread::RequestExit(){
 		return;
 	}
 	
-	deMutexGuard lock( pMutexWaiting );
+	const deMutexGuard lock( pMutexWaiting );
 	pExitThread = true;
 }
 
 deParallelTask *deParallelThread::GetTask(){
-	deMutexGuard lock( pMutexTask );
+	const deMutexGuard lock( pMutexTask );
 	return pTask;
 }
 
 void deParallelThread::Run(){
 	while( true ){
 		// get the next task to process if there is any
-		deMutexGuard lock( pMutexTask );
+		// 
+		// NOTE potential dead-lock:
+		//      - Run() locks task:pMutexTask
+		//      - NextPendingTask locks pp:pMutexTasks
+		//      - if NextPendingTask somehow manages to call GetTask() a dead lock happens
+		//      - (same for AddFinishedTask)
+		//      
+		//      this situation should not be possible to happen. to prevent any possibility
+		//      of a dead-lock the task is first acquired unlocked then written locked.
+		{
+		deParallelTask * const task = pParallelProcessing.NextPendingTask( pTakeLowPriorityTasks );
 		
-		pTask = pParallelProcessing.NextPendingTask( pTakeLowPriorityTasks );
+		const deMutexGuard lock( pMutexTask );
+		pTask = task;
 		
 		if( pParallelProcessing.GetOutputDebugMessages() ){
 			if( pTask ){
@@ -103,8 +114,7 @@ void deParallelThread::Run(){
 					"Thread %i: No task, going to sleep", pNumber );
 			}
 		}
-		
-		lock.Unlock();
+		}
 		
 		// if there is a task process it
 		if( pTask ){
@@ -130,28 +140,34 @@ void deParallelThread::Run(){
 					debugName.GetString(), debugDetails.GetString() );
 			}
 			
-			lock.Lock();
-			
-			pParallelProcessing.AddFinishedTask( pTask );
-			pTask = NULL;
-			
-			lock.Unlock();
+			{
+			deParallelTask *task;
+			{
+			const deMutexGuard lock( pMutexTask );
+			task = pTask;
+			pTask = nullptr;
+			}
+			pParallelProcessing.AddFinishedTask( task );
+			}
 			
 		// otherwise go to sleep until new tasks become available
 		}else{
-			deMutexGuard lockWait( pMutexWaiting );
+			{
+			const deMutexGuard lock( pMutexWaiting );
 			pWaiting = true;
 			if( pExitThread ){
 				break;
 			}
-			lockWait.Unlock();
+			}
 			
 			pParallelProcessing.WaitOnNewTasksSemaphore();
 			
-			lockWait.Lock();
+			{
+			const deMutexGuard lock( pMutexWaiting );
 			pWaiting = false;
 			if( pExitThread ){
 				break;
+			}
 			}
 		}
 	}

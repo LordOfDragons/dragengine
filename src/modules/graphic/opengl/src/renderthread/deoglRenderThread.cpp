@@ -77,6 +77,7 @@
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 #include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 #ifdef ANDROID
 #include <dragengine/systems/deInputSystem.h>
@@ -512,6 +513,8 @@ void deoglRenderThread::Run(){
 	DEBUG_SYNC_RT_PASS("out")
 	
 	// render loop
+	decTimer gpuDeadTimer;
+	
 	pLastFrameTime = 0.0f;
 	pTimerFrameUpdate.Reset();
 	pTimerVRFrameUpdate.Reset();
@@ -528,7 +531,10 @@ void deoglRenderThread::Run(){
 			// main thread is messing with our state here. proceed to next barrier doing nothing
 			// except alter the estimated render time. this value is used by the main thread
 			// only outside the synchronization part so we can update it here
+			{
+			const deMutexGuard lock( pMutexShared );
 			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
+			}
 			
 			// wait for leaving synchronize
 			DEBUG_SYNC_RT_WAIT("out")
@@ -541,6 +547,7 @@ void deoglRenderThread::Run(){
 			// main thread did not synchronize in time. render another time using the old state
 			// then wait for synchronization again. we still have to update the estimated render
 			// time though
+			const deMutexGuard lock( pMutexShared );
 			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
 		}
 		
@@ -566,6 +573,7 @@ void deoglRenderThread::Run(){
 				
 				pLimitFrameRate( elapsedRender );
 				pThreadFailure = false;
+				gpuDeadTimer.Reset();
 				DEBUG_SYNC_RT_FAILURE
 				
 			}catch( const deException &exception ){
@@ -577,12 +585,30 @@ void deoglRenderThread::Run(){
 					pSemaphoreSyncVR.Signal();
 				}
 				
-				pThreadFailure = true;
+				// skip failures. gpu drivers get more and more complex and especially
+				// fence timeouts can sometimes happen, for example because a compositor
+				// consumed too much render time or the gpu driver hung up for some
+				// reason. by skipping the error we can hope for the gpu to recover
+				// during the next frame update and avoids brining down the entire
+				// application. to avoid endless hanging a counter is used to bail
+				// out in case the GPU does not recover anymore
+				// pThreadFailure = true;
+				const float gpuDeadTimerElapsed = gpuDeadTimer.PeekElapsedTime();
+				pLogger->LogErrorFormat( "GPU Dead Timer: %.1fs", gpuDeadTimerElapsed );
+				if( gpuDeadTimerElapsed < 6.0f ){
+					pThreadFailure = false;
+					
+				}else{
+					pThreadFailure = true;
+				}
 				DEBUG_SYNC_RT_FAILURE
 			}
 			
 			pLastFrameTime = pTimerFrameUpdate.GetElapsedTime();
+			{
+			const deMutexGuard lock( pMutexShared );
 			pTimeHistoryFrame.Add( pLastFrameTime );
+			}
 			
 			/*
 			pLogger->LogInfoFormat( "RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
@@ -687,9 +713,12 @@ void deoglRenderThread::Synchronize(){
 	
 	pMainThreadShowDebugInfoModule = pDebugInfoModule->GetVisible();
 	
+	{
+	const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryFrame
 	pFPSRate = 0;
 	if( pTimeHistoryFrame.HasMetrics() ){
 		pFPSRate = ( int )( 1.0f / pTimeHistoryFrame.GetAverage() );
+	}
 	}
 	
 	if( pAsyncRendering ){
@@ -762,8 +791,14 @@ bool deoglRenderThread::MainThreadWaitFinishRendering(){
 		if( pTimeHistoryMain.HasMetrics() ){
 			pAccumulatedMainTime += gameTime;
 			
+			float estimatedRenderTime;
+			{
+			const deMutexGuard lock( pMutexShared );
+			estimatedRenderTime = pEstimatedRenderTime;
+			}
+			
 			const float ratioTimes = pOgl.GetConfiguration().GetAsyncRenderSkipSyncTimeRatio();
-			const float remainingTime = pEstimatedRenderTime - pAccumulatedMainTime;
+			const float remainingTime = estimatedRenderTime - pAccumulatedMainTime;
 			const float estimatedGameTime = decMath::max( pTimeHistoryMain.GetAverage(), 0.001f ); // stay above 1ms
 			
 			/*

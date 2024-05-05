@@ -328,8 +328,6 @@ public class WindowCaptureBinding extends WindowDialog
 			// add mouse axis buttons if required. for button input axis input is possible
 			// too but mouse does not work for this
 			if inputSource == EditBindingsListModelEntry.InputSource.axis
-				var int i, count = bindingManager.getDeviceCount()
-				
 				var InputDevice device = bindingManager.findDevice(block InputDevice each
 					return each.getType() == InputDeviceType.mouse
 				end)

@@ -26,7 +26,7 @@ import bpy
 import math
 
 from .de_math import ONE_PI
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -44,7 +44,8 @@ registerClass(TypeDETProjectUVTemplate)
 
 class OBJECT_OT_ToolProjectUV( bpy.types.Operator ):
 	bl_idname = "dragengine.projectuv"
-	bl_label = "ProjectUV"
+	bl_label = "Project UV"
+	bl_label_button = "Project"
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Project texture coordinates"""
 	
@@ -165,4 +166,6 @@ class OBJECT_OT_ToolProjectUV( bpy.types.Operator ):
 			bpy.ops.object.mode_set( mode='EDIT' )
 		
 		return { 'FINISHED' }
+
 registerClass(OBJECT_OT_ToolProjectUV)
+appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_faces, OBJECT_OT_ToolProjectUV)

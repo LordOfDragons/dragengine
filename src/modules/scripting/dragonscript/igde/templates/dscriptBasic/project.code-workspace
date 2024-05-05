@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"dragonscriptLanguage.requiresPackageDragengine": true
+	}
+}

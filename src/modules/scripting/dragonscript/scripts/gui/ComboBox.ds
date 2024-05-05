@@ -237,6 +237,7 @@ class ComboBox extends Container implements ListModelListener
 	var bool pSelFromEditorOnDropDown
 	var bool pDropDownRequiresSelFromEditor
 	var String pSelectedElementDesignerSelector
+	var bool pPreventUpdateEditor
 // 	var bool pFirstDropDown
 	
 	
@@ -797,6 +798,11 @@ class ComboBox extends Container implements ListModelListener
 	
 	/** \brief Selection in the list box changed. */
 	func void selectionChanged(ListModel listModel)
+		if pPreventUpdateEditor
+			updateSelectedWidget()
+			return
+		end
+		
 		setEditorValueFromSelection()
 		updateSelectedWidget()
 		
@@ -870,7 +876,25 @@ class ComboBox extends Container implements ListModelListener
 			return
 		end
 		
-		pListBox.setSelectedElement(pListBox.getModel().indexOf(pEditor.getEditorValue()))
+		runWhilePreventUpdateEditor(block
+			pListBox.setSelectedElement(pListBox.getModel().indexOf(pEditor.getEditorValue()))
+		end)
+	end
+	
+	/**
+	 * \brief Run block while preventing updating editor.
+	 * \version 1.22
+	 */
+	protected func void runWhilePreventUpdateEditor(Block ablock)
+		try
+			pPreventUpdateEditor = true
+			ablock.run()
+			pPreventUpdateEditor = false
+			
+		catch Exception e
+			pPreventUpdateEditor = false
+			throw
+		end
 	end
 	
 	/** \brief Update visibility of editor and selected element renderer. */

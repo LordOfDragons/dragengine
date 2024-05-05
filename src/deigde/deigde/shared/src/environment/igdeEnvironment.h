@@ -82,7 +82,8 @@ public:
 		efpltSynthesizer, //<! Synthesizer.
 		efpltSound, //<! Sound.
 		efpltVideo, //<! Video.
-		efpltSpeechAnimation //<! Speech animation.
+		efpltSpeechAnimation, //<! Speech animation.
+		efpltCamera, //<! Camera file.
 	};
 	
 	/** \brief Stock icons. */

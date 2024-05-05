@@ -26,7 +26,7 @@ class AnimatorInstance
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create animator instance. */
-	public func new()
+	func new()
 	end
 	/*@}*/
 	
@@ -35,7 +35,7 @@ class AnimatorInstance
 	/** \name Management */
 	/*@{*/
 	/** \brief animator or \em null if not set. */
-	public func Animator getAnimator()
+	func Animator getAnimator()
 		return null
 	end
 	
@@ -44,7 +44,7 @@ class AnimatorInstance
 	 * 
 	 * Initializes all controllers to the value of the animator.
 	 */
-	public func void setAnimator( Animator animator )
+	func void setAnimator(Animator animator)
 	end
 	
 	/**
@@ -54,54 +54,63 @@ class AnimatorInstance
 	 * name in the old and new animator. Otherwise initializes all controllers to the value
 	 * of the new animator.
 	 */
-	public func void setAnimator( Animator animator, bool keepValues )
+	func void setAnimator(Animator animator, bool keepValues)
 	end
 	
 	/** \brief Component or \em null if not set. */
-	public func Component getComponent()
+	func Component getComponent()
 		return null
 	end
 	
 	/** \brief Set component or \em null if not set. */
-	public func void setComponent( Component component )
+	func void setComponent(Component component)
 	end
 	
 	/** \brief Animation or \em null if not set. */
-	public func Animation getAnimation()
+	func Animation getAnimation()
 		return null
 	end
 	
 	/** \brief Set animation or null if not set. */
-	public func void setAnimation( Animation animation )
+	func void setAnimation(Animation animation)
 	end
 	
 	
 	
 	/** \brief Blend mode. */
-	public func AnimatorRuleBlendMode getBlendMode()
+	func AnimatorRuleBlendMode getBlendMode()
 		return null
 	end
 	
 	/** \brief Set blend mode. */
-	public func void setBlendMode( AnimatorRuleBlendMode mode )
+	func void setBlendMode(AnimatorRuleBlendMode mode)
 	end
 	
 	/** \brief Blend factor in the range from 0 to 1. */
-	public func float getBlendFactor()
+	func float getBlendFactor()
 		return 0.0
 	end
 	
 	/** \brief Set blend factor clamped to the range from 0 to 1. */
-	public func void setBlendFactor( float factor )
+	func void setBlendFactor(float factor)
 	end
 	
 	/** \brief Retargeting is enabled. */
-	public func bool getEnableRetargeting()
+	func bool getEnableRetargeting()
 		return false
 	end
 	
 	/** \brief Set if retargeting is enabled. */
-	public func void setEnableRetargeting( bool enableRetargeting )
+	func void setEnableRetargeting(bool enableRetargeting)
+	end
+	
+	/** \brief Protect dynamic bones from being animated. */
+	func bool getProtectDynamicBones()
+		return false
+	end
+	
+	/** \brief Set if dynamic bones ar protected from being animated. */
+	func void setProtectDynamicBones(bool protectDynamicBones)
 	end
 	
 	
@@ -114,7 +123,7 @@ class AnimatorInstance
 	 * component state any time after this call. If the calculation is not
 	 * finished by then the affected call waits until it is finished.
 	 */
-	public func void apply()
+	func void apply()
 	end
 	
 	/**
@@ -122,13 +131,13 @@ class AnimatorInstance
 	 * 
 	 * Calculates animator state and waits for calculation to complete.
 	 */
-	public func void applyDirect()
+	func void applyDirect()
 	end
 	
 	/**
 	 * \brief Capture current state into snapshot rules matching identifier
 	 */
-	public func void captureState( int identifier )
+	func void captureState(int identifier)
 	end
 	
 	/**
@@ -136,7 +145,7 @@ class AnimatorInstance
 	 * \details If \em moveName does not exist in the animation a default state is captured.
 	 * \throws EInvalidParam \em moveName is \em NULL.
 	 */
-	public func void storeFrame( int identifier, String moveName, float moveTime )
+	func void storeFrame(int identifier, String moveName, float moveTime)
 	end
 	/*@}*/
 	
@@ -145,7 +154,7 @@ class AnimatorInstance
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Nnumber of controllers. */
-	public func int getControllerCount()
+	func int getControllerCount()
 		return 0
 	end
 	
@@ -160,7 +169,7 @@ class AnimatorInstance
 	 * \throws EOutOfBoundary \em controller is less than -getControllerCount() or larger
 	 *                        than or equal to getControllerCount().
 	 */
-	public func AnimatorController getControllerAt( int index )
+	func AnimatorController getControllerAt(int index)
 		return null
 	end
 	
@@ -173,12 +182,12 @@ class AnimatorInstance
 	 * \param name Name of controller. If no controller with this name is present
 	 *             \em null is returned.
 	 */
-	public func AnimatorController getControllerNamed( String name )
+	func AnimatorController getControllerNamed(String name)
 		return null
 	end
 	
 	/** \brief Index of named controller or -1 if not found. */
-	public func int indexOfControllerNamed( String name )
+	func int indexOfControllerNamed(String name)
 		return 0
 	end
 	
@@ -187,7 +196,7 @@ class AnimatorInstance
 	 * \details Bones outside the number of controllers are ignored.
 	 * \throws EInvalidParam \em count is less than 0.
 	 */
-	public func void copyControllerStates( AnimatorInstance instance, int count )
+	func void copyControllerStates(AnimatorInstance instance, int count)
 	end
 	
 	/**
@@ -196,14 +205,14 @@ class AnimatorInstance
 	 *          of controllers are ignored.
 	 * \throws EInvalidParam \em count is less than 0.
 	 */
-	public func void copyControllerStates( AnimatorInstance instance, int offset, int count )
+	func void copyControllerStates(AnimatorInstance instance, int offset, int count)
 	end
 	
 	/**
 	 * \brief Copy name matching controller values and vectors from another animator instance.
 	 * \details Non-matching controllers are ignored.
 	 */
-	public func void copyNamedControllerStates( AnimatorInstance instance )
+	func void copyNamedControllerStates(AnimatorInstance instance)
 	end
 	/*@}*/
 end

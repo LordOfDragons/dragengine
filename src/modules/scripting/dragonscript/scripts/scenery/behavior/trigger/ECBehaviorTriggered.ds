@@ -158,12 +158,12 @@ class ECBehaviorTriggered extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
-			var String value = pECBehavior.getTrigger().getValue(stub)
-			if value.empty()
+			var String value = pECBehavior.getTrigger().getValueOrNull(stub)
+			if value == null
 				return
 			end
 			
-			pTriggerExpression = getElement().getClass() \
+			pTriggerExpression = getElement().getClass()\
 				.getTriggerExpressionParser().stringToExpression(value)
 			
 			pECBehavior.createListeners(this)

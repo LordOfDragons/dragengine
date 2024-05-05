@@ -368,12 +368,11 @@ void igdeListBox::SetSelectionMode( eSelectionMode mode ){
 }
 
 igdeListItem *igdeListBox::GetSelectedItem() const{
-	if( pSelection != -1 ){
-		return ( igdeListItem* )pItems.GetAt( pSelection );
-		
-	}else{
-		return NULL;
-	}
+	return pSelection != -1 ? ( igdeListItem* )pItems.GetAt( pSelection ) : nullptr;
+}
+
+void *igdeListBox::GetSelectedItemData() const{
+	return pSelection != -1 ? ( ( igdeListItem* )pItems.GetAt( pSelection ) )->GetData() : nullptr;
 }
 
 void igdeListBox::SetSelection( int selection ){

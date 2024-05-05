@@ -196,8 +196,11 @@ public:
 	/** \brief Index of selected item or -1. */
 	inline int GetSelection() const{ return pSelection; }
 	
-	/** \brief Selected item or NULL. */
+	/** \brief Selected item or nullptr. */
 	igdeListItem *GetSelectedItem() const;
+	
+	/** \brief Selected item date or nullptr. */
+	void *GetSelectedItemData() const;
 	
 	/** \brief Set index of selected item or -1. */
 	void SetSelection( int selection );

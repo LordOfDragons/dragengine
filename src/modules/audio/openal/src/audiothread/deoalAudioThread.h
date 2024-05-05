@@ -30,6 +30,7 @@
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deBarrier.h>
 #include <dragengine/threading/deThread.h>
+#include <dragengine/threading/deMutex.h>
 
 class deAudioOpenAL;
 class deoalAMicrophone;
@@ -112,26 +113,27 @@ private:
 	deoalAMicrophone *pDeactiveMicrophone;
 	deoalAWorld *pActiveWorld;
 	
-	decObjectSet pProcessOnceWorld;
+	decObjectSet pProcessOnceWorld; // audio thread
 	
-	decTimer pTimerElapsed;
-	float pElapsed;
-	float pElapsedFull;
+	decTimer pTimerElapsed; // audio thread
+	float pElapsed; // audio thread
+	float pElapsedFull; // audio thread
 	
 	// time history
-	decTimeHistory pTimeHistoryMain;
-	decTimeHistory pTimeHistoryAudio;
-	decTimeHistory pTimeHistoryAudioEstimated;
-	decTimeHistory pTimeHistoryUpdate;
-	decTimer pTimerMain;
-	decTimer pTimerAudio;
-	float pEstimatedAudioTime;
-	float pAccumulatedMainTime;
-	float pFrameTimeLimit;
-	int pFPSRate;
-	bool pReadyToWait;
-	bool pWaitSkipped;
-	float pWaitSkippedElapsed;
+	decTimeHistory pTimeHistoryMain; // both (main, audio)
+	decTimeHistory pTimeHistoryAudio; // audio thread
+	decTimeHistory pTimeHistoryAudioEstimated; // audio thread
+	decTimeHistory pTimeHistoryUpdate; // both (main, audio)
+	decTimer pTimerMain; // main thread
+	decTimer pTimerAudio; // audio thread
+	float pEstimatedAudioTime; // both (main, audio)
+	float pAccumulatedMainTime; // main thread
+	float pFrameTimeLimit; // audio thread
+	int pFPSRate; // main thread
+	bool pReadyToWait; // shared (main, audio)
+	bool pWaitSkipped; // audio thread
+	float pWaitSkippedElapsed; // audio thread
+	deMutex pMutexShared;
 	
 	// thread control
 	eThreadStates pThreadState;

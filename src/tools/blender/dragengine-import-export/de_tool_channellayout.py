@@ -24,7 +24,7 @@
 
 import bpy
 
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -33,7 +33,8 @@ from .de_porting import registerClass
 
 class OBJECT_OT_DEToolSortActionChannels( bpy.types.Operator ):
 	bl_idname = "dragengine.sortactionchannels"
-	bl_label = "Drag[en]gine Sort Action Channels"
+	bl_label = "Sort alphabetically"
+	bl_label_button = "Sort Action Channels"
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Sort Action Channels"""
 	
@@ -95,3 +96,4 @@ class OBJECT_OT_DEToolSortActionChannels( bpy.types.Operator ):
 		
 		return { 'FINISHED' }
 registerClass(OBJECT_OT_DEToolSortActionChannels)
+appendToMenu(bpy.types.DOPESHEET_MT_channel, OBJECT_OT_DEToolSortActionChannels)

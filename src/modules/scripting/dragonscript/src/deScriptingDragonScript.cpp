@@ -1099,6 +1099,10 @@ void deScriptingDragonScript::UserRequestQuit(){
 	}
 }
 
+bool deScriptingDragonScript::OnAppActivate(){
+	return pState != esReady || pCallFunction( "onAppActivate" );
+}
+
 
 
 // helper functions

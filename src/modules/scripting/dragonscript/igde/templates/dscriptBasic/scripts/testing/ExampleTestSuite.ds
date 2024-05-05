@@ -28,7 +28,7 @@ class ExampleTestSuite extends TestSuite
 		 * can be used to refer to individual test cases. The second argument is the
 		 * display text shown in WindowTesting or other UI.
 		 */
-		public func new() super("basicTest", UnicodeString.newFromUTF8("Basic Test"))
+		func new() super("basicTest", UnicodeString.newFromUTF8("Basic Test"))
 		end
 		
 		
@@ -80,7 +80,7 @@ class ExampleTestSuite extends TestSuite
 	 * suite identifier and can be used to refer to the test suite. The second argument
 	 * is the display text shown in WindowTesting or other UI.
 	 */
-	public func new() super("ecbcomponent", UnicodeString.newFromUTF8("ECBehaviorComponent"))
+	func new() super("ecbcomponent", UnicodeString.newFromUTF8("ECBehaviorComponent"))
 		addTestCase(BasicTest.new())
 	end
 end

@@ -190,7 +190,6 @@ class FormLayout implements Layout
 		// determine first the minimum size needed. this is the real minimum size not a
 		// potentially artifial minimal size from container.getMinimumSize()
 		var int newSizeX = container.getContainerWidth()
-		var int newSizeY = container.getContainerHeight()
 		var Point minSize = this.getMinimumSizeFor( container, newSizeX )
 		
 		// the size of the non-stretching column
@@ -199,7 +198,7 @@ class FormLayout implements Layout
 		// now determine how much additional space we have got
 		// at our disposal to size child widgets beyond minimum
 		var int cy = container.getPadding().getTop()
-		var int i, effSize, sizeGain
+		var int i
 		var Widget child
 		
 		var Point leftChildSize
@@ -246,7 +245,6 @@ class FormLayout implements Layout
 		end
 		
 		// available space
-		var int availSpaceX = DEMath.max( container.getWidth() - minSize.getX(), 0 )
 		var int availSpaceY = DEMath.max( container.getHeight() - minSize.getY(), 0 )
 		var int countStretchRow = this.getNumRowsStretch( container )
 		var int sizeGainY

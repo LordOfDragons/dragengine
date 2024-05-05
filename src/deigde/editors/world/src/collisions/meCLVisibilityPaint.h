@@ -73,7 +73,7 @@ private:
 	int pModifyHeight;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new listener. */
 	meCLVisibilityPaint( meWorld *world );
@@ -81,7 +81,7 @@ public:
 	virtual ~meCLVisibilityPaint();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Sets the paint ray. */
 	void SetRay( const decDVector &origin, const decVector &direction );
@@ -96,7 +96,7 @@ public:
 	void EndSession();
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/**
 	 * Determines the response for a given collision. If you specified ertCustom

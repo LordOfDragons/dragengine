@@ -132,8 +132,10 @@ class Label extends Widget implements TextModelListener
 	
 	/** \brief Dispose of widget. */
 	func void dispose()
-		pModel.removeListener(this)
-		pModel = null
+		if pModel != null
+			pModel.removeListener(this)
+			pModel = null
+		end
 		
 		super.dispose()
 	end

@@ -176,6 +176,13 @@ public:
 	 * Default implementation calls deEngine.Quit().
 	 */
 	virtual void UserRequestQuit();
+	
+	/**
+	 * \brief Called after the application received or lost focus.
+	 * \return true if the call has been successfull or false otherwise
+	 * \version 1.22
+	 */
+	virtual bool OnAppActivate();
 	/*@}*/
 };
 

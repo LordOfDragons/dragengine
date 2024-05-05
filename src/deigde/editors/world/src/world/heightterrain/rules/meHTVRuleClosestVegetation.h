@@ -60,7 +60,7 @@ private:
 	bool pDirty;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleClosestVegetation();
@@ -72,7 +72,7 @@ public:
 	virtual ~meHTVRuleClosestVegetation();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the vegetation type to search for. */
 	inline const decString &GetVegetationType() const{ return pVegetationType; }

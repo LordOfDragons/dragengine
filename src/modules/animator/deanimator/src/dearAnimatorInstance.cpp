@@ -422,9 +422,23 @@ void dearAnimatorInstance::EnableRetargetingChanged(){
 }
 
 void dearAnimatorInstance::ProtectDynamicBonesChanged(){
-	if( pAnimator ){
-		pAnimator->BonesChanged();
-		pDirtyAnimator = true;
+	if( ! pAnimator ){
+		return;
+	}
+	
+	const int count = pBoneStateList.GetStateCount();
+	int i;
+	
+	if( pAnimatorInstance.GetProtectDynamicBones() ){
+		for( i=0; i<count; i++ ){
+			dearBoneState &boneState = *pBoneStateList.GetStateAt( i );
+			boneState.SetProtected( boneState.GetRigBone() && boneState.GetRigBone()->GetDynamic() );
+		}
+		
+	}else{
+		for( i=0; i<count; i++ ){
+			pBoneStateList.GetStateAt( i )->SetProtected( false );
+		}
 	}
 }
 

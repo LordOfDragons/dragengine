@@ -153,7 +153,6 @@ class STDTRRBinding extends STDTRRStyle
 		
 		var Array values = Array.new()
 		var Array images = Array.new()
-		var int i
 		
 		pBindings.forEachButtonBinding(block Binding each
 			if each.getCommand() == command

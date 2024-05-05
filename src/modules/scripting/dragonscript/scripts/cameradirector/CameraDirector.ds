@@ -450,7 +450,9 @@ class CameraDirector
 	
 	/** \brief Init camera parameters. */
 	func void initCameraParameters()
-		applyParameters(pCamera)
+		if pCamera != null
+			applyParameters(pCamera)
+		end
 	end
 	
 	/**

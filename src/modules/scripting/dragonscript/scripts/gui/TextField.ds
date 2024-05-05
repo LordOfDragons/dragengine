@@ -330,7 +330,6 @@ class TextField extends TextWidget
 		var Font font = getFont()
 		var float textLen
 		var String text
-		var int i
 		
 		// check for password
 		if pPasswordChar == noPasswordChar
@@ -456,7 +455,7 @@ class TextField extends TextWidget
 		var UTF8Navigator nav = UTF8Navigator.new(pFirstChar)
 		var float floatRefXPos = (refXPos cast float) + 0.1
 		var bool decodeCharacter = pPasswordChar == noPasswordChar
-		var int i, character = pPasswordChar
+		var int character = pPasswordChar
 		var Font font = getFont()
 		var float x
 		
@@ -904,9 +903,6 @@ class TextField extends TextWidget
 		
 		if subString != null and pSelectionStart != null
 			var Point selXOffsets = getSelectionXOffsets()
-			var int selFrom = pSelectionStart.getPosition()
-			var int selTo = pSelectionEnd.getPosition()
-			
 			var int soff = selXOffsets.getX()
 			var int eoff = selXOffsets.getY()
 			

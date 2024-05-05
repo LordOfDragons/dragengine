@@ -40,41 +40,41 @@ namespace Dragengine.Gui
 class SharedListModel implements ListModel
 	/** Shared model listener. Required to solve cycling dependency problems. */
 	private class SharedModelListener implements ListModelListener
-		private var WeakReference pOwner
+		var WeakReference pOwner
 		
-		public func new(SharedListModel owner)
+		func new(SharedListModel owner)
 			pOwner = WeakReference.new(owner)
 		end
 		
-		public func void elementsAdded(ListModel listModel, int fromIndex, int toIndex)
+		func void elementsAdded(ListModel listModel, int fromIndex, int toIndex)
 			(pOwner.get() cast SharedListModel).notifyElementsAdded(fromIndex, toIndex)
 		end
 		
-		public func void elementsRemoved(ListModel listModel, int fromIndex, int toIndex)
+		func void elementsRemoved(ListModel listModel, int fromIndex, int toIndex)
 			(pOwner.get() cast SharedListModel).notifyElementsRemoved(fromIndex, toIndex)
 		end
 		
-		public func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
+		func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
 			(pOwner.get() cast SharedListModel).notifyContentChanged(fromIndex, toIndex)
 		end
 		
-		public func void selectionChanged(ListModel listModel)
+		func void selectionChanged(ListModel listModel)
 		end
 	end
 	
 	
 	
-	private var ListModel pModel
-	private var SharedModelListener pSharedModelListener
-	private var Array pListeners
-	private var int pSelected
-	private var Object pSelectedObject
-	private var bool pAutoSelect
+	var ListModel pModel
+	var SharedModelListener pSharedModelListener
+	var Array pListeners
+	var int pSelected
+	var Object pSelectedObject
+	var bool pAutoSelect
 	
 	
 	
 	/** \brief Create shared list model linked to ListModel. */
-	public func new(ListModel model)
+	func new(ListModel model)
 		if model == null
 			throw ENullPointer.new("model")
 		end
@@ -94,7 +94,7 @@ class SharedListModel implements ListModel
 	end
 	
 	/** \brief Destroy shared list model. */
-	public func void destructor()
+	func destructor()
 		if pModel != null
 			pModel.removeListener(pSharedModelListener)
 		end
@@ -103,14 +103,14 @@ class SharedListModel implements ListModel
 	
 	
 	/** \brief Linked model. */
-	public func ListModel getModel()
+	func ListModel getModel()
 		return pModel
 	end
 	
 	
 	
 	/** \brief Add listener. */
-	public func void addListener(ListModelListener listener)
+	func void addListener(ListModelListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
 		end
@@ -118,14 +118,14 @@ class SharedListModel implements ListModel
 	end
 	
 	/** \brief Remove listener. */
-	public func void removeListener(ListModelListener listener)
+	func void removeListener(ListModelListener listener)
 		pListeners.remove(listener)
 	end
 	
 	
 	
 	/** \brief Count of elements. */
-	public func int getCount()
+	func int getCount()
 		return pModel.getCount()
 	end
 	
@@ -133,27 +133,27 @@ class SharedListModel implements ListModel
 	 * \brief Element at index.
 	 * \throws EOutOfBounds \em index is less than 0 or larger than or equal to getCount().
 	 */
-	public func Object getAt(int index)
+	func Object getAt(int index)
 		return pModel.getAt(index)
 	end
 	
 	/** \brief Index of element or -1 if absent. */
-	public func int indexOf(Object element)
+	func int indexOf(Object element)
 		return pModel.indexOf(element)
 	end
 	
 	/** \brief Element is present. */
-	public func bool has(Object element)
+	func bool has(Object element)
 		return pModel.has(element)
 	end
 	
 	/** \brief Index of the selected element or -1 if there is no selected element. */
-	public func int getSelected()
+	func int getSelected()
 		return pSelected
 	end
 	
 	/** \brief Set index of selected element or -1 if none is no selected element. */
-	public func void setSelected(int index)
+	func void setSelected(int index)
 		if index < -1 or index >= pModel.getCount()
 			throw EInvalidParam.new()
 		end
@@ -182,7 +182,7 @@ class SharedListModel implements ListModel
 	 * If getSelected() is -1 returns null. If getSelected() is not -1 this method
 	 * behaves the same as calling getAt(getSelected()).
 	 */
-	public func Object getSelectedElement()
+	func Object getSelectedElement()
 		return pSelectedObject
 	end
 	
@@ -191,7 +191,7 @@ class SharedListModel implements ListModel
 	 * 
 	 * Behaves the same as calling setSelected(indexOf(element)).
 	 */
-	public func void setSelectedElement(Object element)
+	func void setSelectedElement(Object element)
 		var int index = pModel.indexOf(element)
 		
 		if index == pSelected
@@ -212,7 +212,7 @@ class SharedListModel implements ListModel
 	 * If no item is selected and an item is added it is selected. If selected item is
 	 * removed selects the next suitible item if the list is not empty.
 	 */
-	public func bool getAutoSelect()
+	func bool getAutoSelect()
 		return pAutoSelect
 	end
 	
@@ -225,7 +225,7 @@ class SharedListModel implements ListModel
 	 * If auto select is set to true while no item is selected the first item in the
 	 * list is selected if the list is not empty.
 	 */
-	public func void setAutoSelect(bool autoSelect)
+	func void setAutoSelect(bool autoSelect)
 		if autoSelect == pAutoSelect
 			return
 		end
@@ -244,7 +244,7 @@ class SharedListModel implements ListModel
 	 * \param indexFrom Index of first element that changed
 	 * \param indexTo Index of last element that changed
 	 */
-	public func void notifyContentChanged(int indexFrom, int indexTo)
+	func void notifyContentChanged(int indexFrom, int indexTo)
 		var bool notifySelectedChanged
 		
 		if pSelected != -1
@@ -274,7 +274,7 @@ class SharedListModel implements ListModel
 	 * \param indexFrom Index of first added element.
 	 * \param indexTo Index of last added element.
 	 */
-	public func void notifyElementsAdded(int indexFrom, int indexTo)
+	func void notifyElementsAdded(int indexFrom, int indexTo)
 		pListeners.forEach(block ListModelListener each
 			each.elementsAdded(this, indexFrom, indexTo)
 		end)
@@ -289,7 +289,7 @@ class SharedListModel implements ListModel
 	 * \param indexFrom Index of first removed element.
 	 * \param indexTo Index of last removed element.
 	 */
-	public func void notifyElementsRemoved(int indexFrom, int indexTo)
+	func void notifyElementsRemoved(int indexFrom, int indexTo)
 		var bool notifySelectedChanged
 		
 		if pSelected > indexTo

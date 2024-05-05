@@ -128,6 +128,19 @@ public:
 	/** \brief Read one unsigned integer (8 bytes) and advances the file pointer. */
 	uint64_t ReadULong();
 	
+	/**
+	 * \brief Read variable length unsigned integer (1-4 bytes) and advances file pointer.
+	 * 
+	 * Variable length integers are written using 1 to 4 bytes. The highest 2 bits of the
+	 * first byte stores the total length (0=1 byte, 1=2 bytes, 2=3 bytes, 3=4 bytes).
+	 * The lower 6 bits are used as value. With each added byte the previous bits are
+	 * shifted up. The maximum storable value is thus 1073741823.
+	 * 
+	 * Variable length unsigned integers are typically used for values like versions
+	 * or revisions which start low and potentially grow large over time.
+	 */
+	uint32_t ReadVarUInt();
+	
 	/** \brief Read one float (4 bytes) and advances the file pointer. */
 	float ReadFloat();
 	
@@ -149,16 +162,43 @@ public:
 	void ReadString8Into( decString &string );
 	
 	/**
-	 * \brief Read a string prefixed by a 2-byte2 length field and advances the file pointer.
+	 * \brief Read a string prefixed by a 2-bytes length field and advances the file pointer.
 	 * 
 	 * The returned string pointer has to be freed by the caller itself.
 	 */
 	decString ReadString16();
 	
 	/**
-	 * \brief Read string prefixed by a 2-byte2 length field and advances the file pointer.
+	 * \brief Read string prefixed by a 2-bytes length field and advances the file pointer.
 	 */
 	void ReadString16Into( decString &string );
+	
+	/**
+	 * \brief Read a string prefixed by a 4-bytes length field and advances the file pointer.
+	 * 
+	 * The returned string pointer has to be freed by the caller itself.
+	 */
+	decString ReadString32();
+	
+	/**
+	 * \brief Read string prefixed by a 4-bytes length field and advances the file pointer.
+	 */
+	void ReadString32Into( decString &string );
+	
+	/**
+	 * \brief Read a variable string prefixed by a 1-4 bytes length field and advances the file pointer.
+	 * 
+	 * The length is stored as variable unsigned integer (ReadVarUInt).
+	 * The returned string pointer has to be freed by the caller itself.
+	 */
+	decString ReadVarString();
+	
+	/**
+	 * \brief Read variable string prefixed by a 1-4 bytes length field and advances the file pointer.
+	 * 
+	 * The length is stored as variable unsigned integer (ReadVarUInt).
+	 */
+	void ReadVarStringInto( decString &string );
 	
 	/**
 	 * \brief Read a 3-float vector and advances the file pointer.
@@ -298,6 +338,9 @@ public:
 	/** \brief Skip one unsigned integer (8 bytes) and advances the file pointer. */
 	void SkipULong();
 	
+	/** \brief Skip variable length unsigned integer (1-4 bytes) and advances file pointer. */
+	void SkipVarUInt();
+	
 	/** \brief Skip one float (4 bytes) and advances the file pointer. */
 	void SkipFloat();
 	
@@ -307,8 +350,14 @@ public:
 	/** \brief Skip a string prefixed by a 1-byte length field and advances the file pointer. */
 	void SkipString8();
 	
-	/** \brief Skip a string prefixed by a 2-byte2 length field and advances the file pointer. */
+	/** \brief Skip a string prefixed by a 2-byte length field and advances the file pointer. */
 	void SkipString16();
+	
+	/** \brief Skip a string prefixed by a 4-byte length field and advances the file pointer. */
+	void SkipString32();
+	
+	/** \brief Skip a string prefixed by a 1-4 byte length field and advances the file pointer. */
+	void SkipVarString();
 	
 	/** \brief Skip a 3-float vector and advances the file pointer. */
 	void SkipVector();

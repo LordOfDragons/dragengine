@@ -62,7 +62,7 @@ private:
 	meObject *pHostObject;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new lumimeter. */
 	meLumimeter( deEngine *engine );
@@ -70,7 +70,7 @@ public:
 	~meLumimeter();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the game engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
@@ -121,7 +121,7 @@ public:
 	bool HasHostObject() const;
 	/*@}*/
 	
-	/** @name Measuring */
+	/** \name Measuring */
 	/*@{*/
 	/** Measures the luminance. */
 	float MeasureLuminance();

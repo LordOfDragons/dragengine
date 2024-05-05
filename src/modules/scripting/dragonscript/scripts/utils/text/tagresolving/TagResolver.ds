@@ -133,7 +133,6 @@ class TagResolver
 		var int len = text.getLength()
 		var TagResolverRule rule
 		var String result = ""
-		var String actionName
 		var int position = 0
 		var String tagData
 		var String tagAction

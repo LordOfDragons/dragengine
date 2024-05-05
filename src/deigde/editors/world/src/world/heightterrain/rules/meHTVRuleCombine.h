@@ -56,7 +56,7 @@ private:
 	float pZ;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleCombine();
@@ -68,7 +68,7 @@ public:
 	virtual ~meHTVRuleCombine();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the x value to use if there is no x input. */
 	inline float GetX() const{ return pX; }

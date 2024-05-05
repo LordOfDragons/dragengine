@@ -138,7 +138,7 @@ class DebugBehaviorLookAt
 	end
 	
 	/** \brief Destructor. */
-	func void destructor()
+	func destructor()
 		if pLookAtDebugInfo != null
 			pPanelDebugInformation.removeDebugInfo(pLookAtDebugInfo)
 		end

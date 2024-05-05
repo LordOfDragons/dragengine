@@ -79,7 +79,7 @@ private:
 	decVector2 pViewCenter;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	meHTVegetationLayer( deEngine *engine, const char *name = "" );
@@ -87,7 +87,7 @@ public:
 	virtual ~meHTVegetationLayer();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** \brief Parent height terrain or NULL. */
 	inline meHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
@@ -106,7 +106,7 @@ public:
 	void SetName( const char *name );
 	/*@}*/
 	
-	/** @name Variation */
+	/** \name Variation */
 	/*@{*/
 	/** Retrieves the number of variations. */
 	inline int GetVariationCount() const{ return pVariationCount; }
@@ -132,7 +132,7 @@ public:
 	void SetActiveVariation( meHTVVariation *variation );
 	/*@}*/
 	
-	/** @name Rule */
+	/** \name Rule */
 	/*@{*/
 	/** Retrieves the number of rules. */
 	inline int GetRuleCount() const{ return pRuleCount; }
@@ -161,7 +161,7 @@ public:
 	void EvaluateRules( meHTVEvaluationEnvironment &evalEnv );
 	/*@}*/
 	
-	/** @name Link */
+	/** \name Link */
 	/*@{*/
 	/** Retrieves the number of links. */
 	inline int GetLinkCount() const{ return pLinkCount; }

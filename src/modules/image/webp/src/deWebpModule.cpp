@@ -82,25 +82,74 @@ deBaseImageInfo *deWebpModule::InitLoadImage( decBaseFileReader &file ){
 
 void deWebpModule::LoadImage( decBaseFileReader&, deImage &image, deBaseImageInfo &infos ){
 	deWebpImageInfo &webpInfo = ( deWebpImageInfo& )infos;
+	uint8_t *readTarget = nullptr;
+	sRGBA8 *bufferRGBA = nullptr;
+	sRGB8 *bufferRGB = nullptr;
 	uint8_t *result = nullptr;
+	int i;
 	
 	try{
+		const int pixelCount = image.GetWidth() * image.GetHeight();
+		
 		if( webpInfo.GetHasAlpha() ){
+			if( webpInfo.GetIsGrayscale() ){
+				bufferRGBA = new sRGBA8[ pixelCount ];
+				readTarget = ( uint8_t* )bufferRGBA;
+				
+			}else{
+				readTarget = ( uint8_t* )image.GetDataRGBA8();
+			}
+			
 			result = WebPDecodeRGBAInto( ( const uint8_t* )webpInfo.GetData().GetPointer(),
-				webpInfo.GetData().GetLength(), ( uint8_t* )image.GetDataRGBA8(),
-				image.GetWidth() * image.GetHeight() * 4, image.GetWidth() * 4 );
+				webpInfo.GetData().GetLength(), readTarget, pixelCount * 4, image.GetWidth() * 4 );
 			
 		}else{
+			if( webpInfo.GetIsGrayscale() ){
+				bufferRGB = new sRGB8[ pixelCount ];
+				readTarget = ( uint8_t* )bufferRGB;
+				
+			}else{
+				readTarget = ( uint8_t* )image.GetDataRGB8();
+			}
+			
 			result = WebPDecodeRGBInto( ( const uint8_t* )webpInfo.GetData().GetPointer(),
-				webpInfo.GetData().GetLength(), ( uint8_t* )image.GetDataRGB8(),
-				image.GetWidth() * image.GetHeight() * 3, image.GetWidth() * 3 );
+				webpInfo.GetData().GetLength(), readTarget, pixelCount * 3, image.GetWidth() * 3 );
 		}
 		
 		if( ! result ){
 			DETHROW( deeInvalidFileFormat );
 		}
 		
+		if( bufferRGBA ){
+			sGrayscaleAlpha8 * const dest = image.GetDataGrayscaleAlpha8();
+			
+			for( i=0; i<pixelCount; i++ ){
+				dest[ i ].value = bufferRGBA[ i ].red;
+				dest[ i ].alpha = bufferRGBA[ i ].alpha;
+			}
+			
+			delete [] bufferRGBA;
+			bufferRGBA = nullptr;
+		}
+		
+		if( bufferRGB ){
+			sGrayscale8 * const dest = image.GetDataGrayscale8();
+			
+			for( i=0; i<pixelCount; i++ ){
+				dest[ i ].value = bufferRGB[ i ].red;
+			}
+			
+			delete [] bufferRGB;
+			bufferRGB = nullptr;
+		}
+		
 	}catch( const deException & ){
+		if( bufferRGBA ){
+			delete [] bufferRGBA;
+		}
+		if( bufferRGB ){
+			delete [] bufferRGB;
+		}
 		throw;
 	}
 }

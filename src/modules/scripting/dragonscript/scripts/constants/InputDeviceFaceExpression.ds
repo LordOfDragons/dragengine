@@ -28,7 +28,18 @@ namespace Dragengine
  * \version 1.12
  * 
  * See https://www.khronos.org/registry/OpenXR/specs/1.0/html/xrspec.html#XR_HTC_facial_tracking
- * for description and images of face expressions.
+ * and https://www.khronos.org/registry/OpenXR/specs/1.0/html/xrspec.html#XR_FB_face_tracking2
+ * for description and images of face expressions. Expressions existing in one expression set
+ * are emulated in the other if possible.
+ * 
+ * Some expressions are simplified expressions. These can have detail expressions which combined
+ * match up with the simplified expression. Use only the simplified expression or the corresponding
+ * detail expressions or you get the expression applied twice. You can also apply simplified
+ * expressions last and make them overwrite detail expressions. In this case both systems can
+ * work together if it is unclear which system is used.
+ * 
+ * Expressions up to and including \ref InputDeviceFaceExpression#tongueMorphDownLeft
+ * are present since version 1.12 . All other expressions are present since version 1.21 .
  */
 fixed class InputDeviceFaceExpression
 	public static fixed var int eyeLeftBlink = 0
@@ -87,4 +98,55 @@ fixed class InputDeviceFaceExpression
 	public static fixed var int tongueMorphUpLeft = 48
 	public static fixed var int tongueMorphDownRight = 49
 	public static fixed var int tongueMorphDownLeft = 50
+	
+	public static fixed var int eyeRightSquint = 51
+	public static fixed var int eyeLeftSquint = 52
+	
+	public static fixed var int browRightDown = 53
+	public static fixed var int browLeftDown = 54
+	public static fixed var int browInnerRightUp = 55
+	public static fixed var int browInnerLeftUp = 56
+	public static fixed var int browOuterRightUp = 57
+	public static fixed var int browOuterLeftUp = 58
+	
+	public static fixed var int lidUpperUpRight = 59
+	public static fixed var int lidUpperUpLeft = 60
+	
+	public static fixed var int noseWrinkleRight = 61
+	public static fixed var int noseWrinkleLeft = 62
+	
+	public static fixed var int cheekUpRight = 63
+	public static fixed var int cheekUpLeft = 64
+	public static fixed var int cheekSuckRight = 65 //<! Detail expression of cheekSuck
+	public static fixed var int cheekSuckLeft = 66 //<! Detail expression of cheekSuck
+	
+	public static fixed var int chinUpperUp = 67
+	public static fixed var int chinLowerUp = 68
+	
+	public static fixed var int mouthDimpleRight = 69
+	public static fixed var int mouthDimpleLeft = 70
+	public static fixed var int mouthPressRight = 71
+	public static fixed var int mouthPressLeft = 72
+	public static fixed var int mouthPoutRight = 73 //<! Detail expression of mouthPout
+	public static fixed var int mouthPoutLeft = 74 //<! Detail expression of mouthPout
+	public static fixed var int mouthStretchRight = 75
+	public static fixed var int mouthStretchLeft = 76
+	public static fixed var int mouthRight = 77
+	public static fixed var int mouthLeft = 78
+	public static fixed var int mouthUpperFunnelRight = 79
+	public static fixed var int mouthUpperFunnelLeft = 80
+	public static fixed var int mouthUpperSuckRight = 81
+	public static fixed var int mouthUpperSuckLeft = 82
+	public static fixed var int mouthLowerFunnelRight = 83
+	public static fixed var int mouthLowerFunnelLeft = 84
+	public static fixed var int mouthLowerSuckRight = 85
+	public static fixed var int mouthLowerSuckLeft = 86
+	
+	public static fixed var int TongueTipInterdental = 87
+	public static fixed var int TongueTipAlveolar = 88
+	public static fixed var int TongueDorsalPalateFront = 89
+	public static fixed var int TongueDorsalPalateMid = 90
+	public static fixed var int TongueDorsalVelarBack = 91
+	public static fixed var int TongueRetreatBack = 92
+	public static fixed var int TongueOut = 93
 end

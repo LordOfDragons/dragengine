@@ -1437,7 +1437,7 @@ void deoalASpeaker::pCheckStillSourceOwner(){
 		return;
 	}
 	
-	pSource = NULL;
+	pSource = nullptr;
 }
 
 void deoalASpeaker::pUpdateSourceImportance(){

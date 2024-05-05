@@ -44,6 +44,8 @@ from .de_porting import registerClass, matmul
 class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 	bl_idname = "dragengine.export_rig"
 	bl_label = "Rig (.derig)"
+	bl_label_button = "Rig"
+	bl_icon = 'ARMATURE_DATA'
 	__doc__ = """Export as Drag[en]gine Rig Resource"""
 	filename_ext = ".derig"
 	filter_glob: bpy.props.StringProperty(default="*.derig", options={'HIDDEN'})

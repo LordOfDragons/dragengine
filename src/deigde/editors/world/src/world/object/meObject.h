@@ -175,7 +175,7 @@ public:
 	/** \brief Dispose of the component. */
 	void Dispose();
 	
-	/** \brief Retrieves the camera or NULL if not existing. */
+	/** \brief Retrieves the camera or nullptr if not existing. */
 	inline meCamera *GetCamera() const{ return pCamera; }
 	
 	inline meWorld *GetWorld() const{ return pWorld; }

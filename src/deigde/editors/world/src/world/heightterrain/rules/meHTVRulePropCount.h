@@ -54,7 +54,7 @@ private:
 	bool pDirty;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRulePropCount();
@@ -66,7 +66,7 @@ public:
 	virtual ~meHTVRulePropCount();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the class name of the prop to search for. */
 	inline const decString &GetPropClass() const{ return pPropClass; }

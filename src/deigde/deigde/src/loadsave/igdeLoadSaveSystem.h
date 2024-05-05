@@ -59,7 +59,8 @@ public:
 		efplSky,
 		efplAnimator,
 		efplSynthesizer,
-		efplSpeechAnimation
+		efplSpeechAnimation,
+		efplCamera
 	};
 	
 	/** \brief FOX File pattern lists. */
@@ -71,8 +72,8 @@ private:
 	igdeWindowMain *pWindowMain;
 	igdeLSGameProject *pLSGameProject;
 	
-	igdeFilePatternList pFPLOpen[ efplSpeechAnimation + 1 ];
-	igdeFilePatternList pFPLSave[ efplSpeechAnimation + 1 ];
+	igdeFilePatternList pFPLOpen[ efplCamera + 1 ];
+	igdeFilePatternList pFPLSave[ efplCamera + 1 ];
 	
 	decString pFoxFPLOpen[ effplGameProject + 1 ];
 	decString pFoxFPLSave[ effplGameProject + 1 ];

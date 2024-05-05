@@ -105,7 +105,7 @@ class FlowLayout extends BoxLayout
 		var int cy = container.getPadding().getTop()
 		var int gap = this.getGap()
 		var Point childSize
-		var int i, effSize
+		var int i
 		var Widget child
 		
 		var BorderSize borderSize

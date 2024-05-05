@@ -554,7 +554,6 @@ class TextArea extends TextWidget implements RangeModelListener
 	public func void onKeyPress(KeyEvent event)
 		var bool shift = (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
 		var bool control = (event.getModifiers() & InputEventModifier.control) == InputEventModifier.control
-		var String curText = getText()
 		var int line = getCursorLine()
 		var int first = pTextLayout.getLine(line).getFirstChar()
 		var int count = pTextLayout.getLine(line).getCharCount()
@@ -814,7 +813,7 @@ class TextArea extends TextWidget implements RangeModelListener
 		var int lastChar = nav.getPosition() + pTextLayout.getLine(line).getCharCount()
 		var float floatRefXPos = (refXPos cast float) + 0.1
 		var Font font = getFont()
-		var int i, character
+		var int character
 		var float x
 		
 		while nav.getPosition() < lastChar
@@ -931,9 +930,7 @@ class TextArea extends TextWidget implements RangeModelListener
 		var int charHeight = font.getSize()
 		var int scrollOffsetY = pVertRangeModel.getValue() * charHeight
 		var int width = getWidth() - 1 - getPadding().getWidth()
-		var int height = getHeight() - 1 - getPadding().getHeight()
 		var int selFrom = -1, selTo = -1, soff, eoff
-		var int realHeight = charHeight + 3
 		var Point selXOffsets
 		var int i
 		

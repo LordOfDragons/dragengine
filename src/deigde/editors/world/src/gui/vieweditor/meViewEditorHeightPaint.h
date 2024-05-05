@@ -41,7 +41,7 @@ private:
 	meCLHeightPaint *pHeightPainter;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
 	meViewEditorHeightPaint( meView3D &view );
@@ -49,13 +49,13 @@ public:
 	virtual ~meViewEditorHeightPaint();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Game like frame update. */
 	virtual void OnFrameUpdate( float elapsed );
 	/*@}*/
 	
-	/** @name Events */
+	/** \name Events */
 	/*@{*/
 	/** The left mouse button has been pressed. Return true if handled. */
 	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );

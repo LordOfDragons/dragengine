@@ -44,7 +44,7 @@ private:
 	meHeightTerrainPropField *pPropField;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	meUpdateHeightTerrainPropField( meHeightTerrainPropField *propField );
@@ -52,13 +52,13 @@ public:
 	virtual ~meUpdateHeightTerrainPropField();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the prop field. */
 	inline meHeightTerrainPropField *GetPropField() const{ return pPropField; }
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/**
 	 * Requests the game scripts to fill the prop field with instances. The density

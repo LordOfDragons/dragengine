@@ -110,11 +110,11 @@ class DebugBehaviorHitScan
 		
 		this.pBehavior.forEachTest( block ColliderCollisionTest each
 			// ray shape
-			var DVector rayStart = each.getTestOrigin()
-			var DVector rayEnd = rayStart + each.getTestDirection()
-			var DVector rayCenter = ( rayStart + rayEnd ) * 0.5
-			var Vector direction = each.getTestDirection().toVector()
-			var float distance = direction.getLength()
+			rayStart = each.getTestOrigin()
+			rayEnd = rayStart + each.getTestDirection()
+			rayCenter = ( rayStart + rayEnd ) * 0.5
+			direction = each.getTestDirection().toVector()
+			distance = direction.getLength()
 			
 			if distance > 0.01
 				var Vector view = direction / distance

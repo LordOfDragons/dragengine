@@ -149,6 +149,7 @@ fixed class FileSystem
 	 * a default extension in the form ".xyz".
 	 */
 	public static func Array getFileExtensions(ResourceLoaderType type)
+		return null
 	end
 	
 	/**

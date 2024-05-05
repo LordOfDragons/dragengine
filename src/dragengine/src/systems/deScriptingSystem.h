@@ -149,6 +149,12 @@ public:
 	/** \brief Render window has changed size. */
 	void OnResizeRenderWindow();
 	
+	/**
+	 * \brief Application received or lost focus.
+	 * \version 1.22
+	 */
+	void OnAppActivate();
+	
 	/** \brief Event has to be processed. */
 	void SendEvent( deInputEvent *event );
 	

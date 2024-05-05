@@ -1,5 +1,0 @@
-[Project]
-VersionControlSupport=kdevgit
-
-[dragonscriptsupport]
-requireDragenginePackage=true

@@ -283,7 +283,7 @@ class InteractiveMainMenu extends Window
 			return
 		end
 		
-		removeWidget(pTextDisplay)
+		pTextDisplay.safeDispose()
 		pTextDisplay = textDisplay
 	end
 	

@@ -24,7 +24,7 @@
 
 import bpy, re
 
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -32,58 +32,61 @@ from .de_porting import registerClass
 ###################################
 
 class OBJECT_OT_ToolRemoveEmptyVertexGroups(bpy.types.Operator):
-	bl_idname = "dragengine.remove_empty_vertex_groups"
-	bl_label = "Remove Empty Vertex Groups"
-	bl_options = {'INTERNAL'}
-	__doc__ = """Remove vertex groups not used by any vertices"""
-	
-	@classmethod
-	def poll(cls, context):
-		return context.active_object != None \
-			and context.active_object.type == 'MESH' \
-			and context.active_object.mode in ['OBJECT', 'EDIT']
-	
-	def execute(self, context):
-		restoreEditMode = self.inModeEdit(context)
-		self.modeObject()
-		try:
-			self.removeEmptyVertexGroups(context)
-		finally:
-			if restoreEditMode:
-				self.modelEdit()
-		return {'FINISHED'}
-	
-	# selection states do not update in edit mode. flick-flack to get it working
-	def modelFlickFlack(self):
-		self.modeObject()
-		self.modelEdit()
-	
-	def inModeEdit(self, context):
-		return context.active_object.mode == 'EDIT'
-	
-	def modeObject(self):
-		bpy.ops.object.mode_set(mode='OBJECT')
-	
-	def modelEdit(self):
-		bpy.ops.object.mode_set(mode='EDIT')
-	
-	def removeEmptyVertexGroups(self, context):
-		object = context.active_object
-		mesh = object.data
-		
-		# find empty groups
-		groups = [[g, False] for g in object.vertex_groups]
-		
-		for v in mesh.vertices:
-			for g in v.groups:
-				if g.weight: # ignore 0 weights
-					groups[g.group][1] = True
-		
-		print(groups)
-		# remove groups
-		for g in groups:
-			if not g[1]:
-				object.vertex_groups.remove(g[0])
+    bl_idname = "dragengine.remove_empty_vertex_groups"
+    bl_label = "Remove empty vertex groups"
+    bl_label_button = "Remove empty groups"
+    bl_icon = 'TRASH'
+    bl_options = {'REGISTER', 'UNDO'}
+    __doc__ = """Remove vertex groups not used by any vertices"""
+    
+    @classmethod
+    def poll(cls, context):
+        return context.active_object != None \
+            and context.active_object.type == 'MESH' \
+            and context.active_object.mode in ['OBJECT', 'EDIT']
+    
+    def execute(self, context):
+        restoreEditMode = self.inModeEdit(context)
+        self.modeObject()
+        try:
+            self.removeEmptyVertexGroups(context)
+        finally:
+            if restoreEditMode:
+                self.modelEdit()
+        return {'FINISHED'}
+    
+    # selection states do not update in edit mode. flick-flack to get it working
+    def modelFlickFlack(self):
+        self.modeObject()
+        self.modelEdit()
+    
+    def inModeEdit(self, context):
+        return context.active_object.mode == 'EDIT'
+    
+    def modeObject(self):
+        bpy.ops.object.mode_set(mode='OBJECT')
+    
+    def modelEdit(self):
+        bpy.ops.object.mode_set(mode='EDIT')
+    
+    def removeEmptyVertexGroups(self, context):
+        object = context.active_object
+        mesh = object.data
+        
+        # find empty groups
+        groups = [[g, False] for g in object.vertex_groups]
+        
+        for v in mesh.vertices:
+            for g in v.groups:
+                if g.weight: # ignore 0 weights
+                    groups[g.group][1] = True
+        
+        # remove groups
+        for g in groups:
+            if not g[1]:
+                object.vertex_groups.remove(g[0])
 
 if bpy.app.version >= (2, 80):
-	registerClass(OBJECT_OT_ToolRemoveEmptyVertexGroups)
+    registerClass(OBJECT_OT_ToolRemoveEmptyVertexGroups)
+    appendToMenu(bpy.types.VIEW3D_MT_object_cleanup,
+                 OBJECT_OT_ToolRemoveEmptyVertexGroups)

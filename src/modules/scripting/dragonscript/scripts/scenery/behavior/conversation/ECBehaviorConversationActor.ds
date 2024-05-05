@@ -100,7 +100,7 @@ pin Dragengine.Utils.StyledText.Definition
  * addBehaviorTree(ECBehaviorBehaviorTree). This will add behavior tree actions and conditions
  * to all added behavior tree contexts. The following actions and conditions are added.
  * 
- * <b>Condition "conversationActor.inConversation"</b>
+ * - Condition "conversationActor.inConversation"
  * 
  * Determines if conversation actor is in a conversation.
  * 
@@ -111,7 +111,7 @@ pin Dragengine.Utils.StyledText.Definition
  * </action>
  * \endcode
  * 
- * <b>Condition "conversationActor.notInConversation"</b>
+ * - Condition "conversationActor.notInConversation"
  * 
  * Determines if conversation actor is not in a conversation.
  * 

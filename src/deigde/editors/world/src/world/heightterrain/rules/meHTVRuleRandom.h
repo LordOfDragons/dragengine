@@ -47,7 +47,7 @@ private:
 	float pRandom;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleRandom();
@@ -59,7 +59,7 @@ public:
 	virtual ~meHTVRuleRandom();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Resets the rule state. */
 	virtual void Reset();

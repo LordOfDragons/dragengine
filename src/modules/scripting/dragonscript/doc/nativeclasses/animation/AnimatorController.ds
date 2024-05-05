@@ -164,10 +164,12 @@ class AnimatorController
 	
 	/** \brief Controller value is at lower value. */
 	func bool isAtLower()
+		return false
 	end
 	
 	/** \brief Controller value is at upper value. */
 	func bool isAtUpper()
+		return false
 	end
 	/*@}*/
 end

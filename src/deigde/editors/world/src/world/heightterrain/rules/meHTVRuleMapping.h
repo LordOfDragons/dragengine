@@ -59,7 +59,7 @@ private:
 	bool pInversed;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleMapping();
@@ -71,7 +71,7 @@ public:
 	virtual ~meHTVRuleMapping();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the value to use if there is no input value. */
 	inline float GetValue() const{ return pValue; }

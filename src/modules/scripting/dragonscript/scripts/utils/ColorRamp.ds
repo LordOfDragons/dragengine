@@ -166,7 +166,7 @@ class ColorRamp
 		end
 		
 		var RampColor color2 = this.pColors.getAt( index + 1 ) cast RampColor
-		var float blend = DEMath.linearStep( location, color1.getLocation(), color2.getLocation() )
-		return color1.getColor() * ( 1.0 - blend ) + color2.getColor() * blend
+		var float factor = DEMath.linearStep( location, color1.getLocation(), color2.getLocation() )
+		return color1.getColor() * ( 1.0 - factor ) + color2.getColor() * factor
 	end
 end

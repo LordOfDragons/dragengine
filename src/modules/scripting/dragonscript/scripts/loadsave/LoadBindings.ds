@@ -241,8 +241,6 @@ class LoadBindings extends BaseXmlLoader
 	 * Can be used by other classes to write a bindings tag to any XML outside bindings XML.
 	 */
 	public func void writeBindings( EasyXMLElement root, BindingManager bindingManager )
-		var EasyXMLElement element
-		
 		bindingManager.forEachAxisBinding( block Binding each
 			if each.getCommand() != null
 				this.writeAxisBinding( root, each )

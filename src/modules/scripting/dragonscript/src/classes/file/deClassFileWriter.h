@@ -95,9 +95,12 @@ private:
 	DEF_NATFUNC( nfWriteUShort );
 	DEF_NATFUNC( nfWriteInt );
 	DEF_NATFUNC( nfWriteUInt );
+	DEF_NATFUNC( nfWriteVarUInt );
 	DEF_NATFUNC( nfWriteFloat );
 	DEF_NATFUNC( nfWriteString8 );
 	DEF_NATFUNC( nfWriteString16 );
+	DEF_NATFUNC( nfWriteString32 );
+	DEF_NATFUNC( nfWriteVarString );
 	DEF_NATFUNC( nfWriteString );
 	DEF_NATFUNC( nfWriteData );
 	DEF_NATFUNC( nfWriteData2 );

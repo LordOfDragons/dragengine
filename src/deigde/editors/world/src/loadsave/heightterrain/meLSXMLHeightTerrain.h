@@ -65,7 +65,7 @@ private:
 	meLoadSaveSystem *pLSSys;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	meLSXMLHeightTerrain( meLoadSaveSystem *lssys );
@@ -73,7 +73,7 @@ public:
 	virtual ~meLSXMLHeightTerrain();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Loads a height terrain. */
 	virtual void LoadFromFile( meHeightTerrain &heightTerrain, decBaseFileReader &file );

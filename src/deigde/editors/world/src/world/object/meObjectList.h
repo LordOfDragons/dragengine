@@ -36,7 +36,7 @@ private:
 	decObjectOrderedSet pObjects;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	meObjectList();
@@ -44,7 +44,7 @@ public:
 	~meObjectList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of objects. */
 	int GetCount() const;

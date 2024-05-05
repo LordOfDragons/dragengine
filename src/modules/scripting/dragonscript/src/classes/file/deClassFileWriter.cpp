@@ -229,6 +229,17 @@ void deClassFileWriter::nfWriteUInt::RunFunction( dsRunTime *rt, dsValue *myself
 	fileWriter.WriteUInt( ( uint32_t )rt->GetValue( 0 )->GetInt() );
 }
 
+// public func void writeVarUInt( int value )
+deClassFileWriter::nfWriteVarUInt::nfWriteVarUInt( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeVarUInt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // value
+}
+void deClassFileWriter::nfWriteVarUInt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
+	
+	fileWriter.WriteVarUInt( ( uint32_t )rt->GetValue( 0 )->GetInt() );
+}
+
 // public func void writeFloat( float value )
 deClassFileWriter::nfWriteFloat::nfWriteFloat( const sInitData &init ) : dsFunction( init.clsFileWriter,
 "writeFloat", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -241,42 +252,66 @@ void deClassFileWriter::nfWriteFloat::RunFunction( dsRunTime *rt, dsValue *mysel
 }
 
 // public func void writeString8( String data )
-deClassFileWriter::nfWriteString8::nfWriteString8( const sInitData &init ) : dsFunction( init.clsFileWriter,
-"writeString8", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassFileWriter::nfWriteString8::nfWriteString8( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeString8", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsString ); // data
 }
 void deClassFileWriter::nfWriteString8::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
-	const char *data = rt->GetValue( 0 )->GetString();
-	int size = ( int )strlen( data );
-	
-	if( size > 255 ){
-		DSTHROW_INFO( dueInvalidParam, "String too long" );
-	}
-	
-	fileWriter.WriteByte( ( unsigned char )size );
-	if( size > 0 ){
-		fileWriter.Write( data, size );
+	const char * const data = rt->GetValue( 0 )->GetString();
+	try{
+		fileWriter.WriteString8( data );
+		
+	}catch( const deException &e ){
+		DSTHROW_INFO( dueInvalidParam, e.GetDescription() );
 	}
 }
 
 // public func void writeString16( String data )
-deClassFileWriter::nfWriteString16::nfWriteString16( const sInitData &init ) : dsFunction( init.clsFileWriter,
-"writeString16", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassFileWriter::nfWriteString16::nfWriteString16( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeString16", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsString ); // data
 }
 void deClassFileWriter::nfWriteString16::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
-	const char *data = rt->GetValue( 0 )->GetString();
-	int size = ( int )strlen( data );
-	
-	if( size > 65535 ){
-		DSTHROW_INFO( dueInvalidParam, "String too long" );
+	const char * const data = rt->GetValue( 0 )->GetString();
+	try{
+		fileWriter.WriteString16( data );
+		
+	}catch( const deException &e ){
+		DSTHROW_INFO( dueInvalidParam, e.GetDescription() );
 	}
-	
-	fileWriter.WriteUShort( ( unsigned short )size );
-	if( size > 0 ){
-		fileWriter.Write( data, size );
+}
+
+// public func void writeString32( String data )
+deClassFileWriter::nfWriteString32::nfWriteString32( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeString32", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // data
+}
+void deClassFileWriter::nfWriteString32::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
+	const char * const data = rt->GetValue( 0 )->GetString();
+	try{
+		fileWriter.WriteString32( data );
+		
+	}catch( const deException &e ){
+		DSTHROW_INFO( dueInvalidParam, e.GetDescription() );
+	}
+}
+
+// public func void writeVarString( String data )
+deClassFileWriter::nfWriteVarString::nfWriteVarString( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeVarString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // data
+}
+void deClassFileWriter::nfWriteVarString::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
+	const char * const data = rt->GetValue( 0 )->GetString();
+	try{
+		fileWriter.WriteVarString( data );
+		
+	}catch( const deException &e ){
+		DSTHROW_INFO( dueInvalidParam, e.GetDescription() );
 	}
 }
 
@@ -466,9 +501,12 @@ void deClassFileWriter::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfWriteUShort( init ) );
 	AddFunction( new nfWriteInt( init ) );
 	AddFunction( new nfWriteUInt( init ) );
+	AddFunction( new nfWriteVarUInt( init ) );
 	AddFunction( new nfWriteFloat( init ) );
 	AddFunction( new nfWriteString8( init ) );
 	AddFunction( new nfWriteString16( init ) );
+	AddFunction( new nfWriteString32( init ) );
+	AddFunction( new nfWriteVarString( init ) );
 	AddFunction( new nfWriteString( init ) );
 	AddFunction( new nfWriteData( init ) );
 	AddFunction( new nfWriteData2( init ) );

@@ -37,7 +37,7 @@ private:
 	meObjectShape *pActive;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	meObjectShapeSelection();
@@ -45,7 +45,7 @@ public:
 	~meObjectShapeSelection();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected object shapes. */
 	inline const meObjectShapeList &GetSelected() const{ return pSelection; }

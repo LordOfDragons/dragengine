@@ -409,7 +409,6 @@ class GridLayout implements Layout
 	protected func Point getMinimumCellSize(Container container, int width, int height)
 		var int count = container.getWidgetCount()
 		var Point minSize = Point.new()
-		var Point childSize
 		var Widget child
 		var int i
 		

@@ -331,7 +331,7 @@ void debpPhysicsBody::SetResponseType( eResponseTypes responseType ){
 }
 
 void debpPhysicsBody::ResetKinematicInterpolation(){
-	if( ! pRigidBody || pResponseType == ertDynamic ){
+	if( ! pRigidBody /*|| pResponseType == ertDynamic*/ ){
 		return;
 	}
 	

@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include <webp/decode.h>
+#include <webp/demux.h>
 
 #include "deWebpImageInfo.h"
 
@@ -42,7 +43,8 @@ deWebpImageInfo::deWebpImageInfo( decBaseFileReader &reader ) :
 pFilename( reader.GetFilename() ),
 pWidth( 0 ),
 pHeight( 0 ),
-pHasAlpha( false )
+pHasAlpha( false ),
+	pIsGrayscale ( false )
 {
 	const int size = reader.GetLength();
 	pData.TakeOver( new decMemoryFile( "data" ) );
@@ -55,6 +57,35 @@ pHasAlpha( false )
 	pWidth = features.width;
 	pHeight = features.height;
 	pHasAlpha = features.has_alpha;
+	
+	// look for exif user comments to handle the "grayscale" problem
+	WebPData wpdata = { ( const uint8_t* )pData->GetPointer(), ( size_t )size };
+	WebPDemuxer * const demux = WebPDemux( &wpdata );
+	DEASSERT_NOTNULL( demux )
+	
+	const uint32_t flags = WebPDemuxGetI( demux, WEBP_FF_FORMAT_FLAGS );
+	if( ( flags & EXIF_FLAG ) == EXIF_FLAG ){
+		WebPChunkIterator iter = {};
+		if( WebPDemuxGetChunk( demux, "EXIF", 1, &iter ) == 1 ){
+			static const char * const tagGrayscale = "dewebp:grayscale";
+			static const int tagGrayscaleLen = strlen( tagGrayscale );
+			
+			const char * const exif = ( const char* )iter.chunk.bytes;
+			const int exifLen = ( int )iter.chunk.size;
+			int i;
+			
+			for( i=0; i<exifLen; i++ ){
+				if( strncmp( exif + i, tagGrayscale, tagGrayscaleLen ) == 0 ){
+					pIsGrayscale = true;
+					break;
+				}
+			}
+			
+			WebPDemuxReleaseChunkIterator( &iter );
+		}
+	}
+	
+	WebPDemuxDelete( demux );
 }
 
 deWebpImageInfo::~deWebpImageInfo(){
@@ -78,7 +109,12 @@ int deWebpImageInfo::GetDepth(){
 }
 
 int deWebpImageInfo::GetComponentCount(){
-	return pHasAlpha ? 4 : 3;
+	if( pHasAlpha ){
+		return pIsGrayscale ? 2 : 4;
+		
+	}else{
+		return pIsGrayscale ? 1 : 3;
+	}
 }
 
 int deWebpImageInfo::GetBitCount(){

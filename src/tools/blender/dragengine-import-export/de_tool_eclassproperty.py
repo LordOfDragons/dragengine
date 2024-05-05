@@ -27,8 +27,8 @@ import bpy
 from mathutils import Vector, Matrix
 
 from .de_math import transformPosition, vector_by_matrix, float2String, convertMatrix
-from .de_resources import Mesh, Armature
-from .de_porting import registerClass, matmul
+from .de_resources import Armature
+from .de_porting import registerClass, matmul, appendToMenu
 
 
 
@@ -37,9 +37,11 @@ from .de_porting import registerClass, matmul
 
 class OBJECT_OT_DEToolEClassProperty(bpy.types.Operator):
 	bl_idname = "dragengine.eclassproperty"
-	bl_label = "Drag[en]gine EClass Property"
+	bl_label = "Element Class Property"
+	bl_label_button = "Build Property"
+	bl_icon = 'TEXT'
 	bl_options = {'REGISTER', 'UNDO'}
-	__doc__ = """Element class property value from selection into Text object"""
+	__doc__ = """Build element class property value from selection storing it into Text object"""
 	
 	relative3DCursor: bpy.props.BoolProperty(name="Relative 3D-Cursor", description="Relative to 3D cursor", default=False)
 	
@@ -273,4 +275,6 @@ class OBJECT_OT_DEToolEClassProperty(bpy.types.Operator):
 		text.current_line_index = 0
 		
 		return {'FINISHED'}
+
 registerClass(OBJECT_OT_DEToolEClassProperty)
+appendToMenu(bpy.types.VIEW3D_MT_object_relations, OBJECT_OT_DEToolEClassProperty)

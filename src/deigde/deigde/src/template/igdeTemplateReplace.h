@@ -34,14 +34,17 @@ class igdeTemplateReplace : public deObject{
 public:
 	/** \brief Replacement value. */
 	enum eValues{
-		/** \brief Project directory path. */
+		/** \brief Absolute project directory path. */
 		evProjectPath,
 		
-		/** \brief Project directory path filename (last component of path). */
+		/** \brief Last component of project directory path. */
 		evProjectPathDirectory,
 		
-		/** \brief Project data directory path. */
+		/** \brief Absolute project data directory path. */
 		evDataPath,
+		
+		/** \brief Project data directory relative to project root. */
+		evDataDirectory,
 		
 		/** \brief Project name. */
 		evProjectName,

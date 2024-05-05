@@ -188,20 +188,20 @@ void decXmlWriter::WriteAttributeString( const char *name, const char *string ){
 	}
 	
 	const char *walker = string;
-	char buffer[ 10 ];
 	
 	pFile->WriteByte( ' ' );
 	pFile->WriteString( name );
 	pFile->WriteString( "='" );
 	
 	while( *walker ){
-		if( *walker == '<' || *walker == '&' || *walker == '\'' ){
-			#ifdef OS_W32_VS
-				sprintf_s( buffer, 10, "&#%i;", *walker );
-			#else
-				sprintf( buffer, "&#%i;", *walker );
-			#endif
-			pFile->WriteString( buffer );
+		if( *walker == '<' ){
+			pFile->WriteString( "&lt;" );
+			
+		} else if( *walker == '&' ){
+			pFile->WriteString( "&amp;" );
+			
+		} else if( *walker == '\'' ){
+			pFile->WriteString( "&apos;" );
 			
 		}else{
 			pFile->WriteByte( *walker );
@@ -341,7 +341,6 @@ void decXmlWriter::WriteTextString( const char *text ){
 	}
 	
 	const unsigned char *walker = ( const unsigned char * )text;
-	char buffer[ 10 ];
 	
 	while( *walker ){
 		/*
@@ -349,13 +348,14 @@ void decXmlWriter::WriteTextString( const char *text ){
 		||  ( *walker >= 0x20 && ! ( IN( *walker, 0x7f, 0x84 ) || IN( *walker, 0x86, 0x9f ) ) ) ){
 		*/
 		
-		if( *walker == '<' || *walker == '&' || *walker == '>' ){
-			#ifdef OS_W32_VS
-				sprintf_s( buffer, 10, "&#%i;", *walker );
-			#else
-				sprintf( buffer, "&#%i;", *walker );
-			#endif
-			pFile->WriteString( buffer );
+		if( *walker == '<' ){
+			pFile->WriteString( "&lt;" );
+			
+		} else if( *walker == '>' ){
+			pFile->WriteString( "&gt;" );
+			
+		} else if( *walker == '&' ){
+			pFile->WriteString( "&amp;" );
 			
 		}else{
 			pFile->WriteByte( *walker );
@@ -566,8 +566,14 @@ decString decXmlWriter::EscapeText( const char *text ){
 		||  ( *walker >= 0x20 && ! ( IN( *walker, 0x7f, 0x84 ) || IN( *walker, 0x86, 0x9f ) ) ) ){
 		*/
 		
-		if( *walker == '<' || *walker == '&' || *walker == '>' ){
-			escaped.AppendFormat( "&#%i;", *walker );
+		if( *walker == '<' ){
+			escaped.Append( "&lt;" );
+			
+		} else if( *walker == '>' ){
+			escaped.Append( "&gt;" );
+			
+		} else if( *walker == '&' ){
+			escaped.Append( "&amp;" );
 			
 		}else{
 			escaped.AppendCharacter( *walker );

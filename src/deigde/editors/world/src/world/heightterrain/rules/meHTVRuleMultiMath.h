@@ -66,7 +66,7 @@ private:
 	eOperators pOperator;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleMultiMath();
@@ -78,7 +78,7 @@ public:
 	virtual ~meHTVRuleMultiMath();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the operator. */
 	inline eOperators GetOperator() const{ return pOperator; }

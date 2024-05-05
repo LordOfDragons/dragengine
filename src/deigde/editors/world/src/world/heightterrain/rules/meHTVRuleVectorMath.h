@@ -76,7 +76,7 @@ private:
 	eOperators pOperator;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleVectorMath();
@@ -88,7 +88,7 @@ public:
 	virtual ~meHTVRuleVectorMath();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the vector-A to use if there is no input vector-A. */
 	inline const decVector &GetVectorA() const{ return pVectorA; }

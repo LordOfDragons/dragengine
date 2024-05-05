@@ -47,7 +47,7 @@ class meFilterListObjects : public meFilterObjects{
 	bool pAcceptAny;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new filter list. */
 	meFilterListObjects();
@@ -55,7 +55,7 @@ public:
 	virtual ~meFilterListObjects();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Determines if any filter can accept the object or only all together. */
 	inline bool GetAcceptAny() const{ return pAcceptAny; }

@@ -17,13 +17,18 @@ srcdir = 'libwebp-1.2.1'
 
 libLinkVersion = '7' # 7.1.2
 libLinkName = 'webp'
+libLinkName2 = 'webpdemux'
 
 if envLibrary['OSWindows']:
 	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
+	libFileName2 = 'bin/lib{}-{}.dll'.format(libLinkName2, libLinkVersion)
 	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+	staticFileName2 = 'lib/lib{}.a'.format(libLinkName2)
 else:
 	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
+	libFileName2 = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName2, libLinkVersion))
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+	staticFileName2 = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName2))
 
 # check if system libwebp is present
 hasSystemWebp = False
@@ -36,7 +41,7 @@ conf.Finish()
 if not hasSystemWebp and envLibrary['with_system_libwebp'] == TernaryVariableYes:
 	Exit('Requested to use system libwebp but no usable libwebp found.')
 
-libs = [libLinkName]
+libs = [libLinkName, libLinkName2]
 
 parent_report['use system libwebp'] = 'yes' if hasSystemWebp else 'no'
 
@@ -63,7 +68,7 @@ def libwebpBuild(target, source, env):
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
 	cmdline.append('--enable-silent-rules')
 	cmdline.append('--disable-libwebpmux')
-	cmdline.append('--disable-libwebpdemux')
+	cmdline.append('--enable-libwebpdemux')
 	cmdline.append('--disable-libwebpdecoder')
 	cmdline.append('--disable-libwebpextras')
 	cmdline.append('--disable-png')
@@ -90,12 +95,14 @@ def libwebpBuild(target, source, env):
 		raise Exception('Failed building libwebp')
 
 if buildStaticLinking:
-	targets = [staticFileName]
+	targets = [staticFileName, staticFileName2]
 else:
-	targets = [libFileName]
+	targets = [libFileName, libFileName2]
 targets.append('include/webp/decode.h')
 targets.append('include/webp/encode.h')
 targets.append('include/webp/types.h')
+targets.append('include/webp/demux.h')
+targets.append('include/webp/mux_types.h')
 library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 	envLibrary.Action(libwebpBuild, 'Build libwebp'))
 
@@ -110,10 +117,10 @@ libpath = [envLibrary.Dir('lib')]
 libpath.extend(parent_targets['lib_libogg']['libpath'])
 
 if buildStaticLinking:
-	libs = library[0:1]
+	libs = library[0:2]
 	runtimelibs = []
 else:
-	runtimelibs = library[0:1]
+	runtimelibs = library[0:2]
 
 parent_targets['lib_libwebp'] = {
 	'name' : 'Internal libwebp library',

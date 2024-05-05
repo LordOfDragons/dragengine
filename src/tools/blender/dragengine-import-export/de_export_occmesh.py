@@ -43,6 +43,8 @@ from .de_porting import registerClass, matmul
 class OBJECT_OT_ExportOcclusionMesh( bpy.types.Operator, ExportHelper ):
 	bl_idname = "dragengine.export_occmesh"
 	bl_label = "Occlusion Mesh (.deoccmesh)"
+	bl_label_button = "Occlusion Mesh"
+	bl_icon = 'GHOST_ENABLED'
 	__doc__ = """Export as Drag[en]gine Occlusion Mesh Resource"""
 	filename_ext = ".deoccmesh"
 	filter_glob: bpy.props.StringProperty( default="*.deoccmesh", options={ 'HIDDEN' } )

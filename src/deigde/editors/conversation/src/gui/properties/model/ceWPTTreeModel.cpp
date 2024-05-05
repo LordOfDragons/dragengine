@@ -393,6 +393,8 @@ void ceWPTTreeModel::ContextMenuAction( igdeMenuCascade &contextMenu, ceConversa
 	helper.MenuCommand( contextMenu, new ceWPTMATopicPasteActions( pWindowMain, *pConversation,
 		*topic, indexAction + 1, "Paste Actions After" ), true );
 	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand( contextMenu, new ceWPTMATopicPasteSnippet(
+		pWindowMain, *pConversation, *topic, indexAction + 1 ), true );
 	
 	helper.MenuCommand( contextMenu, new ceWPTMATopicRemoveAction(
 		pWindowMain, *pConversation, *topic, action ), true );
