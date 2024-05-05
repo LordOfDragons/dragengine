@@ -1,3 +1,9 @@
+dragengine (1.22-ubuntu2~ubuntu20.10-ppa1) jammy; urgency=medium
+
+  * Changelog 1.22: https://dragondreams.ch/index.php/changelog-release-1-22
+
+ -- Roland Plüss <roland@rptd.ch>  Sun, 05 May 2024 17:57:10 +0000
+
 dragengine (1.21-ubuntu2~ubuntu20.10-ppa1) jammy; urgency=medium
 
   * Changelog 1.21: https://dragondreams.ch/index.php/changelog-release-1-21
