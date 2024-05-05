@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
           lfs: ${{ !inputs.lfscache }}
@@ -36,7 +36,7 @@ jobs:
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
 
       - name: Restore LFS Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: lfs-cache
         if: ${{ inputs.lfscache }}
         with:
@@ -59,7 +59,7 @@ jobs:
           sudo apt -y install scons
         
       - name: Get Archives
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.artifactArchive }}
           path: installer/artifacts
@@ -74,7 +74,7 @@ jobs:
           cp -a installer/build_msix/deigde-${{ inputs.releaseVersion }}.msixupload deigde-${{ inputs.releaseVersion }}.msixupload
         
       - name: Store MSIX
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifactMsix }}
           path: |
