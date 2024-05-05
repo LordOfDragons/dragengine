@@ -26,10 +26,9 @@ inner workings and those wanting to create engine modules or editor modules.
 
 # License Information
 
-The Drag\[en\]gine Game Engine is dual licensed under [L-GPL](https://www.gnu.org/licenses/lgpl-3.0.html)
-(for commercial projects and proprietary use like on consoles) and
-[GPL](https://www.gnu.org/licenses/gpl-3.0.html) (for free game project).
-This affects only game engine modules, launchers and IGDE editors.
+The Drag\[en\]gine Game Engine is licensed under [MIT](https://choosealicense.com/licenses/mit)
+for clarity. Optionally the [L-GPL](https://www.gnu.org/licenses/lgpl-3.0.html)
+can be used. This affects only game engine modules, launchers and IGDE editors.
 Game projects do not link against the game engine and thus are not affected by
 the license. They can use any license they see fit.
 
