@@ -86,7 +86,7 @@ void deoglCanvasCanvasView::CanvasViewDestroyed(){
 }
 
 void deoglCanvasCanvasView::CanvasViewRequiresSync(){
-	SetDirtyParentPaint();
+	deoglCanvas::ContentChanged();
 }
 
 

@@ -200,6 +200,9 @@ void igdeLoadTemplate::pReadReplace( const decXmlElementTag &root, igdeTemplateR
 			}else if( value == "dataPath" ){
 				replace.SetValue( igdeTemplateReplace::evDataPath );
 				
+			}else if( value == "dataDirectory" ){
+				replace.SetValue( igdeTemplateReplace::evDataDirectory );
+				
 			}else if( value == "projectName" ){
 				replace.SetValue( igdeTemplateReplace::evProjectName );
 				

@@ -441,7 +441,6 @@ class Announcer
 		if this.pModifierSynthesizer != null
 			var SSSynthesizer synthSource = SSSynthesizer.new()
 			var int controllerCount = this.pModifierSynthesizer.getControllerCount()
-			var int i
 			
 			synthSource.setSynthesizer( this.pModifierSynthesizer )
 			for i = 0 to controllerCount

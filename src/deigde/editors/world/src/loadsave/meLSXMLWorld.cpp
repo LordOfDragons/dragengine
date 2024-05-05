@@ -201,7 +201,7 @@ void meLSXMLWorld::pWriteWorldEditor( decXmlWriter &writer, const meWorld &world
 	int i;
 	for( i=0; i<skyControllerCount; i++ ){
 		const deSkyController &controller = sky.GetControllerAt( i );
-		writer.WriteOpeningTagStart( "skyController", false );
+		writer.WriteOpeningTagStart( "skyController" );
 		writer.WriteAttributeString( "name", controller.GetName() );
 		writer.WriteOpeningTagEnd( false, false );
 		writer.WriteTextFloat( controller.GetCurrentValue() );

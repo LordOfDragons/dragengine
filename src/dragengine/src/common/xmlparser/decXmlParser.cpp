@@ -420,7 +420,6 @@ bool decXmlParser::ParseReference( decXmlContainer *container ){
 //						if( ! charRef ) DETHROW( deeOutOfMemory );
 					}
 				}
-				RemoveFromToken( count + 1 );
 				if( charRef ){
 					charRef->SetLineNumber( lineNumber );
 					charRef->SetPositionNumber( posNumber );
@@ -428,19 +427,39 @@ bool decXmlParser::ParseReference( decXmlContainer *container ){
 					charRef->FreeReference();
 					charRef = NULL;
 				}
+				
 			}else{
 				count = ParseName( count + 1, false );
 				if( GetTokenAt( count ) != ';' ) RaiseFatalError();
 				SetCleanString( count );
-				entRef = new decXmlEntityReference( pCleanString + 1 );
-				if( ! entRef ) DETHROW( deeOutOfMemory );
-				entRef->SetLineNumber( lineNumber );
-				entRef->SetPositionNumber( posNumber );
-				RemoveFromToken( count + 1 );
-				container->AddElement( entRef );
-				entRef->FreeReference();
-				entRef = NULL;
+				
+				const char * const name = pCleanString + 1;
+				if( strcmp( name, "lt" ) == 0 ){
+					pAddCharacterData( container, '<', lineNumber, posNumber );
+					
+				} else if( strcmp( name, "gt" ) == 0 ){
+					pAddCharacterData( container, '>', lineNumber, posNumber );
+					
+				} else if( strcmp( name, "amp" ) == 0 ){
+					pAddCharacterData( container, '&', lineNumber, posNumber );
+					
+				} else if( strcmp( name, "quot" ) == 0 ){
+					pAddCharacterData( container, '"', lineNumber, posNumber );
+					
+				} else if( strcmp( name, "apos" ) == 0 ){
+					pAddCharacterData( container, '\'', lineNumber, posNumber );
+					
+				} else {
+					entRef = new decXmlEntityReference( name );
+					entRef->SetLineNumber( lineNumber );
+					entRef->SetPositionNumber( posNumber );
+					container->AddElement( entRef );
+					entRef->FreeReference();
+					entRef = nullptr;
+				}
 			}
+			
+			RemoveFromToken( count + 1 );
 		}else{
 			return false;
 		}
@@ -598,8 +617,31 @@ void decXmlParser::ParseAttValue( decXmlAttValue *value ){
 				}
 				count = pTokenLen;
 			}else{
+				safeguard = count;
 				count = ParseName( count + 1, false );
 				if( GetTokenAt( count ) != ';' ) RaiseFatalError();
+				
+				const char * const name = pToken + safeguard + 1;
+				if( strncmp( name, "lt", 2 ) == 0 ){
+					pToken[ safeguard ] = '<';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( name, "gt", 2 ) == 0 ){
+					pToken[ safeguard ] = '>';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( name, "amp", 3 ) == 0 ){
+					pToken[ safeguard ] = '&';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( name, "quot", 4 ) == 0 ){
+					pToken[ safeguard ] = '"';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( name, "apos", 4 ) == 0 ){
+					pToken[ safeguard ] = '\'';
+					count = pTokenLen = safeguard + 1;
+				}
 			}
 		}
 		count++;

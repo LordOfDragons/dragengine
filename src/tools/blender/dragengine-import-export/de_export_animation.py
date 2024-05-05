@@ -74,6 +74,8 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
     
     bl_idname = "dragengine.export_animation"
     bl_label = "Animations (.deanim)"
+    bl_label_button = "Animations"
+    bl_icon = 'ACTION'
     __doc__ = """Export as Drag[en]gine Animation Resource"""
     filename_ext = ".deanim"
     filter_glob: bpy.props.StringProperty(default="*.deanim", options={'HIDDEN'})

@@ -1,0 +1,47 @@
+diff -rupN dragonscript-1.4-orig/src/dsi/test_scripts/stringTests.ds dragonscript-1.4/src/dsi/test_scripts/stringTests.ds
+--- dragonscript-1.4-orig/src/dsi/test_scripts/stringTests.ds	2024-05-01 20:23:00.789125636 +0200
++++ dragonscript-1.4/src/dsi/test_scripts/stringTests.ds	2024-01-17 23:13:18.166451025 +0100
+@@ -61,6 +61,8 @@ class StringTests extends Application
+ 		System.print( "startsWithNoCase: should true is " + str1.startsWithNoCase(str1) + "\n" )
+ 		System.print( "startsWithNoCase: should true is " + str1.startsWithNoCase(str1.toUpper()) + "\n" )
+ 		System.print( "startsWithNoCase: should false is " + str1.startsWithNoCase(str1 + "x") + "\n" )
++		
++		System.print( "startsWith: should true is " + str1.startsWith("") + "\n" )
+ 	end
+ 	
+ 	protected func void testEndsWith()
+diff -rupN dragonscript-1.4-orig/src/scriptengine/objects/dsFuncList.cpp dragonscript-1.4/src/scriptengine/objects/dsFuncList.cpp
+--- dragonscript-1.4-orig/src/scriptengine/objects/dsFuncList.cpp	2024-05-01 20:20:55.880423789 +0200
++++ dragonscript-1.4/src/scriptengine/objects/dsFuncList.cpp	2023-12-05 18:00:38.683151946 +0100
+@@ -155,11 +155,11 @@ dsFunction *dsFuncList::FindBestFunction
+ 		if(vBestFunc == vCurFunc) continue;
+ 		if(strcmp(vCurFunc->GetName(), Name) != 0) continue;
+ 		if(Class && !Class->IsEqualTo(vCurFunc->GetOwnerClass())) continue;
+-		// get signature and check if the func-sig has at least the same number of args as the check-sig
++		// get signature and check if the func-sig has at the same number of args as the check-sig
+ 		vCurSig = vCurFunc->GetSignature();
+ 		vCurParamCount = vCurSig->GetCount();
+ 		vCurMatch = 0;
+-		if(vCurParamCount < vCheckParamCount) continue;
++		if(vCurParamCount != vCheckParamCount) continue;
+ 		// check if the args do match
+ 		for(j=0; j<vCurParamCount; j++){
+ 			vCurParam = vCurSig->GetParameter(j);
+diff -rupN dragonscript-1.4-orig/src/scriptengine/objects/dsValue.h dragonscript-1.4/src/scriptengine/objects/dsValue.h
+--- dragonscript-1.4-orig/src/scriptengine/objects/dsValue.h	2024-05-01 20:20:55.880423789 +0200
++++ dragonscript-1.4/src/scriptengine/objects/dsValue.h	2024-05-01 20:09:02.561415750 +0200
+@@ -65,10 +65,10 @@ private: // for dsRunTime
+ 	dsValue(dsValue *value);
+ 	inline void SetValue(dsValue *Value){ p_Type=Value->p_Type; p_Data=Value->p_Data; }
+ 	inline void SetValue(dsClass *Type, dsValueData *Data){ p_Type=Type; p_Data=*Data; }
+-	inline void SetByte(dsClass *Type, byte Value){ p_Type=Type; p_Data.SetByte(Value); }
+-	inline void SetBool(dsClass *Type, bool Value){ p_Type=Type; p_Data.SetBool(Value); }
+-	inline void SetInt(dsClass *Type, int Value){ p_Type=Type; p_Data.SetInt(Value); }
+-	inline void SetFloat(dsClass *Type, float Value){ p_Type=Type; p_Data.SetFloat(Value); }
++	inline void SetByte(dsClass *Type, byte Value){ p_Type=Type; p_Data.SetByte(Value); p_Data.SetFuncBase(0); }
++	inline void SetBool(dsClass *Type, bool Value){ p_Type=Type; p_Data.SetBool(Value); p_Data.SetFuncBase(0); }
++	inline void SetInt(dsClass *Type, int Value){ p_Type=Type; p_Data.SetInt(Value); p_Data.SetFuncBase(0); }
++	inline void SetFloat(dsClass *Type, float Value){ p_Type=Type; p_Data.SetFloat(Value); p_Data.SetFuncBase(0); }
+ 	inline void SetRealObject(dsClass *Type, dsRealObject *Object){ p_Type=Type; p_Data.SetRealObject(Object); p_Data.SetFuncBase(0); }
+ 	inline void SetNull(dsClass *Type){ p_Type=Type; p_Data.SetRealObject(NULL); p_Data.SetFuncBase(0); }
+ 	inline void SetEmpty(dsClass *Type){ p_Type=Type; p_Data.SetRealObject(NULL); p_Data.SetFuncBase(0); }

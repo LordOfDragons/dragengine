@@ -268,14 +268,14 @@ class ECBehaviorStepAside extends DefaultECBehavior
 				return
 			end
 			
-			var StepAside stepAside = StepAside.new(element, position, direction, speed)
+			var StepAside sa = StepAside.new(element, position, direction, speed)
 			
 			element.forEachInstance(block ECBehaviorAvoidedByActor.Instance each
-				stepAsideAvoidedByActor(each, stepAside)
+				stepAsideAvoidedByActor(each, sa)
 			end)
 			
-			if stepAside.getLeft() > 0.01 or stepAside.getRight() > 0.01
-				stepAside(stepAside)
+			if sa.getLeft() > 0.01 or sa.getRight() > 0.01
+				stepAside(sa)
 			end
 		end
 		

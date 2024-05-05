@@ -73,6 +73,26 @@ fixed class Engine
 		return null
 	end
 	
+	/**
+	 * \brief Application is active (has focus).
+	 * \version 1.22
+	 */
+	public static func bool getAppActive()
+		return false
+	end
+	
+	/**
+	 * \brief Updates resource loading.
+	 * \version 1.22
+	 * 
+	 * Use this method if resources are loaded asynchronously but the script requires to
+	 * wait synchronously for the completion.
+	 * 
+	 * \warning This method is potentially dangerous. Use it only if you know what you are doing.
+	 */
+	public static func void updateResourceLoading()
+	end
+	
 	
 	
 	/**

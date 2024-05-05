@@ -24,7 +24,7 @@
 
 import bpy
 
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 # Tool Copy Vertices
@@ -47,9 +47,11 @@ registerClass(TypeDETCVVertex)
 
 class OBJECT_OT_ToolCopyVerticesCopy(bpy.types.Operator):
     bl_idname = "dragengine.copyvertices_copy"
-    bl_label = "Copy vertices"
-    bl_options = {'INTERNAL'}
-    __doc__ = """Copy vertices"""
+    bl_label = "Shape key: Copy vertex position"
+    bl_label_button = "Copy vertices"
+    bl_options = {'REGISTER'}
+    bl_icon = 'COPYDOWN'
+    __doc__ = """Copy position of selected vertices in active shape key"""
 
     @classmethod
     def poll(cls, context):
@@ -78,13 +80,16 @@ class OBJECT_OT_ToolCopyVerticesCopy(bpy.types.Operator):
 
 
 registerClass(OBJECT_OT_ToolCopyVerticesCopy)
-
+appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_vertices,
+             OBJECT_OT_ToolCopyVerticesCopy)
 
 class OBJECT_OT_ToolCopyVerticesPaste(bpy.types.Operator):
     bl_idname = "dragengine.copyvertices_paste"
-    bl_label = "Paste Vertices"
-    bl_options = {'INTERNAL'}
-    __doc__ = """Paste vertices"""
+    bl_label = "Shape key: Paste vertex position"
+    bl_label_button = "Paste Vertices"
+    bl_icon = 'PASTEDOWN'
+    bl_options = {'REGISTER', 'UNDO'}
+    __doc__ = """Paste copied vertex positions into active shape key"""
 
     mirror: bpy.props.BoolProperty(
         name="Mirror",
@@ -119,3 +124,5 @@ class OBJECT_OT_ToolCopyVerticesPaste(bpy.types.Operator):
 
 
 registerClass(OBJECT_OT_ToolCopyVerticesPaste)
+appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_vertices,
+             OBJECT_OT_ToolCopyVerticesPaste)

@@ -268,6 +268,16 @@ void deClassFileReader::nfReadUInt::RunFunction( dsRunTime *rt, dsValue *myself 
 	rt->PushInt( ( int )fileReader.ReadUInt() );
 }
 
+// public func int readVarUInt()
+deClassFileReader::nfReadVarUInt::nfReadVarUInt( const sInitData &init ) :
+dsFunction( init.clsFRead, "readVarUInt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassFileReader::nfReadVarUInt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
+	rt->PushInt( ( int )fileReader.ReadVarUInt() );
+}
+
 // public func float readFloat()
 deClassFileReader::nfReadFloat::nfReadFloat( const sInitData &init ) : dsFunction( init.clsFRead,
 "readFloat", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
@@ -284,16 +294,9 @@ deClassFileReader::nfReadString8::nfReadString8( const sInitData &init ) : dsFun
 }
 void deClassFileReader::nfReadString8::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
-	unsigned char size;
-	decString string;
 	
-	size = fileReader.ReadByte();
-	if( size > 0 ){
-		string.Set( ' ', size );
-		fileReader.Read( ( char* )string.GetString(), size );
-	}
-	
-	rt->PushString( string.GetString() );
+	const decString string( fileReader.ReadString8() );
+	rt->PushString( string );
 }
 
 // public func String readString16()
@@ -302,16 +305,31 @@ deClassFileReader::nfReadString16::nfReadString16( const sInitData &init ) : dsF
 }
 void deClassFileReader::nfReadString16::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
-	unsigned short size;
-	decString string;
 	
-	size = fileReader.ReadUShort();
-	if( size > 0 ){
-		string.Set( ' ', size );
-		fileReader.Read( ( char* )string.GetString(), size );
-	}
+	const decString string( fileReader.ReadString16() );
+	rt->PushString( string );
+}
+
+// public func String readString32()
+deClassFileReader::nfReadString32::nfReadString32( const sInitData &init ) :
+dsFunction( init.clsFRead, "readString32", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassFileReader::nfReadString32::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
 	
-	rt->PushString( string.GetString() );
+	const decString string( fileReader.ReadString32() );
+	rt->PushString( string );
+}
+
+// public func String readVarString()
+deClassFileReader::nfReadVarString::nfReadVarString( const sInitData &init ) :
+dsFunction( init.clsFRead, "readVarString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassFileReader::nfReadVarString::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
+	const decString string( fileReader.ReadVarString() );
+	rt->PushString( string );
 }
 
 // public func String readString( int size )
@@ -321,32 +339,52 @@ deClassFileReader::nfReadString::nfReadString( const sInitData &init ) : dsFunct
 }
 void deClassFileReader::nfReadString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
 	const int size = rt->GetValue( 0 )->GetInt();
 	decString string;
-	
 	string.Set( ' ', size );
 	fileReader.Read( ( char* )string.GetString(), size );
 	rt->PushString( string.GetString() );
 }
 
 // public func void skipString8()
-deClassFileReader::nfSkipString8::nfSkipString8( const sInitData &init ) : dsFunction( init.clsFRead,
-"skipString8", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassFileReader::nfSkipString8::nfSkipString8( const sInitData &init ) :
+dsFunction( init.clsFRead, "skipString8", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassFileReader::nfSkipString8::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassFileReader::nfSkipString8::RunFunction( dsRunTime*, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
 	
 	fileReader.SkipString8();
 }
 
 // public func void skipString16()
-deClassFileReader::nfSkipString16::nfSkipString16( const sInitData &init ) : dsFunction( init.clsFRead,
-"skipString16", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassFileReader::nfSkipString16::nfSkipString16( const sInitData &init ) :
+dsFunction( init.clsFRead, "skipString16", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassFileReader::nfSkipString16::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassFileReader::nfSkipString16::RunFunction( dsRunTime*, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
 	
 	fileReader.SkipString16();
+}
+
+// public func void skipString32()
+deClassFileReader::nfSkipString32::nfSkipString32( const sInitData &init ) :
+dsFunction( init.clsFRead, "skipString32", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassFileReader::nfSkipString32::RunFunction( dsRunTime*, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
+	fileReader.SkipString32();
+}
+
+// public func void skipVarString()
+deClassFileReader::nfSkipVarString::nfSkipVarString( const sInitData &init ) :
+dsFunction( init.clsFRead, "skipVarString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassFileReader::nfSkipVarString::RunFunction( dsRunTime*, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
+	fileReader.SkipVarString();
 }
 
 // public func TimeDate readTimeDate()
@@ -438,12 +476,17 @@ void deClassFileReader::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfReadUShort( init ) );
 	AddFunction( new nfReadInt( init ) );
 	AddFunction( new nfReadUInt( init ) );
+	AddFunction( new nfReadVarUInt( init ) );
 	AddFunction( new nfReadFloat( init ) );
 	AddFunction( new nfReadString8( init ) );
 	AddFunction( new nfReadString16( init ) );
+	AddFunction( new nfReadString32( init ) );
+	AddFunction( new nfReadVarString( init ) );
 	AddFunction( new nfReadString( init ) );
 	AddFunction( new nfSkipString8( init ) );
 	AddFunction( new nfSkipString16( init ) );
+	AddFunction( new nfSkipString32( init ) );
+	AddFunction( new nfSkipVarString( init ) );
 	AddFunction( new nfReadTimeDate( init ) );
 	
 	CalcMemberOffsets();

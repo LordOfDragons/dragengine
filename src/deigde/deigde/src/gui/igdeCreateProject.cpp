@@ -540,6 +540,10 @@ decStringList &tokens, decStringList &values ){
 			value = pNativePathData;
 			break;
 			
+		case igdeTemplateReplace::evDataDirectory:
+			value = pPathData;
+			break;
+			
 		case igdeTemplateReplace::evProjectName:
 			value = pName;
 			break;

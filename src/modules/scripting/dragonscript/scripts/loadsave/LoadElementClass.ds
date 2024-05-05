@@ -95,7 +95,7 @@ class LoadElementClass extends BaseXmlLoader
 			logMissingAttribute(root, "name")
 			throw EInvalidParam.new()
 		end
-		var String className = root.getAttributeNamed("name")
+		var String cname = root.getAttributeNamed("name")
 		
 		if not root.hasAttributeNamed("class")
 			logMissingAttribute(root, "class")
@@ -103,8 +103,8 @@ class LoadElementClass extends BaseXmlLoader
 		end
 		var String baseClassName = root.getAttributeNamed("class")
 		
-		if ecmgr.hasNamed(className)
-			printOnConsole(root, "A class with the name '" + className + "' exists already.")
+		if ecmgr.hasNamed(cname)
+			printOnConsole(root, "A class with the name '" + cname + "' exists already.")
 			throw EInvalidParam.new()
 		end
 		
@@ -115,7 +115,7 @@ class LoadElementClass extends BaseXmlLoader
 			throw EInvalidParam.new()
 		end
 		
-		var ElementClass eclass = baseEClass.duplicateNamed(className)
+		var ElementClass eclass = baseEClass.duplicateNamed(cname)
 		if eclass == null
 			printOnConsole(root, "Class '" + baseClassName + "' is not usable for XML extending.")
 			throw EInvalidParam.new()

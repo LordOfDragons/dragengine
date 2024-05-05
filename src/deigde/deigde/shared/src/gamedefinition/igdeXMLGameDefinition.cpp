@@ -1953,6 +1953,9 @@ void igdeXMLGameDefinition::pParseProperty( const decXmlElementTag &root, igdeGD
 			}else if( strcmp( type, "sky" ) == 0 ){
 				property.SetPathPatternType( igdeGDProperty::epptSky );
 				
+			}else if( strcmp( type, "camera" ) == 0 ){
+				property.SetPathPatternType( igdeGDProperty::epptCamera );
+				
 			}else if( strcmp( type, "custom" ) == 0 ){
 				property.SetPathPatternType( igdeGDProperty::epptCustom );
 				

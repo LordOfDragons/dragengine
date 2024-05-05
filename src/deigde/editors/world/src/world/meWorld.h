@@ -210,7 +210,7 @@ private:
 	int pNotifierSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new world object linked to the given engine. */
 	meWorld( meWindowMain &windowMain, igdeEnvironment *environment );
@@ -223,7 +223,7 @@ protected:
 	
 	
 public:
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Main window. */
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
@@ -274,7 +274,7 @@ public:
 	void InitDelegates();
 	/*@}*/
 	
-	/** @name Collision Detection */
+	/** \name Collision Detection */
 	/*@{*/
 	/** Tests for collisions of a box. */
 	void CollisionTestBox( const decDVector &position, const decQuaternion &orientation, const decVector &halfExtends,
@@ -284,7 +284,7 @@ public:
 		const decQuaternion &orientation, deBaseScriptingCollider *listener, const decCollisionFilter &filter );
 	/*@}*/
 	
-	/** @name Editing */
+	/** \name Editing */
 	/*@{*/
 	/** Determines if a world dependency has changed. */
 	inline bool GetDepChanged() const{ return pDepChanged; }
@@ -383,7 +383,7 @@ public:
 	
 	
 	
-	/** @name World Parameters */
+	/** \name World Parameters */
 	/*@{*/
 	
 	/** Size of world in meters. */
@@ -432,7 +432,7 @@ public:
 	
 	
 	
-	/** @name Selection */
+	/** \name Selection */
 	/*@{*/
 	/** Retrieves the object selection. */
 	inline meObjectSelection &GetSelectionObject(){ return pSelectionObject; }
@@ -448,7 +448,7 @@ public:
 	inline const meNavigationSpaceSelection &GetSelectionNavigationSpace() const{ return pSelectionNavigationSpace; }
 	/*@}*/
 	
-	/** @name Camera */
+	/** \name Camera */
 	/*@{*/
 	/** Retrieves the free roaming camera. */
 	inline meCamera *GetFreeRoamingCamera() const{ return pFreeRoamCamera; }
@@ -460,7 +460,7 @@ public:
 	void SetActiveCamera( meCamera *camera );
 	/*@}*/
 	
-	/** @name Sensors */
+	/** \name Sensors */
 	/*@{*/
 	/** Retrieves the lumimeter sensor. */
 	inline meLumimeter *GetLumimeter() const{ return pLumimeter; }
@@ -468,7 +468,7 @@ public:
 	void UpdateSensors();
 	/*@}*/
 	
-	/** @name Testing */
+	/** \name Testing */
 	/*@{*/
 	/** Retrieves the path find test. */
 	inline mePathFindTest *GetPathFindTest() const{ return pPathFindTest; }
@@ -489,7 +489,7 @@ public:
 	/** Game definition. */
 	void GameDefChanged();
 	
-	/** @name Notifiers */
+	/** \name Notifiers */
 	/*@{*/
 	/** Retrieves the number of notifiers. */
 	inline int GetNotifierCount() const{ return pNotifierCount; }

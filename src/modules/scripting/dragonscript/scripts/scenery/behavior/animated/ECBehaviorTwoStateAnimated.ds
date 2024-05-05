@@ -1433,9 +1433,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		end
 		
 		// create animator instance
-		var AnimatorInstance instance = AnimatorInstance.new()
-		instance.setAnimator(animator)
-		instance.setAnimation(animation)
-		return instance
+		var AnimatorInstance inst = AnimatorInstance.new()
+		inst.setAnimator(animator)
+		inst.setAnimation(animation)
+		return inst
 	end
 end

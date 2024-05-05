@@ -303,7 +303,6 @@ class MenuPopup extends WindowPopup
 		var int ident = event.getIdentifier()
 		var Point localPosition
 		var Window window
-		var Widget widget
 		
 		for i = count - 1 downto 0
 			window = desktop.getWidget(i) cast Window
@@ -350,7 +349,7 @@ class MenuPopup extends WindowPopup
 		if pParentMenuBarItem != null
 			var MenuBar bar = pParentMenuBarItem.getParentMenuBar()
 			if bar != null
-				var Point localPosition = mouseLocation - bar.getDesktopPosition()
+				localPosition = mouseLocation - bar.getDesktopPosition()
 				
 				var MenuBarItem item = bar.findWidget(block Widget each
 					return each.isPointInside(localPosition - each.getRelativePosition(bar))\

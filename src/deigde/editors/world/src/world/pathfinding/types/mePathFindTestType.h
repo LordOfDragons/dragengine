@@ -38,7 +38,7 @@ private:
 	float pCostPerMeter;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new path find test type. */
 	mePathFindTestType( int typeNumber );
@@ -46,7 +46,7 @@ public:
 	virtual ~mePathFindTestType();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the type number. */
 	inline int GetTypeNumber() const{ return pTypeNumber; }

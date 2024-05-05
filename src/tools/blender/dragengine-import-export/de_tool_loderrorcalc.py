@@ -131,7 +131,7 @@ class OBJECT_OT_DEToolLODInfo(bpy.types.Operator):
 	bl_idname = "dragengine.lodinfo"
 	bl_label = "Drag[en]gine LOD Info"
 	bl_options = { 'INTERNAL' }
-	__doc__ = """LOD Information"""
+	__doc__ = """Calculate LOD Information between meshes"""
 	
 	calcMaxError: bpy.props.BoolProperty(name="Calc Max Error",
 		description="Calculate maximum error", default=False)

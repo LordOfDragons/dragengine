@@ -35,7 +35,7 @@ private:
 	meDecal *pActive;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	meDecalSelection();
@@ -43,7 +43,7 @@ public:
 	~meDecalSelection();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected decals. */
 	inline const meDecalList &GetSelected() const{ return pSelection; }

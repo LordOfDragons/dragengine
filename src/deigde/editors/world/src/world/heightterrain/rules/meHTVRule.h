@@ -92,7 +92,7 @@ private:
 	meHTVRSlot *pSlots;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRule( int type, int slotCount );
@@ -108,7 +108,7 @@ protected:
 	
 	
 public:
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }

@@ -62,7 +62,7 @@ private:
 	int pInstanceCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	mePropFieldType( deEngine *engine );
@@ -70,7 +70,7 @@ public:
 	virtual ~mePropFieldType();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the prop field or NULL. */
 	inline mePropField *GetPropField() const{ return pPropField; }

@@ -41,6 +41,7 @@ private:
 		int width;
 		int height;
 		bool hasAlpha;
+		bool isGrayscale;
 	};
 	
 	deWebp3DModule &pModule;

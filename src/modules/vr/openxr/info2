@@ -1,0 +1,185 @@
+XR_FACE_EXPRESSION2_BROW_LOWERER_L_FB = 0,
+XR_FACE_EXPRESSION2_BROW_LOWERER_R_FB = 1,
+	part of Eye{Right,Left}Squeeze but standalone
+	==> add as new expressions
+XR_FACE_EXPRESSION2_CHEEK_PUFF_L_FB = 2,
+XR_FACE_EXPRESSION2_CHEEK_PUFF_R_FB = 3,
+	matches CheekPuff{Right,Left}
+XR_FACE_EXPRESSION2_CHEEK_RAISER_L_FB = 4,
+XR_FACE_EXPRESSION2_CHEEK_RAISER_R_FB = 5,
+	==> add as new expressions
+XR_FACE_EXPRESSION2_CHEEK_SUCK_L_FB = 6,
+XR_FACE_EXPRESSION2_CHEEK_SUCK_R_FB = 7,
+	matches CheekSuck if both are equal
+	==> add as new expressions
+	--> emulate CheeckSuck = (R+L)/2
+XR_FACE_EXPRESSION2_CHIN_RAISER_B_FB = 8,
+XR_FACE_EXPRESSION2_CHIN_RAISER_T_FB = 9,
+	matches MouthLowerOverlap but without the overlap part. that said, maybe separate them
+	==> add as new expressions
+	--> MouthLowerOverlap = (chinRainserT+chinRaiserB)/2
+XR_FACE_EXPRESSION2_DIMPLER_L_FB = 10,
+XR_FACE_EXPRESSION2_DIMPLER_R_FB = 11,
+	mouth corner pulled inside (towards the teeth) and often also slightly up.
+	==> add as new expressions
+XR_FACE_EXPRESSION2_EYES_CLOSED_L_FB = 12,
+XR_FACE_EXPRESSION2_EYES_CLOSED_R_FB = 13,
+	matches Eye{Right,Left}Blink
+XR_FACE_EXPRESSION2_EYES_LOOK_DOWN_L_FB = 14,
+XR_FACE_EXPRESSION2_EYES_LOOK_DOWN_R_FB = 15,
+	matches Eye{Right,Left}Down
+XR_FACE_EXPRESSION2_EYES_LOOK_LEFT_L_FB = 16,
+	matches EyeLeftOut
+XR_FACE_EXPRESSION2_EYES_LOOK_LEFT_R_FB = 17,
+	matches EyeRightIn
+XR_FACE_EXPRESSION2_EYES_LOOK_RIGHT_L_FB = 18,
+	matches EyeLeftIn
+XR_FACE_EXPRESSION2_EYES_LOOK_RIGHT_R_FB = 19,
+	matches EyeRightOut
+XR_FACE_EXPRESSION2_EYES_LOOK_UP_L_FB = 20,
+XR_FACE_EXPRESSION2_EYES_LOOK_UP_R_FB = 21,
+	matches Eye{Right,Left}Up
+XR_FACE_EXPRESSION2_INNER_BROW_RAISER_L_FB = 22,
+XR_FACE_EXPRESSION2_INNER_BROW_RAISER_R_FB = 23,
+	matches Eye{Right,Left}Wide but is slightly different
+	==> add as new expressions
+	--> emulation: see below
+XR_FACE_EXPRESSION2_JAW_DROP_FB = 24,
+	matches JawOpen
+XR_FACE_EXPRESSION2_JAW_SIDEWAYS_LEFT_FB = 25,
+XR_FACE_EXPRESSION2_JAW_SIDEWAYS_RIGHT_FB = 26,
+	matches Jaw{Right,Left}
+XR_FACE_EXPRESSION2_JAW_THRUST_FB = 27,
+	matches JawForward
+XR_FACE_EXPRESSION2_LID_TIGHTENER_L_FB = 28,
+XR_FACE_EXPRESSION2_LID_TIGHTENER_R_FB = 29,
+	basically squinting. biggest difference being the lower lid pulled up
+	==> add as new expressions
+XR_FACE_EXPRESSION2_LIP_CORNER_DEPRESSOR_L_FB = 30,
+XR_FACE_EXPRESSION2_LIP_CORNER_DEPRESSOR_R_FB = 31,
+	matches MouthSad{Right,Left}
+XR_FACE_EXPRESSION2_LIP_CORNER_PULLER_L_FB = 32,
+XR_FACE_EXPRESSION2_LIP_CORNER_PULLER_R_FB = 33,
+	matches MouthSmile{Right,Left}
+XR_FACE_EXPRESSION2_LIP_FUNNELER_LB_FB = 34,
+XR_FACE_EXPRESSION2_LIP_FUNNELER_LT_FB = 35,
+XR_FACE_EXPRESSION2_LIP_FUNNELER_RB_FB = 36,
+XR_FACE_EXPRESSION2_LIP_FUNNELER_RT_FB = 37,
+	matches Mouth{UpperUp,LowerDown}{Right,Left} and Mouth{Upper,Lower}Overturn.
+	basically lipDepressor+lipRaiser but pulling the lips forward for a round shape.
+	==> add as new expressions
+	--> emulate MouthUpperUpRight = max(upperLipRaiserR,lipFunnelerRT)
+	--> emulate MouthUpperUpLeft = max(upperLipRaiserL,lipFunnelerLT)
+	--> emulate MouthLowerDownRight = max(lipDepressorR,lipFunnelerRB)
+	--> emulate MouthLowerDownLeft = max(lipDepressorL,lipFunnelerLB)
+	--> emulate MouthUpperOverturn = (lipFunnelerRT+lipFunnelerLT)/2
+	--> emulate MouthLowerOverturn = (lipFunnelerRB+lipFunnelerLB)/2
+XR_FACE_EXPRESSION2_LIP_PRESSOR_L_FB = 38,
+XR_FACE_EXPRESSION2_LIP_PRESSOR_R_FB = 39,
+	basically pressing lips together. not very noticeable but technically something new
+	==> add as new expressions
+XR_FACE_EXPRESSION2_LIP_PUCKER_L_FB = 40,
+XR_FACE_EXPRESSION2_LIP_PUCKER_R_FB = 41,
+	matches MouthPout if both are equal
+	==> add as new expressions
+	--> emulate MouthPout = (L+R)/2
+XR_FACE_EXPRESSION2_LIP_STRETCHER_L_FB = 42,
+XR_FACE_EXPRESSION2_LIP_STRETCHER_R_FB = 43,
+	goes into the direction of sad but more like "this is too close!" pulling the mouth corner sideways.
+	==> add as new expressions
+XR_FACE_EXPRESSION2_LIP_SUCK_LB_FB = 44,
+XR_FACE_EXPRESSION2_LIP_SUCK_LT_FB = 45,
+XR_FACE_EXPRESSION2_LIP_SUCK_RB_FB = 46,
+XR_FACE_EXPRESSION2_LIP_SUCK_RT_FB = 47,
+	matches Mouth{Upper,Lower}Inside if respective pair of expressions are equal
+	==> add as new expressions
+	--> emulate MouthUpperInside = (LT+RT)/2
+	--> emulate MouthLowerInside = (LB+RB)/2
+XR_FACE_EXPRESSION2_LIP_TIGHTENER_L_FB = 48,
+XR_FACE_EXPRESSION2_LIP_TIGHTENER_R_FB = 49,
+	basically sort of pressed the lips together. pretty much the same as lip pressor but most probably not as strong
+	not adding this one but instead adjust lip pressor expressions:
+	--> LipPressor = mix(lipPressor,1,lipThightener/2)
+XR_FACE_EXPRESSION2_LIPS_TOWARD_FB = 50,
+	matches MouthApeShape
+XR_FACE_EXPRESSION2_LOWER_LIP_DEPRESSOR_L_FB = 51,
+XR_FACE_EXPRESSION2_LOWER_LIP_DEPRESSOR_R_FB = 52,
+	matches MouthLowerDown{Right,Left} but collides with funneler on emulating
+	==> add as new expressions
+	--> emulate MouthLowerDownRight = max(lipDepressorR,lipFunnelerRB)
+	--> emulate MouthLowerDownLeft = max(lipDepressorL,lipFunnelerLB)
+XR_FACE_EXPRESSION2_MOUTH_LEFT_FB = 53,
+XR_FACE_EXPRESSION2_MOUTH_RIGHT_FB = 54,
+	matches Mouth{Upper,Lower}{Right,Left} but also with often with a slight rotation upwards.
+	==> add as new expressions
+	--> emulate MouthUpperRight = mouthRight
+	--> emulate MouthUpperLeft = mouthLeft
+	--> emulate MouthLowerRight = mouthRight
+	--> emulate MouthLowerLeft = mouthLeft
+XR_FACE_EXPRESSION2_NOSE_WRINKLER_L_FB = 55,
+XR_FACE_EXPRESSION2_NOSE_WRINKLER_R_FB = 56,
+	part of MouthUpperUp{Right,Left} but standalone
+	==> add as new expressions
+XR_FACE_EXPRESSION2_OUTER_BROW_RAISER_L_FB = 57,
+XR_FACE_EXPRESSION2_OUTER_BROW_RAISER_R_FB = 58,
+XR_FACE_EXPRESSION2_UPPER_LID_RAISER_L_FB = 59,
+XR_FACE_EXPRESSION2_UPPER_LID_RAISER_R_FB = 60,
+	matches Eye{Right,Left}Wide . one set affects the brow the other the eye lid.
+	inner brow raiser is similar but gives more of a frowning look
+	==> add as new expressions
+	--> emulate EyeRightWide = (max(outerBrowRaiserR,innerBrowRaiserR)+upperLidRaiserR)/2
+	--> emulate EyeLeftWide = (max(outerBrowRaiserL,innerBrowRaiserL)+upperLidRaiserL)/2
+XR_FACE_EXPRESSION2_UPPER_LIP_RAISER_L_FB = 61,
+XR_FACE_EXPRESSION2_UPPER_LIP_RAISER_R_FB = 62,
+	matches MouthUpperUp{Right,Left} but collides with funneler on emulating
+	==> add as new expressions
+	--> emulate MouthUpperUpRight = max(upperLipRaiserR,lipFunnelerRT)
+	--> emulate MouthUpperUpLeft = max(upperLipRaiserL,lipFunnelerLT)
+XR_FACE_EXPRESSION2_TONGUE_TIP_INTERDENTAL_FB = 63,
+	matches TongueUp up to longstep1
+	==> add as new expression
+	--> emulate TongueUp = value/2
+	--> emulate TongueLongStep1 = 1
+	--> emulate TongueLongStep2 = 0
+XR_FACE_EXPRESSION2_TONGUE_TIP_ALVEOLAR_FB = 64,
+	matches TongueUp up to longstep1
+	==> add as new expression
+	--> emulate TongueUp = value
+	--> emulate TongueLongStep1 = 0.5
+	--> emulate TongueLongStep2 = 0
+XR_FACE_EXPRESSION2_TONGUE_FRONT_DORSAL_PALATE_FB = 65,
+	matches TongueUp up to longstep1
+	==> add as new expression
+	--> emulate TongueUp = value
+	--> emulate TongueLongStep1 = 0.5
+	--> emulate TongueLongStep2 = 0
+XR_FACE_EXPRESSION2_TONGUE_MID_DORSAL_PALATE_FB = 66,
+	matches TongueUp up to longstep1
+	==> add as new expression
+	--> emulate TongueUp = value
+	--> emulate TongueLongStep1 = 0.5
+	--> emulate TongueLongStep2 = 0
+XR_FACE_EXPRESSION2_TONGUE_BACK_DORSAL_VELAR_FB = 67,
+	matches TongueUp up to longstep1
+	==> add as new expression
+	--> emulate TongueUp = value
+	--> emulate TongueLongStep1 = 0.5
+	--> emulate TongueLongStep2 = 0
+XR_FACE_EXPRESSION2_TONGUE_OUT_FB = 68,
+	matches TongueLongStep2
+	==> add as new expression
+	--> emulate TongueLongStep1 = 1
+	--> emulate TongueLongStep2 = 1
+XR_FACE_EXPRESSION2_TONGUE_RETREAT_FB = 69,
+	matches TongueDown up to longstep1
+	==> add as new expression
+	--> emulate TongueDown = value/2
+	--> emulate TongueLongStep1 = 0
+	--> emulate TongueLongStep2 = 0
+
+
+not matched:
+- EyeSqueeze{Right,Left}
+- Tongue{Right,Left}
+- TongueRoll
+- TongueMorph{Up,Down}{Right,Left}

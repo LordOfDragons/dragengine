@@ -245,7 +245,7 @@ private:
 		float rollOff, float distanceOffset, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
 		const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config );
 	
-	void pRunListenUsingTasks( const deoalEnvProbe &sourceProbe, const deoalEnvProbe *listenProbe,
+	bool pRunListenUsingTasks( const deoalEnvProbe &sourceProbe, const deoalEnvProbe *listenProbe,
 		deoalEnvProbeListener &listener, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
 		const decLayerMask &layerMask, const decDVector &position );
 	

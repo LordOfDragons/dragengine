@@ -103,7 +103,7 @@ private:
 	eOperators pOperator;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleMath();
@@ -115,7 +115,7 @@ public:
 	virtual ~meHTVRuleMath();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the value-A to use if there is no input value-A. */
 	inline float GetValueA() const{ return pValueA; }

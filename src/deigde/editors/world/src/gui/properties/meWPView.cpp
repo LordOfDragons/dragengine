@@ -305,6 +305,28 @@ public:
 	}
 };
 
+class cComboCamera: public igdeComboBoxListener{
+	meWPView &pPanel;
+public:
+	cComboCamera( meWPView &panel ) : igdeComboBoxListener(), pPanel( panel ){}
+	
+	void OnTextChanged( igdeComboBox *comboBox ) override{
+		meWorld * const world = pPanel.GetWorld();
+		if( ! world ){
+			return;
+		}
+		
+		meCamera * const camera = ( meCamera* )comboBox->GetSelectedItemData();
+		if( camera == world->GetActiveCamera()
+		|| camera == world->GetFreeRoamingCamera()
+		|| camera == world->GetPlayerCamera() ){
+			return;
+		}
+		
+		world->SetActiveCamera( camera );
+	}
+};
+
 
 class cActionSkyChanged : public cBaseAction{
 public:
@@ -520,8 +542,7 @@ void meWPView::UpdateView(){
 }
 
 void meWPView::UpdateCameraList(){
-	meCamera * const selectedCamera = pCBCameraObjects->GetSelectedItem()
-		? ( meCamera* )pCBCameraObjects->GetSelectedItem()->GetData() : NULL;
+	meCamera * const selectedCamera = ( meCamera* )pCBCameraObjects->GetSelectedItemData();
 	
 	pCBCameraObjects->RemoveAllItems();
 	
@@ -533,7 +554,7 @@ void meWPView::UpdateCameraList(){
 		for( i=0; i<count; i++ ){
 			meCamera * const camera = objects.GetAt( i )->GetCamera();
 			if( camera ){
-				pCBCameraObjects->AddItem( camera->GetName(), NULL, camera );
+				pCBCameraObjects->AddItem( camera->GetName(), nullptr, camera );
 			}
 		}
 	}
@@ -549,7 +570,7 @@ void meWPView::UpdateCameraList(){
 }
 
 void meWPView::UpdateCamera(){
-	meCamera * const camera = pWorld ? pWorld->GetActiveCamera() : NULL;
+	meCamera * const camera = pWorld ? pWorld->GetActiveCamera() : nullptr;
 	
 	if( camera ){
 		pEditActiveCamera->SetText( camera->GetName() );

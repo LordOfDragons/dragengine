@@ -147,7 +147,7 @@ class DebugVerifyStubProperties
 		end
 		
 		if pDecalProperties != null
-			var int i, count = stub.getWorldDecalCount()
+			count = stub.getWorldDecalCount()
 			for i = 0 to count
 				allVerified &= verifyDecal(stub.getWorldDecalAt(i), pDecalProperties)
 			end

@@ -550,6 +550,13 @@ public:
 	 */
 	virtual void UserRequestQuit();
 	
+	/**
+	 * \brief Called after the application received or lost focus.
+	 * \return true if the call has been successfull or false otherwise
+	 * \version 1.22
+	 */
+	virtual bool OnAppActivate();
+	
 	/** Requested compatible module version. */
 	inline const sModuleVersion &GetModuleVersion() const{ return pModuleVersion; }
 	

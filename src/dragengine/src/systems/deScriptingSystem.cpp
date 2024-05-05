@@ -337,6 +337,14 @@ void deScriptingSystem::OnResizeRenderWindow(){
 	}
 }
 
+void deScriptingSystem::OnAppActivate(){
+	if( GetIsRunning() ){
+		if( ! pActiveModule->OnAppActivate() ){
+			GetEngine()->SignalScriptFailed();
+		}
+	}
+}
+
 void deScriptingSystem::SendEvent( deInputEvent *event){
 	if( ! pActiveModule->SendEvent( event ) ){
 		GetEngine()->SignalScriptFailed();

@@ -36,7 +36,7 @@ class Game
 	 * \details This function has to load all data needed to start working. Do not enter
 	 *          a loop inside this method. The game engine handles the game loop.
 	 */
-	public func void initGame()
+	func void initGame()
 	end
 	
 	/**
@@ -44,13 +44,13 @@ class Game
 	 * \details Make sure to free all data acquired during the run of the game. This is
 	 *          the last method called in the script before the engine terminates.
 	 */
-	public func void cleanUp()
+	func void cleanUp()
 	end
 	
 	
 	
 	/** \brief Process input event. */
-	public func void inputEvent( InputEvent event )
+	func void inputEvent(InputEvent event)
 	end
 	
 	/**
@@ -58,7 +58,7 @@ class Game
 	 * 
 	 * Default implementation calls quitGame().
 	 */
-	public func void userRequestedQuit()
+	func void userRequestedQuit()
 	end
 	
 	
@@ -67,17 +67,24 @@ class Game
 	 * \brief Called by the game engine at the beginning of each frame update.
 	 * \details Use this method to advance your game by Engine.getElapsedTime() seconds.
 	 */
-	public func void onFrameUpdate()
+	func void onFrameUpdate()
 	end
 	
 	/** \brief Size of the render window changed. */
-	public func void onResizeRenderWindow()
+	func void onResizeRenderWindow()
+	end
+	
+	/**
+	 * \brief Called after the application received or lost focus.
+	 * \return true if the call has been successfull or false otherwise
+	 * \version 1.22
+	 */
+	func void onAppActivate()
 	end
 	
 	
-	
 	/** \brief Number of command line arguments given to the game. */
-	public func int getArgumentCount()
+	func int getArgumentCount()
 		return 0
 	end
 	
@@ -85,7 +92,7 @@ class Game
 	 * \brief Command line argument given to the game.
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getArgumentCount().
 	 */
-	public func String getArgumentAt( int index )
+	func String getArgumentAt(int index)
 		return null
 	end
 	/*@}*/

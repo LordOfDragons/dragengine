@@ -32,92 +32,92 @@ pin Dragengine.Scenery
  */
 class StubWithProperties
 	/** \brief Properties. */
-	private var Dictionary pProperties
+	var Dictionary pProperties
 	
 	
 	
 	/** \brief Create stub with properties. */
-	public func new()
-		this.pProperties = Dictionary.new()
+	func new()
+		pProperties = Dictionary.new()
 	end
 	
 	/** \brief Create copy of stub with properties. */
-	public func new( StubWithProperties stub )
-		this.pProperties = Dictionary.new( stub.pProperties )
+	func new(StubWithProperties stub)
+		pProperties = Dictionary.new(stub.pProperties)
 	end
 	
 	
 	
 	/** \brief Number of properties. */
-	public func int getPropertyCount()
-		return this.pProperties.getCount()
+	func int getPropertyCount()
+		return pProperties.getCount()
 	end
 	
 	/** \brief Property keys (String array). */
-	public func Array getPropertyKeys()
-		return this.pProperties.getKeys()
+	func Array getPropertyKeys()
+		return pProperties.getKeys()
 	end
 	
 	/** \brief Property key is present. */
-	public func bool hasPropertyWithKey( String key )
-		return this.pProperties.has( key )
+	func bool hasPropertyWithKey(String key)
+		return pProperties.has(key)
 	end
 	
 	/** \brief Value of property or default value if absent. */
-	public func String getPropertyValueFor( String key, String default )
-		return this.pProperties.getAt( key, default ) cast String
+	func String getPropertyValueFor(String key, String default)
+		return pProperties.getAt(key, default) cast String
 	end
 	
 	/** \brief Set property. */
-	public func void setPropertyValueFor( String key, String value )
+	func void setPropertyValueFor(String key, String value)
 		if value == null
 			throw EInvalidParam.new()
 		end
-		this.pProperties.setAt( key, value )
+		pProperties.setAt(key, value)
 	end
 	
 	/** \brief Set property. */
-	public func void setPropertyBoolFor( String key, bool value )
-		this.pProperties.setAt( key, value if "1" else "0" )
+	func void setPropertyBoolFor(String key, bool value)
+		pProperties.setAt(key, value if "1" else "0")
 	end
 	
 	/** \brief Set property. */
-	public func void setPropertyIntFor( String key, int value )
-		this.pProperties.setAt( key, value.toString() )
+	func void setPropertyIntFor(String key, int value)
+		pProperties.setAt(key, value.toString())
 	end
 	
 	/** \brief Set property. */
-	public func void setPropertyFloatFor( String key, float value )
-		this.pProperties.setAt( key, value.toString() )
+	func void setPropertyFloatFor(String key, float value)
+		pProperties.setAt(key, value.toString())
 	end
 	
 	/** \brief Remove property if present. */
-	public func void removePropertyWithKey( String key )
-		this.pProperties.removeIfExisting( key )
+	func void removePropertyWithKey(String key)
+		pProperties.removeIfExisting(key)
 	end
 	
 	/** \brief Remove all properties. */
-	public func void removeAllProperties()
-		this.pProperties.removeAll()
+	func void removeAllProperties()
+		pProperties.removeAll()
 	end
 	
 	
 	
 	/** \brief Boolean property value or default value if absent. */
-	public func bool getPropertyBoolFor( String key, bool default )
-		var String value = this.pProperties.getAt( key, null ) cast String
+	func bool getPropertyBoolFor(String key, bool default)
+		var String value = pProperties.getAt(key, null) cast String
 		
 		if value == null
 			return default
 			
 		else
-			return ( ( value.toFloat() + 0.5 ) cast int ) != 0
+			return ((value.toFloat() + 0.5) cast int) != 0
 		end
 	end
 	
 	/** \brief Integer property value or default value if absent. */
-	public func int getPropertyIntFor( String key, int default )
-		var String value = this.pProperties.getAt( key, null ) cast String
+	func int getPropertyIntFor(String key, int default)
+		var String value = pProperties.getAt(key, null) cast String
 		
 		if value == null
 			return default
@@ -128,8 +128,8 @@ class StubWithProperties
 	end
 	
 	/** \brief Floating point property value or default value if absent. */
-	public func float getPropertyFloatFor( String key, float default )
-		var String value = this.pProperties.getAt( key, null ) cast String
+	func float getPropertyFloatFor(String key, float default)
+		var String value = pProperties.getAt(key, null) cast String
 		
 		if value == null
 			return default
@@ -140,14 +140,31 @@ class StubWithProperties
 	end
 	
 	/** \brief Set properties from another StubWithProperties. */
-	public func void setFrom( StubWithProperties properties )
-		this.pProperties = Dictionary.new( properties.pProperties )
+	func void setFrom(StubWithProperties properties)
+		pProperties = Dictionary.new(properties.pProperties)
+	end
+	
+	/**
+	 * \brief Copy of all properties as dictionary mapping String key to String value.
+	 * \version 1.22
+	 */
+	func Dictionary getProperties()
+		return Dictionary.new(pProperties)
+	end
+	
+	/**
+	 * \brief Set all properties from dictionary mapping String key to String value.
+	 * \version 1.22
+	 */
+	func void setFrom(Dictionary properties)
+		pProperties.removeAll()
+		pProperties.setAll(properties)
 	end
 	
 	
 	
 	/** \brief Read properties from file. */
-	public func void readPropertiesFromFile( FileReader reader )
+	func void readPropertiesFromFile(FileReader reader)
 		select reader.readByte() // version
 		case 0
 			var int count = reader.readUShort()
@@ -157,22 +174,22 @@ class StubWithProperties
 			for i = 0 to count
 				key = reader.readString8()
 				value = reader.readString16()
-				this.pProperties.setAt( key, value )
+				pProperties.setAt(key, value)
 			end
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Write properties to file. */
-	public func void writePropertiesToFile( FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writePropertiesToFile(FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeUShort( this.pProperties.getCount() )
-		this.pProperties.forEach( block String key, String value
-			writer.writeString8( key )
-			writer.writeString16( value )
-		end )
+		writer.writeUShort(pProperties.getCount())
+		pProperties.forEach(block String key, String value
+			writer.writeString8(key)
+			writer.writeString16(value)
+		end)
 	end
 end

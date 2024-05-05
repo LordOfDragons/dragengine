@@ -66,6 +66,7 @@
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deMicrophone.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -273,6 +274,8 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 		const float gameTime = pTimerMain.GetElapsedTime();
 		pDebugInfo->StoreTimeThreadMain( gameTime );
 		
+		const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryMain, pEstimatedAudioTime,
+		                                         // pReadyToWait
 		pTimeHistoryMain.Add( gameTime );
 		//pLogger->LogInfo( decString("TimeHistory Main: ") + pTimeHistoryMain.DebugPrint() );
 		
@@ -323,8 +326,11 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 }
 
 void deoalAudioThread::WaitFinishAudio(){
+	{
+	const deMutexGuard lock( pMutexShared );
 	if( ! pReadyToWait ){
 		return; // true if audio thread is waiting on pBarrierSyncIn otherwise pBarrierSyncOut
+	}
 	}
 	
 	switch( pThreadState ){
@@ -361,9 +367,12 @@ void deoalAudioThread::Synchronize(){
 	
 	pDebugInfo->UpdateDebugInfo();
 	
+	{
+	const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryUpdate
 	pFPSRate = 0;
 	if( pTimeHistoryUpdate.HasMetrics() ){
 		pFPSRate = ( int )( 1.0f / pTimeHistoryUpdate.GetAverage() );
+	}
 	}
 	
 	if( pAsyncAudio ){
@@ -470,7 +479,10 @@ void deoalAudioThread::Run(){
 	while( true ){
 		// wait for entering synchronize. we use a timeout here to avoid a long delay by the
 		// main thread causing the buffers to underrun.
+		{
+		const deMutexGuard lock( pMutexShared );
 		pReadyToWait = true;
+		}
 		
 		const int barrierTimeout = decMath::max( maxSyncSkipDelay - ( int )( pElapsed * 1000.0f ), 0 );
 		
@@ -478,14 +490,19 @@ void deoalAudioThread::Run(){
 		if( pBarrierSyncIn.TryWait( barrierTimeout ) ){
 			DEBUG_SYNC_RT_PASS("in")
 			
+			{
+			const deMutexGuard lock( pMutexShared );
 			pReadyToWait = false;
+			}
 			
 			// main thread is messing with our state here. proceed to next barrier doing nothing
 			// except alter the estimated render time. this value is used by the main thread
 			// only outside the synchronization part so we can update it here
-			
+			{
+			const deMutexGuard lock( pMutexShared ); // due to pEstimatedAudioTime
 			pEstimatedAudioTime = decMath::max( pTimeHistoryAudio.GetAverage(),
 				pTimeHistoryAudioEstimated.GetAverage(), pFrameTimeLimit );
+			}
 			
 			// wait for leaving synchronize
 			DEBUG_SYNC_RT_WAIT("out")
@@ -534,8 +551,11 @@ void deoalAudioThread::Run(){
 					
 					// apply frame limiter
 					pLimitFrameRate( timeAudio );
+					{
+					const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryMain
 					pDebugInfo->StoreTimeFrameLimiter( pTimeHistoryMain,
 						pTimeHistoryAudio, pTimeHistoryAudioEstimated );
+					}
 					pThreadFailure = false;
 					DEBUG_SYNC_RT_FAILURE
 					
@@ -857,6 +877,7 @@ void deoalAudioThread::pProcessAudio(){
 		pWaitSkipped = false;
 		
 	}else{
+		const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryUpdate
 		pTimeHistoryUpdate.Add( pElapsed );
 		// pLogger->LogInfoFormat( "ProcessAudio: %.3f (%.1f)", pElapsed, 1.0f / pElapsed );
 	}

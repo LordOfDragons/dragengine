@@ -158,7 +158,7 @@ class MenuItemSubMenu extends MenuItemCommand
 		end
 		
 		if pWidgetArrow != null
-			removeWidget(pWidgetArrow)
+			pWidgetArrow.safeDispose()
 		end
 		
 		pWidgetArrow = widget

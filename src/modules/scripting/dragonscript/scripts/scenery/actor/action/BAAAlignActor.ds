@@ -205,9 +205,9 @@ class BAAAlignActor extends BaseActorAction
 	
 	/** \brief Set target from locomotion. */
 	public func void setTargetFromLocomotion()
-		var Locomotion locomotion = this.locomotion.getLocomotion()
-		this.pTargetOrientation = locomotion.getOrientation()
-		this.pTargetLookVertical = locomotion.getLookVerticalGoal()
+		var Locomotion loco = this.locomotion.getLocomotion()
+		this.pTargetOrientation = loco.getOrientation()
+		this.pTargetLookVertical = loco.getLookVerticalGoal()
 	end
 	
 	/** \brief Conversation look-at. */

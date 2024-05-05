@@ -33,6 +33,9 @@
     <ProjectReference Include="..\..\..\extern\libsharpyuv\extern_libsharpyuv.vcxproj">
       <Project>{f27bfd85-f580-4241-bdc5-27befa2d528c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libwebpdemux\extern_libwebpdemux.vcxproj">
+      <Project>{faf5fc57-02d5-4c34-8a06-059e9588bef5}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\extern\libwebp\extern_libwebp.vcxproj">
       <Project>{4d5f6e37-c322-4312-ab53-41b4f743a064}</Project>
     </ProjectReference>

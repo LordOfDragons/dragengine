@@ -57,7 +57,7 @@ class mePropFieldType;
  */
 class meWorldNotifier : public deObject{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin notifier. */
 	meWorldNotifier();
@@ -65,7 +65,7 @@ public:
 	virtual ~meWorldNotifier();
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/** World parameters changed. */
 	virtual void WorldParametersChanged( meWorld *world );

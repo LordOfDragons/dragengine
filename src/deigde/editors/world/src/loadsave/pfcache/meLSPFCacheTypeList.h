@@ -47,7 +47,7 @@ private:
 	int pTypeSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a type list. */
 	meLSPFCacheTypeList();
@@ -55,7 +55,7 @@ public:
 	~meLSPFCacheTypeList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }

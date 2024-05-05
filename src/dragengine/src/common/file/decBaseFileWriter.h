@@ -116,6 +116,19 @@ public:
 	/** \brief Write one unsigned integer (8 bytes) to file and advances write pointer. */
 	void WriteULong( uint64_t value );
 	
+	/**
+	 * \brief Write variable length unsigned integer (1-4 bytes) and advances file pointer.
+	 * 
+	 * Variable length integers are written using 1 to 4 bytes. The highest 2 bits of the
+	 * first byte stores the total length (0=1 byte, 1=2 bytes, 2=3 bytes, 3=4 bytes).
+	 * The lower 6 bits are used as value. With each added byte the previous bits are
+	 * shifted up. The maximum storable value is thus 1073741823.
+	 * 
+	 * Variable length unsigned integers are typically used for values like versions
+	 * or revisions which start low and potentially grow large over time.
+	 */
+	void WriteVarUInt( uint32_t value );
+	
 	/** \brief Write one float (4 bytes) to file and advances write pointer. */
 	void WriteFloat( float value );
 	
@@ -125,11 +138,17 @@ public:
 	/** \brief Write string-length bytes of string to file without length field and advances write pointer. */
 	void WriteString( const char *string );
 	
-	/** \brief Write string-length bytes of string to file with a 1-byte length field in front and advances write pointer. */
+	/** \brief Write string to file with a 1-byte length field in front and advances write pointer. */
 	void WriteString8( const char *string );
 	
-	/** \brief Write string-length bytes of string to file with a 2-byte length field in front and advances write pointer. */
+	/** \brief Write string to file with a 2-byte length field in front and advances write pointer. */
 	void WriteString16( const char *string );
+	
+	/** \brief Write string to file with a 4-byte length field in front and advances write pointer. */
+	void WriteString32( const char *string );
+	
+	/** \brief Write string to file with a 1-4 byte length field in front and advances write pointer. */
+	void WriteVarString( const char *string );
 	
 	/** \brief Write a 3-float vector to the file ( order x, y, z ) and advances write pointer. */
 	void WriteVector( const decVector &vector );

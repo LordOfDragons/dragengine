@@ -36,7 +36,7 @@ private:
 	decObjectOrderedSet pObjects;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	meDecalList();
@@ -44,7 +44,7 @@ public:
 	~meDecalList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of decals. */
 	int GetCount() const;

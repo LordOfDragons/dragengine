@@ -54,6 +54,7 @@ class PanelDebugInformation extends Panel
 	/** \brief Dispose of widget. */
 	func void dispose()
 		pDebugInformation = null
+		pSortedList = null
 		super.dispose()
 	end
 	
@@ -138,22 +139,15 @@ class PanelDebugInformation extends Panel
 		runWhileBlockingLayout(block
 			var int widgetIndex = getWidgetCount()
 			var int requiredCount = count * 2
-			var Label label
 			while widgetIndex > requiredCount
 				widgetIndex--
-				removeWidget(getWidget(widgetIndex))
+				getWidget(widgetIndex).safeDispose()
 			end
 			
 			widgetIndex = getWidgetCount() / 2
 			while widgetIndex < count
-				label = Label.new("")
-				label.setDesignerSelector("Label.PanelDebugInformation.Label")
-				addWidget(label)
-				
-				label = Label.new("")
-				label.setDesignerSelector("Label.PanelDebugInformation.Details")
-				addWidget(label)
-				
+				addWidget(Label.new("", "Label.PanelDebugInformation.Label"))
+				addWidget(Label.new("", "Label.PanelDebugInformation.Details"))
 				widgetIndex++
 			end
 			
@@ -169,7 +163,7 @@ class PanelDebugInformation extends Panel
 			end
 		end)
 		
-		doLayoutIfBlocked()
+		doLayout()
 	end
 end
 

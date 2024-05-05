@@ -138,6 +138,7 @@ private:
 	DEF_NATFUNC( nfAddComment );
 	
 	DEF_NATFUNC( nfForEachTag );
+	DEF_NATFUNC( nfHasTags );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

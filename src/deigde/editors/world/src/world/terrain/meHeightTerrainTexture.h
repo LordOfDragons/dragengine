@@ -64,7 +64,7 @@ private:
 	bool pMaskSaved;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	meHeightTerrainTexture( deEngine *engine, const char *name );
@@ -72,7 +72,7 @@ public:
 	virtual ~meHeightTerrainTexture();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the game engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }

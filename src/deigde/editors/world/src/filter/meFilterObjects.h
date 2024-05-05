@@ -40,7 +40,7 @@ class meObject;
  */
 class meFilterObjects{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new filter. */
 	meFilterObjects();
@@ -48,7 +48,7 @@ public:
 	virtual ~meFilterObjects();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/**
 	 * Determines if the given object is accepted by the filter.

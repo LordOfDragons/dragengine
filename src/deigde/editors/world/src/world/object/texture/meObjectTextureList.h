@@ -40,7 +40,7 @@ private:
 	decObjectOrderedSet pTextures;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new list. */
 	meObjectTextureList();
@@ -48,7 +48,7 @@ public:
 	~meObjectTextureList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of textures. */
 	int GetTextureCount() const;

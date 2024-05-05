@@ -41,7 +41,7 @@ private:
 	int pByteCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new bit array. */
 	meBitArray( int colons, int rows );
@@ -49,7 +49,7 @@ public:
 	~meBitArray();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of colons. */
 	inline int GetColons() const{ return pColons; }

@@ -32,58 +32,58 @@ pin Dragengine.Scenery
  * conversations where it is not convenient to locate elements using their UniqueID.
  */
 class AnchoredElementList
-	private var Dictionary pElements
+	var Dictionary pElements
 	
 	
 	
 	/** \brief Create anchored element list. */
-	public func new()
-		this.pElements = Dictionary.new()
+	func new()
+		pElements = Dictionary.new()
 	end
 	
 	/** \brief Dispose of list. */
-	public func void dispose()
-		this.removeAll()
+	func void dispose()
+		removeAll()
 	end
 	
 	
 	
 	/** \brief Number of anchored elements. */
-	public func int getCount()
-		return this.pElements.getCount()
+	func int getCount()
+		return pElements.getCount()
 	end
 	
 	/** \brief Anchored element is present. */
-	public func bool has( StringID id )
-		return this.pElements.has( id )
+	func bool has(StringID id)
+		return pElements.has(id)
 	end
 	
 	/** \brief Anchored element with identifier or \em null if absent. */
-	public func Element getAt( StringID id )
-		return this.pElements.getAt( id ) cast Element
+	func Element getAt(StringID id)
+		return pElements.getAt(id, null) cast Element
 	end
 	
 	/** \brief Add anchored element. */
-	public func void add( StringID id, Element element )
-		if id == null or this.pElements.has( id )
+	func void add(StringID id, Element element)
+		if id == null or pElements.has(id)
 			throw EInvalidParam.new()
 		end
-		this.pElements.setAt( id, element )
+		pElements.setAt(id, element)
 	end
 	
 	/** \brief Remove anchored element. */
-	public func void remove( StringID id )
-		this.pElements.remove( id )
+	func void remove(StringID id)
+		pElements.remove(id)
 	end
 	
 	/** \brief Remove all anchored elements. */
-	public func void removeAll()
-		this.pElements.removeAll()
+	func void removeAll()
+		pElements.removeAll()
 	end
 	
 	/** \brief Visit anchored elements with block with parameter Element. */
-	public func void forEach( Block ablock )
-		this.pElements.forEachValue( ablock )
+	func void forEach(Block ablock)
+		pElements.forEachValue(ablock)
 	end
 	
 	/**
@@ -92,7 +92,7 @@ class AnchoredElementList
 	 * Block is called with arguments StringID (identifier) and Element. Block has to return
 	 * true if the element has been found.
 	 */
-	public func Element find( Block ablock )
-		return this.pElements.find( ablock ) cast Element
+	func Element find(Block ablock)
+		return pElements.find(ablock) cast Element
 	end
 end

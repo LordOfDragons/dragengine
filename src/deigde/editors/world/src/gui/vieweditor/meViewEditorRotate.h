@@ -40,7 +40,7 @@ private:
 	float pNullAngle;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
 	meViewEditorRotate( meView3D &view );
@@ -48,13 +48,13 @@ public:
 	virtual ~meViewEditorRotate();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Calculates the rotation axis for the current view. */
 	virtual void CalculateRotationAxis( decDVector &axis ) const;
 	/*@}*/
 	
-	/** @name Events */
+	/** \name Events */
 	/*@{*/
 	/** A key on the keyboard has been pressed. Return true if handled. */
 	virtual bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control );

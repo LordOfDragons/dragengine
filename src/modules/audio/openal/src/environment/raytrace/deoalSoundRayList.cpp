@@ -69,16 +69,14 @@ deoalSoundRayList::~deoalSoundRayList(){
 ///////////////
 
 deoalSoundRay &deoalSoundRayList::GetRayAt( int index ){
-	if( index < 0 || index >= pRayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pRayCount )
 	return pRays[ index ];
 }
 
 const deoalSoundRay &deoalSoundRayList::GetRayAt( int index ) const{
-	if( index < 0 || index >= pRayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pRayCount )
 	return pRays[ index ];
 }
 
@@ -110,16 +108,14 @@ void deoalSoundRayList::RemoveAllRays(){
 }
 
 deoalSoundRaySegment &deoalSoundRayList::GetSegmentAt( int index ){
-	if( index < 0 || index >= pSegmentCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pSegmentCount )
 	return pSegments[ index ];
 }
 
 const deoalSoundRaySegment &deoalSoundRayList::GetSegmentAt( int index ) const{
-	if( index < 0 || index >= pSegmentCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pSegmentCount )
 	return pSegments[ index ];
 }
 
@@ -139,16 +135,14 @@ int deoalSoundRayList::AddSegment(){
 }
 
 deoalSoundRay &deoalSoundRayList::GetTransmittedRayAt( int index ){
-	if( index < 0 || index >= pTransmittedRayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pTransmittedRayCount )
 	return pTransmittedRays[ index ];
 }
 
 const deoalSoundRay &deoalSoundRayList::GetTransmittedRayAt( int index ) const{
-	if( index < 0 || index >= pTransmittedRayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pTransmittedRayCount )
 	return pTransmittedRays[ index ];
 }
 
@@ -174,9 +168,9 @@ int deoalSoundRayList::AddTransmittedRay(){
 }
 
 void deoalSoundRayList::ReserveSize( int rays, int segments, int transmittedRays ){
-	if( rays < 0 || segments < 0 || transmittedRays < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( rays >= 0 )
+	DEASSERT_TRUE( segments >= 0 )
+	DEASSERT_TRUE( transmittedRays >= 0 )
 	
 	if( rays > pRaySize ){
 		deoalSoundRay * const newArray = new deoalSoundRay[ rays ];

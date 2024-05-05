@@ -36,6 +36,7 @@
 #include "deWebp3DModule.h"
 
 #include <webp/encode.h>
+#include <webp/demux.h>
 
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/common/exceptions.h>
@@ -102,6 +103,8 @@ void deWebp3DTarball::Get3DImageInfos( deWebp3DImageInfo &info, decBaseFileReade
 	info.width = 0;
 	info.height = 0;
 	info.depth = 0;
+	info.hasAlpha = false;
+	info.isGrayscale = false;
 	
 	while( true ){
 		file.Read( &header, 512 );
@@ -162,13 +165,15 @@ void deWebp3DTarball::Get3DImageInfos( deWebp3DImageInfo &info, decBaseFileReade
 				info.width = info2D.width;
 				info.height = info2D.height;
 				info.hasAlpha = info2D.hasAlpha;
+				info.isGrayscale = info2D.isGrayscale;
 				firstImage = false;
 					
 			// otherwise check if the properties match
 			}else{
 				if( info2D.width != info.width
 				|| info2D.height != info.height
-				|| info2D.hasAlpha != info.hasAlpha ){
+				|| info2D.hasAlpha != info.hasAlpha
+				|| info2D.isGrayscale != info.isGrayscale ){
 					pModule.LogErrorFormat(
 						"the files in the archive '%s' do not match in size or format.",
 						info.GetFilename().GetString() );
@@ -398,6 +403,36 @@ void deWebp3DTarball::Get2DImageInfos( sImageInfo &info2D, decBaseFileReader &fi
 	info2D.width = features.width;
 	info2D.height = features.height;
 	info2D.hasAlpha = features.has_alpha;
+	info2D.isGrayscale = false;
+	
+	// look for exif user comments to handle the "grayscale" problem
+	WebPData wpdata = { ( const uint8_t* )data->GetPointer(), ( size_t )size };
+	WebPDemuxer * const demux = WebPDemux( &wpdata );
+	DEASSERT_NOTNULL( demux )
+	
+	const uint32_t flags = WebPDemuxGetI( demux, WEBP_FF_FORMAT_FLAGS );
+	if( ( flags & EXIF_FLAG ) == EXIF_FLAG ){
+		WebPChunkIterator iter = {};
+		if( WebPDemuxGetChunk( demux, "EXIF", 1, &iter ) == 1 ){
+			static const char * const tagGrayscale = "dewebp:grayscale";
+			static const int tagGrayscaleLen = strlen( tagGrayscale );
+			
+			const char * const exif = ( const char* )iter.chunk.bytes;
+			const int exifLen = ( int )iter.chunk.size;
+			int i;
+			
+			for( i=0; i<exifLen; i++ ){
+				if( strncmp( exif + i, tagGrayscale, tagGrayscaleLen ) == 0 ){
+					info2D.isGrayscale = true;
+					break;
+				}
+			}
+			
+			WebPDemuxReleaseChunkIterator( &iter );
+		}
+	}
+	
+	WebPDemuxDelete( demux );
 }
 
 void deWebp3DTarball::Load2DImage( deWebp3DImageInfo &info3D,
@@ -408,19 +443,75 @@ decBaseFileReader &file, int size, void *imagedata ){
 	data->Resize( size );
 	file.Read( data->GetPointer(), size );
 	
+	uint8_t *readTarget = nullptr;
+	sRGBA8 *bufferRGBA = nullptr;
+	sRGB8 *bufferRGB = nullptr;
 	uint8_t *result = nullptr;
+	int i;
 	
-	if( info3D.hasAlpha ){
-		result = WebPDecodeRGBAInto( ( const uint8_t* )data->GetPointer(), size,
-			( uint8_t* )imagedata, info3D.width * info3D.height * 4, info3D.width * 4 );
+	try{
+		const int pixelCount = info3D.width * info3D.height;
 		
-	}else{
-		result = WebPDecodeRGBInto( ( const uint8_t* )data->GetPointer(), size,
-			( uint8_t* )imagedata, info3D.width * info3D.height * 3, info3D.width * 3 );
-	}
-	
-	if( ! result ){
-		DETHROW( deeInvalidFileFormat );
+		if( info3D.hasAlpha ){
+			if( info3D.isGrayscale ){
+				bufferRGBA = new sRGBA8[ pixelCount ];
+				readTarget = ( uint8_t* )bufferRGBA;
+				
+			}else{
+				readTarget = ( uint8_t* )imagedata;
+			}
+			
+			result = WebPDecodeRGBAInto( ( const uint8_t* )data->GetPointer(), size,
+				readTarget, pixelCount * 4, info3D.width * 4 );
+			
+		}else{
+			if( info3D.isGrayscale ){
+				bufferRGB = new sRGB8[ pixelCount ];
+				readTarget = ( uint8_t* )bufferRGB;
+				
+			}else{
+				readTarget = ( uint8_t* )imagedata;
+			}
+			
+			result = WebPDecodeRGBInto( ( const uint8_t* )data->GetPointer(), size,
+				readTarget, pixelCount * 3, info3D.width * 3 );
+		}
+		
+		if( ! result ){
+			DETHROW( deeInvalidFileFormat );
+		}
+		
+		if( bufferRGBA ){
+			sGrayscaleAlpha8 *dest = ( sGrayscaleAlpha8* )imagedata;
+			
+			for( i=0; i<pixelCount; i++ ){
+				dest[ i ].value = bufferRGBA[ i ].red;
+				dest[ i ].alpha = bufferRGBA[ i ].alpha;
+			}
+			
+			delete [] bufferRGBA;
+			bufferRGBA = nullptr;
+		}
+		
+		if( bufferRGB ){
+			sGrayscale8 *dest = ( sGrayscale8* )imagedata;
+			
+			for( i=0; i<pixelCount; i++ ){
+				dest[ i ].value = bufferRGB[ i ].red;
+			}
+			
+			delete [] bufferRGB;
+			bufferRGB = nullptr;
+		}
+		
+	}catch( const deException & ){
+		if( bufferRGBA ){
+			delete [] bufferRGBA;
+		}
+		if( bufferRGB ){
+			delete [] bufferRGB;
+		}
+		throw;
 	}
 }
 

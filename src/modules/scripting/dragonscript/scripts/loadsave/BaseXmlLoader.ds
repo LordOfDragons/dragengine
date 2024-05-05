@@ -336,9 +336,6 @@ class BaseXmlLoader
 	 * for red, green and blue and 1 for alpha.
 	 */
 	func Color readColor(EasyXMLElement root, Color defaultColor)
-		var int e, elementCount = root.getElementCount()
-		var EasyXMLElement element
-		var String tagName
 		var float red = defaultColor.getRed()
 		var float green = defaultColor.getGreen()
 		var float blue = defaultColor.getBlue()
@@ -765,6 +762,30 @@ class BaseXmlLoader
 		writeVector2(tag, "coordinates", curve.getPointAt(point))
 		writeVector2(tag, "handle1", curve.getHandle1At(point))
 		writeVector2(tag, "handle2", curve.getHandle2At(point))
+	end
+	
+	/**
+	 * \brief Write rectArea tag.
+	 * \version 1.22
+	 */
+	func void writeRectArea(EasyXMLElement root, String name, RectArea rectArea)
+		var EasyXMLElement tag = root.addTag(name)
+		tag.setAttribute("x1", rectArea.getX1())
+		tag.setAttribute("y1", rectArea.getY1())
+		tag.setAttribute("x2", rectArea.getX2())
+		tag.setAttribute("y2", rectArea.getY2())
+	end
+	
+	/**
+	 * \brief Write floatRectRea tag.
+	 * \version 1.22
+	 */
+	func void writeFloatRectArea(EasyXMLElement root, String name, FloatRectArea rectArea)
+		var EasyXMLElement tag = root.addTag(name)
+		tag.setAttribute("x1", rectArea.getX1())
+		tag.setAttribute("y1", rectArea.getY1())
+		tag.setAttribute("x2", rectArea.getX2())
+		tag.setAttribute("y2", rectArea.getY2())
 	end
 	
 	

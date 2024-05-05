@@ -64,7 +64,7 @@ private:
 	float pRandomRotationMax;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	meHTVVariation( deEngine *engine );
@@ -72,7 +72,7 @@ public:
 	virtual ~meHTVVariation();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent height terrain vegetation layer or NULL. */
 	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }

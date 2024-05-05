@@ -85,8 +85,8 @@ void deoglVideoDecodeThread::StartDecode( int frame ){
 	bool startDecoding = false;
 	bool waitFinished = false;
 	
-	deMutexGuard guard( pMutex );
-	
+	{
+	const deMutexGuard lock( pMutex );
 // 	printf( "DecodeThread(%p) StartDecode(%p,%p,%i)\n", this, decoder, video, frame );
 	
 	if( pDecoding && ! pHasDecodedFrame ){
@@ -113,8 +113,7 @@ void deoglVideoDecodeThread::StartDecode( int frame ){
 			//printf( "DecodeThread(%p) StartDecode(%p,%p,%i): Same frame, not decoding.\n", this, decoder, video, frame );
 		}
 	}
-	
-	guard.Unlock();
+	}
 	
 	if( waitFinished ){
 		DEBUG_SYNC_MT_WAIT("StartDecode() finished")
@@ -131,10 +130,20 @@ void deoglVideoDecodeThread::StartDecode( int frame ){
 }
 
 deoglPixelBuffer::Ref deoglVideoDecodeThread::GetTexturePixelBuffer(){
-	if( pDecoding ){
+	bool decoding;
+	{
+	const deMutexGuard lock( pMutex );
+	decoding = pDecoding;
+	}
+	
+	if( decoding ){
 		DEBUG_SYNC_MT_WAIT("GetTexturePixelBuffer() finished")
 		pSemaphoreFinished.Wait();
 		DEBUG_SYNC_MT_DONE("GetTexturePixelBuffer() finished")
+	}
+	
+	const deMutexGuard lock( pMutex );
+	if( decoding ){
 		pDecoding = false;
 	}
 	
@@ -155,39 +164,54 @@ void deoglVideoDecodeThread::SetTexturePixelBuffer( deoglPixelBuffer *pixelBuffe
 void deoglVideoDecodeThread::StopDecode(){
 	// clear the next decoding parameters if set.
 	// stops the decoder from decoding a new frame
-	deMutexGuard guard( pMutex );
+	bool decoding;
+	{
+	const deMutexGuard lock( pMutex );
 	pNextFrame = -1;
-	guard.Unlock();
+	decoding = pDecoding;
+	}
 	
 	// wait for the decoding to finish if running
-	if( pDecoding ){
+	if( decoding ){
 		DEBUG_SYNC_MT_WAIT("SetTexturePixelBuffer() finished")
 		pSemaphoreFinished.Wait();
 		DEBUG_SYNC_MT_DONE("SetTexturePixelBuffer() finished")
-		pDecoding = false;
 	}
 	
 	// clear the decoding parameters
+	const deMutexGuard lock( pMutex );
 	pFrame = -1;
+	if( decoding ){
+		pDecoding = false;
+	}
 }
 
 
 
 void deoglVideoDecodeThread::Run(){
-	bool keepDecoding;
 // 	decTimer timer;
-	
-	while( ! pShutDown ){
+	while( true ){
+		{
+		const deMutexGuard lock( pMutex );
+		if( pShutDown ){
+			return;
+		}
+		}
+		
 		DEBUG_SYNC_MT_WAIT("Run() decode")
 		pSemaphoreDecode.Wait();
 		DEBUG_SYNC_MT_DONE("Run() decode")
 		
-		if( pShutDown ){
-			break;
-		}
-		
-		keepDecoding = true;
-		while( keepDecoding && ! pShutDown ){
+		bool keepDecoding = true;
+		while( keepDecoding ){
+			{
+			const deMutexGuard lock( pMutex );
+			if( pShutDown ){
+				DEBUG_SYNC_MT_SIGNAL("Run() finished then exit")
+				pSemaphoreFinished.Signal();
+				return;
+			}
+			}
 			keepDecoding = false;
 			
 // 			timer.Reset();
@@ -202,8 +226,7 @@ void deoglVideoDecodeThread::Run(){
 			
 // 			printf( "DecodeThread(%p) Run(%p,%p,%i): Decoded in %iys\n", this, pDecoder, pVideo, pFrame, ( int )( timer.GetElapsedTime() * 1e6f ) );
 			
-			deMutexGuard guard( pMutex );
-			
+			const deMutexGuard lock( pMutex );
 			if( pNextFrame != -1 ){
 				pFrame = pNextFrame;
 				pNextFrame = -1;
@@ -452,10 +475,11 @@ void deoglVideoDecodeThread::pSafelyShutDownThread(){
 		return;
 	}
 	
-	deMutexGuard guard( pMutex );
+	{
+	const deMutexGuard lock( pMutex );
 	pNextFrame = -1;
 	pShutDown = true;
-	guard.Unlock();
+	}
 	
 	DEBUG_SYNC_MT_SIGNAL("pSafelyShutDownThread() decode")
 	pSemaphoreDecode.Signal();

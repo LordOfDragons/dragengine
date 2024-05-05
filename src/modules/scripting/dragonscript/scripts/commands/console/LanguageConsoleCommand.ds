@@ -100,8 +100,6 @@ class LanguageConsoleCommand extends ConsoleCommand
 		var LanguagePack languagePack
 		
 		if params.getAt(0).equals("list")
-			var Array identifiers = pTranslationManager.getIdentifiers()
-			
 			if pTranslationManager.getCount() > 0
 				pTranslationManager.forEach(block LanguagePack each
 					console.addMessage("- {}: {}".format(Array.newWith(\

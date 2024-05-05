@@ -53,7 +53,7 @@ private:
 	decVector pVector;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleComponents();
@@ -65,7 +65,7 @@ public:
 	virtual ~meHTVRuleComponents();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the vector to use if there is no input vector. */
 	inline const decVector &GetVector() const{ return pVector; }

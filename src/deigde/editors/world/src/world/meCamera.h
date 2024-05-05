@@ -19,22 +19,18 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _MECAMERA_H_
 #define _MECAMERA_H_
 
-// includes
 #include <deigde/gui/igdeCamera.h>
 
-// predefinitions
 class meObject;
 class meWorld;
 class deDebugDrawerShape;
 
 
-
 /**
- * @brief Camera for rendering a world.
+ * Camera for rendering a world.
  *
  * Manages a camera including the wrapped engine camera. Provides also
  * some simple unproject methods to determine a ray shot into the world
@@ -49,7 +45,7 @@ private:
 	meObject *pHostObject;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new camera. */
 	meCamera( deEngine *engine );
@@ -57,7 +53,7 @@ public:
 	virtual ~meCamera();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Dispose of the camera. */
 	void Dispose();
@@ -88,5 +84,4 @@ private:
 	void pUpdateDDVolume();
 };
 
-// end of include only once
 #endif

@@ -156,9 +156,9 @@ class ECPElementClassList extends ElementClassProperty
 				return null
 			end
 			
-			var ElementClass elementClass = pElementClassList.getNamed(each)
+			var ElementClass eachEClass = pElementClassList.getNamed(each)
 			
-			if elementClass == null
+			if eachEClass == null
 				if pNotFoundElementClasses == null
 					pNotFoundElementClasses = Array.new()
 				end
@@ -166,8 +166,8 @@ class ECPElementClassList extends ElementClassProperty
 				return null
 			end
 			
-			pElementClasses.add(elementClass)
-			elementClass.preloadResources(counter)
+			pElementClasses.add(eachEClass)
+			eachEClass.preloadResources(counter)
 		end)
 	end
 	

@@ -254,7 +254,6 @@ class ECBehaviorCollider extends DefaultECBehavior
 		 * \param component Component to use or \em null if absent.
 		 */
 		protected func Collider createCollider(StubElement stub, ECBehaviorComponent.Instance component)
-			var BehaviorElement element = getElement()
 			var Collider collider
 			
 			if component != null

@@ -148,8 +148,7 @@ class ScrollPanel extends Panel
 		end
 		
 		if pContent != null
-			removeWidget(pContent)
-			pContent.dispose()
+			pContent.safeDispose()
 			pContent = null
 		end
 		

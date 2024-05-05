@@ -91,12 +91,17 @@ private:
 	DEF_NATFUNC( nfReadUShort );
 	DEF_NATFUNC( nfReadInt );
 	DEF_NATFUNC( nfReadUInt );
+	DEF_NATFUNC( nfReadVarUInt );
 	DEF_NATFUNC( nfReadFloat );
 	DEF_NATFUNC( nfReadString8 );
 	DEF_NATFUNC( nfReadString16 );
+	DEF_NATFUNC( nfReadString32 );
+	DEF_NATFUNC( nfReadVarString );
 	DEF_NATFUNC( nfReadString );
 	DEF_NATFUNC( nfSkipString8 );
 	DEF_NATFUNC( nfSkipString16 );
+	DEF_NATFUNC( nfSkipString32 );
+	DEF_NATFUNC( nfSkipVarString );
 	DEF_NATFUNC( nfReadTimeDate );
 #undef DEF_NATFUNC
 };

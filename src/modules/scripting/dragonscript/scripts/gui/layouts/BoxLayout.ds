@@ -110,7 +110,7 @@ class BoxLayout implements Layout
 		var bool negate = ( this.pAxis == LayoutAxis.inverseX or this.pAxis == LayoutAxis.inverseY )
 		var int cx = container.getPadding().getLeft()
 		var int cy = container.getPadding().getTop()
-		var int w, effSize, sizeGain, availCount
+		var int w, sizeGain, availCount
 		var Point childSize
 		var Widget child
 		

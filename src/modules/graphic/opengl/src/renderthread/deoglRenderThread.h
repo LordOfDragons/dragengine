@@ -148,18 +148,19 @@ private:
 	deSharedVulkan::Ref pVulkan;
 	devkDevice::Ref pVulkanDevice;
 	
-	decTimeHistory pTimeHistoryMain;
-	decTimeHistory pTimeHistoryRender;
-	decTimeHistory pTimeHistoryFrame;
-	decTimer pTimerMain;
-	decTimer pTimerRender;
-	decTimer pTimerFrameUpdate;
-	decTimer pTimerVRFrameUpdate;
-	float pLastFrameTime;
-	float pEstimatedRenderTime;
-	float pAccumulatedMainTime;
-	float pFrameTimeLimit;
-	int pFPSRate;
+	decTimeHistory pTimeHistoryMain; // main thread
+	decTimeHistory pTimeHistoryRender; // render thread
+	decTimeHistory pTimeHistoryFrame; // shared (main, render)
+	decTimer pTimerMain; // main thread
+	decTimer pTimerRender; // render thread
+	decTimer pTimerFrameUpdate; // render thread
+	decTimer pTimerVRFrameUpdate; // render thread
+	float pLastFrameTime; // render thread
+	float pEstimatedRenderTime; // shared (main, render)
+	float pAccumulatedMainTime; // main thread
+	float pFrameTimeLimit; // render thread
+	int pFPSRate; // main thread
+	deMutex pMutexShared;
 	
 	// debug information
 	deoglDebugInformation::Ref pDebugInfoModule;

@@ -3,9 +3,10 @@
 ![dragengine_logo](https://dragondreams.ch/wp-content/uploads/2020/03/banner_medium.png)
 
 - Website: https://dragondreams.ch/?page_id=152
+- Documentation (GitHub Pages): https://lordofdragons.github.io/dragengine
+- Development Wiki: https://developer.dragondreams.ch/wiki/doku.php
 - IndieDB Engine Profile: https://www.indiedb.com/engines/dragengine
 - GameDev Engine Profile: https://www.gamedev.net/manage/projects/356/
-- Development Wiki: https://developer.dragondreams.ch/wiki/doku.php
 - Source Code Repository: https://github.com/LordOfDragons/dragengine
 
 Example projects can be found on Development Wiki or in this repository:

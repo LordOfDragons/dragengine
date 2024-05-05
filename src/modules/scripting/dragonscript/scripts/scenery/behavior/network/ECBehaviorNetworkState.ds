@@ -1124,13 +1124,13 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 	
 	static public func bool createAndAddFromLinkRequest( Connection connection, \
 	NetworkState state, FileReader reader, GameWorld gameWorld, ElementClassList elementClassList )
-		var Instance instance = createFromLinkRequest( connection, state, reader, elementClassList )
+		var Instance inst = createFromLinkRequest( connection, state, reader, elementClassList )
 		try
-			gameWorld.addElement( instance.getElement() )
+			gameWorld.addElement( inst.getElement() )
 			return true
 			
 		catch Exception e
-			instance.getElement().safeDispose()
+			inst.getElement().safeDispose()
 		end
 		return false
 	end

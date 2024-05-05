@@ -341,6 +341,7 @@ class HeightTerrain
 	 * \throws EOutOfBoundary \em corner is less than 0 or greater than navspaceGetCornerCount().
 	 */
 	public func int navspaceGetCornerAt( int sector, int navspace, int corner )
+		return 0
 	end
 	
 	/**

@@ -74,7 +74,7 @@ class LoadStateMachine extends BaseXmlLoader
 				throw EInvalidParam.new()
 			end
 			
-			var StateMachine stateMachine = this.readStateMachine( root )
+			stateMachine = this.readStateMachine( root )
 			
 			this.pStateMachines.setAt( filename, stateMachine )
 			return stateMachine

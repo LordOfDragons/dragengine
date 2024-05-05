@@ -9,7 +9,7 @@ class GameAppTesting extends BaseGameAppTesting
 	/**
 	 * Create Application.
 	 */
-	public func new()
+	func new()
 	end
 	
 	

@@ -39,7 +39,7 @@ class decXmlElementTag;
  */
 class meConfigurationXML : public igdeBaseXML{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new configuration xml read/save. */
 	meConfigurationXML( deLogger *logger, const char *loggerSource );
@@ -47,7 +47,7 @@ public:
 	virtual ~meConfigurationXML();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Read from XML file. */
 	void ReadFromFile( decBaseFileReader &reader, meConfiguration &config );

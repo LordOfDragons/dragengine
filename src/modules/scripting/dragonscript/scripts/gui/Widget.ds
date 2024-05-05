@@ -190,7 +190,14 @@ class Widget
 	
 	
 	
-	/** Disposes of the widget cleaning references. */
+	/**
+	 * Disposes of the widget cleaning references.
+	 * 
+	 * \warning
+	 * This does not remove the widget from the parent container if present. Calling this
+	 * method while a widget is still inside a parent container will cause exceptions.
+	 * Use \ref #safeDispose() to safely dispose of a widget.
+	 */
 	func void dispose()
 		if pWidgetListeners == null
 			return // already disposed
@@ -227,7 +234,11 @@ class Widget
 	/**
 	 * \brief Safely dispose of widget.
 	 * 
-	 * If widget has parent removes the widget from the parent before calling dispose().
+	 * If widget has parent removes the widget from the parent before calling \ref #dispose().
+	 * 
+	 * \note
+	 * 
+	 * It is recommended to use \ref #safeDispose() instead of \ref #dispose() to be on the safe side.
 	 */
 	func void safeDispose()
 		if pParent != null

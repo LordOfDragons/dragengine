@@ -51,7 +51,7 @@ private:
 	int pVariation;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
 	meHTVRuleResult();
@@ -63,7 +63,7 @@ public:
 	virtual ~meHTVRuleResult();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Probability to use if there is no input probability. */
 	inline float GetProbability() const{ return pProbability; }

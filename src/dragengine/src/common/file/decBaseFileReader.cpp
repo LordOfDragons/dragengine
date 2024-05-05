@@ -114,6 +114,17 @@ uint64_t decBaseFileReader::ReadULong(){
 		| ( ( uint64_t )value[ 7 ] << 56 );
 }
 
+uint32_t decBaseFileReader::ReadVarUInt(){
+	const uint8_t byte1 = ReadByte();
+	const int length = byte1 >> 6;
+	uint32_t value = byte1 & 0x3f;
+	int i;
+	for( i=0; i<length; i++ ){
+		value = ( value << 8 ) | ReadByte();
+	}
+	return value;
+}
+
 float decBaseFileReader::ReadFloat(){
 	const uint32_t value = ReadUInt();
 	float realValue;
@@ -148,6 +159,30 @@ decString decBaseFileReader::ReadString16(){
 
 void decBaseFileReader::ReadString16Into( decString &string ){
 	const int len = ReadUShort();
+	string.Set( ' ', len );
+	Read( ( char* )string.GetString(), len );
+}
+
+decString decBaseFileReader::ReadString32(){
+	decString string;
+	ReadString32Into( string );
+	return string;
+}
+
+void decBaseFileReader::ReadString32Into( decString &string ){
+	const int len = ReadUInt();
+	string.Set( ' ', len );
+	Read( ( char* )string.GetString(), len );
+}
+
+decString decBaseFileReader::ReadVarString(){
+	decString string;
+	ReadVarStringInto( string );
+	return string;
+}
+
+void decBaseFileReader::ReadVarStringInto( decString &string ){
+	const int len = ReadVarUInt();
 	string.Set( ' ', len );
 	Read( ( char* )string.GetString(), len );
 }
@@ -283,6 +318,13 @@ void decBaseFileReader::SkipULong(){
 	MovePosition( 8 );
 }
 
+void decBaseFileReader::SkipVarUInt(){
+	const int length = ReadByte() >> 6;
+	if( length > 0 ){
+		MovePosition( length );
+	}
+}
+
 void decBaseFileReader::SkipFloat(){
 	MovePosition( 4 );
 }
@@ -298,6 +340,23 @@ void decBaseFileReader::SkipString8(){
 
 void decBaseFileReader::SkipString16(){
 	const int len = ReadUShort();
+	MovePosition( len );
+}
+
+void decBaseFileReader::SkipString32(){
+	const unsigned int len = ReadUInt();
+	
+	if( len < 2147483648 ){
+		MovePosition( ( int )len );
+		
+	}else{
+		MovePosition( ( int )( len & 0x7fffffff ) );
+		MovePosition( ( int )( len > 31 ) );
+	}
+}
+
+void decBaseFileReader::SkipVarString(){
+	const int len = ( int )ReadVarUInt();
 	MovePosition( len );
 }
 

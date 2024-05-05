@@ -71,7 +71,7 @@ private:
 	int pModifyHeight;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new listener. */
 	meCLMaskPaint( meWorld *world );
@@ -79,7 +79,7 @@ public:
 	virtual ~meCLMaskPaint();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Sets the texture. */
 	void SetTexture( meHeightTerrainSector *sector, meHeightTerrainTexture *texture );
@@ -99,7 +99,7 @@ public:
 	void EndSession();
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/**
 	 * Determines the response for a given collision. If you specified ertCustom

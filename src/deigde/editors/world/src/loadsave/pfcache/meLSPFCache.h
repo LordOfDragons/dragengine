@@ -44,7 +44,7 @@ private:
 	decString pPattern;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	meLSPFCache();
@@ -52,7 +52,7 @@ public:
 	~meLSPFCache();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
