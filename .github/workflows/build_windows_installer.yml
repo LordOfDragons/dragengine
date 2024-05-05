@@ -80,7 +80,7 @@ jobs:
           chmod 777 installer/windows/build
           
       - name: Build Installers
-        uses: addnab/docker-run-action@v4
+        uses: addnab/docker-run-action@v3
         with:
           image: amake/innosetup:latest
           options: -v ${{ github.workspace }}/installer/windows:/work
