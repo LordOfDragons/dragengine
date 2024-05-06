@@ -23,6 +23,17 @@ versionString = envAddon['version']
 if envAddon['force_version']:
         versionString = envAddon['force_version']
 
+versionParts = [int(x) for x in versionString.split('.')]
+if len(versionParts) < 3:
+	versionParts.append(0)
+else:
+	versionParts[2] = versionParts[2] + 1
+
+with open(envAddon.File('blender_manifest.toml.in').srcnode().abspath, 'r') as f:
+	content = f.read().replace('{VERSION}', '.'.join([str(x) for x in versionParts]))
+with open(envAddon.File('dragengine-import-export/blender_manifest.toml').srcnode().abspath, 'w') as f:
+	f.write(content)
+
 filename = '{}-{}.zip'.format(envAddon['addon_name_blender'], versionString)
 
 targetBuild = envAddon.Command(filename, files, envAddon.Action(archiveZip, 'Archiving $TARGET'))
