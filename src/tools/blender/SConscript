@@ -23,12 +23,23 @@ versionString = envAddon['version']
 if envAddon['force_version']:
         versionString = envAddon['force_version']
 
+# blender repository version has to be "X.Y.Z" whereas "X.Y" matches drag[en]gine
+# release version and Z starts at 0 incrementally updated with each release.
+# Z does not line up with potential drag[en]gine patch since blender repository
+# package can be released more often if required
 versionParts = [int(x) for x in versionString.split('.')]
 if len(versionParts) < 3:
 	versionParts.append(0)
-else:
-	versionParts[2] = versionParts[2] + 1
 
+# set custom patch version number. it is a bit annoying to handle this in the script
+# hence a version based custom value is used. the version check ensures the patch
+# version goes back to 0 if the drag[en]gine release version is bumped
+versionParts[2] = 0
+
+if versionParts[1] == 22:
+	versionParts[2] = 1
+
+# update manifest. done in source directly to avoid complicated copying
 with open(envAddon.File('blender_manifest.toml.in').srcnode().abspath, 'r') as f:
 	content = f.read().replace('{VERSION}', '.'.join([str(x) for x in versionParts]))
 with open(envAddon.File('dragengine-import-export/blender_manifest.toml').srcnode().abspath, 'w') as f:

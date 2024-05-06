@@ -25,8 +25,7 @@
 import bpy
 
 from .de_math import projectToPlane
-from .de_porting import registerClass, appendToMenu
-
+from .de_porting import registerClass, appendToMenu, matmul
 
 
 # Tool Transfer UV
@@ -37,71 +36,70 @@ class OBJECT_OT_ToolShapePropertyFromTexture(bpy.types.Operator):
     bl_label = "Shape property from texture"
     bl_options = {'REGISTER', 'UNDO'}
     __doc__ = """Set shape property string from nearest face material texture name"""
-    
-    
-    
+
     @classmethod
     def poll(cls, context):
         return context.active_object != None \
             and context.active_object.type == 'MESH'
-    
+
     def execute(self, context):
         # find reference object to map against
         refMesh = [x for x in context.selected_objects
-             if x.rigid_body or x.dragengine_physics == 'NONE']
+             if not x.rigid_body and x.dragengine_physics == 'NONE']
         if len(refMesh) != 1:
             self.report({'INFO', 'ERROR'}, "Select exactly one non-physics object to map physics objects against.")
-            return False
-        
+            return {'FINISHED'}
+
         refMesh = refMesh[0]
         rminvmat = refMesh.matrix_world.inverted()
         rmfaces = refMesh.data.polygons
         rmverts = refMesh.data.vertices
         rmloops = refMesh.data.loops
-        
+
         # process physics objects
         for obj in context.selected_objects:
             # operate only on physics objects. this skips the reference object
-            if obj.rigid_body or obj.dragengine_physics == 'NONE':
+            if not obj.rigid_body and obj.dragengine_physics == 'NONE':
                 continue
-            
+
             # calculate position relative to reference mesh object
-            searchPos = (rminvmat * obj.matrix_world).to_translation()
-            
+            searchPos = matmul(rminvmat, obj.matrix_world).to_translation()
+
             # find closes face in parent object
             closestFace = None
             closestDistance = 0.0
-            
+
             for face in rmfaces:
                 faceNormal = face.normal
-                
+
                 # project point to face
                 facePos = projectToPlane(searchPos, faceNormal, face.center)
-                
+
                 cornerPosLast = rmverts[rmloops[face.loop_start + face.loop_total - 1].vertex_index].co
                 for corner in range(face.loop_total):
                     cornerPosNext = rmverts[rmloops[face.loop_start + corner].vertex_index].co
                     testNormal = faceNormal.cross(cornerPosNext - cornerPosLast).normalized()
                     distance = (facePos - cornerPosLast).dot(testNormal)
-                    if distance < 0.0:
+                    if distance < 0:
                         facePos = facePos - testNormal * distance
                     cornerPosLast = cornerPosNext
-                
+
                 # face wins if the distance to the closest point is closer than anything found so far.
                 # for speed reason we use only distance squared since this works too
                 distance = (facePos - searchPos).length_squared
                 if not closestFace or distance < closestDistance:
                     closestFace = face
                     closestDistance = distance
-            
+
             # get texture name of face
             material = refMesh.data.materials[closestFace.material_index]
             name = material.dragengine_exportname
             if not name:
                 name = material.name
             obj.dragengine_shapeproperty = name
-        
+
         return {'FINISHED'}
+
 
 registerClass(OBJECT_OT_ToolShapePropertyFromTexture)
 appendToMenu(bpy.types.VIEW3D_MT_object_relations,
