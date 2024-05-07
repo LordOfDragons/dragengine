@@ -28,7 +28,7 @@ if envAddon['force_version']:
 # Z does not line up with potential drag[en]gine patch since blender repository
 # package can be released more often if required
 versionParts = [int(x) for x in versionString.split('.')]
-if len(versionParts) < 3:
+while len(versionParts) < 3:
 	versionParts.append(0)
 
 # set custom patch version number. it is a bit annoying to handle this in the script
