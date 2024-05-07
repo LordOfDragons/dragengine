@@ -42,8 +42,10 @@ class OBJECT_OT_DEToolRounding( bpy.types.Operator ):
     
     @classmethod
     def poll( cls, context ):
-        return context.active_object != None \
-            and context.active_object.type == 'MESH'
+        # NOTE: operator is not working if shape keys are present.
+        #       reason for this is unknown and needs deeper investigation
+        o = context.active_object
+        return o is not None and o.type == 'MESH' and not o.data.shape_keys
     
     def execute( self, context ):
         editmode = ( bpy.context.mode == 'EDIT_MESH' )
