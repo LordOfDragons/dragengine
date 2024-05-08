@@ -180,6 +180,9 @@ void deModuleSystem::DetectModules(){
 		logger.LogInfoFormat( LOGSOURCE, "Loading Occlusion Mesh modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "occlusionmesh", emtOcclusionMesh );
 		
+		logger.LogInfoFormat( LOGSOURCE, "Loading Service modules" );
+		pDetectModulesIn( searchPath.GetPathNative(), "service", emtService );
+		
 		logger.LogInfoFormat( LOGSOURCE, "Finished loading modules" );
 		
 	}catch( const deException &e ){
@@ -577,6 +580,9 @@ deModuleSystem::eModuleTypes deModuleSystem::GetTypeFromString( const char *type
 	}else if( strcmp( typeString, "VR" ) == 0 ){
 		return emtVR;
 		
+	}else if( strcmp( typeString, "Service" ) == 0 ){
+		return emtService;
+		
 	}else{
 		return emtUnknown;
 	}
@@ -649,6 +655,9 @@ const char *deModuleSystem::GetTypeDirectory( eModuleTypes type ){
 		
 	case emtVR:
 		return "vr";
+		
+	case emtService:
+		return "service";
 		
 	default:
 		DETHROW( deeInvalidParam );

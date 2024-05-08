@@ -22,37 +22,44 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _DEBASESERVICEMODULE_H_
+#define _DEBASESERVICEMODULE_H_
 
-#include "deBaseScriptingModule.h"
-#include "deBaseScriptingService.h"
-#include "../../../deEngine.h"
+#include "../deBaseModule.h"
+#include "../../../common/string/decStringSet.h"
 
-
-
-// Class deBaseScriptingModule
-////////////////////////////////
-
-deBaseScriptingModule::deBaseScriptingModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
-}
-
-deBaseScriptingModule::~deBaseScriptingModule(){
-}
+class deBaseServiceService;
 
 
+/**
+ * \brief Base service module providing platform or community services.
+ * \version 1.23
+ */
+class DE_DLL_EXPORT deBaseServiceModule : public deBaseModule{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create module. */
+	deBaseServiceModule( deLoadableModule &loadableModule );
+	
+	/** \brief Clean up module. */
+	virtual ~deBaseServiceModule();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set of supported service names. */
+	virtual decStringSet GetSupportedServices() = 0;
+	
+	/**
+	 * \brief Create service peer.
+	 * 
+	 * If service name is not supported nullptr is returned.
+	 */
+	virtual deBaseServiceService *CreateService( const char *name ) = 0;
+	/*@}*/
+};
 
-// Management
-///////////////
-
-void deBaseScriptingModule::UserRequestQuit(){
-	GetGameEngine()->Quit();
-}
-
-bool deBaseScriptingModule::OnAppActivate(){
-	return true;
-}
-
-deBaseScriptingService *deBaseScriptingModule::CreateService( deService* ){
-	return new deBaseScriptingService;
-}
+#endif

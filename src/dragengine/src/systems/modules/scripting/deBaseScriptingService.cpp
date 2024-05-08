@@ -22,37 +22,36 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
-#include "deBaseScriptingModule.h"
 #include "deBaseScriptingService.h"
-#include "../../../deEngine.h"
+
+#include "../../../resources/service/deServiceObject.h"
 
 
+// Class deBaseScriptingService
+/////////////////////////////////
 
-// Class deBaseScriptingModule
-////////////////////////////////
-
-deBaseScriptingModule::deBaseScriptingModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseScriptingService::deBaseScriptingService(){
 }
 
-deBaseScriptingModule::~deBaseScriptingModule(){
+deBaseScriptingService::~deBaseScriptingService(){
 }
 
 
 
-// Management
-///////////////
+// Notifications
+//////////////////
 
-void deBaseScriptingModule::UserRequestQuit(){
-	GetGameEngine()->Quit();
+void deBaseScriptingService::RequestResponse( const decUniqueID &, deServiceObject *response, bool ){
+	DEASSERT_NOTNULL( response )
+	response->FreeReference();
 }
 
-bool deBaseScriptingModule::OnAppActivate(){
-	return true;
+void deBaseScriptingService::RequestFailed( const decUniqueID &, deServiceObject *error ){
+	DEASSERT_NOTNULL( error )
+	error->FreeReference();
 }
 
-deBaseScriptingService *deBaseScriptingModule::CreateService( deService* ){
-	return new deBaseScriptingService;
+void deBaseScriptingService::EventReceived( deServiceObject *event ){
+	DEASSERT_NOTNULL( event )
+	event->FreeReference();
 }

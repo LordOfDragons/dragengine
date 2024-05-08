@@ -22,37 +22,14 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
-#include "deBaseScriptingModule.h"
-#include "deBaseScriptingService.h"
-#include "../../../deEngine.h"
+#include "deBaseServiceService.h"
 
 
+// Class deBaseServiceService
+///////////////////////////////
 
-// Class deBaseScriptingModule
-////////////////////////////////
-
-deBaseScriptingModule::deBaseScriptingModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseServiceService::deBaseServiceService(){
 }
 
-deBaseScriptingModule::~deBaseScriptingModule(){
-}
-
-
-
-// Management
-///////////////
-
-void deBaseScriptingModule::UserRequestQuit(){
-	GetGameEngine()->Quit();
-}
-
-bool deBaseScriptingModule::OnAppActivate(){
-	return true;
-}
-
-deBaseScriptingService *deBaseScriptingModule::CreateService( deService* ){
-	return new deBaseScriptingService;
+deBaseServiceService::~deBaseServiceService(){
 }

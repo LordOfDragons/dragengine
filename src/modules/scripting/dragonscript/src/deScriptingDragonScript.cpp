@@ -190,6 +190,8 @@
 #include "classes/sound/deClassSoundLevelMeterSpeaker.h"
 #include "classes/sound/deClassSoundLevelMeterListener.h"
 
+#include "classes/service/deClassServiceObject.h"
+
 #include "classes/sky/deClassSky.h"
 #include "classes/sky/deClassSkyBody.h"
 #include "classes/sky/deClassSkyController.h"
@@ -469,6 +471,7 @@ pClsRTM( nullptr ),
 pClsSvrL( nullptr ),
 pClsSA( nullptr ),
 pClsShaList( nullptr ),
+pClsServiceObject( nullptr ),
 pClsSvr( nullptr ),
 pClsSkin( nullptr ),
 pClsSkinBuilder( nullptr ),
@@ -1335,6 +1338,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsCanvasView = new deClassCanvasView( *this ) );
 		package->AddHostClass( pClsCapCan = new deClassCaptureCanvas( *this ) );
 		package->AddHostClass( pClsCache = new deClassCache( *this ) );
+		package->AddHostClass( pClsServiceObject = new deClassServiceObject( *this ) );
 		package->AddHostClass( pClsSky = new deClassSky( *this ) );
 		package->AddHostClass( pClsSkyBody = new deClassSkyBody( *this ) );
 		package->AddHostClass( pClsSkyCtrl = new deClassSkyController( *this ) );

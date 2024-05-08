@@ -35,11 +35,12 @@
 #include "../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/app/deOS.h>
 #include <dragengine/errortracing/deErrorTrace.h>
 #include <dragengine/errortracing/deErrorTracePoint.h>
 #include <dragengine/errortracing/deErrorTraceValue.h>
-#include <dragengine/app/deOS.h>
+#include <dragengine/resources/service/deServiceManager.h>
+#include <dragengine/systems/deScriptingSystem.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/dsMemoryManager.h>
@@ -409,6 +410,41 @@ void deClassEngine::nfGetUserLocaleTerritory::RunFunction( dsRunTime *rt, dsValu
 
 
 
+// static public func Set getSupportedServices()
+deClassEngine::nfGetSupportedServices::nfGetSupportedServices( const sInitData &init ) :
+dsFunction( init.clsEngine, "getSupportedServices", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsSet ){
+}
+void deClassEngine::nfGetSupportedServices::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const decStringSet names( ds.GetGameEngine()->GetServiceManager()->GetAllSupportedSerices() );
+	const dsEngine &sengine = *ds.GetScriptEngine();
+	const int count = names.GetCount();
+	int i;
+	
+	dsValue * const valueNames = rt->CreateValue( sengine.GetClassSet() );
+	
+	try{
+		rt->CreateObject( valueNames, sengine.GetClassSet(), 0 );
+		
+		for( i=0; i<count; i++ ){
+			rt->PushString( names.GetAt( i ) );
+			rt->RunFunction( valueNames, "add", 1 );
+		}
+		
+		rt->PushValue( valueNames );
+		rt->FreeValue( valueNames );
+		
+	}catch( ... ){
+		if( valueNames ){
+			rt->FreeValue( valueNames );
+		}
+		throw;
+	}
+}
+
+
+
 // Class deClassEngine
 ////////////////////////
 
@@ -444,6 +480,7 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	init.clsFloat = engine->GetClassFloat();
 	init.clsBoolean = engine->GetClassBool();
 	init.clsString = engine->GetClassString();
+	init.clsSet = engine->GetClassSet();
 	init.clsDictionary = engine->GetClassDictionary();
 	init.clsWindow = engine->GetClass( DECN_WINDOW );
 	init.clsGame = pDS.GetClassGame();
@@ -480,6 +517,8 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction( new nfGetUserLocaleLanguage( init ) );
 	AddFunction( new nfGetUserLocaleTerritory( init ) );
+	
+	AddFunction( new nfGetSupportedServices( init ) );
 
 	// calculate member offsets
 	CalcMemberOffsets();

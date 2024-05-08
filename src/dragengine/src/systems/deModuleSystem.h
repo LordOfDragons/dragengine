@@ -119,10 +119,16 @@ public:
 		emtArchive,
 		
 		/**
-		 * \brief VR system module.
+		 * \brief VR module.
 		 * \version 1.6
 		 */
-		emtVR
+		emtVR,
+		
+		/**
+		 * \brief Service module.
+		 * \version 1.23
+		 */
+		emtService
 	};
 	
 	

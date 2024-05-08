@@ -82,6 +82,7 @@ class deResourceManager;
 class deRigManager;
 class deScriptingSystem;
 class deServerManager;
+class deServiceManager;
 class deSkinManager;
 class deSkyManager;
 class deSkyInstanceManager;
@@ -151,6 +152,7 @@ private:
 	
 	// resource managers
 	deResourceManager **pResMgrs;
+	deServiceManager *pServiceManager;
 	
 	// files
 	decString pPathData; // the path to the data files
@@ -330,6 +332,9 @@ public:
 	deVideoManager *GetVideoManager() const;
 	deVideoPlayerManager *GetVideoPlayerManager() const;
 	deWorldManager *GetWorldManager() const;
+	
+	/** \brief Service manager. */
+	inline deServiceManager *GetServiceManager() const{ return pServiceManager; }
 	
 	/** \brief Parallel processing. */
 	inline deParallelProcessing &GetParallelProcessing(){ return *pParallelProcessing; }

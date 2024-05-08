@@ -82,6 +82,7 @@ private:
 		dsClass *clsFloat;
 		dsClass *clsString;
 		dsClass *clsBoolean;
+		dsClass *clsSet;
 		dsClass *clsDictionary;
 		
 		dsClass *clsWindow;
@@ -125,6 +126,8 @@ private:
 	
 	DEF_NATFUNC( nfGetUserLocaleLanguage );
 	DEF_NATFUNC( nfGetUserLocaleTerritory );
+	
+	DEF_NATFUNC( nfGetSupportedServices );
 #undef DEF_NATFUNC
 };
 

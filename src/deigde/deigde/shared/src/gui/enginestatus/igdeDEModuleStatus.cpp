@@ -267,6 +267,10 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 		pEditType->SetText( "VR" );
 		break;
 		
+	case deModuleSystem::emtService:
+		pEditType->SetText( "Service" );
+		break;
+		
 	default:
 		pEditType->SetText( "Unknown Type" );
 	}

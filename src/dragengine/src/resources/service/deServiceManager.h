@@ -22,37 +22,49 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _DESERVICEMANAGER_H_
+#define _DESERVICEMANAGER_H_ 
 
-#include "deBaseScriptingModule.h"
-#include "deBaseScriptingService.h"
-#include "../../../deEngine.h"
+#include "deService.h"
+#include "../../common/string/decStringSet.h"
 
-
-
-// Class deBaseScriptingModule
-////////////////////////////////
-
-deBaseScriptingModule::deBaseScriptingModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
-}
-
-deBaseScriptingModule::~deBaseScriptingModule(){
-}
+class deEngine;
 
 
+/**
+ * \brief Service Manager.
+ */
+class DE_DLL_EXPORT deServiceManager{
+private:
+	deEngine &pEngine;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create service manager linked to the given engine. */
+	deServiceManager( deEngine &engine );
+	
+	/** \brief Clean up service manager. */
+	~deServiceManager();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief List of all service names supported by all service modules.
+	 */
+	decStringSet GetAllSupportedSerices() const;
+	
+	/**
+	 * \brief Create named service.
+	 * \throw deeInvalidParam Named service not supported by any loaded service module.
+	 */
+	deService::Ref CreateService( const char *name );
+	/*@}*/
+};
 
-// Management
-///////////////
-
-void deBaseScriptingModule::UserRequestQuit(){
-	GetGameEngine()->Quit();
-}
-
-bool deBaseScriptingModule::OnAppActivate(){
-	return true;
-}
-
-deBaseScriptingService *deBaseScriptingModule::CreateService( deService* ){
-	return new deBaseScriptingService;
-}
+#endif

@@ -41,6 +41,7 @@ class dePropField;
 class deParticleEmitterInstance;
 class deSoundLevelMeter;
 class deSpeaker;
+class deService;
 
 
 /**
@@ -187,6 +188,9 @@ public:
 	
 	/** \brief Create deSpeaker peer using active module and assigns it. */
 	void LoadSpeaker( deSpeaker *speaker );
+	
+	/** \brief Create deService peer using active module and assigns it. */
+	void CreateService( deService *service );
 	/*@}*/
 	
 	

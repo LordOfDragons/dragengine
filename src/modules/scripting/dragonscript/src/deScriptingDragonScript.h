@@ -214,6 +214,7 @@ class deClassVideo;
 class deClassVideoPlayer;
 class deClassVRSystem;
 class deClassWorld;
+class deClassServiceObject;
 
 class deCollisionInfo;
 class dedsColliderListenerClosest;
@@ -401,6 +402,7 @@ private:
 	deClassSafeArray *pClsSA;
 	deClassScriptSystem *pClsScrSys;
 	deClassShapeList *pClsShaList;
+	deClassServiceObject *pClsServiceObject;
 	deClassServer *pClsSvr;
 	deClassSkin *pClsSkin;
 	deClassSkinBuilder *pClsSkinBuilder;
@@ -724,6 +726,7 @@ public:
 	inline deClassServer *GetClassServer() const{ return pClsSvr; }
 	inline deClassServerListener *GetClassServerListener() const{ return pClsSvrL; }
 	inline deClassShapeList *GetClassShapeList() const{ return pClsShaList; }
+	inline deClassServiceObject *GetClassServiceObject() const{ return pClsServiceObject; }
 	inline deClassSkin *GetClassSkin() const{ return pClsSkin; }
 	inline deClassSkinBuilder *GetClassSkinBuilder() const{ return pClsSkinBuilder; }
 	inline deClassSky *GetClassSky() const{ return pClsSky; }

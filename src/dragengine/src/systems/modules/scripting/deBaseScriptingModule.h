@@ -38,6 +38,7 @@ class deBaseScriptingServer;
 class deBaseScriptingSpeaker;
 class deBaseScriptingSoundLevelMeter;
 class deBaseScriptingTouchSensor;
+class deBaseScriptingService;
 class deCollider;
 class deComponent;
 class deConnection;
@@ -49,6 +50,7 @@ class deServer;
 class deSoundLevelMeter;
 class deSpeaker;
 class deTouchSensor;
+class deService;
 
 
 /**
@@ -136,6 +138,12 @@ public:
 	
 	/** \brief Create deSpeaker peer. */
 	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker ) = 0;
+	
+	/**
+	 * \brief Create deService peer.
+	 * \version 1.23
+	 */
+	virtual deBaseScriptingService *CreateService( deService *service );
 	
 	/**
 	 * \brief Initialize game scripts.

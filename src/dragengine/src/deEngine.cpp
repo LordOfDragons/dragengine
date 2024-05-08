@@ -88,6 +88,7 @@
 #include "resources/sensor/deLumimeterManager.h"
 #include "resources/sensor/deTouchSensorManager.h"
 #include "resources/sensor/deSoundLevelMeterManager.h"
+#include "resources/service/deServiceManager.h"
 #include "resources/smoke/deSmokeEmitterManager.h"
 #include "resources/sound/deMicrophoneManager.h"
 #include "resources/sound/deSoundManager.h"
@@ -289,6 +290,7 @@ pSystems( nullptr ),
 pParallelProcessing( nullptr ),
 pResLoader( nullptr ),
 pResMgrs( nullptr ),
+pServiceManager( nullptr ),
 
 pVFS( nullptr ),
 
@@ -1162,6 +1164,9 @@ void deEngine::pInitResourceManagers(){
 	RESMGRSANCHECK( ermVideoPlayers, ertVideoPlayer );
 	RESMGRSANCHECK( ermWorlds, ertWorld );
 	
+	// create service manager
+	pServiceManager = new deServiceManager( *this );
+	
 	// create resource loader
 	pResLoader = new deResourceLoader( *this );
 }
@@ -1189,6 +1194,11 @@ void deEngine::pCleanUp(){
 	}
 	
 	// free resource managers
+	if( pServiceManager ){
+		delete pServiceManager;
+		pServiceManager = nullptr;
+	}
+	
 	int i;
 	if( pResMgrs ){
 		pLogger->LogInfoFormat( LOGGING_NAME, "Free Resource Managers" );
