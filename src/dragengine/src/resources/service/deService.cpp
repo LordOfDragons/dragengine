@@ -23,6 +23,7 @@
  */
 
 #include "deService.h"
+#include "deServiceObject.h"
 #include "../../common/exceptions.h"
 #include "../../systems/modules/service/deBaseServiceService.h"
 #include "../../systems/modules/scripting/deBaseScriptingService.h"
@@ -56,8 +57,7 @@ deService::~deService(){
 // Management
 ///////////////
 
-void deService::StartRequest( const decUniqueID &id, const deServiceObject::Ref &request ){
-	DEASSERT_NOTNULL( request )
+void deService::StartRequest( const decUniqueID &id, const deServiceObject &request ){
 	DEASSERT_NOTNULL( pPeerService )
 	
 	pPeerService->StartRequest( id, request );

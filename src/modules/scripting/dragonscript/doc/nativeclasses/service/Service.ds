@@ -1,0 +1,73 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Gui
+
+/**
+ * \brief Service.
+ * \version 1.23
+ * 
+ * Services provide various platform or community functionality not handled by other modules.
+ * Such services are typically queried infrequently and take a certain time time complete.
+ * For this reason service request are asynchronous. Data is carried in a generic
+ * deServiceObject object. Users have to know the interface of the service. There is no
+ * support to query interface structure unless a service desires to provide these using
+ * a special service query.
+ * 
+ * Each service has a unique name across the entire game engine instance. If the name of
+ * services of different service modules collide it is undefined which service the user
+ * receives.
+ * 
+ * This is a native class.
+ */
+class Service
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create named service.
+	 * \throw EInvalidParam Named service not supported by any loaded service module.
+	 */
+	func new(String name)
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Get listener or null. */
+	func ServiceListener getListener()
+	end
+	
+	/** \brief Set listener or null. */
+	func void setListener(ServiceListener listener)
+	end
+	
+	
+	
+	/**
+	 * \brief Start service request.
+	 * 
+	 * Script module peer is called with the received answer. Depending on the service the
+	 * answer can be received continuously or as individual responses or in smaller chunks.
+	 * The script module has to use a unique id for each request. The same id is returned
+	 * in responses to allow matching them to requests. The id can also be used to cancel
+	 * a request at any time.
+	 */
+	func void startRequest(UniqueID id, ServiceObject request)
+	end
+	
+	/**
+	 * \brief Cancel service request if running.
+	 */
+	func void cancelRequest(UniqueID id)
+	end
+	/*@}*/
+end

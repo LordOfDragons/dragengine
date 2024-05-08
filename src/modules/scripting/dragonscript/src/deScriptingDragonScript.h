@@ -214,6 +214,8 @@ class deClassVideo;
 class deClassVideoPlayer;
 class deClassVRSystem;
 class deClassWorld;
+class deClassService;
+class deClassServiceListener;
 class deClassServiceObject;
 
 class deCollisionInfo;
@@ -402,6 +404,8 @@ private:
 	deClassSafeArray *pClsSA;
 	deClassScriptSystem *pClsScrSys;
 	deClassShapeList *pClsShaList;
+	deClassService *pClsService;
+	deClassServiceListener *pClsServiceListener;
 	deClassServiceObject *pClsServiceObject;
 	deClassServer *pClsSvr;
 	deClassSkin *pClsSkin;
@@ -519,6 +523,12 @@ public:
 	
 	/** \brief Create deSpeaker peer. */
 	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker );
+	
+	/**
+	 * \brief Create deService peer.
+	 * \version 1.23
+	 */
+	virtual deBaseScriptingService *CreateService( deService *service );
 	
 	/**
 	 * Initializes the game scripts. This usually involves creating the
@@ -726,6 +736,8 @@ public:
 	inline deClassServer *GetClassServer() const{ return pClsSvr; }
 	inline deClassServerListener *GetClassServerListener() const{ return pClsSvrL; }
 	inline deClassShapeList *GetClassShapeList() const{ return pClsShaList; }
+	inline deClassService *GetClassService() const{ return pClsService; }
+	inline deClassServiceListener *GetClassServiceListener() const{ return pClsServiceListener; }
 	inline deClassServiceObject *GetClassServiceObject() const{ return pClsServiceObject; }
 	inline deClassSkin *GetClassSkin() const{ return pClsSkin; }
 	inline deClassSkinBuilder *GetClassSkinBuilder() const{ return pClsSkinBuilder; }

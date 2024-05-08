@@ -14,11 +14,7 @@
  * copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT L	 * If finished is true the request finished with this response otherwise more responses
-	 * will be delivered. By returning false the request can be cancelled. The script module
-	 * receives ownership of the response object reference. The default implementation releases
-	 * the object reference. Id is a unique identifier used to start the matching request.
-IMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
@@ -29,7 +25,7 @@ IMITED TO THE WARRANTIES OF MERCHANTABILITY,
 #ifndef _DESERVICE_H_
 #define _DESERVICE_H_
 
-#include "deServiceObject.h"
+#include "../../deObject.h"
 
 class deBaseServiceModule;
 class deServiceObject;
@@ -106,7 +102,7 @@ public:
 	 * in responses to allow matching them to requests. The id can also be used to cancel
 	 * a request at any time.
 	 */
-	void StartRequest( const decUniqueID &id, const deServiceObject::Ref &request );
+	void StartRequest( const decUniqueID &id, const deServiceObject &request );
 	
 	/**
 	 * \brief Cancel service request if running.

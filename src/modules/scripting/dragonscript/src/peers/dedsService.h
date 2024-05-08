@@ -22,33 +22,58 @@
  * SOFTWARE.
  */
 
-#ifndef _DEBASESCRIPTINGSERVICE_H_
-#define _DEBASESCRIPTINGSERVICE_H_
+#ifndef _DEDSSERVICE_H_
+#define _DEDSSERVICE_H_
 
-#include "../../../dragengine_export.h"
+#include <dragengine/systems/modules/scripting/deBaseScriptingService.h>
 
-class deServiceObject;
-class decUniqueID;
+class deScriptingDragonScript;
+class dsValue;
+class dsRealObject;
+class deService;
 
 
 /**
- * \brief Scripting Module Service Peer.
+ * \brief Service peer.
  */
-class DE_DLL_EXPORT deBaseScriptingService{
+class dedsService : public deBaseScriptingService{
+private:
+	deScriptingDragonScript &pDS;
+	deService *pService;
+	
+	dsValue *pValOwner;
+	
+	dsValue *pValCB;
+	bool pHasCB;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new peer. */
-	deBaseScriptingService();
+	/** \brief Create peer. */
+	dedsService( deScriptingDragonScript &ds, deService *service );
 	
 	/** \brief Clean up peer. */
-	virtual ~deBaseScriptingService();
+	~dedsService() override;
 	/*@}*/
 	
 	
 	
-	/** \name Notifications */
+	/** \name Management */
 	/*@{*/
+	/** \brief Owner object or nullptr. */
+	dsRealObject *GetOwner() const;
+	
+	/** \brief Set owner object or nullptr. */
+	void SetOwner( dsRealObject *object );
+	
+	/** \brief Callback object or nullptr. */
+	dsRealObject *GetCallback() const;
+	
+	/** \brief Set callback object or nullptr. */
+	void SetCallback( dsRealObject *object );
+	
+	
+	
 	/**
 	 * \brief Response received for request.
 	 * 
@@ -59,7 +84,7 @@ public:
 	 * 
 	 * \warning This call is usually not called from the main thread.
 	 */
-	virtual void RequestResponse( const decUniqueID &id, deServiceObject *response, bool finished );
+	void RequestResponse( const decUniqueID &id, deServiceObject *response, bool finished ) override;
 	
 	/**
 	 * \brief Response received for request.
@@ -70,7 +95,7 @@ public:
 	 * 
 	 * \warning This call is usually not called from the main thread.
 	 */
-	virtual void RequestFailed( const decUniqueID &id, deServiceObject *error );
+	void RequestFailed( const decUniqueID &id, deServiceObject *error ) override;
 	
 	/**
 	 * \brief Service event received.
@@ -80,7 +105,7 @@ public:
 	 * 
 	 * \warning This call is usually not called from the main thread.
 	 */
-	virtual void EventReceived( deServiceObject *event );
+	void EventReceived( deServiceObject *event ) override;
 	/*@}*/
 };
 

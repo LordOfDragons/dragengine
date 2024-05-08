@@ -1,0 +1,44 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Gui
+
+/**
+ * \brief Service listener.
+ * \version 1.23
+ * 
+ * This is a native class.
+ */
+interface ServiceListener
+	/**
+	 * \brief Response received for request.
+	 * 
+	 * If finished is true the request finished with this response otherwise more responses
+	 * will be delivered. By returning false the request can be cancelled. The script module
+	 * receives ownership of the response object reference. Id is a unique identifier used
+	 * to start the matching request.
+	 */
+	func void requestResponse(UniqueID id, ServiceObject response, bool finished)
+	
+	/**
+	 * \brief Response received for request.
+	 * 
+	 * The script module receives ownership of the error object reference. Id is a unique
+	 * identifier used to start the matching request.
+	 */
+	func void requestFailed(UniqueID id, ServiceObject error)
+	
+	/**
+	 * \brief Service event received.
+	 * 
+	 * The script module receives ownership of the event object reference.
+	 */
+	func void eventReceived(ServiceObject event)
+end

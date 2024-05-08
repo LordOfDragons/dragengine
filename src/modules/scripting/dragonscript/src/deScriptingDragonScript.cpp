@@ -38,6 +38,7 @@
 #include "peers/dedsParticleEmitter.h"
 #include "peers/dedsSpeaker.h"
 #include "peers/dedsSoundLevelMeter.h"
+#include "peers/dedsService.h"
 #include "deScriptSource.h"
 #include "deClassPathes.h"
 
@@ -190,6 +191,8 @@
 #include "classes/sound/deClassSoundLevelMeterSpeaker.h"
 #include "classes/sound/deClassSoundLevelMeterListener.h"
 
+#include "classes/service/deClassService.h"
+#include "classes/service/deClassServiceListener.h"
 #include "classes/service/deClassServiceObject.h"
 
 #include "classes/sky/deClassSky.h"
@@ -471,6 +474,8 @@ pClsRTM( nullptr ),
 pClsSvrL( nullptr ),
 pClsSA( nullptr ),
 pClsShaList( nullptr ),
+pClsService( nullptr ),
+pClsServiceListener( nullptr ),
 pClsServiceObject( nullptr ),
 pClsSvr( nullptr ),
 pClsSkin( nullptr ),
@@ -822,6 +827,10 @@ deBaseScriptingSoundLevelMeter *deScriptingDragonScript::CreateSoundLevelMeter( 
 
 deBaseScriptingSpeaker *deScriptingDragonScript::CreateSpeaker( deSpeaker *speaker ){
 	return new dedsSpeaker( *this, speaker );
+}
+
+deBaseScriptingService *deScriptingDragonScript::CreateService( deService *service ){
+	return new dedsService( *this, service );
 }
 
 bool deScriptingDragonScript::InitGame(){
@@ -1338,6 +1347,8 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsCanvasView = new deClassCanvasView( *this ) );
 		package->AddHostClass( pClsCapCan = new deClassCaptureCanvas( *this ) );
 		package->AddHostClass( pClsCache = new deClassCache( *this ) );
+		package->AddHostClass( pClsService = new deClassService( *this ) );
+		package->AddHostClass( pClsServiceListener = new deClassServiceListener( *this ) );
 		package->AddHostClass( pClsServiceObject = new deClassServiceObject( *this ) );
 		package->AddHostClass( pClsSky = new deClassSky( *this ) );
 		package->AddHostClass( pClsSkyBody = new deClassSkyBody( *this ) );

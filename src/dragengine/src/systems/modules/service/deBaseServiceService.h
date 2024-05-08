@@ -27,9 +27,8 @@
 
 #include "../deBaseModule.h"
 
-#include "../../../resources/service/deServiceObject.h"
-
 class decUniqueID;
+class deServiceObject;
 
 
 /**
@@ -70,7 +69,7 @@ public:
 	 * in responses to allow matching them to requests. The id can also be used to cancel
 	 * a request at any time.
 	 */
-	virtual void StartRequest( const decUniqueID &id, const deServiceObject::Ref &request ) = 0;
+	virtual void StartRequest( const decUniqueID &id, const deServiceObject &request ) = 0;
 	
 	/**
 	 * \brief Cancel service request if running.

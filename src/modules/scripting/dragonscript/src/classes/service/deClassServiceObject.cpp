@@ -31,7 +31,6 @@
 #include "../../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
 #include <libdscript/exceptions.h>
