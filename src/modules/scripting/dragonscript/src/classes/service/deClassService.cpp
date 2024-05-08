@@ -34,9 +34,9 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
-#include <dragengine/resources/service/deService.h>
-#include <dragengine/resources/service/deServiceObject.h>
-#include <dragengine/resources/service/deServiceManager.h>
+#include <dragengine/service/deService.h>
+#include <dragengine/service/deServiceObject.h>
+#include <dragengine/service/deServiceManager.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>

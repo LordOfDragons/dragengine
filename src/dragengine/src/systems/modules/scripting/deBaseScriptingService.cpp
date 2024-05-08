@@ -24,8 +24,6 @@
 
 #include "deBaseScriptingService.h"
 
-#include "../../../resources/service/deServiceObject.h"
-
 
 // Class deBaseScriptingService
 /////////////////////////////////
@@ -41,17 +39,12 @@ deBaseScriptingService::~deBaseScriptingService(){
 // Notifications
 //////////////////
 
-void deBaseScriptingService::RequestResponse( const decUniqueID &, deServiceObject *response, bool ){
-	DEASSERT_NOTNULL( response )
-	response->FreeReference();
+void deBaseScriptingService::RequestResponse(
+const decUniqueID &, const deServiceObject::Ref &, bool ){
 }
 
-void deBaseScriptingService::RequestFailed( const decUniqueID &, deServiceObject *error ){
-	DEASSERT_NOTNULL( error )
-	error->FreeReference();
+void deBaseScriptingService::RequestFailed( const decUniqueID &, const deServiceObject::Ref & ){
 }
 
-void deBaseScriptingService::EventReceived( deServiceObject *event ){
-	DEASSERT_NOTNULL( event )
-	event->FreeReference();
+void deBaseScriptingService::EventReceived( const deServiceObject::Ref & ){
 }

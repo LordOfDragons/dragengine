@@ -22,53 +22,69 @@
  * SOFTWARE.
  */
 
-#ifndef _DEBASESCRIPTINGSERVICE_H_
-#define _DEBASESCRIPTINGSERVICE_H_
+#ifndef _DESERVICEMANAGER_H_
+#define _DESERVICEMANAGER_H_ 
 
-#include "../../../dragengine_export.h"
-#include "../../../service/deServiceObject.h"
+#include "deService.h"
+#include "deServiceEvent.h"
+#include "../common/collection/decObjectList.h"
+#include "../common/string/decStringSet.h"
+#include "../threading/deMutex.h"
 
-class decUniqueID;
+class deEngine;
 
 
 /**
- * \brief Scripting Module Service Peer.
+ * \brief Service Manager.
+ * \version 1.23
  */
-class DE_DLL_EXPORT deBaseScriptingService{
+class DE_DLL_EXPORT deServiceManager{
+private:
+	deEngine &pEngine;
+	deMutex pMutex;
+	decObjectList pEventQueue;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new peer. */
-	deBaseScriptingService();
+	/** \brief Create service manager linked to the given engine. */
+	deServiceManager( deEngine &engine );
 	
-	/** \brief Clean up peer. */
-	virtual ~deBaseScriptingService();
+	/** \brief Clean up service manager. */
+	~deServiceManager();
 	/*@}*/
 	
 	
 	
-	/** \name Notifications */
+	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Response received for request.
-	 * 
-	 * If finished is true the request finished with this response otherwise more responses
-	 * will be delivered. Id is a unique identifier used to start the matching request.
+	 * \brief List of all service names supported by all service modules.
 	 */
-	virtual void RequestResponse( const decUniqueID &id,
-		const deServiceObject::Ref &response, bool finished );
+	decStringSet GetAllSupportedSerices() const;
 	
 	/**
-	 * \brief Response received for request.
-	 * 
-	 * Id is a unique identifier used to start the matching request.
+	 * \brief Create named service.
+	 * \throw deeInvalidParam Named service not supported by any loaded service module.
 	 */
-	virtual void RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error );
+	deService::Ref CreateService( const char *name );
 	
 	/**
-	 * \brief Service event received.
+	 * \brief Queue service event.
+	 * \note Can be called from any thread except the main thread.
 	 */
-	virtual void EventReceived( const deServiceObject::Ref &event );
+	void QueueEvent( const deServiceEvent::Ref &event );
+	
+	/**
+	 * \brief Process all queued events sending them to the respective service.
+	 * 
+	 * Processed events are removed from the queue.
+	 * 
+	 * \note Has to be called only from the main thread.
+	 */
+	void ProcessQueuedEvents();
 	/*@}*/
 };
 

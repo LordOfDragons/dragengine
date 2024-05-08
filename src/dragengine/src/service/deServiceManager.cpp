@@ -23,13 +23,14 @@
  */
 
 #include "deServiceManager.h"
-#include "../../deEngine.h"
-#include "../../common/exceptions.h"
-#include "../../systems/deModuleSystem.h"
-#include "../../systems/deScriptingSystem.h"
-#include "../../systems/modules/deLoadableModule.h"
-#include "../../systems/modules/service/deBaseServiceModule.h"
-#include "../../systems/modules/service/deBaseServiceService.h"
+#include "../deEngine.h"
+#include "../common/exceptions.h"
+#include "../threading/deMutexGuard.h"
+#include "../systems/deModuleSystem.h"
+#include "../systems/deScriptingSystem.h"
+#include "../systems/modules/deLoadableModule.h"
+#include "../systems/modules/service/deBaseServiceModule.h"
+#include "../systems/modules/service/deBaseServiceService.h"
 
 
 // Class deServiceManager
@@ -107,4 +108,38 @@ deService::Ref deServiceManager::CreateService( const char *name ){
 	}
 	
 	DETHROW_INFO( deeInvalidParam, "Named service not supported" );
+}
+
+void deServiceManager::QueueEvent( const deServiceEvent::Ref &event ){
+	const deMutexGuard lock( pMutex );
+	pEventQueue.Add( event );
+}
+
+void deServiceManager::ProcessQueuedEvents(){
+	decObjectList events;
+	{
+	const deMutexGuard lock( pMutex );
+	events = pEventQueue;
+	pEventQueue.RemoveAll();
+	}
+	
+	const int count = events.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deServiceEvent &event = *( ( deServiceEvent* )pEventQueue.GetAt( 0 ) );
+		switch( event.GetType() ){
+		case deServiceEvent::eeRequestResponse:
+			event.GetService()->RequestResponse( event.GetId(), event.GetData(), event.GetFinished() );
+			break;
+			
+		case deServiceEvent::eeRequestFailed:
+			event.GetService()->RequestFailed( event.GetId(), event.GetData() );
+			break;
+			
+		case deServiceEvent::eeEventReceived:
+			event.GetService()->EventReceived( event.GetData() );
+			break;
+		}
+	}
 }

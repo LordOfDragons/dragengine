@@ -33,8 +33,7 @@
 #include <libdscript/libdscript.h>
 
 #include <dragengine/common/utils/decUniqueID.h>
-#include <dragengine/resources/service/deService.h>
-#include <dragengine/resources/service/deServiceObject.h>
+#include <dragengine/service/deService.h>
 
 
 
@@ -142,11 +141,8 @@ void dedsService::SetCallback( dsRealObject *object ){
 
 
 
-void dedsService::RequestResponse( const decUniqueID &id, deServiceObject *response, bool finished ){
-	// PROBLEM! this is asynchronous. we have to delay this callback until the main thread
-	response->FreeReference();
-	
-	/*
+void dedsService::RequestResponse( const decUniqueID &id,
+const deServiceObject::Ref &response, bool finished ){
 	if( ! pHasCB ){
 		if( response ){
 			response->FreeReference();
@@ -171,16 +167,9 @@ void dedsService::RequestResponse( const decUniqueID &id, deServiceObject *respo
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
-	
-	response->FreeReference();
-	*/
 }
 
-void dedsService::RequestFailed( const decUniqueID &id, deServiceObject *error ){
-	// PROBLEM! this is asynchronous. we have to delay this callback until the main thread
-	error->FreeReference();
-	
-	/*
+void dedsService::RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error ){
 	if( ! pHasCB ){
 		if( error ){
 			error->FreeReference();
@@ -204,16 +193,9 @@ void dedsService::RequestFailed( const decUniqueID &id, deServiceObject *error )
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
-	
-	error->FreeReference();
-	*/
 }
 
-void dedsService::EventReceived( deServiceObject *event ){
-	// PROBLEM! this is asynchronous. we have to delay this callback until the main thread
-	event->FreeReference();
-	
-	/*
+void dedsService::EventReceived( const deServiceObject::Ref &event ){
 	if( ! pHasCB ){
 		if( event ){
 			event->FreeReference();
@@ -236,7 +218,4 @@ void dedsService::EventReceived( deServiceObject *event ){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
-	
-	event->FreeReference();
-	*/
 }

@@ -30,7 +30,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
-#include <dragengine/resources/service/deServiceObject.h>
+#include <dragengine/service/deServiceObject.h>
 
 #include <libdscript/exceptions.h>
 

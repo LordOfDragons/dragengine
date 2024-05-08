@@ -25,10 +25,9 @@
 #ifndef _DESERVICE_H_
 #define _DESERVICE_H_
 
-#include "../../deObject.h"
+#include "deServiceObject.h"
 
 class deBaseServiceModule;
-class deServiceObject;
 class decUniqueID;
 
 class deBaseServiceService;
@@ -37,6 +36,7 @@ class deBaseScriptingService;
 
 /**
  * \brief Service.
+ * \version 1.23
  *
  * Services provide various platform or community functionality not handled by other modules.
  * Such services are typically queried infrequently and take a certain time time complete.
@@ -113,26 +113,21 @@ public:
 	 * \brief Response received for request.
 	 * 
 	 * If finished is true the request finished with this response otherwise more responses
-	 * will be delivered. By returning false the request can be cancelled. The script module
-	 * receives ownership of the response object reference. Id is a unique identifier used
-	 * to start the matching request.
+	 * will be delivered. Id is a unique identifier used to start the matching request.
 	 */
-	void RequestResponse( const decUniqueID &id, deServiceObject *response, bool finished );
+	void RequestResponse( const decUniqueID &id, const deServiceObject::Ref &response, bool finished );
 	
 	/**
 	 * \brief Response received for request.
 	 * 
-	 * The script module receives ownership of the error object reference. Id is a unique
-	 * identifier used to start the matching request.
+	 * Id is a unique identifier used to start the matching request.
 	 */
-	void RequestFailed( const decUniqueID &id, deServiceObject *error );
+	void RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error );
 	
 	/**
 	 * \brief Service event received.
-	 * 
-	 * The script module receives ownership of the event object reference.
 	 */
-	void EventReceived( deServiceObject *event );
+	void EventReceived( const deServiceObject::Ref &event );
 	/*@}*/
 	
 	

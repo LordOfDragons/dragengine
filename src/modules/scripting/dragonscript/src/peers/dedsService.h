@@ -78,34 +78,22 @@ public:
 	 * \brief Response received for request.
 	 * 
 	 * If finished is true the request finished with this response otherwise more responses
-	 * will be delivered. By returning false the request can be cancelled. The script module
-	 * receives ownership of the response object reference. The default implementation releases
-	 * the object reference. Id is a unique identifier used to start the matching request.
-	 * 
-	 * \warning This call is usually not called from the main thread.
+	 * will be delivered. Id is a unique identifier used to start the matching request.
 	 */
-	void RequestResponse( const decUniqueID &id, deServiceObject *response, bool finished ) override;
+	void RequestResponse( const decUniqueID &id, const deServiceObject::Ref &response,
+		bool finished ) override;
 	
 	/**
 	 * \brief Response received for request.
 	 * 
-	 * The script module receives ownership of the error object reference. The default
-	 * implementation releases the error object reference. Id is a unique identifier
-	 * used to start the matching request.
-	 * 
-	 * \warning This call is usually not called from the main thread.
+	 * Id is a unique identifier used to start the matching request.
 	 */
-	void RequestFailed( const decUniqueID &id, deServiceObject *error ) override;
+	void RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error ) override;
 	
 	/**
 	 * \brief Service event received.
-	 * 
-	 * The script module receives ownership of the event object reference. The default
-	 * implementation releases the event object reference.
-	 * 
-	 * \warning This call is usually not called from the main thread.
 	 */
-	void EventReceived( deServiceObject *event ) override;
+	void EventReceived( const deServiceObject::Ref &event ) override;
 	/*@}*/
 };
 

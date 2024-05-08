@@ -31,7 +31,7 @@
 #include "../../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/resources/service/deServiceObject.h>
+#include <dragengine/service/deServiceObject.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>

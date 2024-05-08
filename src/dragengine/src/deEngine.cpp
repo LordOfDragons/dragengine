@@ -88,7 +88,6 @@
 #include "resources/sensor/deLumimeterManager.h"
 #include "resources/sensor/deTouchSensorManager.h"
 #include "resources/sensor/deSoundLevelMeterManager.h"
-#include "resources/service/deServiceManager.h"
 #include "resources/smoke/deSmokeEmitterManager.h"
 #include "resources/sound/deMicrophoneManager.h"
 #include "resources/sound/deSoundManager.h"
@@ -105,6 +104,8 @@
 #include "resources/probe/deEnvMapProbeManager.h"
 #include "resources/canvas/deCanvasManager.h"
 #include "resources/canvas/capture/deCaptureCanvasManager.h"
+
+#include "service/deServiceManager.h"
 
 #include "errortracing/deErrorTrace.h"
 #include "errortracing/deErrorTracePoint.h"
@@ -974,6 +975,9 @@ DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
 	}
 	vrEventQueue.RemoveAllEvents();
 DEBUG_PRINT_TIMER( "DoFrame: Process VR events" );
+	
+	// process service events
+	pServiceManager->ProcessQueuedEvents();
 	
 	// frame update
 	pParallelProcessing->Update();

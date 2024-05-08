@@ -22,49 +22,24 @@
  * SOFTWARE.
  */
 
-#ifndef _DESERVICEMANAGER_H_
-#define _DESERVICEMANAGER_H_ 
-
-#include "deService.h"
-#include "../../common/string/decStringSet.h"
-
-class deEngine;
+#include "deServiceEvent.h"
+#include "../common/exceptions.h"
 
 
-/**
- * \brief Service Manager.
- */
-class DE_DLL_EXPORT deServiceManager{
-private:
-	deEngine &pEngine;
-	
-	
-	
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** \brief Create service manager linked to the given engine. */
-	deServiceManager( deEngine &engine );
-	
-	/** \brief Clean up service manager. */
-	~deServiceManager();
-	/*@}*/
-	
-	
-	
-	/** \name Management */
-	/*@{*/
-	/**
-	 * \brief List of all service names supported by all service modules.
-	 */
-	decStringSet GetAllSupportedSerices() const;
-	
-	/**
-	 * \brief Create named service.
-	 * \throw deeInvalidParam Named service not supported by any loaded service module.
-	 */
-	deService::Ref CreateService( const char *name );
-	/*@}*/
-};
+// Class deServiceEvent
+/////////////////////////
 
-#endif
+// Constructors and Destructors
+/////////////////////////////////
+
+deServiceEvent::deServiceEvent( eEvents type, const deService::Ref &service,
+const decUniqueID &id, const deServiceObject::Ref &data, bool finished ) :
+pType( type ),
+pService( service ),
+pId( id ),
+pData( data ),
+pFinished( finished ){
+}
+
+deServiceEvent::~deServiceEvent(){
+}

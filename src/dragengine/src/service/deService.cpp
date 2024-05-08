@@ -23,10 +23,9 @@
  */
 
 #include "deService.h"
-#include "deServiceObject.h"
-#include "../../common/exceptions.h"
-#include "../../systems/modules/service/deBaseServiceService.h"
-#include "../../systems/modules/scripting/deBaseScriptingService.h"
+#include "../common/exceptions.h"
+#include "../systems/modules/service/deBaseServiceService.h"
+#include "../systems/modules/scripting/deBaseScriptingService.h"
 
 
 
@@ -69,7 +68,8 @@ void deService::CancelRequest( const decUniqueID &id ){
 	pPeerService->CancelRequest( id );
 }
 
-void deService::RequestResponse( const decUniqueID &id, deServiceObject *response, bool finished ){
+void deService::RequestResponse( const decUniqueID &id,
+const deServiceObject::Ref &response, bool finished ){
 	DEASSERT_NOTNULL( response )
 	
 	if( pPeerScripting ){
@@ -80,7 +80,7 @@ void deService::RequestResponse( const decUniqueID &id, deServiceObject *respons
 	}
 }
 
-void deService::RequestFailed( const decUniqueID &id, deServiceObject *error ){
+void deService::RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error ){
 	DEASSERT_NOTNULL( error )
 	
 	if( pPeerScripting ){
@@ -91,7 +91,7 @@ void deService::RequestFailed( const decUniqueID &id, deServiceObject *error ){
 	}
 }
 
-void deService::EventReceived( deServiceObject *event ){
+void deService::EventReceived( const deServiceObject::Ref &event ){
 	DEASSERT_NOTNULL( event )
 	
 	if( pPeerScripting ){

@@ -25,14 +25,15 @@
 #ifndef _DESERVICEOBJECT_H_
 #define _DESERVICEOBJECT_H_
 
-#include "../deResource.h"
-#include "../../deObject.h"
-#include "../../common/collection/decObjectDictionary.h"
-#include "../../common/file/decMemoryFile.h"
+#include "../deObject.h"
+#include "../common/collection/decObjectDictionary.h"
+#include "../common/file/decMemoryFile.h"
+#include "../resources/deResource.h"
 
 
 /**
  * \brief Service object.
+ * \version 1.23
  * 
  * Stores data object for use with platform services. Object value can be a boolean,
  * an integer, a float, a string, a resource, data or a dictionary of objects.
