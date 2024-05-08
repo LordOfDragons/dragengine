@@ -57,6 +57,7 @@ def unregisterRegisteredClasses():
     global registeredClasses
     for cls in reversed(registeredClasses):
         bpy.utils.unregister_class(cls)
+    del registeredClasses[:]
 
 
 def appendToMenu(menu, cls):
