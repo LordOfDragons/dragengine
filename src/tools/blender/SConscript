@@ -9,15 +9,6 @@ envAddon = parent_env.Clone()
 
 pathShare = envAddon.subst(envAddon['path_igde_share'])
 
-files = []
-globFiles(envAddon, 'dragengine-import-export', '*.py', files)
-files.append('dragengine-import-export/blender_manifest.toml')
-
-archiveFiles = {f:envAddon.File(f) for f in files}
-def archiveZip(env, target, source):
-	with zipfile.ZipFile(target[0].abspath, 'w', zipfile.ZIP_DEFLATED) as arcfile:
-		for path, node in archiveFiles.items():
-			arcfile.write(node.srcnode().abspath, path)
 
 versionString = envAddon['version']
 if envAddon['force_version']:
@@ -39,15 +30,45 @@ versionParts[2] = 0
 if versionParts[1] == 22:
 	versionParts[2] = 1
 
-# update manifest. done in source directly to avoid complicated copying
-with open(envAddon.File('blender_manifest.toml.in').srcnode().abspath, 'r') as f:
-	content = f.read().replace('{VERSION}', '.'.join([str(x) for x in versionParts]))
-with open(envAddon.File('dragengine-import-export/blender_manifest.toml').srcnode().abspath, 'w') as f:
-	f.write(content)
+blenderVersionString = '.'.join([str(x) for x in versionParts])
+
+
+addonSrcDir = 'dragengine-import-export'
+addonDestDir = 'dragengine-import-export'
+
+files = []
+globFiles(envAddon, addonSrcDir, '*.py', files)
+print(files)
+
+files2 = []
+for f in files:
+	files2.extend(envAddon.Install(addonDestDir, envAddon.File(f).srcnode()))
+
+def copyModifyFile(env, target, source):
+	with open(source[0].abspath, 'r') as f:
+		content = f.read()
+	content = content.replace('{RELEASE_VERSION}', blenderVersionString)
+	with open(target[0].abspath, 'w') as f:
+		f.write(content)
+
+files2.extend(envAddon.Command('{}/blender_manifest.toml'.format(addonDestDir),
+	'blender_manifest.toml.in', envAddon.Action(copyModifyFile, 'Copy-Modify $TARGET')))
+
+files2.extend(envAddon.Command('{}/de_version.py'.format(addonDestDir),
+	'de_version.py.in', envAddon.Action(copyModifyFile, 'Copy-Modify $TARGET')))
+
+
+buildDir = envAddon.Dir('.')
+
+archiveFiles = {buildDir.rel_path(f): f for f in files2}
+def archiveZip(env, target, source):
+	with zipfile.ZipFile(target[0].abspath, 'w', zipfile.ZIP_DEFLATED) as arcfile:
+		for path, node in archiveFiles.items():
+			arcfile.write(node.abspath, path)
 
 filename = '{}-{}.zip'.format(envAddon['addon_name_blender'], versionString)
 
-targetBuild = envAddon.Command(filename, files, envAddon.Action(archiveZip, 'Archiving $TARGET'))
+targetBuild = envAddon.Command(filename, files2, envAddon.Action(archiveZip, 'Archiving $TARGET'))
 
 install = envAddon.Install(os.path.join(pathShare, 'tools'), targetBuild)
 targetInstall = envAddon.Alias('blender-addon', install)
