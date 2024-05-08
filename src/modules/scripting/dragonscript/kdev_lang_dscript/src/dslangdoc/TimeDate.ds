@@ -10,9 +10,9 @@
  * \brief Represents a point in time.
  * 
  * This is a native class. It can not be subclassed.
- * \author Roland Plüss
+ * \author DragonDreams GmbH
  * \version 1.0
- * \date 2020
+ * \date 2024
  */
 fixed class TimeDate
 	/** \name Constructors */
