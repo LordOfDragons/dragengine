@@ -36,8 +36,8 @@
 ////////////////////////////
 
 deService::deService( const char *name ) :
-pServiceModule( nullptr ),
 pName( name ),
+pServiceModule( nullptr ),
 pPeerService( nullptr ),
 pPeerScripting( nullptr ){
 }
