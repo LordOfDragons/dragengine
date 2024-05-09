@@ -1,6 +1,6 @@
 schema_version = "1.0.0"
 id = "dragengine_tools"
-version = "{RELEASE_VERSION}"
+version = "{VERSION_MAJOR}.{VERSION_MINOR}.{VERSION_PATCH}"
 name = "Drag[en]gine Import/Export"
 tagline = "Import/Export Drag[en]gine Resources including helper tools"
 maintainer = "DragonDreams GmbH <info@dragondreams.ch>"

@@ -22,4 +22,4 @@
 # NOTE: For the GPL copy see http://www.gnu.org/licenses/gpl.html
 #
 
-addonVersion = tuple("{RELEASE_VERSION}".split('.'))
+addonVersion = ({VERSION_MAJOR}, {VERSION_MINOR}, {VERSION_PATCH})

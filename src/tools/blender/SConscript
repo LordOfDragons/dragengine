@@ -14,48 +14,56 @@ versionString = envAddon['version']
 if envAddon['force_version']:
         versionString = envAddon['force_version']
 
-# blender repository version has to be "X.Y.Z" whereas "X.Y" matches drag[en]gine
-# release version and Z starts at 0 incrementally updated with each release.
-# Z does not line up with potential drag[en]gine patch since blender repository
-# package can be released more often if required
-versionParts = [int(x) for x in versionString.split('.')]
-while len(versionParts) < 3:
-	versionParts.append(0)
+try:
+	# blender repository version has to be "X.Y.Z" whereas "X.Y" matches drag[en]gine
+	# release version and Z starts at 0 incrementally updated with each release.
+	# Z does not line up with potential drag[en]gine patch since blender repository
+	# package can be released more often if required
+	blenderVersion = [int(x) for x in versionString.split('.')]
+	while len(blenderVersion) < 3:
+		blenderVersion.append(0)
 
-# set custom patch version number. it is a bit annoying to handle this in the script
-# hence a version based custom value is used. the version check ensures the patch
-# version goes back to 0 if the drag[en]gine release version is bumped
-versionParts[2] = 0
+	# set custom patch version number. it is a bit annoying to handle this in the script
+	# hence a version based custom value is used. the version check ensures the patch
+	# version goes back to 0 if the drag[en]gine release version is bumped
+	blenderVersion[2] = 0
 
-if versionParts[1] == 22:
-	versionParts[2] = 1
+	if blenderVersion[1] == 22:
+		blenderVersion[2] = 1
+except:
+	blenderVersion = [9999, 0, 0]
 
-blenderVersionString = '.'.join([str(x) for x in versionParts])
-
+blenderVersion = [str(x) for x in blenderVersion]
 
 addonSrcDir = 'dragengine-import-export'
 addonDestDir = 'dragengine-import-export'
 
 files = []
-globFiles(envAddon, addonSrcDir, '*.py', files)
-print(files)
+globFiles(envAddon, addonSrcDir, '*', files)
 
-files2 = []
-for f in files:
-	files2.extend(envAddon.Install(addonDestDir, envAddon.File(f).srcnode()))
+specialFiles = [
+	'{}/__init__.py'.format(addonSrcDir),
+	'{}/de_version.py'.format(addonSrcDir),
+	'{}/blender_manifest.toml'.format(addonSrcDir)]
 
 def copyModifyFile(env, target, source):
 	with open(source[0].abspath, 'r') as f:
 		content = f.read()
-	content = content.replace('{RELEASE_VERSION}', blenderVersionString)
+	content = content.replace('{VERSION_MAJOR}', blenderVersion[0])
+	content = content.replace('{VERSION_MINOR}', blenderVersion[1])
+	content = content.replace('{VERSION_PATCH}', blenderVersion[2])
 	with open(target[0].abspath, 'w') as f:
 		f.write(content)
 
-files2.extend(envAddon.Command('{}/blender_manifest.toml'.format(addonDestDir),
-	'blender_manifest.toml.in', envAddon.Action(copyModifyFile, 'Copy-Modify $TARGET')))
-
-files2.extend(envAddon.Command('{}/de_version.py'.format(addonDestDir),
-	'de_version.py.in', envAddon.Action(copyModifyFile, 'Copy-Modify $TARGET')))
+files2 = []
+for f in files:
+	if f in specialFiles:
+		files2.extend(envAddon.Command(
+			'{}/{}'.format(addonDestDir, f[len(addonSrcDir)+1:]),
+			envAddon.File(f).srcnode(),
+			envAddon.Action(copyModifyFile, 'Copy-Modify $TARGET')))
+	else:
+		files2.extend(envAddon.Install(addonDestDir, envAddon.File(f).srcnode()))
 
 
 buildDir = envAddon.Dir('.')

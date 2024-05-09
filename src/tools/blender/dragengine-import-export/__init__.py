@@ -22,156 +22,150 @@
 # NOTE: For the GPL copy see http://www.gnu.org/licenses/gpl.html
 #
 
-bl_info = {
-	"name": "Drag[en]gine Import/Export",
-	"description": "Import/Export Drag[en]gine Resources including helper tools",
-	"author": "Plüss Roland",
-	"version": (1, 0),
-	"blender": (2, 80, 0),
-	"api": 36079,
-	"location": "File > Import-Export > Drag[en]gine",
-	"warning": "",
-	"url": "https://dragondreams.ch/index.php/dragengine",
-	"support": "COMMUNITY",
-	"category": "Import-Export"
-	}
-
-# porting problems ahead. blender 2.8 hard-requires version 2,80,0 as mininum.
-# to support both the value has to be 2,80,0 to work. for 2.7 this shows warnings
-# to users but that is okay. in the long run we are forced to switch anyways
-
-if "bpy" in locals():
-	import imp
-	if "de_math" in locals():
-		imp.reload(de_math)
-	if "de_resources" in locals():
-		imp.reload(de_resources)
-	if "de_configuration" in locals():
-		imp.reload(de_configuration)
-	
-	if "de_tool_aogen" in locals():
-		imp.reload(de_tool_aogen)
-	if "de_tool_texturefill" in locals():
-		imp.reload(de_tool_texturefill)
-	if "de_tool_gbuffernormgen" in locals():
-		imp.reload(de_tool_gbuffernormgen)
-	if "de_tool_treebranchunwrap" in locals():
-		imp.reload(de_tool_treebranchunwrap)
-	if "de_tool_channellayout" in locals():
-		imp.reload(de_tool_channellayout)
-	if "de_tool_mirroranim" in locals():
-		imp.reload(de_tool_mirroranim)
-	if "de_tool_loderrorcalc" in locals():
-		imp.reload(de_tool_loderrorcalc)
-	if "de_tool_rounding" in locals():
-		imp.reload(de_tool_rounding)
-	if "de_tool_collapsevertices" in locals():
-		imp.reload(de_tool_collapsevertices)
-	if "de_tool_mirrorvertices" in locals():
-		imp.reload(de_tool_mirrorvertices)
-	if "de_tool_removeemptyvertexgroups" in locals():
-		imp.reload(de_tool_removeemptyvertexgroups)
-	if "de_tool_projectuv" in locals():
-		imp.reload(de_tool_projectuv)
-	if "de_tool_transferuv" in locals():
-		imp.reload(de_tool_transferuv)
-	if "de_tool_shapropfromtex" in locals():
-		imp.reload(de_tool_shapropfromtex)
-	if "de_tool_exportmerger" in locals():
-		imp.reload(de_tool_exportmerger)
-	if "de_tools" in locals():
-		imp.reload(de_tools)
-	
-	if "de_export_model" in locals():
-		imp.reload(de_export_model)
-	if "de_export_rig" in locals():
-		imp.reload(de_export_rig)
-	if "de_export_animation" in locals():
-		imp.reload(de_export_animation)
-	if "de_export_navspace" in locals():
-		imp.reload(de_export_navspace)
-	if "de_export_occmesh" in locals():
-		imp.reload(de_export_occmesh)
-	if "de_export_config" in locals():
-		imp.reload(de_export_config)
-	
-	if "de_import_animation" in locals():
-		imp.reload(de_import_animation)
-	if "de_import_rig" in locals():
-		imp.reload(de_import_rig)
-
-from .de_tools import TypeDragengineProgress, TypeDETOptions
-from .de_export_model import OBJECT_OT_ExportModel
-from .de_export_rig import OBJECT_OT_ExportRig
-from .de_export_animation import OBJECT_OT_ExportAnimation
-from .de_export_navspace import OBJECT_OT_ExportNavigationSpace
-from .de_export_occmesh import OBJECT_OT_ExportOcclusionMesh
-from .de_export_config import OBJECT_OT_ExportConfig
-from .de_import_animation import OBJECT_OT_ImportAnimation
-from .de_import_rig import OBJECT_OT_ImportRig
-from .de_porting import registerClass, unregisterRegisteredClasses
-
 import bpy
+
+from .de_version import addonVersion
+from .de_porting import registerClass, registerKnownClasses
+from .de_porting import unregisterRegisteredClasses, delog
+
+delog("Version {}".format(addonVersion))
+
+
+bl_info = {
+    "name": "Drag[en]gine Import/Export",
+    "description": "Import/Export Drag[en]gine Resources including helper tools",
+    "author": "Plüss Roland",
+    "version": ({VERSION_MAJOR}, {VERSION_MINOR}),
+    "blender": (3, 0, 0),
+    "api": 36079,
+    "location": "File > Import-Export > Drag[en]gine",
+    "warning": "",
+    "url": "https://dragondreams.ch/index.php/dragengine",
+    "support": "COMMUNITY",
+    "category": "Import-Export"
+    }
 
 
 class VIEW3D_MT_DragengineExport(bpy.types.Menu):
-	bl_label = "Drag[en]gine Resources"
-	
-	def draw(self, context):
-		layout = self.layout
-		# settings = context.tool_settings
-		layout.operator_context = 'INVOKE_REGION_WIN'
-		layout.operator("dragengine.export_model", text=OBJECT_OT_ExportModel.bl_label)
-		layout.operator("dragengine.export_animation", text=OBJECT_OT_ExportAnimation.bl_label)
-		layout.operator("dragengine.export_rig", text=OBJECT_OT_ExportRig.bl_label)
-		layout.operator("dragengine.export_occmesh", text=OBJECT_OT_ExportOcclusionMesh.bl_label)
-		layout.operator("dragengine.export_navspace", text=OBJECT_OT_ExportNavigationSpace.bl_label)
-		layout.operator("dragengine.export_config", text=OBJECT_OT_ExportConfig.bl_label)
-registerClass(VIEW3D_MT_DragengineExport)
+    bl_label = "Drag[en]gine Resources"
+    bl_addon_version = addonVersion
+
+    def draw(self, context):
+        layout = self.layout
+        # settings = context.tool_settings
+        layout.operator_context = 'INVOKE_REGION_WIN'
+        layout.operator("dragengine.export_model", text=OBJECT_OT_ExportModel.bl_label)
+        layout.operator("dragengine.export_animation", text=OBJECT_OT_ExportAnimation.bl_label)
+        layout.operator("dragengine.export_rig", text=OBJECT_OT_ExportRig.bl_label)
+        layout.operator("dragengine.export_occmesh", text=OBJECT_OT_ExportOcclusionMesh.bl_label)
+        layout.operator("dragengine.export_navspace", text=OBJECT_OT_ExportNavigationSpace.bl_label)
+        layout.operator("dragengine.export_config", text=OBJECT_OT_ExportConfig.bl_label)
+
 
 class VIEW3D_MT_DragengineImport(bpy.types.Menu):
-	bl_label = "Drag[en]gine Resources"
-	
-	def draw(self, context):
-		layout = self.layout
-		# settings = context.tool_settings
-		layout.operator_context = 'INVOKE_REGION_WIN'
-		layout.operator("dragengine.import_animation", text=OBJECT_OT_ImportAnimation.bl_label)
-		layout.operator("dragengine.import_rig", text=OBJECT_OT_ImportRig.bl_label)
-registerClass(VIEW3D_MT_DragengineImport)
+    bl_label = "Drag[en]gine Resources"
+
+    def draw(self, context):
+        layout = self.layout
+        # settings = context.tool_settings
+        layout.operator_context = 'INVOKE_REGION_WIN'
+        layout.operator("dragengine.import_animation", text=OBJECT_OT_ImportAnimation.bl_label)
+        layout.operator("dragengine.import_rig", text=OBJECT_OT_ImportRig.bl_label)
+
+
+def checkAlreadyRegistered():
+    """
+    Checks if this add-on has been already registered. This happens if
+    the add-on is bundled. If the add-on is registered but is newer
+    unregister the old add-on and register this one.
+
+    Returns True to continue registering or False to not register
+    """
+    regver = None
+    unregfunc = None
+
+    if hasattr(bpy.types, "VIEW3D_MT_DragengineExport"):
+        view = bpy.types.VIEW3D_MT_DragengineExport
+        if "bl_addon_version" in view.__annotations__:
+            regver = view.__annotations__["bl_addon_version"]
+            unregfunc = view.__annotations__["bl_addon_unregister"]
+
+    delog("=> Already registered add-on version: {}".format(regver))
+
+    if regver:
+        if regver < addonVersion:
+            delog("=> Already registered add-on is older")
+            delog("=> Unregister already registered add-on")
+            unregfunc()
+        else:
+            delog("=> Already registered add-on is not older")
+            delog("=> Abort registering")
+            return False
+
+    return True
+
 
 def VIEW3D_MT_DragengineExportMenuFunc(self, context):
-	self.layout.menu("VIEW3D_MT_DragengineExport")
+    self.layout.menu("VIEW3D_MT_DragengineExport")
+
 
 def VIEW3D_MT_DragengineImportMenuFunc(self, context):
-	self.layout.menu("VIEW3D_MT_DragengineImport")
+    self.layout.menu("VIEW3D_MT_DragengineImport")
+
 
 def register():
-	bpy.types.WindowManager.dragengine_progress = bpy.props.PointerProperty(type=TypeDragengineProgress)
-	bpy.types.WindowManager.dragengine_tooloptions = bpy.props.PointerProperty(type=TypeDETOptions)
-	
-	if hasattr(bpy.types, "INFO_MT_file_export"):
-		bpy.types.INFO_MT_file_export.append(VIEW3D_MT_DragengineExportMenuFunc)
-	elif hasattr(bpy.types, "TOPBAR_MT_file_export"):
-		bpy.types.TOPBAR_MT_file_export.append(VIEW3D_MT_DragengineExportMenuFunc)
-	
-	if hasattr(bpy.types, "INFO_MT_file_import"):
-		bpy.types.INFO_MT_file_import.append(VIEW3D_MT_DragengineImportMenuFunc)
-	elif hasattr(bpy.types, "TOPBAR_MT_file_import"):
-		bpy.types.TOPBAR_MT_file_import.append(VIEW3D_MT_DragengineImportMenuFunc)
-	
-def unregister():
-	if hasattr(bpy.types, "INFO_MT_file_import"):
-		bpy.types.INFO_MT_file_import.remove(VIEW3D_MT_DragengineImportMenuFunc)
-	elif hasattr(bpy.types, "TOPBAR_MT_file_import"):
-		bpy.types.TOPBAR_MT_file_import.remove(VIEW3D_MT_DragengineImportMenuFunc)
-	
-	if hasattr(bpy.types, "INFO_MT_file_export"):
-		bpy.types.INFO_MT_file_export.remove(VIEW3D_MT_DragengineExportMenuFunc)
-	elif hasattr(bpy.types, "TOPBAR_MT_file_export"):
-		bpy.types.TOPBAR_MT_file_export.remove(VIEW3D_MT_DragengineExportMenuFunc)
-	
-	unregisterRegisteredClasses()
+    delog("Register classes")
+    if not checkAlreadyRegistered():
+        return
 
-if __name__ == "__main__":
-	register()
+    VIEW3D_MT_DragengineExport.__annotations__["bl_addon_unregister"] = unregister
+
+    from .de_tools import TypeDragengineProgress, TypeDETOptions
+    from .de_export_model import OBJECT_OT_ExportModel
+    from .de_export_rig import OBJECT_OT_ExportRig
+    from .de_export_animation import OBJECT_OT_ExportAnimation
+    from .de_export_navspace import OBJECT_OT_ExportNavigationSpace
+    from .de_export_occmesh import OBJECT_OT_ExportOcclusionMesh
+    from .de_export_config import OBJECT_OT_ExportConfig
+    from .de_import_animation import OBJECT_OT_ImportAnimation
+    from .de_import_rig import OBJECT_OT_ImportRig
+
+    registerClass(VIEW3D_MT_DragengineExport)
+    registerClass(VIEW3D_MT_DragengineImport)
+
+    registerKnownClasses()
+
+    bpy.types.WindowManager.dragengine_progress = bpy.props.PointerProperty(type=TypeDragengineProgress)
+    bpy.types.WindowManager.dragengine_tooloptions = bpy.props.PointerProperty(type=TypeDETOptions)
+
+    if hasattr(bpy.types, "INFO_MT_file_export"):
+        bpy.types.INFO_MT_file_export.append(VIEW3D_MT_DragengineExportMenuFunc)
+    elif hasattr(bpy.types, "TOPBAR_MT_file_export"):
+        bpy.types.TOPBAR_MT_file_export.append(VIEW3D_MT_DragengineExportMenuFunc)
+
+    if hasattr(bpy.types, "INFO_MT_file_import"):
+        bpy.types.INFO_MT_file_import.append(VIEW3D_MT_DragengineImportMenuFunc)
+    elif hasattr(bpy.types, "TOPBAR_MT_file_import"):
+        bpy.types.TOPBAR_MT_file_import.append(VIEW3D_MT_DragengineImportMenuFunc)
+
+
+def unregister():
+    delog("Unregister classes")
+
+    if hasattr(bpy.types, "INFO_MT_file_import"):
+        bpy.types.INFO_MT_file_import.remove(VIEW3D_MT_DragengineImportMenuFunc)
+    elif hasattr(bpy.types, "TOPBAR_MT_file_import"):
+        bpy.types.TOPBAR_MT_file_import.remove(VIEW3D_MT_DragengineImportMenuFunc)
+
+    if hasattr(bpy.types, "INFO_MT_file_export"):
+        bpy.types.INFO_MT_file_export.remove(VIEW3D_MT_DragengineExportMenuFunc)
+    elif hasattr(bpy.types, "TOPBAR_MT_file_export"):
+        bpy.types.TOPBAR_MT_file_export.remove(VIEW3D_MT_DragengineExportMenuFunc)
+
+    if hasattr(bpy.types.WindowManager, "dragengine_progress"):
+        delattr(bpy.types.WindowManager, "dragengine_progress")
+
+    if hasattr(bpy.types.WindowManager, "dragengine_tooloptions"):
+        delattr(bpy.types.WindowManager, "dragengine_tooloptions")
+
+    unregisterRegisteredClasses()
