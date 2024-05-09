@@ -251,6 +251,10 @@
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsNavigationInfo.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlDocument.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlParser.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassService.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceObject.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsService.h" />
     <ClInclude Include="module_version.h" />
   </ItemGroup>
   <ItemGroup>
@@ -464,6 +468,10 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsNavigationInfo.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlDocument.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlParser.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassService.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsService.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\scripting\dragonscript\src\module.xml" />

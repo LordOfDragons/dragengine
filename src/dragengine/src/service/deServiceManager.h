@@ -26,7 +26,6 @@
 #define _DESERVICEMANAGER_H_ 
 
 #include "deService.h"
-#include "deServiceEvent.h"
 #include "../common/collection/decObjectList.h"
 #include "../common/string/decStringSet.h"
 #include "../threading/deMutex.h"
@@ -72,10 +71,24 @@ public:
 	deService::Ref CreateService( const char *name );
 	
 	/**
-	 * \brief Queue service event.
+	 * \brief Queue request response event.
 	 * \note Can be called from any thread except the main thread.
 	 */
-	void QueueEvent( const deServiceEvent::Ref &event );
+	void QueueRequestResponse( const deService::Ref &service, const decUniqueID &id,
+	const deServiceObject::Ref &response, bool finished );
+	
+	/**
+	 * \brief Queue request failed event.
+	 * \note Can be called from any thread except the main thread.
+	 */
+	void QueueRequestFailed( const deService::Ref &service, const decUniqueID &id,
+	const deServiceObject::Ref &error );
+	
+	/**
+	 * \brief Queue event received event.
+	 * \note Can be called from any thread except the main thread.
+	 */
+	void QueueEventReceived( const deService::Ref &service, const deServiceObject::Ref &event );
 	
 	/**
 	 * \brief Process all queued events sending them to the respective service.

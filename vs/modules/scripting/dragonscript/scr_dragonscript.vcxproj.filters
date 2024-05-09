@@ -645,6 +645,18 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="module_version.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassService.h">
+      <Filter>Source Files<\Filter>
+    <\ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceObject.h">
+      <Filter>Source Files<\Filter>
+    <\ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceListener.h">
+      <Filter>Source Files<\Filter>
+    <\ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsService.h">
+      <Filter>Source Files<\Filter>
+    <\ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.cpp">
@@ -1277,6 +1289,18 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassService.cpp">
+      <Filter>Source Files<\Filter>
+    <\ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceObject.cpp">
+      <Filter>Source Files<\Filter>
+    <\ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceListener.cpp">
+      <Filter>Source Files<\Filter>
+    <\ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsService.cpp">
+      <Filter>Source Files<\Filter>
+    <\ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\scripting\dragonscript\src\module.xml">

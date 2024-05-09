@@ -25,12 +25,40 @@
 #include "deServiceManager.h"
 #include "../deEngine.h"
 #include "../common/exceptions.h"
+#include "../common/utils/decUniqueID.h"
 #include "../threading/deMutexGuard.h"
 #include "../systems/deModuleSystem.h"
 #include "../systems/deScriptingSystem.h"
 #include "../systems/modules/deLoadableModule.h"
 #include "../systems/modules/service/deBaseServiceModule.h"
 #include "../systems/modules/service/deBaseServiceService.h"
+
+
+// Event queue item
+/////////////////////
+
+class cEvent : public deObject{
+public:
+	typedef deTObjectReference<cEvent> Ref;
+	
+	enum eEvents{
+		eeRequestResponse,
+		eeRequestFailed,
+		eeEventReceived
+	};
+	
+	const eEvents type;
+	const deService::Ref service;
+	const decUniqueID id;
+	const deServiceObject::Ref data;
+	const bool finished;
+	
+	cEvent( eEvents atype, const deService::Ref &aservice, const decUniqueID &aid,
+	const deServiceObject::Ref &adata, bool afinished ) :
+	type( atype ), service( aservice ), id( aid ), data( adata ), finished( afinished ){
+	}
+};
+
 
 
 // Class deServiceManager
@@ -110,9 +138,22 @@ deService::Ref deServiceManager::CreateService( const char *name ){
 	DETHROW_INFO( deeInvalidParam, "Named service not supported" );
 }
 
-void deServiceManager::QueueEvent( const deServiceEvent::Ref &event ){
+void deServiceManager::QueueRequestResponse( const deService::Ref &service,
+const decUniqueID &id, const deServiceObject::Ref &response, bool finished ){
 	const deMutexGuard lock( pMutex );
-	pEventQueue.Add( event );
+	pEventQueue.Add( new cEvent( cEvent::eeRequestResponse, service, id, response, finished ) );
+}
+
+void deServiceManager::QueueRequestFailed( const deService::Ref &service,
+const decUniqueID &id, const deServiceObject::Ref &error ){
+	const deMutexGuard lock( pMutex );
+	pEventQueue.Add( new cEvent( cEvent::eeRequestFailed, service, id, error, true ) );
+}
+
+void deServiceManager::QueueEventReceived( const deService::Ref &service,
+const deServiceObject::Ref &event ){
+	const deMutexGuard lock( pMutex );
+	pEventQueue.Add( new cEvent( cEvent::eeEventReceived, service, decUniqueID(), event, true ) );
 }
 
 void deServiceManager::ProcessQueuedEvents(){
@@ -127,18 +168,18 @@ void deServiceManager::ProcessQueuedEvents(){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const deServiceEvent &event = *( ( deServiceEvent* )pEventQueue.GetAt( 0 ) );
-		switch( event.GetType() ){
-		case deServiceEvent::eeRequestResponse:
-			event.GetService()->RequestResponse( event.GetId(), event.GetData(), event.GetFinished() );
+		const cEvent &event = *( ( cEvent* )pEventQueue.GetAt( 0 ) );
+		switch( event.type ){
+		case cEvent::eEvents::eeRequestResponse:
+			event.service->RequestResponse( event.id, event.data, event.finished );
 			break;
 			
-		case deServiceEvent::eeRequestFailed:
-			event.GetService()->RequestFailed( event.GetId(), event.GetData() );
+		case cEvent::eEvents::eeRequestFailed:
+			event.service->RequestFailed( event.id, event.data );
 			break;
 			
-		case deServiceEvent::eeEventReceived:
-			event.GetService()->EventReceived( event.GetData() );
+		case cEvent::eEvents::eeEventReceived:
+			event.service->EventReceived( event.data );
 			break;
 		}
 	}
