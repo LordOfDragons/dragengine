@@ -24,6 +24,7 @@
 
 #include "deGDKServiceSystem.h"
 #include "deMicrosoftGDK.h"
+#include "gdk_include.h"
 
 #include <dragengine/service/deServiceManager.h>
 #include <dragengine/service/deServiceObject.h>
@@ -56,6 +57,10 @@ void deGDKServiceSystem::StartRequest(const decUniqueID& id, const deServiceObje
 	so->AddChild("error", deServiceObject::Ref::New(
 		deServiceObject::NewString("invalidRequest")));
 	srvmgr.QueueRequestFailed(deService::Ref(pService), id, so);
+	
+	if(false){
+		XUserAddAsync(XUserAddOptions::AddDefaultUserSilently, nullptr);
+	}
 }
 
 void deGDKServiceSystem::CancelRequest(const decUniqueID& id){

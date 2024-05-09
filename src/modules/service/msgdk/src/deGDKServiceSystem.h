@@ -25,6 +25,8 @@
 #ifndef _DEGDKSERVICEGDK_H_
 #define _DEGDKSERVICEGDK_H_
 
+#include "gdk_include.h"
+
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
 
 class deMicrosoftGDK;

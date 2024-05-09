@@ -22,47 +22,10 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMICROSOFTGDK_H_
-#define _DEMICROSOFTGDK_H_
+#ifndef _GDKINCLUDE_H_
+#define _GDKINCLUDE_H_
 
-#include "gdk_include.h"
-
-#include <dragengine/systems/modules/service/deBaseServiceModule.h>
-
-
-/**
- * Microsoft GDK Service Module.
- */
-class deMicrosoftGDK : public deBaseServiceModule{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deMicrosoftGDK(deLoadableModule &loadableModule);
-	
-	/** Delete module. */
-	~deMicrosoftGDK() override;
-	/*@}*/
-	
-	
-	
-	/** \name Management */
-	/*@{*/
-	/** Map error code to string. */
-	const char *GetErrorCodeString(HRESULT code) const;
-
-
-
-	/** \brief Set of supported service names. */
-	decStringSet GetSupportedServices() override;
-	
-	/**
-	 * \brief Create service peer.
-	 * 
-	 * If service name is not supported nullptr is returned.
-	 */
-	deBaseServiceService *CreateService(deService *service, const char *name) override;
-	/*@}*/
-};
+#include <dragengine/app/include_windows.h>
+#include <XGameRuntime.h>
 
 #endif
