@@ -34,7 +34,7 @@ class deService;
 /**
  * Microsoft GDK Service.
  */
-class deGDKServiceGDK : public deBaseServiceService{
+class deGDKServiceSystem : public deBaseServiceService{
 public:
 	static const char * const serviceName;
 	
@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deGDKServiceGDK(deMicrosoftGDK &module, deService *service);
+	deGDKServiceSystem(deMicrosoftGDK &module, deService *service);
 	
 	/** Delete module. */
-	~deGDKServiceGDK() override;
+	~deGDKServiceSystem() override;
 	/*@}*/
 	
 	

@@ -25,7 +25,7 @@
 #include <string.h>
 
 #include "deMicrosoftGDK.h"
-#include "deGDKServiceGDK.h"
+#include "deGDKServiceSystem.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -75,15 +75,15 @@ deMicrosoftGDK::~deMicrosoftGDK(){
 
 decStringSet deMicrosoftGDK::GetSupportedServices(){
 	decStringSet names;
-	names.Add(deGDKServiceGDK::serviceName);
+	names.Add(deGDKServiceSystem::serviceName);
 	return names;
 }
 
 deBaseServiceService* deMicrosoftGDK::CreateService(deService *service, const char* name){
 	DEASSERT_NOTNULL(service)
 
-	if(strcmp(name, deGDKServiceGDK::serviceName) == 0){
-		return new deGDKServiceGDK(*this, service);
+	if(strcmp(name, deGDKServiceSystem::serviceName) == 0){
+		return new deGDKServiceSystem(*this, service);
 	}
 
 	return nullptr;

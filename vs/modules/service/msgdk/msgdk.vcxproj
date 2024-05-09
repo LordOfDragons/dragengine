@@ -32,11 +32,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deGDKServiceGDK.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deGDKServiceSystem.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGDK.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deGDKServiceGDK.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deGDKServiceSystem.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGDK.cpp" />
   </ItemGroup>
   <ItemGroup>

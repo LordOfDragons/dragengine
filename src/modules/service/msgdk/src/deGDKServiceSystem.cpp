@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "deGDKServiceGDK.h"
+#include "deGDKServiceSystem.h"
 #include "deMicrosoftGDK.h"
 
 #include <dragengine/service/deServiceManager.h>
@@ -33,24 +33,24 @@
 // Class deGDKServiceGDK
 //////////////////////////
 
-const char * const deGDKServiceGDK::serviceName = "MicrosoftGDK";
+const char * const deGDKServiceSystem::serviceName = "Microsoft.GDK.System";
 
 // Constructor, destructor
 ////////////////////////////
 
-deGDKServiceGDK::deGDKServiceGDK(deMicrosoftGDK &module, deService *service) :
+deGDKServiceSystem::deGDKServiceSystem(deMicrosoftGDK &module, deService *service) :
 pModule(module),
 pService(service){
 }
 
-deGDKServiceGDK::~deGDKServiceGDK(){
+deGDKServiceSystem::~deGDKServiceSystem(){
 }
 
 
 // Management
 ///////////////
 
-void deGDKServiceGDK::StartRequest(const decUniqueID& id, const deServiceObject& request){
+void deGDKServiceSystem::StartRequest(const decUniqueID& id, const deServiceObject& request){
 	deServiceManager &srvmgr = *pModule.GetGameEngine()->GetServiceManager();
 	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
 	so->AddChild("error", deServiceObject::Ref::New(
@@ -58,5 +58,5 @@ void deGDKServiceGDK::StartRequest(const decUniqueID& id, const deServiceObject&
 	srvmgr.QueueRequestFailed(deService::Ref(pService), id, so);
 }
 
-void deGDKServiceGDK::CancelRequest(const decUniqueID& id){
+void deGDKServiceSystem::CancelRequest(const decUniqueID& id){
 }
