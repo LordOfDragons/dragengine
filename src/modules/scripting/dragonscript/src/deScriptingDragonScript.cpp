@@ -317,7 +317,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DSCreateModule( deLoadableModule *loadableMod
 deBaseModule *DSCreateModule( deLoadableModule *loadableModule ){
 	try{
 		return new deScriptingDragonScript( *loadableModule );
-	}catch( const duException & ){
+	}catch( ... ){
 		return nullptr;
 	}
 }

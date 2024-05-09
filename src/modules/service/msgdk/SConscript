@@ -1,0 +1,4 @@
+
+versionString = '1.0'
+if envModule['force_version']:
+	versionString = envModule['force_version']

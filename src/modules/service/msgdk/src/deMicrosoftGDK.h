@@ -22,29 +22,24 @@
  * SOFTWARE.
  */
 
-#ifndef _DEBASESERVICEMODULE_H_
-#define _DEBASESERVICEMODULE_H_
+#ifndef _DEMICROSOFTGDK_H_
+#define _DEMICROSOFTGDK_H_
 
-#include "../deBaseModule.h"
-#include "../../../common/string/decStringSet.h"
-
-class deBaseServiceService;
-class deService;
+#include <dragengine/systems/modules/service/deBaseServiceModule.h>
 
 
 /**
- * \brief Base service module providing platform or community services.
- * \version 1.23
+ * Microsoft GDK Service Module.
  */
-class DE_DLL_EXPORT deBaseServiceModule : public deBaseModule{
+class deMicrosoftGDK : public deBaseServiceModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create module. */
-	deBaseServiceModule( deLoadableModule &loadableModule );
+	/** Create module. */
+	deMicrosoftGDK(deLoadableModule &loadableModule);
 	
-	/** \brief Clean up module. */
-	virtual ~deBaseServiceModule();
+	/** Delete module. */
+	~deMicrosoftGDK() override;
 	/*@}*/
 	
 	
@@ -52,14 +47,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set of supported service names. */
-	virtual decStringSet GetSupportedServices() = 0;
+	decStringSet GetSupportedServices() override;
 	
 	/**
 	 * \brief Create service peer.
 	 * 
 	 * If service name is not supported nullptr is returned.
 	 */
-	virtual deBaseServiceService *CreateService( deService *service, const char *name ) = 0;
+	deBaseServiceService *CreateService(deService *service, const char *name) override;
 	/*@}*/
 };
 

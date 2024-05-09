@@ -22,45 +22,41 @@
  * SOFTWARE.
  */
 
-#ifndef _DEBASESERVICEMODULE_H_
-#define _DEBASESERVICEMODULE_H_
+#include "deGDKServiceGDK.h"
+#include "deMicrosoftGDK.h"
 
-#include "../deBaseModule.h"
-#include "../../../common/string/decStringSet.h"
-
-class deBaseServiceService;
-class deService;
+#include <dragengine/service/deServiceManager.h>
+#include <dragengine/service/deServiceObject.h>
+#include <dragengine/deEngine.h>
 
 
-/**
- * \brief Base service module providing platform or community services.
- * \version 1.23
- */
-class DE_DLL_EXPORT deBaseServiceModule : public deBaseModule{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** \brief Create module. */
-	deBaseServiceModule( deLoadableModule &loadableModule );
-	
-	/** \brief Clean up module. */
-	virtual ~deBaseServiceModule();
-	/*@}*/
-	
-	
-	
-	/** \name Management */
-	/*@{*/
-	/** \brief Set of supported service names. */
-	virtual decStringSet GetSupportedServices() = 0;
-	
-	/**
-	 * \brief Create service peer.
-	 * 
-	 * If service name is not supported nullptr is returned.
-	 */
-	virtual deBaseServiceService *CreateService( deService *service, const char *name ) = 0;
-	/*@}*/
-};
+// Class deGDKServiceGDK
+//////////////////////////
 
-#endif
+const char * const deGDKServiceGDK::serviceName = "MicrosoftGDK";
+
+// Constructor, destructor
+////////////////////////////
+
+deGDKServiceGDK::deGDKServiceGDK(deMicrosoftGDK &module, deService *service) :
+pModule(module),
+pService(service){
+}
+
+deGDKServiceGDK::~deGDKServiceGDK(){
+}
+
+
+// Management
+///////////////
+
+void deGDKServiceGDK::StartRequest(const decUniqueID& id, const deServiceObject& request){
+	deServiceManager &srvmgr = *pModule.GetGameEngine()->GetServiceManager();
+	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+	so->AddChild("error", deServiceObject::Ref::New(
+		deServiceObject::NewString("invalidRequest")));
+	srvmgr.QueueRequestFailed(deService::Ref(pService), id, so);
+}
+
+void deGDKServiceGDK::CancelRequest(const decUniqueID& id){
+}

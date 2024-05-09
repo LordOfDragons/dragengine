@@ -57,9 +57,9 @@ public:
 	
 	
 private:
-	deBaseServiceModule &pModule;
 	const decString pName;
 	
+	deBaseServiceModule *pServiceModule;
 	deBaseServiceService *pPeerService;
 	deBaseScriptingService *pPeerScripting;
 	
@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new service object. */
-	deService( deBaseServiceModule &module, const char *name );
+	deService( const char *name );
 	
 protected:
 	/**
@@ -86,9 +86,6 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Service module that created this service. */
-	inline deBaseServiceModule &GetModule(){ return pModule; }
-	inline const deBaseServiceModule &GetModule() const{ return pModule; }
 	
 	/** \brief Unique service name. */
 	inline const decString &GetName() const{ return pName; }
@@ -134,11 +131,14 @@ public:
 	
 	/** \name System Peers */
 	/*@{*/
+	/** \brief Service module. */
+	inline deBaseServiceModule *GetServiceModule(){ return pServiceModule; }
+	
 	/** \brief Service system peer object. */
 	inline deBaseServiceService *GetPeerService() const{ return pPeerService; }
 	
 	/** \brief Set service system peer object. */
-	void SetPeerService( deBaseServiceService *peer );
+	void SetPeerService( deBaseServiceModule *module, deBaseServiceService *peer );
 	
 	/** \brief Scripting system peer object. */
 	inline deBaseScriptingService *GetPeerScripting() const{ return pPeerScripting; }

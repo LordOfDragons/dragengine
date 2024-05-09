@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module>
+	<name>MicrosoftGDK</name>
+	<description>
+    Provides access to services provided by the Microsoft GDK.
+  </description>
+	<author>DragonDreams GmbH (info@dragondreams.ch)</author>
+	<version>VERSION</version>
+	<type>Service</type>
+	<priority>1</priority>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>MSGDKCreateModule</entrypoint>
+	</library>
+</module>

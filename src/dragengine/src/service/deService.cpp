@@ -35,8 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deService::deService( deBaseServiceModule &module, const char *name ) :
-pModule( module ),
+deService::deService( const char *name ) :
+pServiceModule( nullptr ),
 pName( name ),
 pPeerService( nullptr ),
 pPeerScripting( nullptr ){
@@ -107,7 +107,7 @@ void deService::EventReceived( const deServiceObject::Ref &event ){
 // System Peers
 /////////////////
 
-void deService::SetPeerService( deBaseServiceService *peer ){
+void deService::SetPeerService( deBaseServiceModule *module, deBaseServiceService *peer ){
 	if( peer == pPeerService ){
 		return;
 	}
@@ -116,6 +116,7 @@ void deService::SetPeerService( deBaseServiceService *peer ){
 		delete pPeerService;
 	}
 	
+	pServiceModule = module;
 	pPeerService = peer;
 }
 

@@ -123,14 +123,15 @@ deService::Ref deServiceManager::CreateService( const char *name ){
 			continue;
 		}
 		
-		deBaseServiceModule &srvmod = *( ( deBaseServiceModule* )loadmod.GetModule() );
-		deBaseServiceService * const peer = srvmod.CreateService( name );
+		const deService::Ref service( deService::Ref::New( new deService( name ) ) );
+		
+		deBaseServiceModule * const srvmod = ( deBaseServiceModule* )loadmod.GetModule();
+		deBaseServiceService * const peer = srvmod->CreateService( service, name );
 		if( ! peer ){
 			continue;
 		}
 		
-		const deService::Ref service( deService::Ref::New( new deService( srvmod, name ) ) );
-		service->SetPeerService( peer );
+		service->SetPeerService( srvmod, peer );
 		pEngine.GetScriptingSystem()->CreateService( service );
 		return service;
 	}

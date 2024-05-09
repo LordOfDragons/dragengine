@@ -22,44 +22,57 @@
  * SOFTWARE.
  */
 
-#ifndef _DEBASESERVICEMODULE_H_
-#define _DEBASESERVICEMODULE_H_
+#ifndef _DEGDKSERVICEGDK_H_
+#define _DEGDKSERVICEGDK_H_
 
-#include "../deBaseModule.h"
-#include "../../../common/string/decStringSet.h"
+#include <dragengine/systems/modules/service/deBaseServiceService.h>
 
-class deBaseServiceService;
+class deMicrosoftGDK;
 class deService;
 
 
 /**
- * \brief Base service module providing platform or community services.
- * \version 1.23
+ * Microsoft GDK Service.
  */
-class DE_DLL_EXPORT deBaseServiceModule : public deBaseModule{
+class deGDKServiceGDK : public deBaseServiceService{
+public:
+	static const char * const serviceName;
+	
+
+private:
+	deMicrosoftGDK &pModule;
+	deService * const pService;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create module. */
-	deBaseServiceModule( deLoadableModule &loadableModule );
+	/** Create module. */
+	deGDKServiceGDK(deMicrosoftGDK &module, deService *service);
 	
-	/** \brief Clean up module. */
-	virtual ~deBaseServiceModule();
+	/** Delete module. */
+	~deGDKServiceGDK() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set of supported service names. */
-	virtual decStringSet GetSupportedServices() = 0;
+	/**
+	 * \brief Start service request.
+	 * 
+	 * Script module peer is called with the received answer. Depending on the service the
+	 * answer can be received continuously or as individual responses or in smaller chunks.
+	 * The script module has to use a unique id for each request. The same id is returned
+	 * in responses to allow matching them to requests. The id can also be used to cancel
+	 * a request at any time.
+	 */
+	void StartRequest(const decUniqueID &id, const deServiceObject &request) override;
 	
 	/**
-	 * \brief Create service peer.
-	 * 
-	 * If service name is not supported nullptr is returned.
+	 * \brief Cancel service request if running.
 	 */
-	virtual deBaseServiceService *CreateService( deService *service, const char *name ) = 0;
+	void CancelRequest(const decUniqueID &id) override;
 	/*@}*/
 };
 
