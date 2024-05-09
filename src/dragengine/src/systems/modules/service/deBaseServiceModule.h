@@ -25,12 +25,6 @@
 #ifndef _DEBASESERVICEMODULE_H_
 #define _DEBASESERVICEMODULE_H_
 
-#include "../../../dragengine_configuration.h"
-
-#ifdef OS_W32
-#undef CreateService
-#endif
-
 #include "../deBaseModule.h"
 #include "../../../common/string/decStringSet.h"
 

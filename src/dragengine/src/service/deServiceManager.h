@@ -25,12 +25,6 @@
 #ifndef _DESERVICEMANAGER_H_
 #define _DESERVICEMANAGER_H_ 
 
-#include "../dragengine_configuration.h"
-
-#ifdef OS_W32
-#undef CreateService
-#endif
-
 #include "deService.h"
 #include "../common/collection/decObjectList.h"
 #include "../common/string/decStringSet.h"
