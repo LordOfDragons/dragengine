@@ -25,7 +25,7 @@
 #ifndef _DEBASESERVICEMODULE_H_
 #define _DEBASESERVICEMODULE_H_
 
-#ifdef OS_WINDOWS
+#ifdef OS_W32
 #ifdef CreateService
 #undef CreateService
 #endif

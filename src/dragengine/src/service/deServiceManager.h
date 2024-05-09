@@ -25,7 +25,7 @@
 #ifndef _DESERVICEMANAGER_H_
 #define _DESERVICEMANAGER_H_ 
 
-#ifdef OS_WINDOWS
+#ifdef OS_W32
 #ifdef CreateService
 #undef CreateService
 #endif
