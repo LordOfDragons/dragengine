@@ -29,7 +29,7 @@ try:
 	blenderVersion[2] = 0
 
 	if blenderVersion[1] == 22:
-		blenderVersion[2] = 1
+		blenderVersion[2] = 2
 except:
 	blenderVersion = [9999, 0, 0]
 
