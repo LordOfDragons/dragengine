@@ -57,12 +57,12 @@ def registerClass(cls):
     global registeredClasses
 
     if cls not in knownClasses:
-        delog("Remember class: {}".format(cls))
+        # delog("Remember class: {}".format(cls))
         make_annotations(cls)
         knownClasses.append(cls)
 
     if cls not in registeredClasses:
-        delog("Register class: {}".format(cls))
+        # delog("Register class: {}".format(cls))
         bpy.utils.register_class(cls)
         registeredClasses.append(cls)
 
@@ -76,7 +76,7 @@ def registerKnownClasses():
 def unregisterRegisteredClasses():
     global registeredClasses
     for cls in reversed(registeredClasses):
-        delog("unregisterRegisteredClasses: {}".format(cls))
+        # delog("unregisterRegisteredClasses: {}".format(cls))
         bpy.utils.unregister_class(cls)
     del registeredClasses[:]
 
@@ -128,5 +128,8 @@ def matmul28(a, b):
     return operator.matmul(a, b)  # the same as writing a @ b
 
 
+"""
 matmul = matmul28 if hasattr(bpy.app, "version") \
     and bpy.app.version >= (2, 80) else matmul27
+"""
+matmul = matmul28

@@ -73,6 +73,9 @@ class VIEW3D_MT_DragengineImport(bpy.types.Menu):
         layout.operator("dragengine.import_rig", text=OBJECT_OT_ImportRig.bl_label)
 
 
+isRegistered = False
+
+
 def checkAlreadyRegistered():
     """
     Checks if this add-on has been already registered. This happens if
@@ -114,11 +117,14 @@ def VIEW3D_MT_DragengineImportMenuFunc(self, context):
 
 
 def register():
+    global isRegistered
+
     delog("Register classes")
     if not checkAlreadyRegistered():
         return
 
     VIEW3D_MT_DragengineExport.__annotations__["bl_addon_unregister"] = unregister
+    isRegistered = True
 
     from .de_tools import TypeDragengineProgress, TypeDETOptions
     from .de_export_model import OBJECT_OT_ExportModel
@@ -150,7 +156,13 @@ def register():
 
 
 def unregister():
+    global isRegistered
+
     delog("Unregister classes")
+    if not isRegistered:
+        return
+
+    isRegistered = False
 
     if hasattr(bpy.types, "INFO_MT_file_import"):
         bpy.types.INFO_MT_file_import.remove(VIEW3D_MT_DragengineImportMenuFunc)
