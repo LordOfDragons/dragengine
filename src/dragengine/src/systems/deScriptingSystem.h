@@ -25,6 +25,8 @@
 #ifndef _DESCRIPTINGSYSTEM_H_
 #define _DESCRIPTINGSYSTEM_H_
 
+#include "../dragengine_configuration.h"
+
 #ifdef OS_W32
 #ifdef CreateService
 #undef CreateService

@@ -25,6 +25,8 @@
 #ifndef _DESERVICEMANAGER_H_
 #define _DESERVICEMANAGER_H_ 
 
+#include "../dragengine_configuration.h"
+
 #ifdef OS_W32
 #ifdef CreateService
 #undef CreateService
