@@ -25,6 +25,12 @@
 #ifndef _DESCRIPTINGSYSTEM_H_
 #define _DESCRIPTINGSYSTEM_H_
 
+#ifdef OS_WINDOWS
+#ifdef CreateService
+#undef CreateService
+#endif
+#endif
+
 #include "deBaseSystem.h"
 #include "../common/math/decMath.h"
 #include "../common/string/decString.h"

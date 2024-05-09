@@ -25,6 +25,12 @@
 #ifndef _DESERVICEMANAGER_H_
 #define _DESERVICEMANAGER_H_ 
 
+#ifdef OS_WINDOWS
+#ifdef CreateService
+#undef CreateService
+#endif
+#endif
+
 #include "deService.h"
 #include "../common/collection/decObjectList.h"
 #include "../common/string/decStringSet.h"

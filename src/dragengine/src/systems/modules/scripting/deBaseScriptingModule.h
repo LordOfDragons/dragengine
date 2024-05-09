@@ -25,6 +25,12 @@
 #ifndef _DEBASESCRIPTINGMODULE_H_
 #define _DEBASESCRIPTINGMODULE_H_
 
+#ifdef OS_WINDOWS
+#ifdef CreateService
+#undef CreateService
+#endif
+#endif
+
 #include "../deBaseModule.h"
 #include "../../../common/math/decMath.h"
 

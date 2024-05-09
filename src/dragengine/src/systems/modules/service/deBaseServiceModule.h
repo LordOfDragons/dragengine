@@ -25,6 +25,12 @@
 #ifndef _DEBASESERVICEMODULE_H_
 #define _DEBASESERVICEMODULE_H_
 
+#ifdef OS_WINDOWS
+#ifdef CreateService
+#undef CreateService
+#endif
+#endif
+
 #include "../deBaseModule.h"
 #include "../../../common/string/decStringSet.h"
 
