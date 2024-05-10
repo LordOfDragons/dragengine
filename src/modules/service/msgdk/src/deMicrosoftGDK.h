@@ -34,6 +34,10 @@
  * Microsoft GDK Service Module.
  */
 class deMicrosoftGDK : public deBaseServiceModule{
+private:
+	bool pSdkInited;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -45,12 +49,10 @@ public:
 	/*@}*/
 	
 	
-	
 	/** \name Management */
 	/*@{*/
 	/** Map error code to string. */
 	const char *GetErrorCodeString(HRESULT code) const;
-
 
 
 	/** \brief Set of supported service names. */
@@ -62,6 +64,10 @@ public:
 	 * If service name is not supported nullptr is returned.
 	 */
 	deBaseServiceService *CreateService(deService *service, const char *name) override;
+
+
+	/** Init SDK if not already inited. */
+	void InitSdk();
 	/*@}*/
 };
 

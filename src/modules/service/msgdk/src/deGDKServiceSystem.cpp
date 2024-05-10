@@ -26,8 +26,8 @@
 #include "deMicrosoftGDK.h"
 #include "gdk_include.h"
 
-#include <dragengine/service/deServiceManager.h>
-#include <dragengine/service/deServiceObject.h>
+#include <dragengine/resources/service/deServiceManager.h>
+#include <dragengine/resources/service/deServiceObject.h>
 #include <dragengine/deEngine.h>
 
 

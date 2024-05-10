@@ -1121,7 +1121,7 @@ void deEngine::pInitResourceManagers(){
 	pResMgrs[ ermVideoPlayers ] = new deVideoPlayerManager( this );
 	pResMgrs[ ermVideos ] = new deVideoManager( this );
 	pResMgrs[ ermWorlds ] = new deWorldManager( this );
-	pResMgrs[ ermServices ] = new deServerManager( this );
+	pResMgrs[ ermServices ] = new deServiceManager( this );
 	
 	// sanity check
 	RESMGRSANCHECK( ermAnimations, ertAnimation );

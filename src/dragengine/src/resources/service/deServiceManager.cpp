@@ -68,7 +68,7 @@ public:
 ////////////////////////////
 
 deServiceManager::deServiceManager( deEngine *engine ) :
-deResourceManager( engine, ertSynthesizerInstance )
+deResourceManager( engine, ertService )
 {
 	SetLoggingName( "service" );
 }

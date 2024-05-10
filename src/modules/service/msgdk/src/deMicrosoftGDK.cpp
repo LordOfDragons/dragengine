@@ -125,19 +125,17 @@ static struct sErrorCode{
 ////////////////////////////
 
 deMicrosoftGDK::deMicrosoftGDK(deLoadableModule& loadableModule) :
-deBaseServiceModule(loadableModule)
+deBaseServiceModule(loadableModule),
+pSdkInited(false)
 {
-	LogInfo("Initialize GDK");
-	HRESULT rc = XGameRuntimeInitialize();
-	if(FAILED(rc)){
-		LogErrorFormat("Failed initialize GDK: %s", GetErrorCodeString(rc));
-		DETHROW(deeInvalidAction);
-	}
+	InitSdk();
 }
 
 deMicrosoftGDK::~deMicrosoftGDK(){
-	LogInfo("Shutdown GDK");
-	XGameRuntimeUninitialize();
+	if(pSdkInited){
+		LogInfo("Shutdown GDK");
+		XGameRuntimeUninitialize();
+	}
 }
 
 
@@ -171,4 +169,18 @@ deBaseServiceService* deMicrosoftGDK::CreateService(deService *service, const ch
 	}
 
 	return nullptr;
+}
+
+void deMicrosoftGDK::InitSdk(){
+	if(pSdkInited){
+		return;
+	}
+
+	LogInfo("Initialize GDK");
+	HRESULT rc = XGameRuntimeInitialize();
+	if(FAILED(rc)){
+		LogErrorFormat("Failed initialize GDK: %s", GetErrorCodeString(rc));
+		DETHROW(deeInvalidAction);
+	}
+	pSdkInited = true;
 }

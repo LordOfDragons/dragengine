@@ -44,6 +44,7 @@ class Service
 	/*@{*/
 	/** \brief Get listener or null. */
 	func ServiceListener getListener()
+		return null
 	end
 	
 	/** \brief Set listener or null. */
