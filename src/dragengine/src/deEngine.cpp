@@ -104,8 +104,7 @@
 #include "resources/probe/deEnvMapProbeManager.h"
 #include "resources/canvas/deCanvasManager.h"
 #include "resources/canvas/capture/deCaptureCanvasManager.h"
-
-#include "service/deServiceManager.h"
+#include "resources/service/deServiceManager.h"
 
 #include "errortracing/deErrorTrace.h"
 #include "errortracing/deErrorTracePoint.h"
@@ -175,6 +174,7 @@ enum eResourceManager{
 	ermVideos,
 	ermVideoPlayers,
 	ermWorlds,
+	ermServices,
 	ermManagerCount
 };
 
@@ -263,6 +263,8 @@ static const int vLocalResourcePeerCreationOrder[ ermManagerCount ] = {
 	ermCaptureCanvas,
 	
 	ermRenderWindows,
+	
+	ermServices
 };
 
 const int *vResourcePeerCreationOrder = &vLocalResourcePeerCreationOrder[ 0 ];
@@ -291,7 +293,6 @@ pSystems( nullptr ),
 pParallelProcessing( nullptr ),
 pResLoader( nullptr ),
 pResMgrs( nullptr ),
-pServiceManager( nullptr ),
 
 pVFS( nullptr ),
 
@@ -638,6 +639,10 @@ deWorldManager *deEngine::GetWorldManager() const{
 	return ( deWorldManager* )pResMgrs[ ermWorlds ];
 }
 
+deServiceManager *deEngine::GetServiceManager() const{
+	return ( deServiceManager* )pResMgrs[ ermServices ];
+}
+
 
 
 void deEngine::RemoveLeakingResources(){
@@ -977,7 +982,7 @@ DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
 DEBUG_PRINT_TIMER( "DoFrame: Process VR events" );
 	
 	// process service events
-	pServiceManager->ProcessQueuedEvents();
+	GetServiceManager()->ProcessQueuedEvents();
 	
 	// frame update
 	pParallelProcessing->Update();
@@ -1116,6 +1121,7 @@ void deEngine::pInitResourceManagers(){
 	pResMgrs[ ermVideoPlayers ] = new deVideoPlayerManager( this );
 	pResMgrs[ ermVideos ] = new deVideoManager( this );
 	pResMgrs[ ermWorlds ] = new deWorldManager( this );
+	pResMgrs[ ermServices ] = new deServerManager( this );
 	
 	// sanity check
 	RESMGRSANCHECK( ermAnimations, ertAnimation );
@@ -1167,9 +1173,7 @@ void deEngine::pInitResourceManagers(){
 	RESMGRSANCHECK( ermVideos, ertVideo );
 	RESMGRSANCHECK( ermVideoPlayers, ertVideoPlayer );
 	RESMGRSANCHECK( ermWorlds, ertWorld );
-	
-	// create service manager
-	pServiceManager = new deServiceManager( *this );
+	RESMGRSANCHECK( ermServices, ertService );
 	
 	// create resource loader
 	pResLoader = new deResourceLoader( *this );
@@ -1198,11 +1202,6 @@ void deEngine::pCleanUp(){
 	}
 	
 	// free resource managers
-	if( pServiceManager ){
-		delete pServiceManager;
-		pServiceManager = nullptr;
-	}
-	
 	int i;
 	if( pResMgrs ){
 		pLogger->LogInfoFormat( LOGGING_NAME, "Free Resource Managers" );

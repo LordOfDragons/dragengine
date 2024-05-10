@@ -26,9 +26,11 @@
 #define _DESERVICEMANAGER_H_ 
 
 #include "deService.h"
-#include "../common/collection/decObjectList.h"
-#include "../common/string/decStringSet.h"
-#include "../threading/deMutex.h"
+#include "../deResourceManager.h"
+#include "../deResourceList.h"
+#include "../../common/collection/decObjectList.h"
+#include "../../common/string/decStringSet.h"
+#include "../../threading/deMutex.h"
 
 class deEngine;
 
@@ -37,11 +39,11 @@ class deEngine;
  * \brief Service Manager.
  * \version 1.23
  */
-class DE_DLL_EXPORT deServiceManager{
+class DE_DLL_EXPORT deServiceManager : public deResourceManager{
 private:
-	deEngine &pEngine;
 	deMutex pMutex;
 	decObjectList pEventQueue;
+	deResourceList pServices;
 	
 	
 	
@@ -49,16 +51,27 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create service manager linked to the given engine. */
-	deServiceManager( deEngine &engine );
+	deServiceManager( deEngine *engine );
 	
 	/** \brief Clean up service manager. */
-	~deServiceManager();
+	~deServiceManager() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Number of service resource. */
+	int GetServiceCount() const;
+	
+	/** \brief Root service resource for iteration purpose. */
+	deService *GetRootService() const;
+	
+	/** \brief Release leaking resources and report them. */
+	void ReleaseLeakingResources() override;
+	
+	
+	
 	/**
 	 * \brief List of all service names supported by all service modules.
 	 */
@@ -98,6 +111,16 @@ public:
 	 * \note Has to be called only from the main thread.
 	 */
 	void ProcessQueuedEvents();
+	/*@}*/
+	
+	
+	
+	/**
+	 * \name Resource only Functions
+	 * \brief Those functions are only for resource objects and should never be called directly from an application.
+	 */
+	/*@{*/
+	void RemoveResource( deResource *resource );
 	/*@}*/
 };
 

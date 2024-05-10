@@ -49,7 +49,7 @@
 #include "../resources/particle/deParticleEmitterInstance.h"
 #include "../resources/propfield/dePropField.h"
 #include "../resources/sound/deSpeaker.h"
-#include "../service/deService.h"
+#include "../resources/service/deService.h"
 
 
 

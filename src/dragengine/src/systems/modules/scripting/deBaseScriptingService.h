@@ -26,7 +26,7 @@
 #define _DEBASESCRIPTINGSERVICE_H_
 
 #include "../../../dragengine_export.h"
-#include "../../../service/deServiceObject.h"
+#include "../../../resources/service/deServiceObject.h"
 
 class decUniqueID;
 

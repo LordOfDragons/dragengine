@@ -23,15 +23,15 @@
  */
 
 #include "deServiceManager.h"
-#include "../deEngine.h"
-#include "../common/exceptions.h"
-#include "../common/utils/decUniqueID.h"
-#include "../threading/deMutexGuard.h"
-#include "../systems/deModuleSystem.h"
-#include "../systems/deScriptingSystem.h"
-#include "../systems/modules/deLoadableModule.h"
-#include "../systems/modules/service/deBaseServiceModule.h"
-#include "../systems/modules/service/deBaseServiceService.h"
+#include "../../deEngine.h"
+#include "../../common/exceptions.h"
+#include "../../common/utils/decUniqueID.h"
+#include "../../threading/deMutexGuard.h"
+#include "../../systems/deModuleSystem.h"
+#include "../../systems/deScriptingSystem.h"
+#include "../../systems/modules/deLoadableModule.h"
+#include "../../systems/modules/service/deBaseServiceModule.h"
+#include "../../systems/modules/service/deBaseServiceService.h"
 
 
 // Event queue item
@@ -67,8 +67,10 @@ public:
 // Constructor, Destructor
 ////////////////////////////
 
-deServiceManager::deServiceManager( deEngine &engine ) :
-pEngine( engine ){
+deServiceManager::deServiceManager( deEngine *engine ) :
+deResourceManager( engine, ertSynthesizerInstance )
+{
+	SetLoggingName( "service" );
 }
 
 deServiceManager::~deServiceManager(){
@@ -79,8 +81,27 @@ deServiceManager::~deServiceManager(){
 // Management
 ///////////////
 
+int deServiceManager::GetServiceCount() const{
+	return pServices.GetCount();
+}
+
+deService *deServiceManager::GetRootService() const{
+	return ( deService* )pServices.GetRoot();
+}
+
+void deServiceManager::ReleaseLeakingResources(){
+	const int count = GetServiceCount();
+	
+	if( count > 0 ){
+		LogWarnFormat( "%i leaking services", count );
+		pServices.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+	}
+}
+
+
+
 decStringSet deServiceManager::GetAllSupportedSerices() const{
-	const deModuleSystem &modsys = *pEngine.GetModuleSystem();
+	const deModuleSystem &modsys = *GetEngine()->GetModuleSystem();
 	const int count = modsys.GetModuleCount();
 	decStringSet names;
 	int i;
@@ -107,7 +128,8 @@ decStringSet deServiceManager::GetAllSupportedSerices() const{
 deService::Ref deServiceManager::CreateService( const char *name ){
 	DEASSERT_NOTNULL( name )
 	
-	const deModuleSystem &modsys = *pEngine.GetModuleSystem();
+	deEngine * const engine = GetEngine();
+	const deModuleSystem &modsys = *engine->GetModuleSystem();
 	const int count = modsys.GetModuleCount();
 	int i;
 	
@@ -123,7 +145,7 @@ deService::Ref deServiceManager::CreateService( const char *name ){
 			continue;
 		}
 		
-		const deService::Ref service( deService::Ref::New( new deService( name ) ) );
+		const deService::Ref service( deService::Ref::New( new deService( this, name ) ) );
 		
 		deBaseServiceModule * const srvmod = ( deBaseServiceModule* )loadmod.GetModule();
 		deBaseServiceService * const peer = srvmod->CreateService( service, name );
@@ -132,7 +154,8 @@ deService::Ref deServiceManager::CreateService( const char *name ){
 		}
 		
 		service->SetPeerService( srvmod, peer );
-		pEngine.GetScriptingSystem()->CreateService( service );
+		engine->GetScriptingSystem()->CreateService( service );
+		pServices.Add( service );
 		return service;
 	}
 	
@@ -184,4 +207,8 @@ void deServiceManager::ProcessQueuedEvents(){
 			break;
 		}
 	}
+}
+
+void deServiceManager::RemoveResource( deResource *resource ){
+	pServices.RemoveIfPresent( resource );
 }

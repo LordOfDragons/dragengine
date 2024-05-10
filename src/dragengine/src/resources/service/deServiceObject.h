@@ -25,10 +25,9 @@
 #ifndef _DESERVICEOBJECT_H_
 #define _DESERVICEOBJECT_H_
 
-#include "../deObject.h"
-#include "../common/collection/decObjectDictionary.h"
-#include "../common/file/decMemoryFile.h"
-#include "../resources/deResource.h"
+#include "../../common/collection/decObjectDictionary.h"
+#include "../../common/file/decMemoryFile.h"
+#include "../../resources/deResource.h"
 
 
 /**

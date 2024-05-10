@@ -33,7 +33,7 @@
 #include <libdscript/libdscript.h>
 
 #include <dragengine/common/utils/decUniqueID.h>
-#include <dragengine/service/deService.h>
+#include <dragengine/resources/service/deService.h>
 
 
 

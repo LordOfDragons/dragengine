@@ -29,11 +29,11 @@
 
 class deScriptingDragonScript;
 class deServiceObject;
-
+class deResource;
 
 
 /**
- * \brief Service object script class.
+ * Service object script class.
  */
 class deClassServiceObject : public dsClass{
 private:
@@ -45,10 +45,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create class. */
+	/** Create class. */
 	deClassServiceObject( deScriptingDragonScript &ds );
 	
-	/** \brief Clean up class. */
+	/** Clean up class. */
 	virtual ~deClassServiceObject();
 	/*@}*/
 	
@@ -56,19 +56,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
-	/** \brief Creates class members. */
+	/** Creates class members. */
 	void CreateClassMembers( dsEngine *engine );
 	
-	/** \brief Service object or nullptr if myself is nullptr. */
+	/** Service object or nullptr if myself is nullptr. */
 	deServiceObject *GetServiceObject( dsRealObject *myself ) const;
 	
-	/** \brief Push service object which can be nullptr. */
+	/** Push service object which can be nullptr. */
 	void PushServiceObject( dsRunTime *rt, deServiceObject *object );
 	
 	inline dsClass *GetClassServiceObjectType() const{ return pClsServiceObjectType; }
+	
+	/**
+	 * Retrieve the engine resource object for a script object.
+	 * 
+	 * Return nullptr if the value is not an object, is nullptr or does not match a
+	 * resource script class.
+	 */
+	deResource *GetResource( dsValue &myself ) const;
+	
+	/**
+	 * Push engine resource onto stack as script object.
+	 * 
+	 * Push nullptr object if the engine resource is null or does not have a script class.
+	 */
+	void PushResource( dsRunTime &rt, deResource *resource );
 	/*@}*/
 	
 	

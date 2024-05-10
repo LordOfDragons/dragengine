@@ -152,7 +152,6 @@ private:
 	
 	// resource managers
 	deResourceManager **pResMgrs;
-	deServiceManager *pServiceManager;
 	
 	// files
 	decString pPathData; // the path to the data files
@@ -332,9 +331,7 @@ public:
 	deVideoManager *GetVideoManager() const;
 	deVideoPlayerManager *GetVideoPlayerManager() const;
 	deWorldManager *GetWorldManager() const;
-	
-	/** \brief Service manager. */
-	inline deServiceManager *GetServiceManager() const{ return pServiceManager; }
+	deServiceManager *GetServiceManager() const;
 	
 	/** \brief Parallel processing. */
 	inline deParallelProcessing &GetParallelProcessing(){ return *pParallelProcessing; }

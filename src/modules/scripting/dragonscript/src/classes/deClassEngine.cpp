@@ -39,7 +39,7 @@
 #include <dragengine/errortracing/deErrorTrace.h>
 #include <dragengine/errortracing/deErrorTracePoint.h>
 #include <dragengine/errortracing/deErrorTraceValue.h>
-#include <dragengine/service/deServiceManager.h>
+#include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/systems/deScriptingSystem.h>
 
 #include <libdscript/exceptions.h>

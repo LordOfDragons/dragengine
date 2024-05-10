@@ -24,14 +24,36 @@
 
 #include <stdint.h>
 
+#include "deClassService.h"
 #include "deClassServiceObject.h"
-#include "../collider/deClassCollider.h"
+#include "../animation/deClassAnimation.h"
 #include "../file/deClassMemoryFile.h"
+#include "../graphics/deClassImage.h"
+#include "../graphics/deClassOcclusionMesh.h"
+#include "../particle/deClassParticleEmitter.h"
+#include "../sound/deClassSound.h"
+#include "../translation/deClassLanguagePack.h"
+#include "../world/deClassModel.h"
+#include "../world/deClassRig.h"
+#include "../world/deClassSkin.h"
+#include "../video/deClassVideo.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/service/deServiceObject.h>
+#include <dragengine/resources/deResourceManager.h>
+#include <dragengine/resources/animation/deAnimation.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/localization/deLanguagePack.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
+#include <dragengine/resources/particle/deParticleEmitter.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/service/deService.h>
+#include <dragengine/resources/service/deServiceObject.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/sound/deSound.h>
+#include <dragengine/resources/video/deVideo.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>
@@ -152,9 +174,8 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject ){
 
 void deClassServiceObject::nfNewResource::RunFunction( dsRunTime *rt, dsValue* ){
 	deClassServiceObject &clsServiceObject = *( ( deClassServiceObject* )GetOwnerClass() );
-	deScriptingDragonScript &ds = clsServiceObject.GetDS();
 	
-	deResource * const value = ds.GetClassCollider()->GetResource( *rt->GetValue( 0 ) );
+	deResource * const value = clsServiceObject.GetResource( *rt->GetValue( 0 ) );
 	if( ! value ){
 		DSTHROW( dueNullPointer );
 	}
@@ -417,8 +438,8 @@ void deClassServiceObject::nfGetResource::RunFunction( dsRunTime *rt, dsValue *m
 		DSTHROW( dueNullPointer );
 	}
 	
-	deScriptingDragonScript &ds = ( ( deClassServiceObject* )GetOwnerClass() )->GetDS();
-	ds.GetClassCollider()->PushResource( *rt, nd.object->GetResource() );
+	deClassServiceObject &clsServiceObject = *( ( deClassServiceObject* )GetOwnerClass() );
+	clsServiceObject.PushResource( *rt, nd.object->GetResource() );
 }
 
 
@@ -760,4 +781,109 @@ void deClassServiceObject::PushServiceObject( dsRunTime *rt, deServiceObject *ob
 	( ( sServiceObjectNatDat* )p_GetNativeData(
 		rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->object = object;
 	object->AddReference();
+}
+
+deResource *deClassServiceObject::GetResource( dsValue &myself ) const{
+	if( myself.GetType()->GetPrimitiveType() != DSPT_OBJECT ){
+		return nullptr;
+	}
+	
+	dsRealObject * const realObject = myself.GetRealObject();
+	if( ! realObject ){
+		return nullptr;
+	}
+	
+	dsClass * const sclass = realObject->GetType();
+	
+	if( sclass == pDS.GetClassAnimation() ){
+		return pDS.GetClassAnimation()->GetAnimation( realObject );
+		
+	}else if( sclass == pDS.GetClassImage() ){
+		return pDS.GetClassImage()->GetImage( realObject );
+		
+	}else if( sclass == pDS.GetClassLanguagePack() ){
+		return pDS.GetClassLanguagePack()->GetLanguagePack( realObject );
+		
+	}else if( sclass == pDS.GetClassModel() ){
+		return pDS.GetClassModel()->GetModel( realObject );
+		
+	}else if( sclass == pDS.GetClassOcclusionMesh() ){
+		return pDS.GetClassOcclusionMesh()->GetOcclusionMesh( realObject );
+		
+	}else if( sclass == pDS.GetClassParticleEmitter() ){
+		return pDS.GetClassParticleEmitter()->GetParticleEmitter( realObject );
+		
+	}else if( sclass == pDS.GetClassRig() ){
+		return pDS.GetClassRig()->GetRig( realObject );
+		
+	}else if( sclass == pDS.GetClassSkin() ){
+		return pDS.GetClassSkin()->GetSkin( realObject );
+		
+	}else if( sclass == pDS.GetClassSound() ){
+		return pDS.GetClassSound()->GetSound( realObject );
+		
+	}else if( sclass == pDS.GetClassVideo() ){
+		return pDS.GetClassVideo()->GetVideo( realObject );
+		
+	}else if( sclass == pDS.GetClassService() ){
+		return pDS.GetClassService()->GetService( realObject );
+	}
+	
+	return nullptr;
+}
+
+void deClassServiceObject::PushResource( dsRunTime &rt, deResource *resource ){
+	if( ! resource ){
+		rt.PushObject( NULL, pDS.GetScriptEngine()->GetClassObject() );
+		return;
+	}
+	
+	switch( resource->GetResourceManager()->GetResourceType() ){
+	case deResourceManager::ertAnimation:
+		pDS.GetClassAnimation()->PushAnimation( &rt, ( deAnimation* )resource );
+		break;
+		
+	case deResourceManager::ertImage:
+		pDS.GetClassImage()->PushImage( &rt, ( deImage* )resource );
+		break;
+		
+	case deResourceManager::ertLanguagePack:
+		pDS.GetClassLanguagePack()->PushLanguagePack( &rt, ( deLanguagePack* )resource );
+		break;
+		
+	case deResourceManager::ertModel:
+		pDS.GetClassModel()->PushModel( &rt, ( deModel* )resource );
+		break;
+		
+	case deResourceManager::ertOcclusionMesh:
+		pDS.GetClassOcclusionMesh()->PushOcclusionMesh( &rt, ( deOcclusionMesh* )resource );
+		break;
+		
+	case deResourceManager::ertParticleEmitter:
+		pDS.GetClassParticleEmitter()->PushParticleEmitter( &rt, ( deParticleEmitter* )resource );
+		break;
+		
+	case deResourceManager::ertRig:
+		pDS.GetClassRig()->PushRig( &rt, ( deRig* )resource );
+		break;
+		
+	case deResourceManager::ertSkin:
+		pDS.GetClassSkin()->PushSkin( &rt, ( deSkin* )resource );
+		break;
+		
+	case deResourceManager::ertSound:
+		pDS.GetClassSound()->PushSound( &rt, ( deSound* )resource );
+		break;
+		
+	case deResourceManager::ertVideo:
+		pDS.GetClassVideo()->PushVideo( &rt, ( deVideo* )resource );
+		break;
+		
+	case deResourceManager::ertService:
+		pDS.GetClassService()->PushService( &rt, ( deService* )resource );
+		break;
+		
+	default:
+		rt.PushObject( nullptr, pDS.GetScriptEngine()->GetClassObject() );
+	}
 }

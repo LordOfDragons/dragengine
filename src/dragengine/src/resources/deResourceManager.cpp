@@ -51,12 +51,7 @@ deResourceManager::deResourceManager( deEngine *engine, eResourceType type ) :
 pEngine( engine ),
 pResourceType( type )
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
-	}
-	if( type < ertAnimation || type > ertWorld ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( engine )
 }
 
 deResourceManager::~deResourceManager(){

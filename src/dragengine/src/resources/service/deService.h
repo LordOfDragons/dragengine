@@ -29,6 +29,7 @@
 
 class deBaseServiceModule;
 class decUniqueID;
+class deServiceManager;
 
 class deBaseServiceService;
 class deBaseScriptingService;
@@ -49,7 +50,7 @@ class deBaseScriptingService;
  * services of different service modules collide it is undefined which service the user
  * receives.
  */
-class DE_DLL_EXPORT deService : public deObject{
+class DE_DLL_EXPORT deService : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deService> Ref;
@@ -69,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new service object. */
-	deService( const char *name );
+	deService( deServiceManager *manager, const char *name );
 	
 protected:
 	/**

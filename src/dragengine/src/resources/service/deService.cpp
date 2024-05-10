@@ -23,9 +23,10 @@
  */
 
 #include "deService.h"
-#include "../common/exceptions.h"
-#include "../systems/modules/service/deBaseServiceService.h"
-#include "../systems/modules/scripting/deBaseScriptingService.h"
+#include "deServiceManager.h"
+#include "../../common/exceptions.h"
+#include "../../systems/modules/service/deBaseServiceService.h"
+#include "../../systems/modules/scripting/deBaseScriptingService.h"
 
 
 
@@ -35,7 +36,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deService::deService( const char *name ) :
+deService::deService( deServiceManager *manager, const char *name ) :
+deResource( manager ),
 pName( name ),
 pServiceModule( nullptr ),
 pPeerService( nullptr ),

@@ -221,7 +221,10 @@ public:
 		ertVideoPlayer,
 		
 		/** \brief World resource */
-		ertWorld
+		ertWorld,
+		
+		/** \brief Service resource */
+		ertService
 	};
 	
 	
