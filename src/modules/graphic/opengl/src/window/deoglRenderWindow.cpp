@@ -75,6 +75,7 @@ pRRenderWindow( NULL )
 		pRRenderWindow->SetHostWindow( renderWindow.GetHostWindow() );
 		pRRenderWindow->SetSize( renderWindow.GetWidth(), renderWindow.GetHeight() );
 		pRRenderWindow->SetTitle( renderWindow.GetTitle() );
+		pRRenderWindow->SetFullScreen( renderWindow.GetFullScreen() );
 		
 		ogl.GetRenderThread().CreateRenderWindow( pRRenderWindow );
 		

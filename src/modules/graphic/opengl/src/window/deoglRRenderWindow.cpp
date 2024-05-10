@@ -41,6 +41,7 @@
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! OS_MACOS
 #include <dragengine/app/deOSUnix.h>
+#include <X11/Xatom.h>
 #include "../extensions/deoglXExtResult.h"
 #endif
 
@@ -454,6 +455,8 @@ void deoglRRenderWindow::CreateWindow(){
 				XMapWindow( display, pWindow );
 			}
 			XSync( display, False ); // required or strange problems can happen
+			
+			pUpdateFullScreen();
 			
 		}catch( const deException &e ){
 			if( pWindow > 255 ){
@@ -973,26 +976,27 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 		const Atom atomWMState = XInternAtom( display, "_NET_WM_STATE", False );
 		const Atom atomFullScreen = XInternAtom( display, "_NET_WM_STATE_FULLSCREEN", False );
 		
+		XChangeProperty( display, pWindow, atomWMState, XA_ATOM, 32,
+			PropModeReplace, ( const unsigned char* )&atomFullScreen, 1 );
+		
 		XEvent event;
 		memset( &event, 0, sizeof( event ) );
 		event.xclient.type = ClientMessage;
 		event.xclient.send_event = True;
+		event.xclient.display = display;
 		event.xclient.window = pWindow;
 		event.xclient.message_type = atomWMState;
 		event.xclient.format = 32;
-		
-		if( pFullScreen ){ // 0(unset property), 1(set property), 2(toggle property)
-			event.xclient.data.l[ 0 ] = 1;
-			
-		}else{
-			event.xclient.data.l[ 0 ] = 0;
-		}
-		
-		event.xclient.data.l[ 1 ] = atomFullScreen; // property to change
+		event.xclient.data.l[ 0 ] = pFullScreen ? 1 : 0; // 0(unset property), 1(set property), 2(toggle property)
+		event.xclient.data.l[ 1 ] = atomFullScreen;
 		event.xclient.data.l[ 2 ] = 0; // must be set to zero if only one property is to be changed
 		event.xclient.data.l[ 3 ] = 1; // source indicator: 0(legacy application), 1(application), 2(direct user input)
 		
-		XSendEvent( display, rootWindow, False, SubstructureRedirectMask | SubstructureNotifyMask, &event );
+		int rc = XSendEvent( display, rootWindow, False,
+			SubstructureRedirectMask | SubstructureNotifyMask, &event );
+		if( rc != Success ){
+			pRenderThread.GetLogger().LogErrorFormat("Switch fullscreen failed: %d", rc);
+		}
 		XSync( display, False ); // make sure the request is processed before going on
 	}
 #endif

@@ -421,11 +421,13 @@ void projTestRunEngine::CreateMainWindow(){
 	int width = runParameters.windowSizeX;
 	int height = runParameters.windowSizeY;
 	
+	/*
 	if( runParameters.fullScreen ){
 		const decPoint resolution( pEngine->GetOS()->GetDisplayCurrentResolution( 0 ) );
 		width = resolution.x;
 		height = resolution.y;
 	}
+	*/
 	
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "Creating window %i x %i", width, height );
 	pEngine->GetGraphicSystem()->CreateAndSetRenderWindow( width, height,
