@@ -27,6 +27,7 @@
 
 #include "../deBaseModule.h"
 #include "../../../common/string/decStringSet.h"
+#include "../../../resources/service/deServiceObject.h"
 
 class deBaseServiceService;
 class deService;
@@ -59,7 +60,8 @@ public:
 	 * 
 	 * If service name is not supported nullptr is returned.
 	 */
-	virtual deBaseServiceService *CreateService( deService *service, const char *name ) = 0;
+	virtual deBaseServiceService *CreateService( deService *service,
+		const char *name, const deServiceObject::Ref &data ) = 0;
 	/*@}*/
 };
 

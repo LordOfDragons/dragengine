@@ -71,7 +71,30 @@ void deClassService::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	
 	// create object
 	const char * const name = rt->GetValue( 0 )->GetString();
-	nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService( name );
+	nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService( name, nullptr );
+}
+
+// func new(String name, ServiceObject data)
+deClassService::nfNew2::nfNew2( const sInitData &init ) :
+dsFunction( init.clsService, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // name
+	p_AddParameter( init.clsServiceObject ); // data
+}
+
+void deClassService::nfNew2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deScriptingDragonScript &ds = ( ( deClassService* )GetOwnerClass() )->GetDS();
+	sServiceNatDat &nd = *( ( sServiceNatDat* )p_GetNativeData( myself ) );
+	
+	// clear (important)
+	nd.service = nullptr;
+	
+	// create object
+	const char * const name = rt->GetValue( 0 )->GetString();
+	const deServiceObject::Ref data( ds.GetClassServiceObject()->GetServiceObject(
+		rt->GetValue( 1 )->GetRealObject() ) );
+	
+	nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService( name, data );
 }
 
 // public func destructor()
@@ -284,6 +307,7 @@ void deClassService::CreateClassMembers( dsEngine *engine ){
 	init.clsServiceObject = pDS.GetClassServiceObject();
 	
 	AddFunction( new nfNew( init ) );
+	AddFunction( new nfNew2( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetName( init ) );

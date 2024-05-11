@@ -36,6 +36,13 @@ class Service
 	 */
 	func new(String name)
 	end
+	
+	/**
+	 * \brief Create named service with additional creation data.
+	 * \throw EInvalidParam Named service not supported by any loaded service module.
+	 */
+	func new(String name, ServiceObject data)
+	end
 	/*@}*/
 	
 	

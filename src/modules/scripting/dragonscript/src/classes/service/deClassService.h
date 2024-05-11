@@ -90,6 +90,7 @@ private:
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC( nfNew );
+	DEF_NATFUNC( nfNew2 );
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetName );

@@ -26,6 +26,7 @@
 #define _DESERVICEMANAGER_H_ 
 
 #include "deService.h"
+#include "deServiceObject.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 #include "../../common/collection/decObjectList.h"
@@ -81,7 +82,7 @@ public:
 	 * \brief Create named service.
 	 * \throw deeInvalidParam Named service not supported by any loaded service module.
 	 */
-	deService::Ref CreateService( const char *name );
+	deService::Ref CreateService( const char *name, const deServiceObject::Ref &data );
 	
 	/**
 	 * \brief Queue request response event.
@@ -120,7 +121,7 @@ public:
 	 * \brief Those functions are only for resource objects and should never be called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource( deResource *resource ) override;
 	/*@}*/
 };
 

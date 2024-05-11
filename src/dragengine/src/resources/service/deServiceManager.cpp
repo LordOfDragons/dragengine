@@ -125,7 +125,7 @@ decStringSet deServiceManager::GetAllSupportedSerices() const{
 	return names;
 }
 
-deService::Ref deServiceManager::CreateService( const char *name ){
+deService::Ref deServiceManager::CreateService( const char *name, const deServiceObject::Ref &data ){
 	DEASSERT_NOTNULL( name )
 	
 	deEngine * const engine = GetEngine();
@@ -148,7 +148,7 @@ deService::Ref deServiceManager::CreateService( const char *name ){
 		const deService::Ref service( deService::Ref::New( new deService( this, name ) ) );
 		
 		deBaseServiceModule * const srvmod = ( deBaseServiceModule* )loadmod.GetModule();
-		deBaseServiceService * const peer = srvmod->CreateService( service, name );
+		deBaseServiceService * const peer = srvmod->CreateService( service, name, data );
 		if( ! peer ){
 			continue;
 		}
