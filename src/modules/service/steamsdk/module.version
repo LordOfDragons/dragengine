@@ -1,0 +1,4 @@
+SRVSTEAMSDK {
+  global: SsdkCreateModule;
+  local: *;
+};
