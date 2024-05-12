@@ -182,10 +182,9 @@ void deSsdkServiceSteam::GetStats( const decUniqueID &id, const deServiceObject&
 	
 	soIn = request.GetChildAt( "stats" );
 	if( soIn ){
-		const decStringList keys( soIn->GetChildrenKeys() );
-		count = keys.GetCount();
+		count = soIn->GetChildCount();
 		for( i=0; i<count; i++ ){
-			const decString &apiName = keys.GetAt( i );
+			const decString &apiName = soIn->GetChildAt( i )->GetString();
 			int32 valueInt;
 			float valueFloat;
 			if( SteamUserStats()->GetStat( apiName, &valueInt ) ){
@@ -203,10 +202,9 @@ void deSsdkServiceSteam::GetStats( const decUniqueID &id, const deServiceObject&
 	
 	soIn = request.GetChildAt( "achievements" );
 	if( soIn ){
-		const decStringList keys( soIn->GetChildrenKeys() );
-		count = keys.GetCount();
+		count = soIn->GetChildCount();
 		for( i=0; i<count; i++ ){
-			const decString &apiName = keys.GetAt( i );
+			const decString &apiName = soIn->GetChildAt( i )->GetString();
 			bool achieved;
 			if( SteamUserStats()->GetAchievement( apiName, &achieved ) ){
 				soResp->SetBoolChildAt( apiName, achieved );

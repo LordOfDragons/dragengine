@@ -39,7 +39,7 @@
 	#include <unistd.h>
 	#include <linux/limits.h>
 #elif defined OS_W32
-	#include <dragengine/app/include_windows.h>
+	#include <dragengine/app/deOSWindows.h>
 #endif
 
 
@@ -189,7 +189,10 @@ void deSteamSdk::InitSdk( const deServiceObject::Ref &data ){
 			if( ! GetCurrentDirectory( MAX_PATH, workDir ) ){
 				DETHROW_INFO( deeInvalidAction, "Failed getting working directory" );
 			}
-			if( ! SetCurrentDirectory( pathCache.GetPathNative() ) ){
+
+			TCHAR targetDir[ MAX_PATH ];
+			deOSWindows::Utf8ToWide( pathCache.GetPathNative(), targetDir, MAX_PATH );
+			if( ! SetCurrentDirectory( targetDir ) ){
 				DETHROW_INFO( deeInvalidAction, "Failed changing working directory" );
 			}
 			
