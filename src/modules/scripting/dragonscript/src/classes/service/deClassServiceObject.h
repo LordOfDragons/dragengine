@@ -27,8 +27,9 @@
 
 #include <libdscript/libdscript.h>
 
+#include <dragengine/resources/service/deServiceObject.h>
+
 class deScriptingDragonScript;
-class deServiceObject;
 class deResource;
 
 
@@ -66,7 +67,7 @@ public:
 	deServiceObject *GetServiceObject( dsRealObject *myself ) const;
 	
 	/** Push service object which can be nullptr. */
-	void PushServiceObject( dsRunTime *rt, deServiceObject *object );
+	void PushServiceObject( dsRunTime *rt, const deServiceObject::Ref &object );
 	
 	inline dsClass *GetClassServiceObjectType() const{ return pClsServiceObjectType; }
 	

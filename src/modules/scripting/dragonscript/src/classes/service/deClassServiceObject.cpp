@@ -767,7 +767,7 @@ deServiceObject *deClassServiceObject::GetServiceObject( dsRealObject *myself ) 
 	return ( ( sServiceObjectNatDat* )p_GetNativeData( myself->GetBuffer() ) )->object;
 }
 
-void deClassServiceObject::PushServiceObject( dsRunTime *rt, deServiceObject *object ){
+void deClassServiceObject::PushServiceObject( dsRunTime *rt, const deServiceObject::Ref &object ){
 	if( ! rt ){
 		DSTHROW( dueInvalidParam );
 	}
