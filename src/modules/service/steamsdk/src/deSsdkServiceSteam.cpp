@@ -171,7 +171,7 @@ void deSsdkServiceSteam::RequestCurrentStats( const decUniqueID &id ){
 
 void deSsdkServiceSteam::GetStats( const decUniqueID &id, const deServiceObject& request ){
 	const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
-	deServiceObject::Ref soIn, soResp, soItem;
+	deServiceObject::Ref soIn, soResp;
 	int i, count;
 	
 	response->SetStringChildAt( "function", "getStats" );
@@ -180,23 +180,20 @@ void deSsdkServiceSteam::GetStats( const decUniqueID &id, const deServiceObject&
 	soResp.TakeOver( new deServiceObject );
 	response->SetChildAt( "stats", soResp );
 	
-	soIn = request.GetChildAt( "statApiNames" );
+	soIn = request.GetChildAt( "stats" );
 	if( soIn ){
-		count = soIn->GetChildCount();
+		const decStringList keys( soIn->GetChildrenKeys() );
+		count = keys.GetCount();
 		for( i=0; i<count; i++ ){
-			const decString &apiName = soIn->GetChildAt( i )->GetString();
-			soItem.TakeOver( new deServiceObject );
-			
+			const decString &apiName = keys.GetAt( i );
 			int32 valueInt;
 			float valueFloat;
 			if( SteamUserStats()->GetStat( apiName, &valueInt ) ){
-				soItem->SetIntChildAt( "value", valueInt );
+				soResp->SetIntChildAt( apiName, valueInt );
 				
 			}else if( SteamUserStats()->GetStat( apiName, &valueFloat ) ){
-				soItem->SetFloatChildAt( "value", valueFloat );
+				soResp->SetFloatChildAt( apiName, valueFloat );
 			}
-			
-			soResp->SetChildAt( apiName, soItem );
 		}
 	}
 	
@@ -204,26 +201,16 @@ void deSsdkServiceSteam::GetStats( const decUniqueID &id, const deServiceObject&
 	soResp.TakeOver( new deServiceObject );
 	response->SetChildAt( "achievements", soResp );
 	
-	soIn = request.GetChildAt( "achievementApiNames" );
+	soIn = request.GetChildAt( "achievements" );
 	if( soIn ){
-		count = soIn->GetChildCount();
+		const decStringList keys( soIn->GetChildrenKeys() );
+		count = keys.GetCount();
 		for( i=0; i<count; i++ ){
-			const decString &apiName = soIn->GetChildAt( i )->GetString();
-			soItem.TakeOver( new deServiceObject );
-			
+			const decString &apiName = keys.GetAt( i );
 			bool achieved;
-			uint32 unlockTime;
-			if( SteamUserStats()->GetAchievementAndUnlockTime( apiName, &achieved, &unlockTime ) ){
-				soItem->SetBoolChildAt( "achieved", achieved );
-				//so2->SetBoolChildAt( "achievedTime", achieved );
+			if( SteamUserStats()->GetAchievement( apiName, &achieved ) ){
+				soResp->SetBoolChildAt( apiName, achieved );
 			}
-			
-			float percentage;
-			if( SteamUserStats()->GetAchievementAchievedPercent( apiName, &percentage ) ){
-				soItem->SetFloatChildAt( "percentage", percentage );
-			}
-			
-			soResp->SetChildAt( apiName, soItem );
 		}
 	}
 	
