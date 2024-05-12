@@ -22,53 +22,52 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMICROSOFTGDK_H_
-#define _DEMICROSOFTGDK_H_
+#ifndef _DESTEAMSDK_H_
+#define _DESTEAMSDK_H_
 
-#include "gdk_include.h"
+#include "steam_api.h"
 
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
 
 
 /**
- * Microsoft GDK Service Module.
+ * Steam SDK Service Module.
  */
-class deMicrosoftGDK : public deBaseServiceModule{
+class deSteamSdk : public deBaseServiceModule{
 private:
 	bool pSdkInited;
-
-
+	
+	
+public:
+	static deSteamSdk *globalModule;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deMicrosoftGDK(deLoadableModule &loadableModule);
+	deSteamSdk( deLoadableModule &loadableModule );
 	
 	/** Delete module. */
-	~deMicrosoftGDK() override;
+	~deSteamSdk() override;
 	/*@}*/
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Map error code to string. */
-	const char *GetErrorCodeString(HRESULT code) const;
-
-
-	/** \brief Set of supported service names. */
+	/** Set of supported service names. */
 	decStringSet GetSupportedServices() override;
 	
+	/** Initialize Steam SDK if not initialized yet. */
+	void InitSdk( const deServiceObject::Ref &data );
+	
 	/**
-	 * \brief Create service peer.
+	 * Create service peer.
 	 * 
 	 * If service name is not supported nullptr is returned.
 	 */
-	deBaseServiceService *CreateService(deService *service,
-		const char *name, const deServiceObject::Ref &data) override;
-
-
-	/** Init SDK if not already inited. */
-	void InitSdk();
+	deBaseServiceService *CreateService( deService *service,
+		const char *name, const deServiceObject::Ref &data ) override;
 	/*@}*/
 };
 

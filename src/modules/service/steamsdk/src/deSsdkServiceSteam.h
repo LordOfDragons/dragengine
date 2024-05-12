@@ -22,53 +22,60 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMICROSOFTGDK_H_
-#define _DEMICROSOFTGDK_H_
+#ifndef _DESSDKSERVICESTEAM_H_
+#define _DESSDKSERVICESTEAM_H_
 
-#include "gdk_include.h"
+#include <steam_api.h>
 
-#include <dragengine/systems/modules/service/deBaseServiceModule.h>
+#include <dragengine/systems/modules/service/deBaseServiceService.h>
+#include <dragengine/resources/service/deServiceObject.h>
+
+class deSteamSdk;
+class deService;
 
 
 /**
- * Microsoft GDK Service Module.
+ * Microsoft GDK Service.
  */
-class deMicrosoftGDK : public deBaseServiceModule{
+class deSsdkServiceSteam : public deBaseServiceService{
+public:
+	static const char * const serviceName;
+	
+	
 private:
-	bool pSdkInited;
-
-
+	deSteamSdk &pModule;
+	deService * const pService;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deMicrosoftGDK(deLoadableModule &loadableModule);
+	deSsdkServiceSteam( deSteamSdk &module, deService *service, const deServiceObject::Ref &data );
 	
 	/** Delete module. */
-	~deMicrosoftGDK() override;
+	~deSsdkServiceSteam() override;
 	/*@}*/
+	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Map error code to string. */
-	const char *GetErrorCodeString(HRESULT code) const;
-
-
-	/** \brief Set of supported service names. */
-	decStringSet GetSupportedServices() override;
+	/**
+	 * \brief Start service request.
+	 * 
+	 * Script module peer is called with the received answer. Depending on the service the
+	 * answer can be received continuously or as individual responses or in smaller chunks.
+	 * The script module has to use a unique id for each request. The same id is returned
+	 * in responses to allow matching them to requests. The id can also be used to cancel
+	 * a request at any time.
+	 */
+	void StartRequest( const decUniqueID &id, const deServiceObject &request ) override;
 	
 	/**
-	 * \brief Create service peer.
-	 * 
-	 * If service name is not supported nullptr is returned.
+	 * \brief Cancel service request if running.
 	 */
-	deBaseServiceService *CreateService(deService *service,
-		const char *name, const deServiceObject::Ref &data) override;
-
-
-	/** Init SDK if not already inited. */
-	void InitSdk();
+	void CancelRequest( const decUniqueID &id ) override;
 	/*@}*/
 };
 
