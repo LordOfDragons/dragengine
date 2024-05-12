@@ -27,26 +27,28 @@
 
 #include <libdscript/libdscript.h>
 
+#include <dragengine/common/utils/decUniqueID.h>
+
 class deScriptingDragonScript;
 class deService;
 
 
 /**
- * \brief Service script class.
+ * Service script class.
  */
 class deClassService : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
-	
+	decUniqueID pNextId;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create class. */
+	/** Create class. */
 	deClassService( deScriptingDragonScript &ds );
 	
-	/** \brief Clean up class. */
+	/** Clean up class. */
 	virtual ~deClassService();
 	/*@}*/
 	
@@ -54,17 +56,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
-	/** \brief Creates class members. */
+	/** Creates class members. */
 	void CreateClassMembers( dsEngine *engine );
 	
-	/** \brief Service or nullptr if myself is nullptr. */
+	/** Service or nullptr if myself is nullptr. */
 	deService *GetService( dsRealObject *myself ) const;
 	
-	/** \brief Push service which can be nullptr. */
+	/** Push service which can be nullptr. */
 	void PushService( dsRunTime *rt, deService *service );
+	
+	/** Next identifier. */
+	decUniqueID NextId();
 	/*@}*/
 	
 	
@@ -98,7 +103,9 @@ private:
 	DEF_NATFUNC( nfGetListener );
 	DEF_NATFUNC( nfSetListener );
 	
+	DEF_NATFUNC( nfNextId );
 	DEF_NATFUNC( nfStartRequest );
+	DEF_NATFUNC( nfStartRequest2 );
 	DEF_NATFUNC( nfCancelRequest );
 	
 	DEF_NATFUNC( nfHashCode );

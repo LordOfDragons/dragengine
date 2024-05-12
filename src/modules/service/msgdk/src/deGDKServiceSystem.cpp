@@ -54,8 +54,7 @@ deGDKServiceSystem::~deGDKServiceSystem(){
 void deGDKServiceSystem::StartRequest(const decUniqueID& id, const deServiceObject& request){
 	deServiceManager &srvmgr = *pModule.GetGameEngine()->GetServiceManager();
 	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
-	so->AddChild("error", deServiceObject::Ref::New(
-		deServiceObject::NewString("invalidRequest")));
+	so->SetStringChildAt("error", "invalidRequest");
 	srvmgr.QueueRequestFailed(deService::Ref(pService), id, so);
 	
 	if(false){

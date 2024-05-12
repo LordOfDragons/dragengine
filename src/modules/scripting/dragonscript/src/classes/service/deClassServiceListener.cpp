@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include "deClassService.h"
 #include "deClassServiceListener.h"
 #include "deClassServiceObject.h"
 #include "../utils/deClassUniqueID.h"
@@ -38,10 +39,11 @@
 // Native Functions
 /////////////////////
 
-// func void requestResponse(UniqueID id, ServiceObject response, bool finished)
+// func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 deClassServiceListener::nfRequestResponse::nfRequestResponse( const sInitData &init ) :
 dsFunction( init.clsServiceListener, "requestResponse", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsService ); // service
 	p_AddParameter( init.clsUniqueID ); // id
 	p_AddParameter( init.clsServiceObject ); // response
 	p_AddParameter( init.clsBoolean ); // finished
@@ -51,10 +53,11 @@ void deClassServiceListener::nfRequestResponse::RunFunction( dsRunTime*, dsValue
 }
 
 
-// func void requestFailed(UniqueID id, ServiceObject error)
+// func void requestFailed(Service service, UniqueID id, ServiceObject error)
 deClassServiceListener::nfRequestFailed::nfRequestFailed( const sInitData &init ) :
 dsFunction( init.clsServiceListener, "requestFailed", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsService ); // service
 	p_AddParameter( init.clsUniqueID ); // id
 	p_AddParameter( init.clsServiceObject ); // error
 }
@@ -63,10 +66,11 @@ void deClassServiceListener::nfRequestFailed::RunFunction( dsRunTime*, dsValue* 
 }
 
 
-// func void eventReceived(ServiceObject event)
+// func void eventReceived(Service service, ServiceObject event)
 deClassServiceListener::nfEventReceived::nfEventReceived( const sInitData &init ) :
 dsFunction( init.clsServiceListener, "eventReceived", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsService ); // service
 	p_AddParameter( init.clsServiceObject ); // event
 }
 void deClassServiceListener::nfEventReceived::RunFunction( dsRunTime*, dsValue* ){
@@ -104,6 +108,7 @@ void deClassServiceListener::CreateClassMembers( dsEngine *engine ){
 	init.clsVoid = engine->GetClassVoid();
 	init.clsBoolean = engine->GetClassBool();
 	init.clsUniqueID = pDS.GetClassUniqueID();
+	init.clsService = pDS.GetClassService();
 	init.clsServiceObject = pDS.GetClassServiceObject();
 	
 	AddFunction( new nfRequestResponse( init ) ); // function 0

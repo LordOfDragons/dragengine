@@ -22,51 +22,34 @@
  * SOFTWARE.
  */
 
-#ifndef _DEBASESERVICEMODULE_H_
-#define _DEBASESERVICEMODULE_H_
+#ifndef _DESSDKPENDINGREQUEST_H_
+#define _DESSDKPENDINGREQUEST_H_
 
-#include "../deBaseModule.h"
-#include "../../../common/string/decStringSet.h"
-#include "../../../resources/service/deServiceObject.h"
-
-class deBaseServiceService;
-class deService;
+#include <dragengine/deObject.h>
+#include <dragengine/common/utils/decUniqueID.h>
+#include <dragengine/resources/service/deServiceObject.h>
 
 
 /**
- * \brief Base service module providing platform or community services.
- * \version 1.23
+ * Pending service request.
  */
-class DE_DLL_EXPORT deBaseServiceModule : public deBaseModule{
+class deSsdkPendingRequest : public deObject{
 public:
+	typedef deTObjectReference<deSsdkPendingRequest> Ref;
+	
+	
+	decUniqueID id;
+	decString function;
+	deServiceObject::Ref data;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create module. */
-	deBaseServiceModule( deLoadableModule &loadableModule );
+	/** Create module. */
+	deSsdkPendingRequest();
 	
-	/** \brief Clean up module. */
-	virtual ~deBaseServiceModule();
-	/*@}*/
-	
-	
-	
-	/** \name Management */
-	/*@{*/
-	/** \brief Set of supported service names. */
-	virtual decStringSet GetSupportedServices() = 0;
-	
-	/**
-	 * \brief Create service peer.
-	 * 
-	 * If service name is not supported nullptr is returned.
-	 */
-	virtual deBaseServiceService *CreateService( deService *service,
-		const char *name, const deServiceObject::Ref &data ) = 0;
-	
-	/**
-	 * \brief Frame update.
-	 */
-	virtual void FrameUpdate( float elapsed ) = 0;
+	/** Delete module. */
+	~deSsdkPendingRequest() override;
 	/*@}*/
 };
 

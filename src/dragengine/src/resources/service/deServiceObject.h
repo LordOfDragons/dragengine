@@ -25,6 +25,7 @@
 #ifndef _DESERVICEOBJECT_H_
 #define _DESERVICEOBJECT_H_
 
+#include "../../common/collection/decObjectList.h"
 #include "../../common/collection/decObjectDictionary.h"
 #include "../../common/file/decMemoryFile.h"
 #include "../../resources/deResource.h"
@@ -35,8 +36,8 @@
  * \version 1.23
  * 
  * Stores data object for use with platform services. Object value can be a boolean,
- * an integer, a float, a string, a resource, data or a dictionary of objects.
- * A list of objects is represented as a dictionary with the string index as key.
+ * an integer, a float, a string, a resource, data, a list of objects or a dictionary
+ * of objects.
  * 
  * A newly created service object is of type evtDictionary.
  */
@@ -68,6 +69,9 @@ public:
 		/** \brief Data. */
 		evtData,
 		
+		/** \brief List of objects. */
+		evtList,
+		
 		/** \brief Dictionary of objects. */
 		evtDictionary
 	};
@@ -85,6 +89,7 @@ private:
 	decString pString;
 	deResource::Ref pResource;
 	decMemoryFile::Ref pData;
+	decObjectList pList;
 	decObjectDictionary pDictionary;
 	
 	
@@ -112,6 +117,9 @@ public:
 	
 	/** \brief Create service object of type evtData. */
 	static deServiceObject::Ref NewData( const decMemoryFile::Ref &value );
+	
+	/** \brief Create service object of type evtList. */
+	static deServiceObject::Ref NewList();
 	
 	/** \brief Copy content from another object. */
 	deServiceObject( const deServiceObject &object, bool deep = false );
@@ -233,12 +241,15 @@ public:
 	
 	
 	
+	/** \brief Is list value. */
+	inline bool IsList() const{ return pValueType == evtList; }
+	
 	/** \brief Is dictionary value. */
 	inline bool IsDictionary() const{ return pValueType == evtDictionary; }
 	
 	/**
 	 * \brief Count of child objects.
-	 * \throws EInvalidParam Value type is not evtDictionary.
+	 * \throws EInvalidParam Value type is not evtList or evtDictionary.
 	 */
 	int GetChildCount() const;
 	
@@ -249,10 +260,22 @@ public:
 	decStringList GetChildrenKeys() const;
 	
 	/**
+	 * \brief Child object at index.
+	 * \throws EInvalidParam Value type is not evtList.
+	 */
+	deServiceObject::Ref GetChildAt( int index ) const;
+	
+	/**
 	 * \brief Child object with key or nullptr if absent.
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
 	deServiceObject::Ref GetChildAt( const char *key ) const;
+	
+	/**
+	 * \brief Add child object.
+	 * \throws EInvalidParam Value type is not evtList.
+	 */
+	void AddChild( const deServiceObject::Ref &child );
 	
 	/**
 	 * \brief Add child object.
@@ -261,7 +284,103 @@ public:
 	 * 
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void AddChild( const char *key, const deServiceObject::Ref &child );
+	void SetChildAt( const char *key, const deServiceObject::Ref &child );
+	
+	/**
+	 * \brief Add boolean type child object.
+	 * \throws EInvalidParam Value type is not evtList.
+	 */
+	void AddBoolChild( bool value );
+	
+	/**
+	 * \brief Add boolean type child object.
+	 * 
+	 * Overwrites children with same name if present.
+	 * 
+	 * \throws EInvalidParam Value type is not evtDictionary.
+	 */
+	void SetBoolChildAt( const char *key, bool value );
+	
+	/**
+	 * \brief Add integer type child object.
+	 * \throws EInvalidParam Value type is not evtList.
+	 */
+	void AddIntChild( int value );
+	
+	/**
+	 * \brief Add integer type child object.
+	 * 
+	 * Overwrites children with same name if present.
+	 * 
+	 * \throws EInvalidParam Value type is not evtDictionary.
+	 */
+	void SetIntChildAt( const char *key, int value );
+	
+	/**
+	 * \brief Add float type child object.
+	 * \throws EInvalidParam Value type is not evtList.
+	 */
+	void AddFloatChild( double value );
+	
+	/**
+	 * \brief Add float type child object.
+	 * 
+	 * Overwrites children with same name if present.
+	 * 
+	 * \throws EInvalidParam Value type is not evtDictionary.
+	 */
+	void SetFloatChildAt( const char *key, double value );
+	
+	/**
+	 * \brief Add string type child object.
+	 * \throws EInvalidParam Value type is not evtList.
+	 */
+	void AddStringChild( const char *value );
+	
+	/**
+	 * \brief Add string type child object.
+	 * 
+	 * Overwrites children with same name if present.
+	 * 
+	 * \throws EInvalidParam Value type is not evtDictionary.
+	 */
+	void SetStringChildAt( const char *key, const char *value );
+	
+	/**
+	 * \brief Add resource type child object.
+	 * \throws EInvalidParam Value type is not evtDictionary.
+	 */
+	void AddResourceChild( deResource *value );
+	
+	/**
+	 * \brief Add resource type child object.
+	 * 
+	 * Overwrites children with same name if present.
+	 * 
+	 * \throws EInvalidParam Value type is not evtDictionary.
+	 */
+	void SetResourceChildAt( const char *key, deResource *value );
+	
+	/**
+	 * \brief Add data type child object.
+	 * \throws EInvalidParam Value type is not evtList.
+	 */
+	void AddDataChild( const decMemoryFile::Ref &value );
+	
+	/**
+	 * \brief Add data type child object.
+	 * 
+	 * Overwrites children with same name if present.
+	 * 
+	 * \throws EInvalidParam Value type is not evtDictionary.
+	 */
+	void SetDataChildAt( const char *key, const decMemoryFile::Ref &value );
+	
+	/**
+	 * \brief Remove child object at index.
+	 * \throws EInvalidParam Value type is not evtList.
+	 */
+	void RemoveChild( int index );
 	
 	/**
 	 * \brief Remove child object with key if present.
@@ -271,7 +390,7 @@ public:
 	
 	/**
 	 * \brief Remove all child objects.
-	 * \throws EInvalidParam Value type is not evtDictionary.
+	 * \throws EInvalidParam Value type is not evtList or evtDictionary.
 	 */
 	void RemoveAllChildren();
 	/*@}*/

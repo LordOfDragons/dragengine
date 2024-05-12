@@ -48,7 +48,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *SSDKCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *SsdkCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
 #endif
@@ -60,7 +60,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *SSDKCreateModule( deLoadableModule *loadableM
 // returns NULL on error.
 /////////////////////////////////////////////////////////
 
-deBaseModule *SSDKCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *SsdkCreateModule( deLoadableModule *loadableModule ){
 	try{
 		return new deSteamSdk( *loadableModule );
 	}catch( ... ){
@@ -234,4 +234,10 @@ const char *name, const deServiceObject::Ref &data ){
 	}
 	
 	return nullptr;
+}
+
+void deSteamSdk::FrameUpdate( float ){
+	if( pSdkInited ){
+		SteamAPI_RunCallbacks();
+	}
 }

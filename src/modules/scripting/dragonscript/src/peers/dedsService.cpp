@@ -161,6 +161,7 @@ const deServiceObject::Ref &response, bool finished ){
 		rt->PushBool( finished ); // finished
 		pDS.GetClassServiceObject()->PushServiceObject( rt, response ); // response
 		pDS.GetClassUniqueID()->PushUniqueID( rt, id ); // id
+		pDS.GetClassService()->PushService( rt, pService ); // service
 		rt->RunFunctionFast( pValCB, funcIndex );
 		
 	}catch( const duException &e ){
@@ -187,6 +188,7 @@ void dedsService::RequestFailed( const decUniqueID &id, const deServiceObject::R
 	try{
 		pDS.GetClassServiceObject()->PushServiceObject( rt, error ); // error
 		pDS.GetClassUniqueID()->PushUniqueID( rt, id ); // id
+		pDS.GetClassService()->PushService( rt, pService ); // service
 		rt->RunFunctionFast( pValCB, funcIndex );
 		
 	}catch( const duException &e ){
@@ -212,6 +214,7 @@ void dedsService::EventReceived( const deServiceObject::Ref &event ){
 	
 	try{
 		pDS.GetClassServiceObject()->PushServiceObject( rt, event ); // event
+		pDS.GetClassService()->PushService( rt, pService ); // service
 		rt->RunFunctionFast( pValCB, funcIndex );
 		
 	}catch( const duException &e ){

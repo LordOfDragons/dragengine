@@ -68,7 +68,8 @@ public:
 ////////////////////////////
 
 deServiceManager::deServiceManager( deEngine *engine ) :
-deResourceManager( engine, ertService )
+deResourceManager( engine, ertService ),
+pDirtyModules( false )
 {
 	SetLoggingName( "service" );
 }
@@ -156,6 +157,7 @@ deService *deServiceManager::CreateService( const char *name, const deServiceObj
 		service->SetPeerService( srvmod, peer );
 		engine->GetScriptingSystem()->CreateService( service );
 		pServices.Add( service );
+		pDirtyModules = true;
 		service->AddReference(); // caller takes over reference
 		return service;
 	}
@@ -181,7 +183,76 @@ const deServiceObject::Ref &event ){
 	pEventQueue.Add( new cEvent( cEvent::eeEventReceived, service, decUniqueID(), event, true ) );
 }
 
-void deServiceManager::ProcessQueuedEvents(){
+
+
+void deServiceManager::FrameUpdate(){
+	pUpdateModuleList();
+	pUpdateModules();
+	pProcessEvents();
+}
+
+
+
+void deServiceManager::SystemScriptingLoad(){
+	deService *service = ( deService* )pServices.GetRoot();
+	
+	while( service ){
+		if( ! service->GetPeerScripting() ){
+			GetScriptingSystem()->CreateService( service );
+		}
+		
+		service = ( deService* ) service->GetLLManagerNext();
+	}
+}
+
+void deServiceManager::SystemScriptingUnload(){
+	deService *service = ( deService* )pServices.GetRoot();
+	
+	while( service ){
+		service->SetPeerScripting( nullptr );
+		service = ( deService* ) service->GetLLManagerNext();
+	}
+}
+void deServiceManager::RemoveResource( deResource *resource ){
+	pServices.RemoveIfPresent( resource );
+	pDirtyModules = true;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deServiceManager::pUpdateModuleList(){
+	if( ! pDirtyModules ){
+		return;
+	}
+	
+	pDirtyModules = false;
+	pModules.RemoveAll();
+	
+	const deService *service = ( const deService* )pServices.GetRoot();
+	while( service ){
+		pModules.AddIfAbsent( service->GetServiceModule() );
+		service = ( const deService* )service->GetLLManagerNext();
+	}
+}
+
+void deServiceManager::pUpdateModules(){
+	const int count = pModules.GetCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	const float elapsed = GetEngine()->GetElapsedTime();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( deBaseServiceModule* )pModules.GetAt( i ) )->FrameUpdate( elapsed );
+	}
+}
+
+void deServiceManager::pProcessEvents(){
 	decObjectList events;
 	{
 	const deMutexGuard lock( pMutex );
@@ -193,7 +264,7 @@ void deServiceManager::ProcessQueuedEvents(){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const cEvent &event = *( ( cEvent* )pEventQueue.GetAt( 0 ) );
+		const cEvent &event = *( ( cEvent* )events.GetAt( 0 ) );
 		switch( event.type ){
 		case cEvent::eEvents::eeRequestResponse:
 			event.service->RequestResponse( event.id, event.data, event.finished );
@@ -208,8 +279,4 @@ void deServiceManager::ProcessQueuedEvents(){
 			break;
 		}
 	}
-}
-
-void deServiceManager::RemoveResource( deResource *resource ){
-	pServices.RemoveIfPresent( resource );
 }

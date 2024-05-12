@@ -83,6 +83,7 @@ private:
 		dsClass *clsBoolean;
 		
 		dsClass *clsUniqueID;
+		dsClass *clsService;
 		dsClass *clsServiceObject;
 	};
 	

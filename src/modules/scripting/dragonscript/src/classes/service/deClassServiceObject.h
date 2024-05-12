@@ -117,6 +117,7 @@ private:
 	DEF_NATFUNC( nfNewString );
 	DEF_NATFUNC( nfNewResource );
 	DEF_NATFUNC( nfNewData );
+	DEF_NATFUNC( nfNewList );
 	DEF_NATFUNC( nfNewCopy );
 	DEF_NATFUNC( nfDestructor );
 	
@@ -140,12 +141,28 @@ private:
 	DEF_NATFUNC( nfIsData );
 	DEF_NATFUNC( nfGetData );
 	
+	DEF_NATFUNC( nfIsList );
 	DEF_NATFUNC( nfIsDictionary );
 	DEF_NATFUNC( nfGetChildCount );
 	DEF_NATFUNC( nfGetChildrenKeys );
 	DEF_NATFUNC( nfGetChildAt );
+	DEF_NATFUNC( nfGetChildAt2 );
 	DEF_NATFUNC( nfAddChild );
+	DEF_NATFUNC( nfSetChildAt );
+	DEF_NATFUNC( nfAddBoolChild );
+	DEF_NATFUNC( nfSetBoolChildAt );
+	DEF_NATFUNC( nfAddIntChild );
+	DEF_NATFUNC( nfSetIntChildAt );
+	DEF_NATFUNC( nfAddFloatChild );
+	DEF_NATFUNC( nfSetFloatChildAt );
+	DEF_NATFUNC( nfAddStringChild );
+	DEF_NATFUNC( nfSetStringChildAt );
+	DEF_NATFUNC( nfAddResourceChild );
+	DEF_NATFUNC( nfSetResourceChildAt );
+	DEF_NATFUNC( nfAddDataChild );
+	DEF_NATFUNC( nfSetDataChildAt );
 	DEF_NATFUNC( nfRemoveChild );
+	DEF_NATFUNC( nfRemoveChild2 );
 	DEF_NATFUNC( nfRemoveAllChildren );
 	
 	DEF_NATFUNC( nfHashCode );

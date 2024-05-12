@@ -66,6 +66,10 @@ public:
 	deBaseServiceService *CreateService(deService *service,
 		const char *name, const deServiceObject::Ref &data) override;
 
+	/**
+	 * \brief Frame update.
+	 */
+	void FrameUpdate(float elapsed) override;
 
 	/** Init SDK if not already inited. */
 	void InitSdk();

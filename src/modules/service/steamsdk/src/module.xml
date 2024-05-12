@@ -12,6 +12,6 @@
 		<file>FILENAME</file>
 		<size>FILESIZE</size>
 		<sha1>SHA1SUM</sha1>
-		<entrypoint>SSDKCreateModule</entrypoint>
+		<entrypoint>SsdkCreateModule</entrypoint>
 	</library>
 </module>

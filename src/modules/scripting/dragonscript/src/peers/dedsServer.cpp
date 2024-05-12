@@ -70,7 +70,7 @@ dedsServer::~dedsServer(){
 		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
 	}
 	
-	pValCB = NULL;
+	pValCB = nullptr;
 	pHasCB = false;
 }
 

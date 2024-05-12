@@ -57,6 +57,11 @@ class ServiceObject
 		return null
 	end
 	
+	/** \brief Create service object of type \ref ServiceObjectType#list with value. */
+	static func ServiceObject newList()
+		return null
+	end
+	
 	/** \brief Create copy of service object. */
 	func new(ServiceObject copy, bool deep)
 	end
@@ -163,6 +168,11 @@ class ServiceObject
 	
 	
 	
+	/** \brief Is list value. */
+	func bool isList()
+		return false
+	end
+	
 	/** \brief Is dictionary value. */
 	func bool isDictionary()
 		return false
@@ -170,7 +180,7 @@ class ServiceObject
 	
 	/**
 	 * \brief Count of child objects.
-	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list nor \ref ServiceObjectType#dictionary.
 	 */
 	func int getChildCount()
 		return 0
@@ -185,6 +195,14 @@ class ServiceObject
 	end
 	
 	/**
+	 * \brief Child object at index.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func ServiceObject getChildAt(int index)
+		return null
+	end
+	
+	/**
 	 * \brief Child object with key or nullptr if absent.
 	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
 	 */
@@ -194,12 +212,107 @@ class ServiceObject
 	
 	/**
 	 * \brief Add child object.
-	 * 
-	 * Overwrites children with same name if present.
-	 * 
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addChild(ServiceObject value)
+	end
+	
+	/**
+	 * \brief Set child object with key overwriting existing child if present.
 	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
 	 */
-	func void addChild(String key, ServiceObject value)
+	func void setChildAt(String key, ServiceObject value)
+	end
+	
+	/**
+	 * \brief Add boolean child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addBoolChild(bool value)
+	end
+	
+	/**
+	 * \brief Set boolean child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setBoolChildAt(String key, bool value)
+	end
+	
+	/**
+	 * \brief Add integer child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addIntChild(int value)
+	end
+	
+	/**
+	 * \brief Set integer child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setIntChildAt(String key, int value)
+	end
+	
+	/**
+	 * \brief Add float child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addFloatChild(float value)
+	end
+	
+	/**
+	 * \brief Set float child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setFloatChildAt(String key, float value)
+	end
+	
+	/**
+	 * \brief Add string child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addStringChild(String value)
+	end
+	
+	/**
+	 * \brief Set string child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setStringChildAt(String key, String value)
+	end
+	
+	/**
+	 * \brief Add resource child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addResourceChild(Object value)
+	end
+	
+	/**
+	 * \brief Set resource child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setResourceChildAt(String key, Object value)
+	end
+	
+	/**
+	 * \brief Add data child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addDataChild(MemoryFile value)
+	end
+	
+	/**
+	 * \brief Set data child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setDataChildAt(String key, MemoryFile value)
+	end
+	
+	/**
+	 * \brief Remove child at index.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void removeChild(int index)
 	end
 	
 	/**
@@ -211,7 +324,7 @@ class ServiceObject
 	
 	/**
 	 * \brief Remove all child objects.
-	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list or \ref ServiceObjectType#dictionary.
 	 */
 	func void removeAllChildren()
 	end

@@ -30,6 +30,7 @@
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 #include "../../common/collection/decObjectList.h"
+#include "../../common/collection/decPointerOrderedSet.h"
 #include "../../common/string/decStringSet.h"
 #include "../../threading/deMutex.h"
 
@@ -45,6 +46,8 @@ private:
 	deMutex pMutex;
 	decObjectList pEventQueue;
 	deResourceList pServices;
+	decPointerOrderedSet pModules;
+	bool pDirtyModules;
 	
 	
 	
@@ -107,14 +110,24 @@ public:
 	 */
 	void QueueEventReceived( const deService::Ref &service, const deServiceObject::Ref &event );
 	
+	
+	
 	/**
-	 * \brief Process all queued events sending them to the respective service.
+	 * \brief Update services and process all queued events.
 	 * 
-	 * Processed events are removed from the queue.
+	 * Queued events are sent to the respective service then removed from the queue.
 	 * 
 	 * \note Has to be called only from the main thread.
 	 */
-	void ProcessQueuedEvents();
+	void FrameUpdate();
+	/*@}*/
+	
+	
+	
+	/** \name System Peer Management */
+	/*@{*/
+	void SystemScriptingLoad();
+	void SystemScriptingUnload();
 	/*@}*/
 	
 	
@@ -126,6 +139,13 @@ public:
 	/*@{*/
 	void RemoveResource( deResource *resource ) override;
 	/*@}*/
+	
+	
+	
+private:
+	void pUpdateModuleList();
+	void pUpdateModules();
+	void pProcessEvents();
 };
 
 #endif

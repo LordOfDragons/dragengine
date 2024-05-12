@@ -982,7 +982,7 @@ DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
 DEBUG_PRINT_TIMER( "DoFrame: Process VR events" );
 	
 	// process service events
-	GetServiceManager()->ProcessQueuedEvents();
+	GetServiceManager()->FrameUpdate();
 	
 	// frame update
 	pParallelProcessing->Update();

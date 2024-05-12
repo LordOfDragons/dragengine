@@ -172,6 +172,9 @@ const char *name, const deServiceObject::Ref &data){
 	return nullptr;
 }
 
+void deMicrosoftGDK::FrameUpdate(float elapsed){
+}
+
 void deMicrosoftGDK::InitSdk(){
 	if(pSdkInited){
 		return;

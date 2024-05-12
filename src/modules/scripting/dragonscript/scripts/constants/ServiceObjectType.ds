@@ -47,6 +47,9 @@ enum ServiceObjectType
 	/** \brief Data. */
 	data
 	
+	/** \brief List of objects. */
+	list
+	
 	/** \brief Dictionary of objects. */
 	dictionary
 end

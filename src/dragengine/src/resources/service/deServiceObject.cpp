@@ -79,6 +79,12 @@ deServiceObject::Ref deServiceObject::NewData( const decMemoryFile::Ref &value )
 	return object;
 }
 
+deServiceObject::Ref deServiceObject::NewList(){
+	const deServiceObject::Ref object( deServiceObject::Ref::New( new deServiceObject ) );
+	object->pValueType = evtList;
+	return object;
+}
+
 deServiceObject::deServiceObject( const deServiceObject &object, bool deep ) :
 pValueType( object.pValueType ),
 pInteger( object.pInteger ),
@@ -175,8 +181,13 @@ void deServiceObject::SetData( const decMemoryFile::Ref &value ){
 
 
 int deServiceObject::GetChildCount() const{
-	DEASSERT_TRUE( pValueType == evtDictionary )
-	return pDictionary.GetCount();
+	DEASSERT_TRUE( pValueType == evtList || pValueType == evtDictionary )
+	return pValueType == evtDictionary ? pDictionary.GetCount() : pList.GetCount();
+}
+
+deServiceObject::Ref deServiceObject::GetChildAt( int index ) const{
+	DEASSERT_TRUE( pValueType == evtList )
+	return Ref( ( deServiceObject* )pList.GetAt( index ) );
 }
 
 deServiceObject::Ref deServiceObject::GetChildAt( const char *key ) const{
@@ -190,9 +201,79 @@ decStringList deServiceObject::GetChildrenKeys() const{
 	return pDictionary.GetKeys();
 }
 
-void deServiceObject::AddChild( const char *key, const deServiceObject::Ref &child ){
+void deServiceObject::AddChild( const deServiceObject::Ref &child ){
+	DEASSERT_TRUE( pValueType == evtList )
+	pList.Add( child );
+}
+
+void deServiceObject::SetChildAt( const char *key, const deServiceObject::Ref &child ){
 	DEASSERT_TRUE( pValueType == evtDictionary )
 	pDictionary.SetAt( key, child );
+}
+
+void deServiceObject::AddBoolChild( bool value ){
+	DEASSERT_TRUE( pValueType == evtList )
+	pList.Add( NewBool( value ) );
+}
+
+void deServiceObject::SetBoolChildAt( const char *key, bool value ){
+	DEASSERT_TRUE( pValueType == evtDictionary )
+	pDictionary.SetAt( key, NewBool( value ) );
+}
+
+void deServiceObject::AddIntChild( int value ){
+	DEASSERT_TRUE( pValueType == evtList )
+	pList.Add( NewInt( value ) );
+}
+
+void deServiceObject::SetIntChildAt( const char *key, int value ){
+	DEASSERT_TRUE( pValueType == evtDictionary )
+	pDictionary.SetAt( key, NewInt( value ) );
+}
+
+void deServiceObject::AddFloatChild( double value ){
+	DEASSERT_TRUE( pValueType == evtList )
+	pList.Add( NewFloat( value ) );
+}
+
+void deServiceObject::SetFloatChildAt( const char *key, double value ){
+	DEASSERT_TRUE( pValueType == evtDictionary )
+	pDictionary.SetAt( key, NewFloat( value ) );
+}
+
+void deServiceObject::AddStringChild( const char *value ){
+	DEASSERT_TRUE( pValueType == evtList )
+	pList.Add( NewString( value ) );
+}
+
+void deServiceObject::SetStringChildAt( const char *key, const char *value ){
+	DEASSERT_TRUE( pValueType == evtDictionary )
+	pDictionary.SetAt( key, NewString( value ) );
+}
+
+void deServiceObject::AddResourceChild( deResource *value ){
+	DEASSERT_TRUE( pValueType == evtList )
+	pList.Add( NewResource( value ) );
+}
+
+void deServiceObject::SetResourceChildAt( const char *key, deResource *value ){
+	DEASSERT_TRUE( pValueType == evtDictionary )
+	pDictionary.SetAt( key, NewResource( value ) );
+}
+
+void deServiceObject::AddDataChild( const decMemoryFile::Ref &value ){
+	DEASSERT_TRUE( pValueType == evtList )
+	pList.Add( NewData( value ) );
+}
+
+void deServiceObject::SetDataChildAt( const char *key, const decMemoryFile::Ref &value ){
+	DEASSERT_TRUE( pValueType == evtDictionary )
+	pDictionary.SetAt( key, NewData( value ) );
+}
+
+void deServiceObject::RemoveChild( int index ){
+	DEASSERT_TRUE( pValueType == evtList )
+	pList.RemoveFrom( index );
 }
 
 void deServiceObject::RemoveChild( const char *key ){
@@ -201,8 +282,14 @@ void deServiceObject::RemoveChild( const char *key ){
 }
 
 void deServiceObject::RemoveAllChildren(){
-	DEASSERT_TRUE( pValueType == evtDictionary )
-	pDictionary.RemoveAll();
+	DEASSERT_TRUE( pValueType == evtList || pValueType == evtDictionary )
+	
+	if( pValueType == evtDictionary ){
+		pDictionary.RemoveAll();
+		
+	}else{
+		pList.RemoveAll();
+	}
 }
 
 

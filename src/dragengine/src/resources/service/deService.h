@@ -133,7 +133,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Service module. */
-	inline deBaseServiceModule *GetServiceModule(){ return pServiceModule; }
+	inline deBaseServiceModule *GetServiceModule() const{ return pServiceModule; }
 	
 	/** \brief Service system peer object. */
 	inline deBaseServiceService *GetPeerService() const{ return pPeerService; }

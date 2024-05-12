@@ -25,8 +25,11 @@
 #ifndef _DESSDKSERVICESTEAM_H_
 #define _DESSDKSERVICESTEAM_H_
 
+#include "deSsdkPendingRequest.h"
+
 #include <steam_api.h>
 
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
@@ -35,7 +38,7 @@ class deService;
 
 
 /**
- * Microsoft GDK Service.
+ * Steam SDK Service.
  */
 class deSsdkServiceSteam : public deBaseServiceService{
 public:
@@ -45,6 +48,7 @@ public:
 private:
 	deSteamSdk &pModule;
 	deService * const pService;
+	decObjectList pPendingRequests;
 	
 	
 public:
@@ -76,6 +80,31 @@ public:
 	 * \brief Cancel service request if running.
 	 */
 	void CancelRequest( const decUniqueID &id ) override;
+	/*@}*/
+	
+	
+	
+	/** \name Request */
+	/*@{*/
+	deSsdkPendingRequest *GetPendingRequestWithId( const decUniqueID &id ) const;
+	deSsdkPendingRequest::Ref RemoveFirstPendingRequestWithId( const decUniqueID &id );
+	deSsdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction( const char *function );
+	deSsdkPendingRequest::Ref NewPendingRequest( const decUniqueID &id, const decString &function );
+	
+	void RequestCurrentStats( const decUniqueID &id );
+	void GetStats( const decUniqueID &id, const deServiceObject& request );
+	void SetStats( const decUniqueID &id, const deServiceObject& request );
+	void ResetAllStats( const decUniqueID &id, const deServiceObject& request );
+	
+	void FailRequest( const decUniqueID &id, const deException &e );
+	/*@}*/
+	
+	
+	
+	/** \name Steam Callbacks */
+	/*@{*/
+	STEAM_CALLBACK( deSsdkServiceSteam, OnUserStatsReceived, UserStatsReceived_t );
+	STEAM_CALLBACK( deSsdkServiceSteam, OnUserStatsStored, UserStatsStored_t );
 	/*@}*/
 };
 

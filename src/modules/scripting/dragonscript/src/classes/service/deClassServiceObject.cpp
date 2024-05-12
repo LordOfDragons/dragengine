@@ -211,6 +211,18 @@ void deClassServiceObject::nfNewData::RunFunction( dsRunTime *rt, dsValue* ){
 }
 
 
+// static func ServiceObject newList()
+deClassServiceObject::nfNewList::nfNewList( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "newList", DSFT_FUNCTION,
+DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject ){
+}
+
+void deClassServiceObject::nfNewList::RunFunction( dsRunTime *rt, dsValue* ){
+	deClassServiceObject &clsServiceObject = *( ( deClassServiceObject* )GetOwnerClass() );
+	clsServiceObject.PushServiceObject( rt, deServiceObject::Ref::New( deServiceObject::NewList() ) );
+}
+
+
 // new(ServiceObject copy, bool deep)
 deClassServiceObject::nfNewCopy::nfNewCopy( const sInitData &init ) :
 dsFunction( init.clsServiceObject, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
@@ -478,6 +490,22 @@ void deClassServiceObject::nfGetData::RunFunction( dsRunTime *rt, dsValue *mysel
 
 
 
+// func bool isList()
+deClassServiceObject::nfIsList::nfIsList( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "isList", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+
+void deClassServiceObject::nfIsList::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	rt->PushBool( nd.object->IsList() );
+}
+
+
 // func bool isDictionary()
 deClassServiceObject::nfIsDictionary::nfIsDictionary( const sInitData &init ) :
 dsFunction( init.clsServiceObject, "isDictionary", DSFT_FUNCTION,
@@ -550,14 +578,34 @@ void deClassServiceObject::nfGetChildrenKeys::RunFunction( dsRunTime *rt, dsValu
 }
 
 
-// func ServiceObject getChildAt(String key)
+// func ServiceObject getChildAt(int index)
 deClassServiceObject::nfGetChildAt::nfGetChildAt( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "getChildAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject ){
+	p_AddParameter( init.clsInteger ); // index
+}
+
+void deClassServiceObject::nfGetChildAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deClassServiceObject &clsServiceObject = *( ( deClassServiceObject* )GetOwnerClass() );
+	const int index = rt->GetValue( 0 )->GetInt();
+	
+	clsServiceObject.PushServiceObject( rt, nd.object->GetChildAt( index ) );
+}
+
+
+// func ServiceObject getChildAt(String key)
+deClassServiceObject::nfGetChildAt2::nfGetChildAt2( const sInitData &init ) :
 dsFunction( init.clsServiceObject, "getChildAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject ){
 	p_AddParameter( init.clsString ); // key
 }
 
-void deClassServiceObject::nfGetChildAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassServiceObject::nfGetChildAt2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
 	if( ! nd.object ){
 		DSTHROW( dueNullPointer );
@@ -570,11 +618,10 @@ void deClassServiceObject::nfGetChildAt::RunFunction( dsRunTime *rt, dsValue *my
 }
 
 
-// func void addChild(String key, ServiceObject value)
+// func void addChild(ServiceObject value)
 deClassServiceObject::nfAddChild::nfAddChild( const sInitData &init ) :
 dsFunction( init.clsServiceObject, "addChild", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsString ); // key
 	p_AddParameter( init.clsServiceObject ); // value
 }
 
@@ -584,21 +631,278 @@ void deClassServiceObject::nfAddChild::RunFunction( dsRunTime *rt, dsValue *myse
 		DSTHROW( dueNullPointer );
 	}
 	
-	DEASSERT_TRUE( nd.object->GetValueType() == deServiceObject::evtDictionary )
+	deClassServiceObject &clsServiceObject = *( ( deClassServiceObject* )GetOwnerClass() );
+	
+	nd.object->AddChild( deServiceObject::Ref( clsServiceObject.GetServiceObject(
+		rt->GetValue( 0 )->GetRealObject() ) ) );
+}
+
+
+// func void setChildAt(String key, ServiceObject value)
+deClassServiceObject::nfSetChildAt::nfSetChildAt( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "setChildAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // key
+	p_AddParameter( init.clsServiceObject ); // value
+}
+
+void deClassServiceObject::nfSetChildAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
 	
 	deClassServiceObject &clsServiceObject = *( ( deClassServiceObject* )GetOwnerClass() );
 	const char * const key = rt->GetValue( 0 )->GetString();
 	deServiceObject * const value = clsServiceObject.GetServiceObject( rt->GetValue( 1 )->GetRealObject() );
 	
-	nd.object->AddChild( key, deServiceObject::Ref( value ) );
+	nd.object->SetChildAt( key, deServiceObject::Ref( value ) );
 }
 
 
-// func void removeChild(String key)
+// func void addBoolChild(bool value)
+deClassServiceObject::nfAddBoolChild::nfAddBoolChild( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "addBoolChild", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // value
+}
+
+void deClassServiceObject::nfAddBoolChild::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.object->AddBoolChild( rt->GetValue( 0 )->GetBool() );
+}
+
+
+// func void setBoolChildAt(String key, bool value)
+deClassServiceObject::nfSetBoolChildAt::nfSetBoolChildAt( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "setBoolChildAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // key
+	p_AddParameter( init.clsBool ); // value
+}
+
+void deClassServiceObject::nfSetBoolChildAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const char * const key = rt->GetValue( 0 )->GetString();
+	const bool value = rt->GetValue( 1 )->GetBool();
+	
+	nd.object->SetBoolChildAt( key, value );
+}
+
+
+// func void addIntChild(int value)
+deClassServiceObject::nfAddIntChild::nfAddIntChild( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "addIntChild", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInteger ); // value
+}
+
+void deClassServiceObject::nfAddIntChild::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.object->AddIntChild( rt->GetValue( 0 )->GetInt() );
+}
+
+
+// func void setIntChildAt(String key, int value)
+deClassServiceObject::nfSetIntChildAt::nfSetIntChildAt( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "setIntChildAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // key
+	p_AddParameter( init.clsInteger ); // value
+}
+
+void deClassServiceObject::nfSetIntChildAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const char * const key = rt->GetValue( 0 )->GetString();
+	const int value = rt->GetValue( 1 )->GetInt();
+	
+	nd.object->SetIntChildAt( key, value );
+}
+
+
+// func void addFloatChild(float value)
+deClassServiceObject::nfAddFloatChild::nfAddFloatChild( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "addFloatChild", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // value
+}
+
+void deClassServiceObject::nfAddFloatChild::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.object->AddFloatChild( ( double )rt->GetValue( 0 )->GetFloat() );
+}
+
+
+// func void setFloatChildAt(String key, float value)
+deClassServiceObject::nfSetFloatChildAt::nfSetFloatChildAt( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "setFloatChildAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // key
+	p_AddParameter( init.clsFloat ); // value
+}
+
+void deClassServiceObject::nfSetFloatChildAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const char * const key = rt->GetValue( 0 )->GetString();
+	const float value = rt->GetValue( 1 )->GetFloat();
+	
+	nd.object->SetFloatChildAt( key, ( double )value );
+}
+
+
+// func void addStringChild(String value)
+deClassServiceObject::nfAddStringChild::nfAddStringChild( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "addStringChild", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // value
+}
+
+void deClassServiceObject::nfAddStringChild::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.object->AddStringChild( rt->GetValue( 0 )->GetString() );
+}
+
+
+// func void setStringChildAt(String key, String value)
+deClassServiceObject::nfSetStringChildAt::nfSetStringChildAt( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "setStringChildAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // key
+	p_AddParameter( init.clsString ); // value
+}
+
+void deClassServiceObject::nfSetStringChildAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const char * const key = rt->GetValue( 0 )->GetString();
+	const char * const value = rt->GetValue( 1 )->GetString();
+	
+	nd.object->SetStringChildAt( key, value );
+}
+
+
+// func void addResourceChild(Object value)
+deClassServiceObject::nfAddResourceChild::nfAddResourceChild( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "addResourceChild", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsObject ); // value
+}
+
+void deClassServiceObject::nfAddResourceChild::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deClassServiceObject &clsServiceObject = *( ( deClassServiceObject* )GetOwnerClass() );
+	
+	nd.object->AddResourceChild( clsServiceObject.GetResource( *rt->GetValue( 0 ) ) );
+}
+
+
+// func void setResourceChildAt(String key, Object value)
+deClassServiceObject::nfSetResourceChildAt::nfSetResourceChildAt( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "setResourceChildAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // key
+	p_AddParameter( init.clsObject ); // value
+}
+
+void deClassServiceObject::nfSetResourceChildAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const char * const key = rt->GetValue( 0 )->GetString();
+	
+	deClassServiceObject &clsServiceObject = *( ( deClassServiceObject* )GetOwnerClass() );
+	deResource * const value = clsServiceObject.GetResource( *rt->GetValue( 1 ) );
+	
+	nd.object->SetResourceChildAt( key, value );
+}
+
+
+// func void addDataChild(MemoryFile value)
+deClassServiceObject::nfAddDataChild::nfAddDataChild( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "addDataChild", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsMemoryFile ); // value
+}
+
+void deClassServiceObject::nfAddDataChild::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deScriptingDragonScript &ds = ( ( deClassServiceObject* )GetOwnerClass() )->GetDS();
+	
+	nd.object->AddDataChild( decMemoryFile::Ref( ds.GetClassMemoryFile()->GetMemoryFile(
+		rt->GetValue( 0 )->GetRealObject() ) ) );
+}
+
+
+// func void setDataChildAt(String key, MemoryFile value)
+deClassServiceObject::nfSetDataChildAt::nfSetDataChildAt( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "setDataChildAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // key
+	p_AddParameter( init.clsMemoryFile ); // value
+}
+
+void deClassServiceObject::nfSetDataChildAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const char * const key = rt->GetValue( 0 )->GetString();
+	
+	deScriptingDragonScript &ds = ( ( deClassServiceObject* )GetOwnerClass() )->GetDS();
+	decMemoryFile * const value = ds.GetClassMemoryFile()->GetMemoryFile(
+		rt->GetValue( 1 )->GetRealObject() );
+	
+	nd.object->SetDataChildAt( key, decMemoryFile::Ref( value ) );
+}
+
+
+// func void removeChild(int index)
 deClassServiceObject::nfRemoveChild::nfRemoveChild( const sInitData &init ) :
 dsFunction( init.clsServiceObject, "removeChild", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsString ); // key
+	p_AddParameter( init.clsInteger ); // index
 }
 
 void deClassServiceObject::nfRemoveChild::RunFunction( dsRunTime *rt, dsValue *myself ){
@@ -607,11 +911,24 @@ void deClassServiceObject::nfRemoveChild::RunFunction( dsRunTime *rt, dsValue *m
 		DSTHROW( dueNullPointer );
 	}
 	
-	DEASSERT_TRUE( nd.object->GetValueType() == deServiceObject::evtDictionary )
+	nd.object->RemoveChild( rt->GetValue( 0 )->GetInt() );
+}
+
+
+// func void removeChild(String key)
+deClassServiceObject::nfRemoveChild2::nfRemoveChild2( const sInitData &init ) :
+dsFunction( init.clsServiceObject, "removeChild", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // key
+}
+
+void deClassServiceObject::nfRemoveChild2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceObjectNatDat &nd = *( ( sServiceObjectNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.object ){
+		DSTHROW( dueNullPointer );
+	}
 	
-	const char * const key = rt->GetValue( 0 )->GetString();
-	
-	nd.object->RemoveChild( key );
+	nd.object->RemoveChild( rt->GetValue( 0 )->GetString() );
 }
 
 
@@ -626,8 +943,6 @@ void deClassServiceObject::nfRemoveAllChildren::RunFunction( dsRunTime*, dsValue
 	if( ! nd.object ){
 		DSTHROW( dueNullPointer );
 	}
-	
-	DEASSERT_TRUE( nd.object->GetValueType() == deServiceObject::evtDictionary )
 	
 	nd.object->RemoveAllChildren();
 }
@@ -722,6 +1037,7 @@ void deClassServiceObject::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNewString( init ) );
 	AddFunction( new nfNewResource( init ) );
 	AddFunction( new nfNewData( init ) );
+	AddFunction( new nfNewList( init ) );
 	AddFunction( new nfNewCopy( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
@@ -745,12 +1061,28 @@ void deClassServiceObject::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIsData( init ) );
 	AddFunction( new nfGetData( init ) );
 	
+	AddFunction( new nfIsList( init ) );
 	AddFunction( new nfIsDictionary( init ) );
 	AddFunction( new nfGetChildCount( init ) );
 	AddFunction( new nfGetChildrenKeys( init ) );
 	AddFunction( new nfGetChildAt( init ) );
+	AddFunction( new nfGetChildAt2( init ) );
 	AddFunction( new nfAddChild( init ) );
+	AddFunction( new nfSetChildAt( init ) );
+	AddFunction( new nfAddBoolChild( init ) );
+	AddFunction( new nfSetBoolChildAt( init ) );
+	AddFunction( new nfAddIntChild( init ) );
+	AddFunction( new nfSetIntChildAt( init ) );
+	AddFunction( new nfAddFloatChild( init ) );
+	AddFunction( new nfSetFloatChildAt( init ) );
+	AddFunction( new nfAddStringChild( init ) );
+	AddFunction( new nfSetStringChildAt( init ) );
+	AddFunction( new nfAddResourceChild( init ) );
+	AddFunction( new nfSetResourceChildAt( init ) );
+	AddFunction( new nfAddDataChild( init ) );
+	AddFunction( new nfSetDataChildAt( init ) );
 	AddFunction( new nfRemoveChild( init ) );
+	AddFunction( new nfRemoveChild2( init ) );
 	AddFunction( new nfRemoveAllChildren( init ) );
 	
 	AddFunction( new nfHashCode( init ) );
