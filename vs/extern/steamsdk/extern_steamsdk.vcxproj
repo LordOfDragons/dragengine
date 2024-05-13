@@ -111,7 +111,7 @@
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>steam_api64</TargetName>
-    <OutDir>$(ProjectDir)steamsdk\lib\</OutDir>
+    <OutDir>$(ProjectDir)steamsdk\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
@@ -121,7 +121,7 @@
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>steam_api64</TargetName>
-    <OutDir>$(ProjectDir)steamsdk\lib\</OutDir>
+    <OutDir>$(ProjectDir)steamsdk\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <CustomBuildBeforeTargets />
