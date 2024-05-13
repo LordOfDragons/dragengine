@@ -34,7 +34,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
         
       - name: Install requirements
-        run: Install-Module -Name 7Zip4PowerShell -Verbose
+        run: Install-Module -Name 7Zip4PowerShell -Scope CurrentUser -Force -Verbose
       
       - name: Test 1
         run: Compress-7Zip -Path extern/steamsdk -ArchiveFileName test.7z -Format SevenZip
