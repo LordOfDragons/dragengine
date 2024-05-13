@@ -1,0 +1,43 @@
+name: Github Test
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          submodules: 'recursive'
+          ref: 'master'
+      
+      - name: Create LFS file hash list
+        run: (git lfs ls-files -l) | ForEach-Object { $_.Split(" ")[0] } | sort | Out-File -FilePath ".lfs-objects-id"
+
+      - name: Restore LFS Cache
+        uses: actions/cache@v4
+        id: lfs-vs-cache
+        with:
+          path: .git/lfs
+          key: lfs-vs-cache-${{ hashFiles('.lfs-objects-id') }}
+          restore-keys: lfs-vs-cache-
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git lfs logs last
+      
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+        
+      - name: Install requirements
+        run: Install-Module -Name 7Zip4PowerShell -Verbose
+      
+      - name: Test 1
+        run: Compress-7Zip -Path extern/steamsdk -ArchiveFileName test.7z -Format SevenZip
+      
+      - name: Test 2
+        run: Expand-7Zip -ArchiveFileName test.7z -TargetPath .
