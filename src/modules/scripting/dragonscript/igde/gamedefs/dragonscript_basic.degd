@@ -2810,4 +2810,46 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorRandomizeGeometry'>
+		<description>Behavior adding support to randomize position, rotation and scaling.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>randomizeGeometry.</defaultInheritPropertyPrefix>
+		<property name='randomize'>
+			<description>Randomize property.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='minTranslate'>
+			<description>Minimum translation. Translation is randomly chosen between minimum and maximum translation.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='maxTranslate'>
+			<description>Maximum translation. Translation is randomly chosen between minimum and maximum translation.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='minRotate'>
+			<description>Minimum rotation in degrees. Rotation is randomly chosen between minimum and maximum rotation.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='maxRotate'>
+			<description>Maximum rotation in degrees. Rotation is randomly chosen between minimum and maximum rotation.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='minScale'>
+			<description>Minimum scaling. Scaling is randomly chosen between minimum and maximum scaling.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='maxScale'>
+			<description>Maximum scaling. Scaling is randomly chosen between minimum and maximum scaling.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 </gameDefinition>

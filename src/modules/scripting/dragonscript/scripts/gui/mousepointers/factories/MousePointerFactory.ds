@@ -31,7 +31,7 @@ namespace Dragengine.Gui.MousePointers.Factories
  */
 interface MousePointerFactory
 	/** \brief Set parameter. */
-	func void setParameter( String name, Object value )
+	func void setParameter(String name, Object value)
 	
 	/** \brief Create copy of factory. */
 	func MousePointerFactory copyFactory()

@@ -48,8 +48,10 @@ public interface BehaviorPrepareStub
 	/**
 	 * \brief Prepare stub.
 	 * 
-	 * Called by BehaviorElementClass.createAndAddElement() with loading set to false and
-	 * BehaviorElementClass.loadAndAddElement() with loading set to true.
+	 * Called by \ref BehaviorElementClass#createAndAddElement(StubElement,GameWorld) with
+	 * loading set to false and
+	 * \ref BehaviorElementClass#loadAndAddElement(PersistencyEnvironment,StubElement,FileReader,GameWorld)
+	 * with loading set to true.
 	 */
 	func void prepareStub(StubElement stub, GameWorld gameWorld, bool loading)
 end

@@ -39,7 +39,7 @@ pin Dragengine.Gui.Layouts
  */
 class WindowToolTip extends Window
 	/** \brief Create window. */
-	public func new()
+	func new()
 		runWhileBlockingLayout(block
 			setVisible(false)
 			setEnabled(true)
@@ -64,7 +64,7 @@ class WindowToolTip extends Window
 	 * 
 	 * Shows the window at position.
 	 */
-	public func void popup(Point position)
+	func void popup(Point position)
 		popupInside(position, RectArea.new(Point.new(), getDesktop().getContainerSize() - Point.new(1, 1)))
 	end
 	
@@ -73,7 +73,7 @@ class WindowToolTip extends Window
 	 * 
 	 * Shows the window at position.
 	 */
-	public func void popup(int x, int y)
+	func void popup(int x, int y)
 		popup(Point.new(x, y))
 	end
 	
@@ -82,7 +82,7 @@ class WindowToolTip extends Window
 	 * 
 	 * Shows the window at position.
 	 */
-	public func void popupInside(Point position, RectArea boundary)
+	func void popupInside(Point position, RectArea boundary)
 		setPosition(boundary.grow(-getSize()).clamp(position))
 		setVisible(true)
 		moveToTop()
@@ -93,7 +93,7 @@ class WindowToolTip extends Window
 	 * 
 	 * Hides window.
 	 */
-	public func void popdown()
+	func void popdown()
 		setVisible(false)
 	end
 	
@@ -108,7 +108,7 @@ class WindowToolTip extends Window
 	 * the first focusable widget. This avoids popup windows stealing focus from
 	 * the underlaying window.
 	 */
-	public func void grabFocus()
+	func void grabFocus()
 	end
 	
 	
@@ -120,12 +120,12 @@ class WindowToolTip extends Window
 	 * in mind if you try to call this method. It might not work. If you need original
 	 * getWidgetAt behavior from super class use realGetWidgetAt().
 	 */
-	public func Widget getWidgetAt(Point position)
+	func Widget getWidgetAt(Point position)
 		return null
 	end
 	
 	/** \brief Super class getWidgetAt without overwritten behavior. */
-	public func Widget realGetWidgetAt(Point position)
+	func Widget realGetWidgetAt(Point position)
 		return super.getWidgetAt(position)
 	end
 end

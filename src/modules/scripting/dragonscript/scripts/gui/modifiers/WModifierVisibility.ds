@@ -43,29 +43,29 @@ pin Dragengine.Scenery
  * showing if specific objects (typically enumerations) are present in a ListModel.
  */
 class WModifierVisibility implements ToggleModelListener
-	private var Widget pWidget
+	var Widget pWidget
 	
 	
 	
 	/** \brief Create widget modifier showing widget if model is toggled. */
-	public func new( ToggleModel model, Widget widget )
+	func new(ToggleModel model, Widget widget)
 		if model == null
-			throw ENullPointer.new( "model" )
+			throw ENullPointer.new("model")
 		end
 		if widget == null
-			throw ENullPointer.new( "widget" )
+			throw ENullPointer.new("widget")
 		end
 		
-		this.pWidget = widget
-		model.addListener( this )
+		pWidget = widget
+		model.addListener(this)
 		
-		this.toggledChanged( model )
+		toggledChanged(model)
 	end
 	
 	
 	
 	/** \brief Toggled state changed. */
-	public func void toggledChanged( ToggleModel model )
-		this.pWidget.setVisible( model.getToggled() )
+	func void toggledChanged(ToggleModel model)
+		pWidget.setVisible(model.getToggled())
 	end
 end

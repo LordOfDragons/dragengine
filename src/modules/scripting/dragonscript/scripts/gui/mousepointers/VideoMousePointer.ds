@@ -31,101 +31,101 @@ pin Dragengine.Utils
 
 
 /**
- * \brief Mouse pointer using image.
+ * \brief Mouse pointer using video.
  */
 class VideoMousePointer extends DefaultMousePointer
 	/** \brief Playback timer. */
 	class PlaybackTimer extends Timer
 		/** \brief Video player to update. */
-		private var VideoPlayer pVideoPlayer
+		var VideoPlayer pVideoPlayer
 		
 		/** \brief Create playback timer. */
-		public func new( VideoPlayer videoPlayer ) super( 0.0, true )
-			this.pVideoPlayer = videoPlayer
+		func new(VideoPlayer videoPlayer) super(0.0, true)
+			pVideoPlayer = videoPlayer
 		end
 		
 		/** \brief Timer elapsed. */
-		public func void fire()
-			this.pVideoPlayer.update( Engine.getElapsedTime() )
+		func void fire()
+			pVideoPlayer.update(Engine.getElapsedTime())
 		end
 	end
 	
 	/** \brief Playback timer. */
-	private var PlaybackTimer pTimer
+	var PlaybackTimer pTimer
 	
 	
 	
 	/** \brief Video player. */
-	private var VideoPlayer pVideoPlayer
+	var VideoPlayer pVideoPlayer
 	
 	
 	
 	/** \brief Create mouse pointer. */
-	public func new()
-		this.pVideoPlayer = VideoPlayer.new()
-		this.pVideoPlayer.setLooping( true )
+	func new()
+		pVideoPlayer = VideoPlayer.new()
+		pVideoPlayer.setLooping(true)
 	end
 	
 	/** \brief Destructor. */
-	public func destructor()
-		if this.pTimer != null
-			this.pTimer.giveUp()
+	func destructor()
+		if pTimer != null
+			pTimer.giveUp()
 		end
 	end
 	
 	
 	
 	/** \brief Video player or \em null if not set. */
-	public func VideoPlayer getVideoPlayer()
-		return this.pVideoPlayer
+	func VideoPlayer getVideoPlayer()
+		return pVideoPlayer
 	end
 	
 	/** \brief Video or \em null if not set. */
-	public func Video getVideo()
-		return this.pVideoPlayer.getVideo()
+	func Video getVideo()
+		return pVideoPlayer.getVideo()
 	end
 	
 	/** \brief Set video. */
-	public func void setVideo( Video video )
-		if video == this.pVideoPlayer.getVideo()
+	func void setVideo(Video video)
+		if video == pVideoPlayer.getVideo()
 			return
 		end
 		
-		if this.pTimer != null
-			this.pTimer.giveUp()
-			this.pTimer = null
+		if pTimer != null
+			pTimer.giveUp()
+			pTimer = null
 		end
-		this.pVideoPlayer.stop()
+		pVideoPlayer.stop()
 		
-		this.pVideoPlayer.setVideo( video )
+		pVideoPlayer.setVideo(video)
 		
 		if video != null
-			this.setSize( video.getSize() )
-			this.pVideoPlayer.play()
-			this.pTimer = PlaybackTimer.new( this.pVideoPlayer )
+			setSize(video.getSize())
+			pVideoPlayer.play()
+			pTimer = PlaybackTimer.new(pVideoPlayer)
 			
 		else
-			this.setSize( Point.new() )
+			setSize(Point.new())
 		end
 		
-		this.updateCanvas()
+		updateCanvas()
 	end
 	
 	
 	
 	/** \brief Update canvas. */
-	public func void updateCanvas()
-		var CanvasView canvasView = this.getCanvasView()
+	func void updateCanvas()
+		var CanvasView canvasView = getCanvasView()
 		
 		canvasView.removeAllCanvas()
 		
-		if this.pVideoPlayer.getVideo() == null
+		if pVideoPlayer.getVideo() == null
 			return
 		end
 		
 		var CanvasVideoPlayer canvasVideo = CanvasVideoPlayer.new()
-		canvasVideo.setVideoPlayer( this.pVideoPlayer )
-		canvasVideo.setSize( this.pVideoPlayer.getVideo().getSize() )
-		canvasView.addCanvas( canvasVideo )
+		canvasVideo.setVideoPlayer(pVideoPlayer)
+		canvasVideo.setSize(pVideoPlayer.getVideo().getSize())
+		canvasView.addCanvas(canvasVideo)
 	end
 end

@@ -33,29 +33,29 @@ pin Dragengine.Gui.CanvasCreators
  */
 public class CanvasCreatorMousePointerFactory extends DefaultMousePointerFactory
 	/** \brief Canvas creator factory. */
-	private var CanvasCreator pCanvasCreator
+	var CanvasCreator pCanvasCreator
 	
 	
 	
 	/** \brief Create mouse pointer factory. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create copy of mouse pointer factory. */
-	public func new( CanvasCreatorMousePointerFactory factory ) super( factory )
-		this.pCanvasCreator = factory.pCanvasCreator
+	func new(CanvasCreatorMousePointerFactory factory) super(factory)
+		pCanvasCreator = factory.pCanvasCreator
 	end
 	
 	
 	
 	/** \brief Canvas creator or \em null if not set. */
-	public func CanvasCreator getCanvasCreator()
-		return this.pCanvasCreator
+	func CanvasCreator getCanvasCreator()
+		return pCanvasCreator
 	end
 	
 	/** \brief Set canvas creator or \em null if not set. */
-	public func void setCanvasCreator( CanvasCreator canvasCreator )
-		this.pCanvasCreator = canvasCreator
+	func void setCanvasCreator(CanvasCreator canvasCreator)
+		pCanvasCreator = canvasCreator
 	end
 	
 	
@@ -68,32 +68,32 @@ public class CanvasCreatorMousePointerFactory extends DefaultMousePointerFactory
 	 * | offset | Point | setOffset |
 	 * | canvasCreator | CanvasCreator | setCanvasCreator |
 	 */
-	public func void setParameter( String name, Object value )
-		if name.equals( "canvasCreator" )
-			this.setCanvasCreator( value cast CanvasCreator )
+	func void setParameter(String name, Object value)
+		if name.equals("canvasCreator")
+			setCanvasCreator(value cast CanvasCreator)
 			
 		else
-			super.setParameter( name, value )
+			super.setParameter(name, value)
 		end
 	end
 	
 	
 	
 	/** \brief Create copy of mouse pointer factory. */
-	public func MousePointerFactory copyFactory()
-		return CanvasCreatorMousePointerFactory.new( this )
+	func MousePointerFactory copyFactory()
+		return CanvasCreatorMousePointerFactory.new(this)
 	end
 	
 	/** \brief Create mouse pointer. */
-	public func MousePointer createMousePointer()
+	func MousePointer createMousePointer()
 		var CanvasCreatorMousePointer mousePointer = CanvasCreatorMousePointer.new()
-		this.initCanvasCreatorMousePointer( mousePointer )
+		initCanvasCreatorMousePointer(mousePointer)
 		return mousePointer
 	end
 	
 	/** \brief Initialize canvas creator part of mouse pointer. */
-	protected func void initCanvasCreatorMousePointer( CanvasCreatorMousePointer mousePointer )
-		this.initDefaultMousePointer( mousePointer )
-		mousePointer.setCanvasCreator( this.pCanvasCreator )
+	protected func void initCanvasCreatorMousePointer(CanvasCreatorMousePointer mousePointer)
+		initDefaultMousePointer(mousePointer)
+		mousePointer.setCanvasCreator(pCanvasCreator)
 	end
 end

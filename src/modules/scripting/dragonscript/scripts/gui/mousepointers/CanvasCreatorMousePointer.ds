@@ -34,46 +34,46 @@ pin Dragengine.Scenery
  */
 class CanvasCreatorMousePointer extends DefaultMousePointer
 	/** \brief Canvas creator. */
-	private var CanvasCreator pCanvasCreator
+	var CanvasCreator pCanvasCreator
 	
 	
 	
 	/** \brief Create mouse pointer. */
-	public func new()
+	func new()
 	end
 	
 	
 	
 	/** \brief Canvas creator or \em null if not set. */
-	public func CanvasCreator getCanvasCreator()
-		return this.pCanvasCreator
+	func CanvasCreator getCanvasCreator()
+		return pCanvasCreator
 	end
 	
 	/** \brief Set canvas creator. */
-	public func void setCanvasCreator( CanvasCreator canvasCreator )
-		if canvasCreator == this.pCanvasCreator
+	func void setCanvasCreator(CanvasCreator canvasCreator)
+		if canvasCreator == pCanvasCreator
 			return
 		end
 		
-		this.pCanvasCreator = canvasCreator
-		this.updateCanvas()
+		pCanvasCreator = canvasCreator
+		updateCanvas()
 	end
 	
 	
 	
 	/** \brief Update canvas. */
-	public func void updateCanvas()
-		var CanvasView canvasView = this.getCanvasView()
+	func void updateCanvas()
+		var CanvasView canvasView = getCanvasView()
 		
 		canvasView.removeAllCanvas()
 		
-		if this.pCanvasCreator == null
+		if pCanvasCreator == null
 			return
 		end
 		
-		var Canvas canvas = this.pCanvasCreator.createCanvas( canvasView.getSize() )
+		var Canvas canvas = pCanvasCreator.createCanvas(canvasView.getSize())
 		if canvas != null
-			canvasView.addCanvas( canvas )
+			canvasView.addCanvas(canvas)
 		end
 	end
 end
