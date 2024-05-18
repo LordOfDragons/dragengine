@@ -2852,4 +2852,17 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorRandomizeCreation'>
+		<description>Behavior adding support to randomize creation.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>randomizeCreation.</defaultInheritPropertyPrefix>
+		<property name='probability'>
+			<description>Probability the element is created.</description>
+			<type>range</type>
+			<range min='0' max='1'/>
+			<default>1</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 </gameDefinition>

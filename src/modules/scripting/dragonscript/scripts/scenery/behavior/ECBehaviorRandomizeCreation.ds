@@ -22,25 +22,54 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
 
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
+pin Dragengine.Utils
 
 
 /**
- * \brief Interface for behaviors supporting preventing element creation.
+ * \brief Behavior adding support to randomize creation.
  * \version 1.23
  * 
- * Preventing creation allows behaviors to cancel creating and adding an element
- * before Element.init() is called. This can be used for to randomly create or not
- * create an element as well as creating elements only if the player choose a certain
- * difficulty level.
+ * This behavior is typically used to add variation to game worlds by randomly creating
+ * or not creating element. This affects only elements added to a game world. Loading
+ * a game world does not trigger randomization.
  * 
- * Prevent creation is tested after \ref BehaviorPrepareStub interfaces are processed.
+ * This behavior uses \ref BehaviorPreventCreation to randomly prevent the element to
+ * be created and added to the game world. This check is done after \ref BehaviorPrepareStub
+ * supporting behaviors have potentially modified the \ref StubElement.
+ * 
+ * Default property prefix is "randomizeCreation."
  */
-public interface BehaviorPreventCreation
+class ECBehaviorRandomizeCreation extends DefaultECBehavior implements BehaviorPreventCreation
+	var ECPFloat pProbability
+	
+	
+	/** \brief Create behavior. */
+	func new(BehaviorElementClass eclass) super(eclass)
+		var String prefix = "randomizeCreation."
+		
+		pProbability = ECPFloat.new(prefix + "probability", 1, 0, 1)
+		eclass.addProperty(pProbability)
+		
+		eclass.addBehavior(this)
+		eclass.addPreventCreationBehavior(this)
+	end
+	
+	
+	/**
+	 * \brief Probability property.
+	 * 
+	 * Probability the element is created. Property name is "probability".
+	 * Default value is 1. Minimum value is 0. Minimum value is 1.
+	 */
+	func ECPFloat getPrrobability()
+		return pProbability
+	end
+	
+	
 	/**
 	 * \brief Prevent creation of element.
 	 * 
@@ -49,4 +78,12 @@ public interface BehaviorPreventCreation
 	 * returned the element is not created and added to the game world.
 	 */
 	func bool preventCreation(StubElement stub, GameWorld gameWorld)
+		return not DEMath.probability(pProbability.getValue(stub))
+	end
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return DefaultECBehaviorInstance.new(element)
+	end
 end
