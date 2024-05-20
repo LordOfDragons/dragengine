@@ -175,26 +175,24 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 			
 			// solidity
 			renderableName = pECBehavior.getRenderableSolidity().getValue(stub)
-			if renderableName.empty()
-				return
+			if not renderableName.empty()
+				pCanvasViewSolidity = CanvasView.new()
+				pCanvasViewSolidity.setSize(pPanel.getCanvasWidget().getSize())
+				
+				var CanvasCanvasView ccv = CanvasCanvasView.new()
+				ccv.setCanvasView(pPanel.getCanvasWidget())
+				ccv.setColorTransform(ColorMatrix.new(\
+					Color.new(0, 0, 0, 0), Color.new(0, 0, 0, 0), Color.new(0, 0, 0, 0),\
+					Color.new(1, 1, 1, 0), Color.new(0, 0, 0, 1)))
+				ccv.setSize(pPanel.getCanvasWidget().getSize())
+				pCanvasViewSolidity.addCanvas(ccv)
+				
+				dynamicSkin.setCanvasAt(pRenderable, pPanel.getCanvasWidget(), 4)
+				
+				pRenderableSolidity = dynamicSkin.getRenderableCount()
+				dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
+				dynamicSkin.setCanvasAt(pRenderableSolidity, pCanvasViewSolidity, 1)
 			end
-			
-			pCanvasViewSolidity = CanvasView.new()
-			pCanvasViewSolidity.setSize(pPanel.getCanvasWidget().getSize())
-			
-			var CanvasCanvasView ccv = CanvasCanvasView.new()
-			ccv.setCanvasView(pPanel.getCanvasWidget())
-			ccv.setColorTransform(ColorMatrix.new(\
-				Color.new(0, 0, 0, 0), Color.new(0, 0, 0, 0), Color.new(0, 0, 0, 0),\
-				Color.new(1, 1, 1, 0), Color.new(0, 0, 0, 1)))
-			ccv.setSize(pPanel.getCanvasWidget().getSize())
-			pCanvasViewSolidity.addCanvas(ccv)
-			
-			dynamicSkin.setCanvasAt(pRenderable, pPanel.getCanvasWidget(), 4)
-			
-			pRenderableSolidity = dynamicSkin.getRenderableCount()
-			dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
-			dynamicSkin.setCanvasAt(pRenderableSolidity, pCanvasViewSolidity, 1)
 			
 			// create content using content creators
 			pECBehavior.createContent(this)
