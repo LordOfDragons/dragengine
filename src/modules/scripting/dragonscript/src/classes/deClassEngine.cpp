@@ -386,6 +386,25 @@ void deClassEngine::nfSetDefaultEnableGI::RunFunction( dsRunTime *rt, dsValue* )
 	( ( deClassEngine* )GetOwnerClass() )->SetDefaultEnableGI( rt->GetValue( 0 )->GetBool() );
 }
 
+// static public func bool getDefaultEnableAuralization()
+deClassEngine::nfGetDefaultEnableAuralization::nfGetDefaultEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsEngine, "getDefaultEnableAuralization", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+}
+void deClassEngine::nfGetDefaultEnableAuralization::RunFunction( dsRunTime *rt, dsValue* ){
+	rt->PushBool( ( ( ( deClassEngine* )GetOwnerClass() )->GetDefaultEnableAuralization() ) );
+}
+
+// static public func void setDefaultEnableAuralization(bool enable)
+deClassEngine::nfSetDefaultEnableAuralization::nfSetDefaultEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsEngine, "setDefaultEnableAuralization", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsBoolean ); // enable
+}
+void deClassEngine::nfSetDefaultEnableAuralization::RunFunction( dsRunTime *rt, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->SetDefaultEnableAuralization( rt->GetValue( 0 )->GetBool() );
+}
+
 
 
 // static public func String getUserLocaleLanguage()
@@ -454,7 +473,8 @@ void deClassEngine::nfGetSupportedServices::RunFunction( dsRunTime *rt, dsValue*
 deClassEngine::deClassEngine( deScriptingDragonScript &ds ) :
 dsClass("Engine", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
 pDS( ds ),
-pDefaultEnableGI( false )
+pDefaultEnableGI( false ),
+pDefaultEnableAuralization( true )
 {
 	GetParserInfo()->SetParent( DENS_DRAGENGINE );
 	GetParserInfo()->SetBase( "Object" );
@@ -514,6 +534,8 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction( new nfGetDefaultEnableGI( init ) );
 	AddFunction( new nfSetDefaultEnableGI( init ) );
+	AddFunction( new nfGetDefaultEnableAuralization( init ) );
+	AddFunction( new nfSetDefaultEnableAuralization( init ) );
 	
 	AddFunction( new nfGetUserLocaleLanguage( init ) );
 	AddFunction( new nfGetUserLocaleTerritory( init ) );
@@ -526,4 +548,8 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 
 void deClassEngine::SetDefaultEnableGI( bool enable ){
 	pDefaultEnableGI = enable;
+}
+
+void deClassEngine::SetDefaultEnableAuralization( bool enable ){
+	pDefaultEnableAuralization = enable;
 }

@@ -110,6 +110,21 @@ fixed class Engine
 	static func void setDefaultEnableGI(bool enable)
 	end
 	
+	/**
+	 * \brief Default value for EnableAuralization parameter in microphones.
+	 * \version 1.23
+	 */
+	static func bool getDefaultEnableAuralization()
+		return false
+	end
+	
+	/**
+	 * \brief Set default value for EnableAuralization parameter in microphones.
+	 * \version 1.23
+	 */
+	static func void setDefaultEnableAuralization(bool enable)
+	end
+	
 	
 	
 	/**

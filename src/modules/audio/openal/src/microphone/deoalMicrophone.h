@@ -72,7 +72,7 @@ public:
 	deoalMicrophone( deAudioOpenAL &oal, const deMicrophone &microphone );
 	
 	/** \brief Clean up microphone. */
-	virtual ~deoalMicrophone();
+	~deoalMicrophone() override;
 	/*@}*/
 	
 	
@@ -126,37 +126,40 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Velocity changed. */
-	virtual void VelocityChanged();
+	void VelocityChanged() override;
 	
 	/** \brief Muted changed. */
-	virtual void MutedChanged();
+	void MutedChanged() override;
 	
 	/** \brief Volume changed. */
-	virtual void VolumeChanged();
+	void VolumeChanged() override;
 	
 	/** \brief Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** \brief Speaker gain changed. */
-	virtual void SpeakerGainChanged();
+	void SpeakerGainChanged() override;
+	
+	/** \brief Enable auralization changed. */
+	void EnableAuralizationChanged() override;
 	
 	/** \brief Speaker has been added. */
-	virtual void SpeakerAdded( deSpeaker *speaker );
+	void SpeakerAdded( deSpeaker *speaker ) override;
 	
 	/** \brief Speaker has been removed. */
-	virtual void SpeakerRemoved( deSpeaker *speaker );
+	void SpeakerRemoved( deSpeaker *speaker ) override;
 	
 	/** \brief All speakers have been removed. */
-	virtual void AllSpeakersRemoved();
+	void AllSpeakersRemoved() override;
 	/*@}*/
 	
 	

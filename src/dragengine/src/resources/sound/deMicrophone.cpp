@@ -51,6 +51,7 @@ pType( emtPoint ),
 pMuted( false ),
 pVolume( 1.0f ),
 pSpeakerGain( 1.0f ),
+pEnableAuralization( true ),
 
 pSpeakerRoot( NULL ),
 pSpeakerTail( NULL ),
@@ -182,6 +183,20 @@ void deMicrophone::SetSpeakerGain( float gain ){
 	
 	if( pPeerAudio ){
 		pPeerAudio->SpeakerGainChanged();
+	}
+}
+
+
+
+void deMicrophone::SetEnableAuralization( bool enable ){
+	if( enable == pEnableAuralization ){
+		return;
+	}
+	
+	pEnableAuralization = enable;
+	
+	if( pPeerAudio ){
+		pPeerAudio->EnableAuralizationChanged();
 	}
 }
 

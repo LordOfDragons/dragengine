@@ -29,6 +29,7 @@
 
 #include "deClassMicrophone.h"
 #include "deClassSpeaker.h"
+#include "../deClassEngine.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
@@ -64,6 +65,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 void deClassMicrophone::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sMicNatDat *nd = ( sMicNatDat* )p_GetNativeData( myself );
 	deClassMicrophone *clsMic = ( deClassMicrophone* )GetOwnerClass();
+	const deScriptingDragonScript &ds = *clsMic->GetScriptModule();
 	deMicrophoneManager *spkMgr = clsMic->GetGameEngine()->GetMicrophoneManager();
 	
 	// clear (important)
@@ -71,7 +73,7 @@ void deClassMicrophone::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create microphone
 	nd->microphone = spkMgr->CreateMicrophone();
-	if( ! nd->microphone ) DSTHROW( dueOutOfMemory );
+	nd->microphone->SetEnableAuralization( ds.GetClassEngine()->GetDefaultEnableAuralization() );
 }
 
 // public func destructor()
@@ -302,6 +304,25 @@ void deClassMicrophone::nfGetParentWorld::RunFunction( dsRunTime *rt, dsValue *m
 	ds.GetClassWorld()->PushWorld( rt, microphone.GetParentWorld() );
 }
 
+// public func bool getEnableAuralization()
+deClassMicrophone::nfGetEnableAuralization::nfGetEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsMic, "getEnableAuralization", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassMicrophone::nfGetEnableAuralization::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	rt->PushBool( microphone.GetEnableAuralization() );
+}
+
+// public func void setEnableAuralization(bool enable)
+deClassMicrophone::nfSetEnableAuralization::nfSetEnableAuralization(const sInitData &init) :
+dsFunction( init.clsMic, "setEnableAuralization", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enable
+}
+void deClassMicrophone::nfSetEnableAuralization::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	microphone.SetEnableAuralization( rt->GetValue( 0 )->GetBool() );
+}
+
 
 
 // Speakers
@@ -455,6 +476,9 @@ void deClassMicrophone::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetSpeakerGain( init ) );
 	AddFunction( new nfSetSpeakerGain( init ) );
 	AddFunction( new nfGetParentWorld( init ) );
+	
+	AddFunction( new nfGetEnableAuralization( init ) );
+	AddFunction( new nfSetEnableAuralization( init ) );
 	
 	AddFunction( new nfAddSpeaker( init ) );
 	AddFunction( new nfRemoveSpeaker( init ) );

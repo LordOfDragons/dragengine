@@ -76,6 +76,8 @@ private:
 	igdeActionReference pActionCameraPlayer;
 	igdeActionReference pActionCameraObject;
 	
+	igdeCheckBoxReference pChkEnableAuralization;
+	
 	
 	
 public:

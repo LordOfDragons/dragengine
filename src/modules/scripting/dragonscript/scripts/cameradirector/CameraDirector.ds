@@ -80,6 +80,7 @@ class CameraDirector
 	var LayerMask pLayerMask
 	var bool pEnableHDRR
 	var bool pEnableGI
+	var bool pEnableAuralization
 	var float pWhiteIntensity
 	var float pBloomIntensity
 	var float pBloomStrength
@@ -101,6 +102,7 @@ class CameraDirector
 		pViewDistance = 200
 		pEnableHDRR = true
 		pEnableGI = Engine.getDefaultEnableGI()
+		pEnableAuralization = Engine.getDefaultEnableAuralization()
 		pWhiteIntensity = 3
 		pBloomIntensity = 4
 		pBloomStrength = 1
@@ -277,6 +279,22 @@ class CameraDirector
 		pEnableGI = enable
 	end
 	
+	/**
+	 * \brief Enable auralization if supported.
+	 * \version 1.23
+	 */
+	func bool getEnableAuralization()
+		return pEnableAuralization
+	end
+	
+	/**
+	 * \brief Set to enable auralization if supported.
+	 * \version 1.23
+	 */
+	func void setEnableAuralization(bool enable)
+		pEnableAuralization = enable
+	end
+	
 	
 	
 	/**
@@ -410,6 +428,7 @@ class CameraDirector
 		setAdaptionTime(director.pAdaptionTime)
 		
 		setEnableGI(director.pEnableGI)
+		setEnableAuralization(director.pEnableAuralization)
 		
 		setWhiteIntensity(director.pWhiteIntensity)
 		setBloomIntensity(director.pBloomIntensity)
@@ -447,6 +466,14 @@ class CameraDirector
 		setToneMapCurve(camera.getToneMapCurve())
 		
 		setLayerMask(camera.getLayerMask())
+	end
+	
+	/**
+	 * \brief Copy parameters from microphone.
+	 * \version 1.23
+	 */
+	func void copyParameters(Microphone microphone)
+		setEnableAuralization(microphone.getEnableAuralization())
 	end
 	
 	
@@ -494,15 +521,41 @@ class CameraDirector
 		pCamera.resetAdaptedIntensity()
 	end
 	
+	
+	
+	/**
+	 * \brief Init microphone parameters.
+	 * \version 1.23
+	 */
+	func void initMicrophoneParameters()
+		if pMicrophone != null
+			applyParameters(pMicrophone)
+		end
+	end
+	
+	/**
+	 * \brief Apply parameters to microphone.
+	 * \version 1.23
+	 */
+	func void applyParameters(Microphone microphone)
+		microphone.setEnableAuralization(pEnableAuralization)
+	end
+	
+	
+	
 	/**
 	 * \brief Director has been activated.
 	 * 
 	 * Useful for init camera parameters that do not change over time. Default implementation
-	 * calls initCameraParameters if camera is not null.
+	 * calls initCameraParameters if camera is not null and initMicrophoneParameters if
+	 * microphone is not null.
 	 */
 	func void activate()
 		if pCamera != null
 			initCameraParameters()
+		end
+		if pMicrophone != null
+			initMicrophoneParameters()
 		end
 	end
 	

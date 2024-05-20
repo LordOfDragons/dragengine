@@ -316,6 +316,9 @@ public:
 	/** Enable GI changed. */
 	void EnableGIChanged();
 	
+	/** Enable auralization changed. */
+	void EnableAuralizationChanged();
+	
 	/** Clear scaling of non-scaled elements. */
 	void ClearScalingOfNonScaledElements();
 	

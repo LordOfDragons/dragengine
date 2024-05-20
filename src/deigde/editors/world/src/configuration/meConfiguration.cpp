@@ -165,6 +165,17 @@ void meConfiguration::SetEnableGI( bool enable ){
 	pWindowMain.ConfigEnableGIChanged();
 }
 
+void meConfiguration::SetEnableAuralization( bool enable ){
+	if( enable == pEnableAuralization ){
+		return;
+	}
+	
+	pEnableAuralization = enable;
+	SaveConfiguration();
+	
+	pWindowMain.ConfigEnableAuralizationChanged();
+}
+
 
 
 deInputEvent::eKeyCodes meConfiguration::GetHotKeyAt( int hotkey ) const{
@@ -262,6 +273,7 @@ void meConfiguration::pReset(){
 	pSensitivity = 1.0f;
 	
 	pEnableGI = false;
+	pEnableAuralization = false;
 	
 	pHotKeys[ ehkSelectWorkMode ] = deInputEvent::ekcW;
 	pHotKeys[ ehkSelectElementMode ] = deInputEvent::ekcE;

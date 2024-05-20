@@ -329,6 +329,12 @@ void meWindowMain::ConfigEnableGIChanged(){
 	}
 }
 
+void meWindowMain::ConfigEnableAuralizationChanged(){
+	if( pWorld ){
+		pWorld->EnableAuralizationChanged();
+	}
+}
+
 
 
 

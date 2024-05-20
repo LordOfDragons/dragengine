@@ -126,6 +126,7 @@ void deoalMicrophone::Synchronize(){
 		pAMicrophone->SetVolume( pMicrophone.GetVolume() );
 		pAMicrophone->SetMuted( pMicrophone.GetMuted() );
 		pAMicrophone->SetSpeakerGain( pMicrophone.GetSpeakerGain() );
+		pAMicrophone->SetEnableAuralization( pMicrophone.GetEnableAuralization() );
 		pDirtyMicrophone = false;
 	}
 	
@@ -236,6 +237,12 @@ void deoalMicrophone::LayerMaskChanged(){
 }
 
 void deoalMicrophone::SpeakerGainChanged(){
+	pDirtyMicrophone = true;
+	
+	pRequiresSync();
+}
+
+void deoalMicrophone::EnableAuralizationChanged(){
 	pDirtyMicrophone = true;
 	
 	pRequiresSync();

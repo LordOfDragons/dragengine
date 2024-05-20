@@ -189,6 +189,7 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		decLayerMask layerMaskMicrophone;
 		layerMaskMicrophone.SetBit( elmAudio );
 		pEngMicrophone->SetLayerMask( layerMaskMicrophone );
+		pEngMicrophone->SetEnableAuralization( windowMain.GetConfiguration().GetEnableAuralization() );
 		pDEWorld->AddMicrophone( pEngMicrophone );
 		
 		// create path find test
@@ -365,6 +366,14 @@ void meWorld::EnableGIChanged(){
 		if( object.GetCamera() ){
 			object.GetCamera()->SetEnableGI( enable );
 		}
+	}
+}
+
+void meWorld::EnableAuralizationChanged(){
+	const bool enable = pWindowMain.GetConfiguration().GetEnableAuralization();
+	
+	if( pEngMicrophone ){
+		pEngMicrophone->SetEnableAuralization( enable );
 	}
 }
 

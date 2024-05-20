@@ -69,12 +69,15 @@ void deBaseAudioMicrophone::LayerMaskChanged(){
 void deBaseAudioMicrophone::SpeakerGainChanged(){
 }
 
-
-
-void deBaseAudioMicrophone::SpeakerAdded( deSpeaker *speaker ){
+void deBaseAudioMicrophone::EnableAuralizationChanged(){
 }
 
-void deBaseAudioMicrophone::SpeakerRemoved( deSpeaker *speaker ){
+
+
+void deBaseAudioMicrophone::SpeakerAdded( deSpeaker* ){
+}
+
+void deBaseAudioMicrophone::SpeakerRemoved( deSpeaker* ){
 }
 
 void deBaseAudioMicrophone::AllSpeakersRemoved(){

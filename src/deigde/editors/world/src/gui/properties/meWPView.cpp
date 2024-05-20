@@ -331,6 +331,19 @@ public:
 };
 
 
+class cActionEnableAuralization : public cBaseAction{
+public:
+	cActionEnableAuralization( meWPView &panel ) : cBaseAction( panel,
+		"Enable Auralization", "Enable auralization if supported by audio module" ){ }
+	
+	virtual void OnAction( meWorld &world ){
+		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
+		configuration.SetEnableAuralization( ! configuration.GetEnableAuralization() );
+		world.NotifyEditingChanged();
+	}
+};
+
+
 class cActionSkyChanged : public cBaseAction{
 public:
 	cActionSkyChanged( meWPView &panel ) : cBaseAction( panel, "", "" ){ }
@@ -453,6 +466,11 @@ pWorld( NULL )
 		"Camera Parameters:", false, false, true );
 	
 	
+	// microphone
+	helper.GroupBoxFlow( content, groupBox, "Microphone:" );
+	helper.CheckBox( groupBox, pChkEnableAuralization, new cActionEnableAuralization( *this ) );
+	
+	
 	// property panels
 	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ), "Sky:", false, false, true );
 	helper.WPTriggerTable( content, pWPTriggerTable, new cActionTriggerTable( *this ),
@@ -528,6 +546,8 @@ void meWPView::UpdateView(){
 	pChkScaleSnap->SetChecked( configuration.GetScaleSnap() );
 	pEditScaleStep->SetFloat( configuration.GetScaleStep() );
 	pEditSensitivity->SetFloat( configuration.GetSensitivity() );
+	pChkAutoUpdate->SetChecked( configuration.GetAutoUpdate() );
+	pChkEnableAuralization->SetChecked( configuration.GetEnableAuralization() );
 	
 	if( pWorld ){
 		const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();

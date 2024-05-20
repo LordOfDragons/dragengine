@@ -39,6 +39,7 @@ private:
 	deScriptingDragonScript &pDS;
 	decTimer pDebugTimer;
 	bool pDefaultEnableGI;
+	bool pDefaultEnableAuralization;
 	
 	
 	
@@ -69,6 +70,12 @@ public:
 	
 	/** Set default enable GI. */
 	void SetDefaultEnableGI( bool enable );
+	
+	/** Default enable auralization. */
+	inline bool GetDefaultEnableAuralization() const{ return pDefaultEnableAuralization; }
+	
+	/** Set default enable auralization. */
+	void SetDefaultEnableAuralization( bool enable );
 	/*@}*/
 	
 	
@@ -123,6 +130,8 @@ private:
 	
 	DEF_NATFUNC( nfGetDefaultEnableGI );
 	DEF_NATFUNC( nfSetDefaultEnableGI );
+	DEF_NATFUNC( nfGetDefaultEnableAuralization );
+	DEF_NATFUNC( nfSetDefaultEnableAuralization );
 	
 	DEF_NATFUNC( nfGetUserLocaleLanguage );
 	DEF_NATFUNC( nfGetUserLocaleTerritory );

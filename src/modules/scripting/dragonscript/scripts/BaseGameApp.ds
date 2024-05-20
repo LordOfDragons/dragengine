@@ -473,6 +473,7 @@ class BaseGameApp extends Game
 		loadConfiguration()
 		
 		Engine.setDefaultEnableGI(pConfiguration.getBoolAt("defaultEnableGI", false))
+		Engine.setDefaultEnableAuralization(pConfiguration.getBoolAt("defaultEnableAuralization", true))
 		
 		initLanguages()
 		registerPersistencyFactories()

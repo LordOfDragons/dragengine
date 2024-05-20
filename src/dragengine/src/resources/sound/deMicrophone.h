@@ -76,6 +76,8 @@ private:
 	decLayerMask pLayerMask;
 	float pSpeakerGain;
 	
+	bool pEnableAuralization;
+	
 	deSpeaker *pSpeakerRoot;
 	deSpeaker *pSpeakerTail;
 	int pSpeakerCount;
@@ -162,6 +164,18 @@ public:
 	 * \version 1.16
 	 */
 	void SetSpeakerGain( float gain );
+	
+	/**
+	 * \brief Enable auralization if supported.
+	 * \version 1.23
+	 */
+	inline bool GetEnableAuralization() const{ return pEnableAuralization; }
+	
+	/**
+	 * \brief Set to enable auralization if supported.
+	 * \version 1.23
+	 */
+	void SetEnableAuralization( bool enable );
 	/*@}*/
 	
 	
