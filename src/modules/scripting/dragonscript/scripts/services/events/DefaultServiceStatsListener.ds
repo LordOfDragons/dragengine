@@ -1,0 +1,97 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+
+
+/**
+ * \brief Default implementation of ServiceStatsListener.
+ * \version 1.23
+ */
+class DefaultServiceStatsListener implements ServiceStatsListener
+	/**
+	 * Create new instance of DefaultServiceStatsListener.
+	 */
+	func new()
+	end
+	
+	
+	
+	/**
+	 * Stats and achievements have been received in response to a service request.
+	 * 
+	 * \param service Service sending the event.
+	 * 
+	 * \param stats Dictionary containing stats. Key is stat id as String.
+	 * Value is stat value as int, float or null if not set yet.
+	 * 
+	 * \param achievements Dictionary containing achievements. Key is achievement id
+	 * as String. Value is true or false depending if the achievement is set or not.
+	 */
+	func void statsReceived(Object service, Dictionary stats, Dictionary achievements)
+	end
+	
+	/**
+	 * Failed retrieving stats and achievements in response to a service request.
+	 * 
+	 * \param service Service sending the event.
+	 * \param message Error message from the steam server.
+	 */
+	func void statsReceivedFailed(Object service, String message)
+	end
+	
+	/**
+	 * \brief Stats and achievements have been successfully stored on the hosting platform.
+	 * 
+	 * \param service Service sending the event.
+	 * \param stats Set of stat id as String that have been stored.
+	 * \param achievements Set of achievement id as String that have been stored.
+	 */
+	func void statsStored(Object service, Set stats, Set achievements)
+	end
+	
+	/**
+	 * Failed storing stats and achievements in response to a service request.
+	 * 
+	 * \param service Service sending the event.
+	 * \param message Error message from the steam server.
+	 */
+	func void statsStoredFailed(Object service, String message)
+	end
+	
+	/**
+	 * \brief Notification stats or achievements changed on the hosting platform.
+	 * 
+	 * Typically this requires sending a service request to fetch the changes.
+	 * 
+	 * \param service Service sending the event.
+	 * 
+	 * \param stats Set of stat id as String that have changed. Can be empty for all stats.
+	 * 
+	 * \param achievements Set of achievement id as String that have changed.
+	 * Can be empty for all achievements.
+	 */
+	func void statsChanged(Object service, Set stats, Set achievements)
+	end
+end
