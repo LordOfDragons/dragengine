@@ -32,7 +32,7 @@ namespace Dragengine.Services
  * Provides acess to these functionalities:
  * - Stats/Achievements
  */
-class ServiceSteamSdk implements ServiceListener
+class ServiceSteamSdk implements ServiceStats, ServiceListener
 	var int pAppId
 	var Service pService
 	var Array pStatsListeners

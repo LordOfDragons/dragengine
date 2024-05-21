@@ -49,7 +49,7 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	 * \param achievements Dictionary containing achievements. Key is achievement id
 	 * as String. Value is true or false depending if the achievement is set or not.
 	 */
-	func void statsReceived(Object service, Dictionary stats, Dictionary achievements)
+	func void statsReceived(ServiceStats service, Dictionary stats, Dictionary achievements)
 	end
 	
 	/**
@@ -58,7 +58,7 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	 * \param service Service sending the event.
 	 * \param message Error message from the steam server.
 	 */
-	func void statsReceivedFailed(Object service, String message)
+	func void statsReceivedFailed(ServiceStats service, String message)
 	end
 	
 	/**
@@ -68,7 +68,7 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	 * \param stats Set of stat id as String that have been stored.
 	 * \param achievements Set of achievement id as String that have been stored.
 	 */
-	func void statsStored(Object service, Set stats, Set achievements)
+	func void statsStored(ServiceStats service, Set stats, Set achievements)
 	end
 	
 	/**
@@ -77,7 +77,7 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	 * \param service Service sending the event.
 	 * \param message Error message from the steam server.
 	 */
-	func void statsStoredFailed(Object service, String message)
+	func void statsStoredFailed(ServiceStats service, String message)
 	end
 	
 	/**
@@ -92,6 +92,6 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	 * \param achievements Set of achievement id as String that have changed.
 	 * Can be empty for all achievements.
 	 */
-	func void statsChanged(Object service, Set stats, Set achievements)
+	func void statsChanged(ServiceStats service, Set stats, Set achievements)
 	end
 end
