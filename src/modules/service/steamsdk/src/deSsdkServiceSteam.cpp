@@ -155,8 +155,8 @@ const char *function ){
 }
 
 deSsdkPendingRequest::Ref deSsdkServiceSteam::NewPendingRequest(
-const decUniqueID &id, const decString &function ){
-	const deSsdkPendingRequest::Ref pr( deSsdkPendingRequest::Ref::New( new deSsdkPendingRequest ) );
+const decUniqueID &id, const decString &function, const deServiceObject::Ref &data ){
+	const deSsdkPendingRequest::Ref pr( deSsdkPendingRequest::Ref::New( new deSsdkPendingRequest( data ) ) );
 	pr->id = id;
 	pr->function = function;
 	pr->data->SetStringChildAt( "function", function );
@@ -230,10 +230,14 @@ void deSsdkServiceSteam::ResetAllStats( const decUniqueID &id, const deServiceOb
 }
 
 void deSsdkServiceSteam::SetStats( const decUniqueID &id, const deServiceObject &request ){
-	deServiceObject::Ref soIn;
+	const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
+	deServiceObject::Ref soIn, soResp;
 	int i, count;
 	
 	// stats
+	soResp.TakeOver( new deServiceObject );
+	response->SetChildAt( "stats", soResp );
+	
 	soIn = request.GetChildAt( "stats" );
 	if( soIn ){
 		const decStringList keys( soIn->GetChildrenKeys() );
@@ -243,10 +247,14 @@ void deSsdkServiceSteam::SetStats( const decUniqueID &id, const deServiceObject 
 			const deServiceObject::Ref soValue( soIn->GetChildAt( apiName ) );
 			
 			if( soValue->IsInteger() ){
-				DEASSERT_TRUE( SteamUserStats()->SetStat( apiName, soValue->GetInteger() ) )
+				const int value = soValue->GetInteger();
+				DEASSERT_TRUE( SteamUserStats()->SetStat( apiName, value ) )
+				soResp->SetIntChildAt( apiName, value );
 				
 			}else if( soValue->IsFloat() ){
-				DEASSERT_TRUE( SteamUserStats()->SetStat( apiName, ( float )soValue->GetFloat() ) )
+				const float value = ( float )soValue->GetFloat();
+				DEASSERT_TRUE( SteamUserStats()->SetStat( apiName, value ) )
+				soResp->SetFloatChildAt( apiName, value );
 				
 			}else{
 				DETHROW_INFO( deeInvalidParam, apiName );
@@ -255,24 +263,31 @@ void deSsdkServiceSteam::SetStats( const decUniqueID &id, const deServiceObject 
 	}
 	
 	// achievements
+	soResp.TakeOver( new deServiceObject );
+	response->SetChildAt( "achievements", soResp );
+	
 	soIn = request.GetChildAt( "achievements" );
 	if( soIn ){
 		const decStringList keys( soIn->GetChildrenKeys() );
 		count = keys.GetCount();
 		for( i=0; i<count; i++ ){
 			const decString &apiName = keys.GetAt( i );
-			if( soIn->GetChildAt( apiName )->GetBoolean() ){
+			const bool achieved = soIn->GetChildAt( apiName )->GetBoolean();
+			
+			if( achieved ){
 				DEASSERT_TRUE( SteamUserStats()->SetAchievement( apiName ) )
 				
 			}else{
 				DEASSERT_TRUE( SteamUserStats()->ClearAchievement( apiName ) )
 			}
+			
+			soResp->SetBoolChildAt( apiName, achieved );
 		}
 	}
 	
 	// store
 	DEASSERT_TRUE( SteamUserStats()->StoreStats() );
-	NewPendingRequest( id, "setStats" );
+	NewPendingRequest( id, "setStats", response );
 }
 
 

@@ -55,10 +55,14 @@ interface ServiceStatsListener
 	 * \brief Stats and achievements have been successfully stored on the hosting platform.
 	 * 
 	 * \param service Service sending the event.
-	 * \param stats Set of stat id as String that have been stored.
-	 * \param achievements Set of achievement id as String that have been stored.
+	 * 
+	 * \param stats Dictionary containing stored stats. Key is stat id as String.
+	 * Value is stat value as int, float or null if not set yet.
+	 * 
+	 * \param achievements Dictionary containing stored achievements. Key is achievement id
+	 * as String. Value is true or false depending if the achievement is set or not.
 	 */
-	func void statsStored(ServiceStats service, Set stats, Set achievements)
+	func void statsStored(ServiceStats service, Dictionary stats, Dictionary achievements)
 	
 	/**
 	 * Failed storing stats and achievements in response to a service request.

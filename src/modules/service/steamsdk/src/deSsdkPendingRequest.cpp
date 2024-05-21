@@ -31,8 +31,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSsdkPendingRequest::deSsdkPendingRequest() :
-data( deServiceObject::Ref::New( new deServiceObject ) ){
+deSsdkPendingRequest::deSsdkPendingRequest( const deServiceObject::Ref &ndata ) :
+data( ndata ? ndata : deServiceObject::Ref::New( new deServiceObject ) ){
 }
 
 deSsdkPendingRequest::~deSsdkPendingRequest(){
