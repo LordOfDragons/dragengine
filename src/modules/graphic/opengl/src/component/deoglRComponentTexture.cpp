@@ -278,11 +278,11 @@ void deoglRComponentTexture::UpdateSkinState( deoglComponent &component ){
 
 
 void deoglRComponentTexture::UpdateUseSkin(){
-	pUseSkin = NULL;
+	pUseSkin = nullptr;
 	pUseTextureNumber = -1;
-	pUseSkinTexture = NULL;
-	pUseSkinState = NULL;
-	pUseDynamicSkin = NULL;
+	pUseSkinTexture = nullptr;
+	pUseSkinState = nullptr;
+	pUseDynamicSkin = nullptr;
 	pUseDoubleSided = false;
 	pUseDecal = false;
 	
