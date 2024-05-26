@@ -53,6 +53,7 @@ class BehaviorElementClass extends ElementClass
 	var Array pPreventCreationBehaviors
 	
 	
+	
 	/** \brief Create element class using loaders from BaseGameApp. */
 	func new() this("BehaviorElement", BaseGameApp.getApp().getLoaders())
 	end
@@ -148,7 +149,6 @@ class BehaviorElementClass extends ElementClass
 		return pBehaviors.collectCastable(ablock)
 	end
 	
-	
 	/**
 	 * \brief Visit behaviors with block.
 	 * 
@@ -157,6 +157,7 @@ class BehaviorElementClass extends ElementClass
 	func void forEachBehaviorDirect(Block ablock)
 		pBehaviors.forEach(ablock)
 	end
+	
 	
 	
 	/**
@@ -183,6 +184,35 @@ class BehaviorElementClass extends ElementClass
 	end
 	
 	/**
+	 * \brief Visit prepare stub behaviors with block.
+	 * version 1.23
+	 * 
+	 * Block is required to have one parameter of type ECBehavior or subclass thereof.
+	 * Block is called only for behaviors castable to block parameter type.
+	 */
+	func void forEachPrepareStubBehavior(Block ablock)
+		pPrepareStubBehaviors.forEachCastable(ablock)
+	end
+	
+	/**
+	 * \brief Call prepareStub on all prepare stub behaviors.
+	 * \version 1.23
+	 * 
+	 * For use by subclasses overwriting \ref #createAndAddElement(StubElement,GameWorld)
+	 * or \ref #loadAndAddElement(PersistencyEnvironment,StubElement,FileReader,GameWorld)
+	 * without super calling.
+	 * 
+	 * \see BehaviorPrepareStub#prepareStub(StubElement,GameWorld,bool)
+	 */
+	func void prepareStubs(StubElement stub, GameWorld gameWorld, bool loading)
+		pPrepareStubBehaviors.forEach(block BehaviorPrepareStub each
+			each.prepareStub(stub, gameWorld, loading)
+		end)
+	end
+	
+	
+	
+	/**
 	 * \brief Add behavior potentially preventing creation before initialization is done.
 	 * \version 1.23
 	 * 
@@ -204,6 +234,33 @@ class BehaviorElementClass extends ElementClass
 		
 		pPreventCreationBehaviors.add(behavior)
 	end
+	
+	/**
+	 * \brief Visit prevent creation behaviors with block.
+	 * version 1.23
+	 * 
+	 * Block is required to have one parameter of type ECBehavior or subclass thereof.
+	 * Block is called only for behaviors castable to block parameter type.
+	 */
+	func void forEachPreventCreationBehavior(Block ablock)
+		pPreventCreationBehaviors.forEachCastable(ablock)
+	end
+	
+	/**
+	 * \brief Call prepareStub on all prepare stub behaviors.
+	 * \version 1.23
+	 * 
+	 * For use by subclasses overwriting \ref #createAndAddElement(StubElement,GameWorld)
+	 * without super calling.
+	 * 
+	 * \see BehaviorPreventCreation#preventCreation(StubElement,GameWorld)
+	 */
+	func bool preventCreation(StubElement stub, GameWorld gameWorld)
+		return pPreventCreationBehaviors.find(block BehaviorPreventCreation each
+			return each.preventCreation(stub, gameWorld)
+		end) != null
+	end
+	
 	
 	
 	/** \brief Create element instance. */
