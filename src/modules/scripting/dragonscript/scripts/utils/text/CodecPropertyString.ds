@@ -222,8 +222,8 @@ class CodecPropertyString
 		var Dictionary dict = Dictionary.new()
 		
 		decodeStringList(string).forEach(block String pair
-			var Array keyValue = pair.splitExact(pKeyValueSeparator)
-			dict.setAt(keyValue.getAt(0) cast String, keyValue.getAt(1) cast String)
+			var int index = pair.find(pKeyValueSeparator)
+			dict.setAt(pair.substring(0, index), pair.substring(index + 1))
 		end)
 		
 		return dict
