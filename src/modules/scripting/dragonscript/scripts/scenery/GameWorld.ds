@@ -877,7 +877,7 @@ class GameWorld
 	
 	private func void pPrepareUpdateEnterFrameOnce()
 		if pLockEnterFrameOnce
-			pEnterFrameOnce = Array.new()
+			pEnterFrameOnce = Array.new(pEnterFrameOnce)
 			pLockEnterFrameOnce = false
 		end
 	end
