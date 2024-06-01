@@ -104,6 +104,91 @@ class CodecPropertyString
 	
 	
 	
+	/**
+	 * \brief Basic separators for tokens in property strings containing multiple values.
+	 * \version 1.23
+	 */
+	func String getTokenSeparators()
+		return pTokenSeparators
+	end
+	
+	/**
+	 * \brief Set basic separators for tokens in property strings containing multiple values.
+	 * \version 1.23
+	 */
+	func void setTokenSeparators(String separators)
+		if separators == null
+			throw ENullPointer.new("separators")
+		end
+		pTokenSeparators = separators
+	end
+	
+	/**
+	 * \brief Separator for key and value in dictionaries.
+	 * \version 1.23
+	 */
+	func byte getKeyValueSeparator()
+		return pKeyValueSeparator
+	end
+	
+	/**
+	 * \brief Set separator for key and value in dictionaries.
+	 * \version 1.23
+	 */
+	func void setKeyValueSeparator(byte separator)
+		pKeyValueSeparator = separator
+	end
+	
+	/**
+	 * \brief Shape parameter separator character.
+	 * \version 1.23
+	 */
+	func byte getShapeParameterSeparator()
+		return pShapeParameterSeparator
+	end
+	
+	/**
+	 * \brief Set shape parameter separator character.
+	 * \version 1.23
+	 */
+	func void setShapeParameterSeparator(byte separator)
+		pShapeParameterSeparator = separator
+	end
+	
+	/**
+	 * \brief Shape value separator character.
+	 * \version 1.23
+	 */
+	func byte getShapeValueSeparator()
+		return pShapeValueSeparator
+	end
+	
+	/**
+	 * \brief Set shape value separator character.
+	 * \version 1.23
+	 */
+	func void setShapeValueSeparator(byte separator)
+		pShapeValueSeparator = separator
+	end
+	
+	/**
+	 * \brief Character to separate tokens with for encoding.
+	 * \version 1.23
+	 */
+	func byte getEncodeTokenSeparator()
+		return pEncodeTokenSeparator
+	end
+	
+	/**
+	 * \brief Set character to separate tokens with for encoding.
+	 * \version 1.23
+	 */
+	func void setEncodeTokenSeparator(byte separator)
+		pEncodeTokenSeparator = separator
+	end
+	
+	
+	
 	/** \brief Decode property string into a fixed sized list of floating point values. */
 	func Array decodeFixedFloatList(String string, int valueCount)
 		var Array list = string.split(pTokenSeparators)
