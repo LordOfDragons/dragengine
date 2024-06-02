@@ -152,8 +152,8 @@ class ShoutConsole extends Widget implements ConsoleListener
 		
 		// drop lines if buffer is full
 		if count == this.pMaxLines
-			this.pTextLayouts.remove( 0 )
-			this.pTimesToLive.remove( 0 )
+			this.pTextLayouts.removeFrom( 0 )
+			this.pTimesToLive.removeFrom( 0 )
 		end
 		
 		// add new message
@@ -202,8 +202,8 @@ class ShoutConsole extends Widget implements ConsoleListener
 			if this.pTimesToLive.getAt( 0 ) cast float > 0
 				break
 			end
-			this.pTextLayouts.remove( 0 )
-			this.pTimesToLive.remove( 0 )
+			this.pTextLayouts.removeFrom( 0 )
+			this.pTimesToLive.removeFrom( 0 )
 			count--
 			changed = true
 		end

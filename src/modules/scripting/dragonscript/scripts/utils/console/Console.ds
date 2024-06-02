@@ -114,7 +114,7 @@ class Console
 		
 		var bool removedTop = false
 		if pMessages.getCount() == pBufferSize
-			pMessages.remove(0)
+			pMessages.removeFrom(0)
 			removedTop = true
 		end
 		

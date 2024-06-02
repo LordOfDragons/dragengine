@@ -256,7 +256,7 @@ class ConsoleInputField extends TextField
 		end
 		
 		var String commandName = tokens.getAt( 0 ) cast String
-		tokens.remove( 0 )
+		tokens.removeFrom( 0 )
 		
 		// check if this is a console command
 		if this.pConsoleCommands != null

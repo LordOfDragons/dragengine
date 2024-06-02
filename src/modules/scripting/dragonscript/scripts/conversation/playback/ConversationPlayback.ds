@@ -799,7 +799,7 @@ abstract class ConversationPlayback implements Persistable
 	
 	/** \brief Pop top layer off stack. */
 	public func void popLayer()
-		pLayers.remove(pLayers.getCount() - 1)
+		pLayers.removeFrom(pLayers.getCount() - 1)
 	end
 	
 	/** \brief Next action is present. */
